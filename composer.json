@@ -1,0 +1,23 @@
+{
+  "name": "payone/shopware",
+  "type": "shopware-plugin",
+  "description": "Payone Payment Plugin",
+  "license": "Commercial",
+  "authors": [
+    {
+      "name": "Kellerkinder GmbH",
+      "email": "anfragen@kellerkinder.de"
+    }
+  ],
+  "require": {
+    "composer/installers": "^1.5",
+    "arvatis/payone-php-api": "^2.2"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master",
+    "k10r/codestyle": "^1.0"
+  },
+  "extra": {
+    "installer-name": "PayonePayment"
+  }
+}
