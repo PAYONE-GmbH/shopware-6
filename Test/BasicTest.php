@@ -1,6 +1,6 @@
 <?php
 
-namespace K10rPayorize\Test;
+namespace PayonePayment\Test;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
