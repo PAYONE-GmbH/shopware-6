@@ -49,7 +49,6 @@ class Migration1544109427 extends MigrationStep
                 'id'                   => $id,
                 'technical_name'       => $paymentMethod->getTechnicalName(),
                 'class'                => $paymentMethod->getPaymentHandler(),
-                'hide'                 => 0,
                 'percentage_surcharge' => 0,
                 'position'             => $position,
                 'active'               => 1,
