@@ -10,6 +10,7 @@
     }
   ],
   "require": {
+    "ext-curl": "*",
     "composer/installers": "^1.5",
     "arvatis/payone-php-api": "^2.2"
   },
