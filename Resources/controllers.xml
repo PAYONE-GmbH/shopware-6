@@ -3,16 +3,9 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <imports>
-        <import resource="commands.xml" />
-        <import resource="entities.xml" />
-        <import resource="controllers.xml" />
-        <import resource="handlers.xml" />
-    </imports>
-
     <services>
-        <service id="PayonePayment\ConfigReader\ConfigReader">
-            <argument type="service" id="payone_payment_config.repository" />
+        <service id="PayonePayment\Controller\PayonePaymentController" public="true">
+            <argument type="service" id="logger" />
         </service>
     </services>
 </container>
