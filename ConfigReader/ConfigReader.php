@@ -30,10 +30,6 @@ class ConfigReader implements ConfigReaderInterface
             'payone_payment_config.salesChannelId',
             FieldSorting::ASCENDING
         ));
-        $criteria->addSorting(new FieldSorting(
-            'payone_payment_config.key',
-            FieldSorting::ASCENDING
-        ));
 
         if (!empty($salesChannelId)) {
             $null    = new EqualsFilter('payone_payment_config.salesChannelId', null);
