@@ -9,16 +9,13 @@ use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentC
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 
 class ConfigReader implements ConfigReaderInterface
 {
-    /**
-     * @var RepositoryInterface
-     */
+    /** @var RepositoryInterface */
     private $repository;
 
     public function __construct(RepositoryInterface $repository)
@@ -39,12 +36,12 @@ class ConfigReader implements ConfigReaderInterface
         ));
 
         if (!empty($salesChannelId)) {
-            $null = new EqualsFilter('payone_payment_config.salesChannelId', null);
+            $null    = new EqualsFilter('payone_payment_config.salesChannelId', null);
             $channel = new EqualsFilter('payone_payment_config.salesChannelId', $salesChannelId);
 
             $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_OR, [
                 $null,
-                $channel
+                $channel,
             ]));
         }
 

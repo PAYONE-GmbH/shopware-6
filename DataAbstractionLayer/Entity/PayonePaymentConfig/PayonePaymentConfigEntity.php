@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig;
 
 use DateTime;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
@@ -14,38 +13,26 @@ class PayonePaymentConfigEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var string|null
-     */
+    /** @var null|string */
     protected $salesChannelId;
 
-    /**
-     * @var SalesChannelEntity|null
-     */
+    /** @var null|SalesChannelEntity */
     protected $salesChannel;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $key;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $value;
 
-    /**
-     * @var DateTime|null
-     */
+    /** @var null|DateTime */
     protected $createdAt;
 
-    /**
-     * @var DateTime|null
-     */
+    /** @var null|DateTime */
     protected $updatedAt;
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getSalesChannelId(): ?string
     {
@@ -53,7 +40,7 @@ class PayonePaymentConfigEntity extends Entity
     }
 
     /**
-     * @return SalesChannelEntity|null
+     * @return null|SalesChannelEntity
      */
     public function getSalesChannel(): ?SalesChannelEntity
     {
@@ -77,7 +64,7 @@ class PayonePaymentConfigEntity extends Entity
     }
 
     /**
-     * @return DateTime|null
+     * @return null|DateTime
      */
     public function getCreatedAt(): ?DateTime
     {
@@ -85,7 +72,7 @@ class PayonePaymentConfigEntity extends Entity
     }
 
     /**
-     * @return DateTime|null
+     * @return null|DateTime
      */
     public function getUpdatedAt(): ?DateTime
     {

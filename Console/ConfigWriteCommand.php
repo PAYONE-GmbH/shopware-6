@@ -13,9 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ConfigWriteCommand extends Command
 {
-    /**
-     * @var ConfigWriterInterface
-     */
+    /** @var ConfigWriterInterface */
     private $configWriter;
 
     public function __construct(ConfigWriterInterface $configWriter)
@@ -43,8 +41,8 @@ class ConfigWriteCommand extends Command
         $style = new SymfonyStyle($input, $output);
         $style->title('PayonePayment Config');
 
-        $key = (string) $input->getArgument('key');
-        $value = (string) $input->getArgument('value');
+        $key          = (string) $input->getArgument('key');
+        $value        = (string) $input->getArgument('value');
         $salesChannel = (string) $input->getArgument('sales_channel');
 
         $this->configWriter->write($key, $value, $salesChannel);

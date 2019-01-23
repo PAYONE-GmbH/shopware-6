@@ -66,9 +66,9 @@ class Migration1544109427 extends MigrationStep
 
             foreach ($channels as $channel) {
                 $connection->insert('sales_channel_payment_method', [
-                    'payment_method_id'      => $id,
-                    'sales_channel_id'            => $channel,
-                    'created_at' => (new \DateTime())->format('Y-m-d')
+                    'payment_method_id' => $id,
+                    'sales_channel_id'  => $channel,
+                    'created_at'        => (new \DateTime())->format('Y-m-d'),
                 ]);
             }
         }

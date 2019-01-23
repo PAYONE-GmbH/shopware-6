@@ -4,21 +4,15 @@ declare(strict_types=1);
 
 namespace PayonePayment\ConfigWriter;
 
-use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigCollection;
 use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigEntity;
-use Ramsey\Uuid\Uuid;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 
 class ConfigWriter implements ConfigWriterInterface
 {
-    /**
-     * @var RepositoryInterface
-     */
+    /** @var RepositoryInterface */
     private $repository;
 
     public function __construct(RepositoryInterface $repository)
@@ -48,20 +42,20 @@ class ConfigWriter implements ConfigWriterInterface
             ));
         }
 
-        /** @var PayonePaymentConfigEntity|null $existingEntry */
+        /** @var null|PayonePaymentConfigEntity $existingEntry */
         $existingEntry = $this->repository->search($criteria, $context)->first();
 
         if (null === $existingEntry) {
             $data = [
-                'key' => $key,
+                'key'   => $key,
                 'value' => $value,
             ];
 
             $this->repository->create([$data], $context);
         } else {
             $data = [
-                'id' => $existingEntry->getId(),
-                'key' => $key,
+                'id'    => $existingEntry->getId(),
+                'key'   => $key,
                 'value' => $value,
             ];
 

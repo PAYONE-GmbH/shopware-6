@@ -4,24 +4,18 @@ declare(strict_types=1);
 
 namespace PayonePayment\Console;
 
-use PayonePayment\ConfigReader\ConfigReader;
 use PayonePayment\ConfigReader\ConfigReaderInterface;
 use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigCollection;
 use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ConfigReadCommand extends Command
 {
-    /**
-     * @var ConfigReaderInterface
-     */
+    /** @var ConfigReaderInterface */
     private $configReader;
 
     public function __construct(ConfigReaderInterface $configReader)
@@ -49,17 +43,17 @@ class ConfigReadCommand extends Command
         $style->title('PayonePayment Config');
 
         $salesChannel = (string) $input->getArgument('sales_channel');
-        $key = (string) $input->getArgument('key');
+        $key          = (string) $input->getArgument('key');
 
         /** @var PayonePaymentConfigCollection $configCollection */
         $configCollection = $this->configReader->read($salesChannel, $key, false);
 
         /** @var PayonePaymentConfigEntity[] $configElements */
-        $configElements = $configCollection->map(function(PayonePaymentConfigEntity $configEntity) {
+        $configElements = $configCollection->map(function (PayonePaymentConfigEntity $configEntity) {
             return [
                 'salesChannel' => $configEntity->getSalesChannelId() ?: 'default',
-                'key' => $configEntity->getKey(),
-                'value' => $configEntity->getValue()
+                'key'          => $configEntity->getKey(),
+                'value'        => $configEntity->getValue(),
             ];
         });
 

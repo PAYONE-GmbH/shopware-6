@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig;
 
-use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
