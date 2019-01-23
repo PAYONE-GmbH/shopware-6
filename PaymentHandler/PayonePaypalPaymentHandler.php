@@ -39,9 +39,7 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
     /** @var Router */
     private $router;
 
-    /**
-     * @var ConfigReaderInterface
-     */
+    /** @var ConfigReaderInterface */
     private $configReader;
 
     /** @var LoggerInterface */
@@ -61,7 +59,7 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
         $this->languageRepository      = $languageRepository;
         $this->requestStack            = $requestStack;
         $this->router                  = $router;
-        $this->configReader = $configReader;
+        $this->configReader            = $configReader;
         $this->logger                  = $logger;
     }
 
