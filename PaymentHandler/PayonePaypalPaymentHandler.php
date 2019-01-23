@@ -135,7 +135,7 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
         return [
             'aid'         => $config->get('aid') ? $config->get('aid')->getValue() : '',
             'mid'         => $config->get('mid') ? $config->get('mid')->getValue() : '',
-            'portalid'    => $config->get('portalid') ? $config->get('mid')->getValue() : '',
+            'portalid'    => $config->get('portalid') ? $config->get('portalid')->getValue() : '',
             'key'         => hash('md5', $config->get('key') ? $config->get('key')->getValue() : ''),
             'api_version' => '3.10',
             'mode'        => 'test',
