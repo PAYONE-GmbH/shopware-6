@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\ConfigReader\ConfigReaderInterface;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -25,15 +26,24 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
 {
     /** @var RepositoryInterface */
     private $transactionRepository;
+
     /** @var RepositoryInterface */
     private $orderCustomerRepository;
+
     /** @var RepositoryInterface */
     private $languageRepository;
 
     /** @var RequestStack */
     private $requestStack;
+
     /** @var Router */
     private $router;
+
+    /**
+     * @var ConfigReaderInterface
+     */
+    private $configReader;
+
     /** @var LoggerInterface */
     private $logger;
 
@@ -43,13 +53,15 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
         RepositoryInterface $languageRepository,
         RequestStack $requestStack,
         Router $router,
+        ConfigReaderInterface $configReader,
         LoggerInterface $logger
     ) {
         $this->transactionRepository   = $transactionRepository;
-        $this->requestStack            = $requestStack;
-        $this->router                  = $router;
         $this->orderCustomerRepository = $orderCustomerRepository;
         $this->languageRepository      = $languageRepository;
+        $this->requestStack            = $requestStack;
+        $this->router                  = $router;
+        $this->configReader = $configReader;
         $this->logger                  = $logger;
     }
 
@@ -118,13 +130,15 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
         return $personalData;
     }
 
-    private function getDefaultData(): array
+    private function getDefaultData(PaymentTransactionStruct $transaction): array
     {
+        $config = $this->configReader->read($transaction->getOrder()->getSalesChannelId());
+
         return [
-            'aid'         => '42717',
-            'mid'         => '42598',
-            'portalid'    => '2030744',
-            'key'         => hash('md5', 'cgXdc7e2J9kJaIm6'),
+            'aid'         => $config->get('aid') ? $config->get('aid')->getValue() : '',
+            'mid'         => $config->get('mid') ? $config->get('mid')->getValue() : '',
+            'portalid'    => $config->get('portalid') ? $config->get('mid')->getValue() : '',
+            'key'         => hash('md5', $config->get('key') ? $config->get('key')->getValue() : ''),
             'api_version' => '3.10',
             'mode'        => 'test',
             'encoding'    => 'UTF-8',
@@ -164,7 +178,7 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
 
     private function authorizePayment(PaymentTransactionStruct $transaction, Context $context)
     {
-        $defaults     = $this->getDefaultData();
+        $defaults     = $this->getDefaultData($transaction);
         $personalData = $this->getPayonePersonalData($transaction, $context);
         $parameters   = $this->getPaypalData($transaction);
 

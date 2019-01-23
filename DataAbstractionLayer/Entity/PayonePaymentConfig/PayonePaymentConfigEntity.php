@@ -17,16 +17,6 @@ class PayonePaymentConfigEntity extends Entity
     /**
      * @var string|null
      */
-    protected $paymentMethodId;
-
-    /**
-     * @var PaymentMethodEntity|null
-     */
-    protected $paymentMethod;
-
-    /**
-     * @var string|null
-     */
     protected $salesChannelId;
 
     /**
@@ -57,49 +47,9 @@ class PayonePaymentConfigEntity extends Entity
     /**
      * @return string|null
      */
-    public function getPaymentMethodId(): ?string
-    {
-        return $this->paymentMethodId;
-    }
-
-    /**
-     * @param string|null $paymentMethodId
-     */
-    public function setPaymentMethodId(?string $paymentMethodId): void
-    {
-        $this->paymentMethodId = $paymentMethodId;
-    }
-
-    /**
-     * @return PaymentMethodEntity|null
-     */
-    public function getPaymentMethod(): ?PaymentMethodEntity
-    {
-        return $this->paymentMethod;
-    }
-
-    /**
-     * @param PaymentMethodEntity|null $paymentMethod
-     */
-    public function setPaymentMethod(?PaymentMethodEntity $paymentMethod): void
-    {
-        $this->paymentMethod = $paymentMethod;
-    }
-
-    /**
-     * @return string|null
-     */
     public function getSalesChannelId(): ?string
     {
         return $this->salesChannelId;
-    }
-
-    /**
-     * @param string|null $salesChannelId
-     */
-    public function setSalesChannelId(?string $salesChannelId): void
-    {
-        $this->salesChannelId = $salesChannelId;
     }
 
     /**
@@ -111,27 +61,11 @@ class PayonePaymentConfigEntity extends Entity
     }
 
     /**
-     * @param SalesChannelEntity|null $salesChannel
-     */
-    public function setSalesChannel(?SalesChannelEntity $salesChannel): void
-    {
-        $this->salesChannel = $salesChannel;
-    }
-
-    /**
      * @return string
      */
     public function getKey(): string
     {
         return $this->key;
-    }
-
-    /**
-     * @param string $key
-     */
-    public function setKey(string $key): void
-    {
-        $this->key = $key;
     }
 
     /**
@@ -143,14 +77,6 @@ class PayonePaymentConfigEntity extends Entity
     }
 
     /**
-     * @param string $value
-     */
-    public function setValue(string $value): void
-    {
-        $this->value = $value;
-    }
-
-    /**
      * @return DateTime|null
      */
     public function getCreatedAt(): ?DateTime
@@ -159,26 +85,10 @@ class PayonePaymentConfigEntity extends Entity
     }
 
     /**
-     * @param DateTime|null $createdAt
-     */
-    public function setCreatedAt(?DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
      * @return DateTime|null
      */
     public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
-    }
-
-    /**
-     * @param DateTime|null $updatedAt
-     */
-    public function setUpdatedAt(?DateTime $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
     }
 }

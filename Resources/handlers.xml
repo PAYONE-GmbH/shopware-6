@@ -22,6 +22,7 @@
             <argument type="service" id="language.repository" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="router.default" />
+            <argument type="service" id="PayonePayment\ConfigReader\ConfigReader" />
             <argument type="service" id="logger" />
 
             <tag name="payment.method" />

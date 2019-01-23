@@ -21,10 +21,9 @@ class Migration1548170939 extends MigrationStep
                 `id` binary(16) NOT NULL PRIMARY KEY,
                 
                 `sales_channel_id` binary(16) DEFAULT NULL,
-                `payment_method_id` binary(16) DEFAULT NULL,
                 
-                `key` varchar(255) NOT NULL,
-                `value` varchar(255) NOT NULL,
+                `config_key` varchar(255) NOT NULL,
+                `config_value` varchar(255) NOT NULL,
                 
                 `created_at` datetime(3) NOT NULL,
                 `updated_at` datetime(3),
@@ -32,12 +31,7 @@ class Migration1548170939 extends MigrationStep
                 CONSTRAINT `fk.payone_payment_config.sales_channel_id`
                     FOREIGN KEY (sales_channel_id) 
                     REFERENCES `sales_channel` (id)
-                    ON DELETE CASCADE ON UPDATE CASCADE,
-                    
-                CONSTRAINT `fk.payone_payment_config.payment_method_id` 
-                    FOREIGN KEY (`payment_method_id`) 
-                    REFERENCES `payment_method` (`id`) 
-                    ON DELETE RESTRICT ON UPDATE CASCADE
+                    ON DELETE CASCADE ON UPDATE CASCADE
                     
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');

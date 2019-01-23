@@ -37,9 +37,10 @@ class Migration1544109427 extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $language = Uuid::fromHexToBytes(Defaults::LANGUAGE_EN);
+        $language = Uuid::fromHexToBytes(Defaults::LANGUAGE_SYSTEM);
 
         $position = $connection->fetchColumn('SELECT max(position) FROM payment_method');
+        $channels = $connection->fetchAssoc('SELECT id FROM sales_channel');
 
         foreach ($this->paymentMethods as $paymentMethod) {
             $id = Uuid::uuid4()->getBytes();
@@ -62,6 +63,14 @@ class Migration1544109427 extends MigrationStep
                 'additional_description' => $paymentMethod->getDescription(),
                 'created_at'             => (new DateTimeImmutable())->format(Defaults::DATE_FORMAT),
             ]);
+
+            foreach ($channels as $channel) {
+                $connection->insert('sales_channel_payment_method', [
+                    'payment_method_id'      => $id,
+                    'sales_channel_id'            => $channel,
+                    'created_at' => (new \DateTime())->format('Y-m-d')
+                ]);
+            }
         }
     }
 
