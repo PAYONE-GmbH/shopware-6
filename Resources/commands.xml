@@ -5,6 +5,8 @@
 
     <services>
         <service id="PayonePayment\Console\TestCommand" >
+            <argument type="service" id="service_container" />
+
             <tag name="console.command" />
         </service>
 
@@ -15,6 +17,8 @@
         </service>
 
         <service id="PayonePayment\Console\ConfigWriteCommand" >
+            <argument type="service" id="PayonePayment\ConfigWriter\ConfigWriter" />
+
             <tag name="console.command" />
         </service>
     </services>

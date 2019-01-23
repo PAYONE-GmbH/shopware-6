@@ -39,10 +39,9 @@ class PayonePaymentConfigDefinition extends EntityDefinition
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
 
             new FkField('sales_channel_id', 'salesChannelId', SalesChannelDefinition::class),
-            new FkField('payment_method_id', 'paymentMethodId', PaymentMethodDefinition::class),
 
-            (new StringField('key', 'key'))->setFlags(new Required()),
-            new StringField('value', 'value'),
+            (new StringField('config_key', 'key'))->setFlags(new Required()),
+            new StringField('config_value', 'value'),
 
             new CreatedAtField(),
             new UpdatedAtField(),

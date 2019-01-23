@@ -6,6 +6,7 @@ namespace PayonePayment\Console;
 
 use PayonePayment\ConfigReader\ConfigReader;
 use PayonePayment\ConfigReader\ConfigReaderInterface;
+use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigCollection;
 use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
@@ -23,26 +24,19 @@ class ConfigReadCommand extends Command
      */
     private $configReader;
 
-    /**
-     * @var EntityRepository
-     */
-    private $salesChannelRepository;
-
-    public function __construct(ConfigReaderInterface $configReader, EntityRepository $salesChannelRepository)
+    public function __construct(ConfigReaderInterface $configReader)
     {
         parent::__construct();
 
         $this->configReader = $configReader;
-        $this->salesChannelRepository = $salesChannelRepository;
     }
 
     protected function configure()
     {
         $this
             ->setName('payone:config:read')
-            ->setDescription('Installs a plugin.')
+            ->setDescription('Display the PayonePayment config')
             ->addArgument('sales_channel', InputArgument::OPTIONAL, 'sales channel')
-            ->addArgument('payment_method', InputArgument::OPTIONAL, 'payment method')
             ->addArgument('key', InputArgument::OPTIONAL, 'config key');
     }
 
@@ -51,22 +45,32 @@ class ConfigReadCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $style = new SymfonyStyle($input, $output);
+        $style->title('PayonePayment Config');
+
         $salesChannel = (string) $input->getArgument('sales_channel');
-        $paymentMethod = (string) $input->getArgument('payment_method');
         $key = (string) $input->getArgument('key');
 
-        /** @var EntitySearchResult $configElements */
-        $configElements = $this->configReader->read($salesChannel, $paymentMethod, $key);
-        $configElements = $configElements->map(function(PayonePaymentConfigEntity $configEntity) {
+        /** @var PayonePaymentConfigCollection $configCollection */
+        $configCollection = $this->configReader->read($salesChannel, $key, false);
+
+        /** @var PayonePaymentConfigEntity[] $configElements */
+        $configElements = $configCollection->map(function(PayonePaymentConfigEntity $configEntity) {
             return [
-                $configEntity->getSalesChannelId(),
-                $configEntity->getPaymentMethodId(),
-                $configEntity->getKey(),
-                $configEntity->getValue()
+                'salesChannel' => $configEntity->getSalesChannelId() ?: 'default',
+                'key' => $configEntity->getKey(),
+                'value' => $configEntity->getValue()
             ];
         });
 
-        $style = new SymfonyStyle($input, $output);
-        $style->table(['sales_channel', 'payment_method', 'key', 'value'], $configElements);
+        $configGroup = [];
+        foreach ($configElements as $element) {
+            $configGroup[$element['salesChannel']][] = $element;
+        }
+
+        foreach ($configGroup as $salesChannel => $group) {
+            $style->text(sprintf('Saleschannel %s:', $salesChannel));
+            $style->table(['sales_channel', 'key', 'value'], $group);
+        }
     }
 }

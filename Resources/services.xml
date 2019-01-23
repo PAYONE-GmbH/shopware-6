@@ -14,5 +14,9 @@
         <service id="PayonePayment\ConfigReader\ConfigReader">
             <argument type="service" id="payone_payment_config.repository" />
         </service>
+
+        <service id="PayonePayment\ConfigWriter\ConfigWriter">
+            <argument type="service" id="payone_payment_config.repository" />
+        </service>
     </services>
 </container>
