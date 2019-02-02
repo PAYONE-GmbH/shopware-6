@@ -6,6 +6,8 @@ namespace PayonePayment\PaymentMethod;
 
 interface PaymentMethodInterface
 {
+    public function getId(): string;
+
     public function getName(): string;
 
     public function getTechnicalName(): string;

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Console;
 
-use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigEntity;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Struct\Uuid;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,23 +32,8 @@ class TestCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $context = Context::createDefaultContext();
-
-        $repository = $this->container->get('sales_channel.repository');
-        $channels   = $repository->search(new Criteria(), $context);
-
-        $repository = $this->container->get('payone_payment_config.repository');
-
-        /** @var PayonePaymentConfigEntity[] $configElements */
-        $configElements = $repository->search(new Criteria(), $context);
-
-        foreach ($configElements as $element) {
-            $data = [
-                'id'             => $element->getId(),
-                'salesChannelId' => $channels->first()->getId(),
-            ];
-
-            $repository->update([$data], $context);
+        for ($i = 0; $i < 5; ++$i) {
+            var_dump(Uuid::uuid4()->getHex());
         }
     }
 }

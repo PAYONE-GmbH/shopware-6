@@ -12,8 +12,8 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Read\ReadCriteria;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Language\LanguageEntity;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,13 +24,13 @@ use Symfony\Component\Routing\Router;
 
 class PayonePaypalPaymentHandler implements PaymentHandlerInterface
 {
-    /** @var RepositoryInterface */
+    /** @var EntityRepositoryInterface */
     private $transactionRepository;
 
-    /** @var RepositoryInterface */
+    /** @var EntityRepositoryInterface */
     private $orderCustomerRepository;
 
-    /** @var RepositoryInterface */
+    /** @var EntityRepositoryInterface */
     private $languageRepository;
 
     /** @var RequestStack */
@@ -46,9 +46,9 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
     private $logger;
 
     public function __construct(
-        RepositoryInterface $transactionRepository,
-        RepositoryInterface $orderCustomerRepository,
-        RepositoryInterface $languageRepository,
+        EntityRepositoryInterface $transactionRepository,
+        EntityRepositoryInterface $orderCustomerRepository,
+        EntityRepositoryInterface $languageRepository,
         RequestStack $requestStack,
         Router $router,
         ConfigReaderInterface $configReader,
@@ -92,29 +92,34 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
 
     private function getPayonePersonalData(PaymentTransactionStruct $transaction, Context $context): array
     {
-        $criteria = new ReadCriteria([$transaction->getOrder()->getOrderCustomerId()]);
+        $criteria = new Criteria([$transaction->getOrder()->getOrderCustomerId()]);
         $criteria->addAssociation('order_customer.customer');
 
         /** @var OrderCustomerEntity $orderCustomer */
-        $orderCustomer = $this->orderCustomerRepository->read($criteria, $context)->first();
+        $orderCustomer = $this->orderCustomerRepository->search($criteria, $context)->first();
 
         $languages = $context->getLanguageIdChain();
-        $criteria  = new ReadCriteria([reset($languages)]);
+        $criteria  = new Criteria([reset($languages)]);
         $criteria->addAssociation('language.locale');
 
         /** @var LanguageEntity $language */
-        $language = $this->languageRepository->read($criteria, $context)->first();
+        $language = $this->languageRepository->search($criteria, $context)->first();
+
+        $address = $transaction->getOrder()->getAddresses();
+
+        $billing        = $transaction->getOrder()->getBillingAddressId();
+        $billingAddress = $address->get($transaction->getOrder()->getBillingAddressId());
 
         $personalData = [
-            'salutation'      => $transaction->getOrder()->getBillingAddress()->getSalutation(),
-            'title'           => $transaction->getOrder()->getBillingAddress()->getTitle(),
-            'firstname'       => $transaction->getOrder()->getBillingAddress()->getFirstName(),
-            'lastname'        => $transaction->getOrder()->getBillingAddress()->getLastName(),
-            'street'          => $transaction->getOrder()->getBillingAddress()->getStreet(),
-            'addressaddition' => $transaction->getOrder()->getBillingAddress()->getAdditionalAddressLine1(),
-            'zip'             => $transaction->getOrder()->getBillingAddress()->getZipcode(),
-            'city'            => $transaction->getOrder()->getBillingAddress()->getCity(),
-            'country'         => $transaction->getOrder()->getBillingAddress()->getCountry()->getIso(),
+            'salutation'      => $billingAddress->getSalutation(),
+            'title'           => $billingAddress->getTitle(),
+            'firstname'       => $billingAddress->getFirstName(),
+            'lastname'        => $billingAddress->getLastName(),
+            'street'          => $billingAddress->getStreet(),
+            'addressaddition' => $billingAddress->getAdditionalAddressLine1(),
+            'zip'             => $billingAddress->getZipcode(),
+            'city'            => $billingAddress->getCity(),
+            'country'         => $billingAddress->getCountry()->getIso(),
             'email'           => $transaction->getOrder()->getOrderCustomer()->getEmail(),
             'language'        => substr($language->getLocale()->getCode(), 0, 2),
             'gender'          => $transaction->getOrder()->getOrderCustomer()->getSalutation() === 'Herr' ? 'm' : 'f',
@@ -133,10 +138,10 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
         $config = $this->configReader->read($transaction->getOrder()->getSalesChannelId());
 
         return [
-            'aid'         => $config->get('aid') ? $config->get('aid')->getValue() : '',
-            'mid'         => $config->get('mid') ? $config->get('mid')->getValue() : '',
-            'portalid'    => $config->get('portalid') ? $config->get('portalid')->getValue() : '',
-            'key'         => hash('md5', $config->get('key') ? $config->get('key')->getValue() : ''),
+            'aid'         => $config->get('aid') ? $config->get('aid')->getValue() : getenv('PAYONE_AID'),
+            'mid'         => $config->get('mid') ? $config->get('mid')->getValue() : getenv('PAYONE_MID'),
+            'portalid'    => $config->get('portalid') ? $config->get('portalid')->getValue() : getenv('PAYONE_PORTALID'),
+            'key'         => hash('md5', $config->get('key') ? $config->get('key')->getValue() : getenv('PAYONE_KEY')),
             'api_version' => '3.10',
             'mode'        => 'test',
             'encoding'    => 'UTF-8',
@@ -168,9 +173,9 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
             'amount'       => (int) ($transaction->getAmount()->getTotalPrice() * 100),
             'currency'     => 'EUR',
             'reference'    => $transaction->getOrder()->getAutoIncrement(), // TODO: replace with ordernumber when available
-            'successurl'   => $transaction->getReturnUrl(),
-            'errorurl'     => $errorUrl,
-            'backurl'      => $cancelUrl,
+            'successurl'   => str_replace('localhost', 'example.com', $transaction->getReturnUrl()),
+            'errorurl'     => str_replace('localhost', 'example.com', $errorUrl),
+            'backurl'      => str_replace('localhost', 'example.com', $cancelUrl),
         ];
     }
 
@@ -238,11 +243,11 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
      */
     private function savePayoneResponseData(PaymentTransactionStruct $transaction, Context $context, $response): void
     {
-        $criteria = new ReadCriteria([$transaction->getTransactionId()]);
+        $criteria = new Criteria([$transaction->getTransactionId()]);
         $criteria->addAssociation('order_transaction.order');
 
         /** @var OrderTransactionEntity $orderTransaction */
-        $orderTransaction = $this->transactionRepository->read($criteria, $context)->first();
+        $orderTransaction = $this->transactionRepository->search($criteria, $context)->first();
 
         $data = [
             'id'      => $transaction->getTransactionId(),

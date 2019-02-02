@@ -7,7 +7,7 @@ namespace PayonePayment\ConfigReader;
 use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigCollection;
 use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
@@ -15,10 +15,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 
 class ConfigReader implements ConfigReaderInterface
 {
-    /** @var RepositoryInterface */
+    /** @var EntityRepositoryInterface */
     private $repository;
 
-    public function __construct(RepositoryInterface $repository)
+    public function __construct(EntityRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }

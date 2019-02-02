@@ -9,6 +9,9 @@ use PayonePayment\PaymentHandler\PayoneSofortPaymentHandler;
 class PayoneSofort implements PaymentMethodInterface
 {
     /** @var string */
+    private $id = '9022c4733d14411e84a78707088487aa';
+
+    /** @var string */
     private $name = 'Payone Sofort';
 
     /** @var string */
@@ -19,6 +22,11 @@ class PayoneSofort implements PaymentMethodInterface
 
     /** @var string */
     private $paymentHandler = PayoneSofortPaymentHandler::class;
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
 
     public function getName(): string
     {

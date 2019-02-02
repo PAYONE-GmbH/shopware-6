@@ -31,51 +31,63 @@ class PayonePaymentConfigEntity extends Entity
     /** @var null|DateTime */
     protected $updatedAt;
 
-    /**
-     * @return null|string
-     */
     public function getSalesChannelId(): ?string
     {
         return $this->salesChannelId;
     }
 
-    /**
-     * @return null|SalesChannelEntity
-     */
+    public function setSalesChannelId(?string $salesChannelId): void
+    {
+        $this->salesChannelId = $salesChannelId;
+    }
+
     public function getSalesChannel(): ?SalesChannelEntity
     {
         return $this->salesChannel;
     }
 
-    /**
-     * @return string
-     */
+    public function setSalesChannel(?SalesChannelEntity $salesChannel): void
+    {
+        $this->salesChannel = $salesChannel;
+    }
+
     public function getKey(): string
     {
         return $this->key;
     }
 
-    /**
-     * @return string
-     */
+    public function setKey(string $key): void
+    {
+        $this->key = $key;
+    }
+
     public function getValue(): string
     {
         return $this->value;
     }
 
-    /**
-     * @return null|DateTime
-     */
+    public function setValue(string $value): void
+    {
+        $this->value = $value;
+    }
+
     public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * @return null|DateTime
-     */
+    public function setCreatedAt(?DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
     public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?DateTime $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
     }
 }
