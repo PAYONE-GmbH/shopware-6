@@ -109,7 +109,7 @@ class PaypalPaymentHandlerTest extends TestCase
 
         $order = $this->cartService->order($processedCart, $context);
 
-        $response = $this->paymentService->handlePaymentByOrder($order, $context, 'http://www.example.com');
+        $response = $this->paymentService->handlePaymentByOrder($order, $context);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
     }

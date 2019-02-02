@@ -5,9 +5,18 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Client;
 
 use LogicException;
+use Psr\Log\LoggerInterface;
 
 class PayoneClient implements PayoneClientInterface
 {
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function request(array $parameters): array
     {
         $curl = curl_init();
@@ -35,6 +44,11 @@ class PayoneClient implements PayoneClientInterface
         }
 
         $response = json_decode($response, true);
+
+        $this->logger->debug('payone request', [
+            'parameters' => $parameters,
+            'response'   => $response,
+        ]);
 
         if (empty($response)) {
             throw new LogicException('payone returned a malformed json');

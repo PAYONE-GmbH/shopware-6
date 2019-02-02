@@ -9,6 +9,7 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\StateMachine\StateMachineRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -17,9 +18,15 @@ class PayoneCreditCardPaymentHandler implements PaymentHandlerInterface
     /** @var EntityRepositoryInterface */
     private $transactionRepository;
 
-    public function __construct(EntityRepositoryInterface $transactionRepository)
-    {
+    /** @var StateMachineRegistry */
+    private $stateMachineRegistry;
+
+    public function __construct(
+        EntityRepositoryInterface $transactionRepository,
+        StateMachineRegistry $stateMachineRegistry
+    ) {
         $this->transactionRepository = $transactionRepository;
+        $this->stateMachineRegistry  = $stateMachineRegistry;
     }
 
     public function pay(PaymentTransactionStruct $transaction, Context $context): ?RedirectResponse
@@ -29,11 +36,16 @@ class PayoneCreditCardPaymentHandler implements PaymentHandlerInterface
 
     public function finalize(string $transactionId, Request $request, Context $context): void
     {
-        $data = [
-            'id'                      => $transactionId,
-            'orderTransactionStateId' => Defaults::ORDER_TRANSACTION_COMPLETED,
+        $stateId = $this->stateMachineRegistry->getStateByTechnicalName(
+            Defaults::ORDER_TRANSACTION_STATE_MACHINE,
+            Defaults::ORDER_TRANSACTION_STATES_PAID, $context
+        )->getId();
+
+        $transaction = [
+            'id'      => $transactionId,
+            'stateId' => $stateId,
         ];
 
-        $this->transactionRepository->update([$data], $context);
+        $this->transactionRepository->update([$transaction], $context);
     }
 }

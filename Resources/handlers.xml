@@ -6,12 +6,14 @@
     <services>
         <service id="PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler">
             <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="Shopware\Core\Framework\StateMachine\StateMachineRegistry" />
 
             <tag name="payment.method" />
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayoneDebitPaymentHandler">
             <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="Shopware\Core\Framework\StateMachine\StateMachineRegistry" />
 
             <tag name="payment.method" />
         </service>
@@ -20,14 +22,14 @@
             <argument type="service" id="PayonePayment\Payone\Request\RequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="router" />
-            <argument type="service" id="logger" />
+            <argument type="service" id="Shopware\Core\Framework\StateMachine\StateMachineRegistry" />
 
             <tag name="payment.method" />
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayoneSofortPaymentHandler">
             <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="Shopware\Core\Framework\StateMachine\StateMachineRegistry" />
 
             <tag name="payment.method" />
         </service>
