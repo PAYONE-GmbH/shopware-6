@@ -77,13 +77,13 @@ class PaypalPaymentHandlerTest extends TestCase
 
     public function setUp()
     {
-        $this->paymentMethodrepository  = $this->getContainer()->get('payment_method.repository');
-        $this->salesChannelRepository   = $this->getContainer()->get('sales_channel.repository');
-        $this->customerRepository       = $this->getContainer()->get('customer.repository');
-        $this->countryRepository        = $this->getContainer()->get('country.repository');
-        $this->productRepository        = $this->getContainer()->get('product.repository');
-        $this->manufacturerRepository   = $this->getContainer()->get('product_manufacturer.repository');
-        $this->taxRepository            = $this->getContainer()->get('tax.repository');
+        $this->paymentMethodrepository = $this->getContainer()->get('payment_method.repository');
+        $this->salesChannelRepository  = $this->getContainer()->get('sales_channel.repository');
+        $this->customerRepository      = $this->getContainer()->get('customer.repository');
+        $this->countryRepository       = $this->getContainer()->get('country.repository');
+        $this->productRepository       = $this->getContainer()->get('product.repository');
+        $this->manufacturerRepository  = $this->getContainer()->get('product_manufacturer.repository');
+        $this->taxRepository           = $this->getContainer()->get('tax.repository');
 
         $this->contextFactory = $this->getContainer()->get(CheckoutContextFactory::class);
         $this->cartProcessor  = $this->getContainer()->get(Processor::class);

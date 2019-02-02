@@ -17,12 +17,10 @@
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePaypalPaymentHandler">
+            <argument type="service" id="PayonePayment\Payone\Request\RequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="order_customer.repository" />
-            <argument type="service" id="language.repository" />
-            <argument type="service" id="request_stack" />
-            <argument type="service" id="router.default" />
-            <argument type="service" id="PayonePayment\ConfigReader\ConfigReader" />
+            <argument type="service" id="router" />
             <argument type="service" id="logger" />
 
             <tag name="payment.method" />
