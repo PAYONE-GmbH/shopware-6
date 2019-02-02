@@ -43,18 +43,6 @@ class PaypalPaymentHandlerTest extends TestCase
     private $salesChannelRepository;
 
     /** @var EntityRepositoryInterface */
-    private $currencyRepository;
-
-    /** @var EntityRepositoryInterface */
-    private $customerGroupRepository;
-
-    /** @var EntityRepositoryInterface */
-    private $taxRepository;
-
-    /** @var EntityRepositoryInterface */
-    private $shippingMethodRepository;
-
-    /** @var EntityRepositoryInterface */
     private $customerRepository;
 
     /** @var EntityRepositoryInterface */
@@ -65,6 +53,9 @@ class PaypalPaymentHandlerTest extends TestCase
 
     /** @var EntityRepositoryInterface */
     private $manufacturerRepository;
+
+    /** @var EntityRepositoryInterface */
+    private $taxRepository;
 
     /** @var CheckoutContextFactory */
     private $contextFactory;
@@ -88,9 +79,6 @@ class PaypalPaymentHandlerTest extends TestCase
     {
         $this->paymentMethodrepository  = $this->getContainer()->get('payment_method.repository');
         $this->salesChannelRepository   = $this->getContainer()->get('sales_channel.repository');
-        $this->currencyRepository       = $this->getContainer()->get('currency.repository');
-        $this->customerGroupRepository  = $this->getContainer()->get('customer_group.repository');
-        $this->shippingMethodRepository = $this->getContainer()->get('shipping_method.repository');
         $this->customerRepository       = $this->getContainer()->get('customer.repository');
         $this->countryRepository        = $this->getContainer()->get('country.repository');
         $this->productRepository        = $this->getContainer()->get('product.repository');
@@ -104,6 +92,7 @@ class PaypalPaymentHandlerTest extends TestCase
         $this->router         = $this->getContainer()->get('router');
 
         $this->token = Uuid::uuid4()->getHex();
+        $this->router->getContext()->setHost('example.com');
     }
 
     public function testPaymentHandler(): void
