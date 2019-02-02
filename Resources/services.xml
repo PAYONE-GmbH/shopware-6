@@ -8,6 +8,7 @@
         <import resource="entities.xml" />
         <import resource="controllers.xml" />
         <import resource="handlers.xml" />
+        <import resource="requests.xml" />
     </imports>
 
     <services>
@@ -18,5 +19,11 @@
         <service id="PayonePayment\ConfigWriter\ConfigWriter">
             <argument type="service" id="payone_payment_config.repository" />
         </service>
+
+        <service id="PayonePayment\Payone\Request\RequestFactory">
+            <argument type="service" id="service_container" />
+        </service>
+
+        <service id="PayonePayment\Payone\Client\PayoneClient" />
     </services>
 </container>
