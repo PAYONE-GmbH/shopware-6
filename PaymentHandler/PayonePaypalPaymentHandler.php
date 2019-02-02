@@ -173,9 +173,9 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
             'amount'       => (int) ($transaction->getAmount()->getTotalPrice() * 100),
             'currency'     => 'EUR',
             'reference'    => $transaction->getOrder()->getAutoIncrement(), // TODO: replace with ordernumber when available
-            'successurl'   => str_replace('localhost', 'example.com', $transaction->getReturnUrl()),
-            'errorurl'     => str_replace('localhost', 'example.com', $errorUrl),
-            'backurl'      => str_replace('localhost', 'example.com', $cancelUrl),
+            'successurl'   => $transaction->getReturnUrl(),
+            'errorurl'     => $errorUrl,
+            'backurl'      => $cancelUrl,
         ];
     }
 
