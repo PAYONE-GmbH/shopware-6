@@ -2,7 +2,7 @@
   "name": "payone/shopware",
   "type": "shopware-plugin",
   "description": "Payone Payment Plugin",
-  "license": "Commercial",
+  "license": "MIT",
   "authors": [
     {
       "name": "Kellerkinder GmbH",
@@ -11,14 +11,30 @@
   ],
   "require": {
     "ext-curl": "*",
-    "composer/installers": "^1.5",
-    "arvatis/payone-php-api": "^2.2"
+    "composer/installers": "^1.5"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",
     "k10r/codestyle": "^1.0"
   },
   "extra": {
-    "installer-name": "PayonePayment"
+    "installer-name": "PayonePayment",
+    "copyright": "(c) by BS PAYONE GmbH",
+    "label": {
+      "de_DE": "Payone Payment",
+      "en_GB": "Payone Payment"
+    },
+    "description": {
+      "de_DE": "Payone Payment Plugin",
+      "en_GB": "Payone Payment Plugin"
+    },
+    "manufacturerLink": {
+      "de_DE": "https://www.bspayone.com",
+      "en_GB": "https://www.bspayone.com"
+    },
+    "supportLink": {
+      "de_DE": "https://www.bspayone.com",
+      "en_GB": "https://www.bspayone.com"
+    }
   }
 }

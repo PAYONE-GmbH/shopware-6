@@ -9,6 +9,9 @@ use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 class PayonePaypal implements PaymentMethodInterface
 {
     /** @var string */
+    private $id = '21e157163fdb4aa4862a2109abcd7522';
+
+    /** @var string */
     private $name = 'Payone Paypal';
 
     /** @var string */
@@ -19,6 +22,11 @@ class PayonePaypal implements PaymentMethodInterface
 
     /** @var string */
     private $paymentHandler = PayonePaypalPaymentHandler::class;
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
 
     public function getName(): string
     {
