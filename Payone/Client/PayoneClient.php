@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Client;
 
-use LogicException;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 class PayoneClient implements PayoneClientInterface
 {
@@ -40,7 +40,7 @@ class PayoneClient implements PayoneClientInterface
         // TODO: Handle error codes/status and curl errors
 
         if (empty($response)) {
-            throw new LogicException('empty payone response');
+            throw new RuntimeException('empty payone response');
         }
 
         $response = json_decode($response, true);
@@ -51,11 +51,11 @@ class PayoneClient implements PayoneClientInterface
         ]);
 
         if (empty($response)) {
-            throw new LogicException('payone returned a malformed json');
+            throw new RuntimeException('payone returned a malformed json');
         }
 
         if ($response['Status'] === 'ERROR') {
-            throw new LogicException('payone responded with ERROR');
+            throw new RuntimeException('payone responded with ERROR');
         }
 
         return $response;

@@ -71,7 +71,7 @@ class PaymentMethodInstaller implements InstallerInterface
         }
     }
 
-    public function deaktivate(DeactivateContext $context): void
+    public function deactivate(DeactivateContext $context): void
     {
         foreach ($this->paymentMethods as $paymentMethod) {
             $this->deactivatePaymentMethod($paymentMethod, $context->getContext());

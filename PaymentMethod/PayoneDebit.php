@@ -8,8 +8,7 @@ use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 
 class PayoneDebit implements PaymentMethodInterface
 {
-    /** @var string */
-    private $id = '1b017bef157b4222b734659361d996fd';
+    public const UUID = '1b017bef157b4222b734659361d996fd';
 
     /** @var string */
     private $name = 'Payone Debit';
@@ -25,7 +24,7 @@ class PayoneDebit implements PaymentMethodInterface
 
     public function getId(): string
     {
-        return $this->id;
+        return self::UUID;
     }
 
     public function getName(): string
