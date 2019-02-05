@@ -70,7 +70,7 @@ class CustomerRequest implements RequestInterface
             'country'         => $billingAddress->getCountry()->getIso(),
             'email'           => $transaction->getOrder()->getOrderCustomer()->getEmail(),
             'language'        => substr($language->getLocale()->getCode(), 0, 2),
-            'gender'          => $transaction->getOrder()->getOrderCustomer()->getSalutation() === 'Herr' ? 'm' : 'f',
+            'gender'          => $transaction->getOrder()->getOrderCustomer()->getSalutation() === 'Herr' ? 'm' : 'f', // TODO: replace with correct salutation handling sometime
             'ip'              => $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
         ];
 

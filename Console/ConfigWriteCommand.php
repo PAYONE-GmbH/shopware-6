@@ -27,7 +27,7 @@ class ConfigWriteCommand extends Command
     {
         $this
             ->setName('payone:config:write')
-            ->setDescription('Installs a plugin.')
+            ->setDescription('Write a PayonePayment config setting')
             ->addArgument('key', InputArgument::REQUIRED, 'config key')
             ->addArgument('value', InputArgument::REQUIRED, 'config value')
             ->addArgument('sales_channel', InputArgument::OPTIONAL, 'sales channel');

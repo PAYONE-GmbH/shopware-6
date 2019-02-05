@@ -20,5 +20,5 @@ interface InstallerInterface
 
     public function activate(ActivateContext $context): void;
 
-    public function deaktivate(DeactivateContext $context): void;
+    public function deactivate(DeactivateContext $context): void;
 }

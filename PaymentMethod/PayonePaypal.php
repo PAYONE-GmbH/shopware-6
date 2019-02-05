@@ -8,8 +8,7 @@ use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 
 class PayonePaypal implements PaymentMethodInterface
 {
-    /** @var string */
-    private $id = '21e157163fdb4aa4862a2109abcd7522';
+    public const UUID = '21e157163fdb4aa4862a2109abcd7522';
 
     /** @var string */
     private $name = 'Payone Paypal';
@@ -25,7 +24,7 @@ class PayonePaypal implements PaymentMethodInterface
 
     public function getId(): string
     {
-        return $this->id;
+        return self::UUID;
     }
 
     public function getName(): string
