@@ -4,6 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <imports>
+        <import resource="../Bundle/PayoneBundle/DependencyInjection/bundle.xml"/>
         <import resource="commands.xml" />
         <import resource="entities.xml" />
         <import resource="controllers.xml" />
