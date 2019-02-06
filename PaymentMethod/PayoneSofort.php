@@ -8,6 +8,8 @@ use PayonePayment\PaymentHandler\PayoneSofortPaymentHandler;
 
 class PayoneSofort implements PaymentMethodInterface
 {
+    public const UUID = '9022c4733d14411e84a78707088487aa';
+
     /** @var string */
     private $name = 'Payone Sofort';
 
@@ -19,6 +21,11 @@ class PayoneSofort implements PaymentMethodInterface
 
     /** @var string */
     private $paymentHandler = PayoneSofortPaymentHandler::class;
+
+    public function getId(): string
+    {
+        return self::UUID;
+    }
 
     public function getName(): string
     {
