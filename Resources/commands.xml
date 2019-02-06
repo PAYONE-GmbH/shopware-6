@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="PayonePayment\Console\TestCommand" >
+            <argument type="service" id="service_container" />
+
+            <tag name="console.command" />
+        </service>
+
+        <service id="PayonePayment\Console\ConfigReadCommand" >
+            <argument type="service" id="PayonePayment\ConfigReader\ConfigReader" />
+
+            <tag name="console.command" />
+        </service>
+
+        <service id="PayonePayment\Console\ConfigWriteCommand" >
+            <argument type="service" id="PayonePayment\ConfigWriter\ConfigWriter" />
+
+            <tag name="console.command" />
+        </service>
+    </services>
+</container>

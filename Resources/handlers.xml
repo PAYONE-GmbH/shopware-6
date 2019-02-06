@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler">
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="Shopware\Core\Framework\StateMachine\StateMachineRegistry" />
+
+            <tag name="payment.method" />
+        </service>
+
+        <service id="PayonePayment\PaymentHandler\PayoneDebitPaymentHandler">
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="Shopware\Core\Framework\StateMachine\StateMachineRegistry" />
+
+            <tag name="payment.method" />
+        </service>
+
+        <service id="PayonePayment\PaymentHandler\PayonePaypalPaymentHandler">
+            <argument type="service" id="PayonePayment\Payone\Request\RequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="Shopware\Core\Framework\StateMachine\StateMachineRegistry" />
+
+            <tag name="payment.method" />
+        </service>
+
+        <service id="PayonePayment\PaymentHandler\PayoneSofortPaymentHandler">
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="Shopware\Core\Framework\StateMachine\StateMachineRegistry" />
+
+            <tag name="payment.method" />
+        </service>
+    </services>
+</container>
