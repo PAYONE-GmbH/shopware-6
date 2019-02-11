@@ -1,14 +1,23 @@
 <?php
 
-namespace PayonePayment\Bundle\PayoneBundle\Webhook\Handler;
+namespace PayonePayment\Payone\Webhook\Handler;
 
-use PayonePayment\Bundle\PayoneBundle\Webhook\Struct\TransactionStatusStruct;
+use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
+use PayonePayment\Payone\Webhook\Struct\TransactionStatusStruct;
 use Symfony\Component\HttpFoundation\Response;
 
 class TransactionStatusWebhookHandler implements WebhookHandlerInterface
 {
     private const RESPONSE_OK = 'TSOK';
     private const RESPONSE_FAILURE = 'TSNOTOK';
+
+    /** @var TransactionStatusServiceInterface */
+    private $transactionStatusService;
+
+    public function __construct(TransactionStatusServiceInterface $transactionStatusService)
+    {
+        $this->transactionStatusService = $transactionStatusService;
+    }
 
     /**
      * {@inheritdoc}
@@ -21,7 +30,9 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
         }
 
         $statusStruct = new TransactionStatusStruct($data);
+        $this->transactionStatusService->persistTransactionStatus($statusStruct);
 
+        exit;
         register_shutdown_function(function ($transactionStatusStruct) {
             $this->handlePaymentStatus($transactionStatusStruct);
         }, $statusStruct);
@@ -29,13 +40,8 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
         return new Response(self::RESPONSE_OK);
     }
 
-    private function handlePaymentStatus(TransactionStatusStruct $statusStruct)
+    private function handlePaymentStatus(TransactionStatusStruct $statusStruct): void
     {
-        //TODO: Implement actual status update for the transaction :-)
-
-        echo '<pre>';
-        print_r($statusStruct);
-        echo '</pre>';
-        exit();
+        $this->transactionStatusService->persistTransactionStatus($statusStruct);
     }
 }

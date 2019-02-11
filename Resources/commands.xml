@@ -11,13 +11,13 @@
         </service>
 
         <service id="PayonePayment\Console\ConfigReadCommand" >
-            <argument type="service" id="PayonePayment\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
 
             <tag name="console.command" />
         </service>
 
         <service id="PayonePayment\Console\ConfigWriteCommand" >
-            <argument type="service" id="PayonePayment\ConfigWriter\ConfigWriter" />
+            <argument type="service" id="PayonePayment\Components\ConfigWriter\ConfigWriter" />
 
             <tag name="console.command" />
         </service>

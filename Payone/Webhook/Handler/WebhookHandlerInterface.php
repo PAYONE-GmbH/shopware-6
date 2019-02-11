@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Bundle\PayoneBundle\Webhook\Handler;
+namespace PayonePayment\Payone\Webhook\Handler;
 
 use Symfony\Component\HttpFoundation\Response;
 

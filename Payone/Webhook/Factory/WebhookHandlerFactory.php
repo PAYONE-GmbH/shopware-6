@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Bundle\PayoneBundle\Webhook\Factory;
+namespace PayonePayment\Payone\Webhook\Factory;
 
 use LogicException;
-use PayonePayment\Bundle\PayoneBundle\Webhook\Handler\WebhookHandlerInterface;
-use PayonePayment\Bundle\PayoneBundle\Webhook\Handler\TransactionStatusWebhookHandler;
+use PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler;
+use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use Psr\Container\ContainerInterface;
 
 class WebhookHandlerFactory implements WebhookHandlerFactoryInterface
@@ -36,7 +36,7 @@ class WebhookHandlerFactory implements WebhookHandlerFactoryInterface
 
     private function getHandlerName(array $data)
     {
-        //TODO: Find a better way to identify the correct webhook handler.. this is crap.
+        //TODO: Find a better way to identify the correct webhook handler.
         if (array_key_exists('txaction', $data)) {
             return TransactionStatusWebhookHandler::class;
         }

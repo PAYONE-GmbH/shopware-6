@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\System;
 
-use PayonePayment\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Payone\Request\RequestInterface;
 use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
