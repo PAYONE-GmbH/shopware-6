@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Bundle\PayoneBundle\Webhook\Factory;
+namespace PayonePayment\Payone\Webhook\Factory;
 
-use PayonePayment\Bundle\PayoneBundle\Webhook\Handler\WebhookHandlerInterface;
+use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 
 interface WebhookHandlerFactoryInterface
 {

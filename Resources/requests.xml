@@ -7,7 +7,7 @@
         <defaults public="true"/>
 
         <service id="PayonePayment\Payone\Request\System\SystemRequest">
-            <argument type="service" id="PayonePayment\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Customer\CustomerRequest">

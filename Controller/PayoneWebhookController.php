@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
-use PayonePayment\Bundle\PayoneBundle\Webhook\Processor\WebhookProcessor;
+use PayonePayment\Payone\Webhook\Processor\WebhookProcessor;
 use Shopware\Storefront\Framework\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

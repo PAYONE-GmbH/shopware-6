@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\ConfigWriter;
+namespace PayonePayment\Components\ConfigWriter;
 
 use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigEntity;
 use Shopware\Core\Framework\Context;

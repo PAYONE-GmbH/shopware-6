@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Bundle\PayoneBundle\Webhook\Struct;
+namespace PayonePayment\Payone\Webhook\Struct;
 
 use ReflectionClass;
 use Shopware\Core\Framework\Struct\Struct;
@@ -18,6 +18,8 @@ abstract class AbstractWebhookStruct extends Struct
      */
     protected function fromArray(array $data): void
     {
+        $data =$this->prepareData($data);
+
         $reflector = new ReflectionClass($this);
 
         foreach ($reflector->getProperties() as $property) {
@@ -31,5 +33,17 @@ abstract class AbstractWebhookStruct extends Struct
                 $property->setValue($this, $data[$propertyNameLowercase]);
             }
         }
+    }
+
+    private function prepareData(array $data): array
+    {
+        $result = [];
+        foreach ($data as $key => $value) {
+            //Lowercase and remove underscore
+            $key = strtolower(str_replace('_', '', $key));
+            $result[$key] = $value;
+        }
+
+        return $result;
     }
 }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Bundle\PayoneBundle\Webhook\Processor;
+namespace PayonePayment\Payone\Webhook\Processor;
 
-use PayonePayment\Bundle\PayoneBundle\Webhook\Factory\WebhookHandlerFactoryInterface;
+use PayonePayment\Payone\Webhook\Factory\WebhookHandlerFactoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class WebhookProcessor implements WebhookProcessorInterface
