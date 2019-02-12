@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionStatus;
 
-use RuntimeException;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use PayonePayment\Payone\Webhook\Struct\TransactionStatusStruct;
+use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 
@@ -38,7 +38,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     {
         $this->payoneStatusRepository     = $payoneStatusRepository;
         $this->orderTransactionRepository = $orderTransactionRepository;
-        $this->stateRepository = $stateRepository;
+        $this->stateRepository            = $stateRepository;
     }
 
     /**
@@ -56,11 +56,11 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
         $data = [
             'orderTransactionId' => $transaction->getId(),
-            'sequenceNumber' => (int) $status->sequenceNumber,
-            'action' => $status->txAction,
-            'reference' => $status->reference,
-            'clearingType' => $status->clearingType,
-            'price' => (float) $status->price
+            'sequenceNumber'     => (int) $status->sequenceNumber,
+            'action'             => $status->txAction,
+            'reference'          => $status->reference,
+            'clearingType'       => $status->clearingType,
+            'price'              => (float) $status->price,
         ];
 
         $this->payoneStatusRepository->create([$data], $context);
@@ -73,8 +73,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         }
 
         $data = [
-            'id' => $transaction->getId(),
-            'stateId' => $state->getId()
+            'id'      => $transaction->getId(),
+            'stateId' => $state->getId(),
         ];
 
         $this->orderTransactionRepository->update([$data], $context);
@@ -85,7 +85,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $context = Context::createDefaultContext();
 
         $criteria = new Criteria();
-        $filter = new EqualsFilter('order_transaction.payoneTransactionId', $payoneTransactionId);
+        $filter   = new EqualsFilter('order_transaction.payoneTransactionId', $payoneTransactionId);
         $criteria->addFilter($filter);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();
@@ -100,7 +100,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $context = Context::createDefaultContext();
 
         $criteria = new Criteria();
-        $filter = new EqualsFilter('state_machine_state.technicalName', self::STATE_MAPPING[$action]);
+        $filter   = new EqualsFilter('state_machine_state.technicalName', self::STATE_MAPPING[$action]);
         $criteria->addFilter($filter);
 
         return $this->stateRepository->search($criteria, $context)->first();

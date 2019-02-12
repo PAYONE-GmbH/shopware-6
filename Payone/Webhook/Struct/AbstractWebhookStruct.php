@@ -18,7 +18,7 @@ abstract class AbstractWebhookStruct extends Struct
      */
     protected function fromArray(array $data): void
     {
-        $data =$this->prepareData($data);
+        $data = $this->prepareData($data);
 
         $reflector = new ReflectionClass($this);
 
@@ -28,7 +28,7 @@ abstract class AbstractWebhookStruct extends Struct
             }
 
             $propertyNameLowercase = strtolower($property->getName());
-            
+
             if (array_key_exists($propertyNameLowercase, $data)) {
                 $property->setValue($this, $data[$propertyNameLowercase]);
             }
@@ -40,7 +40,7 @@ abstract class AbstractWebhookStruct extends Struct
         $result = [];
         foreach ($data as $key => $value) {
             //Lowercase and remove underscore
-            $key = strtolower(str_replace('_', '', $key));
+            $key          = strtolower(str_replace('_', '', $key));
             $result[$key] = $value;
         }
 
