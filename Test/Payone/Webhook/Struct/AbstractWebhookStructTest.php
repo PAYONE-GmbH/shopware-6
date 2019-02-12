@@ -1,8 +1,8 @@
 <?php
 
-namespace PayonePayment\Test\PayoneBundle\Webhook\Struct;
+namespace PayonePayment\Test\Payone\Webhook\Struct;
 
-use PayonePayment\Bundle\PayoneBundle\Webhook\Struct\TransactionStatusStruct;
+use PayonePayment\Payone\Webhook\Struct\TransactionStatusStruct;
 use PHPUnit\Framework\TestCase;
 
 class AbstractWebhookStructTest extends TestCase
@@ -32,18 +32,18 @@ class AbstractWebhookStructTest extends TestCase
     public function testDeserializeWillSetAllProperties(): void
     {
         $data = [
-            'txid' => '1234',
-            'reference' => 'MyReference',
-            'sequencenumber' => 'MySequenceNumber',
-            'price' => 100,
-            'failedcause' => 'MyFailedCause',
-            'errorcode' => 'MyErrorCode',
-            'reasoncode' => 'MyReasonCode',
+            'txid'              => '1234',
+            'reference'         => 'MyReference',
+            'sequencenumber'    => 'MySequenceNumber',
+            'price'             => 100,
+            'failedcause'       => 'MyFailedCause',
+            'errorcode'         => 'MyErrorCode',
+            'reasoncode'        => 'MyReasonCode',
             'transactionstatus' => 'completed',
-            'txtime' => 12345,
-            'aid' => 'MyAID',
-            'clearingtype' => 'wlt', //Wallet
-            'txaction' => 'appointed'
+            'txtime'            => 12345,
+            'aid'               => 'MyAID',
+            'clearingtype'      => 'wlt', //Wallet
+            'txaction'          => 'appointed',
         ];
 
         $testStruct = new TransactionStatusStruct($data);
@@ -53,5 +53,4 @@ class AbstractWebhookStructTest extends TestCase
 
         $this->assertArraySubset($result, $data, false, 'Expected output data to be the same as the input data to verify the deserialization process!');
     }
-
 }

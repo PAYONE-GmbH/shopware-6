@@ -16,6 +16,7 @@
 
         <service id="PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler">
             <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService"/>
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
         </service>
     </services>
 </container>

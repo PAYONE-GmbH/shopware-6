@@ -11,7 +11,7 @@ interface WebhookProcessorInterface
     /**
      * Processes the provided webhook data
      *
-     * @param array  $data
+     * @param array $data
      *
      * @return Response
      */
