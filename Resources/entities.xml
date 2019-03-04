@@ -4,11 +4,11 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <!--
-            <service id="PayonePayment\DataAbstractionLayer\Extension\Order\OrderExtension" >
-                <tag name="shopware.entity.extension"/>
-            </service>
+        <service id="PayonePayment\DataAbstractionLayer\Extension\Order\OrderTransactionExtension" >
+            <tag name="shopware.entity.extension"/>
+        </service>
 
+        <!--
             <service id="PayonePayment\DataAbstractionLayer\Entity\PayonePaymentStatus\PayonePaymentStatusDefinition">
                 <tag name="shopware.entity.definition" entity="payone_payment_status"/>
             </service>
@@ -20,6 +20,21 @@
 
         <service id="payone_payment_config.repository" class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository" public="true">
             <argument>PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigDefinition</argument>
+
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
+
+        <service id="PayonePayment\DataAbstractionLayer\Entity\PayonePaymentStatus\PayonePaymentStatusDefinition">
+            <tag name="shopware.entity.definition" entity="payone_payment_status"/>
+        </service>
+
+        <service id="payone_payment_status.repository" class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository" public="true">
+            <argument>PayonePayment\DataAbstractionLayer\Entity\PayonePaymentStatus\PayonePaymentStatusDefinition</argument>
 
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
