@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\ConfigReader;
+namespace PayonePayment\Components\ConfigReader;
 
 use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigCollection;
 

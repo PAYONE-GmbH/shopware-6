@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Console;
 
-use PayonePayment\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigCollection;
 use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigEntity;
 use Symfony\Component\Console\Command\Command;

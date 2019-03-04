@@ -6,7 +6,6 @@ namespace PayonePayment\Controller;
 
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\CheckoutContext;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Storefront\Framework\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,28 +69,5 @@ class PayonePaymentController extends StorefrontController
         if ($request->get('key') !== hash('md5', 'cgXdc7e2J9kJaIm6')) {
             return new Response('TSNOTOK');
         }
-
-        $this->logger->debug('payone_payment - status', [
-            'data' => $request->query->all(),
-        ]);
-
-        /*
-         * TODO: Save status call data to a new table
-         * TODO: To improve performance, move all code to the shutdown process of php
-         *
-        $criteria = new \Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria();
-        $criteria->addFilter(new EqualsFilter('order_transaction.id', $transaction->getTransactionId()));
-
-
-        $orderTransaction = $this->transactionRepository->search($criteria, $context)->get($transaction->getTransactionId());
-
-        $data = [
-            'id'                      => $transactionId,
-            'details' => Defaults::ORDER_TRANSACTION_COMPLETED,
-        ];
-
-        $this->transactionRepository->update([$data], $context);*/
-
-        return new Response('TSOK');
     }
 }
