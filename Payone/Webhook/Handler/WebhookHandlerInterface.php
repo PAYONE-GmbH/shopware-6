@@ -10,5 +10,5 @@ interface WebhookHandlerInterface
 {
     public function processAsync(array $data): Response;
 
-    public function supports(array $data) : bool;
+    public function supports(array $data): bool;
 }

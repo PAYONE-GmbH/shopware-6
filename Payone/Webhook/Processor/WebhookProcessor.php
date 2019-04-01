@@ -28,7 +28,6 @@ class WebhookProcessor implements WebhookProcessorInterface
             return $handler->processAsync($data);
         }
 
-
         throw new LogicException('Unable to identify a matching webhook handler');
     }
 }

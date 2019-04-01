@@ -92,7 +92,7 @@ class PaymentMethodInstaller implements InstallerInterface
 
         $this->paymentMethodRepository->upsert([$data], $context);
     }
-    
+
     private function activatePaymentMethod(PaymentMethodInterface $paymentMethod, Context $context): void
     {
         $data = [
