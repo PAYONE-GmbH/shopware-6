@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\Installer\AttributeInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest;
 use PayonePayment\Payone\Request\RequestFactory;
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\StateMachine\StateMachineRegistry;
+use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class PayonePaypalPaymentHandler implements PaymentHandlerInterface
+class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
 {
     /** @var RequestFactory */
     private $requestFactory;
@@ -42,20 +43,43 @@ class PayonePaypalPaymentHandler implements PaymentHandlerInterface
         $this->stateMachineRegistry  = $stateMachineRegistry;
     }
 
-    public function pay(PaymentTransactionStruct $transaction, Context $context): ?RedirectResponse
+    public function pay(AsyncPaymentTransactionStruct $transaction, Context $context): RedirectResponse
     {
         $request  = $this->requestFactory->generateRequest($transaction, $context, PaypalAuthorizeRequest::class);
         $response = $this->client->request($request);
 
-        if (!empty($response['Status']) && $response['Status'] === 'REDIRECT') {
-            return new RedirectResponse($response['RedirectUrl']);
+        if (empty($response['Status']) && $response['Status'] !== 'REDIRECT') {
+            throw new \RuntimeException('ExternalPaymentProcessException'); // TODO: replace with correct exception (maybe: ExternalPaymentProcessException)
         }
 
-        return new RedirectResponse($transaction->getReturnUrl());
+        $this->orderTransactionRepo->update([
+            [
+                'id' => $transaction->getOrderTransaction()->getId(),
+                'attributes' => [
+                    AttributeInstaller::TRANSACTION_ID => $response['TXID'],
+                ],
+            ]
+        ], $context);
+
+        return new RedirectResponse($response['RedirectUrl']);
     }
 
     public function finalize(string $transactionId, Request $request, Context $context): void
     {
+        $state = $request->query->get('state');
+
+        if (empty($state)) {
+            throw new \RuntimeException('ExternalPaymentProcessException'); // TODO: replace with correct exception (maybe: ExternalPaymentProcessException)
+        }
+
+        if ($state === 'cancel') {
+            throw new \RuntimeException('ExternalPaymentProcessException'); // TODO: replace with correct exception (maybe: ExternalPaymentProcessException)
+        }
+
+        if ($state === 'error') {
+            throw new \RuntimeException('ExternalPaymentProcessException'); // TODO: replace with correct exception (maybe: ExternalPaymentProcessException)
+        }
+
         $stateId = $this->stateMachineRegistry->getStateByTechnicalName(
             Defaults::ORDER_TRANSACTION_STATE_MACHINE,
             Defaults::ORDER_TRANSACTION_STATES_PAID, $context

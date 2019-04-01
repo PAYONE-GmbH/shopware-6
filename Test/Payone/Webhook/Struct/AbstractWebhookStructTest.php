@@ -51,6 +51,9 @@ class AbstractWebhookStructTest extends TestCase
         $result = array_change_key_case($testStruct->toArray(), CASE_LOWER);
         unset($result['extensions']); //Shopware core adds this
 
-        $this->assertArraySubset($result, $data, false, 'Expected output data to be the same as the input data to verify the deserialization process!');
+        foreach ($data as $key => $value) {
+            $this->assertArrayHasKey($key, $result);
+            $this->assertSame($value, $result[$key]);
+        }
     }
 }

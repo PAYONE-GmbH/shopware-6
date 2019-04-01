@@ -75,7 +75,7 @@ class PaypalPaymentHandlerTest extends TestCase
     /** @var string */
     private $token;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->paymentMethodrepository = $this->getContainer()->get('payment_method.repository');
         $this->salesChannelRepository  = $this->getContainer()->get('sales_channel.repository');
@@ -167,22 +167,22 @@ class PaypalPaymentHandlerTest extends TestCase
         $customerData = [
             'salesChannelId'        => $salesChannel,
             'defaultBillingAddress' => [
-                'firstName'  => $faker->firstName,
-                'lastName'   => $faker->lastName,
-                'street'     => $faker->streetAddress,
-                'city'       => $faker->city,
-                'zipcode'    => $faker->postcode,
-                'salutation' => 'Herr',
-                'countryId'  => $country->getId(),
+                'firstName'    => $faker->firstName,
+                'lastName'     => $faker->lastName,
+                'street'       => $faker->streetAddress,
+                'city'         => $faker->city,
+                'zipcode'      => $faker->postcode,
+                'salutationId' => Defaults::SALUTATION_ID_MR,
+                'countryId'    => $country->getId(),
             ],
             'defaultShippingAddress' => [
-                'firstName'  => $faker->firstName,
-                'lastName'   => $faker->lastName,
-                'street'     => $faker->streetAddress,
-                'city'       => $faker->city,
-                'zipcode'    => $faker->postcode,
-                'salutation' => 'Herr',
-                'countryId'  => $country->getId(),
+                'firstName'    => $faker->firstName,
+                'lastName'     => $faker->lastName,
+                'street'       => $faker->streetAddress,
+                'city'         => $faker->city,
+                'zipcode'      => $faker->postcode,
+                'salutationId' => Defaults::SALUTATION_ID_MR,
+                'countryId'    => $country->getId(),
             ],
             'defaultPaymentMethodId' => $paymentMethod,
             'groupId'                => Defaults::FALLBACK_CUSTOMER_GROUP,
@@ -190,7 +190,7 @@ class PaypalPaymentHandlerTest extends TestCase
             'password'               => $faker->password,
             'firstName'              => $faker->firstName,
             'lastName'               => $faker->lastName,
-            'salutation'             => 'Herr',
+            'salutationId'           => Defaults::SALUTATION_ID_MR,
             'customerNumber'         => 'test',
         ];
 

@@ -24,29 +24,35 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
         $this->configReader             = $configReader;
     }
 
+    public function supports(array $data): bool
+    {
+        if (array_key_exists('txaction', $data)) {
+            return true;
+        }
+
+        return false;
+    }
+
+
     /**
      * {@inheritdoc}
      */
     public function processAsync(array $data): Response
     {
-        //TODO: SalesChannel-Id?
+        // TODO: SalesChannel-Id?
         $storedKey = $this->configReader->read('', 'portal_key')->first()->getValue();
 
+        // TODO: move to helper class
         if (!array_key_exists('key', $data) || !$storedKey || $data['key'] !== hash('md5', $storedKey)) {
             return new Response(self::RESPONSE_FAILURE);
         }
 
         $statusStruct = new TransactionStatusStruct($data);
 
-        register_shutdown_function(function ($transactionStatusStruct) {
-            $this->handlePaymentStatus($transactionStatusStruct);
+        register_shutdown_function(function (TransactionStatusStruct $statusStruct) {
+            $this->transactionStatusService->persistTransactionStatus($statusStruct);
         }, $statusStruct);
 
         return new Response(self::RESPONSE_OK);
-    }
-
-    private function handlePaymentStatus(TransactionStatusStruct $statusStruct): void
-    {
-        $this->transactionStatusService->persistTransactionStatus($statusStruct);
     }
 }

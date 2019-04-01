@@ -83,16 +83,16 @@ class PaymentMethodInstaller implements InstallerInterface
         $pluginId = $this->pluginIdProvider->getPluginIdByTechnicalName('PayonePayment', $context);
 
         $data = [
-            'id'            => $paymentMethod->getId(),
-            'technicalName' => $paymentMethod->getTechnicalName(),
-            'name'          => $paymentMethod->getName(),
-            'class'         => $paymentMethod->getPaymentHandler(),
-            'pluginId'      => $pluginId,
+            'id'                => $paymentMethod->getId(),
+            'technicalName'     => $paymentMethod->getTechnicalName(),
+            'name'              => $paymentMethod->getName(),
+            'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
+            'pluginId'          => $pluginId,
         ];
 
         $this->paymentMethodRepository->upsert([$data], $context);
     }
-
+    
     private function activatePaymentMethod(PaymentMethodInterface $paymentMethod, Context $context): void
     {
         $data = [

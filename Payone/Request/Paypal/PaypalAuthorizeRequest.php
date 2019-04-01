@@ -6,54 +6,34 @@ namespace PayonePayment\Payone\Request\Paypal;
 
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\RequestInterface;
-use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
-use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\Routing\Router;
 
 class PaypalAuthorizeRequest implements RequestInterface
 {
-    /** @var Router */
-    private $router;
-
-    public function __construct(Router $router)
-    {
-        $this->router = $router;
-    }
-
     public function getParentRequest(): string
     {
         return CustomerRequest::class;
     }
 
-    public function getRequestParameters(PaymentTransactionStruct $transaction, Context $context): array
+    public function getRequestParameters($transaction, Context $context): array
     {
-        $cancelUrl = $this->router->generate(
-            'payone_payment_cancel',
-            [
-                'transaction' => $transaction->getTransactionId(),
-            ],
-            UrlGenerator::ABSOLUTE_URL
-        );
+        $order = $transaction->getOrderTransaction()->getOrder();
 
-        $errorUrl = $this->router->generate(
-            'payone_payment_error',
-            [
-                'transaction' => $transaction->getTransactionId(),
-            ],
-            UrlGenerator::ABSOLUTE_URL
-        );
+        if (null === $order) {
+            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
+        }
 
         return [
             'request'      => 'authorization',
             'clearingtype' => 'wlt',
             'wallettype'   => 'PPE',
-            'amount'       => (int) ($transaction->getAmount()->getTotalPrice() * 100),
-            'currency'     => 'EUR',
-            'reference'    => $transaction->getOrder()->getAutoIncrement(), // TODO: replace with ordernumber when available
-            'successurl'   => $transaction->getReturnUrl(),
-            'errorurl'     => $errorUrl,
-            'backurl'      => $cancelUrl,
+            'amount'       => (int) ($order->getAmountTotal() * 100),
+            'currency'     => $order->getCurrency()->getShortName(),
+            'reference'    => $order->getOrderNumber(),
+            'successurl'   => $transaction->getReturnUrl() . '&state=success',
+            'errorurl'     => $transaction->getReturnUrl() . '&state=error',
+            'backurl'      => $transaction->getReturnUrl() . '&state=cancel',
         ];
     }
 }

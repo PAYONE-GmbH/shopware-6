@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Customer;
 
+use http\Exception\RuntimeException;
 use PayonePayment\Payone\Request\RequestInterface;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
-use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,20 +17,15 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class CustomerRequest implements RequestInterface
 {
     /** @var EntityRepositoryInterface */
-    private $orderCustomerRepository;
-
-    /** @var EntityRepositoryInterface */
     private $languageRepository;
 
     /** @var RequestStack */
     private $requestStack;
 
     public function __construct(
-        EntityRepositoryInterface $orderCustomerRepository,
         EntityRepositoryInterface $languageRepository,
         RequestStack $requestStack
     ) {
-        $this->orderCustomerRepository = $orderCustomerRepository;
         $this->languageRepository      = $languageRepository;
         $this->requestStack            = $requestStack;
     }
@@ -40,13 +35,17 @@ class CustomerRequest implements RequestInterface
         return SystemRequest::class;
     }
 
-    public function getRequestParameters(PaymentTransactionStruct $transaction, Context $context): array
+    /**
+     * TODO: Validate if Order Entity is filled with all the required data, thow exceptions if not?
+     * TODO: If errors are unavoidable, implement helper to retrieve a "correct" order entity with all needed data.
+     */
+    public function getRequestParameters($transaction, Context $context): array
     {
-        $criteria = new Criteria([$transaction->getOrder()->getOrderCustomerId()]);
-        $criteria->addAssociation('order_customer.customer');
+        $order = $transaction->getOrderTransaction()->getOrder();
 
-        /** @var OrderCustomerEntity $orderCustomer */
-        $orderCustomer = $this->orderCustomerRepository->search($criteria, $context)->first();
+        if (null === $order) {
+            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
+        }
 
         $languages = $context->getLanguageIdChain();
         $criteria  = new Criteria([reset($languages)]);
@@ -55,11 +54,15 @@ class CustomerRequest implements RequestInterface
         /** @var LanguageEntity $language */
         $language = $this->languageRepository->search($criteria, $context)->first();
 
-        $address        = $transaction->getOrder()->getAddresses();
-        $billingAddress = $address->get($transaction->getOrder()->getBillingAddressId());
+        $address        = $order->getAddresses();
+        $billingAddress = $address->get($order->getBillingAddressId());
+
+        if (null === $billingAddress) {
+            throw new RuntimeException('missing order billing address');
+        }
 
         $personalData = [
-            'salutation'      => $billingAddress->getSalutation(),
+            'salutation'      => $billingAddress->getSalutation()->getDisplayName(),
             'title'           => $billingAddress->getTitle(),
             'firstname'       => $billingAddress->getFirstName(),
             'lastname'        => $billingAddress->getLastName(),
@@ -68,14 +71,14 @@ class CustomerRequest implements RequestInterface
             'zip'             => $billingAddress->getZipcode(),
             'city'            => $billingAddress->getCity(),
             'country'         => $billingAddress->getCountry()->getIso(),
-            'email'           => $transaction->getOrder()->getOrderCustomer()->getEmail(),
+            'email'           => $order->getOrderCustomer()->getEmail(),
             'language'        => substr($language->getLocale()->getCode(), 0, 2),
-            'gender'          => $transaction->getOrder()->getOrderCustomer()->getSalutation() === 'Herr' ? 'm' : 'f', // TODO: replace with correct salutation handling sometime
             'ip'              => $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
         ];
 
-        if (null !== $orderCustomer->getCustomer()->getBirthday()) {
-            $personalData['birthday'] = $orderCustomer->getCustomer()->getBirthday()->format('Ymd');
+        $birthday = $order->getOrderCustomer()->getCustomer()->getBirthday();
+        if (null !== $birthday) {
+            $personalData['birthday'] = $birthday->format('Ymd');
         }
 
         return $personalData;
