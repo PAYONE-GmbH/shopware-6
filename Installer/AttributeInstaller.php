@@ -4,21 +4,14 @@ declare(strict_types=1);
 
 namespace PayonePayment\Installer;
 
-use PayonePayment\PaymentMethod\PaymentMethodInterface;
-use PayonePayment\PaymentMethod\PayoneCreditCard;
-use PayonePayment\PaymentMethod\PayoneDebit;
-use PayonePayment\PaymentMethod\PayonePaypal;
-use PayonePayment\PaymentMethod\PayoneSofort;
 use Shopware\Core\Framework\Attribute\AttributeTypes;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
-use Shopware\Core\Framework\Plugin\Helper\PluginIdProvider;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -26,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class AttributeInstaller implements InstallerInterface
 {
-    public const TRANSACTION_ID = 'payone_transaction_id';
+    public const TRANSACTION_ID   = 'payone_transaction_id';
     public const TRANSACTION_DATA = 'payone_transaction_data';
 
     /** @var EntityRepositoryInterface */

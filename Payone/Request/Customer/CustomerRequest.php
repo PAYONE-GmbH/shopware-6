@@ -26,8 +26,8 @@ class CustomerRequest implements RequestInterface
         EntityRepositoryInterface $languageRepository,
         RequestStack $requestStack
     ) {
-        $this->languageRepository      = $languageRepository;
-        $this->requestStack            = $requestStack;
+        $this->languageRepository = $languageRepository;
+        $this->requestStack       = $requestStack;
     }
 
     public function getParentRequest(): string

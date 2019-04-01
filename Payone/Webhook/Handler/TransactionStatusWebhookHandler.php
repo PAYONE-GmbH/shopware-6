@@ -33,7 +33,6 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
         return false;
     }
 
-
     /**
      * {@inheritdoc}
      */

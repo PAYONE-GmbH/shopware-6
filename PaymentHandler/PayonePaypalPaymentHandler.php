@@ -54,11 +54,11 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
 
         $this->orderTransactionRepo->update([
             [
-                'id' => $transaction->getOrderTransaction()->getId(),
+                'id'         => $transaction->getOrderTransaction()->getId(),
                 'attributes' => [
                     AttributeInstaller::TRANSACTION_ID => $response['TXID'],
                 ],
-            ]
+            ],
         ], $context);
 
         return new RedirectResponse($response['RedirectUrl']);
