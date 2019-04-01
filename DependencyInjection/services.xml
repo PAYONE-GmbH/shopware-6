@@ -9,6 +9,7 @@
         <import resource="entities.xml" />
         <import resource="handlers.xml" />
         <import resource="requests.xml" />
+        <import resource="translations.xml" />
     </imports>
 
     <services>

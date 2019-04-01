@@ -29,23 +29,29 @@ class PayoneSofortPaymentHandler implements AsynchronousPaymentHandlerInterface
         $this->stateMachineRegistry  = $stateMachineRegistry;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function pay(AsyncPaymentTransactionStruct $transaction, Context $context): RedirectResponse
     {
         return new RedirectResponse($transaction->getReturnUrl());
     }
 
-    public function finalize(string $transactionId, Request $request, Context $context): void
+    /**
+     * {@inheritdoc}
+     */
+    public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, Context $context): void
     {
         $stateId = $this->stateMachineRegistry->getStateByTechnicalName(
             Defaults::ORDER_TRANSACTION_STATE_MACHINE,
             Defaults::ORDER_TRANSACTION_STATES_PAID, $context
         )->getId();
 
-        $transaction = [
-            'id'      => $transactionId,
+        $data = [
+            'id'      => $transaction->getOrderTransaction()->getId(),
             'stateId' => $stateId,
         ];
 
-        $this->transactionRepository->update([$transaction], $context);
+        $this->transactionRepository->update([$data], $context);
     }
 }

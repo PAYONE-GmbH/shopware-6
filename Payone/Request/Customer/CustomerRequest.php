@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\Request\Customer;
 use http\Exception\RuntimeException;
 use PayonePayment\Payone\Request\RequestInterface;
 use PayonePayment\Payone\Request\System\SystemRequest;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -38,9 +39,12 @@ class CustomerRequest implements RequestInterface
     /**
      * TODO: Validate if Order Entity is filled with all the required data, thow exceptions if not?
      * TODO: If errors are unavoidable, implement helper to retrieve a "correct" order entity with all needed data.
+     *
+     * {@inheritdoc}
      */
     public function getRequestParameters($transaction, Context $context): array
     {
+        /** @var OrderEntity $order */
         $order = $transaction->getOrderTransaction()->getOrder();
 
         if (null === $order) {
@@ -76,7 +80,7 @@ class CustomerRequest implements RequestInterface
             'ip'              => $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
         ];
 
-        $birthday = $order->getOrderCustomer()->getCustomer()->getBirthday();
+        $birthday = null;//$order->getOrderCustomer()->getCustomer()->getBirthday();
         if (null !== $birthday) {
             $personalData['birthday'] = $birthday->format('Ymd');
         }
