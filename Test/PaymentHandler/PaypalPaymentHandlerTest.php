@@ -19,6 +19,7 @@ use Shopware\Core\Checkout\Payment\PaymentService;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerEntity;
 use Shopware\Core\Content\Product\Cart\ProductCollector;
 use Shopware\Core\Content\Product\ProductEntity;
+use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -57,6 +58,9 @@ class PaypalPaymentHandlerTest extends TestCase
     /** @var EntityRepositoryInterface */
     private $taxRepository;
 
+    /** @var EntityRepositoryInterface */
+    private $ruleRepository;
+
     /** @var CheckoutContextFactory */
     private $contextFactory;
 
@@ -84,6 +88,7 @@ class PaypalPaymentHandlerTest extends TestCase
         $this->productRepository       = $this->getContainer()->get('product.repository');
         $this->manufacturerRepository  = $this->getContainer()->get('product_manufacturer.repository');
         $this->taxRepository           = $this->getContainer()->get('tax.repository');
+        $this->ruleRepository           = $this->getContainer()->get('rule.repository');
 
         $this->contextFactory = $this->getContainer()->get(CheckoutContextFactory::class);
         $this->cartProcessor  = $this->getContainer()->get(Processor::class);
@@ -91,7 +96,7 @@ class PaypalPaymentHandlerTest extends TestCase
         $this->paymentService = $this->getContainer()->get(PaymentService::class);
         $this->router         = $this->getContainer()->get('router');
 
-        $this->token = Uuid::uuid4()->getHex();
+        $this->token = Uuid::randomHex();
         $this->router->getContext()->setHost('example.com');
     }
 
@@ -148,10 +153,14 @@ class PaypalPaymentHandlerTest extends TestCase
 
         $customer = $this->createCustomer($paymentMethod, $salesChannel->getId());
 
-        return $this->contextFactory->create($this->token, $salesChannel->getId(), [
+        $context = $this->contextFactory->create($this->token, $salesChannel->getId(), [
             CheckoutContextService::CUSTOMER_ID       => $customer->getId(),
             CheckoutContextService::PAYMENT_METHOD_ID => $paymentMethod,
         ]);
+
+        $context->setRuleIds($this->fetchAllRules());
+
+        return $context;
     }
 
     private function createCustomer(string $paymentMethod, string $salesChannel): CustomerEntity
@@ -198,5 +207,21 @@ class PaypalPaymentHandlerTest extends TestCase
 
         /** @var CustomerEntity $customer */
         return $this->customerRepository->search(new Criteria(), Context::createDefaultContext())->first();
+    }
+
+    /**
+     * @return string[]
+     */
+    private function fetchAllRules(): array
+    {
+        /** @var RuleEntity[] $rules */
+        $rules = $this->ruleRepository->search(new Criteria(), Context::createDefaultContext())->getIterator();
+
+        $result = [];
+        foreach ($rules as $rule) {
+            $result[] = $rule->getId();
+        }
+
+        return $result;
     }
 }

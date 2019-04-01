@@ -4,15 +4,17 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="PayonePayment\Payone\Request\System\SystemRequest">
+        <defaults public="true"/>
+
+        <service id="PayonePayment\Payone\Request\System\SystemRequest" class="PayonePayment\Payone\Request\System\SystemRequest">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\Customer\CustomerRequest">
+        <service id="PayonePayment\Payone\Request\Customer\CustomerRequest" class="PayonePayment\Payone\Request\Customer\CustomerRequest">
             <argument type="service" id="language.repository" />
             <argument type="service" id="request_stack" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest" />
+        <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest" class="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest" />
     </services>
 </container>

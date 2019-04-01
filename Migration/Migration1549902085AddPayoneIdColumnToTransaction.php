@@ -16,6 +16,12 @@ class Migration1549902085AddPayoneIdColumnToTransaction extends MigrationStep
 
     public function update(Connection $connection): void
     {
+        $fields = $connection->fetchAssoc('SELECT * FROM order_transaction LIMIT 1');
+
+        if (array_key_exists('payone_transaction_id', $fields)) {
+            return;
+        }
+
         $connection->exec('
               ALTER TABLE order_transaction
               ADD payone_transaction_id INT

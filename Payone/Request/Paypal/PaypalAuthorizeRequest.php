@@ -16,6 +16,9 @@ class PaypalAuthorizeRequest implements RequestInterface
         return CustomerRequest::class;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getRequestParameters($transaction, Context $context): array
     {
         $order = $transaction->getOrderTransaction()->getOrder();
