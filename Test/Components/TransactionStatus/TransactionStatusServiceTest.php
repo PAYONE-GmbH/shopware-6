@@ -28,7 +28,7 @@ class TransactionStatusServiceTest extends TestCase
     /** @var EntityRepositoryInterface */
     private $statusRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = $this->getContainer();
 

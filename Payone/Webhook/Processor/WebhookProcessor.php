@@ -4,21 +4,31 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Processor;
 
-use PayonePayment\Payone\Webhook\Factory\WebhookHandlerFactoryInterface;
+use LogicException;
+use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class WebhookProcessor implements WebhookProcessorInterface
 {
-    /** @var WebhookHandlerFactoryInterface */
-    private $handlerFactory;
+    /** @var WebhookHandlerInterface[] */
+    private $handlers;
 
-    public function __construct(WebhookHandlerFactoryInterface $handlerFactory)
+    public function __construct(iterable $handlers)
     {
-        $this->handlerFactory = $handlerFactory;
+        $this->handlers = $handlers;
     }
 
     public function process(array $data): Response
     {
-        return $this->handlerFactory->getHandler($data)->processAsync($data);
+        foreach ($this->handlers as $handler) {
+            if (!$handler->supports($data)) {
+                continue;
+            }
+
+            return $handler->processAsync($data);
+        }
+
+
+        throw new LogicException('Unable to identify a matching webhook handler');
     }
 }

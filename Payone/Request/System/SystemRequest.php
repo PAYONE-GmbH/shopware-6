@@ -6,7 +6,7 @@ namespace PayonePayment\Payone\Request\System;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Payone\Request\RequestInterface;
-use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 
 class SystemRequest implements RequestInterface
@@ -24,9 +24,18 @@ class SystemRequest implements RequestInterface
         return '';
     }
 
-    public function getRequestParameters(PaymentTransactionStruct $transaction, Context $context): array
+    /**
+     * {@inheritdoc}
+     */
+    public function getRequestParameters($transaction, Context $context): array
     {
-        $config = $this->configReader->read($transaction->getOrder()->getSalesChannelId());
+        $order = $transaction->getOrderTransaction()->getOrder();
+
+        if (null === $order) {
+            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
+        }
+
+        $config = $this->configReader->read($order->getSalesChannelId());
 
         return [
             'aid'         => $config->get('aid') ? $config->get('aid')->getValue() : getenv('PAYONE_AID'),

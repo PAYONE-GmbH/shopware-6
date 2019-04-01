@@ -4,19 +4,15 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults public="true"/>
-
-        <service id="PayonePayment\Payone\Webhook\Factory\WebhookHandlerFactory">
-            <argument type="service" id="service_container"/>
-        </service>
-
         <service id="PayonePayment\Payone\Webhook\Processor\WebhookProcessor">
-            <argument type="service" id="PayonePayment\Payone\Webhook\Factory\WebhookHandlerFactory"/>
+            <argument type="tagged" tag="payment.webhook.handler" />
         </service>
 
         <service id="PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler">
             <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService"/>
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+
+            <tag name="payone.webhook.handler" />
         </service>
     </services>
 </container>

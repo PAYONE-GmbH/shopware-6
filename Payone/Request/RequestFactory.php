@@ -6,7 +6,8 @@ namespace PayonePayment\Payone\Request;
 
 use LogicException;
 use Psr\Container\ContainerInterface;
-use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 
 final class RequestFactory
@@ -19,7 +20,16 @@ final class RequestFactory
         $this->container = $container;
     }
 
-    public function generateRequest(PaymentTransactionStruct $transaction, Context $context, string $request)
+    /**
+     * TODO: Separate sync and async requests or us a own parameter for the transaction. A real type would be perfect.
+     *
+     * @param AsyncPaymentTransactionStruct|SyncPaymentTransactionStruct $transaction
+     * @param Context                                                    $context
+     * @param string                                                     $request
+     *
+     * @return array
+     */
+    public function generateRequest($transaction, Context $context, string $request)
     {
         if (!$this->container->has($request)) {
             throw new LogicException('missing service definition for request class: ' . $request);

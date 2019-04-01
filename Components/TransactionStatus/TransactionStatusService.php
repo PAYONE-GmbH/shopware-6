@@ -16,17 +16,15 @@ use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachine
 class TransactionStatusService implements TransactionStatusServiceInterface
 {
     /**
+     * // TODO: Add further mapping values when required
+     *
      * `payone_payment_status.action` -> `state_machine_state.technical_name`
      *
      * @var array
      */
     private const STATE_MAPPING = [
         'appointed' => 'completed',
-        //TODO: Add further mapping values when required
     ];
-
-    /** @var EntityRepositoryInterface */
-    private $payoneStatusRepository;
 
     /** @var EntityRepositoryInterface */
     private $orderTransactionRepository;
@@ -34,8 +32,11 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     /** @var EntityRepositoryInterface */
     private $stateRepository;
 
-    public function __construct(EntityRepositoryInterface $payoneStatusRepository, EntityRepositoryInterface $orderTransactionRepository, EntityRepositoryInterface $stateRepository)
-    {
+    public function __construct(
+        EntityRepositoryInterface $payoneStatusRepository,
+        EntityRepositoryInterface $orderTransactionRepository,
+        EntityRepositoryInterface $stateRepository
+    ) {
         $this->payoneStatusRepository     = $payoneStatusRepository;
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->stateRepository            = $stateRepository;

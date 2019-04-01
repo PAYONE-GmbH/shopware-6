@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\StateMachine\StateMachineRegistry;
+use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class PayoneSofortPaymentHandler implements PaymentHandlerInterface
+class PayoneSofortPaymentHandler implements AsynchronousPaymentHandlerInterface
 {
     /** @var EntityRepositoryInterface */
     private $transactionRepository;
@@ -29,7 +29,7 @@ class PayoneSofortPaymentHandler implements PaymentHandlerInterface
         $this->stateMachineRegistry  = $stateMachineRegistry;
     }
 
-    public function pay(PaymentTransactionStruct $transaction, Context $context): ?RedirectResponse
+    public function pay(AsyncPaymentTransactionStruct $transaction, Context $context): RedirectResponse
     {
         return new RedirectResponse($transaction->getReturnUrl());
     }

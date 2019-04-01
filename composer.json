@@ -10,11 +10,10 @@
     }
   ],
   "require": {
-    "ext-curl": "*",
-    "composer/installers": "^1.5"
+    "shopware/platform": "dev-master"
   },
   "require-dev": {
-    "roave/security-advisories": "dev-master",
+    "phpunit/phpunit": "8.0.6",
     "k10r/codestyle": "^1.0"
   },
   "extra": {

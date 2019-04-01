@@ -4,10 +4,9 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <imports>
-        <import resource="../Payone/DependencyInjection/webhook.xml"/>
+        <import resource="webhook.xml"/>
         <import resource="commands.xml" />
         <import resource="entities.xml" />
-        <import resource="controllers.xml" />
         <import resource="handlers.xml" />
         <import resource="requests.xml" />
     </imports>
