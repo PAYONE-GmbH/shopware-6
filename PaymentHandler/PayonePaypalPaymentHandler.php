@@ -16,7 +16,6 @@ use Shopware\Core\Checkout\Payment\Exception\CustomerCanceledAsyncPaymentExcepti
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\Translation\Translator;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,7 +49,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         $this->client                = $client;
         $this->transactionRepository = $transactionRepository;
         $this->stateMachineRegistry  = $stateMachineRegistry;
-        $this->translator = $translator;
+        $this->translator            = $translator;
     }
 
     /**
@@ -71,7 +70,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         $data = [
             'id'         => $transaction->getOrderTransaction()->getId(),
             'attributes' => [
-                AttributeInstaller::TRANSACTION_ID => $response['TXID'],
+                AttributeInstaller::TRANSACTION_ID   => $response['TXID'],
                 AttributeInstaller::TRANSACTION_DATA => $response,
             ],
         ];
