@@ -14,9 +14,6 @@ class PayoneSofort implements PaymentMethodInterface
     private $name = 'Payone Sofort';
 
     /** @var string */
-    private $technicalName = 'payone_sofort';
-
-    /** @var string */
     private $description = '';
 
     /** @var string */

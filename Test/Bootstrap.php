@@ -34,4 +34,3 @@ if (!class_exists(Dotenv::class)) {
 }
 
 (new Dotenv())->load(TEST_PROJECT_DIR . '/.env');
-

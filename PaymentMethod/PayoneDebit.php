@@ -14,9 +14,6 @@ class PayoneDebit implements PaymentMethodInterface
     private $name = 'Payone Debit';
 
     /** @var string */
-    private $technicalName = 'payone_debit';
-
-    /** @var string */
     private $description = '';
 
     /** @var string */

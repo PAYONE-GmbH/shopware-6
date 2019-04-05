@@ -14,9 +14,6 @@ class PayoneCreditCard implements PaymentMethodInterface
     private $name = 'Payone Credit Card';
 
     /** @var string */
-    private $technicalName = 'payone_credit_card';
-
-    /** @var string */
     private $description = '';
 
     /** @var string */

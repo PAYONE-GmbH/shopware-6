@@ -88,7 +88,7 @@ class PaypalPaymentHandlerTest extends TestCase
         $this->productRepository       = $this->getContainer()->get('product.repository');
         $this->manufacturerRepository  = $this->getContainer()->get('product_manufacturer.repository');
         $this->taxRepository           = $this->getContainer()->get('tax.repository');
-        $this->ruleRepository           = $this->getContainer()->get('rule.repository');
+        $this->ruleRepository          = $this->getContainer()->get('rule.repository');
 
         $this->contextFactory = $this->getContainer()->get(CheckoutContextFactory::class);
         $this->cartProcessor  = $this->getContainer()->get(Processor::class);

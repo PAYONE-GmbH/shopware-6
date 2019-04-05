@@ -14,9 +14,6 @@ class PayonePaypal implements PaymentMethodInterface
     private $name = 'Payone Paypal';
 
     /** @var string */
-    private $technicalName = 'payone_paypal';
-
-    /** @var string */
     private $description = '';
 
     /** @var string */

@@ -60,12 +60,12 @@ class AttributeInstaller implements InstallerInterface
         $this->attributeRepository->upsert(
             [
                 [
-                    'id' => 'fe5f4e10cd1a4f6e9710207638c0c9eb',
+                    'id'   => 'fe5f4e10cd1a4f6e9710207638c0c9eb',
                     'name' => self::TRANSACTION_ID,
                     'type' => AttributeTypes::TEXT,
                 ],
                 [
-                    'id' => '402f0807d3eb44ccadb9a05737ca1ecd',
+                    'id'   => '402f0807d3eb44ccadb9a05737ca1ecd',
                     'name' => self::TRANSACTION_DATA,
                     'type' => AttributeTypes::JSON,
                 ],

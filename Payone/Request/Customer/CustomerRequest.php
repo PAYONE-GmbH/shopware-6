@@ -80,7 +80,7 @@ class CustomerRequest implements RequestInterface
             'ip'              => $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
         ];
 
-        $birthday = null;//$order->getOrderCustomer()->getCustomer()->getBirthday();
+        $birthday = null; //$order->getOrderCustomer()->getCustomer()->getBirthday();
         if (null !== $birthday) {
             $personalData['birthday'] = $birthday->format('Ymd');
         }
