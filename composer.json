@@ -1,6 +1,6 @@
 {
   "name": "payone/shopware",
-  "type": "shopware-plugin",
+  "type": "shopware-platform-plugin",
   "description": "Payone Payment Plugin",
   "license": "MIT",
   "authors": [
@@ -16,8 +16,13 @@
     "phpunit/phpunit": "8.0.6",
     "k10r/codestyle": "^1.0"
   },
+  "autoload": {
+    "psr-4": {
+      "PayonePayment\\": ""
+    }
+  },
   "extra": {
-    "installer-name": "PayonePayment",
+    "shopware-plugin-class": "PayonePayment\\PayonePayment",
     "copyright": "(c) by BS PAYONE GmbH",
     "label": {
       "de_DE": "Payone Payment",
