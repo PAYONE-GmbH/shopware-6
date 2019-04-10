@@ -42,7 +42,7 @@ test:
   image: "edbizarro/gitlab-ci-pipeline-php:7.3"
   stage: test
   services:
-    - mysql:5.7
+    - mysql:latest
   dependencies:
     - composer
   script:
