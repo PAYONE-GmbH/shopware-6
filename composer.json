@@ -23,6 +23,7 @@
   },
   "extra": {
     "shopware-plugin-class": "PayonePayment\\PayonePayment",
+    "plugin-icon": "Resources/public/plugin.png",
     "copyright": "(c) by BS PAYONE GmbH",
     "label": {
       "de_DE": "Payone Payment",

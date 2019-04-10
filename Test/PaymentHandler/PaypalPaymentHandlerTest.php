@@ -198,7 +198,7 @@ class PaypalPaymentHandlerTest extends TestCase
             'password'               => $faker->password,
             'firstName'              => $faker->firstName,
             'lastName'               => $faker->lastName,
-            'salutationId' => $this->getValidSalutationId(),
+            'salutationId'           => $this->getValidSalutationId(),
             'customerNumber'         => 'test',
         ];
 
