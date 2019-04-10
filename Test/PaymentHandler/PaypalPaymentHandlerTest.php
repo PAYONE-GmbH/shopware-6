@@ -101,6 +101,8 @@ class PaypalPaymentHandlerTest extends TestCase
 
     public function testPaymentHandler(): void
     {
+        $this->markTestSkipped('implement response mocks etc.');
+
         $context = $this->createCheckoutContext((new PayonePaypal())->getId());
         $product = $this->getProduct();
 
