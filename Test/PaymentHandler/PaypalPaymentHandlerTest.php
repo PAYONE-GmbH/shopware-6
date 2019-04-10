@@ -7,13 +7,10 @@ namespace PayonePayment\Test\PaymentHandler;
 use Faker\Factory;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Checkout\Cart\CartBehaviorContext;
+use Shopware\Core\Checkout\Cart\CartBehavior;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Processor;
 use Shopware\Core\Checkout\Cart\Storefront\CartService;
-use Shopware\Core\Checkout\CheckoutContext;
-use Shopware\Core\Checkout\Context\CheckoutContextFactory;
-use Shopware\Core\Checkout\Context\CheckoutContextService;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Payment\PaymentService;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerEntity;
@@ -25,9 +22,11 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\System\Country\CountryEntity;
+use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
+use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Shopware\Core\System\Tax\TaxEntity;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -61,7 +60,7 @@ class PaypalPaymentHandlerTest extends TestCase
     /** @var EntityRepositoryInterface */
     private $ruleRepository;
 
-    /** @var CheckoutContextFactory */
+    /** @var SalesChannelContextFactory */
     private $contextFactory;
 
     /** @var CartService */
@@ -90,13 +89,13 @@ class PaypalPaymentHandlerTest extends TestCase
         $this->taxRepository           = $this->getContainer()->get('tax.repository');
         $this->ruleRepository          = $this->getContainer()->get('rule.repository');
 
-        $this->contextFactory = $this->getContainer()->get(CheckoutContextFactory::class);
+        $this->contextFactory = $this->getContainer()->get(SalesChannelContextFactory::class);
         $this->cartProcessor  = $this->getContainer()->get(Processor::class);
         $this->cartService    = $this->getContainer()->get(CartService::class);
         $this->paymentService = $this->getContainer()->get(PaymentService::class);
         $this->router         = $this->getContainer()->get('router');
 
-        $this->token = Uuid::randomHex();
+        $this->token = \Shopware\Core\Framework\Uuid\Uuid::randomHex();
         $this->router->getContext()->setHost('example.com');
     }
 
@@ -110,7 +109,7 @@ class PaypalPaymentHandlerTest extends TestCase
 
         $cart = $this->cartService->add($this->cartService->getCart($this->token, $context), $lineItem, $context);
 
-        $processedCart = $this->cartProcessor->process($cart, $context, new CartBehaviorContext());
+        $processedCart = $this->cartProcessor->process($cart, $context, new CartBehavior());
 
         $order = $this->cartService->order($processedCart, $context);
 
@@ -146,7 +145,7 @@ class PaypalPaymentHandlerTest extends TestCase
         return $this->productRepository->search(new Criteria(), Context::createDefaultContext())->first();
     }
 
-    private function createCheckoutContext(string $paymentMethod): CheckoutContext
+    private function createCheckoutContext(string $paymentMethod): SalesChannelContext
     {
         /** @var SalesChannelEntity $salesChannel */
         $salesChannel = $this->salesChannelRepository->search(new Criteria(), Context::createDefaultContext())->first();
@@ -154,8 +153,8 @@ class PaypalPaymentHandlerTest extends TestCase
         $customer = $this->createCustomer($paymentMethod, $salesChannel->getId());
 
         $context = $this->contextFactory->create($this->token, $salesChannel->getId(), [
-            CheckoutContextService::CUSTOMER_ID       => $customer->getId(),
-            CheckoutContextService::PAYMENT_METHOD_ID => $paymentMethod,
+            SalesChannelContextService::CUSTOMER_ID       => $customer->getId(),
+            SalesChannelContextService::PAYMENT_METHOD_ID => $paymentMethod,
         ]);
 
         $context->setRuleIds($this->fetchAllRules());
@@ -181,7 +180,7 @@ class PaypalPaymentHandlerTest extends TestCase
                 'street'       => $faker->streetAddress,
                 'city'         => $faker->city,
                 'zipcode'      => $faker->postcode,
-                'salutationId' => Defaults::SALUTATION_ID_MR,
+                'salutationId' => $this->getValidSalutationId(),
                 'countryId'    => $country->getId(),
             ],
             'defaultShippingAddress' => [
@@ -190,7 +189,7 @@ class PaypalPaymentHandlerTest extends TestCase
                 'street'       => $faker->streetAddress,
                 'city'         => $faker->city,
                 'zipcode'      => $faker->postcode,
-                'salutationId' => Defaults::SALUTATION_ID_MR,
+                'salutationId' => $this->getValidSalutationId(),
                 'countryId'    => $country->getId(),
             ],
             'defaultPaymentMethodId' => $paymentMethod,
@@ -199,7 +198,7 @@ class PaypalPaymentHandlerTest extends TestCase
             'password'               => $faker->password,
             'firstName'              => $faker->firstName,
             'lastName'               => $faker->lastName,
-            'salutationId'           => Defaults::SALUTATION_ID_MR,
+            'salutationId' => $this->getValidSalutationId(),
             'customerNumber'         => 'test',
         ];
 
@@ -207,6 +206,16 @@ class PaypalPaymentHandlerTest extends TestCase
 
         /** @var CustomerEntity $customer */
         return $this->customerRepository->search(new Criteria(), Context::createDefaultContext())->first();
+    }
+
+    private function getValidSalutationId(): string
+    {
+        /** @var EntityRepositoryInterface $repository */
+        $repository = $this->getContainer()->get('salutation.repository');
+
+        $criteria = (new Criteria())->setLimit(1);
+
+        return $repository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
     }
 
     /**
