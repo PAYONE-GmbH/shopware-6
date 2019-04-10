@@ -46,6 +46,7 @@ test:
   dependencies:
     - composer
   script:
+    - composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     - sudo apt-get update && sudo apt-get install mysql-client -y
     - git clone https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
     - mv ${CI_PROJECT_DIR}/opt /tmp/opt
