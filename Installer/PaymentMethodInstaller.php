@@ -9,6 +9,7 @@ use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\PaymentMethod\PayoneSofort;
+use PayonePayment\PayonePayment;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -80,7 +81,7 @@ class PaymentMethodInstaller implements InstallerInterface
 
     private function upsertPaymentMethod(PaymentMethodInterface $paymentMethod, Context $context): void
     {
-        $pluginId = $this->pluginIdProvider->getPluginIdByTechnicalName('PayonePayment', $context);
+        $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(PayonePayment::class, $context);
 
         $data = [
             'id'                => $paymentMethod->getId(),
