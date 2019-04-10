@@ -53,6 +53,7 @@ test:
     - mv /tmp/opt ${CI_PROJECT_DIR}/opt
     - 'printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"mysql\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"${MYSQL_DATABASE}\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"${MYSQL_ROOT_PASSWORD}\"" > "${CI_PROJECT_DIR}/opt/shopware/.psh.yaml.override"'
     - cd ${CI_PROJECT_DIR}/opt/shopware && php ${CI_PROJECT_DIR}/opt/shopware/psh.phar install
-    - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:update
-    - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:install --activate ${CI_PROJECT_NAME}
+    - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:refresh
+    - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:install ${CI_PROJECT_NAME}
+    - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:activate ${CI_PROJECT_NAME}
     - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && ${CI_PROJECT_DIR}/opt/shopware/vendor/bin/phpunit
