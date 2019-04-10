@@ -9,9 +9,6 @@
       "email": "anfragen@kellerkinder.de"
     }
   ],
-  "require": {
-    "shopware/platform": "1.0.0"
-  },
   "require-dev": {
     "phpunit/phpunit": "8.0.6",
     "k10r/codestyle": "^1.0"
