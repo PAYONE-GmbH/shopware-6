@@ -83,5 +83,5 @@ blackfire:
     - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:refresh
     - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:install ${CI_PROJECT_NAME}
     - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:activate ${CI_PROJECT_NAME}
-    - cd ${CI_PROJECT_DIR}/opt/shopware/ && blackfire run vendor/bin/phpunit
+    - docker run -it --rm  -e BLACKFIRE_CLIENT_ID -e BLACKFIRE_CLIENT_TOKEN blackfire/blackfire blackfire run vendor/bin/phpunit
 
