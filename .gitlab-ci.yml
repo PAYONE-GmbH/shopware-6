@@ -59,7 +59,7 @@ test:
     - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && ${CI_PROJECT_DIR}/opt/shopware/vendor/bin/phpunit
 
 blackfire:
-  image: "blackfire/blackfire"
+  image: "edbizarro/gitlab-ci-pipeline-php:7.3"
   stage: test
   services:
     - mysql:5.7
