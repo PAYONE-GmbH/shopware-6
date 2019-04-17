@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cf717b737a18c1bd84f1528d702a3356",
+    "content-hash": "e4005859e9f563f0af7436e5571b7699",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -3951,12 +3951,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shopware/platform.git",
-                "reference": "ea66c72954ecd95dc57da3d87d933b14f762f568"
+                "reference": "109c405655b2e7568712a54dc0899fb10620678e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shopware/platform/zipball/ea66c72954ecd95dc57da3d87d933b14f762f568",
-                "reference": "ea66c72954ecd95dc57da3d87d933b14f762f568",
+                "url": "https://api.github.com/repos/shopware/platform/zipball/109c405655b2e7568712a54dc0899fb10620678e",
+                "reference": "109c405655b2e7568712a54dc0899fb10620678e",
                 "shasum": ""
             },
             "require": {
@@ -4082,7 +4082,7 @@
                 "framework",
                 "shopware"
             ],
-            "time": "2019-04-17T14:06:54+00:00"
+            "time": "2019-04-17T14:32:41+00:00"
         },
         {
             "name": "smalot/pdfparser",
@@ -4581,7 +4581,7 @@
         },
         {
             "name": "symfony/debug",
-            "version": "v4.2.6",
+            "version": "v4.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug.git",
@@ -5258,7 +5258,7 @@
         },
         {
             "name": "symfony/inflector",
-            "version": "v4.2.6",
+            "version": "v4.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/inflector.git",
@@ -5380,7 +5380,7 @@
         },
         {
             "name": "symfony/monolog-bridge",
-            "version": "v4.2.6",
+            "version": "v4.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/monolog-bridge.git",
@@ -5916,7 +5916,7 @@
         },
         {
             "name": "symfony/process",
-            "version": "v4.2.6",
+            "version": "v4.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
@@ -6521,7 +6521,7 @@
         },
         {
             "name": "symfony/twig-bridge",
-            "version": "v4.2.6",
+            "version": "v4.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/twig-bridge.git",
@@ -6778,16 +6778,16 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v4.2.6",
+            "version": "v4.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "f42850fa32b8d7a35a75510810f6ef597674be74"
+                "reference": "e760a38e12b15032325e64be63f7ffc1817af617"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/f42850fa32b8d7a35a75510810f6ef597674be74",
-                "reference": "f42850fa32b8d7a35a75510810f6ef597674be74",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/e760a38e12b15032325e64be63f7ffc1817af617",
+                "reference": "e760a38e12b15032325e64be63f7ffc1817af617",
                 "shasum": ""
             },
             "require": {
@@ -6850,11 +6850,11 @@
                 "debug",
                 "dump"
             ],
-            "time": "2019-04-11T11:27:41+00:00"
+            "time": "2019-04-17T14:57:01+00:00"
         },
         {
             "name": "symfony/var-exporter",
-            "version": "v4.2.6",
+            "version": "v4.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-exporter.git",

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\CartBehavior;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Processor;
-use Shopware\Core\Checkout\Cart\Storefront\CartService;
+use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Payment\PaymentService;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerEntity;
@@ -131,7 +131,8 @@ class PaypalPaymentHandlerTest extends TestCase
         $product = [
             'price'           => ['gross' => 100, 'net' => 100 / 1.19, 'linked' => true],
             'name'            => $faker->name,
-            'description'     => $faker->text(),
+            'productNumber'   => 'Product-' . $faker->randomDigitNotNull,
+        'description'         => $faker->text(),
             'descriptionLong' => $faker->text,
             'taxId'           => $tax->getId(),
             'manufacturerId'  => $manufacturer->getId(),
@@ -199,7 +200,8 @@ class PaypalPaymentHandlerTest extends TestCase
             'firstName'              => $faker->firstName,
             'lastName'               => $faker->lastName,
             'salutationId'           => $this->getValidSalutationId(),
-            'customerNumber'         => 'test',
+            'customerNumber'         => 'PAYONE-' . $faker->randomDigitNotNull,
+            'birthday'               => $faker->date(),
         ];
 
         $this->customerRepository->create([$customerData], Context::createDefaultContext());

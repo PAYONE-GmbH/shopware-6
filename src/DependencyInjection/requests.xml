@@ -12,6 +12,7 @@
 
         <service id="PayonePayment\Payone\Request\Customer\CustomerRequest" class="PayonePayment\Payone\Request\Customer\CustomerRequest">
             <argument type="service" id="language.repository" />
+            <argument type="service" id="order_address.repository" />
             <argument type="service" id="request_stack" />
         </service>
 

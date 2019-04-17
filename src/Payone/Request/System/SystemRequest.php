@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\Request\System;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Payone\Request\RequestInterface;
+use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 
@@ -24,12 +25,9 @@ class SystemRequest implements RequestInterface
         return '';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getRequestParameters($transaction, Context $context): array
+    public function getRequestParameters(PaymentTransactionStruct $transaction, Context $context): array
     {
-        $order = $transaction->getOrderTransaction()->getOrder();
+        $order = $transaction->getOrder();
 
         if (null === $order) {
             throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
@@ -38,12 +36,12 @@ class SystemRequest implements RequestInterface
         $config = $this->configReader->read($order->getSalesChannelId());
 
         return [
-            'aid'         => $config->get('aid') ? $config->get('aid')->getValue() : getenv('PAYONE_AID'),
-            'mid'         => $config->get('mid') ? $config->get('mid')->getValue() : getenv('PAYONE_MID'),
-            'portalid'    => $config->get('portalid') ? $config->get('portalid')->getValue() : getenv('PAYONE_PORTALID'),
-            'key'         => hash('md5', $config->get('key') ? $config->get('key')->getValue() : getenv('PAYONE_KEY')),
+            'aid'         => $config->get('aid'),
+            'mid'         => $config->get('mid'),
+            'portalid'    => $config->get('portalid'),
+            'key'         => hash('md5', $config->get('key')),
             'api_version' => '3.10',
-            'mode'        => 'test',
+            'mode'        => $config->get('mode') ?: 'test',
             'encoding'    => 'UTF-8',
         ];
     }

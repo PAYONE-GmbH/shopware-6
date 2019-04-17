@@ -8,6 +8,7 @@ use PayonePayment\Installer\AttributeInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest;
 use PayonePayment\Payone\Request\RequestFactory;
+use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
@@ -57,25 +58,32 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
      */
     public function pay(AsyncPaymentTransactionStruct $transaction, Context $context): RedirectResponse
     {
-        $request  = $this->requestFactory->generateRequest($transaction, $context, PaypalAuthorizeRequest::class);
+        $paymentTransaction = PaymentTransactionStruct::fromAsyncPaymentTransactionStruct($transaction);
+
+        $request = $this->requestFactory->generateRequest(
+            $paymentTransaction,
+            $context,
+            PaypalAuthorizeRequest::class
+        );
+
         $response = $this->client->request($request);
 
         if (empty($response['Status']) && $response['Status'] !== 'REDIRECT') {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
-                ''
+                $this->translator->trans('test')
             );
         }
 
         $data = [
             'id'         => $transaction->getOrderTransaction()->getId(),
             'attributes' => [
-                AttributeInstaller::TRANSACTION_ID   => $response['TXID'],
+                AttributeInstaller::TRANSACTION_ID   => $response['TxId'],
                 AttributeInstaller::TRANSACTION_DATA => $response,
             ],
         ];
 
-        $this->transactionRepository->update([$data], $context);
+        $event = $this->transactionRepository->update([$data], $context);
 
         return new RedirectResponse($response['RedirectUrl']);
     }

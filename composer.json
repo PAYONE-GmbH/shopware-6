@@ -2,6 +2,7 @@
   "name": "payone/shopware",
   "type": "shopware-platform-plugin",
   "description": "Payone Payment Plugin",
+  "version": "1.0.0",
   "license": "MIT",
   "authors": [
     {
@@ -18,7 +19,7 @@
   },
   "autoload": {
     "psr-4": {
-      "PayonePayment\\": "src/"
+      "PayonePayment\\": "src"
     }
   },
   "extra": {

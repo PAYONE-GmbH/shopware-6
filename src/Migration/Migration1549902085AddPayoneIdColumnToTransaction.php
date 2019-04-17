@@ -16,7 +16,6 @@ class Migration1549902085AddPayoneIdColumnToTransaction extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        return;
         $connection->exec('
               ALTER TABLE order_transaction
               ADD payone_transaction_id INT
