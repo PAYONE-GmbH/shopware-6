@@ -9,13 +9,16 @@
       "email": "anfragen@kellerkinder.de"
     }
   ],
+  "require": {
+    "shopware/platform": "dev-master"
+  },
   "require-dev": {
-    "phpunit/phpunit": "8.0.6",
+    "phpunit/phpunit": "^8.0",
     "k10r/codestyle": "^1.0"
   },
   "autoload": {
     "psr-4": {
-      "PayonePayment\\": ""
+      "PayonePayment\\": "src/"
     }
   },
   "extra": {

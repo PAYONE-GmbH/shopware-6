@@ -44,6 +44,8 @@ class TransactionStatusServiceTest extends TestCase
 
     public function testPersistTransactionStatusWillThrowAnExceptionIfNoTransactionWasFound()
     {
+        $this->markTestSkipped('test');
+
         $service = $this->getStatusService();
 
         $struct = new TransactionStatusStruct([
