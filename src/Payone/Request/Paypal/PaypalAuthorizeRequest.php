@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\Request\Paypal;
 
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\RequestInterface;
+use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 
@@ -16,12 +17,13 @@ class PaypalAuthorizeRequest implements RequestInterface
         return CustomerRequest::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getRequestParameters($transaction, Context $context): array
+    public function getRequestParameters(PaymentTransactionStruct $transaction, Context $context): array
     {
-        $order = $transaction->getOrderTransaction()->getOrder();
+        if (empty($transaction->getReturnUrl())) {
+            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
+        }
+
+        $order = $transaction->getOrder();
 
         if (null === $order) {
             throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
