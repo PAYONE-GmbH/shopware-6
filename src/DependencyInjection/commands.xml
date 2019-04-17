@@ -10,14 +10,22 @@
             <tag name="console.command" />
         </service>
 
-        <service id="PayonePayment\Console\ConfigReadCommand" >
+        <service id="PayonePayment\Console\ConfigReadCommand">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
 
             <tag name="console.command" />
         </service>
 
-        <service id="PayonePayment\Console\ConfigWriteCommand" >
+        <service id="PayonePayment\Console\ConfigWriteCommand">
             <argument type="service" id="PayonePayment\Components\ConfigWriter\ConfigWriter" />
+
+            <tag name="console.command" />
+        </service>
+
+        <service id="PayonePayment\Console\CalculatePerformanceIndex">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry" />
+            <argument type="service" id="router.default" />
+            <argument type="service" id="kernel" />
 
             <tag name="console.command" />
         </service>
