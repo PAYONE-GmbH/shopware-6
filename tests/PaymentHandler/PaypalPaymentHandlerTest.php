@@ -22,7 +22,10 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
-use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Test\TestCaseBase\BasicTestDataBehaviour;
+use Shopware\Core\Framework\Test\TestCaseBase\CacheTestBehaviour;
+use Shopware\Core\Framework\Test\TestCaseBase\FilesystemBehaviour;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
@@ -34,7 +37,9 @@ use Symfony\Component\Routing\Router;
 
 class PaypalPaymentHandlerTest extends TestCase
 {
-    use IntegrationTestBehaviour;
+    use KernelTestBehaviour;
+    use FilesystemBehaviour;
+    use CacheTestBehaviour;
 
     /** @var EntityRepositoryInterface */
     private $paymentMethodrepository;
@@ -81,19 +86,19 @@ class PaypalPaymentHandlerTest extends TestCase
     public function setUp(): void
     {
         $this->paymentMethodrepository = $this->getContainer()->get('payment_method.repository');
-        $this->salesChannelRepository  = $this->getContainer()->get('sales_channel.repository');
-        $this->customerRepository      = $this->getContainer()->get('customer.repository');
-        $this->countryRepository       = $this->getContainer()->get('country.repository');
-        $this->productRepository       = $this->getContainer()->get('product.repository');
-        $this->manufacturerRepository  = $this->getContainer()->get('product_manufacturer.repository');
-        $this->taxRepository           = $this->getContainer()->get('tax.repository');
-        $this->ruleRepository          = $this->getContainer()->get('rule.repository');
+        $this->salesChannelRepository = $this->getContainer()->get('sales_channel.repository');
+        $this->customerRepository = $this->getContainer()->get('customer.repository');
+        $this->countryRepository = $this->getContainer()->get('country.repository');
+        $this->productRepository = $this->getContainer()->get('product.repository');
+        $this->manufacturerRepository = $this->getContainer()->get('product_manufacturer.repository');
+        $this->taxRepository = $this->getContainer()->get('tax.repository');
+        $this->ruleRepository = $this->getContainer()->get('rule.repository');
 
         $this->contextFactory = $this->getContainer()->get(SalesChannelContextFactory::class);
-        $this->cartProcessor  = $this->getContainer()->get(Processor::class);
-        $this->cartService    = $this->getContainer()->get(CartService::class);
+        $this->cartProcessor = $this->getContainer()->get(Processor::class);
+        $this->cartService = $this->getContainer()->get(CartService::class);
         $this->paymentService = $this->getContainer()->get(PaymentService::class);
-        $this->router         = $this->getContainer()->get('router');
+        $this->router = $this->getContainer()->get('router');
 
         $this->token = \Shopware\Core\Framework\Uuid\Uuid::randomHex();
         $this->router->getContext()->setHost('example.com');
@@ -129,15 +134,15 @@ class PaypalPaymentHandlerTest extends TestCase
         $manufacturer = $this->manufacturerRepository->search(new Criteria(), Context::createDefaultContext())->first();
 
         $product = [
-            'price'           => ['gross' => 100, 'net' => 100 / 1.19, 'linked' => true],
-            'name'            => $faker->name,
-            'productNumber'   => 'Product-' . $faker->randomDigitNotNull,
-        'description'         => $faker->text(),
+            'price' => ['gross' => 100, 'net' => 100 / 1.19, 'linked' => true],
+            'name' => $faker->name,
+            'productNumber' => 'Product-' . $faker->randomDigitNotNull,
+            'description' => $faker->text(),
             'descriptionLong' => $faker->text,
-            'taxId'           => $tax->getId(),
-            'manufacturerId'  => $manufacturer->getId(),
-            'active'          => true,
-            'stock'           => 200,
+            'taxId' => $tax->getId(),
+            'manufacturerId' => $manufacturer->getId(),
+            'active' => true,
+            'stock' => 200,
         ];
 
         $this->productRepository->upsert([$product], Context::createDefaultContext());
@@ -154,7 +159,7 @@ class PaypalPaymentHandlerTest extends TestCase
         $customer = $this->createCustomer($paymentMethod, $salesChannel->getId());
 
         $context = $this->contextFactory->create($this->token, $salesChannel->getId(), [
-            SalesChannelContextService::CUSTOMER_ID       => $customer->getId(),
+            SalesChannelContextService::CUSTOMER_ID => $customer->getId(),
             SalesChannelContextService::PAYMENT_METHOD_ID => $paymentMethod,
         ]);
 
@@ -174,34 +179,34 @@ class PaypalPaymentHandlerTest extends TestCase
         $country = $this->countryRepository->search($criteria, Context::createDefaultContext())->first();
 
         $customerData = [
-            'salesChannelId'        => $salesChannel,
+            'salesChannelId' => $salesChannel,
             'defaultBillingAddress' => [
-                'firstName'    => $faker->firstName,
-                'lastName'     => $faker->lastName,
-                'street'       => $faker->streetAddress,
-                'city'         => $faker->city,
-                'zipcode'      => $faker->postcode,
+                'firstName' => $faker->firstName,
+                'lastName' => $faker->lastName,
+                'street' => $faker->streetAddress,
+                'city' => $faker->city,
+                'zipcode' => $faker->postcode,
                 'salutationId' => $this->getValidSalutationId(),
-                'countryId'    => $country->getId(),
+                'countryId' => $country->getId(),
             ],
             'defaultShippingAddress' => [
-                'firstName'    => $faker->firstName,
-                'lastName'     => $faker->lastName,
-                'street'       => $faker->streetAddress,
-                'city'         => $faker->city,
-                'zipcode'      => $faker->postcode,
+                'firstName' => $faker->firstName,
+                'lastName' => $faker->lastName,
+                'street' => $faker->streetAddress,
+                'city' => $faker->city,
+                'zipcode' => $faker->postcode,
                 'salutationId' => $this->getValidSalutationId(),
-                'countryId'    => $country->getId(),
+                'countryId' => $country->getId(),
             ],
             'defaultPaymentMethodId' => $paymentMethod,
-            'groupId'                => Defaults::FALLBACK_CUSTOMER_GROUP,
-            'email'                  => $faker->email,
-            'password'               => $faker->password,
-            'firstName'              => $faker->firstName,
-            'lastName'               => $faker->lastName,
-            'salutationId'           => $this->getValidSalutationId(),
-            'customerNumber'         => 'PAYONE-' . $faker->randomDigitNotNull,
-            'birthday'               => $faker->date(),
+            'groupId' => Defaults::FALLBACK_CUSTOMER_GROUP,
+            'email' => $faker->email,
+            'password' => $faker->password,
+            'firstName' => $faker->firstName,
+            'lastName' => $faker->lastName,
+            'salutationId' => $this->getValidSalutationId(),
+            'customerNumber' => 'PAYONE-' . $faker->randomDigitNotNull,
+            'birthday' => $faker->date(),
         ];
 
         $this->customerRepository->create([$customerData], Context::createDefaultContext());

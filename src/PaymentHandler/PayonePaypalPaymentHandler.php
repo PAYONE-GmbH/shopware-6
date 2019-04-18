@@ -9,6 +9,7 @@ use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest;
 use PayonePayment\Payone\Request\RequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
@@ -78,12 +79,13 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         $data = [
             'id'         => $transaction->getOrderTransaction()->getId(),
             'attributes' => [
-                AttributeInstaller::TRANSACTION_ID   => $response['TxId'],
+                AttributeInstaller::TRANSACTION_ID   => (string) $response['TxId'],
                 AttributeInstaller::TRANSACTION_DATA => $response,
             ],
+            'payoneTransactionId' => (int) $response['TxId'],
         ];
 
-        $event = $this->transactionRepository->update([$data], $context);
+        $this->transactionRepository->update([$data], $context);
 
         return new RedirectResponse($response['RedirectUrl']);
     }
@@ -117,8 +119,8 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         }
 
         $completeState = $this->stateMachineRegistry->getStateByTechnicalName(
-            Defaults::ORDER_TRANSACTION_STATE_MACHINE,
-            Defaults::ORDER_TRANSACTION_STATES_PAID,
+            OrderTransactionStates::STATE_MACHINE,
+            OrderTransactionStates::STATE_PAID,
             $context
         );
 
