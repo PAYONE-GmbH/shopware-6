@@ -4,6 +4,6 @@
     xsi:schemaLocation="http://symfony.com/schema/routing
     http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <import resource="@PayonePayment/Controller/PayoneWebhookController.php" type="annotation" />
+    <import resource="@PayonePayment/Controller/WebhookController.php" type="annotation" />
     <import resource="@PayonePayment/Controller/RefundController.php" type="annotation" />
 </routes>

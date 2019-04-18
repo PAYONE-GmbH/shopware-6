@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PayoneWebhookController extends StorefrontController
+class WebhookController extends StorefrontController
 {
     /**
      * @Route("/payone_webhook/execute", name="payone_webhook_execute")

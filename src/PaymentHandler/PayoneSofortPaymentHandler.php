@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Defaults;
@@ -42,14 +43,15 @@ class PayoneSofortPaymentHandler implements AsynchronousPaymentHandlerInterface
      */
     public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, Context $context): void
     {
-        $stateId = $this->stateMachineRegistry->getStateByTechnicalName(
-            Defaults::ORDER_TRANSACTION_STATE_MACHINE,
-            Defaults::ORDER_TRANSACTION_STATES_PAID, $context
-        )->getId();
+        $completeState = $this->stateMachineRegistry->getStateByTechnicalName(
+            OrderTransactionStates::STATE_MACHINE,
+            OrderTransactionStates::STATE_PAID,
+            $context
+        );
 
         $data = [
             'id'      => $transaction->getOrderTransaction()->getId(),
-            'stateId' => $stateId,
+            'stateId' => $completeState->getId(),
         ];
 
         $this->transactionRepository->update([$data], $context);

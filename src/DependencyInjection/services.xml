@@ -25,6 +25,10 @@
             <argument type="service" id="service_container" />
         </service>
 
+        <service id="PayonePayment\Components\RefundHandler">
+            <argument type="service" id="logger" />
+        </service>
+
         <service id="PayonePayment\Payone\Client\PayoneClient">
             <argument type="service" id="logger" />
         </service>
