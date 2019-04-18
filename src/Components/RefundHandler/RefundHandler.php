@@ -23,7 +23,6 @@ class RefundHandler implements RefundHandlerInterface
 
         $response = $this->client->request($request);
 
-
         var_dump($response);
 
         if (empty($response['Status']) && $response['Status'] !== 'REDIRECT') {

@@ -9,5 +9,5 @@ use Shopware\Core\Framework\Context;
 
 interface RefundHandlerInterface
 {
-    public function refundTransaction(OrderTransactionEntity $transaction, Context $context): bool ;
+    public function refundTransaction(OrderTransactionEntity $transaction, Context $context): bool;
 }
