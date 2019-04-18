@@ -12,7 +12,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -49,7 +48,7 @@ class RefundController extends AbstractController
         $criteria->addAssociation('oder_transaction.order');
         $criteria->addAssociation('oder_transaction.order.orderCustomer');
 
-        /** @var OrderTransactionEntity|null $orderTransaction */
+        /** @var null|OrderTransactionEntity $orderTransaction */
         $orderTransaction = $transactionRepository->search($criteria, $context)->first();
 
         if (null === $orderTransaction) {
