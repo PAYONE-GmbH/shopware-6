@@ -1,0 +1,8 @@
+{
+    "name": "payonepayment",
+    "version": "1.0.0",
+    "description": "Administration for Payone",
+    "main": "index.js",
+    "author": "Kellerkinder GmbH",
+    "license": "MIT"
+}
