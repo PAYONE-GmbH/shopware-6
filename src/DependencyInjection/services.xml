@@ -35,7 +35,6 @@
         </service>
 
         <service id="PayonePayment\Components\TransactionStatus\TransactionStatusService">
-            <argument type="service" id="payone_payment_status.repository"/>
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="state_machine_state.repository"/>
         </service>

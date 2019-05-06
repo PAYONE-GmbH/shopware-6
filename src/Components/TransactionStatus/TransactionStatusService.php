@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionStatus;
 
-use PayonePayment\Payone\Webhook\Struct\TransactionStatusStruct;
+use DateTime;
+use PayonePayment\Installer\CustomFieldInstaller;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 
 class TransactionStatusService implements TransactionStatusServiceInterface
@@ -27,20 +29,15 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     ];
 
     /** @var EntityRepositoryInterface */
-    private $payoneStatusRepository;
-
-    /** @var EntityRepositoryInterface */
     private $orderTransactionRepository;
 
     /** @var EntityRepositoryInterface */
     private $stateRepository;
 
     public function __construct(
-        EntityRepositoryInterface $payoneStatusRepository,
         EntityRepositoryInterface $orderTransactionRepository,
         EntityRepositoryInterface $stateRepository
     ) {
-        $this->payoneStatusRepository     = $payoneStatusRepository;
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->stateRepository            = $stateRepository;
     }
@@ -48,48 +45,52 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function persistTransactionStatus(TransactionStatusStruct $status): void
-    {
-        $transaction = $this->getOrderTransactionByPayoneTransactionId((int) $status->txId);
+    public function persistTransactionStatus(
+        SalesChannelContext $salesChannelContext,
+        array $transactionData
+    ): void {
+        $orderTransaction = $this->getOrderTransactionByPayoneTransactionId(
+            $salesChannelContext->getContext(),
+            (int) $transactionData['txid']
+        );
 
-        if (!$transaction) {
-            throw new RuntimeException(sprintf('Could not find an order transaction by payone transaction id "%s"', $status->txId));
+        if (!$orderTransaction) {
+            throw new RuntimeException(sprintf(
+                'Could not find an order transaction by payone transaction id "%s"',
+                $transactionData['txid']
+            ));
         }
 
-        $context = Context::createDefaultContext();
-
-        $data = [
-            'orderTransactionId' => $transaction->getId(),
-            'sequenceNumber'     => (int) $status->sequenceNumber,
-            'action'             => $status->txAction,
-            'reference'          => $status->reference,
-            'clearingType'       => $status->clearingType,
-            'price'              => (float) $status->price,
-        ];
-
-        $this->payoneStatusRepository->create([$data], $context);
-
-        //Update the transaction state by the action that was provided by Payone
-        $state = $this->getStateByTechnicalName($status->txAction);
+        // Update the transaction state by the action that was provided by Payone
+        $state = $this->getStateByTechnicalName($transactionData['txaction']);
 
         if (!$state) {
             return;
         }
 
+        $transactionData = array_map('utf8_encode', $transactionData);
+
+        $key = (new DateTime())->format(DATE_ATOM);
+
+        $customFields                                               = $orderTransaction->getCustomFields() ?? [];
+        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = (int) $transactionData['sequencenumber'];
+        $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $transactionData;
+
         $data = [
-            'id'      => $transaction->getId(),
-            'stateId' => $state->getId(),
+            'id'           => $orderTransaction->getId(),
+            'customFields' => $customFields,
+            'stateId'      => $state->getId(),
         ];
 
-        $this->orderTransactionRepository->update([$data], $context);
+        $this->orderTransactionRepository->update([$data], $salesChannelContext->getContext());
     }
 
-    private function getOrderTransactionByPayoneTransactionId(int $payoneTransactionId): ?OrderTransactionEntity
+    private function getOrderTransactionByPayoneTransactionId(Context $context, int $payoneTransactionId): ?OrderTransactionEntity
     {
-        $context = Context::createDefaultContext();
+        $field = 'order_transaction.customFields.' . CustomFieldInstaller::TRANSACTION_ID;
 
         $criteria = new Criteria();
-        $filter   = new EqualsFilter('order_transaction.payoneTransactionId', $payoneTransactionId);
+        $filter   = new EqualsFilter($field, $payoneTransactionId);
         $criteria->addFilter($filter);
 
         return $this->orderTransactionRepository->search($criteria, $context)->first();

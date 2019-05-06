@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use PayonePayment\Installer\AttributeInstaller;
+use DateTime;
+use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest;
 use PayonePayment\Payone\Request\RequestFactory;
@@ -68,20 +69,22 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
 
         $response = $this->client->request($request);
 
-        if (empty($response['Status']) && $response['Status'] !== 'REDIRECT') {
+        if (empty($response['status']) && $response['status'] !== 'REDIRECT') {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('test')
             );
         }
 
+        $key = (new DateTime())->format(DATE_ATOM);
+
+        $customFields                                               = $transaction->getOrderTransaction()->getCustomFields() ?? [];
+        $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['TxId'];
+        $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
+
         $data = [
-            'id'         => $transaction->getOrderTransaction()->getId(),
-            'attributes' => [
-                AttributeInstaller::TRANSACTION_ID   => (string) $response['TxId'],
-                AttributeInstaller::TRANSACTION_DATA => $response,
-            ],
-            'payoneTransactionId' => (int) $response['TxId'],
+            'id'           => $transaction->getOrderTransaction()->getId(),
+            'customFields' => $customFields,
         ];
 
         $this->transactionRepository->update([$data], $salesChannelContext->getContext());

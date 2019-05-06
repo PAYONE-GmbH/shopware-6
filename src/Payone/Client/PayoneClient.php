@@ -54,7 +54,11 @@ class PayoneClient implements PayoneClientInterface
             throw new RuntimeException('payone returned a malformed json');
         }
 
-        if ($response['Status'] === 'ERROR') {
+        $response = array_change_key_case($response, CASE_LOWER);
+
+        ksort($response, SORT_NATURAL | SORT_FLAG_CASE);
+
+        if ($response['status'] === 'ERROR') {
             throw new RuntimeException('payone responded with ERROR');
         }
 

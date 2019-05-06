@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionStatus;
 
-use PayonePayment\Payone\Webhook\Struct\TransactionStatusStruct;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 interface TransactionStatusServiceInterface
 {
     /**
      * Persists the provided TransactionStatusStruct into the database.
      *
-     * @param TransactionStatusStruct $status
+     * @param SalesChannelContext $salesChannelContext
+     * @param array               $transactionData
      */
-    public function persistTransactionStatus(TransactionStatusStruct $status);
+    public function persistTransactionStatus(
+        SalesChannelContext $salesChannelContext,
+        array $transactionData
+    );
 }

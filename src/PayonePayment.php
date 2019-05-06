@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment;
 
 use Doctrine\DBAL\Connection;
-use PayonePayment\Installer\AttributeInstaller;
+use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Installer\PaymentMethodInstaller;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -30,31 +30,31 @@ class PayonePayment extends Plugin
     public function install(InstallContext $context): void
     {
         (new PaymentMethodInstaller($this->container))->install($context);
-        (new AttributeInstaller($this->container))->install($context);
+        (new CustomFieldInstaller($this->container))->install($context);
     }
 
     public function update(UpdateContext $context): void
     {
         (new PaymentMethodInstaller($this->container))->update($context);
-        (new AttributeInstaller($this->container))->update($context);
+        (new CustomFieldInstaller($this->container))->update($context);
     }
 
     public function activate(ActivateContext $context): void
     {
         (new PaymentMethodInstaller($this->container))->activate($context);
-        (new AttributeInstaller($this->container))->activate($context);
+        (new CustomFieldInstaller($this->container))->activate($context);
     }
 
     public function deactivate(DeactivateContext $context): void
     {
         (new PaymentMethodInstaller($this->container))->deactivate($context);
-        (new AttributeInstaller($this->container))->deactivate($context);
+        (new CustomFieldInstaller($this->container))->deactivate($context);
     }
 
     public function uninstall(UninstallContext $context): void
     {
         (new PaymentMethodInstaller($this->container))->uninstall($context);
-        (new AttributeInstaller($this->container))->uninstall($context);
+        (new CustomFieldInstaller($this->container))->uninstall($context);
 
         if ($context->keepUserData()) {
             return;
@@ -63,7 +63,5 @@ class PayonePayment extends Plugin
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
         $connection->exec('DROP TABLE payone_payment_config');
-
-        // TODO: Decide if attributes should be used. If yes, we might need to remove them here.
     }
 }

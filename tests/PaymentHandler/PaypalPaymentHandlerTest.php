@@ -135,7 +135,7 @@ class PaypalPaymentHandlerTest extends TestCase
         $product = [
             'price'           => ['gross' => 100, 'net' => 100 / 1.19, 'linked' => true],
             'name'            => $faker->name,
-            'productNumber'   => 'Product-' . $faker->randomDigitNotNull,
+            'productNumber'   => 'Product-' . $this->token,
             'description'     => $faker->text(),
             'descriptionLong' => $faker->text,
             'taxId'           => $tax->getId(),
