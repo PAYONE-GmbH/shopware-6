@@ -36,6 +36,25 @@ final class RequestFactory
             );
         }
 
-        return array_filter($parameters);
+        $parameters = array_filter($parameters);
+
+        ksort($parameters, SORT_NATURAL | SORT_FLAG_CASE);
+
+        $parameters['hash'] = $this->generateParameterHash($parameters);
+
+        return $parameters;
+    }
+
+    private function generateParameterHash(array $parameters): string
+    {
+        $data = $parameters;
+
+        unset($data['key']);
+
+        return strtolower(hash_hmac(
+            'sha384',
+            implode('', $data),
+            $parameters['key']
+        ));
     }
 }
