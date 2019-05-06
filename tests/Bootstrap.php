@@ -5,8 +5,7 @@ declare(strict_types=1);
 use Shopware\Core\Framework\Test\TestCaseBase\KernelLifecycleManager;
 use Symfony\Component\Dotenv\Dotenv;
 
-function getProjectDir(): string
-{
+$projectDir = static function () {
     if (isset($_SERVER['PROJECT_ROOT']) && file_exists($_SERVER['PROJECT_ROOT'])) {
         return $_SERVER['PROJECT_ROOT'];
     }
@@ -16,16 +15,16 @@ function getProjectDir(): string
 
     $dir = $rootDir = __DIR__;
     while (!file_exists($dir . '/.env')) {
-        if ($dir === \dirname($dir)) {
+        if ($dir === dirname($dir)) {
             return $rootDir;
         }
-        $dir = \dirname($dir);
+        $dir = dirname($dir);
     }
 
     return $dir;
-}
+};
 
-define('TEST_PROJECT_DIR', getProjectDir());
+define('TEST_PROJECT_DIR', $projectDir());
 
 $loader = require TEST_PROJECT_DIR . '/vendor/autoload.php';
 

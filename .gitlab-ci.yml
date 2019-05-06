@@ -26,6 +26,14 @@ composer:
     paths:
       - vendor/
 
+phpstan:
+  stage: test
+  image: "edbizarro/gitlab-ci-pipeline-php:7.3"
+  dependencies:
+    - composer
+  script:
+    - vendor/bin/phpstan analyse -l 1 tests src
+
 codestyle:
   stage: test
   image: "edbizarro/gitlab-ci-pipeline-php:7.3"

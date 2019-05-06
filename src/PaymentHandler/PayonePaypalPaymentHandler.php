@@ -15,8 +15,8 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandle
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Checkout\Payment\Exception\CustomerCanceledAsyncPaymentException;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,13 +56,13 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function pay(AsyncPaymentTransactionStruct $transaction, Context $context): RedirectResponse
+    public function pay(AsyncPaymentTransactionStruct $transaction, SalesChannelContext $salesChannelContext): RedirectResponse
     {
         $paymentTransaction = PaymentTransactionStruct::fromAsyncPaymentTransactionStruct($transaction);
 
         $request = $this->requestFactory->generateRequest(
             $paymentTransaction,
-            $context,
+            $salesChannelContext->getContext(),
             PaypalAuthorizeRequest::class
         );
 
@@ -84,7 +84,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
             'payoneTransactionId' => (int) $response['TxId'],
         ];
 
-        $this->transactionRepository->update([$data], $context);
+        $this->transactionRepository->update([$data], $salesChannelContext->getContext());
 
         return new RedirectResponse($response['RedirectUrl']);
     }
@@ -92,7 +92,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, Context $context): void
+    public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
     {
         $state = $request->query->get('state');
 
@@ -120,7 +120,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         $completeState = $this->stateMachineRegistry->getStateByTechnicalName(
             OrderTransactionStates::STATE_MACHINE,
             OrderTransactionStates::STATE_PAID,
-            $context
+            $salesChannelContext->getContext()
         );
 
         $data = [
@@ -128,6 +128,6 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
             'stateId' => $completeState->getId(),
         ];
 
-        $this->transactionRepository->update([$data], $context);
+        $this->transactionRepository->update([$data], $salesChannelContext->getContext());
     }
 }

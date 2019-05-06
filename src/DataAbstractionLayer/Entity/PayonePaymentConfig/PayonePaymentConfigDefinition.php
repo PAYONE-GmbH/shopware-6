@@ -17,22 +17,22 @@ use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 
 class PayonePaymentConfigDefinition extends EntityDefinition
 {
-    public static function getEntityName(): string
+    public function getEntityName(): string
     {
         return 'payone_payment_config';
     }
 
-    public static function getCollectionClass(): string
+    public function getCollectionClass(): string
     {
         return PayonePaymentConfigCollection::class;
     }
 
-    public static function getEntityClass(): string
+    public function getEntityClass(): string
     {
         return PayonePaymentConfigEntity::class;
     }
 
-    protected static function defineFields(): FieldCollection
+    protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),

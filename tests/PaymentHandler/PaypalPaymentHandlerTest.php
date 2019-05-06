@@ -14,7 +14,6 @@ use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Payment\PaymentService;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerEntity;
-use Shopware\Core\Content\Product\Cart\ProductCollector;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Defaults;
@@ -25,6 +24,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\Test\TestCaseBase\CacheTestBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\FilesystemBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
@@ -99,7 +99,7 @@ class PaypalPaymentHandlerTest extends TestCase
         $this->paymentService = $this->getContainer()->get(PaymentService::class);
         $this->router         = $this->getContainer()->get('router');
 
-        $this->token = \Shopware\Core\Framework\Uuid\Uuid::randomHex();
+        $this->token = Uuid::randomHex();
         $this->router->getContext()->setHost('example.com');
     }
 
@@ -108,7 +108,7 @@ class PaypalPaymentHandlerTest extends TestCase
         $context = $this->createCheckoutContext((new PayonePaypal())->getId());
         $product = $this->getProduct();
 
-        $lineItem = new LineItem($product->getId(), ProductCollector::LINE_ITEM_TYPE, 1);
+        $lineItem = new LineItem($product->getId(), LineItem::PRODUCT_LINE_ITEM_TYPE, 1);
         $lineItem->setPayload(['id' => $product->getId()]);
 
         $cart = $this->cartService->add($this->cartService->getCart($this->token, $context), $lineItem, $context);
