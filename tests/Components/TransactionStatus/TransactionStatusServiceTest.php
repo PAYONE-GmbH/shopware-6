@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Test\Payone\Components\TransactionStatus;
+namespace PayonePayment\Test\Components\TransactionStatus;
 
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentStatus\PayonePaymentStatusDefinition;

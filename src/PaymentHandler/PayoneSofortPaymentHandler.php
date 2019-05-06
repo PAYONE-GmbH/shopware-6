@@ -7,8 +7,8 @@ namespace PayonePayment\PaymentHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +32,7 @@ class PayoneSofortPaymentHandler implements AsynchronousPaymentHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function pay(AsyncPaymentTransactionStruct $transaction, Context $context): RedirectResponse
+    public function pay(AsyncPaymentTransactionStruct $transaction, SalesChannelContext $salesChannelContext): RedirectResponse
     {
         return new RedirectResponse($transaction->getReturnUrl());
     }
@@ -40,12 +40,12 @@ class PayoneSofortPaymentHandler implements AsynchronousPaymentHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, Context $context): void
+    public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
     {
         $completeState = $this->stateMachineRegistry->getStateByTechnicalName(
             OrderTransactionStates::STATE_MACHINE,
             OrderTransactionStates::STATE_PAID,
-            $context
+            $salesChannelContext->getContext()
         );
 
         $data = [
@@ -53,6 +53,6 @@ class PayoneSofortPaymentHandler implements AsynchronousPaymentHandlerInterface
             'stateId' => $completeState->getId(),
         ];
 
-        $this->transactionRepository->update([$data], $context);
+        $this->transactionRepository->update([$data], $salesChannelContext->getContext());
     }
 }

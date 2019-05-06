@@ -27,6 +27,9 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     ];
 
     /** @var EntityRepositoryInterface */
+    private $payoneStatusRepository;
+
+    /** @var EntityRepositoryInterface */
     private $orderTransactionRepository;
 
     /** @var EntityRepositoryInterface */
