@@ -32,7 +32,7 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
-        $this->repository = $repository;
+        $this->repository     = $repository;
     }
 
     public function captureTransaction(OrderTransactionEntity $orderTransaction, Context $context): void

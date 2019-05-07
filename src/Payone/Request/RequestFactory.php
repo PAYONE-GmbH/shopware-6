@@ -23,8 +23,7 @@ final class RequestFactory
         PaymentTransactionStruct $transaction,
         Context $context,
         string $request
-    ): array
-    {
+    ): array {
         if (!$this->container->has($request)) {
             throw new LogicException('missing service definition for request class: ' . $request);
         }
@@ -42,8 +41,7 @@ final class RequestFactory
         PaymentTransactionStruct $transaction,
         Context $context,
         string $request
-    ): array
-    {
+    ): array {
         /** @var RequestInterface $request */
         $request    = $this->container->get($request);
         $parameters = $request->getRequestParameters($transaction, $context);

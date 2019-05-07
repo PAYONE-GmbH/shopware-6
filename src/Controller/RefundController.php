@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
-use PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandlerInterface;
 use PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandlerInterface;
-use PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -15,7 +13,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
@@ -31,7 +28,7 @@ class RefundController extends AbstractController
         RefundPaymentHandlerInterface $captureHandler,
         EntityRepositoryInterface $transactionRepository
     ) {
-        $this->refundHandler = $captureHandler;
+        $this->refundHandler         = $captureHandler;
         $this->transactionRepository = $transactionRepository;
     }
 

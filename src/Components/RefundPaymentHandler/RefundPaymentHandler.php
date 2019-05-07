@@ -32,7 +32,7 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
-        $this->repository = $repository;
+        $this->repository     = $repository;
     }
 
     public function refundTransaction(OrderTransactionEntity $orderTransaction, Context $context): void

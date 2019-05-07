@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
-use PayonePayment\Payone\Webhook\Processor\WebhookProcessor;
 use PayonePayment\Payone\Webhook\Processor\WebhookProcessorInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Controller\StorefrontController;
