@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
-use PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandler;
 use PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandlerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
@@ -14,7 +13,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
@@ -30,7 +28,7 @@ class CaptureController extends AbstractController
         CapturePaymentHandlerInterface $captureHandler,
         EntityRepositoryInterface $transactionRepository
     ) {
-        $this->captureHandler = $captureHandler;
+        $this->captureHandler        = $captureHandler;
         $this->transactionRepository = $transactionRepository;
     }
 

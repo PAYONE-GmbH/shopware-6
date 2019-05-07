@@ -8,21 +8,17 @@ use Exception;
 
 class PayoneRequestException extends Exception
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $request;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $response;
 
     public function __construct(string $message, array $request = [], array $response = [])
     {
         parent::__construct($message);
 
-        $this->request = $request;
+        $this->request  = $request;
         $this->response = $response;
     }
 
