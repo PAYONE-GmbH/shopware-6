@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
+use PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandler;
 use PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandlerInterface;
-use PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandlerInterface;
-use PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -19,31 +18,31 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
-class RefundController extends AbstractController
+class CaptureController extends AbstractController
 {
-    /** @var RefundPaymentHandlerInterface */
-    private $refundHandler;
+    /** @var CapturePaymentHandlerInterface */
+    private $captureHandler;
 
     /** @var EntityRepositoryInterface */
     private $transactionRepository;
 
     public function __construct(
-        RefundPaymentHandlerInterface $captureHandler,
+        CapturePaymentHandlerInterface $captureHandler,
         EntityRepositoryInterface $transactionRepository
     ) {
-        $this->refundHandler = $captureHandler;
+        $this->captureHandler = $captureHandler;
         $this->transactionRepository = $transactionRepository;
     }
 
     /**
-     * @Route("/api/v{version}/_action/payone/refund-payment", name="api.action.payone.refund_payment", methods={"POST"})
+     * @Route("/api/v{version}/_action/payone/capture-payment", name="api.action.payone.capture_payment", methods={"POST"})
      *
      * @param Request $request
      * @param Context $context
      *
      * @return JsonResponse
      */
-    public function refundAction(Request $request, Context $context): JsonResponse
+    public function captureAction(Request $request, Context $context): JsonResponse
     {
         $orderId = $request->get('order');
 
@@ -66,7 +65,7 @@ class RefundController extends AbstractController
         }
 
         try {
-            $this->refundHandler->refundTransaction($orderTransaction, $context);
+            $this->captureHandler->captureTransaction($orderTransaction, $context);
         } catch (Throwable $exception) {
             return new JsonResponse(['status' => false, 'message' => $exception->getMessage()]);
         }

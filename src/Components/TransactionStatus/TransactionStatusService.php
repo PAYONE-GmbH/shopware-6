@@ -45,10 +45,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function persistTransactionStatus(
-        SalesChannelContext $salesChannelContext,
-        array $transactionData
-    ): void {
+    public function persistTransactionStatus(SalesChannelContext $salesChannelContext, array $transactionData): void
+    {
         $orderTransaction = $this->getOrderTransactionByPayoneTransactionId(
             $salesChannelContext->getContext(),
             (int) $transactionData['txid']

@@ -10,6 +10,7 @@
         <import resource="handlers.xml" />
         <import resource="requests.xml" />
         <import resource="translations.xml" />
+        <import resource="controller.xml" />
     </imports>
 
     <services>
@@ -25,9 +26,16 @@
             <argument type="service" id="service_container" />
         </service>
 
-        <service id="PayonePayment\Components\RefundHandler\RefundHandler">
+        <service id="PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandler">
             <argument type="service" id="PayonePayment\Payone\Request\RequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="order_transaction.repository" />
+        </service>
+
+        <service id="PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandler">
+            <argument type="service" id="PayonePayment\Payone\Request\RequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="order_transaction.repository" />
         </service>
 
         <service id="PayonePayment\Payone\Client\PayoneClient">

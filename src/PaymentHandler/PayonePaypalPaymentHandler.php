@@ -72,14 +72,15 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         if (empty($response['status']) && $response['status'] !== 'REDIRECT') {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('test')
+                $this->translator->trans('PayonePayment.genericError')
             );
         }
 
         $key = (new DateTime())->format(DATE_ATOM);
 
-        $customFields                                               = $transaction->getOrderTransaction()->getCustomFields() ?? [];
-        $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['TxId'];
+        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
+
+        $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
 
         $data = [
@@ -89,7 +90,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
 
         $this->transactionRepository->update([$data], $salesChannelContext->getContext());
 
-        return new RedirectResponse($response['RedirectUrl']);
+        return new RedirectResponse($response['redirecturl']);
     }
 
     /**

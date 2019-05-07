@@ -49,7 +49,7 @@ class ConfigReadCommand extends Command
         $configCollection = $this->configReader->read($salesChannel, $key, false);
 
         /** @var PayonePaymentConfigEntity[] $configElements */
-        $configElements = $configCollection->map(function (PayonePaymentConfigEntity $configEntity) {
+        $configElements = $configCollection->map(static function (PayonePaymentConfigEntity $configEntity) {
             return [
                 'salesChannel' => $configEntity->getSalesChannelId() ?: 'default',
                 'key'          => $configEntity->getKey(),
@@ -59,7 +59,7 @@ class ConfigReadCommand extends Command
 
         $configGroup = [];
         foreach ($configElements as $element) {
-            $configGroup[$element['salesChannel']][] = $element;
+            $configGroup[$element->getSalesChannel()][] = $element;
         }
 
         foreach ($configGroup as $salesChannel => $group) {

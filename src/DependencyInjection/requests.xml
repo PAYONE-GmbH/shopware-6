@@ -10,12 +10,16 @@
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\Customer\CustomerRequest" class="PayonePayment\Payone\Request\Customer\CustomerRequest">
+        <service id="PayonePayment\Payone\Request\Customer\CustomerRequest">
             <argument type="service" id="language.repository" />
             <argument type="service" id="order_address.repository" />
             <argument type="service" id="request_stack" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest" class="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest" />
+        <service id="PayonePayment\Payone\Request\Capture\CaptureRequest" />
+
+        <service id="PayonePayment\Payone\Request\Refund\RefundRequest" />
+
+        <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest" />
     </services>
 </container>

@@ -14,8 +14,5 @@ interface TransactionStatusServiceInterface
      * @param SalesChannelContext $salesChannelContext
      * @param array               $transactionData
      */
-    public function persistTransactionStatus(
-        SalesChannelContext $salesChannelContext,
-        array $transactionData
-    );
+    public function persistTransactionStatus(SalesChannelContext $salesChannelContext, array $transactionData): void;
 }

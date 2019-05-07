@@ -36,10 +36,10 @@ class SystemRequest implements RequestInterface
         $config = $this->configReader->read($order->getSalesChannelId());
 
         return [
-            'aid'         => $config->get('aid'),
-            'mid'         => $config->get('mid'),
-            'portalid'    => $config->get('portalid'),
-            'key'         => hash('md5', $config->get('key')),
+            'aid'         => (string) $config->get('aid'),
+            'mid'         => (string) $config->get('mid'),
+            'portalid'    => (string) $config->get('portalid'),
+            'key'         => hash('md5', (string) $config->get('key')),
             'api_version' => '3.10',
             'mode'        => $config->get('mode') ?: 'test',
             'encoding'    => 'UTF-8',
