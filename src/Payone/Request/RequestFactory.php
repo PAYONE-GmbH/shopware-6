@@ -19,30 +19,43 @@ final class RequestFactory
         $this->container = $container;
     }
 
-    public function generateRequest(PaymentTransactionStruct $transaction, Context $context, string $request)
+    public function generateRequest(
+        PaymentTransactionStruct $transaction,
+        Context $context,
+        string $request
+    ): array
     {
         if (!$this->container->has($request)) {
             throw new LogicException('missing service definition for request class: ' . $request);
         }
 
-        /** @var RequestInterface $request */
-        $request    = $this->container->get($request);
-        $parameters = $request->getRequestParameters($transaction, $context);
-
-        if (!empty($request->getParentRequest())) {
-            $parameters = array_merge(
-                $this->generateRequest($transaction, $context, $request->getParentRequest()),
-                $parameters
-            );
-        }
-
-        $parameters = array_filter($parameters);
+        $parameters = $this->generatePartialRequest($transaction, $context, $request);
 
         ksort($parameters, SORT_NATURAL | SORT_FLAG_CASE);
 
         $parameters['hash'] = $this->generateParameterHash($parameters);
 
         return $parameters;
+    }
+
+    private function generatePartialRequest(
+        PaymentTransactionStruct $transaction,
+        Context $context,
+        string $request
+    ): array
+    {
+        /** @var RequestInterface $request */
+        $request    = $this->container->get($request);
+        $parameters = $request->getRequestParameters($transaction, $context);
+
+        if (!empty($request->getParentRequest())) {
+            $parameters = array_merge(
+                $this->generatePartialRequest($transaction, $context, $request->getParentRequest()),
+                $parameters
+            );
+        }
+
+        return array_filter($parameters);
     }
 
     private function generateParameterHash(array $parameters): string

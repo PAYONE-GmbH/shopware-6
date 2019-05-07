@@ -1,5 +1,7 @@
 {
     "payone-order-buttons": {
-        "title": "Payone Payment"
+        "title": "Payone Payment",
+        "capture": "Capture",
+        "refund": "Refund"
     }
 }

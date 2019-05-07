@@ -13,7 +13,7 @@ class SnippetFile_de_DE implements SnippetFileInterface
      */
     public function getName(): string
     {
-        return 'messages_de_DE.json';
+        return 'messages_de-DE.json';
     }
 
     /**
@@ -21,7 +21,7 @@ class SnippetFile_de_DE implements SnippetFileInterface
      */
     public function getPath(): string
     {
-        return __DIR__ . '/messages_de_DE.json';
+        return __DIR__ . '/messages_de-DE.json';
     }
 
     /**
@@ -29,7 +29,7 @@ class SnippetFile_de_DE implements SnippetFileInterface
      */
     public function getIso(): string
     {
-        return 'de_DE';
+        return 'de-DE';
     }
 
     /**

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Controller;
 
 use PayonePayment\Payone\Webhook\Processor\WebhookProcessor;
+use PayonePayment\Payone\Webhook\Processor\WebhookProcessorInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +14,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class WebhookController extends StorefrontController
 {
+    /** @var WebhookProcessorInterface */
+    private $webhookProcessor;
+
+    public function __construct(WebhookProcessorInterface $webhookProcessor)
+    {
+        $this->webhookProcessor = $webhookProcessor;
+    }
+
     /**
      * @Route("/payone/webhook", name="payone_webhook", methods={"POST"})
      *
@@ -23,8 +32,6 @@ class WebhookController extends StorefrontController
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {
-        $webhookProcessor = $this->container->get(WebhookProcessor::class);
-
-        return $webhookProcessor->process($salesChannelContext, $request->request->all());
+        return $this->webhookProcessor->process($salesChannelContext, $request->request->all());
     }
 }

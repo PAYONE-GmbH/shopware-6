@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\Refund;
+namespace PayonePayment\Payone\Request\Capture;
 
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Request\RequestInterface;
@@ -11,7 +11,7 @@ use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 
-class RefundRequest implements RequestInterface
+class CaptureRequest implements RequestInterface
 {
     public function getParentRequest(): string
     {
@@ -41,10 +41,10 @@ class RefundRequest implements RequestInterface
         }
 
         return [
-            'request'        => 'refund',
+            'request'        => 'capture',
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => -1 * (int) ($order->getAmountTotal() * 100),
+            'amount'         => (int) ($order->getAmountTotal() * 100),
             'currency'       => $order->getCurrency()->getShortName(),
         ];
     }
