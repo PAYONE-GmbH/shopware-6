@@ -64,6 +64,7 @@ class CustomerRequest
 
     private function getCustomerLanguage(Context $context): LanguageEntity
     {
+        // TODO: Replace with getLanguageId
         $languages = $context->getLanguageIdChain();
         $criteria  = new Criteria([reset($languages)]);
         $criteria->addAssociation('locale');
