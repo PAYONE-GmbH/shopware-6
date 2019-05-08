@@ -51,5 +51,13 @@
             <argument type="service" id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
+
+        <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequest" />
+
+        <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
     </services>
 </container>
