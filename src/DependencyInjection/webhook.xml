@@ -4,8 +4,6 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults public="true"/>
-
         <service id="PayonePayment\Payone\Webhook\Processor\WebhookProcessor">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="tagged" tag="payone.webhook.handler" />

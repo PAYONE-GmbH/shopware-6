@@ -7,8 +7,7 @@ namespace PayonePayment\PaymentHandler;
 use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest;
-use PayonePayment\Payone\Request\RequestFactory;
+use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -25,7 +24,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var RequestFactory */
+    /** @var PaypalAuthorizeRequestFactory */
     private $requestFactory;
 
     /** @var PayoneClientInterface */
@@ -41,7 +40,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
     private $translator;
 
     public function __construct(
-        RequestFactory $requestFactory,
+        PaypalAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         EntityRepositoryInterface $transactionRepository,
         StateMachineRegistry $stateMachineRegistry,
@@ -61,10 +60,9 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
     {
         $paymentTransaction = PaymentTransactionStruct::fromAsyncPaymentTransactionStruct($transaction);
 
-        $request = $this->requestFactory->generateRequest(
+        $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $salesChannelContext->getContext(),
-            PaypalAuthorizeRequest::class
+            $salesChannelContext->getContext()
         );
 
         $response = $this->client->request($request);
@@ -72,7 +70,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         if (empty($response['status']) && $response['status'] !== 'REDIRECT') {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.genericError')
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
 
@@ -81,6 +79,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
 
         $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];
+        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = 1;
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
 
         $data = [
@@ -103,7 +102,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         if (empty($state)) {
             throw new AsyncPaymentFinalizeException(
                 $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('test')
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
 
@@ -117,7 +116,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         if ($state === 'error') {
             throw new AsyncPaymentFinalizeException(
                 $transaction->getOrderTransaction()->getId(),
-                'message'
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
 

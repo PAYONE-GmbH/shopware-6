@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Resources\translations;
+namespace PayonePayment\Resources\translations\de_DE;
 
 use Shopware\Core\Framework\Snippet\Files\SnippetFileInterface;
 
@@ -13,7 +13,7 @@ class SnippetFile_de_DE implements SnippetFileInterface
      */
     public function getName(): string
     {
-        return 'messages_de-DE.json';
+        return 'messages.de-DE';
     }
 
     /**
@@ -21,7 +21,7 @@ class SnippetFile_de_DE implements SnippetFileInterface
      */
     public function getPath(): string
     {
-        return __DIR__ . '/messages_de-DE.json';
+        return __DIR__ . '/messages.de-DE.json';
     }
 
     /**
@@ -37,7 +37,7 @@ class SnippetFile_de_DE implements SnippetFileInterface
      */
     public function getAuthor(): string
     {
-        return 'Kellerkinder GmbH';
+        return 'BS PAYONE GmbH';
     }
 
     /**
@@ -45,6 +45,6 @@ class SnippetFile_de_DE implements SnippetFileInterface
      */
     public function isBase(): bool
     {
-        return true;
+        return false;
     }
 }

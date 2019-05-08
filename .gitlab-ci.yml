@@ -32,7 +32,7 @@ phpstan:
   dependencies:
     - composer
   script:
-    - vendor/bin/phpstan analyse -l 2 tests src
+    - vendor/bin/phpstan analyse -l 3 -c phpstan.neon tests src
 
 codestyle:
   stage: test

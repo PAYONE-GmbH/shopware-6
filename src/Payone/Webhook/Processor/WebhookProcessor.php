@@ -44,7 +44,7 @@ class WebhookProcessor implements WebhookProcessorInterface
                 continue;
             }
 
-            return $handler->processAsync($salesChannelContext, $data);
+            return $handler->process($salesChannelContext, $data);
         }
 
         throw new LogicException('Unable to identify a matching webhook handler');

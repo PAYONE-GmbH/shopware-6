@@ -6,8 +6,7 @@ namespace PayonePayment\Components\CapturePaymentHandler;
 
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Capture\CaptureRequest;
-use PayonePayment\Payone\Request\RequestFactory;
+use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
@@ -16,7 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 
 class CapturePaymentHandler implements CapturePaymentHandlerInterface
 {
-    /** @var RequestFactory */
+    /** @var CaptureRequestFactory */
     private $requestFactory;
 
     /** @var PayoneClientInterface */
@@ -26,7 +25,7 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
     private $repository;
 
     public function __construct(
-        RequestFactory $requestFactory,
+        CaptureRequestFactory $requestFactory,
         PayoneClientInterface $client,
         EntityRepositoryInterface $repository
     ) {
@@ -39,10 +38,9 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
     {
         $paymentTransaction = PaymentTransactionStruct::fromOrderTransaction($orderTransaction);
 
-        $request = $this->requestFactory->generateRequest(
+        $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $context,
-            CaptureRequest::class
+            $context
         );
 
         $response = $this->client->request($request);

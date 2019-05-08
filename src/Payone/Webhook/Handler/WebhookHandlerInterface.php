@@ -12,7 +12,7 @@ interface WebhookHandlerInterface
     public const RESPONSE_TSOK    = 'TSOK';
     public const RESPONSE_TSNOTOK = 'TSNOTOK';
 
-    public function processAsync(SalesChannelContext $salesChannelContext, array $data): Response;
+    public function process(SalesChannelContext $salesChannelContext, array $data): Response;
 
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool;
 }
