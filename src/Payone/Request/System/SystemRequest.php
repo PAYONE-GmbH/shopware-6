@@ -26,7 +26,7 @@ class SystemRequest
             'aid'         => (string) $config->get('aid'),
             'mid'         => (string) $config->get('mid'),
             'portalid'    => (string) $config->get('portalid'),
-            'key'         => hash('md5', (string) $config->get('key')),
+            'key'         => (string) $config->get('key'),
             'api_version' => '3.10',
             'mode'        => $config->get('mode') ?: 'test',
             'encoding'    => 'UTF-8',

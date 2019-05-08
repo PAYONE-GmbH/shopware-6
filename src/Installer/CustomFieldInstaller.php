@@ -88,9 +88,9 @@ class CustomFieldInstaller implements InstallerInterface
     private function upsertCustomField($customField, Context $context): void
     {
         $data = [
-            'id'                => $customField['id'],
-            'name'              => $customField['name'],
-            'type'              => $customField['type'],
+            'id'   => $customField['id'],
+            'name' => $customField['name'],
+            'type' => $customField['type'],
         ];
 
         $this->customFieldRepository->upsert([$data], $context);
