@@ -46,7 +46,7 @@ codestyle:
     paths:
       - .php_cs.cache
 
-test:
+phpunit:
   image: "edbizarro/gitlab-ci-pipeline-php:7.3"
   stage: test
   services:
