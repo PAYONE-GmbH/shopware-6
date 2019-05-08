@@ -3,5 +3,86 @@
 {% block base_body_script %}
     {{ parent() }}
 
-    <script type="text/javascript" src="https://secure.pay1.de/client-api/js/v1/payone_hosted_min.js"></script>
+    {% if page.extensions.payone %}
+        <script type="text/javascript" src="https://secure.pay1.de/client-api/js/v1/payone_hosted_min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                var request, config;
+
+                config = {
+                    fields: {
+                        cardpan: {
+                            selector: "cardpan",                 // put name of your div-container here
+                            type: "text",                        // text (default), password, tel
+                            iframe: {
+                                width: "140px"
+                            }
+                        },
+                        cardcvc2: {
+                            selector: "cardcvc2",                // put name of your div-container here
+                            type: "password",                    // select(default), text, password, tel
+                            size: "4",
+                            maxlength: "4",
+                            iframe: {
+                                width: "40px"
+                            }
+                        },
+                        cardexpiremonth: {
+                            selector: "cardexpiremonth",         // put name of your div-container here
+                            type: "select",                      // select(default), text, password, tel
+                            size: "2",
+                            maxlength: "2",
+                            iframe: {
+                                width: "50px"
+                            }
+                        },
+                        cardexpireyear: {
+                            selector: "cardexpireyear",          // put name of your div-container here
+                            type: "select",                      // select(default), text, password, tel
+                            iframe: {
+                                width: "80px"
+                            }
+                        }
+                    },
+                    defaultStyle: {
+                        iframe: {
+                            height: "19px",
+                            width: "180px"
+                        }
+                    },
+                    error: "errorOutput",                        // area to display error-messages (optional)
+                    language: Payone.ClientApi.Language.de       // Language to display error-messages
+                                                                 // (default: Payone.ClientApi.Language.en)
+                };
+
+                request = {{ page.extensions.payone.cardRequest | json_encode | raw }};
+                var iframes = new Payone.ClientApi.HostedIFrames(config, request);
+                iframes.setCardType("M");
+
+                // TODO: Re-activate after corresponding select is re-activated
+                //document.getElementById('cardtype').onchange = function () {
+                //    iframes.setCardType(this.value);              // on change: set new type of credit card to process
+                //};
+
+                function check() {                               // Function called by submitting PAY-button
+                    if (iframes.isComplete()) {
+                        iframes.creditCardCheck('payoneCheckCallback');// Perform "CreditCardCheck" to create and get a
+                                                                 // PseudoCardPan; then call your function "checkCallback"
+                    } else {
+                        // TODO: Do we need this case?
+                    }
+                }
+                $('#paymentsubmit').click(check);
+
+            });
+
+            function payoneCheckCallback(response) {
+                if (response.status === "VALID") {
+                    document.getElementById("pseudocardpan").value = response.pseudocardpan;
+                    document.getElementById("truncatedcardpan").value = response.truncatedcardpan;
+                }
+            }
+        </script>
+    {% endif %}
 {% endblock %}

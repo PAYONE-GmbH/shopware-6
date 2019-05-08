@@ -1,127 +1,40 @@
-<form name="paymentform" action="" method="post">
-    <fieldset>
-        <input type="hidden" name="pseudocardpan" id="pseudocardpan">
-        <input type="hidden" name="truncatedcardpan" id="truncatedcardpan">
+<fieldset>
+    <input type="hidden" name="pseudocardpan" id="pseudocardpan">
+    <input type="hidden" name="truncatedcardpan" id="truncatedcardpan">
 
-        <!-- configure your cardtype-selection here -->
-        <label for="cardtypeInput">Card type</label>
+    <!-- configure your cardtype-selection here -->
+    <label for="cardtypeInput">Card type</label>
 
-        <select id="cardtype">
-            <option value="V">VISA</option>
-            <option value="M">Mastercard</option>
-            <option value="A">Amex</option>
-        </select>
+    <!-- TODO: Replace with number-based logo display
+    <select id="cardtype">
+        <option value="V">VISA</option>
+        <option value="M">Mastercard</option>
+        <option value="A">Amex</option>
+    </select>-->
 
-        <label for="cardpanInput">Cardpan:</label>
-        <span class="inputIframe" id="cardpan"></span>
+    <label for="cardpanInput">Cardpan:</label>
+    <span class="inputIframe" id="cardpan"></span>
 
-        <label for="cvcInput">CVC:</label>
-        <span id="cardcvc2" class="inputIframe"></span>
+    <label for="cvcInput">CVC:</label>
+    <span id="cardcvc2" class="inputIframe"></span>
 
-        <label for="expireInput">Expire Date:</label>
+    <label for="expireInput">Expire Date:</label>
 
-        <span id="expireInput" class="inputIframe">
+    <span id="expireInput" class="inputIframe">
             <span id="cardexpiremonth"></span>
             <span id="cardexpireyear"></span>
         </span>
 
-        <label for="firstname">Firstname:</label>
-        <input id="firstname" type="text" name="firstname" value="">
+    <!-- TODO: Re-active after auto-submit for payment selection is properly scoped
+    <label for="firstname">Firstname:</label>
+    <input id="firstname" type="text" name="firstname" value="">
 
-        <label for="lastname">Lastname:</label>
-        <input id="lastname" type="text" name="lastname" value="">
+    <label for="lastname">Lastname:</label>
+    <input id="lastname" type="text" name="lastname" value="">
+    -->
 
-        <div id="errorOutput"></div>
-
-        <input id="paymentsubmit" type="button" value="Submit" onclick="check();">
-    </fieldset>
-</form>
+    <div id="errorOutput"></div>
+</fieldset>
 
 <div id="paymentform"></div>
 
-<script>
-    $(document).ready(function() {
-        var request, config;
-
-        config = {
-            fields: {
-                cardpan: {
-                    selector: "cardpan",                 // put name of your div-container here
-                    type: "text",                        // text (default), password, tel
-                    style: "font-size: 1em; border: 1px solid #000;"
-                },
-                cardcvc2: {
-                    selector: "cardcvc2",                // put name of your div-container here
-                    type: "password",                    // select(default), text, password, tel
-                    style: "font-size: 1em; border: 1px solid #000;",
-                    size: "4",
-                    maxlength: "4"
-                },
-                cardexpiremonth: {
-                    selector: "cardexpiremonth",         // put name of your div-container here
-                    type: "select",                      // select(default), text, password, tel
-                    size: "2",
-                    maxlength: "2",
-                    iframe: {
-                        width: "50px"
-                    }
-                },
-                cardexpireyear: {
-                    selector: "cardexpireyear",          // put name of your div-container here
-                    type: "select",                      // select(default), text, password, tel
-                    iframe: {
-                        width: "80px"
-                    }
-                }
-            },
-            defaultStyle: {
-                input: "font-size: 1em; border: 1px solid #000; width: 175px;",
-                select: "font-size: 1em; border: 1px solid #000;",
-                iframe: {
-                    height: "33px",
-                    width: "180px"
-                }
-            },
-            error: "errorOutput",                        // area to display error-messages (optional)
-            language: Payone.ClientApi.Language.de       // Language to display error-messages
-                                                         // (default: Payone.ClientApi.Language.en)
-        };
-
-        request = {
-            request: 'creditcardcheck',                  // fixed value
-            responsetype: 'JSON',                        // fixed value
-            mode: 'live',                                // desired mode
-            mid: '10001',                                // your MID
-            aid: '10002',                                // your AID
-            portalid: '2000002',                         // your PortalId
-            encoding: 'UTF-8',                           // desired encoding
-            storecarddata: 'yes',                        // fixed value
-            // hash calculated over your request-parameter-values (alphabetical request-order) plus PMI portal key
-            hash: '5c4014cebeb361d9e186fd42c810b9b1'     // see Chapter 3.1.5.3 of Client API documentation
-        };
-        var iframes = new Payone.ClientApi.HostedIFrames(config, request);
-        iframes.setCardType("V");
-
-        document.getElementById('cardtype').onchange = function () {
-            iframes.setCardType(this.value);              // on change: set new type of credit card to process
-        };
-
-        function check() {                               // Function called by submitting PAY-button
-            if (iframes.isComplete()) {
-                iframes.creditCardCheck('checkCallback');// Perform "CreditCardCheck" to create and get a
-                                                         // PseudoCardPan; then call your function "checkCallback"
-            } else {
-                console.debug("not complete");
-            }
-        }
-
-        function checkCallback(response) {
-            console.debug(response);
-            if (response.status === "VALID") {
-                document.getElementById("pseudocardpan").value = response.pseudocardpan;
-                document.getElementById("truncatedcardpan").value = response.truncatedcardpan;
-                document.paymentform.submit();
-            }
-        }
-    });
-</script>
