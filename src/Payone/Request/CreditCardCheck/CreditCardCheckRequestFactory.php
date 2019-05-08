@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\Request\CreditCardCheck;
 
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 
@@ -21,7 +20,7 @@ class CreditCardCheckRequestFactory extends AbstractRequestFactory
     public function __construct(CreditCardCheckRequest $creditCardCheckRequest, SystemRequest $systemRequest)
     {
         $this->creditCardRequest = $creditCardCheckRequest;
-        $this->systemRequest   = $systemRequest;
+        $this->systemRequest     = $systemRequest;
     }
 
     public function getRequestParameters(SalesChannelEntity $salesChannelEntity, Context $context): array

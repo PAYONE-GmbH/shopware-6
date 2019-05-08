@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\Capture;
 
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
-use Shopware\Core\Framework\Context;
 
 class CaptureRequest
 {
