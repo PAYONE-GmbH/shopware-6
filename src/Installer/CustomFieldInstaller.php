@@ -90,7 +90,7 @@ class CustomFieldInstaller implements InstallerInterface
         $data = [
             'id'                => $customField['id'],
             'name'              => $customField['name'],
-            'handlerIdentifier' => $customField['type'],
+            'type'              => $customField['type'],
         ];
 
         $this->customFieldRepository->upsert([$data], $context);
