@@ -7,6 +7,7 @@
         <script type="text/javascript" src="https://secure.pay1.de/client-api/js/v1/payone_hosted_min.js"></script>
 
         <script>
+            var orderFormDisabled = true;
             $(document).ready(function () {
                 var request, config;
 
@@ -65,22 +66,26 @@
                 //    iframes.setCardType(this.value);              // on change: set new type of credit card to process
                 //};
 
-                function check() {                               // Function called by submitting PAY-button
-                    if (iframes.isComplete()) {
-                        iframes.creditCardCheck('payoneCheckCallback');// Perform "CreditCardCheck" to create and get a
-                                                                 // PseudoCardPan; then call your function "checkCallback"
-                    } else {
-                        // TODO: Do we need this case?
-                    }
-                }
-                $('#paymentsubmit').click(check);
+                $('#confirmOrderForm').submit(function() {
+                    if (iframes.isComplete() && orderFormDisabled) {
+                        iframes.creditCardCheck('payoneCheckCallback');
 
+                        return false;
+                    } else {
+                        // TODO: Show error/validation message
+                    }
+                });
             });
 
             function payoneCheckCallback(response) {
                 if (response.status === "VALID") {
                     document.getElementById("pseudocardpan").value = response.pseudocardpan;
                     document.getElementById("truncatedcardpan").value = response.truncatedcardpan;
+
+                    orderFormDisabled = false;
+                    $('#confirmOrderForm').submit();
+                } else {
+                    // TODO: Block order submit
                 }
             }
         </script>

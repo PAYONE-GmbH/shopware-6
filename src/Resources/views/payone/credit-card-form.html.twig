@@ -1,12 +1,12 @@
 <fieldset>
-    <input type="hidden" name="pseudocardpan" id="pseudocardpan">
-    <input type="hidden" name="truncatedcardpan" id="truncatedcardpan">
+    <input type="hidden" name="pseudocardpan" id="pseudocardpan" form="confirmOrderForm">
+    <input type="hidden" name="truncatedcardpan" id="truncatedcardpan" form="confirmOrderForm">
 
     <!-- configure your cardtype-selection here -->
     <label for="cardtypeInput">Card type</label>
 
     <!-- TODO: Replace with number-based logo display
-    <select id="cardtype">
+    <select id="cardtype" form="confirmOrderForm">
         <option value="V">VISA</option>
         <option value="M">Mastercard</option>
         <option value="A">Amex</option>
@@ -27,10 +27,10 @@
 
     <!-- TODO: Re-active after auto-submit for payment selection is properly scoped
     <label for="firstname">Firstname:</label>
-    <input id="firstname" type="text" name="firstname" value="">
+    <input id="firstname" type="text" name="firstname" value="" form="confirmOrderForm">
 
     <label for="lastname">Lastname:</label>
-    <input id="lastname" type="text" name="lastname" value="">
+    <input id="lastname" type="text" name="lastname" value="" form="confirmOrderForm">
     -->
 
     <div id="errorOutput"></div>
