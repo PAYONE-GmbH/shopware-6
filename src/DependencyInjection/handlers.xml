@@ -5,10 +5,14 @@
 
     <services>
         <service id="PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler">
+            <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="Shopware\Core\Framework\StateMachine\StateMachineRegistry" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="request_stack" />
 
-            <tag name="shopware.payment.method.sync" />
+            <tag name="shopware.payment.method.async" />
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayoneDebitPaymentHandler">
