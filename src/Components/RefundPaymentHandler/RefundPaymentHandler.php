@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\RefundPaymentHandler;
 
+use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
@@ -52,6 +53,9 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
         $customFields = $orderTransaction->getCustomFields() ?? [];
 
         ++$customFields[CustomFieldInstaller::SEQUENCE_NUMBER];
+
+        $key                                                        = (new DateTime())->format(DATE_ATOM);
+        $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
 
         $data = [
             'id'           => $orderTransaction->getId(),

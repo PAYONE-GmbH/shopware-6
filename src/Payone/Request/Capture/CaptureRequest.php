@@ -16,11 +16,11 @@ class CaptureRequest
             throw new InvalidOrderException($order->getId());
         }
 
-        if (empty($customFields[CustomFieldInstaller::SEQUENCE_NUMBER])) {
+        if ($customFields[CustomFieldInstaller::SEQUENCE_NUMBER] === null || $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] === '') {
             throw new InvalidOrderException($order->getId());
         }
 
-        if ($customFields[CustomFieldInstaller::SEQUENCE_NUMBER] < 1) {
+        if ($customFields[CustomFieldInstaller::SEQUENCE_NUMBER] < 0) {
             throw new InvalidOrderException($order->getId());
         }
 
