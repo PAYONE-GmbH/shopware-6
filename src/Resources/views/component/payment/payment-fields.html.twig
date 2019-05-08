@@ -3,12 +3,16 @@
 {# @var payment \Shopware\Core\Checkout\Payment\PaymentMethodEntity #}
 
 {% block component_payment_fieldset_template %}
+   {{ parent() }}
+
    {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayonePaypal::UUID')  %}
       <!-- payone paypal -->
    {% endif %}
 
    {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID')  %}
-      <!-- payone credit card -->
+      <div class="payone-payment payment-form">
+         {% sw_include '@Storefront/payone/credit-card-form.html.twig' %}
+      </div>
    {% endif %}
 
    {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayoneSofort::UUID')  %}

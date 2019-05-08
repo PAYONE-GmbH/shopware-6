@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\System;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Payone\Request\RequestInterface;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 
-class SystemRequest implements RequestInterface
+class SystemRequest
 {
     /** @var ConfigReaderInterface */
     private $configReader;
@@ -20,20 +18,9 @@ class SystemRequest implements RequestInterface
         $this->configReader = $configReader;
     }
 
-    public function getParentRequest(): string
+    public function getRequestParameters(SalesChannelEntity $salesChannel, Context $context): array
     {
-        return '';
-    }
-
-    public function getRequestParameters(PaymentTransactionStruct $transaction, Context $context): array
-    {
-        $order = $transaction->getOrder();
-
-        if (null === $order) {
-            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
-        }
-
-        $config = $this->configReader->read($order->getSalesChannelId());
+        $config = $this->configReader->read($salesChannel->getId());
 
         return [
             'aid'         => (string) $config->get('aid'),

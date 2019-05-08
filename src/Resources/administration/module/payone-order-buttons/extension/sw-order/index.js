@@ -6,6 +6,10 @@ Component.override('sw-order-detail-base', {
 
     inject: ['PayonePaymentService'],
 
+    mixins: [
+        Mixin.getByName('notification')
+    ],
+
     methods: {
         captureOrder(order) {
             this.PayonePaymentService.capturePayment(order.id)
@@ -24,7 +28,7 @@ Component.override('sw-order-detail-base', {
         },
 
         refundOrder(order) {
-            this.PayonePaymentService.capturePayment(order.id)
+            this.PayonePaymentService.refundPayment(order.id)
                 .then(() => {
                     this.createNotificationSuccess({
                         title: this.$tc('payone-order-buttons.captureAction.successTitle'),

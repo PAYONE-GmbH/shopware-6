@@ -1,7 +1,6 @@
 {
   "PayonePayment": {
     "errorMessages": {
-      "paymentCancled": "Vorgang abgebrochen.",
       "genericError": "Es ist ein Fehler aufgetreten."
     }
   }

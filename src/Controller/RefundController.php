@@ -50,10 +50,10 @@ class RefundController extends AbstractController
 
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsFilter('order_transaction.order_id', $orderId)
+            new EqualsFilter('orderId', $orderId)
         );
 
-        $criteria->addAssociation('oder_transaction.order');
+        $criteria->addAssociation('order');
 
         /** @var null|OrderTransactionEntity $orderTransaction */
         $orderTransaction = $this->transactionRepository->search($criteria, $context)->first();

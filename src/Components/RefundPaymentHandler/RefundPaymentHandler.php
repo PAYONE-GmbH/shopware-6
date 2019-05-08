@@ -6,8 +6,7 @@ namespace PayonePayment\Components\RefundPaymentHandler;
 
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Refund\RefundRequest;
-use PayonePayment\Payone\Request\RequestFactory;
+use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
@@ -16,7 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 
 class RefundPaymentHandler implements RefundPaymentHandlerInterface
 {
-    /** @var RequestFactory */
+    /** @var RefundRequestFactory */
     private $requestFactory;
 
     /** @var PayoneClientInterface */
@@ -26,7 +25,7 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
     private $repository;
 
     public function __construct(
-        RequestFactory $requestFactory,
+        RefundRequestFactory $requestFactory,
         PayoneClientInterface $client,
         EntityRepositoryInterface $repository
     ) {
@@ -39,10 +38,9 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
     {
         $paymentTransaction = PaymentTransactionStruct::fromOrderTransaction($orderTransaction);
 
-        $request = $this->requestFactory->generateRequest(
+        $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $context,
-            RefundRequest::class
+            $context
         );
 
         $response = $this->client->request($request);

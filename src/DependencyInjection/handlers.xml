@@ -19,7 +19,7 @@
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePaypalPaymentHandler">
-            <argument type="service" id="PayonePayment\Payone\Request\RequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="Shopware\Core\Framework\StateMachine\StateMachineRegistry" />

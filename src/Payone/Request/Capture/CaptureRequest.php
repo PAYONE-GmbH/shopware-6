@@ -5,39 +5,25 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\Capture;
 
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\Payone\Request\RequestInterface;
-use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 
-class CaptureRequest implements RequestInterface
+class CaptureRequest
 {
-    public function getParentRequest(): string
+    public function getRequestParameters(OrderEntity $order, array $customFields): array
     {
-        return SystemRequest::class;
-    }
-
-    public function getRequestParameters(PaymentTransactionStruct $transaction, Context $context): array
-    {
-        $order = $transaction->getOrder();
-
-        if (null === $order) {
-            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
-        }
-
-        $customFields = $transaction->getOrderTransaction()->getCustomFields();
-
         if (empty($customFields[CustomFieldInstaller::TRANSACTION_ID])) {
-            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
+            throw new InvalidOrderException($order->getId());
         }
 
         if (empty($customFields[CustomFieldInstaller::SEQUENCE_NUMBER])) {
-            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
+            throw new InvalidOrderException($order->getId());
         }
 
         if ($customFields[CustomFieldInstaller::SEQUENCE_NUMBER] < 1) {
-            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
+            throw new InvalidOrderException($order->getId());
         }
 
         return [

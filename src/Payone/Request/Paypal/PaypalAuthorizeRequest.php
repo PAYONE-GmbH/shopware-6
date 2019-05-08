@@ -4,29 +4,22 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Paypal;
 
-use PayonePayment\Payone\Request\Customer\CustomerRequest;
-use PayonePayment\Payone\Request\RequestInterface;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 
-class PaypalAuthorizeRequest implements RequestInterface
+class PaypalAuthorizeRequest
 {
-    public function getParentRequest(): string
-    {
-        return CustomerRequest::class;
-    }
-
     public function getRequestParameters(PaymentTransactionStruct $transaction, Context $context): array
     {
         if (empty($transaction->getReturnUrl())) {
-            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
+            throw new InvalidOrderException($transaction->getOrder()->getId());
         }
 
         $order = $transaction->getOrder();
 
         if (null === $order) {
-            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
+            throw new InvalidOrderException($transaction->getOrder()->getId());
         }
 
         return [

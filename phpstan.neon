@@ -1,0 +1,6 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+
+parameters:
+	ignoreErrors:
+		- '#Property(.*)does not accept object(.*)#'

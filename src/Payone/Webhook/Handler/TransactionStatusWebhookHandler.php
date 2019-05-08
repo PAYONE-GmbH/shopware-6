@@ -29,7 +29,7 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function processAsync(SalesChannelContext $salesChannelContext, array $data): Response
+    public function process(SalesChannelContext $salesChannelContext, array $data): Response
     {
         try {
             $this->transactionStatusService->persistTransactionStatus($salesChannelContext, $data);
