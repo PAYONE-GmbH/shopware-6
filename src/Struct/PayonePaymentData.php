@@ -8,13 +8,19 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class PayonePaymentData extends Struct
 {
-    protected $cardRequest;
+    /** @var array */
+    protected $cardRequest = [];
 
-    /**
-     * @return mixed
-     */
-    public function getCardRequest()
+    /** @var null|string */
+    protected $language;
+
+    public function getCardRequest(): array
     {
         return $this->cardRequest;
+    }
+
+    public function getLanguage(): ?string
+    {
+        return $this->language;
     }
 }

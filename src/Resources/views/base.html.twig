@@ -52,7 +52,7 @@
                         }
                     },
                     error: "errorOutput",                        // area to display error-messages (optional)
-                    language: Payone.ClientApi.Language.de       // Language to display error-messages
+                    language: Payone.ClientApi.Language[{{ page.extensions.payone.language | json_encode | raw }}]       // Language to display error-messages
                                                                  // (default: Payone.ClientApi.Language.en)
                 };
 
