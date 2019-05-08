@@ -30,8 +30,8 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
     public function onCheckoutConfirm(CheckoutConfirmPageLoadedEvent $event)
     {
         $salesChannelContext = $event->getSalesChannelContext();
-        $salesChannel = $salesChannelContext->getSalesChannel();
-        $context = $salesChannelContext->getContext();
+        $salesChannel        = $salesChannelContext->getSalesChannel();
+        $context             = $salesChannelContext->getContext();
 
         $payoneData = new PayonePaymentData();
         $payoneData->assign([

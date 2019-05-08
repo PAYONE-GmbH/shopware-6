@@ -47,7 +47,7 @@ class ConfigWriter implements ConfigWriterInterface
 
         if (null === $existingEntry) {
             $data = [
-                'key'   => $key,
+                'key'   => strtolower($key),
                 'value' => $value,
             ];
 
@@ -55,7 +55,7 @@ class ConfigWriter implements ConfigWriterInterface
         } else {
             $data = [
                 'id'    => $existingEntry->getId(),
-                'key'   => $key,
+                'key'   => strtolower($key),
                 'value' => $value,
             ];
 
