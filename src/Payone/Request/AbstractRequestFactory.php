@@ -21,6 +21,8 @@ abstract class AbstractRequestFactory
 
         $parameters['hash'] = $this->generateParameterHash($parameters);
 
+        $parameters['key'] = hash('md5', $parameters['key']);
+
         return $parameters;
     }
 
