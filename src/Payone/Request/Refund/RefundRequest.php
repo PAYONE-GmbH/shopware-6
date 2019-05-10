@@ -4,32 +4,31 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Refund;
 
-use PayonePayment\Payone\Request\RequestInterface;
-use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use PayonePayment\Installer\CustomFieldInstaller;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
-use Shopware\Core\Framework\Context;
 
-class RefundRequest implements RequestInterface
+class RefundRequest
 {
-    public function getParentRequest(): string
+    public function getRequestParameters(OrderEntity $order, array $customFields): array
     {
-        return SystemRequest::class;
-    }
+        if (empty($customFields[CustomFieldInstaller::TRANSACTION_ID])) {
+            throw new InvalidOrderException($order->getId());
+        }
 
-    public function getRequestParameters(PaymentTransactionStruct $transaction, Context $context): array
-    {
-        $order = $transaction->getOrder();
+        if (empty($customFields[CustomFieldInstaller::SEQUENCE_NUMBER])) {
+            throw new InvalidOrderException($order->getId());
+        }
 
-        if (null === $order) {
-            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
+        if ($customFields[CustomFieldInstaller::SEQUENCE_NUMBER] < 1) {
+            throw new InvalidOrderException($order->getId());
         }
 
         return [
             'request'        => 'refund',
-            'txid'           => $transaction->getOrderTransaction()->getAttributes(),
-            'sequencenumber' => 'wlt',
-            'amount'         => (int) ($order->getAmountTotal() * 100),
+            'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
+            'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
+            'amount'         => -1 * (int) ($order->getAmountTotal() * 100),
             'currency'       => $order->getCurrency()->getShortName(),
         ];
     }

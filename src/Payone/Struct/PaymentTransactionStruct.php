@@ -11,8 +11,8 @@ use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 
 class PaymentTransactionStruct
 {
-    /** @var OrderTransactionEntity */
-    private $orderTransaction;
+    /** @var array */
+    private $customFields;
 
     /** @var OrderEntity */
     private $order;
@@ -20,16 +20,19 @@ class PaymentTransactionStruct
     /** @var null|string */
     private $returnUrl;
 
-    public function __construct(OrderTransactionEntity $orderTransaction, OrderEntity $order, ?string $returnUrl = null)
+    public function __construct(OrderEntity $order, array $customFields = [], ?string $returnUrl = null)
     {
-        $this->orderTransaction = $orderTransaction;
-        $this->order            = $order;
-        $this->returnUrl        = $returnUrl;
+        $this->customFields = $customFields;
+        $this->order        = $order;
+        $this->returnUrl    = $returnUrl;
     }
 
-    public function getOrderTransaction(): OrderTransactionEntity
+    /**
+     * @return array
+     */
+    public function getCustomFields(): array
     {
-        return $this->orderTransaction;
+        return $this->customFields;
     }
 
     public function getOrder(): OrderEntity
@@ -42,19 +45,26 @@ class PaymentTransactionStruct
         return $this->returnUrl;
     }
 
+    public static function fromOrder(OrderEntity $order): self
+    {
+        return new self(
+            $order
+        );
+    }
+
     public static function fromOrderTransaction(OrderTransactionEntity $struct): self
     {
         return new self(
-            $struct,
-            $struct->getOrder()
+            $struct->getOrder(),
+            $struct->getCustomFields()
         );
     }
 
     public static function fromAsyncPaymentTransactionStruct(AsyncPaymentTransactionStruct $struct): self
     {
         return new self(
-            $struct->getOrderTransaction(),
             $struct->getOrder(),
+            $struct->getOrderTransaction()->getCustomFields() ?? [],
             $struct->getReturnUrl()
         );
     }
@@ -62,8 +72,8 @@ class PaymentTransactionStruct
     public static function fromSyncPaymentTransactionStruct(SyncPaymentTransactionStruct $struct): self
     {
         return new self(
-            $struct->getOrderTransaction(),
-            $struct->getOrder()
+            $struct->getOrder(),
+            $struct->getOrderTransaction()->getCustomFields()
         );
     }
 }

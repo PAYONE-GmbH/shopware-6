@@ -29,11 +29,6 @@ class PayoneDebit implements PaymentMethodInterface
         return $this->name;
     }
 
-    public function getTechnicalName(): string
-    {
-        return $this->technicalName;
-    }
-
     public function getDescription(): string
     {
         return $this->description;

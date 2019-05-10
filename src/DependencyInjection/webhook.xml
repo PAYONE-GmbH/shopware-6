@@ -5,12 +5,12 @@
 
     <services>
         <service id="PayonePayment\Payone\Webhook\Processor\WebhookProcessor">
-            <argument type="tagged" tag="payment.webhook.handler" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="tagged" tag="payone.webhook.handler" />
         </service>
 
         <service id="PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler">
             <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService"/>
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
 
             <tag name="payone.webhook.handler" />
         </service>

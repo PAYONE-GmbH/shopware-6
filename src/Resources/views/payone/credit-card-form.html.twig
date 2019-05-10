@@ -1,0 +1,40 @@
+<fieldset>
+    <input type="hidden" name="pseudocardpan" id="pseudocardpan" form="confirmOrderForm">
+    <input type="hidden" name="truncatedcardpan" id="truncatedcardpan" form="confirmOrderForm">
+
+    <!-- configure your cardtype-selection here -->
+    <label for="cardtypeInput">Card type</label>
+
+    <!-- TODO: Replace with number-based logo display
+    <select id="cardtype" form="confirmOrderForm">
+        <option value="V">VISA</option>
+        <option value="M">Mastercard</option>
+        <option value="A">Amex</option>
+    </select>-->
+
+    <label for="cardpanInput">Cardpan:</label>
+    <span class="inputIframe" id="cardpan"></span>
+
+    <label for="cvcInput">CVC:</label>
+    <span id="cardcvc2" class="inputIframe"></span>
+
+    <label for="expireInput">Expire Date:</label>
+
+    <span id="expireInput" class="inputIframe">
+            <span id="cardexpiremonth"></span>
+            <span id="cardexpireyear"></span>
+        </span>
+
+    <!-- TODO: Re-active after auto-submit for payment selection is properly scoped
+    <label for="firstname">Firstname:</label>
+    <input id="firstname" type="text" name="firstname" value="" form="confirmOrderForm">
+
+    <label for="lastname">Lastname:</label>
+    <input id="lastname" type="text" name="lastname" value="" form="confirmOrderForm">
+    -->
+
+    <div id="errorOutput"></div>
+</fieldset>
+
+<div id="paymentform"></div>
+

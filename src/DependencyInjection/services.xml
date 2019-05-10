@@ -10,6 +10,8 @@
         <import resource="handlers.xml" />
         <import resource="requests.xml" />
         <import resource="translations.xml" />
+        <import resource="controller.xml" />
+        <import resource="listeners.xml" />
     </imports>
 
     <services>
@@ -21,12 +23,16 @@
             <argument type="service" id="payone_payment_config.repository" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\RequestFactory">
-            <argument type="service" id="service_container" />
+        <service id="PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandler">
+            <argument type="service" id="PayonePayment\Payone\Request\Refund\RefundRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="order_transaction.repository" />
         </service>
 
-        <service id="PayonePayment\Components\RefundHandler">
-            <argument type="service" id="logger" />
+        <service id="PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandler">
+            <argument type="service" id="PayonePayment\Payone\Request\Capture\CaptureRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="order_transaction.repository" />
         </service>
 
         <service id="PayonePayment\Payone\Client\PayoneClient">
@@ -34,7 +40,6 @@
         </service>
 
         <service id="PayonePayment\Components\TransactionStatus\TransactionStatusService">
-            <argument type="service" id="payone_payment_status.repository"/>
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="state_machine_state.repository"/>
         </service>

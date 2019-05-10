@@ -1,0 +1,27 @@
+{% sw_extends '@Storefront/component/payment/payment-fields.html.twig' %}
+
+{# @var payment \Shopware\Core\Checkout\Payment\PaymentMethodEntity #}
+
+{% block component_payment_fieldset_template %}
+    {{ parent() }}
+
+    {% if payment.id is same as(defaultPaymentMethodId) %}
+        {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayonePaypal::UUID') %}
+            <!-- payone paypal -->
+        {% endif %}
+
+        {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') %}
+            <div class="payone-payment payment-form">
+                {% sw_include '@Storefront/payone/credit-card-form.html.twig' %}
+            </div>
+        {% endif %}
+
+        {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayoneSofort::UUID') %}
+            <!-- payone sofort -->
+        {% endif %}
+
+        {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayoneDebit::UUID') %}
+            <!-- payone debit -->
+        {% endif %}
+    {% endif %}
+{% endblock %}
