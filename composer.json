@@ -14,33 +14,44 @@
     "shopware/platform": "dev-master"
   },
   "require-dev": {
-    "phpunit/phpunit": "^8.0",
-    "k10r/codestyle": "^1.0"
+    "fzaninotto/faker": "1.8.0",
+    "k10r/codestyle": "^1.0",
+    "phpstan/phpstan": "^0.11.5",
+    "phpstan/phpstan-phpunit": "^0.11.0",
+    "phpunit/phpunit": "^8.1"
   },
   "autoload": {
     "psr-4": {
       "PayonePayment\\": "src"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "PayonePayment\\Test\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
   "extra": {
     "shopware-plugin-class": "PayonePayment\\PayonePayment",
-    "plugin-icon": "Resources/public/plugin.png",
+    "plugin-icon": "src/Resources/public/plugin.png",
     "copyright": "(c) by BS PAYONE GmbH",
     "label": {
-      "de_DE": "Payone Payment",
-      "en_GB": "Payone Payment"
+      "de-DE": "Payone Payment",
+      "en-GB": "Payone Payment"
     },
     "description": {
-      "de_DE": "Payone Payment Plugin",
-      "en_GB": "Payone Payment Plugin"
+      "de-DE": "Payone Payment Plugin",
+      "en-GB": "Payone Payment Plugin"
     },
     "manufacturerLink": {
-      "de_DE": "https://www.bspayone.com",
-      "en_GB": "https://www.bspayone.com"
+      "de-DE": "https://www.bspayone.com",
+      "en-GB": "https://www.bspayone.com"
     },
     "supportLink": {
-      "de_DE": "https://www.bspayone.com",
-      "en_GB": "https://www.bspayone.com"
+      "de-DE": "https://www.bspayone.com",
+      "en-GB": "https://www.bspayone.com"
     }
   }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Client;
 
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
@@ -34,10 +35,11 @@ class PayoneClient implements PayoneClientInterface
         curl_setopt($curl, CURLOPT_URL, 'https://api.pay1.de/post-gateway/');
 
         $response = curl_exec($curl);
-        $info     = curl_getinfo($curl);
         $errno    = curl_errno($curl);
 
-        // TODO: Handle error codes/status and curl errors
+        if ($errno !== CURLE_OK) {
+            throw new RuntimeException('curl client error: ' . $errno);
+        }
 
         if (empty($response)) {
             throw new RuntimeException('empty payone response');
@@ -51,11 +53,15 @@ class PayoneClient implements PayoneClientInterface
         ]);
 
         if (empty($response)) {
-            throw new RuntimeException('payone returned a malformed json');
+            throw new PayoneRequestException('payone returned a empty response', $parameters, $response);
         }
 
-        if ($response['Status'] === 'ERROR') {
-            throw new RuntimeException('payone responded with ERROR');
+        $response = array_change_key_case($response, CASE_LOWER);
+
+        ksort($response, SORT_NATURAL | SORT_FLAG_CASE);
+
+        if ($response['status'] === 'ERROR') {
+            throw new PayoneRequestException('payone returned a error', $parameters, $response);
         }
 
         return $response;

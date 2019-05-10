@@ -20,7 +20,7 @@ class PayonePaymentConfigCollection extends EntityCollection
         $entity = parent::get($key);
 
         if (null === $entity) {
-            null;
+            return null;
         }
 
         return $entity->getValue();

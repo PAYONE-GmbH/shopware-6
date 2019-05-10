@@ -15,5 +15,9 @@ Module.register('payome-payment', {
     snippets: {
         'de-DE': deDE,
         'en-GB': enGB
+    },
+
+    routeMiddleware(next, currentRoute) {
+        next(currentRoute);
     }
 });

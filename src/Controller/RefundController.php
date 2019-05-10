@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
-use PayonePayment\Components\RefundHandler\RefundHandler;
-use PayonePayment\Components\RefundHandler\RefundHandlerInterface;
+use PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandlerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -14,13 +13,27 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Throwable;
 
 class RefundController extends AbstractController
 {
+    /** @var RefundPaymentHandlerInterface */
+    private $refundHandler;
+
+    /** @var EntityRepositoryInterface */
+    private $transactionRepository;
+
+    public function __construct(
+        RefundPaymentHandlerInterface $captureHandler,
+        EntityRepositoryInterface $transactionRepository
+    ) {
+        $this->refundHandler         = $captureHandler;
+        $this->transactionRepository = $transactionRepository;
+    }
+
     /**
-     * @Route("/api/v{version}/_action/payone/refund", name="api.action.payone.refund", methods={"POST"})
+     * @Route("/api/v{version}/_action/payone/refund-payment", name="api.action.payone.refund_payment", methods={"POST"})
      *
      * @param Request $request
      * @param Context $context
@@ -29,33 +42,31 @@ class RefundController extends AbstractController
      */
     public function refundAction(Request $request, Context $context): JsonResponse
     {
-        /** @var RefundHandlerInterface $refundService */
-        $refundService = $this->container->get(RefundHandler::class);
-
         $orderId = $request->get('order');
 
         if (empty($orderId)) {
-            throw new BadRequestHttpException();
+            return new JsonResponse(['status' => false, 'message' => 'missing order id']);
         }
-
-        /** @var EntityRepositoryInterface $transactionRepository */
-        $transactionRepository = $this->container->get('order_transaction.repository');
 
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsFilter('order_transaction.order_id', $orderId)
+            new EqualsFilter('orderId', $orderId)
         );
-        $criteria->addAssociation('oder_transaction.order');
-        $criteria->addAssociation('oder_transaction.order.orderCustomer');
+
+        $criteria->addAssociation('order');
 
         /** @var null|OrderTransactionEntity $orderTransaction */
-        $orderTransaction = $transactionRepository->search($criteria, $context)->first();
+        $orderTransaction = $this->transactionRepository->search($criteria, $context)->first();
 
         if (null === $orderTransaction) {
-            throw new BadRequestHttpException();
+            return new JsonResponse(['status' => false, 'message' => 'no order transaction found']);
         }
 
-        $refundService->refundTransaction($orderTransaction, $context);
+        try {
+            $this->refundHandler->refundTransaction($orderTransaction, $context);
+        } catch (Throwable $exception) {
+            return new JsonResponse(['status' => false, 'message' => $exception->getMessage()]);
+        }
 
         return new JsonResponse(['status' => true]);
     }

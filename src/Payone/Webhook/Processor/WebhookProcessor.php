@@ -4,28 +4,47 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Processor;
 
+use IteratorAggregate;
 use LogicException;
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Response;
 
 class WebhookProcessor implements WebhookProcessorInterface
 {
+    /** @var ConfigReaderInterface */
+    private $configReader;
+
     /** @var WebhookHandlerInterface[] */
     private $handlers;
 
-    public function __construct(iterable $handlers)
+    public function __construct(ConfigReaderInterface $configReader, IteratorAggregate $handlers)
     {
-        $this->handlers = $handlers;
+        $this->configReader = $configReader;
+        $this->handlers     = iterator_to_array($handlers);
     }
 
-    public function process(array $data): Response
+    public function process(SalesChannelContext $salesChannelContext, array $data): Response
     {
+        $config = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+
+        $storedKey = $config->get('key');
+
+        if (null === $storedKey) {
+            return new Response(WebhookHandlerInterface::RESPONSE_TSNOTOK);
+        }
+
+        if (!isset($data['key']) || $data['key'] !== hash('md5', $storedKey)) {
+            return new Response(WebhookHandlerInterface::RESPONSE_TSNOTOK);
+        }
+
         foreach ($this->handlers as $handler) {
-            if (!$handler->supports($data)) {
+            if (!$handler->supports($salesChannelContext, $data)) {
                 continue;
             }
 
-            return $handler->processAsync($data);
+            return $handler->process($salesChannelContext, $data);
         }
 
         throw new LogicException('Unable to identify a matching webhook handler');

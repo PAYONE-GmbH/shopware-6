@@ -1,0 +1,7 @@
+{
+  "PayonePayment": {
+    "errorMessages": {
+      "genericError": "A error has occurred."
+    }
+  }
+}

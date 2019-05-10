@@ -4,20 +4,16 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Customer;
 
-use PayonePayment\Payone\Request\RequestInterface;
-use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Language\LanguageEntity;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class CustomerRequest implements RequestInterface
+class CustomerRequest
 {
     /** @var EntityRepositoryInterface */
     private $languageRepository;
@@ -38,20 +34,8 @@ class CustomerRequest implements RequestInterface
         $this->requestStack       = $requestStack;
     }
 
-    public function getParentRequest(): string
+    public function getRequestParameters(OrderEntity $order, Context $context): array
     {
-        return SystemRequest::class;
-    }
-
-    public function getRequestParameters(PaymentTransactionStruct $transaction, Context $context): array
-    {
-        /** @var OrderEntity $order */
-        $order = $transaction->getOrder();
-
-        if (null === $order) {
-            throw new InvalidOrderException($transaction->getOrderTransaction()->getOrderId());
-        }
-
         $language       = $this->getCustomerLanguage($context);
         $billingAddress = $this->getCustomerBillingAddress($context, $order);
 
@@ -80,9 +64,10 @@ class CustomerRequest implements RequestInterface
 
     private function getCustomerLanguage(Context $context): LanguageEntity
     {
+        // TODO: Replace with getLanguageId
         $languages = $context->getLanguageIdChain();
         $criteria  = new Criteria([reset($languages)]);
-        $criteria->addAssociation('language.locale');
+        $criteria->addAssociation('locale');
 
         /** @var null|LanguageEntity $language */
         $language = $this->languageRepository->search($criteria, $context)->first();
