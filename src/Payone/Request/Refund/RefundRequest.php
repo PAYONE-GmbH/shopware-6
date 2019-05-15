@@ -29,7 +29,7 @@ class RefundRequest
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
             'amount'         => -1 * (int) ($order->getAmountTotal() * 100),
-            'currency'       => $order->getCurrency()->getShortName(),
+            'currency'       => $order->getCurrency()->getIsoCode(),
         ];
     }
 }
