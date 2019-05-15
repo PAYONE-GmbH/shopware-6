@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\Controller;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +25,7 @@ class RedirectController
     /**
      * @Route("/payone/redirect", name="payone_redirect")
      *
-     * @param Request             $request
+     * @param Request $request
      *
      * @return Response
      */
