@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bde0d671a9f23b90eb843535d48f92b9",
+    "content-hash": "ee42498e619e8888925bc1ec1a411491",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1389,16 +1389,16 @@
         },
         {
             "name": "enqueue/enqueue",
-            "version": "0.9.9",
+            "version": "0.9.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-enqueue/enqueue.git",
-                "reference": "88df6be34fb9e9b98dcdacfdda88058517213927"
+                "reference": "e3ed1d5908a613fdaa74004502c1a505839c4335"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-enqueue/enqueue/zipball/88df6be34fb9e9b98dcdacfdda88058517213927",
-                "reference": "88df6be34fb9e9b98dcdacfdda88058517213927",
+                "url": "https://api.github.com/repos/php-enqueue/enqueue/zipball/e3ed1d5908a613fdaa74004502c1a505839c4335",
+                "reference": "e3ed1d5908a613fdaa74004502c1a505839c4335",
                 "shasum": ""
             },
             "require": {
@@ -1473,20 +1473,20 @@
                 "queue",
                 "rabbitmq"
             ],
-            "time": "2019-03-21T15:54:44+00:00"
+            "time": "2019-05-14T13:03:21+00:00"
         },
         {
             "name": "enqueue/enqueue-bundle",
-            "version": "0.9.8",
+            "version": "0.9.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-enqueue/enqueue-bundle.git",
-                "reference": "12e771664235fff68cd70a2c78206c499d9241d3"
+                "reference": "386129d6234a9157164c96733daa24d2a890b438"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-enqueue/enqueue-bundle/zipball/12e771664235fff68cd70a2c78206c499d9241d3",
-                "reference": "12e771664235fff68cd70a2c78206c499d9241d3",
+                "url": "https://api.github.com/repos/php-enqueue/enqueue-bundle/zipball/386129d6234a9157164c96733daa24d2a890b438",
+                "reference": "386129d6234a9157164c96733daa24d2a890b438",
                 "shasum": ""
             },
             "require": {
@@ -1547,7 +1547,7 @@
                 "queue",
                 "rabbitmq"
             ],
-            "time": "2019-02-19T16:46:23+00:00"
+            "time": "2019-05-14T14:01:51+00:00"
         },
         {
             "name": "enqueue/fs",
@@ -8588,16 +8588,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.11.5",
+            "version": "0.11.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "24ce5a566a798b81343138ed5d41d6877554cf9a"
+                "reference": "7af8b9d02b3ab36444dbf4e1b9ca1c1bd5044d81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/24ce5a566a798b81343138ed5d41d6877554cf9a",
-                "reference": "24ce5a566a798b81343138ed5d41d6877554cf9a",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/7af8b9d02b3ab36444dbf4e1b9ca1c1bd5044d81",
+                "reference": "7af8b9d02b3ab36444dbf4e1b9ca1c1bd5044d81",
                 "shasum": ""
             },
             "require": {
@@ -8657,20 +8657,20 @@
                 "MIT"
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
-            "time": "2019-03-25T16:40:09+00:00"
+            "time": "2019-05-08T16:33:56+00:00"
         },
         {
             "name": "phpstan/phpstan-phpunit",
-            "version": "0.11",
+            "version": "0.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan-phpunit.git",
-                "reference": "70c22d44b96a21a4952fc13021a5a63cc83f5c81"
+                "reference": "0d339995c3c6acc56bc912959f436298c70d13ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan-phpunit/zipball/70c22d44b96a21a4952fc13021a5a63cc83f5c81",
-                "reference": "70c22d44b96a21a4952fc13021a5a63cc83f5c81",
+                "url": "https://api.github.com/repos/phpstan/phpstan-phpunit/zipball/0d339995c3c6acc56bc912959f436298c70d13ab",
+                "reference": "0d339995c3c6acc56bc912959f436298c70d13ab",
                 "shasum": ""
             },
             "require": {
@@ -8692,10 +8692,15 @@
                 "satooshi/php-coveralls": "^1.0",
                 "slevomat/coding-standard": "^4.5.2"
             },
-            "type": "library",
+            "type": "phpstan-extension",
             "extra": {
                 "branch-alias": {
                     "dev-master": "0.11-dev"
+                },
+                "phpstan": {
+                    "includes": [
+                        "extension.neon"
+                    ]
                 }
             },
             "autoload": {
@@ -8708,7 +8713,7 @@
                 "MIT"
             ],
             "description": "PHPUnit extensions and rules for PHPStan",
-            "time": "2018-12-22T14:05:04+00:00"
+            "time": "2019-05-10T20:33:17+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -8964,16 +8969,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.1.3",
+            "version": "8.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "2a676677982b484ee36b54961f570c02eabbe7e1"
+                "reference": "01392d4b5878aa617e8d9bc7a529e5febc8fe956"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2a676677982b484ee36b54961f570c02eabbe7e1",
-                "reference": "2a676677982b484ee36b54961f570c02eabbe7e1",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/01392d4b5878aa617e8d9bc7a529e5febc8fe956",
+                "reference": "01392d4b5878aa617e8d9bc7a529e5febc8fe956",
                 "shasum": ""
             },
             "require": {
@@ -9042,7 +9047,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-04-19T15:52:00+00:00"
+            "time": "2019-05-14T04:57:31+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -9712,9 +9717,6 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": {
-        "php": "^7.1.0",
-        "ext-curl": "*"
-    },
+    "platform": [],
     "platform-dev": []
 }
