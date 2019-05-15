@@ -54,7 +54,8 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
 
         ++$customFields[CustomFieldInstaller::SEQUENCE_NUMBER];
 
-        $key                                                        = (new DateTime())->format(DATE_ATOM);
+        $key = (new DateTime())->format(DATE_ATOM);
+
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
 
         $data = [
