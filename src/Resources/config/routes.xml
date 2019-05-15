@@ -7,4 +7,5 @@
     <import resource="@PayonePayment/Controller/WebhookController.php" type="annotation" />
     <import resource="@PayonePayment/Controller/RefundController.php" type="annotation" />
     <import resource="@PayonePayment/Controller/CaptureController.php" type="annotation" />
+    <import resource="@PayonePayment/Controller/RedirectController.php" type="annotation" />
 </routes>

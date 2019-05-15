@@ -37,7 +37,9 @@
             <argument type="service" id="PayonePayment\Payone\Request\Refund\RefundRequest" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest" />
+        <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+        </service>
 
         <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest" />
@@ -52,7 +54,9 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequest" />
+        <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+        </service>
 
         <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequest" />
