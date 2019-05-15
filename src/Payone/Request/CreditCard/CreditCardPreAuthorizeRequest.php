@@ -26,7 +26,7 @@ class CreditCardPreAuthorizeRequest
             'request'       => 'preauthorization',
             'clearingtype'  => 'cc',
             'amount'        => (int) ($order->getAmountTotal() * 100),
-            'currency'      => $order->getCurrency()->getShortName(),
+            'currency'      => $order->getCurrency()->getIsoCode(),
             'reference'     => $order->getOrderNumber(),
             'pseudocardpan' => $pseudoPan,
             'successurl'    => $transaction->getReturnUrl() . '&state=success',
