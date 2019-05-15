@@ -20,9 +20,6 @@ class TransactionStatusServiceTest extends TestCase
     /** @var ContainerInterface */
     private $container;
 
-    /** @var EntityRepositoryInterface */
-    private $statusRepository;
-
     public function setUp(): void
     {
         $this->container = $this->getContainer();
@@ -52,9 +49,15 @@ class TransactionStatusServiceTest extends TestCase
 
     private function getStatusService(): TransactionStatusService
     {
+        /** @var EntityRepositoryInterface $orderTransactionRepository */
+        $orderTransactionRepository = $this->container->get('order_transaction.repository');
+
+        /** @var EntityRepositoryInterface $stateRepository */
+        $stateRepository = $this->container->get('state_machine_state.repository');
+
         return new TransactionStatusService(
-            $this->container->get('order_transaction.repository'),
-            $this->container->get('state_machine_state.repository')
+            $orderTransactionRepository,
+            $stateRepository
         );
     }
 }

@@ -19,5 +19,9 @@
         <service id="PayonePayment\Controller\WebhookController">
             <argument type="service" id="PayonePayment\Payone\Webhook\Processor\WebhookProcessor" />
         </service>
+
+        <service id="PayonePayment\Controller\RedirectController">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+        </service>
     </services>
 </container>

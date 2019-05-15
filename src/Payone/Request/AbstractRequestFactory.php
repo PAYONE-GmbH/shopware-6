@@ -32,10 +32,6 @@ abstract class AbstractRequestFactory
 
         unset($data['key'], $data['hash']);
 
-        return strtolower(hash_hmac(
-            'sha384',
-            implode('', $data),
-            $parameters['key']
-        ));
+        return strtolower(hash_hmac('sha384', implode('', $data), $parameters['key']));
     }
 }
