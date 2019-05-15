@@ -27,7 +27,7 @@ class PaypalAuthorizeRequest
             'clearingtype' => 'wlt',
             'wallettype'   => 'PPE',
             'amount'       => (int) ($order->getAmountTotal() * 100),
-            'currency'     => $order->getCurrency()->getShortName(),
+            'currency'     => $order->getCurrency()->getIsoCode(),
             'reference'    => $order->getOrderNumber(),
             'successurl'   => $transaction->getReturnUrl() . '&state=success',
             'errorurl'     => $transaction->getReturnUrl() . '&state=error',
