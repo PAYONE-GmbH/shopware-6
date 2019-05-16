@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
@@ -21,6 +22,7 @@ use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
 {
@@ -65,7 +67,19 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
             $salesChannelContext->getContext()
         );
 
-        $response = $this->client->request($request);
+        try {
+            $response = $this->client->request($request);
+        } catch (PayoneRequestException $exception) {
+            throw new AsyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $exception->getResponse()['errorMessage']
+            );
+        } catch (Throwable $exception) {
+            throw new AsyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
 
         if (empty($response['status']) && $response['status'] !== 'REDIRECT') {
             throw new AsyncPaymentProcessException(
