@@ -18,6 +18,13 @@ class PayoneClient implements PayoneClientInterface
         $this->logger = $logger;
     }
 
+    /**
+     * @param array $parameters
+     *
+     * @throws PayoneRequestException
+     *
+     * @return array
+     */
     public function request(array $parameters): array
     {
         $curl = curl_init();

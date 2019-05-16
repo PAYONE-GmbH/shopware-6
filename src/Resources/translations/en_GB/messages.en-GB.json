@@ -2,6 +2,11 @@
   "PayonePayment": {
     "errorMessages": {
       "genericError": "A error has occurred."
+    },
+    "creditCard":{
+      "cardNumber": "Card number",
+      "securityCode": "Security code",
+      "expireDate": "Expirey date"
     }
   }
 }

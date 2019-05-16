@@ -2,6 +2,11 @@
   "PayonePayment": {
     "errorMessages": {
       "genericError": "Es ist ein Fehler aufgetreten."
+    },
+    "creditCard":{
+      "cardNumber": "Kartennummer",
+      "securityCode": "CVV",
+      "expireDate": "Gültis bis"
     }
   }
 }
