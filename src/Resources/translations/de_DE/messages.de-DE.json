@@ -6,7 +6,7 @@
     "creditCard":{
       "cardNumber": "Kartennummer",
       "securityCode": "CVV",
-      "expireDate": "Gültis bis"
+      "expiryDate": "Gültig bis"
     }
   }
 }
