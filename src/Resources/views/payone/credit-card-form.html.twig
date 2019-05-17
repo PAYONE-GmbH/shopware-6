@@ -1,41 +1,43 @@
-<div class="card">
-    <fieldset>
-        <input type="hidden" name="pseudocardpan" id="pseudocardpan" form="confirmOrderForm">
-        <input type="hidden" name="truncatedcardpan" id="truncatedcardpan" form="confirmOrderForm">
+<div class="payone-payment credit-card">
+    <div class="card">
+        <fieldset>
+            <input type="hidden" name="pseudocardpan" id="pseudocardpan" form="confirmOrderForm">
+            <input type="hidden" name="truncatedcardpan" id="truncatedcardpan" form="confirmOrderForm">
 
-        <div class="form-row col-md-12">
-            <div class="form-group col-md-4">
-                <label class="form-label" for="cardpanInput">{{ "PayonePayment.creditCard.cardNumber" | trans }}</label>
-                <span class="form-control" id="cardpan"></span>
+            <div class="form-row col-md-12">
+                <div class="form-group col-md-4">
+                    <label class="form-label" for="cardpanInput">{{ "PayonePayment.creditCard.cardNumber" | trans }}</label>
+                    <span class="form-control" id="cardpan"></span>
+                </div>
+
+                <div class="form-group col-md-2 card-logo-container">
+                    <label class="form-label" for="cardexpireyear">&nbsp;</label>
+                    <img id="card-logo" src="" alt="card-logo" style="display: none;"/>
+                </div>
             </div>
 
-            <div class="form-group col-md-2 card-logo-container">
-                <label class="form-label" for="cardexpireyear">&nbsp;</label>
-                <img id="card-logo" src="" alt="card-logo" style="display: none;"/>
-            </div>
-        </div>
+            <div class="form-row col-md-12">
+                <div class="form-group col-md-2">
+                    <label class="form-label" for="cvcInput">{{ "PayonePayment.creditCard.securityCode" | trans }}</label>
+                    <span class="form-control" id="cardcvc2"></span>
+                </div>
 
-        <div class="form-row col-md-12">
-            <div class="form-group col-md-2">
-                <label class="form-label" for="cvcInput">{{ "PayonePayment.creditCard.securityCode" | trans }}</label>
-                <span class="form-control" id="cardcvc2"></span>
+                <div class="form-group col-md-2">
+                    <label class="form-label" for="cardexpiremonth">{{ "PayonePayment.creditCard.expireDate" | trans }}</label>
+                    <span class="form-control" id="cardexpiremonth"></span>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label class="form-label" for="cardexpireyear">&nbsp;</label>
+                    <span class="form-control" id="cardexpireyear"></span>
+                </div>
             </div>
 
-            <div class="form-group col-md-2">
-                <label class="form-label" for="cardexpiremonth">{{ "PayonePayment.creditCard.expireDate" | trans }}</label>
-                <span class="form-control" id="cardexpiremonth"></span>
+            <div class="form-row col-md-12">
+                <div class="form-group col-md-12" >
+                    <div id="errorOutput" class="alert alert-warning" role="alert" style="display: none;"></div>
+                </div>
             </div>
-
-            <div class="form-group col-md-2">
-                <label class="form-label" for="cardexpireyear">&nbsp;</label>
-                <span class="form-control" id="cardexpireyear"></span>
-            </div>
-        </div>
-
-        <div class="form-row col-md-12">
-            <div class="form-group col-md-12" >
-                <div id="errorOutput" class="alert alert-warning" role="alert" style="display: none;"></div>
-            </div>
-        </div>
-    </fieldset>
+        </fieldset>
+    </div>
 </div>
