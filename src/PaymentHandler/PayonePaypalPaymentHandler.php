@@ -80,6 +80,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
 
         $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];
         $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = 1;
+        $customFields[CustomFieldInstaller::TRANSACTION_STATE] = $response['status'];
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
 
         $data = [
