@@ -6,7 +6,7 @@
     "creditCard":{
       "cardNumber": "Card number",
       "securityCode": "Security code",
-      "expireDate": "Expirey date"
+      "expiryDate": "Expiry date"
     }
   }
 }
