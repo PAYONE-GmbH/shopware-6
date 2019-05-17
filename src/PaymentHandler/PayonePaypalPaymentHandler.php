@@ -72,7 +72,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         } catch (PayoneRequestException $exception) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
-                $exception->getResponse()['errorMessage']
+                $exception->getResponse()['error']['CustomerMessage']
             );
         } catch (Throwable $exception) {
             throw new AsyncPaymentProcessException(

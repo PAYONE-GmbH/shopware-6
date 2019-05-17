@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
+use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
 use PayonePayment\Struct\PayonePaymentData;
 use Shopware\Core\Framework\Context;
@@ -41,22 +42,33 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         $salesChannel        = $salesChannelContext->getSalesChannel();
         $context             = $salesChannelContext->getContext();
 
+        if ($salesChannelContext->getPaymentMethod()->getId() !== PayoneCreditCard::UUID) {
+            return;
+        }
+
         $payoneData = new PayonePaymentData();
         $payoneData->assign([
-            'cardRequest' => $this->requestFactory->getRequestParameters($salesChannel, $context),
-            'language'    => substr($this->getCustomerLanguage($context)->getLocale()->getCode(), 0, 2),
+            'cardRequest'   => $this->requestFactory->getRequestParameters($salesChannel, $context),
+            'language'      => $this->getCustomerLanguage($context),
+            'paymentMethod' => $salesChannelContext->getPaymentMethod(),
         ]);
 
         $event->getPage()->addExtension('payone', $payoneData);
     }
 
-    private function getCustomerLanguage(Context $context): LanguageEntity
+    private function getCustomerLanguage(Context $context): string
     {
         $languages = $context->getLanguageId();
         $criteria  = new Criteria([$languages]);
         $criteria->addAssociation('locale');
 
         /** @var null|LanguageEntity $language */
-        return $this->languageRepository->search($criteria, $context)->first();
+        $language = $this->languageRepository->search($criteria, $context)->first();
+
+        if (null === $languages) {
+            return 'en';
+        }
+
+        return substr($language->getLocale()->getCode(), 0, 2);
     }
 }
