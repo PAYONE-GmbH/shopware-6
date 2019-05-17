@@ -31,9 +31,20 @@ class DebitAuthorizeRequestFactory extends AbstractRequestFactory
         $this->systemRequest    = $systemRequest;
     }
 
-    public function getRequestParameters(PaymentTransactionStruct $transaction, Context $context): array
-    {
-        $this->requests[] = $this->authorizeRequest->getRequestParameters($transaction, $context);
+    public function getRequestParameters(
+        PaymentTransactionStruct $transaction,
+        string $iban,
+        string $bic,
+        string $accountOwner,
+        Context $context
+    ): array {
+        $this->requests[] = $this->authorizeRequest->getRequestParameters(
+            $transaction,
+            $iban,
+            $bic,
+            $accountOwner,
+            $context
+        );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
             $transaction->getOrder(),

@@ -61,9 +61,11 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
     {
         $paymentTransaction = PaymentTransactionStruct::fromSyncPaymentTransactionStruct($transaction);
 
-        // TODO: use credit card data from request
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
+            $this->requestStack->getCurrentRequest()->get('iban'),
+            $this->requestStack->getCurrentRequest()->get('bic'),
+            $this->requestStack->getCurrentRequest()->get('accountOwner'),
             $salesChannelContext->getContext()
         );
 
