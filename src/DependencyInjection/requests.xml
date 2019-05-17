@@ -64,9 +64,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest">
-            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
-        </service>
+        <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest" />
 
         <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest" />
