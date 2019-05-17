@@ -61,13 +61,13 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
     {
         $paymentTransaction = PaymentTransactionStruct::fromSyncPaymentTransactionStruct($transaction);
 
+        // TODO: use credit card data from request
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
             $salesChannelContext->getContext()
         );
 
         try {
-            // TODO: WHAT! request leads to a "Configuration problem, please choose another payment method." exception
             $response = $this->client->request($request);
         } catch (PayoneRequestException $exception) {
             throw new SyncPaymentProcessException(
@@ -88,6 +88,8 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
         $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];
         $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = 1;
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
+
+        // TODO: save $response['mandate'] data to user facing table and implement the storefront integration
 
         $data = [
             'id'           => $transaction->getOrderTransaction()->getId(),
