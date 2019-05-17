@@ -7,6 +7,11 @@
       "cardNumber": "Kartennummer",
       "securityCode": "CVV",
       "expireDate": "Gültis bis"
+    },
+    "debit": {
+      "accountOwner": "Kontoinhalber",
+      "iban": "IBAN",
+      "bic": "BIC"
     }
   }
 }
