@@ -7,11 +7,6 @@
       "cardNumber": "Card number",
       "securityCode": "Security code",
       "expireDate": "Expirey date"
-    },
-    "debit": {
-      "accountOwner": "Account owner",
-      "iban": "IBAN",
-      "bic": "BIC"
     }
   }
 }
