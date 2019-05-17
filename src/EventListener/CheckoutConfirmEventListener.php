@@ -65,7 +65,7 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         /** @var null|LanguageEntity $language */
         $language = $this->languageRepository->search($criteria, $context)->first();
 
-        if (null === $languages) {
+        if (null === $language) {
             return 'en';
         }
 
