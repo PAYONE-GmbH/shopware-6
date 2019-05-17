@@ -11,9 +11,7 @@
         {% endif %}
 
         {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') %}
-            <div class="payone-payment payment-form">
-                {% sw_include '@Storefront/payone/credit-card-form.html.twig' %}
-            </div>
+            {% sw_include '@Storefront/payone/credit-card-form.html.twig' %}
         {% endif %}
 
         {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayoneSofort::UUID') %}
@@ -21,7 +19,7 @@
         {% endif %}
 
         {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayoneDebit::UUID') %}
-            <!-- payone debit -->
+            {% sw_include '@Storefront/payone/debit-form.html.twig' %}
         {% endif %}
     {% endif %}
 {% endblock %}
