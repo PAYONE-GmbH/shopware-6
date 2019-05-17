@@ -19,7 +19,7 @@
         {% endif %}
 
         {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayoneDebit::UUID') %}
-            <!-- payone sofort -->
+            {% sw_include '@Storefront/payone/debit-form.html.twig' %}
         {% endif %}
     {% endif %}
 {% endblock %}
