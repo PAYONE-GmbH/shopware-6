@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
@@ -22,6 +23,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterface
 {
@@ -72,7 +74,19 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
             $salesChannelContext->getContext()
         );
 
-        $response = $this->client->request($request);
+        try {
+            $response = $this->client->request($request);
+        } catch (PayoneRequestException $exception) {
+            throw new AsyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $exception->getResponse()['error']['CustomerMessage']
+            );
+        } catch (Throwable $exception) {
+            throw new AsyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
 
         $key = (new DateTime())->format(DATE_ATOM);
 
