@@ -56,7 +56,7 @@ class PaymentTransactionStruct
     {
         return new self(
             $struct->getOrder(),
-            $struct->getCustomFields()
+            $struct->getCustomFields() ?? []
         );
     }
 
@@ -73,7 +73,7 @@ class PaymentTransactionStruct
     {
         return new self(
             $struct->getOrder(),
-            $struct->getOrderTransaction()->getCustomFields()
+            $struct->getOrderTransaction()->getCustomFields() ?? []
         );
     }
 }
