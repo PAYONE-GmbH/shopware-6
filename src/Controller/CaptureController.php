@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Controller;
 
 use PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandlerInterface;
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -42,30 +43,42 @@ class CaptureController extends AbstractController
      */
     public function captureAction(Request $request, Context $context): JsonResponse
     {
-        $orderId = $request->get('order');
+        $transaction = $request->get('transaction');
 
-        if (empty($orderId)) {
-            return new JsonResponse(['status' => false, 'message' => 'missing order id']);
+        if (empty($transaction)) {
+            return new JsonResponse(['status' => false, 'message' => 'missing order transaction id'], 404);
         }
 
-        $criteria = new Criteria();
-        $criteria->addFilter(
-            new EqualsFilter('orderId', $orderId)
-        );
-
+        $criteria = new Criteria([$transaction]);
         $criteria->addAssociation('order');
 
         /** @var null|OrderTransactionEntity $orderTransaction */
         $orderTransaction = $this->transactionRepository->search($criteria, $context)->first();
 
         if (null === $orderTransaction) {
-            return new JsonResponse(['status' => false, 'message' => 'no order transaction found']);
+            return new JsonResponse(['status' => false, 'message' => 'no order transaction found'], 404);
         }
 
         try {
             $this->captureHandler->captureTransaction($orderTransaction, $context);
+        } catch (PayoneRequestException $exception) {
+            return new JsonResponse(
+                [
+                    'status' => false,
+                    'message' => $exception->getResponse()['error']['ErrorMessage'],
+                    'code' => $exception->getResponse()['error']['ErrorCode']
+                ],
+                400
+            );
         } catch (Throwable $exception) {
-            return new JsonResponse(['status' => false, 'message' => $exception->getMessage()]);
+            return new JsonResponse(
+                [
+                    'status' => false,
+                    'message' => $exception->getMessage(),
+                    'code' => 0
+                ],
+                400
+            );
         }
 
         return new JsonResponse(['status' => true]);

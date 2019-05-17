@@ -1,5 +1,6 @@
 import { Component, Mixin } from 'src/core/shopware';
 import template from './sw-order.html.twig';
+import './sw-order.scss';
 
 Component.override('sw-order-detail-base', {
     template,
@@ -11,34 +12,40 @@ Component.override('sw-order-detail-base', {
     ],
 
     methods: {
-        captureOrder(order) {
-            this.PayonePaymentService.capturePayment(order.id)
+        isPayonePayment(transaction) {
+            return true;
+        },
+
+        hasPayonePayment(order) {
+            return true;
+        },
+
+        captureOrder(transaction) {
+            this.PayonePaymentService.capturePayment(transaction.id)
                 .then(() => {
                     this.createNotificationSuccess({
-                        title: this.$tc('payone-order-buttons.captureAction.successTitle'),
-                        message: this.$tc('payone-order-buttons.captureAction.successMessage')
+                        message: this.$tc('payone-order-buttons.capture.successMessage')
                     });
                 })
                 .catch((errorResponse) => {
                     this.createNotificationError({
-                        title: errorResponse.title,
-                        message: errorResponse.message
+                        message: errorResponse.response.message
                     });
                 });
         },
 
-        refundOrder(order) {
-            this.PayonePaymentService.refundPayment(order.id)
+        refundOrder(transaction) {
+            debugger;
+
+            this.PayonePaymentService.refundPayment(transaction.id)
                 .then(() => {
                     this.createNotificationSuccess({
-                        title: this.$tc('payone-order-buttons.captureAction.successTitle'),
-                        message: this.$tc('payone-order-buttons.captureAction.successMessage')
+                        message: this.$tc('payone-order-buttons.refund.successMessage')
                     });
                 })
                 .catch((errorResponse) => {
                     this.createNotificationError({
-                        title: errorResponse.title,
-                        message: errorResponse.message
+                        message: errorResponse.response.message
                     });
                 });
         },

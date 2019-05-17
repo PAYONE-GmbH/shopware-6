@@ -1,15 +1,36 @@
 {% block sw_order_detail_delivery_metadata %}
     {% parent %}
 
-    <sw-card v-if="!isLoading" :title="$tc('payone-order-buttons.title')" :isLoading="isLoading">
-        <sw-container columns="1fr 1fr" gap="30px">
-            <sw-button class="sw-settings-customer-group-detail__cancel" @click="captureOrder(currentOrder)">
-                {{ $tc('payone-order-buttons.capture') }}
-            </sw-button>
+    <template v-if="!isLoading" :isLoading="isLoading">
+        <template v-if="hasPayonePayment(currentOrder)">
+            <sw-card class="sw-order-payone-card" :title="$tc('payone-order-buttons.title')">
+                <template v-for="transaction in currentOrder.transactions">
+                    <sw-container columns="1fr 1fr">
+                        <sw-container>
+                            <sw-description-list>
+                                <dt>{{ $tc('payone-order-buttons.poNumber') }}</dt>
+                                <dd class="sw-order-base__label-sales-channel">{{ transaction.customFields.payone_transaction_id }}</dd>
 
-            <sw-button class="sw-settings-customer-group-detail__cancel" @click="refundOrder(currentOrder)">
-                {{ $tc('payone-order-buttons.refund') }}
-            </sw-button>
-        </sw-container>
-    </sw-card>
+                                <dt>{{ $tc('payone-order-buttons.sequenceNumber') }}</dt>
+                                <dd class="sw-order-base__label-sales-channel">{{ transaction.customFields.payone_sequence_number }}</dd>
+
+                                <dt>{{ $tc('payone-order-buttons.transactionSatte') }}</dt>
+                                <dd class="sw-order-base__label-sales-channel">{{ transaction.customFields.payone_transaction_state }}</dd>
+                            </sw-description-list>
+                        </sw-container>
+
+                        <sw-container gap="30px">
+                            <sw-button @click="captureOrder(transaction)">
+                                {{ $tc('payone-order-buttons.capture.buttonTitle') }}
+                            </sw-button>
+
+                            <sw-button @click="refundOrder(transaction)">
+                                {{ $tc('payone-order-buttons.refund.buttonTitle') }}
+                            </sw-button>
+                        </sw-container>
+                    </sw-container>
+                </template>
+            </sw-card>
+        </template>
+    </template>
 {% endblock %}

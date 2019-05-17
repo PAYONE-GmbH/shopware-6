@@ -20,6 +20,7 @@ class CustomFieldInstaller implements InstallerInterface
     public const TRANSACTION_ID   = 'payone_transaction_id';
     public const SEQUENCE_NUMBER  = 'payone_sequence_number';
     public const TRANSACTION_DATA = 'payone_transaction_data';
+    public const TRANSACTION_STATE = 'payone_transaction_state';
 
     /** @var EntityRepositoryInterface */
     private $customFieldRepository;
@@ -46,6 +47,11 @@ class CustomFieldInstaller implements InstallerInterface
                 'id'   => '86235308bf4c4bf5b4db7feb07d2a63d',
                 'name' => self::SEQUENCE_NUMBER,
                 'type' => CustomFieldTypes::INT,
+            ],
+            [
+                'id'   => '81f06a4b755e49faaeb42cf0db62c36d',
+                'name' => self::TRANSACTION_STATE,
+                'type' => CustomFieldTypes::TEXT,
             ],
         ];
     }
