@@ -72,6 +72,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
         $customFields                                               = $orderTransaction->getCustomFields() ?? [];
         $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = (int) $transactionData['sequencenumber'];
+        $customFields[CustomFieldInstaller::TRANSACTION_STATE] = $transactionData['status'];
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $transactionData;
 
         $data = [
