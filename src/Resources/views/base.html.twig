@@ -96,9 +96,9 @@
                 $('#confirmOrderForm').submit(function () {
                     $("#errorOutput").hide();
 
-                    iframes.creditCardCheck('payoneCheckCallback');
-
                     if (!iframes.isComplete() || orderFormDisabled) {
+                        iframes.creditCardCheck('payoneCheckCallback');
+                        
                         return false;
                     }
                 });
