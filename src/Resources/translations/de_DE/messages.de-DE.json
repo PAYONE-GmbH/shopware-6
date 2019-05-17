@@ -9,7 +9,7 @@
       "expireDate": "Gültis bis"
     },
     "debit": {
-      "accountOwner": "Kontoinhalber",
+      "accountOwner": "Kontoinhaber",
       "iban": "IBAN",
       "bic": "BIC"
     }
