@@ -93,8 +93,9 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
 
         $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];
+        $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = $response['status'];
         $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = 1;
-        $customFields[CustomFieldInstaller::TRANSACTION_STATE] = $response['status'];
+        $customFields[CustomFieldInstaller::USER_ID]                = $response['userid'];
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
 
         $data = [
@@ -109,6 +110,8 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * TODO: Move finalize to generic handler
      */
     public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
     {

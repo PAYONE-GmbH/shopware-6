@@ -4,20 +4,23 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentMethod;
 
-use PayonePayment\PaymentHandler\PayoneSofortPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 
-class PayoneSofort implements PaymentMethodInterface
+/**
+ * TODO: only valid in DE, AT, CH, NL. Use ruleEngine to enforce this during the checkout
+ */
+class PayoneSofortBanking implements PaymentMethodInterface
 {
     public const UUID = '9022c4733d14411e84a78707088487aa';
 
     /** @var string */
-    private $name = 'Payone Sofort';
+    private $name = 'Payone Sofort Banking';
 
     /** @var string */
     private $description = '';
 
     /** @var string */
-    private $paymentHandler = PayoneSofortPaymentHandler::class;
+    private $paymentHandler = PayoneSofortBankingPaymentHandler::class;
 
     public function getId(): string
     {

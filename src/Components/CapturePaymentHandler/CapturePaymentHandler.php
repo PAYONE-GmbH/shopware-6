@@ -6,6 +6,7 @@ namespace PayonePayment\Components\CapturePaymentHandler;
 
 use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
@@ -35,6 +36,11 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
         $this->repository     = $repository;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * TOOD: only paypal and creditcard is tested.
+     */
     public function captureTransaction(OrderTransactionEntity $orderTransaction, Context $context): void
     {
         $paymentTransaction = PaymentTransactionStruct::fromOrderTransaction($orderTransaction);
