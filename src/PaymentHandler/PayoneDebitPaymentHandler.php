@@ -10,13 +10,11 @@ use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
@@ -32,9 +30,6 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
     /** @var EntityRepositoryInterface */
     private $transactionRepository;
 
-    /** @var StateMachineRegistry */
-    private $stateMachineRegistry;
-
     /** @var TranslatorInterface */
     private $translator;
 
@@ -45,14 +40,12 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
         DebitAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         EntityRepositoryInterface $transactionRepository,
-        StateMachineRegistry $stateMachineRegistry,
         TranslatorInterface $translator,
         RequestStack $requestStack
     ) {
         $this->requestFactory        = $requestFactory;
         $this->client                = $client;
         $this->transactionRepository = $transactionRepository;
-        $this->stateMachineRegistry  = $stateMachineRegistry;
         $this->translator            = $translator;
         $this->requestStack          = $requestStack;
     }
@@ -85,10 +78,14 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
 
         $key = (new DateTime())->format(DATE_ATOM);
 
+        // TODO: move custom Field handling to helper function
+
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
 
         $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];
         $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = 1;
+        $customFields[CustomFieldInstaller::USER_ID]                = $response['userid'];
+        $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = 'pending'; // TODO: fetch correct payment state from payone or use a alternative method
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
 
         // TODO: save $response['mandate'] data to user facing table and implement the storefront integration
@@ -106,18 +103,5 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
-
-        $completeState = $this->stateMachineRegistry->getStateByTechnicalName(
-            OrderTransactionStates::STATE_MACHINE,
-            OrderTransactionStates::STATE_PAID,
-            $salesChannelContext->getContext()
-        );
-
-        $data = [
-            'id'      => $transaction->getOrderTransaction()->getId(),
-            'stateId' => $completeState->getId(),
-        ];
-
-        $this->transactionRepository->update([$data], $salesChannelContext->getContext());
     }
 }

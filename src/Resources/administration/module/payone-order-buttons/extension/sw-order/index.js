@@ -13,10 +13,14 @@ Component.override('sw-order-detail-base', {
 
     methods: {
         isPayonePayment(transaction) {
+            debugger;
+
             return true;
         },
 
         hasPayonePayment(order) {
+            debugger;
+
             return true;
         },
 
@@ -35,8 +39,6 @@ Component.override('sw-order-detail-base', {
         },
 
         refundOrder(transaction) {
-            debugger;
-
             this.PayonePaymentService.refundPayment(transaction.id)
                 .then(() => {
                     this.createNotificationSuccess({

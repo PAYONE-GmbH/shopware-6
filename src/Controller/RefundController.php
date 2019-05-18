@@ -10,7 +10,6 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,18 +63,18 @@ class RefundController extends AbstractController
         } catch (PayoneRequestException $exception) {
             return new JsonResponse(
                 [
-                    'status' => false,
+                    'status'  => false,
                     'message' => $exception->getResponse()['error']['ErrorMessage'],
-                    'code' => $exception->getResponse()['error']['ErrorCode']
+                    'code'    => $exception->getResponse()['error']['ErrorCode'],
                 ],
                 400
             );
         } catch (Throwable $exception) {
             return new JsonResponse(
                 [
-                    'status' => false,
+                    'status'  => false,
                     'message' => $exception->getMessage(),
-                    'code' => 0
+                    'code'    => 0,
                 ],
                 400
             );

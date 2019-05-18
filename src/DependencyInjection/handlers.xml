@@ -19,7 +19,6 @@
             <argument type="service" id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="Shopware\Core\Framework\StateMachine\StateMachineRegistry" />
             <argument type="service" id="translator" />
             <argument type="service" id="request_stack" />
 
@@ -36,9 +35,12 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
-        <service id="PayonePayment\PaymentHandler\PayoneSofortPaymentHandler">
+        <service id="PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler">
+            <argument type="service" id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="Shopware\Core\Framework\StateMachine\StateMachineRegistry" />
+            <argument type="service" id="translator" />
 
             <tag name="shopware.payment.method.async" />
         </service>

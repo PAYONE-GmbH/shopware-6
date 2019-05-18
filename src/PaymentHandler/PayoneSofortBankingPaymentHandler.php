@@ -8,7 +8,7 @@ use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -25,9 +25,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterface
+class PayoneSofortBankingPaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var CreditCardPreAuthorizeRequestFactory */
+    /** @var SofortBankingAuthorizeRequestFactory */
     private $requestFactory;
 
     /** @var PayoneClientInterface */
@@ -42,29 +42,22 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
     /** @var TranslatorInterface */
     private $translator;
 
-    /** @var RequestStack */
-    private $requestStack;
-
     public function __construct(
-        CreditCardPreAuthorizeRequestFactory $requestFactory,
+        SofortBankingAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         EntityRepositoryInterface $transactionRepository,
         StateMachineRegistry $stateMachineRegistry,
-        TranslatorInterface $translator,
-        RequestStack $requestStack
+        TranslatorInterface $translator
     ) {
         $this->requestFactory        = $requestFactory;
         $this->client                = $client;
         $this->transactionRepository = $transactionRepository;
         $this->stateMachineRegistry  = $stateMachineRegistry;
         $this->translator            = $translator;
-        $this->requestStack          = $requestStack;
     }
 
     /**
      * {@inheritdoc}
-     *
-     * TODO: Refaktor payment handlers into one generic payment handler for all payment methods
      */
     public function pay(AsyncPaymentTransactionStruct $transaction, SalesChannelContext $salesChannelContext): RedirectResponse
     {
@@ -72,7 +65,6 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
 
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $this->requestStack->getCurrentRequest()->get('pseudocardpan'),
             $salesChannelContext->getContext()
         );
 
@@ -84,6 +76,13 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
                 $exception->getResponse()['error']['CustomerMessage']
             );
         } catch (Throwable $exception) {
+            throw new AsyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
+
+        if (empty($response['status']) && $response['status'] !== 'REDIRECT') {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -107,18 +106,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
 
         $this->transactionRepository->update([$data], $salesChannelContext->getContext());
 
-        if (strtolower($response['status']) === 'error') {
-            throw new AsyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
-
-        if (strtolower($response['status']) === 'redirect') {
-            return new RedirectResponse($response['redirecturl']);
-        }
-
-        return new RedirectResponse($request['successurl']);
+        return new RedirectResponse($response['redirecturl']);
     }
 
     /**
