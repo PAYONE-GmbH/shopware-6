@@ -19,6 +19,10 @@ class SofortBankingAuthorizeRequest
         $this->redirectHandler = $redirectHandler;
     }
 
+    /**
+     * TODO: the reference number needs to be unique. When multiple transactions are possible per order, we need to add
+     * TODO: a suffix/prefix or use another number as reference
+     */
     public function getRequestParameters(
         PaymentTransactionStruct $transaction,
         Context $context
