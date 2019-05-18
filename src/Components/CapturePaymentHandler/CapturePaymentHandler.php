@@ -62,6 +62,7 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
         $key = (new DateTime())->format(DATE_ATOM);
 
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
+        $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = 'captured';
 
         $data = [
             'id'           => $orderTransaction->getId(),

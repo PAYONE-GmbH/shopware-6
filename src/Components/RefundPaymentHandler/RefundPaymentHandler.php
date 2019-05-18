@@ -64,6 +64,7 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
         $key = (new DateTime())->format(DATE_ATOM);
 
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
+        $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = 'refunded';
 
         $data = [
             'id'           => $orderTransaction->getId(),
