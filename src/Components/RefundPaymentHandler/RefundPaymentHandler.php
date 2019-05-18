@@ -6,7 +6,6 @@ namespace PayonePayment\Components\RefundPaymentHandler;
 
 use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
@@ -37,7 +36,7 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * TODO: Sofort needs additional fields when refunding a transaction. It might be nessessary to have a refund transaction
      * TODO: request per payment method.
