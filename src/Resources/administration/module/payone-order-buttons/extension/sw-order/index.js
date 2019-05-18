@@ -52,7 +52,7 @@ Component.override('sw-order-detail-base', {
                 .catch((errorResponse) => {
                     this.createNotificationError({
                         title: this.$tc('payone-order-buttons.capture.errorTitle'),
-                        message: errorResponse.response.message
+                        message: errorResponse.response.data.message
                     });
                 });
         },
@@ -72,7 +72,7 @@ Component.override('sw-order-detail-base', {
                 .catch((errorResponse) => {
                     this.createNotificationError({
                         title: this.$tc('payone-order-buttons.refund.errorTitle'),
-                        message: errorResponse.response.message
+                        message: errorResponse.response.data.message
                     });
                 });
         },
