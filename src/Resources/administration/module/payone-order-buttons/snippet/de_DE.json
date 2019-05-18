@@ -3,14 +3,19 @@
         "title": "Payone Payment",
         "capture": {
             "buttonTitle": "Capture",
-            "successMessage": "Capture erfolgreich durchgeführt."
+            "successTitle": "Payone Payment",
+            "successMessage": "Capture erfolgreich durchgeführt.",
+            "errorTitle": "Payone Payment"
         },
         "refund": {
             "buttonTitle": "Refund",
-            "successMessage": "Refund erfolgreich durchgeführt."
+            "successTitle": "Payone Payment",
+            "successMessage": "Refund erfolgreich durchgeführt.",
+            "errorTitle": "Payone Payment"
         },
         "poNumber": "PO-Nummer",
         "sequenceNumber": "Sequenznummer",
-        "transactionState": "Status"
+        "transactionState": "Status",
+        "transactionAmount": "Betrag"
     }
 }
