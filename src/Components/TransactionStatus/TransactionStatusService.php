@@ -73,7 +73,11 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $key = (new DateTime())->format(DATE_ATOM);
 
         $customFields                                               = $orderTransaction->getCustomFields() ?? [];
-        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = (int) $transactionData['sequencenumber'];
+
+        // TODO: normally the sequence number from payone should be trusted, but during tests the sequqnce number
+        // TODO: dropped to 0 after a successfull capture of a credit card. Needs to be investiaged.
+        //$customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = (int) $transactionData['sequencenumber'];
+
         $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = $transactionData['txaction'];
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $transactionData;
 

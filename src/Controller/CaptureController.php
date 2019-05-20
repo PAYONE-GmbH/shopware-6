@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
@@ -45,7 +46,7 @@ class CaptureController extends AbstractController
         $transaction = $request->get('transaction');
 
         if (empty($transaction)) {
-            return new JsonResponse(['status' => false, 'message' => 'missing order transaction id'], 404);
+            return new JsonResponse(['status' => false, 'message' => 'missing order transaction id'], Response::HTTP_NOT_FOUND);
         }
 
         $criteria = new Criteria([$transaction]);
@@ -55,7 +56,7 @@ class CaptureController extends AbstractController
         $orderTransaction = $this->transactionRepository->search($criteria, $context)->first();
 
         if (null === $orderTransaction) {
-            return new JsonResponse(['status' => false, 'message' => 'no order transaction found'], 404);
+            return new JsonResponse(['status' => false, 'message' => 'no order transaction found'], Response::HTTP_NOT_FOUND);
         }
 
         try {
@@ -67,7 +68,7 @@ class CaptureController extends AbstractController
                     'message' => $exception->getResponse()['error']['ErrorMessage'],
                     'code'    => $exception->getResponse()['error']['ErrorCode'],
                 ],
-                400
+                Response::HTTP_BAD_REQUEST
             );
         } catch (Throwable $exception) {
             return new JsonResponse(
@@ -76,7 +77,7 @@ class CaptureController extends AbstractController
                     'message' => $exception->getMessage(),
                     'code'    => 0,
                 ],
-                400
+                Response::HTTP_BAD_REQUEST
             );
         }
 

@@ -90,11 +90,12 @@ class PayoneSofortBankingPaymentHandler implements AsynchronousPaymentHandlerInt
 
         $key = (new DateTime())->format(DATE_ATOM);
 
+        // TODO: Move Custom Field handling to a own "handler" class
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
 
         $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];
         $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = $response['status'];
-        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = 1;
+        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = 0; // TODO: payment is currently pending. 0 should be right. Needs to be verififed
         $customFields[CustomFieldInstaller::USER_ID]                = $response['userid'];
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
 
@@ -144,9 +145,15 @@ class PayoneSofortBankingPaymentHandler implements AsynchronousPaymentHandlerInt
             $salesChannelContext->getContext()
         );
 
+        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
+
+        // TODO: hack to disable refund calls during a customer is still on the sofort payment page. Needs to be refaktored
+        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] = 1;
+
         $data = [
             'id'      => $transaction->getOrderTransaction()->getId(),
             'stateId' => $completeState->getId(),
+            'customFields' => $customFields,
         ];
 
         $this->transactionRepository->update([$data], $salesChannelContext->getContext());

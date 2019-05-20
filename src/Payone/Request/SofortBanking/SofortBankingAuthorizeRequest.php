@@ -35,7 +35,7 @@ class SofortBankingAuthorizeRequest
             'request'                => 'authorization',
             'clearingtype'           => 'sb',
             'onlinebanktransfertype' => 'PNT',
-            'bankcountry'            => 'DE', // DE, AT, CH, NL
+            'bankcountry'            => 'DE', // TODO: possible values DE, AT, CH, NL
             'amount'                 => (int) ($transaction->getOrder()->getAmountTotal() * 100),
             'currency'               => $transaction->getOrder()->getCurrency()->getIsoCode(),
             'reference'              => $transaction->getOrder()->getOrderNumber(),
