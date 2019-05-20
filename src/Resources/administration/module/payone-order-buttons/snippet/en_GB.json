@@ -15,7 +15,6 @@
         },
         "poNumber": "PO-Number",
         "sequenceNumber": "Sequencenumber",
-        "transactionState": "State",
-        "transactionAmount": "Amount"
+        "transactionState": "State"
     }
 }
