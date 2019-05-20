@@ -11,13 +11,43 @@ Component.override('sw-order-detail-base', {
         Mixin.getByName('notification')
     ],
 
+    data() {
+        return {
+            disableButtons: false
+        };
+    },
+
     methods: {
         isPayonePayment(transaction) {
             if (!transaction.customFields) {
                 return false;
             }
 
-            return !!transaction.customFields.payone_transaction_id;
+            return transaction.customFields.payone_transaction_id;
+        },
+
+        isCapturePossible(transaction) {
+            if (!transaction.customFields) {
+                return false;
+            }
+
+            if (this.disableButtons) {
+                return false;
+            }
+
+            return transaction.customFields.payone_sequence_number === 0; // TODO: capture is not limited to sequqnce number 0
+        },
+
+        isRefundPossible(transaction) {
+            if (!transaction.customFields) {
+                return false;
+            }
+
+            if (this.disableButtons) {
+                return false;
+            }
+
+            return transaction.customFields.payone_sequence_number === 1; // TODO: refund is not limited to sequqnce number 1
         },
 
         hasPayonePayment(order) {
@@ -38,9 +68,13 @@ Component.override('sw-order-detail-base', {
         },
 
         captureOrder(transaction) {
+            let me = this;
+
             if (!this.isPayonePayment(transaction)) {
                 return;
             }
+
+            me.disableButtons = true;
 
             this.PayonePaymentService.capturePayment(transaction.id)
                 .then(() => {
@@ -48,19 +82,28 @@ Component.override('sw-order-detail-base', {
                         title: this.$tc('payone-order-buttons.capture.successTitle'),
                         message: this.$tc('payone-order-buttons.capture.successMessage')
                     });
+
+                    me.reloadVersionedOrder(me.currentOrder.versionId);
+                    me.disableButtons = false;
                 })
                 .catch((errorResponse) => {
                     this.createNotificationError({
                         title: this.$tc('payone-order-buttons.capture.errorTitle'),
                         message: errorResponse.response.data.message
                     });
+
+                    me.disableButtons = false;
                 });
         },
 
         refundOrder(transaction) {
+            let me = this;
+
             if (!this.isPayonePayment(transaction)) {
                 return;
             }
+
+            me.disableButtons = true;
 
             this.PayonePaymentService.refundPayment(transaction.id)
                 .then(() => {
@@ -68,12 +111,17 @@ Component.override('sw-order-detail-base', {
                         title: this.$tc('payone-order-buttons.refund.successTitle'),
                         message: this.$tc('payone-order-buttons.refund.successMessage')
                     });
+
+                    me.reloadVersionedOrder(me.currentOrder.versionId);
+                    me.disableButtons = false;
                 })
                 .catch((errorResponse) => {
                     this.createNotificationError({
                         title: this.$tc('payone-order-buttons.refund.errorTitle'),
                         message: errorResponse.response.data.message
                     });
+
+                    me.disableButtons = false;
                 });
         },
     }

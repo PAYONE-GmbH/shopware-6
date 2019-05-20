@@ -21,11 +21,11 @@
                             </sw-container>
 
                             <sw-container gap="30px">
-                                <sw-button @click="captureOrder(transaction)">
+                                <sw-button @click="captureOrder(transaction)" :disabled="!isCapturePossible(transaction)">
                                     {{ $tc('payone-order-buttons.capture.buttonTitle') }}
                                 </sw-button>
 
-                                <sw-button @click="refundOrder(transaction)">
+                                <sw-button @click="refundOrder(transaction)" :disabled="!isRefundPossible(transaction)">
                                     {{ $tc('payone-order-buttons.refund.buttonTitle') }}
                                 </sw-button>
                             </sw-container>
