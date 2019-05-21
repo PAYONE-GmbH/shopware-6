@@ -144,15 +144,9 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
             $salesChannelContext->getContext()
         );
 
-        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
-
-        // TODO: hack to disable refund calls during a customer is still on the paypal payment page. Needs to be refaktored
-        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] = 1;
-
         $data = [
-            'id'           => $transaction->getOrderTransaction()->getId(),
-            'stateId'      => $completeState->getId(),
-            'customFields' => $customFields,
+            'id'      => $transaction->getOrderTransaction()->getId(),
+            'stateId' => $completeState->getId(),
         ];
 
         $this->transactionRepository->update([$data], $salesChannelContext->getContext());
