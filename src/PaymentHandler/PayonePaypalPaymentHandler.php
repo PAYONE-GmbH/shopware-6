@@ -10,7 +10,6 @@ use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
@@ -137,18 +136,5 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
-
-        $completeState = $this->stateMachineRegistry->getStateByTechnicalName(
-            OrderTransactionStates::STATE_MACHINE,
-            OrderTransactionStates::STATE_PAID,
-            $salesChannelContext->getContext()
-        );
-
-        $data = [
-            'id'      => $transaction->getOrderTransaction()->getId(),
-            'stateId' => $completeState->getId(),
-        ];
-
-        $this->transactionRepository->update([$data], $salesChannelContext->getContext());
     }
 }

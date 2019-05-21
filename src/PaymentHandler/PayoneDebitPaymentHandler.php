@@ -96,12 +96,5 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
         ];
 
         $this->transactionRepository->update([$data], $salesChannelContext->getContext());
-
-        if (strtolower($response['status']) === 'error') {
-            throw new SyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
     }
 }
