@@ -150,8 +150,8 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] = 1;
 
         $data = [
-            'id'      => $transaction->getOrderTransaction()->getId(),
-            'stateId' => $completeState->getId(),
+            'id'           => $transaction->getOrderTransaction()->getId(),
+            'stateId'      => $completeState->getId(),
             'customFields' => $customFields,
         ];
 
