@@ -28,7 +28,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     private const STATE_MAPPING = [
         'appointed' => 'open',
         'paid'      => 'paid',
-        'captured'  => 'paid',
+        'capture'   => 'paid',
     ];
 
     /** @var EntityRepositoryInterface */
