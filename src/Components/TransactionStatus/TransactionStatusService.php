@@ -19,13 +19,16 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 {
     /**
      * // TODO: Add further mapping values when required
+     * // TODO: Extract mapping to payment methods where needed as per sequence diagrams
      *
      * `payone_payment_status.action` -> `state_machine_state.technical_name`
      *
      * @var array
      */
     private const STATE_MAPPING = [
-        'appointed' => 'completed',
+        'appointed' => 'open',
+        'paid'      => 'paid',
+        'captured'  => 'paid',
     ];
 
     /** @var EntityRepositoryInterface */
