@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Installer;
 
-use PayonePayment\PayonePayment;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\CustomField\CustomFieldTypes;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -17,9 +16,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class CustomFieldInstaller implements InstallerInterface
 {
-    public const TRANSACTION_ID   = 'payone_transaction_id';
-    public const SEQUENCE_NUMBER  = 'payone_sequence_number';
-    public const TRANSACTION_DATA = 'payone_transaction_data';
+    public const TRANSACTION_ID    = 'payone_transaction_id';
+    public const SEQUENCE_NUMBER   = 'payone_sequence_number';
+    public const TRANSACTION_DATA  = 'payone_transaction_data';
+    public const USER_ID           = 'payone_user_id';
+    public const TRANSACTION_STATE = 'payone_transaction_state';
 
     /** @var EntityRepositoryInterface */
     private $customFieldRepository;
@@ -46,6 +47,16 @@ class CustomFieldInstaller implements InstallerInterface
                 'id'   => '86235308bf4c4bf5b4db7feb07d2a63d',
                 'name' => self::SEQUENCE_NUMBER,
                 'type' => CustomFieldTypes::INT,
+            ],
+            [
+                'id'   => '81f06a4b755e49faaeb42cf0db62c36d',
+                'name' => self::TRANSACTION_STATE,
+                'type' => CustomFieldTypes::TEXT,
+            ],
+            [
+                'id'   => '944b5716791c417ebdf7cc333ad5264f',
+                'name' => self::USER_ID,
+                'type' => CustomFieldTypes::TEXT,
             ],
         ];
     }
@@ -74,7 +85,7 @@ class CustomFieldInstaller implements InstallerInterface
     public function activate(ActivateContext $context): void
     {
         foreach ($this->customFields as $customField) {
-            $this->activateCustomField($customField, $context->getContext());
+            $this->upsertCustomField($customField, $context->getContext());
         }
     }
 
@@ -88,31 +99,24 @@ class CustomFieldInstaller implements InstallerInterface
     private function upsertCustomField($customField, Context $context): void
     {
         $data = [
-            'id'   => $customField['id'],
-            'name' => $customField['name'],
-            'type' => $customField['type'],
-        ];
-
-        $this->customFieldRepository->upsert([$data], $context);
-    }
-
-    private function activateCustomField($customField, Context $context): void
-    {
-        $data = [
             'id'     => $customField['id'],
+            'name'   => $customField['name'],
+            'type'   => $customField['type'],
             'active' => true,
         ];
 
-        $this->customFieldRepository->update([$data], $context);
+        $this->customFieldRepository->upsert([$data], $context);
     }
 
     private function deactivateCustomField($customField, Context $context): void
     {
         $data = [
             'id'     => $customField['id'],
+            'name'   => $customField['name'],
+            'type'   => $customField['type'],
             'active' => false,
         ];
 
-        $this->customFieldRepository->update([$data], $context);
+        $this->customFieldRepository->upsert([$data], $context);
     }
 }

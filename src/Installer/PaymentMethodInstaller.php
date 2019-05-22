@@ -8,7 +8,7 @@ use PayonePayment\PaymentMethod\PaymentMethodInterface;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
 use PayonePayment\PaymentMethod\PayonePaypal;
-use PayonePayment\PaymentMethod\PayoneSofort;
+use PayonePayment\PaymentMethod\PayoneSofortBanking;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -40,7 +40,7 @@ class PaymentMethodInstaller implements InstallerInterface
             new PayoneCreditCard(),
             new PayoneDebit(),
             new PayonePaypal(),
-            new PayoneSofort(),
+            new PayoneSofortBanking(),
         ];
     }
 

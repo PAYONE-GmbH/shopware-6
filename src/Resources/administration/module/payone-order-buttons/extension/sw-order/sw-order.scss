@@ -1,0 +1,16 @@
+.sw-order-payone-card {
+    line-height: 15px;
+
+    dt, dd {
+      padding: 0;
+      border-bottom: none;
+    }
+
+    dt {
+      font-weight: 600;
+
+      &:not(:first-child), &:only-of-type{
+        padding-top: 10px;
+      }
+    }
+}

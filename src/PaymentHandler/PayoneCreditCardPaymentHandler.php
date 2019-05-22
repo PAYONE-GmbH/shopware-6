@@ -10,7 +10,6 @@ use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
@@ -63,6 +62,8 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
 
     /**
      * {@inheritdoc}
+     *
+     * TODO: Refaktor payment handlers into one generic payment handler for all payment methods
      */
     public function pay(AsyncPaymentTransactionStruct $transaction, SalesChannelContext $salesChannelContext): RedirectResponse
     {
@@ -93,7 +94,9 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
 
         $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];
-        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = 1;
+        $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = $response['status'];
+        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = -1; // Blocks further actions on the order until PAYONE transaction status call sets correct sequence number
+        $customFields[CustomFieldInstaller::USER_ID]                = $response['userid'];
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
 
         $data = [
@@ -102,13 +105,6 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         ];
 
         $this->transactionRepository->update([$data], $salesChannelContext->getContext());
-
-        if (strtolower($response['status']) === 'error') {
-            throw new AsyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
 
         if (strtolower($response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);
@@ -119,6 +115,8 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
 
     /**
      * {@inheritdoc}
+     *
+     * TODO: Move finalize to generic handler
      */
     public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
     {
@@ -144,18 +142,5 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
-
-        $completeState = $this->stateMachineRegistry->getStateByTechnicalName(
-            OrderTransactionStates::STATE_MACHINE,
-            OrderTransactionStates::STATE_PAID,
-            $salesChannelContext->getContext()
-        );
-
-        $data = [
-            'id'      => $transaction->getOrderTransaction()->getId(),
-            'stateId' => $completeState->getId(),
-        ];
-
-        $this->transactionRepository->update([$data], $salesChannelContext->getContext());
     }
 }

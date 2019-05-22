@@ -6,6 +6,7 @@ namespace PayonePayment\Components\CapturePaymentHandler;
 
 use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
@@ -13,6 +14,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Throwable;
 
 class CapturePaymentHandler implements CapturePaymentHandlerInterface
 {
@@ -35,6 +37,11 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
         $this->repository     = $repository;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * TOOD: only paypal and creditcard is tested.
+     */
     public function captureTransaction(OrderTransactionEntity $orderTransaction, Context $context): void
     {
         $paymentTransaction = PaymentTransactionStruct::fromOrderTransaction($orderTransaction);
@@ -44,9 +51,11 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
             $context
         );
 
-        $response = $this->client->request($request);
-
-        if (empty($response['status']) || $response['status'] === 'ERROR') {
+        try {
+            $response = $this->client->request($request);
+        } catch (PayoneRequestException $exception) {
+            throw new InvalidOrderException($orderTransaction->getOrderId());
+        } catch (Throwable $exception) {
             throw new InvalidOrderException($orderTransaction->getOrderId());
         }
 
@@ -57,6 +66,7 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
         $key = (new DateTime())->format(DATE_ATOM);
 
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
+        $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = 'captured';
 
         $data = [
             'id'           => $orderTransaction->getId(),

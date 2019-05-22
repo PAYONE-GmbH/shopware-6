@@ -1,7 +1,20 @@
 {
     "payone-order-buttons": {
         "title": "Payone Payment",
-        "capture": "Capture",
-        "refund": "Refund"
+        "capture": {
+            "buttonTitle": "Capture",
+            "successTitle": "Payone Payment",
+            "successMessage": "Capture processed successfully.",
+            "errorTitle": "Payone Payment"
+        },
+        "refund": {
+            "buttonTitle": "Refund",
+            "successTitle": "Payone Payment",
+            "successMessage": "Refund processed successfully.",
+            "errorTitle": "Payone Payment"
+        },
+        "poNumber": "PO-Number",
+        "sequenceNumber": "Sequencenumber",
+        "transactionState": "State"
     }
 }
