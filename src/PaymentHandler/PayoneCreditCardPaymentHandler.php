@@ -106,13 +106,6 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
 
         $this->transactionRepository->update([$data], $salesChannelContext->getContext());
 
-        if (strtolower($response['status']) === 'error') {
-            throw new AsyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
-
         if (strtolower($response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);
         }
