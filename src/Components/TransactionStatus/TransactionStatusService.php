@@ -48,7 +48,9 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     /**
      * {@inheritdoc}
      *
-     * TODO: Handle cancellations and failures (example paypal -> customer clicks on the return to merchant button)
+     * TODO: Handle cancellations and failures
+     * TODO: example paypal -> customer clicks on the return to merchant button
+     * TODO: example debit cancellation (Rücklastschrift)
      */
     public function persistTransactionStatus(SalesChannelContext $salesChannelContext, array $transactionData): void
     {
