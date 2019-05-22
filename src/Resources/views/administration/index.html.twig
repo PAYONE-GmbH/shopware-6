@@ -1,5 +1,11 @@
 {% sw_extends 'administration/index.html.twig' %}
 
+{% block administration_stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" href="{{ asset('bundles/payonepayment/static/css/PayonePayment.css') }}">
+{% endblock %}
+
 {% block administration_scripts %}
     {{ parent() }}
 

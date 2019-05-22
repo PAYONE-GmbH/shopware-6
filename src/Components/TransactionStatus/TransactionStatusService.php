@@ -44,6 +44,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     /**
      * {@inheritdoc}
+     *
+     * TODO: Handle cancellations and failures (example paypal -> customer clicks on the return to merchant button)
      */
     public function persistTransactionStatus(SalesChannelContext $salesChannelContext, array $transactionData): void
     {
@@ -70,8 +72,10 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
         $key = (new DateTime())->format(DATE_ATOM);
 
-        $customFields                                               = $orderTransaction->getCustomFields() ?? [];
+        $customFields = $orderTransaction->getCustomFields() ?? [];
+
         $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = (int) $transactionData['sequencenumber'];
+        $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = $transactionData['txaction'];
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $transactionData;
 
         $data = [

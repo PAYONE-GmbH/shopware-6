@@ -1,5 +1,6 @@
 import { Component, Mixin } from 'src/core/shopware';
 import template from './sw-order.html.twig';
+import './sw-order.scss';
 
 Component.override('sw-order-detail-base', {
     template,
@@ -10,36 +11,117 @@ Component.override('sw-order-detail-base', {
         Mixin.getByName('notification')
     ],
 
+    data() {
+        return {
+            disableButtons: false
+        };
+    },
+
     methods: {
-        captureOrder(order) {
-            this.PayonePaymentService.capturePayment(order.id)
+        isPayonePayment(transaction) {
+            if (!transaction.customFields) {
+                return false;
+            }
+
+            return transaction.customFields.payone_transaction_id;
+        },
+
+        isCapturePossible(transaction) {
+            if (!transaction.customFields) {
+                return false;
+            }
+
+            if (this.disableButtons) {
+                return false;
+            }
+
+            return transaction.customFields.payone_sequence_number === 0; // TODO: capture is not limited to sequqnce number 0
+        },
+
+        isRefundPossible(transaction) {
+            if (!transaction.customFields) {
+                return false;
+            }
+
+            if (this.disableButtons) {
+                return false;
+            }
+
+            return transaction.customFields.payone_sequence_number === 1; // TODO: refund is not limited to sequqnce number 1
+        },
+
+        hasPayonePayment(order) {
+            let me = this;
+            let isPayone = false;
+
+            if (!order.transactions) {
+                return false;
+            }
+
+            order.transactions.map(function(transaction) {
+                if (me.isPayonePayment(transaction)) {
+                    isPayone = true;
+                }
+            });
+
+            return isPayone;
+        },
+
+        captureOrder(transaction) {
+            let me = this;
+
+            if (!this.isPayonePayment(transaction)) {
+                return;
+            }
+
+            me.disableButtons = true;
+
+            this.PayonePaymentService.capturePayment(transaction.id)
                 .then(() => {
                     this.createNotificationSuccess({
-                        title: this.$tc('payone-order-buttons.captureAction.successTitle'),
-                        message: this.$tc('payone-order-buttons.captureAction.successMessage')
+                        title: this.$tc('payone-order-buttons.capture.successTitle'),
+                        message: this.$tc('payone-order-buttons.capture.successMessage')
                     });
+
+                    me.reloadVersionedOrder(me.currentOrder.versionId);
+                    me.disableButtons = false;
                 })
                 .catch((errorResponse) => {
                     this.createNotificationError({
-                        title: errorResponse.title,
-                        message: errorResponse.message
+                        title: this.$tc('payone-order-buttons.capture.errorTitle'),
+                        message: errorResponse.response.data.message
                     });
+
+                    me.disableButtons = false;
                 });
         },
 
-        refundOrder(order) {
-            this.PayonePaymentService.refundPayment(order.id)
+        refundOrder(transaction) {
+            let me = this;
+
+            if (!this.isPayonePayment(transaction)) {
+                return;
+            }
+
+            me.disableButtons = true;
+
+            this.PayonePaymentService.refundPayment(transaction.id)
                 .then(() => {
                     this.createNotificationSuccess({
-                        title: this.$tc('payone-order-buttons.captureAction.successTitle'),
-                        message: this.$tc('payone-order-buttons.captureAction.successMessage')
+                        title: this.$tc('payone-order-buttons.refund.successTitle'),
+                        message: this.$tc('payone-order-buttons.refund.successMessage')
                     });
+
+                    me.reloadVersionedOrder(me.currentOrder.versionId);
+                    me.disableButtons = false;
                 })
                 .catch((errorResponse) => {
                     this.createNotificationError({
-                        title: errorResponse.title,
-                        message: errorResponse.message
+                        title: this.$tc('payone-order-buttons.refund.errorTitle'),
+                        message: errorResponse.response.data.message
                     });
+
+                    me.disableButtons = false;
                 });
         },
     }

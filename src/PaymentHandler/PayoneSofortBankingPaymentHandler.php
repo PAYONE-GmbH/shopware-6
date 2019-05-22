@@ -8,7 +8,7 @@ use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -23,9 +23,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
+class PayoneSofortBankingPaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var PaypalAuthorizeRequestFactory */
+    /** @var SofortBankingAuthorizeRequestFactory */
     private $requestFactory;
 
     /** @var PayoneClientInterface */
@@ -41,7 +41,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
     private $translator;
 
     public function __construct(
-        PaypalAuthorizeRequestFactory $requestFactory,
+        SofortBankingAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         EntityRepositoryInterface $transactionRepository,
         StateMachineRegistry $stateMachineRegistry,
@@ -89,6 +89,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
 
         $key = (new DateTime())->format(DATE_ATOM);
 
+        // TODO: Move Custom Field handling to a own "handler" class
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
 
         $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];

@@ -4,6 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <!-- System -->
         <service id="PayonePayment\Payone\Request\System\SystemRequest">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
@@ -12,6 +13,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
+        <!-- Customer -->
         <service id="PayonePayment\Payone\Request\Customer\CustomerRequest">
             <argument type="service" id="language.repository" />
             <argument type="service" id="order_address.repository" />
@@ -23,6 +25,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
+        <!-- Capture -->
         <service id="PayonePayment\Payone\Request\Capture\CaptureRequest" />
 
         <service id="PayonePayment\Payone\Request\Capture\CaptureRequestFactory">
@@ -30,6 +33,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
+        <!-- Refund -->
         <service id="PayonePayment\Payone\Request\Refund\RefundRequest" />
 
         <service id="PayonePayment\Payone\Request\Refund\RefundRequestFactory">
@@ -37,6 +41,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\Refund\RefundRequest" />
         </service>
 
+        <!-- Paypal -->
         <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
         </service>
@@ -47,6 +52,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
+        <!-- Debit -->
         <service id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequest" />
 
         <service id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory">
@@ -64,10 +70,22 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
+        <!-- Debit -->
         <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest" />
 
         <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <!-- SofortBanking -->
+        <service id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
