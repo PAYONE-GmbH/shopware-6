@@ -14,10 +14,15 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Throwable;
 
 class RefundPaymentHandler implements RefundPaymentHandlerInterface
 {
+    private const STATE_REFUNDED = 'refunded';
+
     /** @var RefundRequestFactory */
     private $requestFactory;
 
@@ -27,14 +32,19 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
     /** @var EntityRepositoryInterface */
     private $repository;
 
+    /** @var EntityRepositoryInterface */
+    private $stateRepository;
+
     public function __construct(
         RefundRequestFactory $requestFactory,
         PayoneClientInterface $client,
-        EntityRepositoryInterface $repository
+        EntityRepositoryInterface $repository,
+        EntityRepositoryInterface $stateRepository
     ) {
-        $this->requestFactory = $requestFactory;
-        $this->client         = $client;
-        $this->repository     = $repository;
+        $this->requestFactory  = $requestFactory;
+        $this->client          = $client;
+        $this->repository      = $repository;
+        $this->stateRepository = $stateRepository;
     }
 
     /**
@@ -72,9 +82,21 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
 
         $data = [
             'id'           => $orderTransaction->getId(),
+            'stateId'      => $this->getRefundedState()->getId(),
             'customFields' => $customFields,
         ];
 
         $this->repository->update([$data], $context);
+    }
+
+    private function getRefundedState(): ?StateMachineStateEntity
+    {
+        $context = Context::createDefaultContext();
+
+        $criteria = new Criteria();
+        $filter   = new EqualsFilter('state_machine_state.technicalName', self::STATE_REFUNDED);
+        $criteria->addFilter($filter);
+
+        return $this->stateRepository->search($criteria, $context)->first();
     }
 }
