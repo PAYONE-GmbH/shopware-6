@@ -83,7 +83,7 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
 
         $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];
-        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = 0; // TODO: as the payment is not captured yet, 0 should be ok. Needs to be verified
+        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = -1; // Blocks further actions on the order until PAYONE transaction status call sets correct sequence number
         $customFields[CustomFieldInstaller::USER_ID]                = $response['userid'];
         $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = 'pending'; // TODO: fetch correct payment state from payone or use a alternative method
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;

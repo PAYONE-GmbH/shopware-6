@@ -95,7 +95,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
 
         $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];
         $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = $response['status'];
-        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = 0; // TODO: as the payment is not captured yet, 0 should be ok. Needs to be verified
+        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = -1; // Blocks further actions on the order until PAYONE transaction status call sets correct sequence number
         $customFields[CustomFieldInstaller::USER_ID]                = $response['userid'];
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
 
