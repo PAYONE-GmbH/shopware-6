@@ -27,6 +27,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\Refund\RefundRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="state_machine_state.repository"/>
         </service>
 
         <service id="PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandler">
