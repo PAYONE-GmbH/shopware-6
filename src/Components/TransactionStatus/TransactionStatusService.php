@@ -47,10 +47,6 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     /**
      * {@inheritdoc}
-     *
-     * TODO: Handle cancellations and failures
-     * TODO: example paypal -> customer clicks on the return to merchant button
-     * TODO: example debit cancellation (Rücklastschrift)
      */
     public function persistTransactionStatus(SalesChannelContext $salesChannelContext, array $transactionData): void
     {
@@ -66,7 +62,6 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             ));
         }
 
-        // Update the transaction state by the action that was provided by Payone
         $state = $this->getStateByTechnicalName($transactionData['txaction']);
 
         if (!$state) {

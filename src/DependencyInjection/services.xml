@@ -49,5 +49,13 @@
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="router.default"/>
         </service>
+
+        <service id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler">
+            <argument type="service" id="order_transaction.repository" />
+        </service>
+
+        <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler">
+            <argument type="service" id="translator" />
+        </service>
     </services>
 </container>

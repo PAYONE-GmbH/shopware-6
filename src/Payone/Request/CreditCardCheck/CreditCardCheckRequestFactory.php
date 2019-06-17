@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\CreditCardCheck;
 
 use PayonePayment\Payone\Request\AbstractRequestFactory;
+use PayonePayment\Payone\Request\RequestFactoryInterface;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\System\SalesChannel\SalesChannelEntity;
+use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class CreditCardCheckRequestFactory extends AbstractRequestFactory
+class CreditCardCheckRequestFactory extends AbstractRequestFactory implements RequestFactoryInterface
 {
     /** @var CreditCardCheckRequest */
     private $creditCardRequest;
@@ -23,13 +25,16 @@ class CreditCardCheckRequestFactory extends AbstractRequestFactory
         $this->systemRequest     = $systemRequest;
     }
 
-    public function getRequestParameters(SalesChannelEntity $salesChannelEntity, Context $context): array
-    {
+    public function getRequestParameters(
+        PaymentTransactionStruct $transaction,
+        RequestDataBag $dataBag,
+        SalesChannelContext $context
+    ): array {
         $this->requests[] = $this->creditCardRequest->getRequestParameters();
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $salesChannelEntity,
-            $context
+            $context->getSalesChannel(),
+            $context->getContext()
         );
 
         return $this->createRequest();
