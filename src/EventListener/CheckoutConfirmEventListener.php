@@ -16,7 +16,6 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Storefront\Event\CheckoutEvents;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class CheckoutConfirmEventListener implements EventSubscriberInterface
 {
@@ -50,7 +49,7 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
             return;
         }
 
-        $requestBag = new RequestDataBag($event->getRequest()->request->all());
+        $requestBag         = new RequestDataBag($event->getRequest()->request->all());
         $paymentTransaction = new PaymentTransactionStruct();
 
         $request = $this->requestFactory->getRequestParameters(

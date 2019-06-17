@@ -7,7 +7,6 @@ namespace PayonePayment\Payone\Request;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 interface RequestFactoryInterface
 {
