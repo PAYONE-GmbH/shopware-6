@@ -37,24 +37,24 @@ class CreditCardPreAuthorizeRequestFactory extends AbstractRequestFactory implem
     public function getRequestParameters(
         PaymentTransactionStruct $transaction,
         RequestDataBag $dataBag,
-        SalesChannelContext $context
+        Context $context
     ): array {
         $pseudoPan = $dataBag->get('pseudocardpan');
 
         $this->requests[] = $this->preAuthorizeRequest->getRequestParameters(
             $transaction,
             $pseudoPan,
-            $context->getContext()
+            $context
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
             $transaction->getOrder(),
-            $context->getContext()
+            $context
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $context->getSalesChannel(),
-            $context->getContext()
+            $context
         );
 
         return $this->createRequest();

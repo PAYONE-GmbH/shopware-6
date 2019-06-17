@@ -37,21 +37,21 @@ class SofortBankingAuthorizeRequestFactory extends AbstractRequestFactory implem
     public function getRequestParameters(
         PaymentTransactionStruct $transaction,
         RequestDataBag $dataBag,
-        SalesChannelContext $context
+        Context $context
     ): array {
         $this->requests[] = $this->authorizeRequest->getRequestParameters(
             $transaction,
-            $context->getContext()
+            $context
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
             $transaction->getOrder(),
-            $context->getContext()
+            $context
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannel(),
-            $context->getContext()
+            $context
         );
 
         return $this->createRequest();

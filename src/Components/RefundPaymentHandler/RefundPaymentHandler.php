@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Throwable;
 
@@ -57,9 +58,12 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
     public function refundTransaction(OrderTransactionEntity $orderTransaction, Context $context): void
     {
         $paymentTransaction = PaymentTransactionStruct::fromOrderTransaction($orderTransaction);
+        
+        $requestBag = new RequestDataBag();
 
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
+            $requestBag,
             $context
         );
 

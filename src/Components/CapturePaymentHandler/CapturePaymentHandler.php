@@ -14,6 +14,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Throwable;
 
 class CapturePaymentHandler implements CapturePaymentHandlerInterface
@@ -46,8 +47,11 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
     {
         $paymentTransaction = PaymentTransactionStruct::fromOrderTransaction($orderTransaction);
 
+        $requestBag = new RequestDataBag();
+
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
+            $requestBag,
             $context
         );
 

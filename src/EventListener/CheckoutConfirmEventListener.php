@@ -56,7 +56,7 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
             $requestBag,
-            $salesChannelContext
+            $salesChannelContext->getContext()
         );
 
         $payoneData = new PayonePaymentData();

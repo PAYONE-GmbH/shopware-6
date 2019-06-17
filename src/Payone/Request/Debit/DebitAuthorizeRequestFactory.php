@@ -37,7 +37,7 @@ class DebitAuthorizeRequestFactory extends AbstractRequestFactory implements Req
     public function getRequestParameters(
         PaymentTransactionStruct $transaction,
         RequestDataBag $dataBag,
-        SalesChannelContext $context
+        Context $context
     ): array {
         $iban         = $dataBag->get('iban');
         $bic          = $dataBag->get('bic');
@@ -48,17 +48,17 @@ class DebitAuthorizeRequestFactory extends AbstractRequestFactory implements Req
             $iban,
             $bic,
             $accountOwner,
-            $context->getContext()
+            $context
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
             $transaction->getOrder(),
-            $context->getContext()
+            $context
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannel(),
-            $context->getContext()
+            $context
         );
 
         return $this->createRequest();
