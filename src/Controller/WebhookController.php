@@ -6,7 +6,7 @@ namespace PayonePayment\Controller;
 
 use PayonePayment\Payone\Webhook\Processor\WebhookProcessorInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Storefront\Framework\Controller\StorefrontController;
+use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
