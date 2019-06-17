@@ -9,7 +9,6 @@ use PayonePayment\Payone\Request\RequestFactoryInterface;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class SystemRequestFactory extends AbstractRequestFactory implements RequestFactoryInterface
 {

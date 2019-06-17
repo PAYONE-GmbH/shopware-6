@@ -11,7 +11,6 @@ use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class DebitAuthorizeRequestFactory extends AbstractRequestFactory implements RequestFactoryInterface
 {

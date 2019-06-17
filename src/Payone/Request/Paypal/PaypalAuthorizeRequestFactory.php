@@ -9,10 +9,8 @@ use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\RequestFactoryInterface;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Payone\Struct\PaymentTransactionStruct;
-use Shopware\Core\Checkout\Cart\SalesChannel\SalesChannelCartController;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaypalAuthorizeRequestFactory extends AbstractRequestFactory implements RequestFactoryInterface
 {

@@ -58,7 +58,7 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
     public function refundTransaction(OrderTransactionEntity $orderTransaction, Context $context): void
     {
         $paymentTransaction = PaymentTransactionStruct::fromOrderTransaction($orderTransaction);
-        
+
         $requestBag = new RequestDataBag();
 
         $request = $this->requestFactory->getRequestParameters(

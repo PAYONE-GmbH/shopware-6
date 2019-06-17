@@ -45,9 +45,9 @@ class PaymentTransactionStruct
 
     public static function fromOrderTransaction(OrderTransactionEntity $transaction): self
     {
-        $transactionStruct = new self();
-        $transactionStruct->order = $transaction->getOrder();
-        $transactionStruct->customFields = $transaction->getCustomFields() ?? [];
+        $transactionStruct                   = new self();
+        $transactionStruct->order            = $transaction->getOrder();
+        $transactionStruct->customFields     = $transaction->getCustomFields() ?? [];
         $transactionStruct->orderTransaction = $transaction;
 
         return $transactionStruct;
@@ -55,20 +55,20 @@ class PaymentTransactionStruct
 
     public static function fromAsyncPaymentTransactionStruct(AsyncPaymentTransactionStruct $struct): self
     {
-        $transactionStruct = new self();
-        $transactionStruct->order = $struct->getOrder();
-        $transactionStruct->customFields = $struct->getOrderTransaction()->getCustomFields() ?? [];
+        $transactionStruct                   = new self();
+        $transactionStruct->order            = $struct->getOrder();
+        $transactionStruct->customFields     = $struct->getOrderTransaction()->getCustomFields() ?? [];
         $transactionStruct->orderTransaction = $struct->getOrderTransaction();
-        $transactionStruct->returnUrl = $struct->getReturnUrl();
+        $transactionStruct->returnUrl        = $struct->getReturnUrl();
 
         return $transactionStruct;
     }
 
     public static function fromSyncPaymentTransactionStruct(SyncPaymentTransactionStruct $struct): self
     {
-        $transactionStruct = new self();
-        $transactionStruct->order = $struct->getOrder();
-        $transactionStruct->customFields = $struct->getOrderTransaction()->getCustomFields() ?? [];
+        $transactionStruct                   = new self();
+        $transactionStruct->order            = $struct->getOrder();
+        $transactionStruct->customFields     = $struct->getOrderTransaction()->getCustomFields() ?? [];
         $transactionStruct->orderTransaction = $struct->getOrderTransaction();
 
         return $transactionStruct;
