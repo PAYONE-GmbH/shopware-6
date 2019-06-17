@@ -6,14 +6,17 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
+use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PayonePaymentData;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Language\LanguageEntity;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Storefront\Event\CheckoutEvents;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class CheckoutConfirmEventListener implements EventSubscriberInterface
 {
@@ -23,8 +26,10 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
     /** @var EntityRepositoryInterface */
     private $languageRepository;
 
-    public function __construct(CreditCardCheckRequestFactory $requestFactory, EntityRepositoryInterface $languageRepository)
-    {
+    public function __construct(
+        CreditCardCheckRequestFactory $requestFactory,
+        EntityRepositoryInterface $languageRepository
+    ) {
         $this->requestFactory     = $requestFactory;
         $this->languageRepository = $languageRepository;
     }
@@ -39,16 +44,24 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
     public function onCheckoutConfirm(CheckoutConfirmPageLoadedEvent $event)
     {
         $salesChannelContext = $event->getSalesChannelContext();
-        $salesChannel        = $salesChannelContext->getSalesChannel();
         $context             = $salesChannelContext->getContext();
 
         if ($salesChannelContext->getPaymentMethod()->getId() !== PayoneCreditCard::UUID) {
             return;
         }
 
+        $requestBag = new RequestDataBag($event->getRequest()->request->all());
+        $paymentTransaction = new PaymentTransactionStruct();
+
+        $request = $this->requestFactory->getRequestParameters(
+            $paymentTransaction,
+            $requestBag,
+            $salesChannelContext
+        );
+
         $payoneData = new PayonePaymentData();
         $payoneData->assign([
-            'cardRequest'   => $this->requestFactory->getRequestParameters($salesChannel, $context),
+            'cardRequest'   => $request,
             'language'      => $this->getCustomerLanguage($context),
             'paymentMethod' => $salesChannelContext->getPaymentMethod(),
         ]);

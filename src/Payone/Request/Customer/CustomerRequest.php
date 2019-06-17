@@ -54,8 +54,6 @@ class CustomerRequest
             'ip'              => $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
         ];
 
-        // TODO: we can provide a existing payone userid. This should be discussed.
-
         $birthday = $order->getOrderCustomer()->getCustomer()->getBirthday();
         if (null !== $birthday) {
             $personalData['birthday'] = $birthday->format('Ymd');
@@ -66,9 +64,7 @@ class CustomerRequest
 
     private function getCustomerLanguage(Context $context): LanguageEntity
     {
-        // TODO: Replace with getLanguageId
-        $languages = $context->getLanguageIdChain();
-        $criteria  = new Criteria([reset($languages)]);
+        $criteria = new Criteria([$context->getLanguageId()]);
         $criteria->addAssociation('locale');
 
         /** @var null|LanguageEntity $language */
