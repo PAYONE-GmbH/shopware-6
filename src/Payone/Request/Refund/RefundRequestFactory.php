@@ -29,7 +29,7 @@ class RefundRequestFactory extends AbstractRequestFactory implements RequestFact
     public function getRequestParameters(
         PaymentTransactionStruct $transaction,
         RequestDataBag $dataBag,
-        SalesChannelContext $context
+        Context $context
     ): array {
         $this->requests[] = $this->refundRequest->getRequestParameters(
             $transaction->getOrder(),
@@ -38,7 +38,7 @@ class RefundRequestFactory extends AbstractRequestFactory implements RequestFact
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannel(),
-            $context->getContext()
+            $context
         );
 
         return $this->createRequest();

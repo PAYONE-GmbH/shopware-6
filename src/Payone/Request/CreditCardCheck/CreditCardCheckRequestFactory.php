@@ -28,13 +28,13 @@ class CreditCardCheckRequestFactory extends AbstractRequestFactory implements Re
     public function getRequestParameters(
         PaymentTransactionStruct $transaction,
         RequestDataBag $dataBag,
-        SalesChannelContext $context
+        Context $context
     ): array {
         $this->requests[] = $this->creditCardRequest->getRequestParameters();
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $context->getSalesChannel(),
-            $context->getContext()
+            $context
         );
 
         return $this->createRequest();

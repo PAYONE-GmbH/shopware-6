@@ -14,6 +14,6 @@ interface RequestFactoryInterface
     public function getRequestParameters(
         PaymentTransactionStruct $transaction,
         RequestDataBag $dataBag,
-        SalesChannelContext $context
+        Context $context
     ): array;
 }

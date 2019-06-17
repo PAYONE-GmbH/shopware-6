@@ -29,7 +29,7 @@ class CaptureRequestFactory extends AbstractRequestFactory implements RequestFac
     public function getRequestParameters(
         PaymentTransactionStruct $transaction,
         RequestDataBag $dataBag,
-        SalesChannelContext $context
+        Context $context
     ): array {
         $this->requests[] = $this->captureRequest->getRequestParameters(
             $transaction->getOrder(),
@@ -38,7 +38,7 @@ class CaptureRequestFactory extends AbstractRequestFactory implements RequestFac
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannel(),
-            $context->getContext()
+            $context
         );
 
         return $this->createRequest();

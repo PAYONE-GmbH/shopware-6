@@ -62,7 +62,7 @@ class PayoneSofortBankingPaymentHandler implements AsynchronousPaymentHandlerInt
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
             $dataBag,
-            $salesChannelContext
+            $salesChannelContext->getContext()
         );
 
         try {
