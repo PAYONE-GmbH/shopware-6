@@ -25,6 +25,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\CacheTestBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\FilesystemBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
@@ -108,7 +109,7 @@ class PaypalPaymentHandlerTest extends TestCase
         $context = $this->createCheckoutContext((new PayonePaypal())->getId());
         $product = $this->getProduct();
 
-        $lineItem = new LineItem($product->getId(), LineItem::PRODUCT_LINE_ITEM_TYPE, 1);
+        $lineItem = new LineItem($product->getId(), LineItem::PRODUCT_LINE_ITEM_TYPE, '1');
         $lineItem->setPayload(['id' => $product->getId()]);
 
         $cart = $this->cartService->add($this->cartService->getCart($this->token, $context), $lineItem, $context);
@@ -117,7 +118,9 @@ class PaypalPaymentHandlerTest extends TestCase
 
         $order = $this->cartService->order($processedCart, $context);
 
-        $response = $this->paymentService->handlePaymentByOrder($order, $context);
+        $dataBag = new RequestDataBag();
+
+        $response = $this->paymentService->handlePaymentByOrder($order, $dataBag, $context);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
     }
