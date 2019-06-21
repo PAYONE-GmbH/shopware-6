@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Components\TransactionStatus;
 
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandler;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PHPUnit\Framework\TestCase;
