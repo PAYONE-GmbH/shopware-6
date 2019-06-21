@@ -4,64 +4,37 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\ConfigReader;
 
-use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigCollection;
-use PayonePayment\DataAbstractionLayer\Entity\PayonePaymentConfig\PayonePaymentConfigEntity;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use PayonePayment\Payone\Struct\Configuration;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigReader implements ConfigReaderInterface
 {
-    /** @var EntityRepositoryInterface */
-    private $repository;
+    public const SYSTEM_CONFIG_DOMAIN = 'PayonePayment.config.';
 
-    public function __construct(EntityRepositoryInterface $repository)
+    /** @var SystemConfigService */
+    private $systemConfigService;
+
+    public function __construct(SystemConfigService $systemConfigService)
     {
-        $this->repository = $repository;
+        $this->systemConfigService = $systemConfigService;
     }
 
-    public function read(string $salesChannelId = '', string $key = '', bool $fallback = true): PayonePaymentConfigCollection
+    public function read(string $salesChannelId = '', bool $fallback = true): Configuration
     {
-        $criteria = new Criteria();
-        $criteria->addSorting(new FieldSorting(
-            'payone_payment_config.salesChannelId',
-            FieldSorting::ASCENDING
-        ));
+        $values = $this->systemConfigService->getDomain(
+            self::SYSTEM_CONFIG_DOMAIN,
+            $salesChannelId,
+            $fallback
+        );
 
-        if (!empty($salesChannelId)) {
-            $null    = new EqualsFilter('payone_payment_config.salesChannelId', null);
-            $channel = new EqualsFilter('payone_payment_config.salesChannelId', $salesChannelId);
+        $config = [];
 
-            $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_OR, [
-                $null,
-                $channel,
-            ]));
+        foreach ($values as $key => $value) {
+            $property = substr($key, strlen(self::SYSTEM_CONFIG_DOMAIN));
+
+            $config[$property] = $value;
         }
 
-        if (!empty($key)) {
-            $criteria->addFilter(new EqualsFilter(
-                'payone_payment_config.key',
-                $key
-            ));
-        }
-
-        $context = Context::createDefaultContext();
-
-        /** @var PayonePaymentConfigEntity[] $configElements */
-        $configElements = $this->repository->search($criteria, $context);
-
-        $collection = new PayonePaymentConfigCollection();
-        foreach ($configElements as $element) {
-            if ($fallback) {
-                $collection->set($element->getKey(), $element);
-            } else {
-                $collection->add($element);
-            }
-        }
-
-        return $collection;
+        return new Configuration($config);
     }
 }

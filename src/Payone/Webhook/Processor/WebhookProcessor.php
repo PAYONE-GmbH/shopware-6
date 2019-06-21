@@ -9,6 +9,7 @@ use LogicException;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\System\SystemConfig\Service\ConfigurationService;
 use Symfony\Component\HttpFoundation\Response;
 
 class WebhookProcessor implements WebhookProcessorInterface
@@ -29,7 +30,7 @@ class WebhookProcessor implements WebhookProcessorInterface
     {
         $config = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
-        $storedKey = $config->get('key');
+        $storedKey = $config->get('portalKey');
 
         if (null === $storedKey) {
             return new Response(WebhookHandlerInterface::RESPONSE_TSNOTOK);
