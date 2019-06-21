@@ -96,6 +96,6 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             'stateId' => $state->getId(),
         ];
 
-        $this->repository->update([$data], $context);
+        $this->transactionRepository->update([$data], $context);
     }
 }

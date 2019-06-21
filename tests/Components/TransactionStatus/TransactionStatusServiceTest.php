@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Components\TransactionStatus;
 
+use PayonePayment\Components\TransactionDataHandler\TransactionDataHandler;
+use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -55,9 +57,13 @@ class TransactionStatusServiceTest extends TestCase
         /** @var EntityRepositoryInterface $stateRepository */
         $stateRepository = $this->container->get('state_machine_state.repository');
 
+        /** @var TransactionDataHandlerInterface $stateRepository */
+        $dataHandler = $this->container->get(TransactionDataHandler::class);
+
         return new TransactionStatusService(
             $orderTransactionRepository,
-            $stateRepository
+            $stateRepository,
+            $dataHandler
         );
     }
 }

@@ -45,10 +45,10 @@ class DebitAuthorizeRequest
     {
         $criteria = new Criteria([$order->getCurrencyId()]);
 
-        /** @var null|CurrencyEntity $language */
+        /** @var null|CurrencyEntity $currency */
         $currency = $this->currencyRepository->search($criteria, $context)->first();
 
-        if (null === $language) {
+        if (null === $currency) {
             throw new RuntimeException('missing order currency entity');
         }
 
