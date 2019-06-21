@@ -57,8 +57,8 @@ class TransactionStatusServiceTest extends TestCase
         /** @var EntityRepositoryInterface $stateRepository */
         $stateRepository = $this->container->get('state_machine_state.repository');
 
-        /** @var TransactionDataHandlerInterface $stateRepository */
-        $dataHandler = $this->container->get(TransactionDataHandler::class);
+        /** @var TransactionDataHandlerInterface $dataHandler */
+        $dataHandler = $this->createMock(TransactionDataHandlerInterface::class);
 
         return new TransactionStatusService(
             $orderTransactionRepository,
