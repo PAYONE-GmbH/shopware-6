@@ -19,11 +19,7 @@ class PayoneClient implements PayoneClientInterface
     }
 
     /**
-     * @param array $parameters
-     *
      * @throws PayoneRequestException
-     *
-     * @return array
      */
     public function request(array $parameters): array
     {

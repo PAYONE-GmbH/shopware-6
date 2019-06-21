@@ -6,13 +6,12 @@ namespace PayonePayment\Payone\Request\CreditCard;
 
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
-use PayonePayment\Payone\Request\RequestFactoryInterface;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
-class CreditCardPreAuthorizeRequestFactory extends AbstractRequestFactory implements RequestFactoryInterface
+class CreditCardPreAuthorizeRequestFactory extends AbstractRequestFactory
 {
     /** @var CreditCardPreAuthorizeRequest */
     private $preAuthorizeRequest;
@@ -34,7 +33,7 @@ class CreditCardPreAuthorizeRequestFactory extends AbstractRequestFactory implem
     }
 
     public function getRequestParameters(
-        PaymentTransactionStruct $transaction,
+        PaymentTransaction $transaction,
         RequestDataBag $dataBag,
         Context $context
     ): array {
@@ -42,8 +41,8 @@ class CreditCardPreAuthorizeRequestFactory extends AbstractRequestFactory implem
 
         $this->requests[] = $this->preAuthorizeRequest->getRequestParameters(
             $transaction,
-            $pseudoPan,
-            $context
+            $context,
+            $pseudoPan
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
@@ -52,8 +51,7 @@ class CreditCardPreAuthorizeRequestFactory extends AbstractRequestFactory implem
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $context->getSalesChannel(),
-            $context
+            $transaction->getOrder()->getSalesChannelId()
         );
 
         return $this->createRequest();

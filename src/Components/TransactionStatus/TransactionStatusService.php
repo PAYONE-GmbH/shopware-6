@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionStatus;
 
-use DateTime;
+use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Payone\Struct\PaymentTransaction;
 use RuntimeException;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -18,10 +18,7 @@ use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachine
 class TransactionStatusService implements TransactionStatusServiceInterface
 {
     /**
-     * // TODO: Add further mapping values when required
-     * // TODO: Extract mapping to payment methods where needed as per sequence diagrams
-     *
-     * `payone_payment_status.action` -> `state_machine_state.technical_name`
+     * payone_payment_status.action -> state_machine_state.technical_name
      *
      * @var array
      */
@@ -29,6 +26,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         'appointed' => 'open',
         'paid'      => 'paid',
         'capture'   => 'paid',
+        'completed'   => 'paid',
     ];
 
     /** @var EntityRepositoryInterface */
@@ -37,12 +35,17 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     /** @var EntityRepositoryInterface */
     private $stateRepository;
 
+    /** @var TransactionDataHandlerInterface */
+    private $dataHandler;
+
     public function __construct(
         EntityRepositoryInterface $orderTransactionRepository,
-        EntityRepositoryInterface $stateRepository
+        EntityRepositoryInterface $stateRepository,
+        TransactionDataHandlerInterface $dataHandler
     ) {
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->stateRepository            = $stateRepository;
+        $this->dataHandler                = $dataHandler;
     }
 
     /**
@@ -50,17 +53,35 @@ class TransactionStatusService implements TransactionStatusServiceInterface
      */
     public function persistTransactionStatus(SalesChannelContext $salesChannelContext, array $transactionData): void
     {
-        $orderTransaction = $this->getOrderTransactionByPayoneTransactionId(
+        $paymentTransaction = $this->getPaymentTransactionByPayoneTransactionId(
             $salesChannelContext->getContext(),
             (int) $transactionData['txid']
         );
 
-        if (!$orderTransaction) {
+        if (!$paymentTransaction) {
             throw new RuntimeException(sprintf(
                 'Could not find an order transaction by payone transaction id "%s"',
                 $transactionData['txid']
             ));
         }
+
+        $transactionData = array_map('utf8_encode', $transactionData);
+
+        $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = (int) $transactionData['sequencenumber'];
+        $data[CustomFieldInstaller::TRANSACTION_STATE] = $transactionData['txaction'];
+
+        $customFields = $paymentTransaction->getCustomFields();
+
+        if ($this->shouldAllowCapture($transactionData, $customFields)) {
+            $data[CustomFieldInstaller::ALLOW_CAPTURE] = true;
+        }
+
+        if ($this->shouldAllowRefund($transactionData, $customFields)) {
+            $data[CustomFieldInstaller::ALLOW_CAPTURE] = true;
+        }
+
+        $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $transactionData);
 
         $state = $this->getStateByTechnicalName($transactionData['txaction']);
 
@@ -68,26 +89,15 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return;
         }
 
-        $transactionData = array_map('utf8_encode', $transactionData);
-
-        $key = (new DateTime())->format(DATE_ATOM);
-
-        $customFields = $orderTransaction->getCustomFields() ?? [];
-
-        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = (int) $transactionData['sequencenumber'];
-        $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = $transactionData['txaction'];
-        $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $transactionData;
-
-        $data = [
-            'id'           => $orderTransaction->getId(),
-            'customFields' => $customFields,
-            'stateId'      => $state->getId(),
+        $update = [
+            'id'      => $paymentTransaction->getOrderTransaction()->getId(),
+            'stateId' => $state->getId(),
         ];
 
-        $this->orderTransactionRepository->update([$data], $salesChannelContext->getContext());
+        $this->orderTransactionRepository->update([$update], $salesChannelContext->getContext());
     }
 
-    private function getOrderTransactionByPayoneTransactionId(Context $context, int $payoneTransactionId): ?OrderTransactionEntity
+    private function getPaymentTransactionByPayoneTransactionId(Context $context, int $payoneTransactionId): ?PaymentTransaction
     {
         $field = 'order_transaction.customFields.' . CustomFieldInstaller::TRANSACTION_ID;
 
@@ -95,7 +105,13 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $filter   = new EqualsFilter($field, $payoneTransactionId);
         $criteria->addFilter($filter);
 
-        return $this->orderTransactionRepository->search($criteria, $context)->first();
+        $transaction = $this->orderTransactionRepository->search($criteria, $context)->first();
+
+        if (null === $transaction) {
+            return null;
+        }
+
+        return PaymentTransaction::fromOrderTransaction($transaction);
     }
 
     private function getStateByTechnicalName(string $action): ?StateMachineStateEntity
@@ -111,5 +127,23 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $criteria->addFilter($filter);
 
         return $this->stateRepository->search($criteria, $context)->first();
+    }
+
+    private function shouldAllowCapture(array $transactionData, array $customFields): bool
+    {
+        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== 'preauthorization') {
+            return false;
+        }
+
+        return $transactionData['txaction'] === 'appointed';
+    }
+
+    private function shouldAllowRefund(array $transactionData, array $customFields): bool
+    {
+        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== 'authorization') {
+            return false;
+        }
+
+        return $transactionData['txaction'] === 'appointed';
     }
 }

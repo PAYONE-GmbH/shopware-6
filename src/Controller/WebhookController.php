@@ -23,11 +23,6 @@ class WebhookController extends StorefrontController
 
     /**
      * @Route("/payone/webhook", name="payone_webhook", methods={"POST"})
-     *
-     * @param Request             $request
-     * @param SalesChannelContext $salesChannelContext
-     *
-     * @return Response
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {

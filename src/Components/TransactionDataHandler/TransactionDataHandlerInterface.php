@@ -4,20 +4,17 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionDataHandler;
 
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use PayonePayment\Payone\Struct\PaymentTransaction;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 
 interface TransactionDataHandlerInterface
 {
-    public function saveTransactionData(
-        SalesChannelContext $context,
-        PaymentTransactionStruct $transaction,
-        array $data
-    );
+    public function saveTransactionData(PaymentTransaction $transaction, Context $context, array $data): void;
 
-    public function logResponse(
-        SalesChannelContext $context,
-        PaymentTransactionStruct $transaction,
-        array $response
-    );
+    public function logResponse(PaymentTransaction $transaction, Context $context, array $response): void;
+
+    public function incrementSequenceNumber(PaymentTransaction $transaction, Context $context): void;
+
+    public function setState(PaymentTransaction $transaction, Context $context, StateMachineStateEntity $state): void;
 }

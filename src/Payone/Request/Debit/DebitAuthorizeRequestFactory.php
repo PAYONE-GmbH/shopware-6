@@ -6,13 +6,12 @@ namespace PayonePayment\Payone\Request\Debit;
 
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
-use PayonePayment\Payone\Request\RequestFactoryInterface;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
-class DebitAuthorizeRequestFactory extends AbstractRequestFactory implements RequestFactoryInterface
+class DebitAuthorizeRequestFactory extends AbstractRequestFactory
 {
     /** @var DebitAuthorizeRequest */
     private $authorizeRequest;
@@ -34,7 +33,7 @@ class DebitAuthorizeRequestFactory extends AbstractRequestFactory implements Req
     }
 
     public function getRequestParameters(
-        PaymentTransactionStruct $transaction,
+        PaymentTransaction $transaction,
         RequestDataBag $dataBag,
         Context $context
     ): array {
@@ -44,10 +43,10 @@ class DebitAuthorizeRequestFactory extends AbstractRequestFactory implements Req
 
         $this->requests[] = $this->authorizeRequest->getRequestParameters(
             $transaction,
+            $context,
             $iban,
             $bic,
-            $accountOwner,
-            $context
+            $accountOwner
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
@@ -56,8 +55,7 @@ class DebitAuthorizeRequestFactory extends AbstractRequestFactory implements Req
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannel(),
-            $context
+            $transaction->getOrder()->getSalesChannelId()
         );
 
         return $this->createRequest();

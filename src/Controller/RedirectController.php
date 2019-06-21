@@ -24,10 +24,6 @@ class RedirectController
 
     /**
      * @Route("/payone/redirect", name="payone_redirect")
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     public function execute(Request $request): Response
     {

@@ -10,7 +10,7 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
@@ -57,7 +57,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
      */
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
     {
-        $paymentTransaction = PaymentTransactionStruct::fromAsyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
 
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
@@ -80,14 +80,17 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         }
 
         $data = [
+            CustomFieldInstaller::LAST_REQUEST      => $request['request'],
             CustomFieldInstaller::TRANSACTION_ID    => (string) $response['txid'],
             CustomFieldInstaller::TRANSACTION_STATE => $response['status'],
             CustomFieldInstaller::SEQUENCE_NUMBER   => -1,
             CustomFieldInstaller::USER_ID           => $response['userid'],
+            CustomFieldInstaller::ALLOW_CAPTURE     => false,
+            CustomFieldInstaller::ALLOW_REFUND      => false,
         ];
 
-        $this->dataHandler->saveTransactionData($salesChannelContext, $paymentTransaction, $data);
-        $this->dataHandler->logResponse($salesChannelContext, $paymentTransaction, $response);
+        $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
 
         if (strtolower($response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);
