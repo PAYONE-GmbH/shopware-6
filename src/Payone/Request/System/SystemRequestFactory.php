@@ -5,12 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\System;
 
 use PayonePayment\Payone\Request\AbstractRequestFactory;
-use PayonePayment\Payone\Request\RequestFactoryInterface;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
-class SystemRequestFactory extends AbstractRequestFactory implements RequestFactoryInterface
+class SystemRequestFactory extends AbstractRequestFactory
 {
     /** @var SystemRequest */
     private $systemRequest;
@@ -20,14 +16,10 @@ class SystemRequestFactory extends AbstractRequestFactory implements RequestFact
         $this->systemRequest = $systemRequest;
     }
 
-    public function getRequestParameters(
-        PaymentTransactionStruct $transaction,
-        RequestDataBag $dataBag,
-        Context $context
-    ): array {
+    public function getRequestParameters(string $salesChannel): array
+    {
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannel(),
-            $context
+            $salesChannel
         );
 
         return $this->createRequest();

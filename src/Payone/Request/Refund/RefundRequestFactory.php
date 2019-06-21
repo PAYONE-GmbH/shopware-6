@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\Refund;
 
 use PayonePayment\Payone\Request\AbstractRequestFactory;
-use PayonePayment\Payone\Request\RequestFactoryInterface;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
-class RefundRequestFactory extends AbstractRequestFactory implements RequestFactoryInterface
+class RefundRequestFactory extends AbstractRequestFactory
 {
     /** @var SystemRequest */
     private $systemRequest;
@@ -25,19 +23,16 @@ class RefundRequestFactory extends AbstractRequestFactory implements RequestFact
         $this->refundRequest = $refundRequest;
     }
 
-    public function getRequestParameters(
-        PaymentTransactionStruct $transaction,
-        RequestDataBag $dataBag,
-        Context $context
-    ): array {
+    public function getRequestParameters(PaymentTransaction $transaction, Context $context): array
+    {
         $this->requests[] = $this->refundRequest->getRequestParameters(
             $transaction->getOrder(),
+            $context,
             $transaction->getCustomFields()
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannel(),
-            $context
+            $transaction->getOrder()->getSalesChannelId()
         );
 
         return $this->createRequest();

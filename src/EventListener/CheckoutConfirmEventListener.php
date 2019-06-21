@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PayonePaymentData;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Language\LanguageEntity;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Storefront\Event\CheckoutEvents;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -45,18 +42,7 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         $salesChannelContext = $event->getSalesChannelContext();
         $context             = $salesChannelContext->getContext();
 
-        if ($salesChannelContext->getPaymentMethod()->getId() !== PayoneCreditCard::UUID) {
-            return;
-        }
-
-        $requestBag         = new RequestDataBag($event->getRequest()->request->all());
-        $paymentTransaction = new PaymentTransactionStruct();
-
-        $request = $this->requestFactory->getRequestParameters(
-            $paymentTransaction,
-            $requestBag,
-            $salesChannelContext->getContext()
-        );
+        $request = $this->requestFactory->getRequestParameters($salesChannelContext);
 
         $payoneData = new PayonePaymentData();
         $payoneData->assign([
@@ -77,7 +63,7 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         /** @var null|LanguageEntity $language */
         $language = $this->languageRepository->search($criteria, $context)->first();
 
-        if (null === $language) {
+        if (null === $language || null === $language->getLocale()) {
             return 'en';
         }
 

@@ -6,13 +6,11 @@ namespace PayonePayment\Payone\Request\Paypal;
 
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
-use PayonePayment\Payone\Request\RequestFactoryInterface;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
-class PaypalAuthorizeRequestFactory extends AbstractRequestFactory implements RequestFactoryInterface
+class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
 {
     /** @var PaypalAuthorizeRequest */
     private $authorizeRequest;
@@ -34,8 +32,7 @@ class PaypalAuthorizeRequestFactory extends AbstractRequestFactory implements Re
     }
 
     public function getRequestParameters(
-        PaymentTransactionStruct $transaction,
-        RequestDataBag $dataBag,
+        PaymentTransaction $transaction,
         Context $context
     ): array {
         $this->requests[] = $this->authorizeRequest->getRequestParameters(
@@ -49,8 +46,7 @@ class PaypalAuthorizeRequestFactory extends AbstractRequestFactory implements Re
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannel(),
-            $context
+            $transaction->getOrder()->getSalesChannelId()
         );
 
         return $this->createRequest();

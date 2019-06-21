@@ -35,11 +35,6 @@ class RefundController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/payone/refund-payment", name="api.action.payone.refund_payment", methods={"POST"})
-     *
-     * @param Request $request
-     * @param Context $context
-     *
-     * @return JsonResponse
      */
     public function refundAction(Request $request, Context $context): JsonResponse
     {
@@ -57,6 +52,10 @@ class RefundController extends AbstractController
 
         if (null === $orderTransaction) {
             return new JsonResponse(['status' => false, 'message' => 'no order transaction found'], Response::HTTP_NOT_FOUND);
+        }
+
+        if (null === $orderTransaction->getOrder()) {
+            return new JsonResponse(['status' => false, 'message' => 'no order found'], Response::HTTP_NOT_FOUND);
         }
 
         try {

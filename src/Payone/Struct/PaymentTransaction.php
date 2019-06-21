@@ -9,12 +9,12 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 
-class PaymentTransactionStruct
+class PaymentTransaction
 {
     /** @var ?OrderTransactionEntity */
     private $orderTransaction;
 
-    /** @var ?OrderEntity */
+    /** @var OrderEntity */
     private $order;
 
     /** @var array */
@@ -28,7 +28,12 @@ class PaymentTransactionStruct
         return $this->customFields;
     }
 
-    public function getOrder(): ?OrderEntity
+    public function setCustomFields(array $customFields): void
+    {
+        $this->customFields = $customFields;
+    }
+
+    public function getOrder(): OrderEntity
     {
         return $this->order;
     }

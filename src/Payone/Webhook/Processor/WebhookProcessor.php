@@ -9,7 +9,6 @@ use LogicException;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Core\System\SystemConfig\Service\ConfigurationService;
 use Symfony\Component\HttpFoundation\Response;
 
 class WebhookProcessor implements WebhookProcessorInterface
