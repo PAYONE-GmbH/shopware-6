@@ -26,7 +26,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         'appointed' => 'open',
         'paid'      => 'paid',
         'capture'   => 'paid',
-        'completed'   => 'paid',
+        'completed' => 'paid',
     ];
 
     /** @var EntityRepositoryInterface */

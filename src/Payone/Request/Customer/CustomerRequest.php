@@ -131,18 +131,4 @@ class CustomerRequest
 
         return $billingAddress;
     }
-
-    private function getCustomerBillingCountry(OrderEntity $order, Context $context): CurrencyEntity
-    {
-        $criteria = new Criteria([$order->getCurrencyId()]);
-
-        /** @var null|CurrencyEntity $language */
-        $currency = $this->currencyRepository->search($criteria, $context)->first();
-
-        if (null === $language) {
-            throw new RuntimeException('missing order currency entity');
-        }
-
-        return $currency;
-    }
 }

@@ -31,10 +31,6 @@ class WebhookProcessor implements WebhookProcessorInterface
 
         $storedKey = $config->get('portalKey');
 
-        if (null === $storedKey) {
-            return new Response(WebhookHandlerInterface::RESPONSE_TSNOTOK);
-        }
-
         if (!isset($data['key']) || $data['key'] !== hash('md5', $storedKey)) {
             return new Response(WebhookHandlerInterface::RESPONSE_TSNOTOK);
         }
