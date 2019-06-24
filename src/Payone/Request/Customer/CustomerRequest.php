@@ -61,7 +61,7 @@ class CustomerRequest
             'addressaddition' => $billingAddress->getAdditionalAddressLine1(),
             'zip'             => $billingAddress->getZipcode(),
             'city'            => $billingAddress->getCity(),
-            'country'         => $this->getCustomerCurrency($billingAddress, $context)->getIso(),
+            'country'         => $this->getCustomerCountry($billingAddress, $context)->getIso(),
             'email'           => $order->getOrderCustomer()->getEmail(),
             'language'        => substr($language->getLocale()->getCode(), 0, 2),
             'ip'              => $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
@@ -89,7 +89,7 @@ class CustomerRequest
         return $salutation;
     }
 
-    private function getCustomerCurrency(OrderAddressEntity $addressEntity, Context $context): CountryEntity
+    private function getCustomerCountry(OrderAddressEntity $addressEntity, Context $context): CountryEntity
     {
         $criteria = new Criteria([$addressEntity->getCountryId()]);
 
