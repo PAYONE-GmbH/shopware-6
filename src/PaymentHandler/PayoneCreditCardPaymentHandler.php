@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\Components\CardHandler\CardHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
@@ -38,18 +39,23 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
     /** @var PaymentStateHandlerInterface */
     private $stateHandler;
 
+    /** @var CardHandlerInterface */
+    private $cardHandler;
+
     public function __construct(
         CreditCardPreAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
-        PaymentStateHandlerInterface $stateHandler
+        PaymentStateHandlerInterface $stateHandler,
+        CardHandlerInterface $cardService
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
         $this->translator     = $translator;
         $this->dataHandler    = $dataHandler;
         $this->stateHandler   = $stateHandler;
+        $this->cardHandler    = $cardService;
     }
 
     /**
@@ -91,6 +97,16 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
+
+        $pseudoCardPan    = $dataBag->get('pseudocardpan');
+        $truncatedCardPan = $dataBag->get('truncatedcardpan');
+
+        $this->cardHandler->saveCard(
+            $salesChannelContext->getCustomer(),
+            $truncatedCardPan,
+            $pseudoCardPan,
+            $salesChannelContext->getContext()
+        );
 
         if (strtolower($response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);
