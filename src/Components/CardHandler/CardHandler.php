@@ -28,7 +28,7 @@ class CardHandler implements CardHandlerInterface
         string $pseudoCardPan,
         Context $context
     ): void {
-        $card = $this->getExistingCard($customer->getId(), $pseudoCardPan, $context);
+        $card = $this->getExistingCard($customer->getId(), $truncatedCardPan, $context);
 
         $data = [
             'id'               => null === $card ? Uuid::randomHex() : $card->getId(),
@@ -42,13 +42,13 @@ class CardHandler implements CardHandlerInterface
 
     protected function getExistingCard(
         string $customer,
-        string $pseudoCardPan,
+        string $truncatedCardPan,
         Context $context
     ): ?PayonePaymentCardEntity {
         $criteria = new Criteria();
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_card.pseudoCardPan', $pseudoCardPan)
+            new EqualsFilter('payone_payment_card.truncatedCardPan', $truncatedCardPan)
         );
 
         $criteria->addFilter(
