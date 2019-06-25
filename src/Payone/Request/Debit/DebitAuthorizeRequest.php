@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Debit;
 
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Payone\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -17,9 +18,15 @@ class DebitAuthorizeRequest
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
 
-    public function __construct(EntityRepositoryInterface $currencyRepository)
-    {
+    /** @var ConfigReaderInterface */
+    private $configReader;
+
+    public function __construct(
+        EntityRepositoryInterface $currencyRepository,
+        ConfigReaderInterface $configReader
+    ) {
         $this->currencyRepository = $currencyRepository;
+        $this->configReader       = $configReader;
     }
 
     public function getRequestParameters(
@@ -29,6 +36,13 @@ class DebitAuthorizeRequest
         string $bic,
         string $accountOwner
     ): array {
+        $config    = $this->configReader->read($transaction->getOrder()->getSalesChannelId());
+        $reference = $transaction->getOrder()->getOrderNumber();
+
+        if (!empty($config->get('ordernumberPrefix'))) {
+            $reference = $config->get('ordernumberPrefix') . $reference;
+        }
+
         return [
             'request'           => 'authorization',
             'clearingtype'      => 'elv',
@@ -37,7 +51,7 @@ class DebitAuthorizeRequest
             'bankaccountholder' => $accountOwner,
             'amount'            => (int) ($transaction->getOrder()->getAmountTotal() * 100),
             'currency'          => $this->getOrderCurrency($transaction->getOrder(), $context)->getIsoCode(),
-            'reference'         => $transaction->getOrder()->getOrderNumber(),
+            'reference'         => $reference,
         ];
     }
 
