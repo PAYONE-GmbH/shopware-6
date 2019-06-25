@@ -13,16 +13,16 @@ class PayonePaymentCardEntity extends Entity
     use EntityIdTrait;
 
     /** @var string */
-    private $pseudoCardPan;
+    protected $pseudoCardPan;
 
     /** @var string */
-    private $truncatedCardPan;
+    protected $truncatedCardPan;
 
     /** @var null|CustomerEntity */
-    private $customer;
+    protected $customer;
 
-    /** @var null|string */
-    private $customerId;
+    /** @var string */
+    protected $customerId;
 
     public function getPseudoCardPan(): string
     {
@@ -54,7 +54,12 @@ class PayonePaymentCardEntity extends Entity
         $this->customer = $customer;
     }
 
-    public function getCustomerId(): ?string
+    public function setCustomerId(string $customerId): void
+    {
+        $this->customerId = $customerId;
+    }
+
+    public function getCustomerId(): string
     {
         return $this->customerId;
     }
