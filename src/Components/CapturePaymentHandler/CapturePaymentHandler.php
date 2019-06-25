@@ -13,6 +13,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
@@ -26,17 +27,22 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
     /** @var PayoneClientInterface */
     private $client;
 
+    /** @var EntityRepositoryInterface */
+    private $stateRepository;
+
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
 
     public function __construct(
         CaptureRequestFactory $requestFactory,
         PayoneClientInterface $client,
+        EntityRepositoryInterface $stateRepository,
         TransactionDataHandlerInterface $dataHandler
     ) {
-        $this->requestFactory = $requestFactory;
-        $this->client         = $client;
-        $this->dataHandler    = $dataHandler;
+        $this->requestFactory  = $requestFactory;
+        $this->client          = $client;
+        $this->stateRepository = $stateRepository;
+        $this->dataHandler     = $dataHandler;
     }
 
     /**
