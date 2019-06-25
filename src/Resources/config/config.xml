@@ -45,5 +45,14 @@
                 </option>
             </options>
         </input-field>
+
+        <input-field>
+            <name>ordernumberPrefix</name>
+            <copyable>true</copyable>
+            <label>Ordernumber prefix</label>
+            <label lang="de-DE">Prefix für Auftragsnummern</label>
+            <helpText>If this option is not empty, the specified value will be added in front of the ordernumber reported to Payone. </helpText>
+            <helpText lang="de-DE">Wenn dieser Wert nicht leer ist ist, wird der Wert vor die Auftragsnummer gesetzt, die an Payone gemeldet wird.</helpText>
+        </input-field>
     </card>
 </config>

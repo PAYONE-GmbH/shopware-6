@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Paypal;
 
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Payone\Struct\PaymentTransaction;
 use RuntimeException;
@@ -22,10 +23,17 @@ class PaypalAuthorizeRequest
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
 
-    public function __construct(RedirectHandler $redirectHandler, EntityRepositoryInterface $currencyRepository)
-    {
+    /** @var ConfigReaderInterface */
+    private $configReader;
+
+    public function __construct(
+        RedirectHandler $redirectHandler,
+        EntityRepositoryInterface $currencyRepository,
+        ConfigReaderInterface $configReader
+    ) {
         $this->redirectHandler    = $redirectHandler;
         $this->currencyRepository = $currencyRepository;
+        $this->configReader       = $configReader;
     }
 
     public function getRequestParameters(PaymentTransaction $transaction, Context $context): array
@@ -34,13 +42,20 @@ class PaypalAuthorizeRequest
             throw new InvalidOrderException($transaction->getOrder()->getId());
         }
 
+        $config    = $this->configReader->read($transaction->getOrder()->getSalesChannelId());
+        $reference = $transaction->getOrder()->getOrderNumber();
+
+        if (!empty($config->get('ordernumberPrefix'))) {
+            $reference = $config->get('ordernumberPrefix') . $reference;
+        }
+
         return [
             'request'      => 'authorization',
             'clearingtype' => 'wlt',
             'wallettype'   => 'PPE',
             'amount'       => (int) ($transaction->getOrder()->getAmountTotal() * 100),
             'currency'     => $this->getOrderCurrency($transaction->getOrder(), $context)->getIsoCode(),
-            'reference'    => $transaction->getOrder()->getOrderNumber(),
+            'reference'    => $reference,
             'successurl'   => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
             'errorurl'     => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),
             'backurl'      => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),
