@@ -2,17 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\CardHandler;
+namespace PayonePayment\Components\CardService;
 
 use PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 
-class CardHandler implements CardHandlerInterface
+class CardService implements CardServiceInterface
 {
     /** @var EntityRepositoryInterface */
     private $cardRepository;
@@ -28,7 +29,11 @@ class CardHandler implements CardHandlerInterface
         string $pseudoCardPan,
         Context $context
     ): void {
-        $card = $this->getExistingCard($customer->getId(), $truncatedCardPan, $context);
+        $card = $this->getExistingCard(
+            $customer,
+            $truncatedCardPan,
+            $context
+        );
 
         $data = [
             'id'               => null === $card ? Uuid::randomHex() : $card->getId(),
@@ -40,8 +45,39 @@ class CardHandler implements CardHandlerInterface
         $this->cardRepository->upsert([$data], $context);
     }
 
+    public function removeCard(
+        CustomerEntity $customer,
+        string $truncatedCardPan,
+        Context $context
+    ): void {
+        $card = $this->getExistingCard(
+            $customer,
+            $truncatedCardPan,
+            $context
+        );
+
+        if (null === $card) {
+            return;
+        }
+
+        $this->cardRepository->delete([['id' => $card->getId()]], $context);
+    }
+
+    public function getCards(
+        CustomerEntity $customer,
+        Context $context
+    ): EntitySearchResult {
+        $criteria = new Criteria();
+
+        $criteria->addFilter(
+            new EqualsFilter('payone_payment_card.customerId', $customer->getId())
+        );
+
+        return $this->cardRepository->search($criteria, $context);
+    }
+
     protected function getExistingCard(
-        string $customer,
+        CustomerEntity $customer,
         string $truncatedCardPan,
         Context $context
     ): ?PayonePaymentCardEntity {
@@ -52,7 +88,7 @@ class CardHandler implements CardHandlerInterface
         );
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_card.customerId', $customer)
+            new EqualsFilter('payone_payment_card.customerId', $customer->getId())
         );
 
         return $this->cardRepository->search($criteria, $context)->first();

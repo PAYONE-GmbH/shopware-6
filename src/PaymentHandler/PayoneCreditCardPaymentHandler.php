@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use PayonePayment\Components\CardHandler\CardHandlerInterface;
+use PayonePayment\Components\CardService\CardServiceInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
@@ -39,8 +39,8 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
     /** @var PaymentStateHandlerInterface */
     private $stateHandler;
 
-    /** @var CardHandlerInterface */
-    private $cardHandler;
+    /** @var CardServiceInterface */
+    private $cardService;
 
     public function __construct(
         CreditCardPreAuthorizeRequestFactory $requestFactory,
@@ -48,14 +48,14 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         PaymentStateHandlerInterface $stateHandler,
-        CardHandlerInterface $cardService
+        CardServiceInterface $cardService
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
         $this->translator     = $translator;
         $this->dataHandler    = $dataHandler;
         $this->stateHandler   = $stateHandler;
-        $this->cardHandler    = $cardService;
+        $this->cardService    = $cardService;
     }
 
     /**
@@ -65,9 +65,16 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
     {
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
 
+        $pseudoCardPan      = $dataBag->getAlpha('pseudoCardPan');
+        $savedPseudoCardPan = $dataBag->getAlpha('savedPseudoCardPan');
+
+        if (!empty($savedPseudoCardPan)) {
+            $pseudoCardPan = $savedPseudoCardPan;
+        }
+
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $dataBag,
+            $pseudoCardPan,
             $salesChannelContext->getContext()
         );
 
@@ -101,7 +108,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         $pseudoCardPan    = $dataBag->get('pseudocardpan');
         $truncatedCardPan = $dataBag->get('truncatedcardpan');
 
-        $this->cardHandler->saveCard(
+        $this->cardService->saveCard(
             $salesChannelContext->getCustomer(),
             $truncatedCardPan,
             $pseudoCardPan,

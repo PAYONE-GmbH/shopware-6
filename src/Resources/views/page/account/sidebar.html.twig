@@ -1,0 +1,23 @@
+{% sw_extends '@Storefront/page/account/sidebar.html.twig' %}
+
+{# @var payment \Shopware\Core\Checkout\Payment\PaymentMethodEntity #}
+
+{% block page_account_sidebar_menu_inner %}
+    {{ parent() }}
+
+    {% block page_account_sidebar_link_payone_card %}
+        {% set css_class %}
+            list-group-item
+            list-group-item-action
+            account-sidebar-item
+
+            {% if controllerName is same as('AccountCard') and controllerAction is same as('cardOverview') %}
+                active
+            {% endif %}
+        {% endset %}
+
+        <a href="{{ path('frontend.account.payone.card.page') }}" title="Kreditkarten" class="{{ css_class }}">
+            Kreditkarten
+        </a>
+    {% endblock %}
+{% endblock %}
