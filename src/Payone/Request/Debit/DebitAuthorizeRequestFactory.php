@@ -37,9 +37,9 @@ class DebitAuthorizeRequestFactory extends AbstractRequestFactory
         RequestDataBag $dataBag,
         Context $context
     ): array {
-        $iban         = $dataBag->get('iban');
-        $bic          = $dataBag->get('bic');
-        $accountOwner = $dataBag->get('accountOwner');
+        $iban         = $dataBag->getAlpha('iban');
+        $bic          = $dataBag->getAlpha('bic');
+        $accountOwner = $dataBag->getAlpha('accountOwner');
 
         $this->requests[] = $this->authorizeRequest->getRequestParameters(
             $transaction,

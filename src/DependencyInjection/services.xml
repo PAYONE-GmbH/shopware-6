@@ -10,6 +10,7 @@
         <import resource="handlers.xml" />
         <import resource="listeners.xml" />
         <import resource="requests.xml" />
+        <import resource="pages.xml" />
         <import resource="translations.xml" />
         <import resource="webhooks.xml"/>
     </imports>
@@ -55,7 +56,7 @@
             <argument type="service" id="translator" />
         </service>
 
-        <service id="PayonePayment\Components\CardHandler\CardHandler">
+        <service id="PayonePayment\Components\CardService\CardService">
             <argument type="service" id="payone_payment_card.repository" />
         </service>
     </services>

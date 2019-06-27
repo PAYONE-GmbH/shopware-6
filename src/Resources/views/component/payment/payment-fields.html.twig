@@ -11,7 +11,7 @@
         {% endif %}
 
         {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') %}
-            {% sw_include '@Storefront/payone/credit-card-form.html.twig' %}
+            {% sw_include '@Storefront/payone/form/credit-card-form.html.twig' %}
         {% endif %}
 
         {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayoneSofortBanking::UUID') %}
@@ -19,7 +19,7 @@
         {% endif %}
 
         {% if payment.id == constant('PayonePayment\\PaymentMethod\\PayoneDebit::UUID') %}
-            {% sw_include '@Storefront/payone/debit-form.html.twig' %}
+            {% sw_include '@Storefront/payone/form/debit-form.html.twig' %}
         {% endif %}
     {% endif %}
 {% endblock %}
