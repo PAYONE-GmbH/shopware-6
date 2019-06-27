@@ -59,12 +59,12 @@ class AccountCardController extends StorefrontController
                 $context->getContext()
             );
         } catch (Throwable $exception) {
-            $this->addFlash('danger', $this->trans('error.' . $exception->getErrorCode()));
+            $this->addFlash('danger', 'PayonePayment.cardPage.error');
 
-            return $this->forwardToRoute('frontend.account.payone.card.page', ['success' => false]);
+            return $this->forwardToRoute('frontend.account.payone.card.page');
         }
 
-        $this->addFlash('success', $this->trans('account.paymentSuccess'));
+        $this->addFlash('success', 'PayonePayment.cardPage.success');
 
         return new RedirectResponse($this->generateUrl('frontend.account.payone.card.page'));
     }

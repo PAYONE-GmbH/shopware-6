@@ -1,7 +1,5 @@
 {% sw_extends '@Storefront/page/account/sidebar.html.twig' %}
 
-{# @var payment \Shopware\Core\Checkout\Payment\PaymentMethodEntity #}
-
 {% block page_account_sidebar_menu_inner %}
     {{ parent() }}
 
@@ -16,8 +14,8 @@
             {% endif %}
         {% endset %}
 
-        <a href="{{ path('frontend.account.payone.card.page') }}" title="Kreditkarten" class="{{ css_class }}">
-            Kreditkarten
+        <a href="{{ path('frontend.account.payone.card.page') }}" title="{{ "PayonePayment.cardPage.menuName" | trans }}" class="{{ css_class }}">
+            {{ "PayonePayment.cardPage.menuName" | trans }}
         </a>
     {% endblock %}
 {% endblock %}

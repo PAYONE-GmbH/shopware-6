@@ -6,12 +6,23 @@
     "creditCard":{
       "cardNumber": "Card number",
       "securityCode": "Security code",
-      "expiryDate": "Expiry date"
+      "expiryDate": "Expiry date",
+      "savedCards": "Saved card"
     },
     "debit": {
       "accountOwner": "Account owner",
       "iban": "IBAN",
       "bic": "BIC"
+    },
+    "cardPage": {
+      "success": "The saved credit card was removed successfully.",
+      "error": "A error has occurred while removing the saved credit card.",
+      "menuName": "Payment data",
+      "pageTitle": "Saved Cards",
+      "pageSubTitle": "Here you can manage your saved credit cards.",
+      "tableHeader": "Card Numbers",
+      "deleteButton": "Delete Card",
+      "noEntries": "No cards saved."
     }
   }
 }

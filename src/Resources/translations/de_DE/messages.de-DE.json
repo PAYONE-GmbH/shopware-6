@@ -6,12 +6,23 @@
     "creditCard":{
       "cardNumber": "Kartennummer",
       "securityCode": "CVV",
-      "expiryDate": "Gültig bis"
+      "expiryDate": "Gültig bis",
+      "savedCards": "Gespeicherte Karte",
     },
     "debit": {
       "accountOwner": "Kontoinhaber",
       "iban": "IBAN",
       "bic": "BIC"
+    },
+    "cardPage": {
+      "success": "Die gespeicherte Kreditkarte wurde erfolgreich entfernt.",
+      "error": "Beim entferenn der Kreditkarte ist ein Fehler aufgetretetn.",
+      "menuName": "Zahlungsdaten",
+      "pageTitle": "Gespeicherte Kreditkarten",
+      "pageSubTitle": "Hier können Sie die gespeicerten Kreditkarten verwalten.",
+      "tableHeader": "Kartennummer",
+      "deleteButton": "Karte löschen",
+      "noEntries": "Keine Kreditkarten vorhanden."
     }
   }
 }

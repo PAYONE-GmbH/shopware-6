@@ -7,6 +7,7 @@
         <service id="PayonePayment\EventListener\CheckoutConfirmEventListener">
             <argument type="service" id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory" />
             <argument type="service" id="language.repository" />
+            <argument type="service" id="PayonePayment\Components\CardService\CardService" />
 
             <tag name="kernel.event_subscriber"/>
         </service>
