@@ -51,7 +51,6 @@
         <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory">
@@ -60,7 +59,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
-        <!-- Debit -->
+        <!-- Credit Card -->
         <service id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequest" />
 
         <service id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory">
@@ -71,7 +70,6 @@
         <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory">
@@ -83,7 +81,6 @@
         <!-- Debit -->
         <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest">
             <argument type="service" id="currency.repository" />
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory">
@@ -96,7 +93,6 @@
         <service id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory">
