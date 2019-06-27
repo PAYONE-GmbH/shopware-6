@@ -8,38 +8,40 @@
         {% block page_payone_account_card_welcome %}
             <div class="account-welcome">
                 {% block page_payone_account_card_card_headline %}
-                    <h1>Title</h1>
+                    <h1>{{ "PayonePayment.cardPage.pageTitle" | trans }}</h1>
                 {% endblock %}
 
                 {% block page_payone_account_card_welcome_intro %}
-                    <p>Subtitle</p>
+                    <p>{{ "PayonePayment.cardPage.pageSubTitle" | trans }}</p>
                 {% endblock %}
             </div>
         {% endblock %}
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">
-                        Kartennummber
-                    </th>
-                    <th scope="col">
-                        &nbsp;
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for card in page.cards %}
-                    <tr>
-                        <td>{{ card.truncatedCardPan }}</td>
-                        <td>
-                            <a href="{{ path('frontend.account.payone.card.delete', {'truncatedCardPan': card.truncatedCardPan}) }}" title="Title" class="btn btn-light">
-                                Title
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="card">
+            {% if page.cards|length > 0 %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ "PayonePayment.cardPage.tableHeader" | trans }}</th>
+                            <th scope="col">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for card in page.cards %}
+                            <tr>
+                                <td>{{ card.truncatedCardPan }}</td>
+                                <td>
+                                    <a href="{{ path('frontend.account.payone.card.delete', {'truncatedCardPan': card.truncatedCardPan}) }}" title="{{ "PayonePayment.cardPage.deleteButton" | trans }}" class="btn btn-light">
+                                        {{ "PayonePayment.cardPage.deleteButton" | trans }}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>{{ "PayonePayment.cardPage.noEntries" | trans }}</p>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
