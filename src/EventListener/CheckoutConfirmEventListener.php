@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
 use PayonePayment\Struct\PayonePaymentData;
 use Shopware\Core\Framework\Context;
@@ -23,8 +22,10 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
     /** @var EntityRepositoryInterface */
     private $languageRepository;
 
-    public function __construct(CreditCardCheckRequestFactory $requestFactory, EntityRepositoryInterface $languageRepository)
-    {
+    public function __construct(
+        CreditCardCheckRequestFactory $requestFactory,
+        EntityRepositoryInterface $languageRepository
+    ) {
         $this->requestFactory     = $requestFactory;
         $this->languageRepository = $languageRepository;
     }
@@ -39,16 +40,13 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
     public function onCheckoutConfirm(CheckoutConfirmPageLoadedEvent $event)
     {
         $salesChannelContext = $event->getSalesChannelContext();
-        $salesChannel        = $salesChannelContext->getSalesChannel();
         $context             = $salesChannelContext->getContext();
 
-        if ($salesChannelContext->getPaymentMethod()->getId() !== PayoneCreditCard::UUID) {
-            return;
-        }
+        $request = $this->requestFactory->getRequestParameters($salesChannelContext);
 
         $payoneData = new PayonePaymentData();
         $payoneData->assign([
-            'cardRequest'   => $this->requestFactory->getRequestParameters($salesChannel, $context),
+            'cardRequest'   => $request,
             'language'      => $this->getCustomerLanguage($context),
             'paymentMethod' => $salesChannelContext->getPaymentMethod(),
         ]);
@@ -65,7 +63,7 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         /** @var null|LanguageEntity $language */
         $language = $this->languageRepository->search($criteria, $context)->first();
 
-        if (null === $language) {
+        if (null === $language || null === $language->getLocale()) {
             return 'en';
         }
 

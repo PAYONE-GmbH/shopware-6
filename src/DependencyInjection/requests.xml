@@ -17,6 +17,8 @@
         <service id="PayonePayment\Payone\Request\Customer\CustomerRequest">
             <argument type="service" id="language.repository" />
             <argument type="service" id="order_address.repository" />
+            <argument type="service" id="salutation.repository" />
+            <argument type="service" id="country.repository" />
             <argument type="service" id="request_stack" />
         </service>
 
@@ -26,7 +28,9 @@
         </service>
 
         <!-- Capture -->
-        <service id="PayonePayment\Payone\Request\Capture\CaptureRequest" />
+        <service id="PayonePayment\Payone\Request\Capture\CaptureRequest">
+            <argument type="service" id="currency.repository" />
+        </service>
 
         <service id="PayonePayment\Payone\Request\Capture\CaptureRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\Capture\CaptureRequest" />
@@ -34,7 +38,9 @@
         </service>
 
         <!-- Refund -->
-        <service id="PayonePayment\Payone\Request\Refund\RefundRequest" />
+        <service id="PayonePayment\Payone\Request\Refund\RefundRequest">
+            <argument type="service" id="currency.repository" />
+        </service>
 
         <service id="PayonePayment\Payone\Request\Refund\RefundRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
@@ -44,6 +50,7 @@
         <!-- Paypal -->
         <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory">
@@ -52,7 +59,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
-        <!-- Debit -->
+        <!-- Credit Card -->
         <service id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequest" />
 
         <service id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory">
@@ -62,6 +69,7 @@
 
         <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
         </service>
 
         <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory">
@@ -71,7 +79,9 @@
         </service>
 
         <!-- Debit -->
-        <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest" />
+        <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest">
+            <argument type="service" id="currency.repository" />
+        </service>
 
         <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest" />
@@ -82,6 +92,7 @@
         <!-- SofortBanking -->
         <service id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
         </service>
 
         <service id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory">

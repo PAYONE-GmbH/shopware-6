@@ -29,11 +29,7 @@ class WebhookProcessor implements WebhookProcessorInterface
     {
         $config = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
-        $storedKey = $config->get('key');
-
-        if (null === $storedKey) {
-            return new Response(WebhookHandlerInterface::RESPONSE_TSNOTOK);
-        }
+        $storedKey = $config->get('portalKey');
 
         if (!isset($data['key']) || $data['key'] !== hash('md5', $storedKey)) {
             return new Response(WebhookHandlerInterface::RESPONSE_TSNOTOK);

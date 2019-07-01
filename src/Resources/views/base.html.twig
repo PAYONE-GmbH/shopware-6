@@ -1,6 +1,6 @@
 {% sw_extends '@Storefront/base.html.twig' %}
 
-{% block base_body_script %}
+{% block base_script_hmr_mode %}
     {{ parent() }}
 
     {% if page.extensions.payone %}
@@ -32,76 +32,81 @@
             border-radius: .1875rem;
         {% endset %}
 
-        <script>
+        <script type="application/javascript">
             let orderFormDisabled = true;
 
-            $(document).ready(function () {
-                let request = {{ page.extensions.payone.cardRequest | json_encode | raw }};
+            let request = {{ page.extensions.payone.cardRequest | json_encode | raw }};
 
-                let config = {
-                    fields: {
-                        cardpan: {
-                            selector: 'cardpan',                 // put name of your div-container here
-                            type: 'text',
-                            style: {{ field_style | json_encode | raw }}
-                        },
-                        cardcvc2: {
-                            selector: 'cardcvc2',                // put name of your div-container here
-                            type: 'password',                    // select(default), text, password, tel
-                            size: '4',
-                            maxlength: '4',
-                            style: {{ field_style | json_encode | raw }}
-                        },
-                        cardexpiremonth: {
-                            selector: 'cardexpiremonth',         // put name of your div-container here
-                            type: 'select',                      // select(default), text, password, tel
-                            size: '2',
-                            maxlength: '2',
-                            style: {{ select_style | json_encode | raw }}
-                        },
-                        cardexpireyear: {
-                            selector: 'cardexpireyear',          // put name of your div-container here
-                            type: 'select',
-                            style: {{ select_style | json_encode | raw }}
-                        }
+            let config = {
+                fields: {
+                    cardpan: {
+                        selector: 'cardpan',                 // put name of your div-container here
+                        type: 'text',
+                        style: {{ field_style | json_encode | raw }}
                     },
-
-                    defaultStyle: {
-                        iframe: {
-                            height: '100%',
-                            width: '100%'
-                        }
+                    cardcvc2: {
+                        selector: 'cardcvc2',                // put name of your div-container here
+                        type: 'password',                    // select(default), text, password, tel
+                        size: '4',
+                        maxlength: '4',
+                        style: {{ field_style | json_encode | raw }}
                     },
-
-                    language: Payone.ClientApi.Language[{{ page.extensions.payone.language | json_encode | raw }}],
-
-                    autoCardtypeDetection: {
-                        supportedCardtypes: ['#', 'V', 'A', 'M', 'D', 'J', 'O', 'U', 'P'],
-
-                        callback: function (detectedCardtype) {
-                            if (detectedCardtype === "-" || detectedCardtype === "?") {
-                                return;
-                            }
-
-                            let src = 'https://cdn.pay1.de/cc/' + detectedCardtype.toLowerCase() + '/xl/default.png';
-
-                            $('#card-logo').attr('src', src).show();
-                            $("#errorOutput").hide();
-                        }
+                    cardexpiremonth: {
+                        selector: 'cardexpiremonth',         // put name of your div-container here
+                        type: 'select',                      // select(default), text, password, tel
+                        size: '2',
+                        maxlength: '2',
+                        style: {{ select_style | json_encode | raw }}
                     },
-                };
-
-                const iframes = new Payone.ClientApi.HostedIFrames(config, request);
-
-                $('#confirmOrderForm').submit(function () {
-                    $("#errorOutput").hide();
-
-                    if (!iframes.isComplete() || orderFormDisabled) {
-                        iframes.creditCardCheck('payoneCheckCallback');
-                        
-                        return false;
+                    cardexpireyear: {
+                        selector: 'cardexpireyear',          // put name of your div-container here
+                        type: 'select',
+                        style: {{ select_style | json_encode | raw }}
                     }
-                });
+                },
+
+                defaultStyle: {
+                    iframe: {
+                        height: '100%',
+                        width: '100%'
+                    }
+                },
+
+                language: Payone.ClientApi.Language[{{ page.extensions.payone.language | json_encode | raw }}],
+
+                autoCardtypeDetection: {
+                    supportedCardtypes: ['#', 'V', 'A', 'M', 'D', 'J', 'O', 'U', 'P'],
+
+                    callback: function (detectedCardtype) {
+                        if (detectedCardtype === "-" || detectedCardtype === "?") {
+                            return;
+                        }
+
+                        let src = 'https://cdn.pay1.de/cc/' + detectedCardtype.toLowerCase() + '/xl/default.png';
+
+                        let errorOutput = document.getElementById('errorOutput');
+                        let logo = document.getElementById('card-logo');
+
+                        logo.setAttribute("src", src);
+
+                        errorOutput.style.display = 'none';
+                        logo.style.display = 'block';
+                    }
+                },
+            };
+
+            const iframes = new Payone.ClientApi.HostedIFrames(config, request);
+
+            document.getElementById('confirmOrderForm').addEventListener("submit", function () {
+                let errorOutput = document.getElementById('errorOutput');
+
+                errorOutput.style.display = 'none';
+
+                if (!iframes.isComplete() || orderFormDisabled) {
+                    iframes.creditCardCheck('payoneCheckCallback');
+
+                    return false;
+                }
             });
 
             function payoneCheckCallback(response) {
@@ -111,16 +116,18 @@
 
                     orderFormDisabled = false;
 
-                    $('#confirmOrderForm').submit();
+                    document.getElementById('confirmOrderForm').onsubmit()
                 } else {
-                    let button = $("#confirmFormSubmit");
+                    let button = document.getElementById('confirmFormSubmit');
+                    let errorOutput = document.getElementById('errorOutput');
 
-                    button.removeAttr('disabled');
-                    button.find(".spinner-border").remove();
+                    button.removeAttribute('disabled');
 
-                    $("#errorOutput")
-                        .html(response.errormessage)
-                        .show();
+                    // TODO: Find alternative for this line
+                    // button.find(".spinner-border").remove();
+
+                    errorOutput.innerHTML = response.errormessage;
+                    errorOutput.style.display = 'block';
                 }
             }
         </script>

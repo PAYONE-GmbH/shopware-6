@@ -35,11 +35,6 @@ class CaptureController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/payone/capture-payment", name="api.action.payone.capture_payment", methods={"POST"})
-     *
-     * @param Request $request
-     * @param Context $context
-     *
-     * @return JsonResponse
      */
     public function captureAction(Request $request, Context $context): JsonResponse
     {
@@ -57,6 +52,10 @@ class CaptureController extends AbstractController
 
         if (null === $orderTransaction) {
             return new JsonResponse(['status' => false, 'message' => 'no order transaction found'], Response::HTTP_NOT_FOUND);
+        }
+
+        if (null === $orderTransaction->getOrder()) {
+            return new JsonResponse(['status' => false, 'message' => 'no order found'], Response::HTTP_NOT_FOUND);
         }
 
         try {
