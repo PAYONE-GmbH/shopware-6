@@ -43,6 +43,6 @@ class Migration1561379069AddPayonePaymentCardTable extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-        // implement update destructive if needed
+        // implement update destructive
     }
 }
