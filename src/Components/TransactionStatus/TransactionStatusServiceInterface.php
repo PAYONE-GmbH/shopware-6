@@ -10,9 +10,6 @@ interface TransactionStatusServiceInterface
 {
     /**
      * Persists the provided TransactionStatusStruct into the database.
-     *
-     * @param SalesChannelContext $salesChannelContext
-     * @param array               $transactionData
      */
     public function persistTransactionStatus(SalesChannelContext $salesChannelContext, array $transactionData): void;
 }

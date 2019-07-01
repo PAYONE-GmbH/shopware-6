@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\System;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 
 class SystemRequest
 {
@@ -18,17 +16,17 @@ class SystemRequest
         $this->configReader = $configReader;
     }
 
-    public function getRequestParameters(SalesChannelEntity $salesChannel, Context $context): array
+    public function getRequestParameters(string $salesChannel): array
     {
-        $config = $this->configReader->read($salesChannel->getId());
+        $configuration = $this->configReader->read($salesChannel);
 
         return [
-            'aid'         => (string) $config->get('aid'),
-            'mid'         => (string) $config->get('mid'),
-            'portalid'    => (string) $config->get('portalid'),
-            'key'         => (string) $config->get('key'),
+            'aid'         => $configuration->get('accountId'),
+            'mid'         => $configuration->get('merchantId'),
+            'portalid'    => $configuration->get('portalId'),
+            'key'         => $configuration->get('portalKey'),
             'api_version' => '3.10',
-            'mode'        => $config->get('mode') ?: 'test',
+            'mode'        => $configuration->get('transactionMode'),
             'encoding'    => 'UTF-8',
         ];
     }

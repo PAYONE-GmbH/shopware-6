@@ -5,28 +5,33 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\SofortBanking;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\Struct\PaymentTransaction;
+use RuntimeException;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\System\Currency\CurrencyEntity;
 
 class SofortBankingAuthorizeRequest
 {
     /** @var RedirectHandler */
     private $redirectHandler;
 
-    public function __construct(RedirectHandler $redirectHandler)
-    {
-        $this->redirectHandler = $redirectHandler;
+    /** @var EntityRepositoryInterface */
+    private $currencyRepository;
+
+    public function __construct(
+        RedirectHandler $redirectHandler,
+        EntityRepositoryInterface $currencyRepository
+    ) {
+        $this->redirectHandler    = $redirectHandler;
+        $this->currencyRepository = $currencyRepository;
     }
 
-    /**
-     * TODO: the reference number needs to be unique. When multiple transactions are possible per order, we need to add
-     * TODO: a suffix/prefix or use another number as reference
-     */
-    public function getRequestParameters(
-        PaymentTransactionStruct $transaction,
-        Context $context
-    ): array {
+    public function getRequestParameters(PaymentTransaction $transaction, Context $context): array
+    {
         if (empty($transaction->getReturnUrl())) {
             throw new InvalidOrderException($transaction->getOrder()->getId());
         }
@@ -37,11 +42,25 @@ class SofortBankingAuthorizeRequest
             'onlinebanktransfertype' => 'PNT',
             'bankcountry'            => 'DE', // TODO: possible values DE, AT, CH, NL
             'amount'                 => (int) ($transaction->getOrder()->getAmountTotal() * 100),
-            'currency'               => $transaction->getOrder()->getCurrency()->getIsoCode(),
+            'currency'               => $this->getOrderCurrency($transaction->getOrder(), $context)->getIsoCode(),
             'reference'              => $transaction->getOrder()->getOrderNumber(),
             'successurl'             => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
             'errorurl'               => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),
             'backurl'                => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),
         ];
+    }
+
+    private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity
+    {
+        $criteria = new Criteria([$order->getCurrencyId()]);
+
+        /** @var null|CurrencyEntity $language */
+        $currency = $this->currencyRepository->search($criteria, $context)->first();
+
+        if (null === $currency) {
+            throw new RuntimeException('missing order currency entity');
+        }
+
+        return $currency;
     }
 }

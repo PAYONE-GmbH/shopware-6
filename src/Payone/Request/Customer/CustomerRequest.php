@@ -11,6 +11,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Language\LanguageEntity;
+use Shopware\Core\System\Country\CountryEntity;
+use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\Salutation\SalutationEntity;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class CustomerRequest
@@ -24,14 +27,24 @@ class CustomerRequest
     /** @var RequestStack */
     private $requestStack;
 
+    /** @var EntityRepositoryInterface */
+    private $salutationRepository;
+
+    /** @var EntityRepositoryInterface */
+    private $countryRepository;
+
     public function __construct(
         EntityRepositoryInterface $languageRepository,
         EntityRepositoryInterface $addressRepository,
+        EntityRepositoryInterface $salutationRepository,
+        EntityRepositoryInterface $countryRepository,
         RequestStack $requestStack
     ) {
-        $this->languageRepository = $languageRepository;
-        $this->addressRepository  = $addressRepository;
-        $this->requestStack       = $requestStack;
+        $this->languageRepository   = $languageRepository;
+        $this->addressRepository    = $addressRepository;
+        $this->salutationRepository = $salutationRepository;
+        $this->countryRepository    = $countryRepository;
+        $this->requestStack         = $requestStack;
     }
 
     public function getRequestParameters(OrderEntity $order, Context $context): array
@@ -40,7 +53,7 @@ class CustomerRequest
         $billingAddress = $this->getCustomerBillingAddress($context, $order);
 
         $personalData = [
-            'salutation'      => $billingAddress->getSalutation()->getDisplayName(),
+            'salutation'      => $this->getCustomerSalutation($billingAddress, $context)->getDisplayName(),
             'title'           => $billingAddress->getTitle(),
             'firstname'       => $billingAddress->getFirstName(),
             'lastname'        => $billingAddress->getLastName(),
@@ -48,13 +61,11 @@ class CustomerRequest
             'addressaddition' => $billingAddress->getAdditionalAddressLine1(),
             'zip'             => $billingAddress->getZipcode(),
             'city'            => $billingAddress->getCity(),
-            'country'         => $billingAddress->getCountry()->getIso(),
+            'country'         => $this->getCustomerCountry($billingAddress, $context)->getIso(),
             'email'           => $order->getOrderCustomer()->getEmail(),
             'language'        => substr($language->getLocale()->getCode(), 0, 2),
             'ip'              => $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
         ];
-
-        // TODO: we can provide a existing payone userid. This should be discussed.
 
         $birthday = $order->getOrderCustomer()->getCustomer()->getBirthday();
         if (null !== $birthday) {
@@ -64,11 +75,37 @@ class CustomerRequest
         return $personalData;
     }
 
+    private function getCustomerSalutation(OrderAddressEntity $addressEntity, Context $context): SalutationEntity
+    {
+        $criteria = new Criteria([$addressEntity->getSalutationId()]);
+
+        /** @var null|SalutationEntity $language */
+        $salutation = $this->salutationRepository->search($criteria, $context)->first();
+
+        if (null === $salutation) {
+            throw new RuntimeException('missing order customer salutation');
+        }
+
+        return $salutation;
+    }
+
+    private function getCustomerCountry(OrderAddressEntity $addressEntity, Context $context): CountryEntity
+    {
+        $criteria = new Criteria([$addressEntity->getCountryId()]);
+
+        /** @var null|CurrencyEntity $language */
+        $country = $this->countryRepository->search($criteria, $context)->first();
+
+        if (null === $country) {
+            throw new RuntimeException('missing order country entity');
+        }
+
+        return $country;
+    }
+
     private function getCustomerLanguage(Context $context): LanguageEntity
     {
-        // TODO: Replace with getLanguageId
-        $languages = $context->getLanguageIdChain();
-        $criteria  = new Criteria([reset($languages)]);
+        $criteria = new Criteria([$context->getLanguageId()]);
         $criteria->addAssociation('locale');
 
         /** @var null|LanguageEntity $language */

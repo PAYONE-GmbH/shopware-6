@@ -11,11 +11,6 @@ interface WebhookProcessorInterface
 {
     /**
      * Processes the provided webhook data
-     *
-     * @param SalesChannelContext $salesChannelContext
-     * @param array               $data
-     *
-     * @return Response
      */
     public function process(SalesChannelContext $salesChannelContext, array $data): Response;
 }

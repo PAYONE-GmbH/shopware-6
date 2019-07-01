@@ -12,9 +12,6 @@ use Shopware\Core\Framework\Context;
 interface CapturePaymentHandlerInterface
 {
     /**
-     * @param OrderTransactionEntity $orderTransaction
-     * @param Context                $context
-     *
      * @throws InvalidOrderException
      * @throws PayoneRequestException
      */

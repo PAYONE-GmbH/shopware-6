@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use DateTime;
+use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -28,38 +26,31 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
     /** @var PayoneClientInterface */
     private $client;
 
-    /** @var EntityRepositoryInterface */
-    private $transactionRepository;
-
     /** @var TranslatorInterface */
     private $translator;
 
-    /** @var RequestStack */
-    private $requestStack;
+    /** @var TransactionDataHandlerInterface */
+    private $dataHandler;
 
     public function __construct(
         DebitAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
-        EntityRepositoryInterface $transactionRepository,
         TranslatorInterface $translator,
-        RequestStack $requestStack
+        TransactionDataHandlerInterface $dataHandler
     ) {
-        $this->requestFactory        = $requestFactory;
-        $this->client                = $client;
-        $this->transactionRepository = $transactionRepository;
-        $this->translator            = $translator;
-        $this->requestStack          = $requestStack;
+        $this->requestFactory = $requestFactory;
+        $this->client         = $client;
+        $this->translator     = $translator;
+        $this->dataHandler    = $dataHandler;
     }
 
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
-        $paymentTransaction = PaymentTransactionStruct::fromSyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction);
 
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $this->requestStack->getCurrentRequest()->get('iban'),
-            $this->requestStack->getCurrentRequest()->get('bic'),
-            $this->requestStack->getCurrentRequest()->get('accountOwner'),
+            $dataBag,
             $salesChannelContext->getContext()
         );
 
@@ -77,25 +68,17 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
             );
         }
 
-        $key = (new DateTime())->format(DATE_ATOM);
-
-        // TODO: move custom Field handling to helper function
-
-        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
-
-        $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];
-        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = -1; // Blocks further actions on the order until PAYONE transaction status call sets correct sequence number
-        $customFields[CustomFieldInstaller::USER_ID]                = $response['userid'];
-        $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = 'pending'; // TODO: fetch correct payment state from payone or use a alternative method
-        $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
-
-        // TODO: save $response['mandate'] data to user facing table and implement the storefront integration
-
         $data = [
-            'id'           => $transaction->getOrderTransaction()->getId(),
-            'customFields' => $customFields,
+            CustomFieldInstaller::LAST_REQUEST      => $request['request'],
+            CustomFieldInstaller::TRANSACTION_ID    => (string) $response['txid'],
+            CustomFieldInstaller::TRANSACTION_STATE => 'pending',
+            CustomFieldInstaller::SEQUENCE_NUMBER   => -1,
+            CustomFieldInstaller::USER_ID           => $response['userid'],
+            CustomFieldInstaller::ALLOW_CAPTURE     => false,
+            CustomFieldInstaller::ALLOW_REFUND      => false,
         ];
 
-        $this->transactionRepository->update([$data], $salesChannelContext->getContext());
+        $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
     }
 }

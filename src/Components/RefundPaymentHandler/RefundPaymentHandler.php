@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\RefundPaymentHandler;
 
-use DateTime;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -21,8 +21,6 @@ use Throwable;
 
 class RefundPaymentHandler implements RefundPaymentHandlerInterface
 {
-    private const STATE_REFUNDED = 'refunded';
-
     /** @var RefundRequestFactory */
     private $requestFactory;
 
@@ -30,21 +28,21 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
     private $client;
 
     /** @var EntityRepositoryInterface */
-    private $repository;
-
-    /** @var EntityRepositoryInterface */
     private $stateRepository;
+
+    /** @var TransactionDataHandlerInterface */
+    private $dataHandler;
 
     public function __construct(
         RefundRequestFactory $requestFactory,
         PayoneClientInterface $client,
-        EntityRepositoryInterface $repository,
-        EntityRepositoryInterface $stateRepository
+        EntityRepositoryInterface $stateRepository,
+        TransactionDataHandlerInterface $dataHandler
     ) {
         $this->requestFactory  = $requestFactory;
         $this->client          = $client;
-        $this->repository      = $repository;
         $this->stateRepository = $stateRepository;
+        $this->dataHandler     = $dataHandler;
     }
 
     /**
@@ -56,12 +54,9 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
      */
     public function refundTransaction(OrderTransactionEntity $orderTransaction, Context $context): void
     {
-        $paymentTransaction = PaymentTransactionStruct::fromOrderTransaction($orderTransaction);
+        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransaction);
 
-        $request = $this->requestFactory->getRequestParameters(
-            $paymentTransaction,
-            $context
-        );
+        $request = $this->requestFactory->getRequestParameters($paymentTransaction, $context);
 
         try {
             $response = $this->client->request($request);
@@ -71,30 +66,15 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
             throw new InvalidOrderException($orderTransaction->getOrderId());
         }
 
-        $customFields = $orderTransaction->getCustomFields() ?? [];
-
-        ++$customFields[CustomFieldInstaller::SEQUENCE_NUMBER];
-
-        $key = (new DateTime())->format(DATE_ATOM);
-
-        $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
-        $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = 'refunded';
-
-        $data = [
-            'id'           => $orderTransaction->getId(),
-            'stateId'      => $this->getRefundedState()->getId(),
-            'customFields' => $customFields,
-        ];
-
-        $this->repository->update([$data], $context);
+        $this->dataHandler->logResponse($paymentTransaction, $context, $response);
+        $this->dataHandler->incrementSequenceNumber($paymentTransaction, $context);
+        $this->dataHandler->setState($paymentTransaction, $context, $this->getRefundedState($context));
     }
 
-    private function getRefundedState(): ?StateMachineStateEntity
+    private function getRefundedState(Context $context): StateMachineStateEntity
     {
-        $context = Context::createDefaultContext();
-
         $criteria = new Criteria();
-        $filter   = new EqualsFilter('state_machine_state.technicalName', self::STATE_REFUNDED);
+        $filter   = new EqualsFilter('state_machine_state.technicalName', OrderTransactionStates::STATE_REFUNDED);
         $criteria->addFilter($filter);
 
         return $this->stateRepository->search($criteria, $context)->first();

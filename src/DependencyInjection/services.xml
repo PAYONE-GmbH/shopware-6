@@ -6,7 +6,6 @@
     <imports>
         <import resource="webhook.xml"/>
         <import resource="commands.xml" />
-        <import resource="entities.xml" />
         <import resource="handlers.xml" />
         <import resource="requests.xml" />
         <import resource="translations.xml" />
@@ -16,24 +15,21 @@
 
     <services>
         <service id="PayonePayment\Components\ConfigReader\ConfigReader">
-            <argument type="service" id="payone_payment_config.repository" />
-        </service>
-
-        <service id="PayonePayment\Components\ConfigWriter\ConfigWriter">
-            <argument type="service" id="payone_payment_config.repository" />
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
         </service>
 
         <service id="PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandler">
             <argument type="service" id="PayonePayment\Payone\Request\Refund\RefundRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="state_machine_state.repository"/>
+            <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
         </service>
 
         <service id="PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandler">
             <argument type="service" id="PayonePayment\Payone\Request\Capture\CaptureRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="state_machine_state.repository"/>
+            <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
         </service>
 
         <service id="PayonePayment\Payone\Client\PayoneClient">
@@ -43,11 +39,20 @@
         <service id="PayonePayment\Components\TransactionStatus\TransactionStatusService">
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="state_machine_state.repository"/>
+            <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
         </service>
 
         <service id="PayonePayment\Components\RedirectHandler\RedirectHandler">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="router.default"/>
+        </service>
+
+        <service id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler">
+            <argument type="service" id="order_transaction.repository" />
+        </service>
+
+        <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler">
+            <argument type="service" id="translator" />
         </service>
     </services>
 </container>

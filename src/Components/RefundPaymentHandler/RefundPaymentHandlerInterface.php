@@ -12,9 +12,6 @@ use Shopware\Core\Framework\Context;
 interface RefundPaymentHandlerInterface
 {
     /**
-     * @param OrderTransactionEntity $orderTransaction
-     * @param Context                $context
-     *
      * @throws InvalidOrderException
      * @throws PayoneRequestException
      */

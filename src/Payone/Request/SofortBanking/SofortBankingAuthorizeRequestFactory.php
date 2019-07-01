@@ -7,7 +7,7 @@ namespace PayonePayment\Payone\Request\SofortBanking;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 
 class SofortBankingAuthorizeRequestFactory extends AbstractRequestFactory
@@ -32,7 +32,7 @@ class SofortBankingAuthorizeRequestFactory extends AbstractRequestFactory
     }
 
     public function getRequestParameters(
-        PaymentTransactionStruct $transaction,
+        PaymentTransaction $transaction,
         Context $context
     ): array {
         $this->requests[] = $this->authorizeRequest->getRequestParameters(
@@ -46,8 +46,7 @@ class SofortBankingAuthorizeRequestFactory extends AbstractRequestFactory
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannel(),
-            $context
+            $transaction->getOrder()->getSalesChannelId()
         );
 
         return $this->createRequest();

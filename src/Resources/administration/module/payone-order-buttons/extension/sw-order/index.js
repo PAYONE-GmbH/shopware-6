@@ -35,7 +35,7 @@ Component.override('sw-order-detail-base', {
                 return false;
             }
 
-            return transaction.customFields.payone_sequence_number === 0; // TODO: capture is not limited to sequqnce number 0
+            return transaction.customFields.payone_allow_capture;
         },
 
         isRefundPossible(transaction) {
@@ -47,7 +47,7 @@ Component.override('sw-order-detail-base', {
                 return false;
             }
 
-            return transaction.customFields.payone_sequence_number === 1; // TODO: refund is not limited to sequqnce number 1
+            return transaction.customFields.payone_allow_refund;
         },
 
         hasPayonePayment(order) {

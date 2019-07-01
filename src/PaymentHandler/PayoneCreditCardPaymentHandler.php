@@ -4,24 +4,20 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use DateTime;
+use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
+use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
-use PayonePayment\Payone\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
-use Shopware\Core\Checkout\Payment\Exception\CustomerCanceledAsyncPaymentException;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -33,46 +29,39 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
     /** @var PayoneClientInterface */
     private $client;
 
-    /** @var EntityRepositoryInterface */
-    private $transactionRepository;
-
-    /** @var StateMachineRegistry */
-    private $stateMachineRegistry;
-
     /** @var TranslatorInterface */
     private $translator;
 
-    /** @var RequestStack */
-    private $requestStack;
+    /** @var TransactionDataHandlerInterface */
+    private $dataHandler;
+
+    /** @var PaymentStateHandlerInterface */
+    private $stateHandler;
 
     public function __construct(
         CreditCardPreAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
-        EntityRepositoryInterface $transactionRepository,
-        StateMachineRegistry $stateMachineRegistry,
         TranslatorInterface $translator,
-        RequestStack $requestStack
+        TransactionDataHandlerInterface $dataHandler,
+        PaymentStateHandlerInterface $stateHandler
     ) {
-        $this->requestFactory        = $requestFactory;
-        $this->client                = $client;
-        $this->transactionRepository = $transactionRepository;
-        $this->stateMachineRegistry  = $stateMachineRegistry;
-        $this->translator            = $translator;
-        $this->requestStack          = $requestStack;
+        $this->requestFactory = $requestFactory;
+        $this->client         = $client;
+        $this->translator     = $translator;
+        $this->dataHandler    = $dataHandler;
+        $this->stateHandler   = $stateHandler;
     }
 
     /**
      * {@inheritdoc}
-     *
-     * TODO: Refaktor payment handlers into one generic payment handler for all payment methods
      */
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
     {
-        $paymentTransaction = PaymentTransactionStruct::fromAsyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
 
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $this->requestStack->getCurrentRequest()->get('pseudocardpan'),
+            $dataBag,
             $salesChannelContext->getContext()
         );
 
@@ -90,22 +79,18 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
             );
         }
 
-        $key = (new DateTime())->format(DATE_ATOM);
-
-        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
-
-        $customFields[CustomFieldInstaller::TRANSACTION_ID]         = (string) $response['txid'];
-        $customFields[CustomFieldInstaller::TRANSACTION_STATE]      = $response['status'];
-        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]        = -1; // Blocks further actions on the order until PAYONE transaction status call sets correct sequence number
-        $customFields[CustomFieldInstaller::USER_ID]                = $response['userid'];
-        $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
-
         $data = [
-            'id'           => $transaction->getOrderTransaction()->getId(),
-            'customFields' => $customFields,
+            CustomFieldInstaller::LAST_REQUEST      => $request['request'],
+            CustomFieldInstaller::TRANSACTION_ID    => (string) $response['txid'],
+            CustomFieldInstaller::TRANSACTION_STATE => $response['status'],
+            CustomFieldInstaller::SEQUENCE_NUMBER   => -1,
+            CustomFieldInstaller::USER_ID           => $response['userid'],
+            CustomFieldInstaller::ALLOW_CAPTURE     => false,
+            CustomFieldInstaller::ALLOW_REFUND      => false,
         ];
 
-        $this->transactionRepository->update([$data], $salesChannelContext->getContext());
+        $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
 
         if (strtolower($response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);
@@ -116,32 +101,9 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
 
     /**
      * {@inheritdoc}
-     *
-     * TODO: Move finalize to generic handler
      */
     public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
     {
-        $state = $request->query->get('state');
-
-        if (empty($state)) {
-            throw new AsyncPaymentFinalizeException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
-
-        if ($state === 'cancel') {
-            throw new CustomerCanceledAsyncPaymentException(
-                $transaction->getOrderTransaction()->getId(),
-                ''
-            );
-        }
-
-        if ($state === 'error') {
-            throw new AsyncPaymentFinalizeException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
+        $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
     }
 }
