@@ -33,7 +33,7 @@ class Migration1561379069AddPayonePaymentCardTable extends MigrationStep
                 
                 KEY `fk.payone_payment_card.customer_id` (`customer_id`),
                 
-                CONSTRAINT `fk.payone_payment_card.customeri_id` 
+                CONSTRAINT `fk.payone_payment_card.customer_id` 
                     FOREIGN KEY (`customer_id`) 
                     REFERENCES `customer` (`id`) 
                     ON DELETE RESTRICT ON UPDATE CASCADE
