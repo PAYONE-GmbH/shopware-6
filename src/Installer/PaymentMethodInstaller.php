@@ -12,6 +12,7 @@ use PayonePayment\PaymentMethod\PayoneSofortBanking;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
@@ -28,6 +29,12 @@ class PaymentMethodInstaller implements InstallerInterface
     /** @var EntityRepositoryInterface */
     private $paymentMethodRepository;
 
+    /** @var EntityRepositoryInterface */
+    private $salesChannelRepository;
+
+    /** @var EntityRepositoryInterface */
+    private $paymentMethodSalesChannelRepository;
+
     /** @var PaymentMethodInterface[] */
     private $paymentMethods;
 
@@ -35,6 +42,8 @@ class PaymentMethodInstaller implements InstallerInterface
     {
         $this->pluginIdProvider        = $container->get(PluginIdProvider::class);
         $this->paymentMethodRepository = $container->get('payment_method.repository');
+        $this->salesChannelRepository = $container->get('sales_channel.repository');
+        $this->paymentMethodSalesChannelRepository = $container->get('sales_channel_payment_method.repository');
 
         $this->paymentMethods = [
             new PayoneCreditCard(),
@@ -91,6 +100,17 @@ class PaymentMethodInstaller implements InstallerInterface
         ];
 
         $this->paymentMethodRepository->upsert([$data], $context);
+
+        $channels = $this->salesChannelRepository->searchIds(new Criteria(), $context);
+
+        foreach ($channels->getIds() as $channel) {
+            $data = [
+                'salesChannelId'                => $channel,
+                'paymentMethodId'              => $paymentMethod->getId(),
+            ];
+
+            $this->paymentMethodSalesChannelRepository->upsert([$data], $context);
+        }
     }
 
     private function activatePaymentMethod(PaymentMethodInterface $paymentMethod, Context $context): void

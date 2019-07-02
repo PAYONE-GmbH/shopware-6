@@ -1,0 +1,29 @@
+{% sw_extends '@Storefront/page/checkout/confirm/index.html.twig' %}
+
+{% block page_checkout_confirm %}
+    {{ parent() }}
+
+    {% if constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') is same as(context.paymentMethod.id) %}
+        <div class="card-title">
+            Payment Data
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                {% sw_include '@Storefront/payone/form/credit-card-form.html.twig' %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if constant('PayonePayment\\PaymentMethod\\PayoneDebit::UUID') is same as(context.paymentMethod.id) %}
+        <div class="card-title">
+            Payment Data
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                {% sw_include '@Storefront/payone/form/debit-form.html.twig' %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

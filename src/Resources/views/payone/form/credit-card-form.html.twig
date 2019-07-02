@@ -10,6 +10,7 @@
                         <label class="form-label" for="savedPseudoCardPan">{{ "PayonePayment.creditCard.savedCards" | trans }}</label>
                         <select class="form-control" id="savedpseudocardpan" name="savedPseudoCardPan" form="confirmOrderForm">
                             <option key=""></option>
+
                             {% for card in page.extensions.payone.savedCards %}
                                 <option value="{{ card.pseudoCardPan }}">{{ card.truncatedCardPan }}</option>
                             {% endfor %}
