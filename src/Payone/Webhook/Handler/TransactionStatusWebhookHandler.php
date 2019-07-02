@@ -21,7 +21,7 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
         LoggerInterface $logger
     ) {
         $this->transactionStatusService = $transactionStatusService;
-        $this->logger = $logger;
+        $this->logger                   = $logger;
     }
 
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool

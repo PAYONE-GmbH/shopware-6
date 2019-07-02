@@ -29,7 +29,7 @@ class AccountMandatePageLoader
     ) {
         $this->genericLoader   = $genericLoader;
         $this->eventDispatcher = $eventDispatcher;
-        $this->MandateService     = $MandateService;
+        $this->mandateService  = $MandateService;
     }
 
     public function load(Request $request, SalesChannelContext $context): AccountMandatePage
