@@ -9,6 +9,7 @@ use PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader;
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -67,5 +68,25 @@ class AccountMandateController extends StorefrontController
         $this->addFlash('success', 'PayonePayment.MandatePage.success');
 
         return new RedirectResponse($this->generateUrl('frontend.account.payone.mandate.page'));
+    }
+
+    /**
+     * @Route("/account/mandate/download", name="frontend.account.payone.mandate.delete", methods={"GET"})
+     *
+     * @throws CustomerNotLoggedInException
+     */
+    public function downloadMandate(Request $request, SalesChannelContext $context): Response
+    {
+        $this->denyAccessUnlessLoggedIn();
+
+        try {
+            $file = '';
+        } catch (Throwable $exception) {
+            $this->addFlash('danger', 'PayonePayment.MandatePage.error');
+
+            return $this->forwardToRoute('frontend.account.payone.mandate.page');
+        }
+
+        return new BinaryFileResponse($file);
     }
 }

@@ -18,7 +18,7 @@ interface MandateServiceInterface
 
     public function removeMandate(
         CustomerEntity $customer,
-        string $mandate,
+        string $identification,
         Context $context
     ): void;
 
