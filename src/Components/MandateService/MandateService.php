@@ -14,9 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class MandateService implements MandateServiceInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
+    /** @var EntityRepositoryInterface */
     private $mandateRepository;
 
     public function __construct(EntityRepositoryInterface $mandateRepository)
@@ -45,8 +43,7 @@ class MandateService implements MandateServiceInterface
         string $identification,
         DateTime $signatureDate,
         Context $context
-    ): void
-    {
+    ): void {
         // TODO: Implement saveMandate() method.
     }
 }
