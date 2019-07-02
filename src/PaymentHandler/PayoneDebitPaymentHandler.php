@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use DateTime;
 use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
@@ -87,10 +88,12 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
 
+        $date = DateTime::createFromFormat('Ymd', $response['mandate']['DateOfSignature']);
+
         $this->mandateService->saveMandate(
             $salesChannelContext->getCustomer(),
-            $response['mandate']['identification'],
-            $response['mandate']['identification'],
+            $response['mandate']['Identification'],
+            $date,
             $salesChannelContext->getContext()
         );
     }
