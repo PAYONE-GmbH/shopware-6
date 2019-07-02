@@ -104,7 +104,7 @@
 
                 let savedCardPan = document.getElementById('savedpseudocardpan');
 
-                if (savedCardPan.value && savedCardPan.value.length > 0) {
+                if (savedCardPan && savedCardPan.value.length > 0) {
                     return true;
                 }
 
@@ -124,7 +124,7 @@
 
                     orderFormDisabled = false;
 
-                    document.getElementById('confirmOrderForm').onsubmit()
+                    document.getElementById('confirmOrderForm').submit()
                 } else {
                     let button = document.getElementById('confirmFormSubmit');
                     let errorOutput = document.getElementById('errorOutput');

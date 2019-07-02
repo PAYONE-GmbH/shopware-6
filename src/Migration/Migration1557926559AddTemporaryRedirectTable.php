@@ -21,8 +21,7 @@ class Migration1557926559AddTemporaryRedirectTable extends MigrationStep
                 `id` binary(16) NOT NULL PRIMARY KEY,
                 
                 `hash` text NOT NULL,
-                `url` text NOT NULL
-                    
+                `url` text NOT NULL                    
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
     }

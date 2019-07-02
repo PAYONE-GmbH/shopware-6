@@ -62,6 +62,7 @@ class PayonePayment extends Plugin
 
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
-        $connection->exec('DROP TABLE payone_payment_config');
+        $connection->exec('DROP TABLE payone_payment_card');
+        $connection->exec('DROP TABLE payone_payment_redirect');
     }
 }
