@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
@@ -32,16 +33,21 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
 
+    /** @var MandateServiceInterface */
+    private $mandateService;
+
     public function __construct(
         DebitAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler
+        TransactionDataHandlerInterface $dataHandler,
+        MandateServiceInterface $mandateService
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
         $this->translator     = $translator;
         $this->dataHandler    = $dataHandler;
+        $this->mandateService = $mandateService;
     }
 
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
@@ -80,5 +86,12 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
+
+        $this->mandateService->saveMandate(
+            $salesChannelContext->getCustomer(),
+            $response['mandate']['identification'],
+            $response['mandate']['identification'],
+            $salesChannelContext->getContext()
+        );
     }
 }
