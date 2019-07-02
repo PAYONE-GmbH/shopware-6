@@ -23,6 +23,11 @@
       "tableHeader": "Kartennummer",
       "deleteButton": "Karte löschen",
       "noEntries": "Keine Kreditkarten vorhanden."
+    },
+    "MandatePage": {
+      "success": "Das Lastschrift Mandat wurde erfolgreich entfernt.",
+      "error": "Beim entferenn des Lastschrift Mandats ist ein Fehler aufgetretetn.",
+      "mandatePage": "Lastschrift Mandate"
     }
   }
 }
