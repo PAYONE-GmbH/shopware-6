@@ -80,7 +80,11 @@ class AccountMandateController extends StorefrontController
         $this->denyAccessUnlessLoggedIn();
 
         try {
-            $file = '';
+            $file = $this->mandateService->downloadFile(
+                $context->getCustomer(),
+                $request->get('mandate'),
+                $context->getContext()
+            );
         } catch (Throwable $exception) {
             $this->addFlash('danger', 'PayonePayment.MandatePage.error');
 

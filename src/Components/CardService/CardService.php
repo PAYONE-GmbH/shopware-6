@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\CardService;
 
-use PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardEntity;
+use PayonePayment\DataAbstractionLayer\Entity\Card\SocialEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -80,7 +80,7 @@ class CardService implements CardServiceInterface
         CustomerEntity $customer,
         string $truncatedCardPan,
         Context $context
-    ): ?PayonePaymentCardEntity {
+    ): ?SocialEntity {
         $criteria = new Criteria();
 
         $criteria->addFilter(

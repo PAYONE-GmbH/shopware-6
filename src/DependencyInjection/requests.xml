@@ -100,5 +100,16 @@
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
+
+        <!-- ManageMandate -->
+        <service id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequest">
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
     </services>
 </container>
