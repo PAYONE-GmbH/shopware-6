@@ -6,22 +6,41 @@ namespace PayonePayment\Components\MandateService;
 
 use DateTime;
 use PayonePayment\DataAbstractionLayer\Entity\Mandate\PayonePaymentMandateEntity;
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
+use PayonePayment\Payone\Client\PayoneClient;
+use PayonePayment\Payone\Client\PayoneClientInterface;
+use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\GetFile\GetFileRequestFactory;
+use RuntimeException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Throwable;
 
 class MandateService implements MandateServiceInterface
 {
     /** @var EntityRepositoryInterface */
     private $mandateRepository;
 
-    public function __construct(EntityRepositoryInterface $mandateRepository)
-    {
+    /** @var PayoneClientInterface */
+    private $client;
+
+    /** @var GetFileRequestFactory */
+    private $requestFactory;
+
+    public function __construct(
+        EntityRepositoryInterface $mandateRepository,
+        PayoneClientInterface $client,
+        GetFileRequestFactory $requestFactory
+    ) {
         $this->mandateRepository = $mandateRepository;
+        $this->client = $client;
+        $this->requestFactory = $requestFactory;
     }
 
     public function getMandates(CustomerEntity $customer, Context $context): EntitySearchResult
@@ -92,5 +111,37 @@ class MandateService implements MandateServiceInterface
         );
 
         return $this->mandateRepository->search($criteria, $context)->first();
+    }
+
+    public function downloadFile(
+        CustomerEntity $customer,
+        string $identification,
+        Context $context
+    ): string
+    {
+        $mandate = $this->getExistingMandate(
+            $customer,
+            $identification,
+            $context
+        );
+
+        if (null === $mandate) {
+            throw new RuntimeException('mandate not found');
+        }
+
+        $request = $this->requestFactory->getRequestParameters(
+            $mandate->getIdentification(),
+            $context
+        );
+
+        try {
+            $response = $this->client->request($request);
+        } catch (PayoneRequestException $exception) {
+            throw new RuntimeException('mandate not found');
+        } catch (Throwable $exception) {
+            throw new RuntimeException('mandate not found');
+        }
+
+        return (string) $response['data'];
     }
 }

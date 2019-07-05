@@ -28,4 +28,10 @@ interface MandateServiceInterface
         DateTime $signatureDate,
         Context $context
     ): void;
+
+    public function downloadFile(
+        CustomerEntity $customer,
+        string $identification,
+        Context $context
+    ): string;
 }

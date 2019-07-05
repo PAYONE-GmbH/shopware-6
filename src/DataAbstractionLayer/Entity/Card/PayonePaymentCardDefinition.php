@@ -30,7 +30,7 @@ class PayonePaymentCardDefinition extends EntityDefinition
 
     public function getEntityClass(): string
     {
-        return PayonePaymentCardEntity::class;
+        return SocialEntity::class;
     }
 
     protected function defineFields(): FieldCollection
