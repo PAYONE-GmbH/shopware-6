@@ -40,9 +40,9 @@ class PaymentMethodInstaller implements InstallerInterface
 
     public function __construct(ContainerInterface $container)
     {
-        $this->pluginIdProvider        = $container->get(PluginIdProvider::class);
-        $this->paymentMethodRepository = $container->get('payment_method.repository');
-        $this->salesChannelRepository = $container->get('sales_channel.repository');
+        $this->pluginIdProvider                    = $container->get(PluginIdProvider::class);
+        $this->paymentMethodRepository             = $container->get('payment_method.repository');
+        $this->salesChannelRepository              = $container->get('sales_channel.repository');
         $this->paymentMethodSalesChannelRepository = $container->get('sales_channel_payment_method.repository');
 
         $this->paymentMethods = [
@@ -105,8 +105,8 @@ class PaymentMethodInstaller implements InstallerInterface
 
         foreach ($channels->getIds() as $channel) {
             $data = [
-                'salesChannelId'                => $channel,
-                'paymentMethodId'              => $paymentMethod->getId(),
+                'salesChannelId'  => $channel,
+                'paymentMethodId' => $paymentMethod->getId(),
             ];
 
             $this->paymentMethodSalesChannelRepository->upsert([$data], $context);
