@@ -4,11 +4,11 @@
     {{ parent() }}
 
     {% if constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') is same as(context.paymentMethod.id) %}
-        <div class="card-title">
-            Payment Data
-        </div>
+        <div class="card" data-is-payone-credit-card="true" data-payone-language="{{ page.extensions.payone.language | raw }}" data-payone-request="{{ page.extensions.payone.cardRequest | json_encode | raw }}">
+            <div class="card-title">
+                Payment Data
+            </div>
 
-        <div class="card">
             <div class="card-body">
                 {% sw_include '@Storefront/payone/form/credit-card-form.html.twig' %}
             </div>
@@ -16,11 +16,11 @@
     {% endif %}
 
     {% if constant('PayonePayment\\PaymentMethod\\PayoneDebit::UUID') is same as(context.paymentMethod.id) %}
-        <div class="card-title">
-            Payment Data
-        </div>
+        <div class="card" data-is-payone-debit="true" data-payone-language="{{ page.extensions.payone.language | json_encode | raw }}">
+            <div class="card-title">
+                Payment Data
+            </div>
 
-        <div class="card">
             <div class="card-body">
                 {% sw_include '@Storefront/payone/form/debit-form.html.twig' %}
             </div>
