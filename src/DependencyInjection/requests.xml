@@ -111,5 +111,12 @@
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
+
+        <!-- ManageMandate -->
+        <service id="PayonePayment\Payone\Request\GetFile\GetFileRequest" />
+
+        <service id="PayonePayment\Payone\Request\GetFile\GetFileRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\GetFile\GetFileRequest" />
+        </service>
     </services>
 </container>

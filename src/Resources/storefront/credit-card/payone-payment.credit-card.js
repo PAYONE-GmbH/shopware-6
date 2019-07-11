@@ -130,7 +130,7 @@ export default class PayonePaymentCreditCard extends Plugin {
     }
 
     createScript(callback) {
-        let url = 'https://secure.pay1.de/client-api/js/v1/payone_hosted_min.js';
+        let url = 'https://secure.pay1.de/client-api/js/v1/payone_hosted.js';
 
         let script = document.createElement('script');
         script.type = 'text/javascript';
