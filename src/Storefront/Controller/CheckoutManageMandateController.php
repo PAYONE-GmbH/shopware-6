@@ -40,17 +40,17 @@ class CheckoutManageMandateController extends StorefrontController
     {
         $this->denyAccessUnlessLoggedIn();
 
-        $iban = $request->get('iban');
-        $bic = $request->get('bic');
+        $iban = (string) $request->get('iban');
+        $bic = (string) $request->get('bic');
 
-        $request = $this->requestFactory->getRequestParameters(
+        $payoneRequest = $this->requestFactory->getRequestParameters(
+            $context,
             $iban,
-            $bic,
-            $context
+            $bic
         );
 
         try {
-            $response = $this->client->request($request);
+            $response = $this->client->request($payoneRequest);
         } catch (PayoneRequestException $exception) {
             return new JsonResponse([
                 'error' => $exception->getResponse()['error']['CustomerMessage'],

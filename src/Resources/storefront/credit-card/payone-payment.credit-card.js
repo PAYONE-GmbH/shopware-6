@@ -1,6 +1,5 @@
 /* eslint-disable import/no-unresolved */
 
-
 import Plugin from 'src/script/plugin-system/plugin.class';
 
 export default class PayonePaymentCreditCard extends Plugin {
@@ -27,18 +26,18 @@ export default class PayonePaymentCreditCard extends Plugin {
         let language = requestContainer.getAttribute('data-payone-language');
         let request = JSON.parse(requestContainer.innerHTML);
 
-        this.createScript(() => {
-            let config = this.getClientConfig(language);
+        this._createScript(() => {
+            let config = this._getClientConfig(language);
 
             this.iframe = new window.Payone.ClientApi.HostedIFrames(config, request);
 
             document
                 .getElementById('confirmOrderForm')
-                .addEventListener("submit", this.handleOrderSubmit.bind(this));
+                .addEventListener("submit", this._handleOrderSubmit.bind(this));
         });
     }
 
-    getSelectStyle() {
+    _getSelectStyle() {
         const styles = [
             "width: 100%;",
             "height: calc(1.5em + 1.45rem);",
@@ -55,7 +54,7 @@ export default class PayonePaymentCreditCard extends Plugin {
         return styles.join(' ');
     }
 
-    getFieldStyle() {
+    _getFieldStyle() {
         const styles = [
             "width: 100%;",
             "height: 100%;",
@@ -72,32 +71,32 @@ export default class PayonePaymentCreditCard extends Plugin {
         return styles.join(' ');
     }
 
-    getClientConfig(language) {
+    _getClientConfig(language) {
         return {
             fields: {
                 cardpan: {
                     selector: 'cardpan',
                     type: 'text',
-                    style: this.getFieldStyle(),
+                    style: this._getFieldStyle(),
                 },
                 cardcvc2: {
                     selector: 'cardcvc2',
                     type: 'password',
                     size: '4',
                     maxlength: '4',
-                    style: this.getFieldStyle(),
+                    style: this._getFieldStyle(),
                 },
                 cardexpiremonth: {
                     selector: 'cardexpiremonth',
                     type: 'select',
                     size: '2',
                     maxlength: '2',
-                    style: this.getSelectStyle(),
+                    style: this._getSelectStyle(),
                 },
                 cardexpireyear: {
                     selector: 'cardexpireyear',
                     type: 'select',
-                    style: this.getSelectStyle(),
+                    style: this._getSelectStyle(),
                 }
             },
 
@@ -112,12 +111,12 @@ export default class PayonePaymentCreditCard extends Plugin {
 
             autoCardtypeDetection: {
                 supportedCardtypes: PayonePaymentCreditCard.options.supportedCardtypes,
-                callback: this.cardDetectionCallback
+                callback: this._cardDetectionCallback
             },
         };
     }
 
-    cardDetectionCallback(detectedCardtype) {
+    _cardDetectionCallback(detectedCardtype) {
         if (detectedCardtype === "-" || detectedCardtype === "?") {
             return;
         }
@@ -133,10 +132,10 @@ export default class PayonePaymentCreditCard extends Plugin {
         logo.style.display = 'block';
     }
 
-    createScript(callback) {
+    _createScript(callback) {
         let url = 'https://secure.pay1.de/client-api/js/v1/payone_hosted.js';
 
-            let script = document.createElement('script');
+        let script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = url;
 
@@ -145,7 +144,7 @@ export default class PayonePaymentCreditCard extends Plugin {
         document.head.appendChild(script);
     }
 
-    handleOrderSubmit(event) {
+    _handleOrderSubmit(event) {
         let errorOutput = document.getElementById('errorOutput');
 
         errorOutput.style.display = 'none';
@@ -160,7 +159,7 @@ export default class PayonePaymentCreditCard extends Plugin {
             let me  = this;
 
             window.creditCardCheckCallback = function(response) {
-                me.payoneCheckCallback(response);
+                me._payoneCheckCallback(response);
             };
 
             this.iframe.creditCardCheck('creditCardCheckCallback');
@@ -171,7 +170,7 @@ export default class PayonePaymentCreditCard extends Plugin {
         }
     }
 
-     payoneCheckCallback(response) {
+     _payoneCheckCallback(response) {
         if (response.status === 'VALID') {
             document.getElementById('pseudocardpan').value = response.pseudocardpan;
             document.getElementById('truncatedcardpan').value = response.truncatedcardpan;
@@ -184,9 +183,6 @@ export default class PayonePaymentCreditCard extends Plugin {
             let errorOutput = document.getElementById('errorOutput');
 
             button.removeAttribute('disabled');
-
-            // TODO: Find alternative for this line
-            // button.find(".spinner-border").remove();
 
             errorOutput.innerHTML = response.errormessage;
             errorOutput.style.display = 'block';
