@@ -26,7 +26,7 @@ class AccountCardController extends StorefrontController
     public function __construct(AccountCardPageLoader $accountCardPageLoader, CardRepositoryInterface $cardRepository)
     {
         $this->accountCardPageLoader = $accountCardPageLoader;
-        $this->cardRepository           = $cardRepository;
+        $this->cardRepository        = $cardRepository;
     }
 
     /**
