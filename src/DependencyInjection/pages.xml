@@ -7,7 +7,7 @@
         <service id="PayonePayment\Storefront\Page\Card\AccountCardPageLoader" >
             <argument type="service" id="Shopware\Storefront\Page\GenericPageLoader"/>
             <argument type="service" id="event_dispatcher"/>
-            <argument type="service" id="PayonePayment\Components\CardService\CardService" />
+            <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
         </service>
 
         <service id="PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader" >
