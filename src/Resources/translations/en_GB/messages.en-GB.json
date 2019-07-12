@@ -28,6 +28,9 @@
       "success": "The saved mandate was removed successfully.",
       "error": "A error has occurred while removing the saved debit mandate.",
       "mandatePage": "Debit mandates"
+    },
+    "checkout": {
+      "cardTitle": "Payment Information"
     }
   }
 }

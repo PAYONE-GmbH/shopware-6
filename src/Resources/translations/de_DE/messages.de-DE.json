@@ -28,6 +28,9 @@
       "success": "Das Lastschrift Mandat wurde erfolgreich entfernt.",
       "error": "Beim entferenn des Lastschrift Mandats ist ein Fehler aufgetretetn.",
       "mandatePage": "Lastschrift Mandate"
+    },
+    "checkout": {
+      "cardTitle": "Zahlungsinformationen"
     }
   }
 }

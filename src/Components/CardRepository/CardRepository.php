@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\CardService;
+namespace PayonePayment\Components\CardRepository;
 
 use PayonePayment\DataAbstractionLayer\Entity\Card\SocialEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
@@ -13,7 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 
-class CardService implements CardServiceInterface
+class CardRepository implements CardRepositoryInterface
 {
     /** @var EntityRepositoryInterface */
     private $cardRepository;
@@ -47,12 +47,12 @@ class CardService implements CardServiceInterface
 
     public function removeCard(
         CustomerEntity $customer,
-        string $truncatedCardPan,
+        string $pseudoCardPan,
         Context $context
     ): void {
         $card = $this->getExistingCard(
             $customer,
-            $truncatedCardPan,
+            $pseudoCardPan,
             $context
         );
 
@@ -78,13 +78,13 @@ class CardService implements CardServiceInterface
 
     protected function getExistingCard(
         CustomerEntity $customer,
-        string $truncatedCardPan,
+        string $pseudoCardPan,
         Context $context
     ): ?SocialEntity {
         $criteria = new Criteria();
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_card.truncatedCardPan', $truncatedCardPan)
+            new EqualsFilter('payone_payment_card.pseudoCardPan', $pseudoCardPan)
         );
 
         $criteria->addFilter(

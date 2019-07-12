@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\CardService;
+namespace PayonePayment\Components\CardRepository;
 
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 
-interface CardServiceInterface
+interface CardRepositoryInterface
 {
     public function saveCard(
-        CustomerEntity $customer,
+        CustomerEntity $transaction,
         string $truncatedCardPan,
         string $pseudoCardPan,
         Context $context
@@ -19,7 +19,7 @@ interface CardServiceInterface
 
     public function removeCard(
         CustomerEntity $customer,
-        string $truncatedCardPan,
+        string $pseudoCardPan,
         Context $context
     ): void;
 
