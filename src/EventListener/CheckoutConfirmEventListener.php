@@ -6,12 +6,12 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
+use PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory;
 use PayonePayment\Struct\PayonePaymentData;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Language\LanguageEntity;
-use Shopware\Storefront\Event\CheckoutEvents;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -39,7 +39,7 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutEvents::CHECKOUT_CONFIRM_PAGE_LOADED_EVENT => 'onCheckoutConfirm',
+            CheckoutConfirmPageLoadedEvent::class => 'onCheckoutConfirm',
         ];
     }
 
@@ -48,14 +48,14 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         $salesChannelContext = $event->getSalesChannelContext();
         $context             = $salesChannelContext->getContext();
 
-        $request = $this->requestFactory->getRequestParameters($salesChannelContext);
-        $cards = $this->cardRepository->getCards($salesChannelContext->getCustomer(), $context);
+        $cardRequest = $this->requestFactory->getRequestParameters($salesChannelContext);
+        $savedCards  = $this->cardRepository->getCards($salesChannelContext->getCustomer(), $context);
 
         $payoneData = new PayonePaymentData();
         $payoneData->assign([
-            'cardRequest' => $request,
+            'cardRequest' => $cardRequest,
             'language'    => $this->getCustomerLanguage($context),
-            'savedCards'  => $cards,
+            'savedCards'  => $savedCards,
         ]);
 
         $event->getPage()->addExtension('payone', $payoneData);

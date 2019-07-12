@@ -14,42 +14,15 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 
 class ManageMandateRequest
 {
-    /** @var EntityRepositoryInterface */
-    private $currencyRepository;
-
-    public function __construct(EntityRepositoryInterface $currencyRepository)
-    {
-        $this->currencyRepository = $currencyRepository;
-    }
-
     public function getRequestParameters(
-        PaymentTransaction $transaction,
         string $iban,
-        string $bic,
-        Context $context
-    ): array
-    {
+        string $bic
+    ): array {
         return [
-            'request'       => 'managemandate',
-            'clearingtype'  => 'elv',
-            'amount'        => (int) ($transaction->getOrder()->getAmountTotal() * 100),
-            'currency'      => $this->getOrderCurrency($transaction->getOrder(), $context)->getIsoCode(),
-            'iban'              => $iban,
-            'bic'               => $bic,
+            'request'      => 'managemandate',
+            'clearingtype' => 'elv',
+            'iban'         => $iban,
+            'bic'          => $bic,
         ];
-    }
-
-    private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity
-    {
-        $criteria = new Criteria([$order->getCurrencyId()]);
-
-        /** @var null|CurrencyEntity $currency */
-        $currency = $this->currencyRepository->search($criteria, $context)->first();
-
-        if (null === $currency) {
-            throw new RuntimeException('missing order currency entity');
-        }
-
-        return $currency;
     }
 }

@@ -7,13 +7,10 @@ namespace PayonePayment\Components\MandateService;
 use DateTime;
 use PayonePayment\DataAbstractionLayer\Entity\Mandate\PayonePaymentMandateEntity;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
-use PayonePayment\Payone\Client\PayoneClient;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
 use PayonePayment\Payone\Request\GetFile\GetFileRequestFactory;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -39,8 +36,8 @@ class MandateService implements MandateServiceInterface
         GetFileRequestFactory $requestFactory
     ) {
         $this->mandateRepository = $mandateRepository;
-        $this->client = $client;
-        $this->requestFactory = $requestFactory;
+        $this->client            = $client;
+        $this->requestFactory    = $requestFactory;
     }
 
     public function getMandates(CustomerEntity $customer, Context $context): EntitySearchResult
@@ -58,8 +55,7 @@ class MandateService implements MandateServiceInterface
         CustomerEntity $customer,
         string $identification,
         Context $context
-    ): void
-    {
+    ): void {
         $mandate = $this->getExistingMandate(
             $customer,
             $identification,
@@ -86,39 +82,20 @@ class MandateService implements MandateServiceInterface
         );
 
         $data = [
-            'id'               => null === $mandate ? Uuid::randomHex() : $mandate->getId(),
-            'identification'    => $identification,
-            'signatureDate' => $signatureDate,
-            'customerId'       => $customer->getId(),
+            'id'             => null === $mandate ? Uuid::randomHex() : $mandate->getId(),
+            'identification' => $identification,
+            'signatureDate'  => $signatureDate,
+            'customerId'     => $customer->getId(),
         ];
 
         $this->mandateRepository->upsert([$data], $context);
-    }
-
-    protected function getExistingMandate(
-        CustomerEntity $customer,
-        string $identification,
-        Context $context
-    ): ?PayonePaymentMandateEntity {
-        $criteria = new Criteria();
-
-        $criteria->addFilter(
-            new EqualsFilter('payone_payment_mandate.identification', $identification)
-        );
-
-        $criteria->addFilter(
-            new EqualsFilter('payone_payment_mandate.customerId', $customer->getId())
-        );
-
-        return $this->mandateRepository->search($criteria, $context)->first();
     }
 
     public function downloadFile(
         CustomerEntity $customer,
         string $identification,
         Context $context
-    ): string
-    {
+    ): string {
         $mandate = $this->getExistingMandate(
             $customer,
             $identification,
@@ -143,5 +120,23 @@ class MandateService implements MandateServiceInterface
         }
 
         return (string) $response['data'];
+    }
+
+    protected function getExistingMandate(
+        CustomerEntity $customer,
+        string $identification,
+        Context $context
+    ): ?PayonePaymentMandateEntity {
+        $criteria = new Criteria();
+
+        $criteria->addFilter(
+            new EqualsFilter('payone_payment_mandate.identification', $identification)
+        );
+
+        $criteria->addFilter(
+            new EqualsFilter('payone_payment_mandate.customerId', $customer->getId())
+        );
+
+        return $this->mandateRepository->search($criteria, $context)->first();
     }
 }

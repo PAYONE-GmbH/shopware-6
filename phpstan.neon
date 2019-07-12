@@ -2,7 +2,6 @@ includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
 
 parameters:
-    reportUnmatchedIgnoredErrors: false
+    reportUnmatchedIgnoredErrors: true
     ignoreErrors:
         - '#Property(.*)does not accept object(.*)#'
-        - '#(.*)EventDispatcherInterface(.*)#'

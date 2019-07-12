@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\GetFile;
 
 use PayonePayment\Payone\Request\AbstractRequestFactory;
-use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 
 class GetFileRequestFactory extends AbstractRequestFactory
