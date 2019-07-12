@@ -9,6 +9,7 @@ use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class ManageMandateRequestFactory extends AbstractRequestFactory
 {
@@ -27,9 +28,9 @@ class ManageMandateRequestFactory extends AbstractRequestFactory
     }
 
     public function getRequestParameters(
+        SalesChannelContext $context,
         string $iban,
-        string $bic,
-        Context $context
+        string $bic
     ): array {
         $this->requests[] = $this->mandateRequest->getRequestParameters(
             $iban,
@@ -37,7 +38,7 @@ class ManageMandateRequestFactory extends AbstractRequestFactory
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            ''
+            $context->getSalesChannel()->getId()
         );
 
         return $this->createRequest();
