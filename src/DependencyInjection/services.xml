@@ -55,7 +55,7 @@
             <argument type="service" id="translator" />
         </service>
 
-        <service id="PayonePayment\Components\CardHandler\CardHandler">
+        <service id="PayonePayment\Components\CardRepository\CardRepository">
             <argument type="service" id="payone_payment_card.repository" />
         </service>
     </services>

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\CardHandler;
+namespace PayonePayment\Components\CardRepository;
 
 use PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
@@ -12,7 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 
-class CardHandler implements CardHandlerInterface
+class CardRepository implements CardRepositoryInterface
 {
     /** @var EntityRepositoryInterface */
     private $cardRepository;
@@ -28,7 +28,7 @@ class CardHandler implements CardHandlerInterface
         string $pseudoCardPan,
         Context $context
     ): void {
-        $card = $this->getExistingCard($customer->getId(), $truncatedCardPan, $context);
+        $card = $this->getExistingCard($customer->getId(), $pseudoCardPan, $context);
 
         $data = [
             'id'               => null === $card ? Uuid::randomHex() : $card->getId(),
@@ -42,13 +42,13 @@ class CardHandler implements CardHandlerInterface
 
     protected function getExistingCard(
         string $customer,
-        string $truncatedCardPan,
+        string $pseudoCardPan,
         Context $context
     ): ?PayonePaymentCardEntity {
         $criteria = new Criteria();
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_card.truncatedCardPan', $truncatedCardPan)
+            new EqualsFilter('payone_payment_card.pseudoCardPan', $pseudoCardPan)
         );
 
         $criteria->addFilter(
