@@ -4,13 +4,14 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <imports>
-        <import resource="webhook.xml"/>
         <import resource="commands.xml" />
+        <import resource="controllers.xml" />
+        <import resource="entities.xml" />
         <import resource="handlers.xml" />
+        <import resource="listeners.xml" />
         <import resource="requests.xml" />
         <import resource="translations.xml" />
-        <import resource="controller.xml" />
-        <import resource="listeners.xml" />
+        <import resource="webhooks.xml"/>
     </imports>
 
     <services>
@@ -53,6 +54,10 @@
 
         <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler">
             <argument type="service" id="translator" />
+        </service>
+
+        <service id="PayonePayment\Components\CardRepository\CardRepository">
+            <argument type="service" id="payone_payment_card.repository" />
         </service>
     </services>
 </container>
