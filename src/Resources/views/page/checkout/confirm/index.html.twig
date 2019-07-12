@@ -3,27 +3,31 @@
 {% block page_checkout_confirm %}
     {{ parent() }}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') is same as(context.paymentMethod.id) %}
-        <div class="card-title">
-            Payment Data
-        </div>
+    {% set display_payone_card = false %}
 
-        <div class="card">
-            <div class="card-body">
-                {% sw_include '@Storefront/payone/form/credit-card-form.html.twig' %}
-            </div>
-        </div>
+    {% if constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') is same as(context.paymentMethod.id) %}
+        {% set display_payone_card = true %}
+    {% elseif constant('PayonePayment\\PaymentMethod\\PayoneDebit::UUID') is same as(context.paymentMethod.id) %}
+        {% set display_payone_card = true %}
     {% endif %}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayoneDebit::UUID') is same as(context.paymentMethod.id) %}
-        <div class="card-title">
-            Payment Data
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                {% sw_include '@Storefront/payone/form/debit-form.html.twig' %}
+    {% if display_payone_card %}
+        {% block page_checkout_confirm_payone_card_title %}
+            <div class="card-title">
+                {{ "PayonePayment.checkout.cardTitle" | trans }}
             </div>
-        </div>
+        {% endblock %}
+
+        {% block page_checkout_confirm_payone_card_content %}
+            <div class="card">
+                <div class="card-body">
+                    {% if constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') is same as(context.paymentMethod.id) %}
+                        {% sw_include '@Storefront/payone/form/credit-card-form.html.twig' %}
+                    {% elseif constant('PayonePayment\\PaymentMethod\\PayoneDebit::UUID') is same as(context.paymentMethod.id) %}
+                        {% sw_include '@Storefront/payone/form/debit-form.html.twig' %}
+                    {% endif %}
+                </div>
+            </div>
+        {% endblock %}
     {% endif %}
 {% endblock %}

@@ -23,6 +23,9 @@
       "tableHeader": "Kartennummer",
       "deleteButton": "Karte löschen",
       "noEntries": "Keine Kreditkarten vorhanden."
+    },
+    "checkout": {
+      "cardTitle": "Zahlungsinformationen"
     }
   }
 }

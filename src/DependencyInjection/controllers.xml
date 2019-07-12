@@ -26,7 +26,7 @@
 
         <service id="PayonePayment\Storefront\Controller\AccountCardController">
             <argument type="service" id="PayonePayment\Storefront\Page\Card\AccountCardPageLoader" />
-            <argument type="service" id="PayonePayment\Components\CardService\CardService" />
+            <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
         </service>
     </services>
 </container>

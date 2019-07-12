@@ -23,6 +23,9 @@
       "tableHeader": "Card Numbers",
       "deleteButton": "Delete Card",
       "noEntries": "No cards saved."
+    },
+    "checkout": {
+      "cardTitle": "Payment Information"
     }
   }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Storefront\Controller;
 
-use PayonePayment\Components\CardService\CardServiceInterface;
+use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Storefront\Page\Card\AccountCardPageLoader;
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -20,13 +20,13 @@ class AccountCardController extends StorefrontController
     /** @var AccountCardPageLoader */
     private $accountCardPageLoader;
 
-    /** @var CardServiceInterface */
-    private $cardService;
+    /** @var CardRepositoryInterface */
+    private $cardRepository;
 
-    public function __construct(AccountCardPageLoader $accountCardPageLoader, CardServiceInterface $cardService)
+    public function __construct(AccountCardPageLoader $accountCardPageLoader, CardRepositoryInterface $cardRepository)
     {
         $this->accountCardPageLoader = $accountCardPageLoader;
-        $this->cardService           = $cardService;
+        $this->cardRepository           = $cardRepository;
     }
 
     /**
@@ -53,9 +53,9 @@ class AccountCardController extends StorefrontController
         $this->denyAccessUnlessLoggedIn();
 
         try {
-            $this->cardService->removeCard(
+            $this->cardRepository->removeCard(
                 $context->getCustomer(),
-                $request->get('truncatedCardPan'),
+                $request->get('pseudoCardPan'),
                 $context->getContext()
             );
         } catch (Throwable $exception) {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Storefront\Page\Card;
 
-use PayonePayment\Components\CardService\CardServiceInterface;
+use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\GenericPageLoader;
@@ -19,17 +19,17 @@ class AccountCardPageLoader
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
-    /** @var CardServiceInterface */
-    private $cardService;
+    /** @var CardRepositoryInterface */
+    private $cardRepository;
 
     public function __construct(
         GenericPageLoader $genericLoader,
         EventDispatcherInterface $eventDispatcher,
-        CardServiceInterface $cardService
+        CardRepositoryInterface $cardRepository
     ) {
         $this->genericLoader   = $genericLoader;
         $this->eventDispatcher = $eventDispatcher;
-        $this->cardService     = $cardService;
+        $this->cardRepository     = $cardRepository;
     }
 
     public function load(Request $request, SalesChannelContext $context): AccountCardPage
@@ -43,7 +43,7 @@ class AccountCardPageLoader
         );
 
         $page->setCards(
-            $this->cardService->getCards(
+            $this->cardRepository->getCards(
                 $context->getCustomer(),
                 $context->getContext()
             )
