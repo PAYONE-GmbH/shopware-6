@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\Components\CardService\CardServiceInterface;
+use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
 use PayonePayment\Struct\PayonePaymentData;
 use Shopware\Core\Framework\Context;
@@ -23,17 +23,17 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
     /** @var EntityRepositoryInterface */
     private $languageRepository;
 
-    /** @var CardServiceInterface */
-    private $cardService;
+    /** @var CardRepositoryInterface */
+    private $cardRepository;
 
     public function __construct(
         CreditCardCheckRequestFactory $requestFactory,
         EntityRepositoryInterface $languageRepository,
-        CardServiceInterface $cardService
+        CardRepositoryInterface $cardRepository
     ) {
         $this->requestFactory     = $requestFactory;
         $this->languageRepository = $languageRepository;
-        $this->cardService        = $cardService;
+        $this->cardRepository        = $cardRepository;
     }
 
     public static function getSubscribedEvents(): array
@@ -50,7 +50,7 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
 
         $request = $this->requestFactory->getRequestParameters($salesChannelContext);
 
-        $cards = $this->cardService->getCards($salesChannelContext->getCustomer(), $context);
+        $cards = $this->cardRepository->getCards($salesChannelContext->getCustomer(), $context);
 
         $payoneData = new PayonePaymentData();
         $payoneData->assign([
