@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
 
+
 import Plugin from 'src/script/plugin-system/plugin.class';
-import './payone-payment.credit-card.scss';
 
 export default class PayonePaymentCreditCard extends Plugin {
     static options = {
@@ -20,17 +20,21 @@ export default class PayonePaymentCreditCard extends Plugin {
 
     init() {
         this.iframe = null;
-        this.orderFormDisabled = false;
+        this.orderFormDisabled = true;
+
+        let requestContainer = document.getElementById('payone-request');
+
+        let language = requestContainer.getAttribute('data-payone-language');
+        let request = JSON.parse(requestContainer.innerHTML);
 
         this.createScript(() => {
-            let config = this.getClientConfig('de');
-            let request = [];
+            let config = this.getClientConfig(language);
 
             this.iframe = new window.Payone.ClientApi.HostedIFrames(config, request);
 
             document
                 .getElementById('confirmOrderForm')
-                .addEventListener("submit", this.handleOrderSubmit);
+                .addEventListener("submit", this.handleOrderSubmit.bind(this));
         });
     }
 
@@ -48,7 +52,7 @@ export default class PayonePaymentCreditCard extends Plugin {
             "border-radius: 3px",
         ];
 
-        return styles.concat();
+        return styles.join(' ');
     }
 
     getFieldStyle() {
@@ -65,7 +69,7 @@ export default class PayonePaymentCreditCard extends Plugin {
             "border-radius: .1875rem;",
         ];
 
-        return styles.concat();
+        return styles.join(' ');
     }
 
     getClientConfig(language) {
@@ -132,7 +136,7 @@ export default class PayonePaymentCreditCard extends Plugin {
     createScript(callback) {
         let url = 'https://secure.pay1.de/client-api/js/v1/payone_hosted.js';
 
-        let script = document.createElement('script');
+            let script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = url;
 
@@ -153,7 +157,13 @@ export default class PayonePaymentCreditCard extends Plugin {
         }
 
         if (!this.iframe.isComplete() || this.orderFormDisabled) {
-            this.iframe.creditCardCheck('payoneCheckCallback');
+            let me  = this;
+
+            window.creditCardCheckCallback = function(response) {
+                me.payoneCheckCallback(response);
+            };
+
+            this.iframe.creditCardCheck('creditCardCheckCallback');
 
             event.preventDefault();
 

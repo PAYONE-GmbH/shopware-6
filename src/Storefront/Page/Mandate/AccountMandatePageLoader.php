@@ -49,8 +49,9 @@ class AccountMandatePageLoader
             )
         );
 
-        $event = new AccountMandatePageLoadedEvent($page, $context, $request);
-        $this->eventDispatcher->dispatch($event, AccountMandatePageLoadedEvent::NAME);
+        $this->eventDispatcher->dispatch(
+            new AccountMandatePageLoadedEvent($page, $context, $request)
+        );
 
         return $page;
     }

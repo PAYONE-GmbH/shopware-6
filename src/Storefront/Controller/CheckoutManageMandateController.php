@@ -40,10 +40,13 @@ class CheckoutManageMandateController extends StorefrontController
     {
         $this->denyAccessUnlessLoggedIn();
 
+        $iban = $request->get('iban');
+        $bic = $request->get('bic');
+
         $request = $this->requestFactory->getRequestParameters(
-            $paymentTransaction,
-            $pseudoCardPan,
-            $salesChannelContext->getContext()
+            $iban,
+            $bic,
+            $context
         );
 
         try {

@@ -7,18 +7,18 @@ namespace PayonePayment\DataAbstractionLayer\Entity\Card;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void             add(SocialEntity $entity)
- * @method void             set(string $key, SocialEntity $entity)
- * @method SocialEntity[]    getIterator()
- * @method SocialEntity[]    getElements()
- * @method null|SocialEntity get(string $key)
- * @method null|SocialEntity first()
- * @method null|SocialEntity last()
+ * @method void             add(PayonePaymentCardEntity $entity)
+ * @method void             set(string $key, PayonePaymentCardEntity $entity)
+ * @method PayonePaymentCardEntity[]    getIterator()
+ * @method PayonePaymentCardEntity[]    getElements()
+ * @method null|PayonePaymentCardEntity get(string $key)
+ * @method null|PayonePaymentCardEntity first()
+ * @method null|PayonePaymentCardEntity last()
  */
 class PayonePaymentCardCollection extends EntityCollection
 {
     protected function getExpectedClass(): string
     {
-        return SocialEntity::class;
+        return PayonePaymentCardEntity::class;
     }
 }
