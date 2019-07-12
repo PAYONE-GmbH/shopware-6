@@ -55,7 +55,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         $this->translator     = $translator;
         $this->dataHandler    = $dataHandler;
         $this->stateHandler   = $stateHandler;
-        $this->cardRepository    = $cardRepository;
+        $this->cardRepository = $cardRepository;
     }
 
     /**

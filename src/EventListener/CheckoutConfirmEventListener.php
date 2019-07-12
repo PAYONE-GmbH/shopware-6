@@ -33,7 +33,7 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
     ) {
         $this->requestFactory     = $requestFactory;
         $this->languageRepository = $languageRepository;
-        $this->cardRepository        = $cardRepository;
+        $this->cardRepository     = $cardRepository;
     }
 
     public static function getSubscribedEvents(): array

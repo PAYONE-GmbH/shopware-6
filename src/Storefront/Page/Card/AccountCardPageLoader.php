@@ -29,7 +29,7 @@ class AccountCardPageLoader
     ) {
         $this->genericLoader   = $genericLoader;
         $this->eventDispatcher = $eventDispatcher;
-        $this->cardRepository     = $cardRepository;
+        $this->cardRepository  = $cardRepository;
     }
 
     public function load(Request $request, SalesChannelContext $context): AccountCardPage
