@@ -9,6 +9,7 @@ use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 
@@ -28,7 +29,11 @@ class CardRepository implements CardRepositoryInterface
         string $pseudoCardPan,
         Context $context
     ): void {
-        $card = $this->getExistingCard($customer->getId(), $pseudoCardPan, $context);
+        $card = $this->getExistingCard(
+            $customer,
+            $pseudoCardPan,
+            $context
+        );
 
         $data = [
             'id'               => null === $card ? Uuid::randomHex() : $card->getId(),
@@ -40,8 +45,39 @@ class CardRepository implements CardRepositoryInterface
         $this->cardRepository->upsert([$data], $context);
     }
 
+    public function removeCard(
+        CustomerEntity $customer,
+        string $pseudoCardPan,
+        Context $context
+    ): void {
+        $card = $this->getExistingCard(
+            $customer,
+            $pseudoCardPan,
+            $context
+        );
+
+        if (null === $card) {
+            return;
+        }
+
+        $this->cardRepository->delete([['id' => $card->getId()]], $context);
+    }
+
+    public function getCards(
+        CustomerEntity $customer,
+        Context $context
+    ): EntitySearchResult {
+        $criteria = new Criteria();
+
+        $criteria->addFilter(
+            new EqualsFilter('payone_payment_card.customerId', $customer->getId())
+        );
+
+        return $this->cardRepository->search($criteria, $context);
+    }
+
     protected function getExistingCard(
-        string $customer,
+        CustomerEntity $customer,
         string $pseudoCardPan,
         Context $context
     ): ?PayonePaymentCardEntity {
@@ -52,7 +88,7 @@ class CardRepository implements CardRepositoryInterface
         );
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_card.customerId', $customer)
+            new EqualsFilter('payone_payment_card.customerId', $customer->getId())
         );
 
         return $this->cardRepository->search($criteria, $context)->first();

@@ -5,3 +5,4 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
         - '#Property(.*)does not accept object(.*)#'
+        - '#(.*)EventDispatcherInterface(.*)#'

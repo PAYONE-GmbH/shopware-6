@@ -97,13 +97,21 @@
 
             const iframes = new Payone.ClientApi.HostedIFrames(config, request);
 
-            document.getElementById('confirmOrderForm').addEventListener("submit", function () {
+            document.getElementById('confirmOrderForm').addEventListener("submit", function (event) {
                 let errorOutput = document.getElementById('errorOutput');
 
                 errorOutput.style.display = 'none';
 
+                let savedCardPan = document.getElementById('savedpseudocardpan');
+
+                if (savedCardPan && savedCardPan.value.length > 0) {
+                    return true;
+                }
+
                 if (!iframes.isComplete() || orderFormDisabled) {
                     iframes.creditCardCheck('payoneCheckCallback');
+
+                    event.preventDefault();
 
                     return false;
                 }
@@ -116,7 +124,7 @@
 
                     orderFormDisabled = false;
 
-                    document.getElementById('confirmOrderForm').onsubmit()
+                    document.getElementById('confirmOrderForm').submit()
                 } else {
                     let button = document.getElementById('confirmFormSubmit');
                     let errorOutput = document.getElementById('errorOutput');
@@ -133,7 +141,7 @@
         </script>
 
         <style type="text/css">
-            .payone-payment.credit-card .form-control {
+            .payone-payment.credit-card .form-control.iframe {
                 padding: 0;
                 border: 0;
             }

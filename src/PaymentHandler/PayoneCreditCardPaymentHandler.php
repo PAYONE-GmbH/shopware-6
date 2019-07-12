@@ -40,7 +40,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
     private $stateHandler;
 
     /** @var CardRepositoryInterface */
-    private $cardHandler;
+    private $cardRepository;
 
     public function __construct(
         CreditCardPreAuthorizeRequestFactory $requestFactory,
@@ -48,14 +48,14 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         PaymentStateHandlerInterface $stateHandler,
-        CardRepositoryInterface $cardService
+        CardRepositoryInterface $cardRepository
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
         $this->translator     = $translator;
         $this->dataHandler    = $dataHandler;
         $this->stateHandler   = $stateHandler;
-        $this->cardHandler    = $cardService;
+        $this->cardRepository = $cardRepository;
     }
 
     /**
@@ -65,9 +65,17 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
     {
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
 
+        $pseudoCardPan      = $dataBag->get('pseudoCardPan');
+        $savedPseudoCardPan = $dataBag->get('savedPseudoCardPan');
+        $truncatedCardPan   = $dataBag->get('truncatedCardPan');
+
+        if (!empty($savedPseudoCardPan)) {
+            $pseudoCardPan = $savedPseudoCardPan;
+        }
+
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $dataBag,
+            $pseudoCardPan,
             $salesChannelContext->getContext()
         );
 
@@ -98,15 +106,14 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
 
-        $pseudoCardPan    = $dataBag->get('pseudocardpan');
-        $truncatedCardPan = $dataBag->get('truncatedcardpan');
-
-        $this->cardHandler->saveCard(
-            $salesChannelContext->getCustomer(),
-            $truncatedCardPan,
-            $pseudoCardPan,
-            $salesChannelContext->getContext()
-        );
+        if (empty($savedPseudoCardPan)) {
+            $this->cardRepository->saveCard(
+                $salesChannelContext->getCustomer(),
+                $truncatedCardPan,
+                $pseudoCardPan,
+                $salesChannelContext->getContext()
+            );
+        }
 
         if (strtolower($response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);

@@ -1,13 +1,28 @@
 <div class="payone-payment credit-card">
     <div class="card">
         <fieldset>
-            <input type="hidden" name="pseudocardpan" id="pseudocardpan" form="confirmOrderForm">
-            <input type="hidden" name="truncatedcardpan" id="truncatedcardpan" form="confirmOrderForm">
+            <input type="hidden" name="pseudoCardPan" id="pseudocardpan" form="confirmOrderForm">
+            <input type="hidden" name="truncatedCardPan" id="truncatedcardpan" form="confirmOrderForm">
+
+            {% if page.extensions.payone.savedCards.total > 0 %}
+                <div class="form-row col-md-12">
+                    <div class="form-group col-md-4">
+                        <label class="form-label" for="savedPseudoCardPan">{{ "PayonePayment.creditCard.savedCards" | trans }}</label>
+                        <select class="form-control" id="savedpseudocardpan" name="savedPseudoCardPan" form="confirmOrderForm">
+                            <option key=""></option>
+
+                            {% for card in page.extensions.payone.savedCards %}
+                                <option value="{{ card.pseudoCardPan }}">{{ card.truncatedCardPan }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            {% endif %}
 
             <div class="form-row col-md-12">
                 <div class="form-group col-md-4">
                     <label class="form-label" for="cardpanInput">{{ "PayonePayment.creditCard.cardNumber" | trans }}</label>
-                    <span class="form-control" id="cardpan"></span>
+                    <span class="form-control iframe" id="cardpan"></span>
                 </div>
 
                 <div class="form-group col-md-2 card-logo-container">
@@ -19,17 +34,17 @@
             <div class="form-row col-md-12">
                 <div class="form-group col-md-2">
                     <label class="form-label" for="cvcInput">{{ "PayonePayment.creditCard.securityCode" | trans }}</label>
-                    <span class="form-control" id="cardcvc2"></span>
+                    <span class="form-control iframe" id="cardcvc2"></span>
                 </div>
 
                 <div class="form-group col-md-2">
                     <label class="form-label" for="cardexpiremonth">{{ "PayonePayment.creditCard.expiryDate" | trans }}</label>
-                    <span class="form-control" id="cardexpiremonth"></span>
+                    <span class="form-control iframe" id="cardexpiremonth"></span>
                 </div>
 
                 <div class="form-group col-md-2">
                     <label class="form-label" for="cardexpireyear">&nbsp;</label>
-                    <span class="form-control" id="cardexpireyear"></span>
+                    <span class="form-control iframe" id="cardexpireyear"></span>
                 </div>
             </div>
 
