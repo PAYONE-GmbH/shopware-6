@@ -10,6 +10,7 @@
         <import resource="handlers.xml" />
         <import resource="listeners.xml" />
         <import resource="requests.xml" />
+        <import resource="pages.xml" />
         <import resource="translations.xml" />
         <import resource="webhooks.xml"/>
     </imports>

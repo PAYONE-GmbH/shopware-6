@@ -6,6 +6,7 @@ namespace PayonePayment\Components\CardRepository;
 
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 
 interface CardRepositoryInterface
 {
@@ -15,4 +16,15 @@ interface CardRepositoryInterface
         string $pseudoCardPan,
         Context $context
     ): void;
+
+    public function removeCard(
+        CustomerEntity $customer,
+        string $pseudoCardPan,
+        Context $context
+    ): void;
+
+    public function getCards(
+        CustomerEntity $customer,
+        Context $context
+    ): EntitySearchResult;
 }

@@ -16,8 +16,7 @@ class Migration1561379069AddPayonePaymentCardTable extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->exec('
-            
+        $connection->exec('            
             CREATE TABLE `payone_payment_card` (
                 `id` BINARY(16) NOT NULL,
                 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
+use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
 use PayonePayment\Struct\PayonePaymentData;
 use Shopware\Core\Framework\Context;
@@ -22,12 +23,17 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
     /** @var EntityRepositoryInterface */
     private $languageRepository;
 
+    /** @var CardRepositoryInterface */
+    private $cardRepository;
+
     public function __construct(
         CreditCardCheckRequestFactory $requestFactory,
-        EntityRepositoryInterface $languageRepository
+        EntityRepositoryInterface $languageRepository,
+        CardRepositoryInterface $cardRepository
     ) {
         $this->requestFactory     = $requestFactory;
         $this->languageRepository = $languageRepository;
+        $this->cardRepository     = $cardRepository;
     }
 
     public static function getSubscribedEvents(): array
@@ -44,11 +50,13 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
 
         $request = $this->requestFactory->getRequestParameters($salesChannelContext);
 
+        $cards = $this->cardRepository->getCards($salesChannelContext->getCustomer(), $context);
+
         $payoneData = new PayonePaymentData();
         $payoneData->assign([
-            'cardRequest'   => $request,
-            'language'      => $this->getCustomerLanguage($context),
-            'paymentMethod' => $salesChannelContext->getPaymentMethod(),
+            'cardRequest' => $request,
+            'language'    => $this->getCustomerLanguage($context),
+            'savedCards'  => $cards,
         ]);
 
         $event->getPage()->addExtension('payone', $payoneData);
