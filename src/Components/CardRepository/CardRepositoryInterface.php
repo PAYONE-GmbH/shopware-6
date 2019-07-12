@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\CardHandler;
+namespace PayonePayment\Components\CardRepository;
 
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 
-interface CardHandlerInterface
+interface CardRepositoryInterface
 {
     public function saveCard(
         CustomerEntity $transaction,

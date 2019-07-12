@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use PayonePayment\Components\CardHandler\CardHandlerInterface;
+use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
@@ -39,7 +39,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
     /** @var PaymentStateHandlerInterface */
     private $stateHandler;
 
-    /** @var CardHandlerInterface */
+    /** @var CardRepositoryInterface */
     private $cardHandler;
 
     public function __construct(
@@ -48,7 +48,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         PaymentStateHandlerInterface $stateHandler,
-        CardHandlerInterface $cardService
+        CardRepositoryInterface $cardService
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
