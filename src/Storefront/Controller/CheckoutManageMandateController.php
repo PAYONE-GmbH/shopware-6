@@ -13,6 +13,7 @@ use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 class CheckoutManageMandateController extends StorefrontController
@@ -23,12 +24,17 @@ class CheckoutManageMandateController extends StorefrontController
     /** @var PayoneClientInterface */
     private $client;
 
+    /** @var TranslatorInterface */
+    private $translator;
+
     public function __construct(
         ManageMandateRequestFactory $mandateRequestFactory,
-        PayoneClientInterface $client
+        PayoneClientInterface $client,
+        TranslatorInterface $translator
     ) {
         $this->requestFactory = $mandateRequestFactory;
         $this->client         = $client;
+        $this->translator = $translator;
     }
 
     /**

@@ -37,6 +37,7 @@
         <service id="PayonePayment\Storefront\Controller\CheckoutManageMandateController">
             <argument type="service" id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="translator" />
         </service>
     </services>
 </container>
