@@ -34,7 +34,7 @@ class CheckoutManageMandateController extends StorefrontController
     ) {
         $this->requestFactory = $mandateRequestFactory;
         $this->client         = $client;
-        $this->translator = $translator;
+        $this->translator     = $translator;
     }
 
     /**
