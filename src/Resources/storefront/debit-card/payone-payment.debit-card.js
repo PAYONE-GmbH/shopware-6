@@ -11,19 +11,24 @@ export default class PayonePaymentDebitCard extends Plugin {
     };
 
     init() {
-        this.orderFormDisabled = false;
+        this.orderFormDisabled = true;
 
         this._client = new HttpClient(window.accessKey, window.contextToken);
-        this._registerEvents();
-    }
 
-    _registerEvents() {
         document
             .getElementById('confirmOrderForm')
-            .addEventListener("submit", this._handleOrderSubmit.bind(this));
+            .addEventListener('submit', this._handleOrderSubmit.bind(this));
     }
 
     _handleOrderSubmit(event) {
+        let errorOutput = document.getElementById('errorOutput');
+
+        errorOutput.style.display = 'none';
+
+        if (!this.orderFormDisabled) {
+            return;
+        }
+
         event.preventDefault();
 
         this._getModal(event);
@@ -40,11 +45,48 @@ export default class PayonePaymentDebitCard extends Plugin {
         this._client.post(this._getManageMandateUrl(), JSON.stringify(data), content => this._openModal(content));
     }
 
+    _submitForm() {
+        this.orderFormDisabled = false;
+
+        document
+            .getElementById('confirmOrderForm')
+            .submit();
+    }
+
     _openModal(response) {
-        const pseudoModal = new PseudoModalUtil(response);
+        response = JSON.parse(response);
+
+        if (response.error) {
+            let errorOutput = document.getElementById('errorOutput');
+
+            errorOutput.innerHTML = response.error;
+            errorOutput.style.display = 'block';
+
+            PageLoadingIndicatorUtil.remove();
+
+            return;
+        }
+
+        if (response.mandate.Status === 'active') {
+            this._submitForm();
+
+            return;
+        }
+
+        const pseudoModal = new PseudoModalUtil(response.modal_content);
+
+        pseudoModal.open(this._onOpen.bind(this, pseudoModal));
+    }
+
+    _onOpen(pseudoModal) {
+        const modal = pseudoModal.getModal();
+
+        modal.classList.add('payone-debit-mandate-modal');
+        window.PluginManager.initializePlugins();
+
+        this._registerEvents();
 
         PageLoadingIndicatorUtil.remove();
-        pseudoModal.open();
     }
 
     _getRequestData() {
@@ -61,5 +103,19 @@ export default class PayonePaymentDebitCard extends Plugin {
         let configuration = document.getElementById('payone-configuration');
 
         return configuration.getAttribute('data-manage-mandate-url');
+    }
+
+    _registerEvents() {
+        document
+            .getElementById('mandateSubmit')
+            .addEventListener('click', this._onMandateSubmit.bind(this));
+    }
+
+    _onMandateSubmit() {
+        let checkbox = document.getElementById('accept-mandate');
+
+        if (checkbox.checked) {
+            this._submitForm();
+        }
     }
 }

@@ -33,22 +33,22 @@ export default class PayonePaymentCreditCard extends Plugin {
 
             document
                 .getElementById('confirmOrderForm')
-                .addEventListener("submit", this._handleOrderSubmit.bind(this));
+                .addEventListener('submit', this._handleOrderSubmit.bind(this));
         });
     }
 
     _getSelectStyle() {
         const styles = [
-            "width: 100%;",
-            "height: calc(1.5em + 1.45rem);",
-            "padding: .5625rem;",
-            "color: #8798a9;",
-            "vertical-align: middle;",
-            "line-height: 1.5;",
-            "font-weight: 500;",
-            "background-color: #fff;",
-            "border: .0625rem solid #d1d9e0;",
-            "border-radius: 3px",
+            'width: 100%;',
+            'height: calc(1.5em + 1.45rem);',
+            'padding: .5625rem;',
+            'color: #8798a9;',
+            'vertical-align: middle;',
+            'line-height: 1.5;',
+            'font-weight: 500;',
+            'background-color: #fff;',
+            'border: .0625rem solid #d1d9e0;',
+            'border-radius: 3px',
         ];
 
         return styles.join(' ');
@@ -56,16 +56,16 @@ export default class PayonePaymentCreditCard extends Plugin {
 
     _getFieldStyle() {
         const styles = [
-            "width: 100%;",
-            "height: 100%;",
-            "padding: .5625rem;",
-            "color: #8798a9;",
-            "vertical-align: middle;",
-            "line-height: 1.5;",
-            "font-weight: 500;",
-            "background-color: #fff;",
-            "border: .0625rem solid #d1d9e0;",
-            "border-radius: .1875rem;",
+            'width: 100%;',
+            'height: 100%;',
+            'padding: .5625rem;',
+            'color: #8798a9;',
+            'vertical-align: middle;',
+            'line-height: 1.5;',
+            'font-weight: 500;',
+            'background-color: #fff;',
+            'border: .0625rem solid #d1d9e0;',
+            'border-radius: .1875rem;',
         ];
 
         return styles.join(' ');
@@ -117,7 +117,7 @@ export default class PayonePaymentCreditCard extends Plugin {
     }
 
     _cardDetectionCallback(detectedCardtype) {
-        if (detectedCardtype === "-" || detectedCardtype === "?") {
+        if (detectedCardtype === '-' || detectedCardtype === '?') {
             return;
         }
 
@@ -126,7 +126,7 @@ export default class PayonePaymentCreditCard extends Plugin {
         let errorOutput = document.getElementById('errorOutput');
         let logo = document.getElementById('card-logo');
 
-        logo.setAttribute("src", src);
+        logo.setAttribute('src', src);
 
         errorOutput.style.display = 'none';
         logo.style.display = 'block';
