@@ -40,24 +40,11 @@ export default class PayonePaymentDebitCard extends Plugin {
         this._client.post(this._getManageMandateUrl(), JSON.stringify(data), content => this._openModal(content));
     }
 
-    _getManageMandateUrl() {
-        let configuration = document.getElementById('payone-configuration');
-
-        return configuration.getAttribute('data-manage-mandate-url');
-    }
-
-    _onOpen(pseudoModal) {
-        const modal = pseudoModal.getModal();
-
-        modal.classList.add(this.options.editorModalClass);
-        window.PluginManager.initializePlugins();
-    }
-
     _openModal(response) {
         const pseudoModal = new PseudoModalUtil(response);
 
         PageLoadingIndicatorUtil.remove();
-        pseudoModal.open(this._onOpen.bind(this, pseudoModal));
+        pseudoModal.open();
     }
 
     _getRequestData() {
@@ -68,5 +55,11 @@ export default class PayonePaymentDebitCard extends Plugin {
             'iban': iban.value,
             'bic': bic.value
         };
+    }
+
+    _getManageMandateUrl() {
+        let configuration = document.getElementById('payone-configuration');
+
+        return configuration.getAttribute('data-manage-mandate-url');
     }
 }
