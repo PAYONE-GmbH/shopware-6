@@ -3,5 +3,6 @@ includes:
 
 parameters:
     reportUnmatchedIgnoredErrors: true
+    inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
         - '#Property(.*)does not accept object(.*)#'

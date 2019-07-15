@@ -10,8 +10,8 @@ use PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory;
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
@@ -42,10 +42,8 @@ class CheckoutManageMandateController extends StorefrontController
      *
      * @throws CustomerNotLoggedInException
      */
-    public function mandateOverview(Request $request, SalesChannelContext $context): Response
+    public function mandateOverview(Request $request, SalesChannelContext $context): JsonResponse
     {
-        $this->denyAccessUnlessLoggedIn();
-
         $iban = (string) $request->get('iban');
         $bic  = (string) $request->get('bic');
 
@@ -60,23 +58,21 @@ class CheckoutManageMandateController extends StorefrontController
 
             if (!empty($response['mandate']['HtmlText'])) {
                 $response['mandate']['HtmlText'] = urldecode($response['mandate']['HtmlText']);
-            }
 
-            if ($response['mandate']['Status'] === 'active') {
-                // return and proceed with normal workflow
+                $content = $this->renderView('@PayonePayment/payone/mandate/mandate.html.twig', $response);
+
+                $response['modal_content'] = $content;
             }
         } catch (PayoneRequestException $exception) {
             $response = [
-                'error'   => true,
-                'message' => $exception->getResponse()['error']['CustomerMessage'],
+                'error' => $exception->getResponse()['error']['CustomerMessage'],
             ];
         } catch (Throwable $exception) {
             $response = [
-                'error'   => true,
-                'message' => $this->translator->trans('PayonePayment.errorMessages.genericError'),
+                'error' => $this->translator->trans('PayonePayment.errorMessages.genericError'),
             ];
         }
 
-        return $this->renderStorefront('@Storefront/payone/mandate/mandate.html.twig', $response);
+        return new JsonResponse($response);
     }
 }
