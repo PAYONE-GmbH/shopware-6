@@ -8,6 +8,9 @@
     <import resource="@PayonePayment/Controller/RefundController.php" type="annotation" />
     <import resource="@PayonePayment/Controller/CaptureController.php" type="annotation" />
     <import resource="@PayonePayment/Controller/RedirectController.php" type="annotation" />
+
     <import resource="@PayonePayment/Storefront/Controller/AccountCardController.php" type="annotation" />
     <import resource="@PayonePayment/Storefront/Controller/AccountMandateController.php" type="annotation" />
+
+    <import resource="@PayonePayment/Storefront/Controller/CheckoutManageMandateController.php" type="annotation" />
 </routes>

@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\EventListener;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
+use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
-use PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory;
 use PayonePayment\Struct\PayonePaymentData;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -48,17 +49,36 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         $salesChannelContext = $event->getSalesChannelContext();
         $context             = $salesChannelContext->getContext();
 
+        if (!$this->isPayonePayment($salesChannelContext->getPaymentMethod())) {
+            return;
+        }
+
         $cardRequest = $this->requestFactory->getRequestParameters($salesChannelContext);
         $savedCards  = $this->cardRepository->getCards($salesChannelContext->getCustomer(), $context);
+
+        $language    = $this->getCustomerLanguage($context);
+        $template    = $this->getTemplateFromPaymentMethod($salesChannelContext->getPaymentMethod());
 
         $payoneData = new PayonePaymentData();
         $payoneData->assign([
             'cardRequest' => $cardRequest,
-            'language'    => $this->getCustomerLanguage($context),
+            'language'    => $language,
             'savedCards'  => $savedCards,
+            'template'    => $template,
         ]);
 
         $event->getPage()->addExtension('payone', $payoneData);
+    }
+
+    private function getTemplateFromPaymentMethod(PaymentMethodEntity $paymentMethod): ?string
+    {
+        $customFields = $paymentMethod->getCustomFields();
+
+        if (!empty($customFields[CustomFieldInstaller::TEMPLATE])) {
+            return $customFields[CustomFieldInstaller::TEMPLATE];
+        }
+
+        return null;
     }
 
     private function getCustomerLanguage(Context $context): string
@@ -75,5 +95,20 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         }
 
         return substr($language->getLocale()->getCode(), 0, 2);
+    }
+
+    private function isPayonePayment(PaymentMethodEntity $paymentMethod): bool
+    {
+        $customFields = $paymentMethod->getCustomFields();
+
+        if (empty($customFields[CustomFieldInstaller::IS_PAYONE])) {
+            return false;
+        }
+
+        if (!$customFields[CustomFieldInstaller::IS_PAYONE]) {
+            return false;
+        }
+
+        return true;
     }
 }

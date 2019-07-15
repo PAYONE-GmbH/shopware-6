@@ -19,6 +19,9 @@ class PayoneCreditCard implements PaymentMethodInterface
     /** @var string */
     private $paymentHandler = PayoneCreditCardPaymentHandler::class;
 
+    /** @var ?string */
+    private $template = 'credit-card-form.html.twig';
+
     public function getId(): string
     {
         return self::UUID;
@@ -37,5 +40,10 @@ class PayoneCreditCard implements PaymentMethodInterface
     public function getPaymentHandler(): string
     {
         return $this->paymentHandler;
+    }
+
+    public function getTemplate(): ?string
+    {
+        return $this->template;
     }
 }

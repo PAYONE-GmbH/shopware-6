@@ -12,6 +12,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
@@ -36,12 +37,12 @@ class CheckoutManageMandateController extends StorefrontController
      *
      * @throws CustomerNotLoggedInException
      */
-    public function mandateOverview(Request $request, SalesChannelContext $context): JsonResponse
+    public function mandateOverview(Request $request, SalesChannelContext $context): Response
     {
         $this->denyAccessUnlessLoggedIn();
 
         $iban = (string) $request->get('iban');
-        $bic = (string) $request->get('bic');
+        $bic  = (string) $request->get('bic');
 
         $payoneRequest = $this->requestFactory->getRequestParameters(
             $context,
@@ -61,6 +62,6 @@ class CheckoutManageMandateController extends StorefrontController
             ]);
         }
 
-        return new JsonResponse([]);
+        return $this->renderStorefront('@Storefront/payone/mandate/mandate.html.twig', $response);
     }
 }

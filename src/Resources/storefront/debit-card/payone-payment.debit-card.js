@@ -2,15 +2,17 @@
 
 import Plugin from 'src/script/plugin-system/plugin.class';
 import HttpClient from 'src/script/service/http-client.service';
+import PseudoModalUtil from 'src/script/utility/modal-extension/pseudo-modal.util';
 import PageLoadingIndicatorUtil from 'src/script/utility/loading-indicator/page-loading-indicator.util';
 
 export default class PayonePaymentDebitCard extends Plugin {
     static options = {
-        url: window.router['frontend.payone.manage-mandate'],
         editorModalClass: 'payone-debit-modal',
     };
 
     init() {
+        this.orderFormDisabled = false;
+
         this._client = new HttpClient(window.accessKey, window.contextToken);
         this._registerEvents();
     }
@@ -22,7 +24,9 @@ export default class PayonePaymentDebitCard extends Plugin {
     }
 
     _handleOrderSubmit(event) {
+        event.preventDefault();
 
+        this._getModal(event);
     }
 
     _getModal(event) {
@@ -33,7 +37,13 @@ export default class PayonePaymentDebitCard extends Plugin {
         const data = this._getRequestData();
 
         this._client.abort();
-        this._client.post(this.options.url, JSON.stringify(data), content => this._openModal(content));
+        this._client.post(this._getManageMandateUrl(), JSON.stringify(data), content => this._openModal(content));
+    }
+
+    _getManageMandateUrl() {
+        let configuration = document.getElementById('payone-configuration');
+
+        return configuration.getAttribute('data-manage-mandate-url');
     }
 
     _onOpen(pseudoModal) {
@@ -51,9 +61,12 @@ export default class PayonePaymentDebitCard extends Plugin {
     }
 
     _getRequestData() {
+        let iban = document.getElementById('iban');
+        let bic = document.getElementById('bic');
+
         return {
-            'iban': 'test',
-            'bic': 'test'
+            'iban': iban.value,
+            'bic': bic.value
         };
     }
 }
