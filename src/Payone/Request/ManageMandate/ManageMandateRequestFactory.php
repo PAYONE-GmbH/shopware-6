@@ -25,9 +25,9 @@ class ManageMandateRequestFactory extends AbstractRequestFactory
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
-        $this->mandateRequest = $mandateRequest;
+        $this->mandateRequest  = $mandateRequest;
         $this->customerRequest = $customerRequest;
-        $this->systemRequest  = $systemRequest;
+        $this->systemRequest   = $systemRequest;
     }
 
     public function getRequestParameters(

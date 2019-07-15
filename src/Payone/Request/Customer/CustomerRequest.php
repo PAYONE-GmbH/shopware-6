@@ -48,7 +48,7 @@ class CustomerRequest
             throw new RuntimeException('missing customer language');
         }
 
-        $language   = $this->getCustomerLanguage($context);
+        $language = $this->getCustomerLanguage($context);
 
         if (null === $language->getLocale()) {
             throw new RuntimeException('missing language locale');
