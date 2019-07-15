@@ -10,7 +10,6 @@ use PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory;
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,7 +32,7 @@ class CheckoutManageMandateController extends StorefrontController
     }
 
     /**
-     * @Route("/payone/request/manage-mandate", name="frontend.payone.manage-mandate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest"=true})
+     * @Route("/payone/request/manage-mandate", name="frontend.payone.manage-mandate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
      *
      * @throws CustomerNotLoggedInException
      */
@@ -62,13 +61,13 @@ class CheckoutManageMandateController extends StorefrontController
             }
         } catch (PayoneRequestException $exception) {
             $response = [
-                'error' => true,
-                'message' => $exception->getResponse()['error']['CustomerMessage']
+                'error'   => true,
+                'message' => $exception->getResponse()['error']['CustomerMessage'],
             ];
         } catch (Throwable $exception) {
             $response = [
-                'error' => true,
-                'message' => $this->translator->trans('PayonePayment.errorMessages.genericError')
+                'error'   => true,
+                'message' => $this->translator->trans('PayonePayment.errorMessages.genericError'),
             ];
         }
 

@@ -56,8 +56,8 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         $cardRequest = $this->requestFactory->getRequestParameters($salesChannelContext);
         $savedCards  = $this->cardRepository->getCards($salesChannelContext->getCustomer(), $context);
 
-        $language    = $this->getCustomerLanguage($context);
-        $template    = $this->getTemplateFromPaymentMethod($salesChannelContext->getPaymentMethod());
+        $language = $this->getCustomerLanguage($context);
+        $template = $this->getTemplateFromPaymentMethod($salesChannelContext->getPaymentMethod());
 
         $payoneData = new PayonePaymentData();
         $payoneData->assign([
