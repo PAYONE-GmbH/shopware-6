@@ -58,7 +58,7 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
             $dataBag,
-            $salesChannelContext->getContext()
+            $salesChannelContext
         );
 
         try {

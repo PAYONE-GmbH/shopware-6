@@ -76,7 +76,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
             $pseudoCardPan,
-            $salesChannelContext->getContext()
+            $salesChannelContext
         );
 
         try {

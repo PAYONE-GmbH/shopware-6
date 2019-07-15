@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\Customer;
 
 use RuntimeException;
-use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
-use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\Salutation\SalutationEntity;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -20,9 +20,6 @@ class CustomerRequest
 {
     /** @var EntityRepositoryInterface */
     private $languageRepository;
-
-    /** @var EntityRepositoryInterface */
-    private $addressRepository;
 
     /** @var RequestStack */
     private $requestStack;
@@ -35,25 +32,36 @@ class CustomerRequest
 
     public function __construct(
         EntityRepositoryInterface $languageRepository,
-        EntityRepositoryInterface $addressRepository,
         EntityRepositoryInterface $salutationRepository,
         EntityRepositoryInterface $countryRepository,
         RequestStack $requestStack
     ) {
         $this->languageRepository   = $languageRepository;
-        $this->addressRepository    = $addressRepository;
         $this->salutationRepository = $salutationRepository;
         $this->countryRepository    = $countryRepository;
         $this->requestStack         = $requestStack;
     }
 
-    public function getRequestParameters(OrderEntity $order, Context $context): array
+    public function getRequestParameters(SalesChannelContext $context): array
     {
-        $language       = $this->getCustomerLanguage($context);
-        $billingAddress = $this->getCustomerBillingAddress($context, $order);
+        if (null === $context->getCustomer()) {
+            throw new RuntimeException('missing customer language');
+        }
+
+        $language   = $this->getCustomerLanguage($context);
+
+        if (null === $language->getLocale()) {
+            throw new RuntimeException('missing language locale');
+        }
+
+        $billingAddress = $context->getCustomer()->getActiveBillingAddress();
+
+        if (null === $billingAddress) {
+            throw new RuntimeException('missing customer billing address');
+        }
 
         $personalData = [
-            'salutation'      => $this->getCustomerSalutation($billingAddress, $context)->getDisplayName(),
+            'salutation'      => $this->getCustomerSalutation($billingAddress, $context->getContext())->getDisplayName(),
             'title'           => $billingAddress->getTitle(),
             'firstname'       => $billingAddress->getFirstName(),
             'lastname'        => $billingAddress->getLastName(),
@@ -61,13 +69,13 @@ class CustomerRequest
             'addressaddition' => $billingAddress->getAdditionalAddressLine1(),
             'zip'             => $billingAddress->getZipcode(),
             'city'            => $billingAddress->getCity(),
-            'country'         => $this->getCustomerCurrency($billingAddress, $context)->getIso(),
-            'email'           => $order->getOrderCustomer()->getEmail(),
+            'country'         => $this->getCustomerCountry($billingAddress, $context->getContext())->getIso(),
+            'email'           => $context->getCustomer()->getEmail(),
             'language'        => substr($language->getLocale()->getCode(), 0, 2),
             'ip'              => $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
         ];
 
-        $birthday = $order->getOrderCustomer()->getCustomer()->getBirthday();
+        $birthday = $context->getCustomer()->getBirthday();
         if (null !== $birthday) {
             $personalData['birthday'] = $birthday->format('Ymd');
         }
@@ -75,7 +83,7 @@ class CustomerRequest
         return $personalData;
     }
 
-    private function getCustomerSalutation(OrderAddressEntity $addressEntity, Context $context): SalutationEntity
+    private function getCustomerSalutation(CustomerAddressEntity $addressEntity, Context $context): SalutationEntity
     {
         $criteria = new Criteria([$addressEntity->getSalutationId()]);
 
@@ -89,7 +97,7 @@ class CustomerRequest
         return $salutation;
     }
 
-    private function getCustomerCurrency(OrderAddressEntity $addressEntity, Context $context): CountryEntity
+    private function getCustomerCountry(CustomerAddressEntity $addressEntity, Context $context): CountryEntity
     {
         $criteria = new Criteria([$addressEntity->getCountryId()]);
 
@@ -103,32 +111,22 @@ class CustomerRequest
         return $country;
     }
 
-    private function getCustomerLanguage(Context $context): LanguageEntity
+    private function getCustomerLanguage(SalesChannelContext $context): LanguageEntity
     {
-        $criteria = new Criteria([$context->getLanguageId()]);
+        if (null === $context->getCustomer()) {
+            throw new RuntimeException('missing customer language');
+        }
+
+        $criteria = new Criteria([$context->getCustomer()->getLanguageId()]);
         $criteria->addAssociation('locale');
 
         /** @var null|LanguageEntity $language */
-        $language = $this->languageRepository->search($criteria, $context)->first();
+        $language = $this->languageRepository->search($criteria, $context->getContext())->first();
 
         if (null === $language) {
-            throw new RuntimeException('missing order customer language');
+            throw new RuntimeException('missing customer language');
         }
 
         return $language;
-    }
-
-    private function getCustomerBillingAddress(Context $context, OrderEntity $order): OrderAddressEntity
-    {
-        $criteria = new Criteria([$order->getBillingAddressId()]);
-
-        /** @var null|OrderAddressEntity $billingAddress */
-        $billingAddress = $this->addressRepository->search($criteria, $context)->first();
-
-        if (null === $billingAddress) {
-            throw new RuntimeException('missing order billing address');
-        }
-
-        return $billingAddress;
     }
 }

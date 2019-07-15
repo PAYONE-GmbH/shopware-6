@@ -1,0 +1,7 @@
+{% block mandate_form %}
+    {% if error %}
+        {{ message }}
+    {% else %}
+        {{ mandate.HtmlText | raw }}
+    {% endif %}
+{% endblock %}

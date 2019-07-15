@@ -9,6 +9,7 @@ use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
 {
@@ -33,15 +34,14 @@ class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
 
     public function getRequestParameters(
         PaymentTransaction $transaction,
-        Context $context
+        SalesChannelContext $context
     ): array {
         $this->requests[] = $this->authorizeRequest->getRequestParameters(
             $transaction,
-            $context
+            $context->getContext()
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
-            $transaction->getOrder(),
             $context
         );
 
