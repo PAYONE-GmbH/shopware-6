@@ -33,7 +33,7 @@ class CheckoutManageMandateController extends StorefrontController
     }
 
     /**
-     * @Route("/payone/request/manage-mandate", name="frontend.payone.manage-mandate", options={"seo": "false"}, methods={"POST"})
+     * @Route("/payone/request/manage-mandate", name="frontend.payone.manage-mandate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest"=true})
      *
      * @throws CustomerNotLoggedInException
      */
@@ -52,14 +52,24 @@ class CheckoutManageMandateController extends StorefrontController
 
         try {
             $response = $this->client->request($payoneRequest);
+
+            if (!empty($response['mandate']['HtmlText'])) {
+                $response['mandate']['HtmlText'] = urldecode($response['mandate']['HtmlText']);
+            }
+
+            if ($response['mandate']['Status'] === 'active') {
+                // return and proceed with normal workflow
+            }
         } catch (PayoneRequestException $exception) {
-            return new JsonResponse([
-                'error' => $exception->getResponse()['error']['CustomerMessage'],
-            ]);
+            $response = [
+                'error' => true,
+                'message' => $exception->getResponse()['error']['CustomerMessage']
+            ];
         } catch (Throwable $exception) {
-            return new JsonResponse([
-                'error' => $this->translator->trans('PayonePayment.errorMessages.genericError'),
-            ]);
+            $response = [
+                'error' => true,
+                'message' => $this->translator->trans('PayonePayment.errorMessages.genericError')
+            ];
         }
 
         return $this->renderStorefront('@Storefront/payone/mandate/mandate.html.twig', $response);

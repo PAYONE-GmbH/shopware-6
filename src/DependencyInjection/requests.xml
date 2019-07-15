@@ -16,7 +16,6 @@
         <!-- Customer -->
         <service id="PayonePayment\Payone\Request\Customer\CustomerRequest">
             <argument type="service" id="language.repository" />
-            <argument type="service" id="order_address.repository" />
             <argument type="service" id="salutation.repository" />
             <argument type="service" id="country.repository" />
             <argument type="service" id="request_stack" />
@@ -108,6 +107,7 @@
 
         <service id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
