@@ -77,7 +77,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         }
 
         if ($this->shouldAllowRefund($transactionData, $customFields)) {
-            $data[CustomFieldInstaller::ALLOW_CAPTURE] = true;
+            $data[CustomFieldInstaller::ALLOW_REFUND] = true;
         }
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);

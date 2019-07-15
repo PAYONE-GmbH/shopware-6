@@ -58,7 +58,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
-        <!-- Debit -->
+        <!-- Credit Card -->
         <service id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequest" />
 
         <service id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory">

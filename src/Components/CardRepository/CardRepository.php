@@ -31,7 +31,7 @@ class CardRepository implements CardRepositoryInterface
     ): void {
         $card = $this->getExistingCard(
             $customer,
-            $truncatedCardPan,
+            $pseudoCardPan,
             $context
         );
 

@@ -22,8 +22,10 @@ class PaypalAuthorizeRequest
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
 
-    public function __construct(RedirectHandler $redirectHandler, EntityRepositoryInterface $currencyRepository)
-    {
+    public function __construct(
+        RedirectHandler $redirectHandler,
+        EntityRepositoryInterface $currencyRepository
+    ) {
         $this->redirectHandler    = $redirectHandler;
         $this->currencyRepository = $currencyRepository;
     }
