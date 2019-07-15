@@ -3,40 +3,7 @@
 {% block page_checkout_confirm %}
     {{ parent() }}
 
-    {% set display_payone_card = false %}
-
-    {% if constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') is same as(context.paymentMethod.id) %}
-        {% set display_payone_card = true %}
-    {% elseif constant('PayonePayment\\PaymentMethod\\PayoneDebit::UUID') is same as(context.paymentMethod.id) %}
-        {% set display_payone_card = true %}
-    {% endif %}
-
-    {% if display_payone_card %}
-        {% block page_checkout_confirm_payone_card_title %}
-            <div class="card-title">
-                {{ "PayonePayment.checkout.cardTitle" | trans }}
-            </div>
-        {% endblock %}
-
-        {% block page_checkout_confirm_payone_card_content %}
-
-            <div class="card">
-                <div class="card-body">
-                    {% if constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') is same as(context.paymentMethod.id) %}
-                        <script type="application/json" id="payone-request" data-payone-language="{{ page.extensions.payone.language | raw }}">
-                            {{ page.extensions.payone.cardRequest | json_encode | raw }}
-                        </script>
-
-                        <div data-is-payone-credit-card="true">
-                            {% sw_include '@Storefront/payone/form/credit-card-form.html.twig' %}
-                        </div>
-                    {% elseif constant('PayonePayment\\PaymentMethod\\PayoneDebit::UUID') is same as(context.paymentMethod.id) %}
-                        <div data-is-payone-debit-card="true">
-                            {% sw_include '@Storefront/payone/form/debit-form.html.twig' %}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        {% endblock %}
+    {% if page.extensions.payone and page.extensions.payone.template %}
+        {% sw_include '@Storefront/page/checkout/confirm/payment_form.html.twig' %}
     {% endif %}
 {% endblock %}

@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\ManageMandate;
 
 use PayonePayment\Payone\Request\AbstractRequestFactory;
-use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransaction;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class ManageMandateRequestFactory extends AbstractRequestFactory
@@ -23,8 +20,8 @@ class ManageMandateRequestFactory extends AbstractRequestFactory
         ManageMandateRequest $mandateRequest,
         SystemRequest $systemRequest
     ) {
-        $this->mandateRequest  = $mandateRequest;
-        $this->systemRequest   = $systemRequest;
+        $this->mandateRequest = $mandateRequest;
+        $this->systemRequest  = $systemRequest;
     }
 
     public function getRequestParameters(
@@ -34,7 +31,7 @@ class ManageMandateRequestFactory extends AbstractRequestFactory
     ): array {
         $this->requests[] = $this->mandateRequest->getRequestParameters(
             $iban,
-            $bic,
+            $bic
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(

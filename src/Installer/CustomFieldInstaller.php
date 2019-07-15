@@ -24,6 +24,8 @@ class CustomFieldInstaller implements InstallerInterface
     public const TRANSACTION_STATE = 'payone_transaction_state';
     public const ALLOW_REFUND      = 'payone_allow_refund';
     public const ALLOW_CAPTURE     = 'payone_allow_capture';
+    public const TEMPLATE          = 'payone_template';
+    public const IS_PAYONE         = 'payone_payment';
 
     /** @var EntityRepositoryInterface */
     private $customFieldRepository;
@@ -74,6 +76,16 @@ class CustomFieldInstaller implements InstallerInterface
             [
                 'id'   => '9bafb69059bf467bb3445c445d395c7e',
                 'name' => self::ALLOW_REFUND,
+                'type' => CustomFieldTypes::BOOL,
+            ],
+            [
+                'id'   => '68eae9619aa54103a546d72b95d86e9b',
+                'name' => self::TEMPLATE,
+                'type' => CustomFieldTypes::TEXT,
+            ],
+            [
+                'id'   => '68eae9619aa54103a546d72b95d86e9b',
+                'name' => self::IS_PAYONE,
                 'type' => CustomFieldTypes::BOOL,
             ],
         ];

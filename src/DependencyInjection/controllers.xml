@@ -33,5 +33,10 @@
             <argument type="service" id="PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader" />
             <argument type="service" id="PayonePayment\Components\MandateService\MandateService" />
         </service>
+
+        <service id="PayonePayment\Storefront\Controller\CheckoutManageMandateController">
+            <argument type="service" id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+        </service>
     </services>
 </container>

@@ -18,6 +18,9 @@ class PayonePaymentData extends Struct
     /** @var EntitySearchResult */
     protected $savedCards;
 
+    /** @var null|string */
+    protected $template;
+
     public function getCardRequest(): array
     {
         return $this->cardRequest;
@@ -31,5 +34,10 @@ class PayonePaymentData extends Struct
     public function getSavedCards(): EntitySearchResult
     {
         return $this->savedCards;
+    }
+
+    public function getTemplate(): ?string
+    {
+        return $this->template;
     }
 }
