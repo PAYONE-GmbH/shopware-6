@@ -17,8 +17,9 @@ class DebitAuthorizeRequest
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
 
-    public function __construct(EntityRepositoryInterface $currencyRepository)
-    {
+    public function __construct(
+        EntityRepositoryInterface $currencyRepository
+    ) {
         $this->currencyRepository = $currencyRepository;
     }
 

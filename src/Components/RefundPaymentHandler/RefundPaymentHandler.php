@@ -10,6 +10,7 @@ use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -20,8 +21,6 @@ use Throwable;
 
 class RefundPaymentHandler implements RefundPaymentHandlerInterface
 {
-    private const STATE_REFUNDED = 'refunded';
-
     /** @var RefundRequestFactory */
     private $requestFactory;
 
@@ -75,7 +74,7 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
     private function getRefundedState(Context $context): StateMachineStateEntity
     {
         $criteria = new Criteria();
-        $filter   = new EqualsFilter('state_machine_state.technicalName', self::STATE_REFUNDED);
+        $filter   = new EqualsFilter('state_machine_state.technicalName', OrderTransactionStates::STATE_REFUNDED);
         $criteria->addFilter($filter);
 
         return $this->stateRepository->search($criteria, $context)->first();
