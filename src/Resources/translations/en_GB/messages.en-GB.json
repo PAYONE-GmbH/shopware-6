@@ -28,7 +28,7 @@
       "menuName": "Direct Debit Mandates",
       "pageTitle": "Direct Debit Mandates",
       "pageSubTitle": "Here you can manage your saved direct debit mantes.",
-      "success": "The saved mandate was removed successfully.",
+      "success": "The saved Direct Debit Mandate was removed successfully.",
       "error": "A error has occurred.",
       "tableIdentification": "Nummer",
       "tableSignatureDate": "Date",

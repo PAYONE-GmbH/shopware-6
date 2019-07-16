@@ -27,8 +27,8 @@
     "mandatePage": {
       "menuName": "SEPA-Laschtschriftmandate",
       "pageTitle": "SEPA-Laschtschriftmandate",
-      "pageSubTitle": "Hier können Sie die gespeicerten SEPA-Laschtschriftmandate verwalten.",
-      "success": "Das Lastschrift Mandat wurde erfolgreich entfernt.",
+      "pageSubTitle": "Hier können Sie die gespeicherten SEPA-Laschtschriftmandate verwalten.",
+      "success": "Das SEPA-Laschtschriftmandate wurde erfolgreich entfernt.",
       "error": "Es ist ein Fehler aufgetretetn.",
       "tableIdentification": "Nummer",
       "tableSignatureDate": "Datum",
