@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\Request\GetFile;
 
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class GetFileRequestFactory extends AbstractRequestFactory
@@ -21,7 +20,7 @@ class GetFileRequestFactory extends AbstractRequestFactory
         GetFileRequest $fileRequest,
         SystemRequest $systemRequest
     ) {
-        $this->fileRequest = $fileRequest;
+        $this->fileRequest   = $fileRequest;
         $this->systemRequest = $systemRequest;
     }
 

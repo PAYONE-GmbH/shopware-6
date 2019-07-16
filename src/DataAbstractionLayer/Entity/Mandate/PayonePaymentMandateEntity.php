@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\DataAbstractionLayer\Entity\Mandate;
 
-use DateTime;
 use DateTimeInterface;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
