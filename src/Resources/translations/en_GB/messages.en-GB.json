@@ -29,8 +29,16 @@
       "error": "A error has occurred while removing the saved debit mandate.",
       "mandatePage": "Debit mandates"
     },
-    "checkout": {
+    "checkoutConfirmPage": {
       "cardTitle": "Payment Information"
+    },
+    "checkoutFinishPage": {
+      "mandateIdentification": "Direct Debit Mandate"
+    },
+    "mandateModal": {
+      "question": "I accept the direct debit manadate",
+      "cancel": "Cancel",
+      "confirm": "Submit"
     }
   }
 }

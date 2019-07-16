@@ -7,7 +7,7 @@ namespace PayonePayment\EventListener;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
-use PayonePayment\Struct\PayonePaymentData;
+use PayonePayment\Struct\CheckoutConfirmPaymentData;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -59,7 +59,8 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         $language = $this->getCustomerLanguage($context);
         $template = $this->getTemplateFromPaymentMethod($salesChannelContext->getPaymentMethod());
 
-        $payoneData = new PayonePaymentData();
+        $payoneData = new CheckoutConfirmPaymentData();
+
         $payoneData->assign([
             'cardRequest' => $cardRequest,
             'language'    => $language,

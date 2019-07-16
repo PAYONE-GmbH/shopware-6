@@ -1,6 +1,3 @@
-import 'jquery/dist/jquery.slim';
-import 'bootstrap';
-
 import PayonePaymentCreditCard from './credit-card/payone-payment.credit-card';
 import PayonePaymentDebitCard from './debit-card/payone-payment.debit-card';
 
