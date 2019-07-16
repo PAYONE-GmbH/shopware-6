@@ -23,17 +23,12 @@ class CheckoutManageMandateController extends StorefrontController
     /** @var PayoneClientInterface */
     private $client;
 
-    /** @var TranslatorInterface */
-    private $translator;
-
     public function __construct(
         ManageMandateRequestFactory $mandateRequestFactory,
-        PayoneClientInterface $client,
-        TranslatorInterface $translator
+        PayoneClientInterface $client
     ) {
         $this->requestFactory = $mandateRequestFactory;
         $this->client         = $client;
-        $this->translator     = $translator;
     }
 
     /**
@@ -66,7 +61,7 @@ class CheckoutManageMandateController extends StorefrontController
             ];
         } catch (Throwable $exception) {
             $response = [
-                'error' => $this->translator->trans('PayonePayment.errorMessages.genericError'),
+                'error' => $this->trans('PayonePayment.errorMessages.genericError'),
             ];
         }
 

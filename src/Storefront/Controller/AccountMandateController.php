@@ -60,12 +60,12 @@ class AccountMandateController extends StorefrontController
                 $context
             );
         } catch (Throwable $exception) {
-            $this->addFlash('danger', 'PayonePayment.mandatePage.error');
+            $this->addFlash('danger', $this->trans('PayonePayment.mandatePage.error'));
 
             return $this->forwardToRoute('frontend.account.payone.mandate.page');
         }
 
-        $this->addFlash('success', 'PayonePayment.mandatePage.success');
+        $this->addFlash('success', $this->trans('PayonePayment.mandatePage.success'));
 
         return new RedirectResponse($this->generateUrl('frontend.account.payone.mandate.page'));
     }
@@ -86,7 +86,7 @@ class AccountMandateController extends StorefrontController
                 $context
             );
         } catch (Throwable $exception) {
-            $this->addFlash('danger', 'PayonePayment.mandatePage.error');
+            $this->addFlash('danger', $this->trans('PayonePayment.mandatePage.error'));
 
             return $this->forwardToRoute('frontend.account.payone.mandate.page');
         }
