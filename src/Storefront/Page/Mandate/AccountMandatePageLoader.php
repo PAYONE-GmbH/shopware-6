@@ -45,7 +45,7 @@ class AccountMandatePageLoader
         $page->setMandates(
             $this->mandateService->getMandates(
                 $context->getCustomer(),
-                $context->getContext()
+                $context
             )
         );
 

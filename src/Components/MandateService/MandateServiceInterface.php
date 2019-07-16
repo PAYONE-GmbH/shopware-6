@@ -8,30 +8,31 @@ use DateTime;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 interface MandateServiceInterface
 {
     public function getMandates(
         CustomerEntity $customer,
-        Context $context
+        SalesChannelContext $context
     ): EntitySearchResult;
 
     public function removeMandate(
         CustomerEntity $customer,
         string $identification,
-        Context $context
+        SalesChannelContext $context
     ): void;
 
     public function saveMandate(
         CustomerEntity $customer,
         string $identification,
         DateTime $signatureDate,
-        Context $context
+        SalesChannelContext $context
     ): void;
 
     public function downloadFile(
         CustomerEntity $customer,
         string $identification,
-        Context $context
+        SalesChannelContext $context
     ): string;
 }

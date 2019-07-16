@@ -15,19 +15,26 @@
       "bic": "BIC"
     },
     "cardPage": {
+      "menuName": "Kreditkarten",
       "success": "Die gespeicherte Kreditkarte wurde erfolgreich entfernt.",
       "error": "Beim entferenn der Kreditkarte ist ein Fehler aufgetretetn.",
-      "menuName": "Zahlungsdaten",
       "pageTitle": "Gespeicherte Kreditkarten",
       "pageSubTitle": "Hier können Sie die gespeicerten Kreditkarten verwalten.",
       "tableHeader": "Kartennummer",
       "deleteButton": "Karte löschen",
       "noEntries": "Keine Kreditkarten vorhanden."
     },
-    "MandatePage": {
+    "mandatePage": {
+      "menuName": "SEPA-Laschtschriftmandate",
+      "pageTitle": "SEPA-Laschtschriftmandate",
+      "pageSubTitle": "Hier können Sie die gespeicerten SEPA-Laschtschriftmandate verwalten.",
       "success": "Das Lastschrift Mandat wurde erfolgreich entfernt.",
-      "error": "Beim entferenn des Lastschrift Mandats ist ein Fehler aufgetretetn.",
-      "mandatePage": "Lastschrift Mandate"
+      "error": "Es ist ein Fehler aufgetretetn.",
+      "tableIdentification": "Nummer",
+      "tableSignatureDate": "Datum",
+      "deleteButton": "Mandat löschen",
+      "downloadButton": "Mandat herunterladen",
+      "noEntries": "Keine SEPA-Laschtschriftmandate vorhanden."
     },
     "checkoutPage": {
       "cardTitle": "Zahlungsinformationen"

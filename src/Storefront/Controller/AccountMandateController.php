@@ -57,21 +57,21 @@ class AccountMandateController extends StorefrontController
             $this->mandateService->removeMandate(
                 $context->getCustomer(),
                 $request->get('mandate'),
-                $context->getContext()
+                $context
             );
         } catch (Throwable $exception) {
-            $this->addFlash('danger', 'PayonePayment.MandatePage.error');
+            $this->addFlash('danger', 'PayonePayment.mandatePage.error');
 
             return $this->forwardToRoute('frontend.account.payone.mandate.page');
         }
 
-        $this->addFlash('success', 'PayonePayment.MandatePage.success');
+        $this->addFlash('success', 'PayonePayment.mandatePage.success');
 
         return new RedirectResponse($this->generateUrl('frontend.account.payone.mandate.page'));
     }
 
     /**
-     * @Route("/account/mandate/download", name="frontend.account.payone.mandate.delete", methods={"GET"})
+     * @Route("/account/mandate/download", name="frontend.account.payone.mandate.download", methods={"GET"})
      *
      * @throws CustomerNotLoggedInException
      */
@@ -83,10 +83,10 @@ class AccountMandateController extends StorefrontController
             $file = $this->mandateService->downloadFile(
                 $context->getCustomer(),
                 $request->get('mandate'),
-                $context->getContext()
+                $context
             );
         } catch (Throwable $exception) {
-            $this->addFlash('danger', 'PayonePayment.MandatePage.error');
+            $this->addFlash('danger', 'PayonePayment.mandatePage.error');
 
             return $this->forwardToRoute('frontend.account.payone.mandate.page');
         }

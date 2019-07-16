@@ -17,6 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Throwable;
 
 class MandateService implements MandateServiceInterface
@@ -40,7 +41,7 @@ class MandateService implements MandateServiceInterface
         $this->requestFactory    = $requestFactory;
     }
 
-    public function getMandates(CustomerEntity $customer, Context $context): EntitySearchResult
+    public function getMandates(CustomerEntity $customer, SalesChannelContext $context): EntitySearchResult
     {
         $criteria = new Criteria();
 
@@ -48,37 +49,37 @@ class MandateService implements MandateServiceInterface
             new EqualsFilter('payone_payment_mandate.customerId', $customer->getId())
         );
 
-        return $this->mandateRepository->search($criteria, $context);
+        return $this->mandateRepository->search($criteria, $context->getContext());
     }
 
     public function removeMandate(
         CustomerEntity $customer,
         string $identification,
-        Context $context
+        SalesChannelContext $context
     ): void {
         $mandate = $this->getExistingMandate(
             $customer,
             $identification,
-            $context
+            $context->getContext()
         );
 
         if (null === $mandate) {
             return;
         }
 
-        $this->mandateRepository->delete([['id' => $mandate->getId()]], $context);
+        $this->mandateRepository->delete([['id' => $mandate->getId()]], $context->getContext());
     }
 
     public function saveMandate(
         CustomerEntity $customer,
         string $identification,
         DateTime $signatureDate,
-        Context $context
+        SalesChannelContext $context
     ): void {
         $mandate = $this->getExistingMandate(
             $customer,
             $identification,
-            $context
+            $context->getContext()
         );
 
         $data = [
@@ -88,18 +89,18 @@ class MandateService implements MandateServiceInterface
             'customerId'     => $customer->getId(),
         ];
 
-        $this->mandateRepository->upsert([$data], $context);
+        $this->mandateRepository->upsert([$data], $context->getContext());
     }
 
     public function downloadFile(
         CustomerEntity $customer,
         string $identification,
-        Context $context
+        SalesChannelContext $context
     ): string {
         $mandate = $this->getExistingMandate(
             $customer,
             $identification,
-            $context
+            $context->getContext()
         );
 
         if (null === $mandate) {
