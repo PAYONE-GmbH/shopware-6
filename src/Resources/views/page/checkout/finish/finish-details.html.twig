@@ -6,7 +6,7 @@
     {% block payone_payment_mandate_information %}
         {% if page.extensions.payone.mandate %}
             <p>
-                <strong>{{ "PayonePayment.checkoutFinishPage.mandateIdentification" | trans }}</strong>
+                <strong>{{ "PayonePayment.checkoutFinishPage.mandateIdentification" | trans }}:</strong>
                 {{ page.extensions.payone.mandate.identification }}
             </p>
         {% endif %}

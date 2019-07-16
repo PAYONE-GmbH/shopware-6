@@ -10,15 +10,15 @@ use Shopware\Storefront\Page\Page;
 class AccountMandatePage extends Page
 {
     /** @var EntitySearchResult */
-    protected $Mandates;
+    protected $mandates;
 
     public function getMandates(): EntitySearchResult
     {
-        return $this->Mandates;
+        return $this->mandates;
     }
 
-    public function setMandates(EntitySearchResult $Mandates): void
+    public function setMandates(EntitySearchResult $mandates): void
     {
-        $this->Mandates = $Mandates;
+        $this->mandates = $mandates;
     }
 }

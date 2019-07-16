@@ -1,6 +1,6 @@
 {% sw_extends '@Storefront/page/account/_page.html.twig' %}
 
-{# @var page \PayonePayment\Storefront\Page\Card\AccountCardPage #}
+{# @var page \PayonePayment\Storefront\Page\Mandate\AccountMandatePage #}
 {# @var card \PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardEntity #}
 
 {% block page_account_main_content %}
@@ -8,40 +8,54 @@
         {% block page_payone_account_mandate_welcome %}
             <div class="account-welcome">
                 {% block page_payone_account_mandate_card_headline %}
-                    <h1>{{ "PayonePayment.cardPage.pageTitle" | trans }}</h1>
+                    <h1>{{ "PayonePayment.mandatePage.pageTitle" | trans }}</h1>
                 {% endblock %}
 
                 {% block page_payone_account_mandate_welcome_intro %}
-                    <p>{{ "PayonePayment.cardPage.pageSubTitle" | trans }}</p>
+                    <p>{{ "PayonePayment.mandatePage.pageSubTitle" | trans }}</p>
                 {% endblock %}
             </div>
         {% endblock %}
-
-        <div class="card">
-            {% if page.cards|length > 0 %}
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ "PayonePayment.cardPage.tableHeader" | trans }}</th>
-                            <th scope="col">&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for card in page.cards %}
-                            <tr>
-                                <td>{{ card.truncatedCardPan }}</td>
-                                <td>
-                                    <a href="{{ path('frontend.account.payone.card.delete', {'truncatedCardPan': card.truncatedCardPan}) }}" title="{{ "PayonePayment.cardPage.deleteButton" | trans }}" class="btn btn-light">
-                                        {{ "PayonePayment.cardPage.deleteButton" | trans }}
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>{{ "PayonePayment.cardPage.noEntries" | trans }}</p>
-            {% endif %}
-        </div>
+        
+        {% block page_payone_account_mandate_content %}
+            <div class="card">
+                {% if page.mandates | length > 0 %}
+                    {% block page_payone_account_mandate_table %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{{ "PayonePayment.mandatePage.tableIdentification" | trans }}</th>
+                                    <th scope="col">{{ "PayonePayment.mandatePage.tableSignatureDate" | trans }}</th>
+                                    <th scope="col">&nbsp;</th>
+                                    <th scope="col">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for mandate in page.mandates %}
+                                    <tr>
+                                        <td>{{ mandate.identification }}</td>
+                                        <td>{{ mandate.signatureDate | date }}</td>
+                                        <td>
+                                            <a href="{{ path('frontend.account.payone.mandate.delete', {'mandate': mandate.identification}) }}" title="{{ "PayonePayment.mandatePage.deleteButton" | trans }}" class="btn btn-light">
+                                                {{ "PayonePayment.mandatePage.deleteButton" | trans }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('frontend.account.payone.mandate.download', {'mandate': mandate.identification}) }}" title="{{ "PayonePayment.mandatePage.downloadButton" | trans }}" class="btn btn-light">
+                                                {{ "PayonePayment.mandatePage.downloadButton" | trans }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endblock %}
+                {% else %}
+                    {% block page_payone_account_mandate_table_no_elements %}
+                        <p>{{ "PayonePayment.mandatePage.noEntries" | trans }}</p>
+                    {% endblock %}
+                {% endif %}
+            </div>
+        {% endblock %}
     </div>
 {% endblock %}

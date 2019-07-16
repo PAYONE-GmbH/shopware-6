@@ -95,7 +95,7 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
             $salesChannelContext->getCustomer(),
             $response['mandate']['Identification'],
             $date,
-            $salesChannelContext->getContext()
+            $salesChannelContext
         );
     }
 }
