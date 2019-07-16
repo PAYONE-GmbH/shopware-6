@@ -65,4 +65,14 @@ class PayonePayment extends Plugin
         $connection->exec('DROP TABLE payone_payment_card');
         $connection->exec('DROP TABLE payone_payment_redirect');
     }
+
+    public function getStorefrontScriptPath(): string
+    {
+        return 'Resources/public/storefront/js';
+    }
+
+    public function getStorefrontStylePath(): string
+    {
+        return 'Resources/public/storefront/scss';
+    }
 }

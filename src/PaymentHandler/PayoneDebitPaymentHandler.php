@@ -76,13 +76,14 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
         }
 
         $data = [
-            CustomFieldInstaller::LAST_REQUEST      => $request['request'],
-            CustomFieldInstaller::TRANSACTION_ID    => (string) $response['txid'],
-            CustomFieldInstaller::TRANSACTION_STATE => 'pending',
-            CustomFieldInstaller::SEQUENCE_NUMBER   => -1,
-            CustomFieldInstaller::USER_ID           => $response['userid'],
-            CustomFieldInstaller::ALLOW_CAPTURE     => false,
-            CustomFieldInstaller::ALLOW_REFUND      => false,
+            CustomFieldInstaller::LAST_REQUEST           => $request['request'],
+            CustomFieldInstaller::TRANSACTION_ID         => (string) $response['txid'],
+            CustomFieldInstaller::TRANSACTION_STATE      => 'pending',
+            CustomFieldInstaller::SEQUENCE_NUMBER        => -1,
+            CustomFieldInstaller::USER_ID                => $response['userid'],
+            CustomFieldInstaller::ALLOW_CAPTURE          => false,
+            CustomFieldInstaller::ALLOW_REFUND           => false,
+            CustomFieldInstaller::MANDATE_IDENTIFICATION => $response['mandate']['Identification'],
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);

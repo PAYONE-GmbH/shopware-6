@@ -29,8 +29,16 @@
       "error": "Beim entferenn des Lastschrift Mandats ist ein Fehler aufgetretetn.",
       "mandatePage": "Lastschrift Mandate"
     },
-    "checkout": {
+    "checkoutPage": {
       "cardTitle": "Zahlungsinformationen"
+    },
+    "finishPage": {
+      "mandateIdentification": "SEPA-Laschtschriftmandat"
+    },
+    "mandateModal": {
+      "question": "Ich erteile das SEPA-Laschtschriftmandat",
+      "cancel": "Abbruch",
+      "confirm": "Absenden"
     }
   }
 }

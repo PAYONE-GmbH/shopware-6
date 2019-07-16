@@ -7,7 +7,6 @@ namespace PayonePayment\Storefront\Controller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory;
-use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,8 +38,6 @@ class CheckoutManageMandateController extends StorefrontController
 
     /**
      * @Route("/payone/request/manage-mandate", name="frontend.payone.manage-mandate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
-     *
-     * @throws CustomerNotLoggedInException
      */
     public function mandateOverview(Request $request, SalesChannelContext $context): JsonResponse
     {
