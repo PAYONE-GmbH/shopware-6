@@ -6,7 +6,6 @@ namespace PayonePayment\Components\MandateService;
 
 use DateTime;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
