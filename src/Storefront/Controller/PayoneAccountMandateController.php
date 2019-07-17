@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
-class AccountMandateController extends StorefrontController
+class PayoneAccountMandateController extends StorefrontController
 {
     /** @var AccountMandatePageLoader */
     private $accountMandatePageLoader;
@@ -53,7 +53,7 @@ class AccountMandateController extends StorefrontController
         $this->denyAccessUnlessLoggedIn();
 
         try {
-            $file = $this->mandateService->downloadFile(
+            $file = $this->mandateService->downloadMandate(
                 $context->getCustomer(),
                 $request->get('mandate'),
                 $context

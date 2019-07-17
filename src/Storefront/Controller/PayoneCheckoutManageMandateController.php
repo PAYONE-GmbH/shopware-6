@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
-class CheckoutManageMandateController extends StorefrontController
+class PayoneCheckoutManageMandateController extends StorefrontController
 {
     /** @var ManageMandateRequestFactory */
     private $requestFactory;

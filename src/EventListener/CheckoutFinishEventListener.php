@@ -54,7 +54,7 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
             $context
         );
 
-        if (null === $mandateIdentification) {
+        if (!$this->hasDirectDebitPayment($mandateIdentification)) {
             return;
         }
 
@@ -108,5 +108,10 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
         }
 
         return null;
+    }
+
+    protected function hasDirectDebitPayment(?string $mandateIdentification): bool
+    {
+        return null === $mandateIdentification;
     }
 }

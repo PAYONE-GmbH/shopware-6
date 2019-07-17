@@ -23,7 +23,7 @@ interface MandateServiceInterface
         SalesChannelContext $context
     ): void;
 
-    public function downloadFile(
+    public function downloadMandate(
         CustomerEntity $customer,
         string $identification,
         SalesChannelContext $context

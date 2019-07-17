@@ -45,7 +45,7 @@ class CustomerRequest
     public function getRequestParameters(SalesChannelContext $context): array
     {
         if (null === $context->getCustomer()) {
-            throw new RuntimeException('missing customer language');
+            throw new RuntimeException('missing customer');
         }
 
         $language = $this->getCustomerLanguage($context);
@@ -114,7 +114,7 @@ class CustomerRequest
     private function getCustomerLanguage(SalesChannelContext $context): LanguageEntity
     {
         if (null === $context->getCustomer()) {
-            throw new RuntimeException('missing customer language');
+            throw new RuntimeException('missing customer');
         }
 
         $criteria = new Criteria([$context->getCustomer()->getLanguageId()]);
