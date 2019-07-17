@@ -9,8 +9,7 @@ use PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader;
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,32 +44,6 @@ class AccountMandateController extends StorefrontController
     }
 
     /**
-     * @Route("/account/mandate/delete", name="frontend.account.payone.mandate.delete", methods={"GET"})
-     *
-     * @throws CustomerNotLoggedInException
-     */
-    public function deleteMandate(Request $request, SalesChannelContext $context): Response
-    {
-        $this->denyAccessUnlessLoggedIn();
-
-        try {
-            $this->mandateService->removeMandate(
-                $context->getCustomer(),
-                $request->get('mandate'),
-                $context
-            );
-        } catch (Throwable $exception) {
-            $this->addFlash('danger', $this->trans('PayonePayment.mandatePage.error'));
-
-            return $this->forwardToRoute('frontend.account.payone.mandate.page');
-        }
-
-        $this->addFlash('success', $this->trans('PayonePayment.mandatePage.success'));
-
-        return new RedirectResponse($this->generateUrl('frontend.account.payone.mandate.page'));
-    }
-
-    /**
      * @Route("/account/mandate/download", name="frontend.account.payone.mandate.download", methods={"GET"})
      *
      * @throws CustomerNotLoggedInException
@@ -91,6 +64,15 @@ class AccountMandateController extends StorefrontController
             return $this->forwardToRoute('frontend.account.payone.mandate.page');
         }
 
-        return new BinaryFileResponse($file);
+        $response = new Response($file);
+
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            'mandate.pdf'
+        );
+
+        $response->headers->set('Content-Disposition', $disposition);
+
+        return $response;
     }
 }

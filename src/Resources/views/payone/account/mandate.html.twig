@@ -27,7 +27,6 @@
                                     <th scope="col">{{ "PayonePayment.mandatePage.tableIdentification" | trans }}</th>
                                     <th scope="col">{{ "PayonePayment.mandatePage.tableSignatureDate" | trans }}</th>
                                     <th scope="col">&nbsp;</th>
-                                    <th scope="col">&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,11 +34,6 @@
                                     <tr>
                                         <td>{{ mandate.identification }}</td>
                                         <td>{{ mandate.signatureDate | date }}</td>
-                                        <td>
-                                            <a href="{{ path('frontend.account.payone.mandate.delete', {'mandate': mandate.identification}) }}" title="{{ "PayonePayment.mandatePage.deleteButton" | trans }}" class="btn btn-light">
-                                                {{ "PayonePayment.mandatePage.deleteButton" | trans }}
-                                            </a>
-                                        </td>
                                         <td>
                                             <a href="{{ path('frontend.account.payone.mandate.download', {'mandate': mandate.identification}) }}" title="{{ "PayonePayment.mandatePage.downloadButton" | trans }}" class="btn btn-light">
                                                 {{ "PayonePayment.mandatePage.downloadButton" | trans }}
