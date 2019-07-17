@@ -111,7 +111,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
-        <!-- ManageMandate -->
+        <!-- GetFile -->
         <service id="PayonePayment\Payone\Request\GetFile\GetFileRequest" />
 
         <service id="PayonePayment\Payone\Request\GetFile\GetFileRequestFactory">

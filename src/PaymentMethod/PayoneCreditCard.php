@@ -19,7 +19,7 @@ class PayoneCreditCard implements PaymentMethodInterface
     /** @var string */
     private $paymentHandler = PayoneCreditCardPaymentHandler::class;
 
-    /** @var ?string */
+    /** @var null|string */
     private $template = 'credit-card-form.html.twig';
 
     public function getId(): string

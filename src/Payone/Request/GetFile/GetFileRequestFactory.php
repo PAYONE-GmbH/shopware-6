@@ -37,7 +37,7 @@ class GetFileRequestFactory extends AbstractRequestFactory
 
         $request = $this->createRequest();
 
-        unset($request['aid'], $request['hash']);
+        unset($request['aid']);
 
         return $request;
     }

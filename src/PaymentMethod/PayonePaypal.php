@@ -19,7 +19,7 @@ class PayonePaypal implements PaymentMethodInterface
     /** @var string */
     private $paymentHandler = PayonePaypalPaymentHandler::class;
 
-    /** @var ?string */
+    /** @var null|string */
     private $template;
 
     public function getId(): string

@@ -17,7 +17,7 @@
     "cardPage": {
       "menuName": "Kreditkarten",
       "success": "Die gespeicherte Kreditkarte wurde erfolgreich entfernt.",
-      "error": "Beim entferenn der Kreditkarte ist ein Fehler aufgetretetn.",
+      "error": "Beim entfernen der Kreditkarte ist ein Fehler aufgetreten.",
       "pageTitle": "Gespeicherte Kreditkarten",
       "pageSubTitle": "Hier können Sie die gespeicerten Kreditkarten verwalten.",
       "tableHeader": "Kartennummer",
@@ -25,15 +25,15 @@
       "noEntries": "Keine Kreditkarten vorhanden."
     },
     "mandatePage": {
-      "menuName": "SEPA-Laschtschriftmandate",
-      "pageTitle": "SEPA-Laschtschriftmandate",
-      "pageSubTitle": "Hier können Sie die gespeicherten SEPA-Laschtschriftmandate verwalten.",
-      "success": "Das SEPA-Laschtschriftmandate wurde erfolgreich entfernt.",
+      "menuName": "SEPA-Lastschriftmandate",
+      "pageTitle": "SEPA-Lastschriftmandate",
+      "pageSubTitle": "Hier können Sie die gespeicherten SEPA-Lastschriftmandate verwalten.",
+      "success": "Das SEPA-Lastschriftmandate wurde erfolgreich entfernt.",
       "error": "Es ist ein Fehler aufgetretetn.",
       "tableIdentification": "Nummer",
       "tableSignatureDate": "Datum",
       "downloadButton": "Mandat herunterladen",
-      "noEntries": "Keine SEPA-Laschtschriftmandate vorhanden."
+      "noEntries": "Keine SEPA-Lastschriftmandate vorhanden."
     },
     "checkoutPage": {
       "cardTitle": "Zahlungsinformationen"

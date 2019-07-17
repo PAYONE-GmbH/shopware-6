@@ -19,7 +19,7 @@ class PayoneDebit implements PaymentMethodInterface
     /** @var string */
     private $paymentHandler = PayoneDebitPaymentHandler::class;
 
-    /** @var ?string */
+    /** @var null|string */
     private $template = 'debit-form.html.twig';
 
     public function getId(): string

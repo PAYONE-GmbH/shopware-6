@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
-class AccountCardController extends StorefrontController
+class PayoneAccountCardController extends StorefrontController
 {
     /** @var AccountCardPageLoader */
     private $accountCardPageLoader;

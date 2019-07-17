@@ -74,7 +74,7 @@ class MandateService implements MandateServiceInterface
         $this->mandateRepository->upsert([$data], $context->getContext());
     }
 
-    public function downloadFile(
+    public function downloadMandate(
         CustomerEntity $customer,
         string $identification,
         SalesChannelContext $context
