@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<config>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../../../vendor/shopware/platform/src/Core/System/SystemConfig/Schema/config.xsd">
     <card>
         <title>Basic configuration</title>
         <title lang="de-DE">Grundeinstellungen</title>
@@ -44,6 +45,152 @@
                     <name lang="de-DE">Live Modus</name>
                 </option>
             </options>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Credit Card</title>
+        <title lang="de-DE">Kreditkarte</title>
+
+        <input-field>
+            <name>creditCardMerchantId</name>
+            <copyable>true</copyable>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>creditCardAccountId</name>
+            <copyable>true</copyable>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>creditCardPortalId</name>
+            <copyable>true</copyable>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>creditCardPortalKey</name>
+            <copyable>true</copyable>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>PayPal</title>
+
+        <input-field>
+            <name>paypalMerchantId</name>
+            <copyable>true</copyable>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paypalAccountId</name>
+            <copyable>true</copyable>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paypalPortalId</name>
+            <copyable>true</copyable>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paypalPortalKey</name>
+            <copyable>true</copyable>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Debit</title>
+        <title lang="de-DE">Lastschrift</title>
+
+        <input-field>
+            <name>debitMerchantId</name>
+            <copyable>true</copyable>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>debitAccountId</name>
+            <copyable>true</copyable>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>debitPortalId</name>
+            <copyable>true</copyable>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>debitPortalKey</name>
+            <copyable>true</copyable>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>SOFORT</title>
+
+        <input-field>
+            <name>sofortMerchantId</name>
+            <copyable>true</copyable>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>sofortAccountId</name>
+            <copyable>true</copyable>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>sofortPortalId</name>
+            <copyable>true</copyable>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>sofortPortalKey</name>
+            <copyable>true</copyable>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
         </input-field>
     </card>
 </config>

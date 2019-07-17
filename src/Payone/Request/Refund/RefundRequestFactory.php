@@ -32,7 +32,8 @@ class RefundRequestFactory extends AbstractRequestFactory
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannelId()
+            $transaction->getOrder()->getSalesChannelId(),
+            $transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier() // TODO: Map payment method to configuration prefix
         );
 
         return $this->createRequest();
