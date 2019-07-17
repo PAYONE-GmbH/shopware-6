@@ -54,7 +54,8 @@ class DebitAuthorizeRequestFactory extends AbstractRequestFactory
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannelId()
+            $transaction->getOrder()->getSalesChannelId(),
+            SystemRequest::CONFIGURATION_PREFIX_DEBIT
         );
 
         return $this->createRequest();

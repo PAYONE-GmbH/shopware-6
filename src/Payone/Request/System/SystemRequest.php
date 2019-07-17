@@ -8,6 +8,11 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 
 class SystemRequest
 {
+    public const CONFIGURATION_PREFIX_CREDITCARD = 'creditCard';
+    public const CONFIGURATION_PREFIX_DEBIT      = 'debit';
+    public const CONFIGURATION_PREFIX_PAYPAL     = 'paypal';
+    public const CONFIGURATION_PREFIX_SOFORT     = 'sofort';
+
     /** @var ConfigReaderInterface */
     private $configReader;
 
@@ -16,15 +21,20 @@ class SystemRequest
         $this->configReader = $configReader;
     }
 
-    public function getRequestParameters(string $salesChannel): array
+    public function getRequestParameters(string $salesChannel, string $configurationPrefix = ''): array
     {
         $configuration = $this->configReader->read($salesChannel);
 
+        $accountId  = $configuration->get(sprintf('%sAccountId', $configurationPrefix), $configuration->get('accountId'));
+        $merchantId = $configuration->get(sprintf('%sMerchantId', $configurationPrefix), $configuration->get('merchantId'));
+        $portalId   = $configuration->get(sprintf('%sPortalId', $configurationPrefix), $configuration->get('portalId'));
+        $portalKey  = $configuration->get(sprintf('%sPortalKey', $configurationPrefix), $configuration->get('portalKey'));
+
         return [
-            'aid'         => $configuration->get('accountId'),
-            'mid'         => $configuration->get('merchantId'),
-            'portalid'    => $configuration->get('portalId'),
-            'key'         => $configuration->get('portalKey'),
+            'aid'         => $accountId,
+            'mid'         => $merchantId,
+            'portalid'    => $portalId,
+            'key'         => $portalKey,
             'api_version' => '3.10',
             'mode'        => $configuration->get('transactionMode'),
             'encoding'    => 'UTF-8',
