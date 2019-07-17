@@ -35,6 +35,10 @@ class GetFileRequestFactory extends AbstractRequestFactory
             $context->getSalesChannel()->getId()
         );
 
-        return $this->createRequest();
+        $request = $this->createRequest();
+
+        unset($request['aid'], $request['hash']);
+
+        return $request;
     }
 }

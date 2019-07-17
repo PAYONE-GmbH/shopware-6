@@ -52,24 +52,6 @@ class MandateService implements MandateServiceInterface
         return $this->mandateRepository->search($criteria, $context->getContext());
     }
 
-    public function removeMandate(
-        CustomerEntity $customer,
-        string $identification,
-        SalesChannelContext $context
-    ): void {
-        $mandate = $this->getExistingMandate(
-            $customer,
-            $identification,
-            $context->getContext()
-        );
-
-        if (null === $mandate) {
-            return;
-        }
-
-        $this->mandateRepository->delete([['id' => $mandate->getId()]], $context->getContext());
-    }
-
     public function saveMandate(
         CustomerEntity $customer,
         string $identification,
@@ -113,7 +95,7 @@ class MandateService implements MandateServiceInterface
         );
 
         try {
-            $response = $this->client->request($request);
+            $response = $this->client->request($request, false);
         } catch (PayoneRequestException $exception) {
             throw new RuntimeException('mandate not found');
         } catch (Throwable $exception) {

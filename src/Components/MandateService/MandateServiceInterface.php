@@ -16,12 +16,6 @@ interface MandateServiceInterface
         SalesChannelContext $context
     ): EntitySearchResult;
 
-    public function removeMandate(
-        CustomerEntity $customer,
-        string $identification,
-        SalesChannelContext $context
-    ): void;
-
     public function saveMandate(
         CustomerEntity $customer,
         string $identification,

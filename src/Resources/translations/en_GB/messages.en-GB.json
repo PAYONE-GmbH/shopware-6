@@ -32,7 +32,6 @@
       "error": "A error has occurred.",
       "tableIdentification": "Nummer",
       "tableSignatureDate": "Date",
-      "deleteButton": "Delete Mandate",
       "downloadButton": "Download Mandate",
       "noEntries": "No Mandates saved."
     },
