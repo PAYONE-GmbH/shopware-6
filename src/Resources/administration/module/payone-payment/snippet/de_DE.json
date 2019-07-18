@@ -1,0 +1,33 @@
+{
+    "payone-payment": {
+        "title": "PAYONE",
+        "general": {
+            "mainMenuItemGeneral": "PAYONE",
+            "descriptionTextModule": "Einstellungen für PAYONE"
+        },
+        "capture": {
+            "buttonTitle": "Capture",
+            "successTitle": "PAYONE",
+            "successMessage": "Capture erfolgreich durchgeführt.",
+            "errorTitle": "PAYONE"
+        },
+        "refund": {
+            "buttonTitle": "Refund",
+            "successTitle": "PAYONE",
+            "successMessage": "Refund erfolgreich durchgeführt.",
+            "errorTitle": "PAYONE"
+        },
+        "settingForm": {
+            "save": "Speichern",
+            "test": "API-Zugangsdaten testen",
+            "titleSuccess": "Erfolg",
+            "titleError": "Fehler",
+            "messageTestSuccess": "Die API-Zugangsdaten wurden erfolgreich validiert.",
+            "messageTestError": "Die API-Zugangsdaten sind nicht korrekt."
+        },
+        "messageNotBlank": "Dieser Wert darf nicht leer sein.",
+        "poNumber": "PO-Nummer",
+        "sequenceNumber": "Sequenznummer",
+        "transactionState": "Status"
+    }
+}

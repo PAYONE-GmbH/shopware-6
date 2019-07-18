@@ -1,0 +1,8 @@
+{% block sw_settings_content_card_slot_plugins %}
+    {% parent %}
+
+    <sw-settings-item :label="$tc('payone-payment.general.mainMenuItemGeneral')"
+                      :to="{ name: 'payone.payment.index' }"
+                      :backgroundEnabled="false">
+    </sw-settings-item>
+{% endblock %}

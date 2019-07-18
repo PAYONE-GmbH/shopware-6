@@ -79,8 +79,8 @@ Component.override('sw-order-detail-base', {
             this.PayonePaymentService.capturePayment(transaction.id)
                 .then(() => {
                     this.createNotificationSuccess({
-                        title: this.$tc('payone-order-buttons.capture.successTitle'),
-                        message: this.$tc('payone-order-buttons.capture.successMessage')
+                        title: this.$tc('payone-payment.capture.successTitle'),
+                        message: this.$tc('payone-payment.capture.successMessage')
                     });
 
                     me.reloadVersionedOrder(me.currentOrder.versionId);
@@ -88,7 +88,7 @@ Component.override('sw-order-detail-base', {
                 })
                 .catch((errorResponse) => {
                     this.createNotificationError({
-                        title: this.$tc('payone-order-buttons.capture.errorTitle'),
+                        title: this.$tc('payone-payment.capture.errorTitle'),
                         message: errorResponse.response.data.message
                     });
 
@@ -108,8 +108,8 @@ Component.override('sw-order-detail-base', {
             this.PayonePaymentService.refundPayment(transaction.id)
                 .then(() => {
                     this.createNotificationSuccess({
-                        title: this.$tc('payone-order-buttons.refund.successTitle'),
-                        message: this.$tc('payone-order-buttons.refund.successMessage')
+                        title: this.$tc('payone-payment.refund.successTitle'),
+                        message: this.$tc('payone-payment.refund.successMessage')
                     });
 
                     me.reloadVersionedOrder(me.currentOrder.versionId);
@@ -117,7 +117,7 @@ Component.override('sw-order-detail-base', {
                 })
                 .catch((errorResponse) => {
                     this.createNotificationError({
-                        title: this.$tc('payone-order-buttons.refund.errorTitle'),
+                        title: this.$tc('payone-payment.refund.errorTitle'),
                         message: errorResponse.response.data.message
                     });
 
