@@ -49,12 +49,13 @@ class PayoneClient implements PayoneClientInterface
         }
 
         if (!$json) {
-            return [
-                'data' => $response,
+            $response = [
+                'status' => 'success',
+                'data'   => $response,
             ];
+        } else {
+            $response = json_decode($response, true);
         }
-
-        $response = json_decode($response, true);
 
         $this->logger->debug('payone request', [
             'parameters' => $parameters,
