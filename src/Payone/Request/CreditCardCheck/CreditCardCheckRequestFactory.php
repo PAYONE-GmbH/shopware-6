@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\CreditCardCheck;
 
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -28,7 +29,7 @@ class CreditCardCheckRequestFactory extends AbstractRequestFactory
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $context->getSalesChannel()->getId(),
-            SystemRequest::CONFIGURATION_PREFIX_CREDITCARD
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD
         );
 
         return $this->createRequest();

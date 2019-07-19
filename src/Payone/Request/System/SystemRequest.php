@@ -8,11 +8,6 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 
 class SystemRequest
 {
-    public const CONFIGURATION_PREFIX_CREDITCARD = 'creditCard';
-    public const CONFIGURATION_PREFIX_DEBIT      = 'debit';
-    public const CONFIGURATION_PREFIX_PAYPAL     = 'paypal';
-    public const CONFIGURATION_PREFIX_SOFORT     = 'sofort';
-
     /** @var ConfigReaderInterface */
     private $configReader;
 

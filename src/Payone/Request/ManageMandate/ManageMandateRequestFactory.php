@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\ManageMandate;
 
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
@@ -47,7 +48,7 @@ class ManageMandateRequestFactory extends AbstractRequestFactory
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $context->getSalesChannel()->getId(),
-            SystemRequest::CONFIGURATION_PREFIX_DEBIT
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_DEBIT
         );
 
         return $this->createRequest();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Refund;
 
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Payone\Struct\PaymentTransaction;
@@ -33,7 +34,7 @@ class RefundRequestFactory extends AbstractRequestFactory
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            $transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier() // TODO: Map payment method to configuration prefix
+            ConfigurationPrefixes::CONFIGURATION_PREFIXES[$transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier()]
         );
 
         return $this->createRequest();
