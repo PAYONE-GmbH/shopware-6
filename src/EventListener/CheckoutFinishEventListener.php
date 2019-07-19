@@ -67,6 +67,11 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
         $event->getPage()->addExtension('payone', $payoneData);
     }
 
+    protected function hasDirectDebitPayment(?string $mandateIdentification): bool
+    {
+        return null === $mandateIdentification;
+    }
+
     private function isPayonePayment(PaymentMethodEntity $paymentMethod): bool
     {
         $customFields = $paymentMethod->getCustomFields();
@@ -108,10 +113,5 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
         }
 
         return null;
-    }
-
-    protected function hasDirectDebitPayment(?string $mandateIdentification): bool
-    {
-        return null === $mandateIdentification;
     }
 }
