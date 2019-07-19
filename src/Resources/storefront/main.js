@@ -1,6 +1,8 @@
 import 'jquery/dist/jquery.slim';
 import 'bootstrap';
 
+// TODO: remove imports above when shopware fixes https://issues.shopware.com/issues/NEXT-4127
+
 import PayonePaymentCreditCard from './credit-card/payone-payment.credit-card';
 import PayonePaymentDebitCard from './debit-card/payone-payment.debit-card';
 
