@@ -45,24 +45,29 @@ export default {
         },
 
         checkCredentialsFilled() {
+            this.merchantIdFilled = !!this.getConfigValue('merchantId');
+            this.accountIdFilled = !!this.getConfigValue('accountId');
+            this.portalIdFilled = !!this.getConfigValue('portalId');
+            this.portalKeyFilled = !!this.getConfigValue('portalKey');
+        },
+
+        getConfigValue(field) {
             const defaultConfig = this.$refs.systemConfig.actualConfigData.null;
             const salesChannelId = this.$refs.systemConfig.currentSalesChannelId;
 
             if (salesChannelId === null) {
-                this.merchantIdFilled = !!this.config['PayonePayment.settings.merchantId'];
-                this.accountIdFilled = !!this.config['PayonePayment.settings.accountId'];
-                this.portalIdFilled = !!this.config['PayonePayment.settings.portalId'];
-                this.portalKeyFilled = !!this.config['PayonePayment.settings.portalKey'];
+                return this.config['PayonePayment.settings.' + field];
             } else {
-                this.merchantIdFilled = !!this.config['PayonePayment.settings.merchantId']
-                    || !!defaultConfig['PayonePayment.settings.merchantId'];
-                this.accountIdFilled = !!this.config['PayonePayment.settings.accountId']
-                    || !!defaultConfig['PayonePayment.settings.accountId'];
-                this.portalIdFilled = !!this.config['PayonePayment.settings.portalId']
-                    || !!defaultConfig['PayonePayment.settings.portalId'];
-                this.portalKeyFilled = !!this.config['PayonePayment.settings.portalKey']
-                    || !!defaultConfig['PayonePayment.settings.portalKey'];
+                return this.config['PayonePayment.settings.' + field]
+                    || defaultConfig['PayonePayment.settings.' + field];
             }
+        },
+
+        getPaymentConfigValue(field, prefix) {
+            let uppercasedField = field.charAt(0).toUpperCase() + field.slice(1);
+
+            return this.getConfigValue(prefix + uppercasedField)
+                || this.getConfigValue(field);
         },
 
         onSave() {
@@ -81,14 +86,14 @@ export default {
             });
         },
 
-        onTest() {
+        onTest(method = '') {
             this.isLoading = true;
             this.PayonePaymentApiCredentialsService.validateApiCredentials(
-                this.config['PayonePayment.settings.merchantId'],
-                this.config['PayonePayment.settings.accountId'],
-                this.config['PayonePayment.settings.portalId'],
-                this.config['PayonePayment.settings.portalKey'],
-                this.config['PayonePayment.settings.transactionMode']
+                this.getPaymentConfigValue('merchantId', method),
+                this.getPaymentConfigValue('accountId', method),
+                this.getPaymentConfigValue('portalId', method),
+                this.getPaymentConfigValue('portalKey', method),
+                this.getConfigValue('transactionMode'),
             ).then((response) => {
                 const credentialsValid = response.credentialsValid;
 

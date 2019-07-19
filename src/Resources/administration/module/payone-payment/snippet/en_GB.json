@@ -20,6 +20,10 @@
         "settingForm": {
             "save": "Save",
             "test": "Test API Credentials",
+            "testCreditCard": "Test API credentials for Credit Card",
+            "testDebit": "Test API credentials for Debit",
+            "testPayPal": "Test API credentials for PayPal",
+            "testSofort": "Test API credentials for SOFORT",
             "titleSuccess": "Success",
             "titleError": "Error",
             "messageTestSuccess": "The API credentials were verified successfully.",
