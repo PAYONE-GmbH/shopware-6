@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Paypal;
 
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
@@ -46,7 +47,7 @@ class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            SystemRequest::CONFIGURATION_PREFIX_PAYPAL
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYPAL
         );
 
         return $this->createRequest();
