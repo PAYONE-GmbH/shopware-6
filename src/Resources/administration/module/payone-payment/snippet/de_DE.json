@@ -20,6 +20,10 @@
         "settingForm": {
             "save": "Speichern",
             "test": "API-Zugangsdaten testen",
+            "testCreditCard": "API-Zugangsdaten (Kreditkarte) testen",
+            "testDebit": "API-Zugangsdaten (Lastschrift) testen",
+            "testPayPal": "API-Zugangsdaten (PayPal) testen",
+            "testSofort": "API-Zugangsdaten (SOFORT) testen",
             "titleSuccess": "Erfolg",
             "titleError": "Fehler",
             "messageTestSuccess": "Die API-Zugangsdaten wurden erfolgreich validiert.",

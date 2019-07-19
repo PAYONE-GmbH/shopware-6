@@ -13,23 +13,39 @@
         {% block payone_payment_actions %}
             <template #smart-bar-actions>
                 {% block payone_payment_actions_test %}
-                    <sw-button @click="onTest"
-                               :disabled="!merchantIdFilled || !accountIdFilled || !portalIdFilled || !portalKeyFilled">
-                        {{ $tc('payone-payment.settingForm.test') }}
-                    </sw-button>
+                <sw-button @click="onTest"
+                           :disabled="!merchantIdFilled || !accountIdFilled || !portalIdFilled || !portalKeyFilled">
+                    {{ $tc('payone-payment.settingForm.test') }}
+                </sw-button>
+                <!-- TODO: Needs nicer button -->
+                <sw-context-button
+                    :disabled="!merchantIdFilled || !accountIdFilled || !portalIdFilled || !portalKeyFilled">
+                    <sw-context-menu-item @click="onTest('creditCard')">
+                        {{ $tc('payone-payment.settingForm.testCreditCard') }}
+                    </sw-context-menu-item>
+                    <sw-context-menu-item @click="onTest('debit')">
+                        {{ $tc('payone-payment.settingForm.testDebit') }}
+                    </sw-context-menu-item>
+                    <sw-context-menu-item @click="onTest('paypal')">
+                        {{ $tc('payone-payment.settingForm.testPayPal') }}
+                    </sw-context-menu-item>
+                    <sw-context-menu-item @click="onTest('sofort')">
+                        {{ $tc('payone-payment.settingForm.testSofort') }}
+                    </sw-context-menu-item>
+                </sw-context-button>
                 {% endblock %}
 
                 {% block payone_payment_actions_save %}
-                    <sw-button-process
-                            class="sw-settings-login-registration__save-action"
-                            :isLoading="isLoading"
-                            :processSuccess="isSaveSuccessful"
-                            :disabled="isLoading"
-                            variant="primary"
-                            @process-finish="saveFinish"
-                            @click="onSave">
-                        {{ $tc('payone-payment.settingForm.save') }}
-                    </sw-button-process>
+                <sw-button-process
+                    class="sw-settings-login-registration__save-action"
+                    :isLoading="isLoading"
+                    :processSuccess="isSaveSuccessful"
+                    :disabled="isLoading"
+                    variant="primary"
+                    @process-finish="saveFinish"
+                    @click="onSave">
+                    {{ $tc('payone-payment.settingForm.save') }}
+                </sw-button-process>
                 {% endblock %}
             </template>
         {% endblock %}
