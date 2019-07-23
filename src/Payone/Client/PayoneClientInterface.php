@@ -11,5 +11,5 @@ interface PayoneClientInterface
     /**
      * @throws PayoneRequestException
      */
-    public function request(array $parameters): array;
+    public function request(array $parameters, bool $json = true): array;
 }

@@ -1,0 +1,14 @@
+{% sw_extends '@Storefront/page/checkout/finish/finish-details.html.twig' %}
+
+{% block page_checkout_finish_order_dispatch_method %}
+    {{ parent() }}
+
+    {% block payone_payment_mandate_information %}
+        {% if page.extensions.payone.mandate %}
+            <p>
+                <strong>{{ "PayonePayment.checkoutFinishPage.mandateIdentification" | trans }}:</strong>
+                {{ page.extensions.payone.mandate.identification }}
+            </p>
+        {% endif %}
+    {% endblock %}
+{% endblock %}

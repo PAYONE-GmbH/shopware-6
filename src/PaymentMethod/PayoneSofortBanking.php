@@ -22,6 +22,9 @@ class PayoneSofortBanking implements PaymentMethodInterface
     /** @var string */
     private $paymentHandler = PayoneSofortBankingPaymentHandler::class;
 
+    /** @var null|string */
+    private $template;
+
     public function getId(): string
     {
         return self::UUID;
@@ -40,5 +43,10 @@ class PayoneSofortBanking implements PaymentMethodInterface
     public function getPaymentHandler(): string
     {
         return $this->paymentHandler;
+    }
+
+    public function getTemplate(): ?string
+    {
+        return $this->template;
     }
 }

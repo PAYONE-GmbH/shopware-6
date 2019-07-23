@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace PayonePayment\EventListener;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
+use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
-use PayonePayment\Struct\PayonePaymentData;
+use PayonePayment\Struct\CheckoutConfirmPaymentData;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Language\LanguageEntity;
-use Shopware\Storefront\Event\CheckoutEvents;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -39,7 +40,7 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutEvents::CHECKOUT_CONFIRM_PAGE_LOADED_EVENT => 'onCheckoutConfirm',
+            CheckoutConfirmPageLoadedEvent::class => 'onCheckoutConfirm',
         ];
     }
 
@@ -48,18 +49,37 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         $salesChannelContext = $event->getSalesChannelContext();
         $context             = $salesChannelContext->getContext();
 
-        $request = $this->requestFactory->getRequestParameters($salesChannelContext);
+        if (!$this->isPayonePayment($salesChannelContext->getPaymentMethod())) {
+            return;
+        }
 
-        $cards = $this->cardRepository->getCards($salesChannelContext->getCustomer(), $context);
+        $cardRequest = $this->requestFactory->getRequestParameters($salesChannelContext);
+        $savedCards  = $this->cardRepository->getCards($salesChannelContext->getCustomer(), $context);
 
-        $payoneData = new PayonePaymentData();
+        $language = $this->getCustomerLanguage($context);
+        $template = $this->getTemplateFromPaymentMethod($salesChannelContext->getPaymentMethod());
+
+        $payoneData = new CheckoutConfirmPaymentData();
+
         $payoneData->assign([
-            'cardRequest' => $request,
-            'language'    => $this->getCustomerLanguage($context),
-            'savedCards'  => $cards,
+            'cardRequest' => $cardRequest,
+            'language'    => $language,
+            'savedCards'  => $savedCards,
+            'template'    => $template,
         ]);
 
         $event->getPage()->addExtension('payone', $payoneData);
+    }
+
+    private function getTemplateFromPaymentMethod(PaymentMethodEntity $paymentMethod): ?string
+    {
+        $customFields = $paymentMethod->getCustomFields();
+
+        if (!empty($customFields[CustomFieldInstaller::TEMPLATE])) {
+            return $customFields[CustomFieldInstaller::TEMPLATE];
+        }
+
+        return null;
     }
 
     private function getCustomerLanguage(Context $context): string
@@ -76,5 +96,20 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         }
 
         return substr($language->getLocale()->getCode(), 0, 2);
+    }
+
+    private function isPayonePayment(PaymentMethodEntity $paymentMethod): bool
+    {
+        $customFields = $paymentMethod->getCustomFields();
+
+        if (empty($customFields[CustomFieldInstaller::IS_PAYONE])) {
+            return false;
+        }
+
+        if (!$customFields[CustomFieldInstaller::IS_PAYONE]) {
+            return false;
+        }
+
+        return true;
     }
 }

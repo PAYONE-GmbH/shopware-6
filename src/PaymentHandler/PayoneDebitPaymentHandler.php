@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use DateTime;
+use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
@@ -32,16 +34,21 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
 
+    /** @var MandateServiceInterface */
+    private $mandateService;
+
     public function __construct(
         DebitAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler
+        TransactionDataHandlerInterface $dataHandler,
+        MandateServiceInterface $mandateService
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
         $this->translator     = $translator;
         $this->dataHandler    = $dataHandler;
+        $this->mandateService = $mandateService;
     }
 
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
@@ -51,7 +58,7 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
             $dataBag,
-            $salesChannelContext->getContext()
+            $salesChannelContext
         );
 
         try {
@@ -69,16 +76,26 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
         }
 
         $data = [
-            CustomFieldInstaller::LAST_REQUEST      => $request['request'],
-            CustomFieldInstaller::TRANSACTION_ID    => (string) $response['txid'],
-            CustomFieldInstaller::TRANSACTION_STATE => 'pending',
-            CustomFieldInstaller::SEQUENCE_NUMBER   => -1,
-            CustomFieldInstaller::USER_ID           => $response['userid'],
-            CustomFieldInstaller::ALLOW_CAPTURE     => false,
-            CustomFieldInstaller::ALLOW_REFUND      => false,
+            CustomFieldInstaller::LAST_REQUEST           => $request['request'],
+            CustomFieldInstaller::TRANSACTION_ID         => (string) $response['txid'],
+            CustomFieldInstaller::TRANSACTION_STATE      => 'pending',
+            CustomFieldInstaller::SEQUENCE_NUMBER        => -1,
+            CustomFieldInstaller::USER_ID                => $response['userid'],
+            CustomFieldInstaller::ALLOW_CAPTURE          => false,
+            CustomFieldInstaller::ALLOW_REFUND           => false,
+            CustomFieldInstaller::MANDATE_IDENTIFICATION => $response['mandate']['Identification'],
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
+
+        $date = DateTime::createFromFormat('Ymd', $response['mandate']['DateOfSignature']);
+
+        $this->mandateService->saveMandate(
+            $salesChannelContext->getCustomer(),
+            $response['mandate']['Identification'],
+            $date,
+            $salesChannelContext
+        );
     }
 }

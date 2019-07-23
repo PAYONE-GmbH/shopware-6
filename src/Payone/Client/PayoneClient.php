@@ -21,7 +21,7 @@ class PayoneClient implements PayoneClientInterface
     /**
      * @throws PayoneRequestException
      */
-    public function request(array $parameters): array
+    public function request(array $parameters, bool $json = true): array
     {
         $curl = curl_init();
 
@@ -48,7 +48,14 @@ class PayoneClient implements PayoneClientInterface
             throw new RuntimeException('empty payone response');
         }
 
-        $response = json_decode($response, true);
+        if (!$json) {
+            $response = [
+                'status' => 'success',
+                'data'   => $response,
+            ];
+        } else {
+            $response = json_decode($response, true);
+        }
 
         $this->logger->debug('payone request', [
             'parameters' => $parameters,

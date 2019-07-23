@@ -61,7 +61,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
 
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $salesChannelContext->getContext()
+            $salesChannelContext
         );
 
         try {

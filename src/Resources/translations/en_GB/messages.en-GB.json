@@ -15,17 +15,36 @@
       "bic": "BIC"
     },
     "cardPage": {
+      "menuName": "Credit Cards",
       "success": "The saved credit card was removed successfully.",
-      "error": "A error has occurred while removing the saved credit card.",
-      "menuName": "Payment data",
+      "error": "An error has occurred while removing the saved credit card.",
       "pageTitle": "Saved Cards",
       "pageSubTitle": "Here you can manage your saved credit cards.",
       "tableHeader": "Card Numbers",
       "deleteButton": "Delete Card",
       "noEntries": "No cards saved."
     },
-    "checkout": {
+    "mandatePage": {
+      "menuName": "Direct Debit Mandates",
+      "pageTitle": "Direct Debit Mandates",
+      "pageSubTitle": "Here you can manage your saved direct debit mandates.",
+      "success": "The saved Direct Debit Mandate was removed successfully.",
+      "error": "An error has occurred.",
+      "tableIdentification": "Nummer",
+      "tableSignatureDate": "Date",
+      "downloadButton": "Download Mandate",
+      "noEntries": "No mandates saved."
+    },
+    "checkoutConfirmPage": {
       "cardTitle": "Payment Information"
+    },
+    "checkoutFinishPage": {
+      "mandateIdentification": "Direct Debit Mandate"
+    },
+    "mandateModal": {
+      "question": "I accept the direct debit mandate",
+      "cancel": "Cancel",
+      "confirm": "Submit"
     }
   }
 }

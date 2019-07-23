@@ -20,6 +20,7 @@
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\MandateService\MandateService" />
 
             <tag name="shopware.payment.method.sync" />
         </service>

@@ -7,7 +7,7 @@ namespace PayonePayment\Struct;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Struct\Struct;
 
-class PayonePaymentData extends Struct
+class CheckoutConfirmPaymentData extends Struct
 {
     /** @var array */
     protected $cardRequest = [];
@@ -17,6 +17,9 @@ class PayonePaymentData extends Struct
 
     /** @var EntitySearchResult */
     protected $savedCards;
+
+    /** @var null|string */
+    protected $template;
 
     public function getCardRequest(): array
     {
@@ -31,5 +34,10 @@ class PayonePaymentData extends Struct
     public function getSavedCards(): EntitySearchResult
     {
         return $this->savedCards;
+    }
+
+    public function getTemplate(): ?string
+    {
+        return $this->template;
     }
 }

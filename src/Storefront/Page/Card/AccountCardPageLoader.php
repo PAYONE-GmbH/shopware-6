@@ -49,8 +49,9 @@ class AccountCardPageLoader
             )
         );
 
-        $event = new AccountCardPageLoadedEvent($page, $context, $request);
-        $this->eventDispatcher->dispatch($event, AccountCardPageLoadedEvent::NAME);
+        $this->eventDispatcher->dispatch(
+            new AccountCardPageLoadedEvent($page, $context, $request)
+        );
 
         return $page;
     }

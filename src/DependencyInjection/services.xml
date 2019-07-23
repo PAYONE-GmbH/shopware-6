@@ -60,5 +60,11 @@
         <service id="PayonePayment\Components\CardRepository\CardRepository">
             <argument type="service" id="payone_payment_card.repository" />
         </service>
+
+        <service id="PayonePayment\Components\MandateService\MandateService">
+            <argument type="service" id="payone_payment_mandate.repository" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Payone\Request\GetFile\GetFileRequestFactory" />
+        </service>
     </services>
 </container>

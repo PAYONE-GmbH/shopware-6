@@ -97,6 +97,10 @@ class PaymentMethodInstaller implements InstallerInterface
             'name'              => $paymentMethod->getName(),
             'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
             'pluginId'          => $pluginId,
+            'customFields'      => [
+                CustomFieldInstaller::TEMPLATE  => $paymentMethod->getTemplate(),
+                CustomFieldInstaller::IS_PAYONE => true,
+            ],
         ];
 
         $this->paymentMethodRepository->upsert([$data], $context);
