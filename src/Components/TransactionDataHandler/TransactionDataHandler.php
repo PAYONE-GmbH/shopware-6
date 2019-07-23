@@ -23,10 +23,6 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     public function saveTransactionData(PaymentTransaction $transaction, Context $context, array $data): void
     {
-        if (null === $transaction->getOrderTransaction()) {
-            return;
-        }
-
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
         $customFields = array_merge($customFields, $data);
 
@@ -43,10 +39,6 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     public function logResponse(PaymentTransaction $transaction, Context $context, array $response): void
     {
-        if (null === $transaction->getOrderTransaction()) {
-            return;
-        }
-
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
 
         $key = (new DateTime())->format(DATE_ATOM);
@@ -66,10 +58,6 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     public function incrementSequenceNumber(PaymentTransaction $transaction, Context $context): void
     {
-        if (null === $transaction->getOrderTransaction()) {
-            return;
-        }
-
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
 
         ++$customFields[CustomFieldInstaller::SEQUENCE_NUMBER];
@@ -87,10 +75,6 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     public function setState(PaymentTransaction $transaction, Context $context, StateMachineStateEntity $state): void
     {
-        if (null === $transaction->getOrderTransaction()) {
-            return;
-        }
-
         $data = [
             'id'      => $transaction->getOrderTransaction()->getId(),
             'stateId' => $state->getId(),
