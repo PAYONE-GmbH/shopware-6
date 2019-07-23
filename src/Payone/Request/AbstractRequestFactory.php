@@ -19,6 +19,10 @@ abstract class AbstractRequestFactory
 
         ksort($parameters, SORT_NATURAL | SORT_FLAG_CASE);
 
+        if (empty($parameters['key'])) {
+            return $parameters;
+        }
+
         $parameters['hash'] = $this->generateParameterHash($parameters);
         $parameters['key']  = hash('md5', $parameters['key']);
 

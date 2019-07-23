@@ -7,5 +7,9 @@
         <service id="PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardDefinition">
             <tag name="shopware.entity.definition" entity="payone_payment_card"/>
         </service>
+
+        <service id="PayonePayment\DataAbstractionLayer\Entity\Mandate\PayonePaymentMandateDefinition">
+            <tag name="shopware.entity.definition" entity="payone_payment_mandate"/>
+        </service>
     </services>
 </container>

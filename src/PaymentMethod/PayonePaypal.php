@@ -19,6 +19,9 @@ class PayonePaypal implements PaymentMethodInterface
     /** @var string */
     private $paymentHandler = PayonePaypalPaymentHandler::class;
 
+    /** @var null|string */
+    private $template;
+
     public function getId(): string
     {
         return self::UUID;
@@ -37,5 +40,10 @@ class PayonePaypal implements PaymentMethodInterface
     public function getPaymentHandler(): string
     {
         return $this->paymentHandler;
+    }
+
+    public function getTemplate(): ?string
+    {
+        return $this->template;
     }
 }

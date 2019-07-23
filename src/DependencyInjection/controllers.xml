@@ -24,9 +24,19 @@
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
         </service>
 
-        <service id="PayonePayment\Storefront\Controller\AccountCardController">
+        <service id="PayonePayment\Storefront\Controller\PayoneAccountCardController">
             <argument type="service" id="PayonePayment\Storefront\Page\Card\AccountCardPageLoader" />
             <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
+        </service>
+
+        <service id="PayonePayment\Storefront\Controller\PayoneAccountMandateController">
+            <argument type="service" id="PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader" />
+            <argument type="service" id="PayonePayment\Components\MandateService\MandateService" />
+        </service>
+
+        <service id="PayonePayment\Storefront\Controller\PayoneCheckoutManageMandateController">
+            <argument type="service" id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
         </service>
     </services>
 </container>

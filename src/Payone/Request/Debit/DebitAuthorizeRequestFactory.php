@@ -8,8 +8,8 @@ use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Payone\Struct\PaymentTransaction;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class DebitAuthorizeRequestFactory extends AbstractRequestFactory
 {
@@ -35,7 +35,7 @@ class DebitAuthorizeRequestFactory extends AbstractRequestFactory
     public function getRequestParameters(
         PaymentTransaction $transaction,
         RequestDataBag $dataBag,
-        Context $context
+        SalesChannelContext $context
     ): array {
         $iban         = $dataBag->get('iban');
         $bic          = $dataBag->get('bic');
@@ -43,14 +43,13 @@ class DebitAuthorizeRequestFactory extends AbstractRequestFactory
 
         $this->requests[] = $this->authorizeRequest->getRequestParameters(
             $transaction,
-            $context,
+            $context->getContext(),
             $iban,
             $bic,
             $accountOwner
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
-            $transaction->getOrder(),
             $context
         );
 

@@ -1,0 +1,3 @@
+src/Resources/public/storefront/js/*
+src/Resources/public/administration/js/*
+coverage/

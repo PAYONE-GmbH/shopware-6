@@ -28,8 +28,7 @@ class CustomerRequestFactory extends AbstractRequestFactory
         SalesChannelContext $context
     ): array {
         $this->requests[] = $this->customerRequest->getRequestParameters(
-            $transaction->getOrder(),
-            $context->getContext()
+            $context
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
