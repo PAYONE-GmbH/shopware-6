@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\Configuration;
 
+use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
+
 interface ConfigurationPrefixes
 {
     public const CONFIGURATION_PREFIX_CREDITCARD = 'creditCard';
