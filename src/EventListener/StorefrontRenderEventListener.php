@@ -91,11 +91,9 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
             }
         }
 
-        if (!$clearCache) {
-            return;
+        if ($clearCache) {
+            $this->clearCache($event->getContext());
         }
-
-        $this->clearCache($event->getContext());
     }
 
     /**
