@@ -1,5 +1,6 @@
 import { Mixin } from 'src/core/shopware';
 import template from './payone-settings.html.twig';
+import Criteria from 'src/core/data-new/criteria.data';
 
 export default {
     name: 'payone-settings',
@@ -7,7 +8,8 @@ export default {
     template,
 
     mixins: [
-        Mixin.getByName('notification')
+        Mixin.getByName('notification'),
+        Mixin.getByName('sw-inline-snippet')
     ],
 
     inject: ['PayonePaymentApiCredentialsService'],
@@ -150,6 +152,13 @@ export default {
             }
 
             return element;
+        },
+
+        getPaymentStatusCriteria() {
+            const criteria = new Criteria(1, 100);
+            criteria.addFilter(Criteria.equals('stateMachine.technicalName', 'order_transaction.state'));
+
+            return criteria;
         }
     }
 };
