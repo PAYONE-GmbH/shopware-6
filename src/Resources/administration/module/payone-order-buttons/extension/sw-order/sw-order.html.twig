@@ -2,9 +2,9 @@
     {% parent %}
 
     <template v-if="!isLoading" :isLoading="isLoading">
-        <template v-if="hasPayonePayment(currentOrder)">
+        <template v-if="hasPayonePayment(order)">
             <sw-card class="sw-order-payone-card" :title="$tc('payone-order-buttons.title')">
-                <template v-for="transaction in currentOrder.transactions">
+                <template v-for="transaction in order.transactions">
                     <template v-if="isPayonePayment(transaction)">
                         <sw-container columns="1fr 1fr">
                             <sw-container>

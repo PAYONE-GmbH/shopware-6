@@ -83,6 +83,10 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
             $ids = array_merge($ids, $this->collectPrimaryKeys($salesChannelEvents->getIds()));
         }
 
+        if (empty($ids)) {
+            return;
+        }
+
         $clearCache = false;
 
         foreach (PaymentMethodInstaller::paymentMethods as $paymentMethod) {
