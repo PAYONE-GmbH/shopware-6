@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PayonePayment\Payone\Webhook\Handler;
 
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
