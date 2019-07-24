@@ -49,6 +49,89 @@
     </card>
 
     <card>
+        <title>Status Mapping</title>
+        <title lang="de-DE">Statusmapping</title>
+
+        <input-field type="single-select">
+            <name>paymentStatusAppointed</name>
+            <label>Status for Appointed</label>
+            <label lang="de-DE">Status für Appointed</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusCapture</name>
+            <label>Status for Capture</label>
+            <label lang="de-DE">Status für Capture</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusPaid</name>
+            <label>Status for Paid</label>
+            <label lang="de-DE">Status für Paid</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusUnderpaid</name>
+            <label>Status for Underpaid</label>
+            <label lang="de-DE">Status für Underpaid</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusCancelation</name>
+            <label>Status for Cancelation</label>
+            <label lang="de-DE">Status für Cancelation</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusRefund</name>
+            <label>Status for Refund</label>
+            <label lang="de-DE">Status für Refund</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusDebit</name>
+            <label>Status for Debit</label>
+            <label lang="de-DE">Status für Debit</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusReminder</name>
+            <label>Status for Reminder</label>
+            <label lang="de-DE">Status für Reminder</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusVAutorisierung</name>
+            <label>Status for VAutorisierung</label>
+            <label lang="de-DE">Status für VAutorisierung</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusVSettlement</name>
+            <label>Status for VSettlement</label>
+            <label lang="de-DE">Status für VSettlement</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusTransfer</name>
+            <label>Status for Transfer</label>
+            <label lang="de-DE">Status für Transfer</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusInvoice</name>
+            <label>Status for Invoice</label>
+            <label lang="de-DE">Status für Invoice</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusFailed</name>
+            <label>Status for Failed</label>
+            <label lang="de-DE">Status für Failed</label>
+        </input-field>
+    </card>
+
+    <card>
         <title>Credit Card</title>
         <title lang="de-DE">Kreditkarte</title>
 
