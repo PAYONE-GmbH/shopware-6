@@ -23,6 +23,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PaymentMethodInstaller implements InstallerInterface
 {
+    public const paymentMethods = [
+        PayoneCreditCard::class,
+        PayoneDebit::class,
+        PayonePaypal::class,
+        PayoneSofortBanking::class,
+    ];
+
     /** @var PluginIdProvider */
     private $pluginIdProvider;
 
@@ -35,57 +42,58 @@ class PaymentMethodInstaller implements InstallerInterface
     /** @var EntityRepositoryInterface */
     private $paymentMethodSalesChannelRepository;
 
-    /** @var PaymentMethodInterface[] */
-    private $paymentMethods;
-
     public function __construct(ContainerInterface $container)
     {
         $this->pluginIdProvider                    = $container->get(PluginIdProvider::class);
         $this->paymentMethodRepository             = $container->get('payment_method.repository');
         $this->salesChannelRepository              = $container->get('sales_channel.repository');
         $this->paymentMethodSalesChannelRepository = $container->get('sales_channel_payment_method.repository');
-
-        $this->paymentMethods = [
-            new PayoneCreditCard(),
-            new PayoneDebit(),
-            new PayonePaypal(),
-            new PayoneSofortBanking(),
-        ];
     }
 
     public function install(InstallContext $context): void
     {
-        foreach ($this->paymentMethods as $paymentMethod) {
+        foreach ($this->getPaymentMethods() as $paymentMethod) {
             $this->upsertPaymentMethod($paymentMethod, $context->getContext());
         }
     }
 
     public function update(UpdateContext $context): void
     {
-        foreach ($this->paymentMethods as $paymentMethod) {
+        foreach ($this->getPaymentMethods() as $paymentMethod) {
             $this->upsertPaymentMethod($paymentMethod, $context->getContext());
         }
     }
 
     public function uninstall(UninstallContext $context): void
     {
-        foreach ($this->paymentMethods as $paymentMethod) {
+        foreach ($this->getPaymentMethods() as $paymentMethod) {
             $this->deactivatePaymentMethod($paymentMethod, $context->getContext());
         }
     }
 
     public function activate(ActivateContext $context): void
     {
-        foreach ($this->paymentMethods as $paymentMethod) {
+        foreach ($this->getPaymentMethods() as $paymentMethod) {
             $this->activatePaymentMethod($paymentMethod, $context->getContext());
         }
     }
 
     public function deactivate(DeactivateContext $context): void
     {
-        foreach ($this->paymentMethods as $paymentMethod) {
+        foreach ($this->getPaymentMethods() as $paymentMethod) {
             $this->deactivatePaymentMethod($paymentMethod, $context->getContext());
         }
+    }
+
+    private function getPaymentMethods(): array
+    {
+        $paymentMethods = [];
+
+        foreach (self::paymentMethods as $paymentMethod) {
+            $paymentMethods[] = new $paymentMethod();
+        }
+
+        return $paymentMethods;
     }
 
     private function upsertPaymentMethod(PaymentMethodInterface $paymentMethod, Context $context): void
