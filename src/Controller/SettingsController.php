@@ -12,7 +12,6 @@ use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Test\TestRequestFactory;
-use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,9 +25,6 @@ class SettingsController extends AbstractController
 
     /** @var TestRequestFactory */
     private $requestFactory;
-
-    /** @var SalesChannelRepositoryInterface */
-    private $salesChannelRepository;
 
     public function __construct(PayoneClientInterface $client, TestRequestFactory $requestFactory)
     {
