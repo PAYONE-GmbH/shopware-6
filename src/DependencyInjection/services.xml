@@ -23,15 +23,15 @@
         <service id="PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandler">
             <argument type="service" id="PayonePayment\Payone\Request\Refund\RefundRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="state_machine_state.repository"/>
             <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
+            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler" />
         </service>
 
         <service id="PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandler">
             <argument type="service" id="PayonePayment\Payone\Request\Capture\CaptureRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="state_machine_state.repository"/>
             <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
+            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler" />
         </service>
 
         <service id="PayonePayment\Payone\Client\PayoneClient">

@@ -9,7 +9,6 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 
 class TransactionDataHandler implements TransactionDataHandlerInterface
 {
@@ -71,15 +70,5 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $transaction->setCustomFields($customFields);
 
         $this->transactionRepository->update([$update], $context);
-    }
-
-    public function setState(PaymentTransaction $transaction, Context $context, StateMachineStateEntity $state): void
-    {
-        $data = [
-            'id'      => $transaction->getOrderTransaction()->getId(),
-            'stateId' => $state->getId(),
-        ];
-
-        $this->transactionRepository->update([$data], $context);
     }
 }
