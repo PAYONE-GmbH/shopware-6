@@ -54,6 +54,10 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
             $context
         );
 
+        if (null === $mandateIdentification) {
+            return;
+        }
+
         if (!$this->hasDirectDebitPayment($mandateIdentification)) {
             return;
         }
