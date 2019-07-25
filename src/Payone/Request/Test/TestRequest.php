@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\System;
+namespace PayonePayment\Payone\Request\Test;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 
-class SystemRequest
+class TestRequest
 {
     /** @var ConfigReaderInterface */
     private $configReader;
@@ -16,7 +16,7 @@ class SystemRequest
         $this->configReader = $configReader;
     }
 
-    public function getRequestParameters(?string $salesChannel, string $configurationPrefix = ''): array
+    public function getRequestParameters(string $salesChannel, string $configurationPrefix = ''): array
     {
         $configuration = $this->configReader->read($salesChannel);
 
@@ -31,7 +31,7 @@ class SystemRequest
             'portalid'    => $portalId,
             'key'         => $portalKey,
             'api_version' => '3.10',
-            'mode'        => $configuration->get('transactionMode'),
+            'mode'        => 'test',
             'encoding'    => 'UTF-8',
         ];
     }

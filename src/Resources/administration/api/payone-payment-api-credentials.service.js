@@ -6,14 +6,14 @@ class PayonePaymentApiCredentialsService extends ApiService {
         super(httpClient, loginService, apiEndpoint);
     }
 
-    validateApiCredentials(merchantId, accountId, portalId, portalKey, transactionMode) {
+    validateApiCredentials(salesChannelId) {
         const headers = this.getBasicHeaders();
 
         return this.httpClient
             .get(
                 `_action/${this.getApiBasePath()}/validate-api-credentials`,
                 {
-                    params: { merchantId, accountId, portalId, portalKey, transactionMode },
+                    params: { salesChannelId },
                     headers: headers
                 }
             )
