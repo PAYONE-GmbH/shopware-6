@@ -9,20 +9,17 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
-use Shopware\Core\System\StateMachine\StateMachineRegistry;
 
 class TransactionStatusService implements TransactionStatusServiceInterface
 {
     private const ACTION_APPOINTED = 'appointed';
-    private const ACTION_PAID = 'paid';
-    private const ACTION_CAPTURE = 'capture';
+    private const ACTION_PAID      = 'paid';
+    private const ACTION_CAPTURE   = 'capture';
     private const ACTION_COMPLETED = 'completed';
 
     /** @var EntityRepositoryInterface */
@@ -40,7 +37,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         TransactionDataHandlerInterface $dataHandler
     ) {
         $this->orderTransactionRepository = $orderTransactionRepository;
-        $this->stateHandler = $stateHandler;
+        $this->stateHandler               = $stateHandler;
         $this->dataHandler                = $dataHandler;
     }
 
