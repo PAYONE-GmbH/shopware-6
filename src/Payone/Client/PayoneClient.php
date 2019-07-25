@@ -48,13 +48,13 @@ class PayoneClient implements PayoneClientInterface
             throw new RuntimeException('empty payone response');
         }
 
-        if (!$json) {
+        $response = json_decode($response, true);
+
+        if (!$json && json_last_error() !== JSON_ERROR_NONE) {
             $response = [
                 'status' => 'success',
                 'data'   => $response,
             ];
-        } else {
-            $response = json_decode($response, true);
         }
 
         $this->logger->debug('payone request', [
