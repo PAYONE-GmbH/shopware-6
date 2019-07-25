@@ -1,6 +1,6 @@
 import { Mixin } from 'src/core/shopware';
-import template from './payone-settings.html.twig';
 import Criteria from 'src/core/data-new/criteria.data';
+import template from './payone-settings.html.twig';
 
 export default {
     name: 'payone-settings',
@@ -58,18 +58,10 @@ export default {
             const salesChannelId = this.$refs.systemConfig.currentSalesChannelId;
 
             if (salesChannelId === null) {
-                return this.config['PayonePayment.settings.' + field];
-            } else {
-                return this.config['PayonePayment.settings.' + field]
-                    || defaultConfig['PayonePayment.settings.' + field];
+                return this.config[`PayonePayment.settings.${field}`];
             }
-        },
-
-        getPaymentConfigValue(field, prefix) {
-            let uppercasedField = field.charAt(0).toUpperCase() + field.slice(1);
-
-            return this.getConfigValue(prefix + uppercasedField)
-                || this.getConfigValue(field);
+            return this.config[`PayonePayment.settings.${field}`]
+                    || defaultConfig[`PayonePayment.settings.${field}`];
         },
 
         onSave() {
@@ -90,14 +82,9 @@ export default {
 
         onTest(method = '') {
             this.isLoading = true;
-            this.PayonePaymentApiCredentialsService.validateApiCredentials(
-                this.getPaymentConfigValue('merchantId', method),
-                this.getPaymentConfigValue('accountId', method),
-                this.getPaymentConfigValue('portalId', method),
-                this.getPaymentConfigValue('portalKey', method),
-                this.getConfigValue('transactionMode'),
-            ).then((response) => {
+            this.PayonePaymentApiCredentialsService.validateApiCredentials(this.$refs.systemConfig.currentSalesChannelId).then((response) => {
                 const credentialsValid = response.credentialsValid;
+                const errors = response.errors;
 
                 if (credentialsValid) {
                     this.createNotificationSuccess({
@@ -105,16 +92,20 @@ export default {
                         message: this.$tc('payone-payment.settingForm.messageTestSuccess')
                     });
                 } else {
-                    this.createNotificationError({
-                        title: this.$tc('payone-payment.settingForm.titleError'),
-                        message: this.$tc('payone-payment.settingForm.messageTestError')
-                    });
+                    for(let key in errors) {
+                        if(errors.hasOwnProperty(key)) {
+                            this.createNotificationError({
+                                title: this.$tc('payone-payment.settingForm.titleError'),
+                                message: this.$tc('payone-payment.settingForm.messageTestError.' + key)
+                            });
+                        }
+                    }
                 }
                 this.isLoading = false;
             }).catch((errorResponse) => {
                 this.createNotificationError({
                     title: this.$tc('payone-payment.settingForm.titleError'),
-                    message: this.$tc('payone-payment.settingForm.messageTestError')
+                    message: this.$tc('payone-payment.settingForm.messageTestError.general')
                 });
                 this.isLoading = false;
             });

@@ -20,14 +20,16 @@
         "settingForm": {
             "save": "Speichern",
             "test": "API-Zugangsdaten testen",
-            "testCreditCard": "API-Zugangsdaten (Kreditkarte) testen",
-            "testDebit": "API-Zugangsdaten (Lastschrift) testen",
-            "testPayPal": "API-Zugangsdaten (PayPal) testen",
-            "testSofort": "API-Zugangsdaten (SOFORT) testen",
             "titleSuccess": "Erfolg",
             "titleError": "Fehler",
             "messageTestSuccess": "Die API-Zugangsdaten wurden erfolgreich validiert.",
-            "messageTestError": "Die API-Zugangsdaten sind nicht korrekt."
+            "messageTestError": {
+                "general": "Die API-Zugangsdaten konnten nicht validiert werden.",
+                "creditCard": "Die API-Zugangsdaten für Kreditkarte sind nicht korrekt.",
+                "debit": "Die API-Zugangsdaten für Lastschrift sind nicht korrekt.",
+                "paypal": "Die API-Zugangsdaten für PayPal sind nicht korrekt.",
+                "sofort": "Die API-Zugangsdaten für SOFORT sind nicht korrekt."
+            }
         },
         "messageNotBlank": "Dieser Wert darf nicht leer sein.",
         "poNumber": "PO-Nummer",
