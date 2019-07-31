@@ -202,13 +202,9 @@ class CustomFieldInstaller implements InstallerInterface
     private function upsertCustomField(array $customField, Context $context): void
     {
         $data = [
-            'id'     => $customField['id'],
-            'name'   => $customField['name'],
-            'type'   => $customField['type'],
-            'config' => [
-                'type'            => $customField['type'],
-                'customFieldType' => $customField['type'],
-            ],
+            'id'               => $customField['id'],
+            'name'             => $customField['name'],
+            'type'             => $customField['type'],
             'active'           => true,
             'customFieldSetId' => $customField['customFieldSetId'],
         ];
@@ -219,13 +215,9 @@ class CustomFieldInstaller implements InstallerInterface
     private function deactivateCustomField(array $customField, Context $context): void
     {
         $data = [
-            'id'     => $customField['id'],
-            'name'   => $customField['name'],
-            'type'   => $customField['type'],
-            'config' => [
-                'type'            => $customField['type'],
-                'customFieldType' => $customField['type'],
-            ],
+            'id'               => $customField['id'],
+            'name'             => $customField['name'],
+            'type'             => $customField['type'],
             'active'           => false,
             'customFieldSetId' => $customField['customFieldSetId'],
         ];
