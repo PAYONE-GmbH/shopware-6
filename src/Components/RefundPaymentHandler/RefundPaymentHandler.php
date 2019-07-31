@@ -48,10 +48,6 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
 
     /**
      * {@inheritdoc}
-     *
-     * TODO: Sofort needs additional fields when refunding a transaction. It might be nessessary to have a refund transaction
-     * TODO: request per payment method.
-     * TODO: Sofort Error: IBAN not valid. Please verify your data.
      */
     public function refundTransaction(OrderTransactionEntity $orderTransaction, Context $context): void
     {
