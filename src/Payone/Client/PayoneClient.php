@@ -50,6 +50,8 @@ class PayoneClient implements PayoneClientInterface
 
         $response = json_decode($response, true);
 
+        // Payone returns a JSON on file requests instead of a HTTP error. Only if the response should not be a JSON
+        // and is in fact not a JSON, we can return the raw response as it is most likely a file.
         if (!$json && json_last_error() !== JSON_ERROR_NONE) {
             $response = [
                 'status' => 'success',
