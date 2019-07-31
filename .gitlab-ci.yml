@@ -54,7 +54,7 @@ phpunit:
   dependencies:
     - composer
   script:
-    - sudo apt-get update && sudo apt-get install mysql-client -y
+    - sudo apt-get update && sudo apt-get install default-mysql-client -y
     - git clone https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
     - mv ${CI_PROJECT_DIR}/opt /tmp/opt
     - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/${CI_PROJECT_NAME}
