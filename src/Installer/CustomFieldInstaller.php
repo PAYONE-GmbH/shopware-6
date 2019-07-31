@@ -202,9 +202,13 @@ class CustomFieldInstaller implements InstallerInterface
     private function upsertCustomField(array $customField, Context $context): void
     {
         $data = [
-            'id'               => $customField['id'],
-            'name'             => $customField['name'],
-            'type'             => $customField['type'],
+            'id'     => $customField['id'],
+            'name'   => $customField['name'],
+            'type'   => $customField['type'],
+            'config' => [
+                'type'            => $customField['type'],
+                'customFieldType' => $customField['type'],
+            ],
             'active'           => true,
             'customFieldSetId' => $customField['customFieldSetId'],
         ];
@@ -218,7 +222,12 @@ class CustomFieldInstaller implements InstallerInterface
             'id'     => $customField['id'],
             'name'   => $customField['name'],
             'type'   => $customField['type'],
-            'active' => false,
+            'config' => [
+                'type'            => $customField['type'],
+                'customFieldType' => $customField['type'],
+            ],
+            'active'           => false,
+            'customFieldSetId' => $customField['customFieldSetId'],
         ];
 
         $this->customFieldRepository->upsert([$data], $context);
@@ -245,10 +254,16 @@ class CustomFieldInstaller implements InstallerInterface
     private function deactivateCustomFieldSet(array $customFieldSet, Context $context): void
     {
         $data = [
-            'id'     => $customFieldSet['id'],
-            'name'   => $customFieldSet['name'],
-            'config' => $customFieldSet['config'],
-            'active' => false,
+            'id'        => $customFieldSet['id'],
+            'name'      => $customFieldSet['name'],
+            'config'    => $customFieldSet['config'],
+            'active'    => false,
+            'relations' => [
+                [
+                    'id'         => $customFieldSet['relation']['id'],
+                    'entityName' => $customFieldSet['relation']['entityName'],
+                ],
+            ],
         ];
 
         $this->customFieldSetRepository->upsert([$data], $context);
