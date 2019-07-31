@@ -48,12 +48,12 @@ class PayoneClient implements PayoneClientInterface
             throw new RuntimeException('empty payone response');
         }
 
-        $response = json_decode($response, true);
+        $data = json_decode($response, true);
 
         // Payone returns a JSON on file requests instead of a HTTP error. Only if the response should not be a JSON
         // and is in fact not a JSON, we can return the raw response as it is most likely a file.
         if (!$json && json_last_error() !== JSON_ERROR_NONE) {
-            $response = [
+            $data = [
                 'status' => 'success',
                 'data'   => $response,
             ];
@@ -61,14 +61,14 @@ class PayoneClient implements PayoneClientInterface
 
         $this->logger->debug('payone request', [
             'parameters' => $parameters,
-            'response'   => $response,
+            'response'   => $data,
         ]);
 
-        if (empty($response)) {
-            throw new PayoneRequestException('payone returned a empty response', $parameters, $response);
+        if (empty($data)) {
+            throw new PayoneRequestException('payone returned a empty response', $parameters, $data);
         }
 
-        $response = array_change_key_case($response, CASE_LOWER);
+        $response = array_change_key_case($data, CASE_LOWER);
 
         ksort($response, SORT_NATURAL | SORT_FLAG_CASE);
 
