@@ -19,7 +19,6 @@
         </service>
 
         <service id="PayonePayment\Payone\Request\Test\TestRequestFactory">
-            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
         <!-- Customer -->
