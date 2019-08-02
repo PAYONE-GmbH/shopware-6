@@ -15,7 +15,7 @@
                 {% block payone_payment_settings_actions_test %}
                 <sw-button @click="onTest"
                            :disabled="testButtonDisabled">
-                    {{ $tc('payone-payment.settingForm.test') }}
+                    {{ $tc('payone-payment.settingsForm.test') }}
                 </sw-button>
                 {% endblock %}
 
@@ -28,7 +28,7 @@
                     variant="primary"
                     @process-finish="saveFinish"
                     @click="onSave">
-                    {{ $tc('payone-payment.settingForm.save') }}
+                    {{ $tc('payone-payment.settingsForm.save') }}
                 </sw-button-process>
                 {% endblock %}
             </template>

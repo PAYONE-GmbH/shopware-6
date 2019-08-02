@@ -17,7 +17,7 @@
             "successMessage": "Refund processed successfully.",
             "errorTitle": "PAYONE"
         },
-        "settingForm": {
+        "settingsForm": {
             "save": "Save",
             "test": "Test API Credentials",
             "titleSuccess": "Success",
