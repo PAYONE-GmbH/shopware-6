@@ -12,14 +12,14 @@
 
         {% block payone_payment_actions %}
             <template #smart-bar-actions>
-                {% block payone_payment_actions_test %}
+                {% block payone_payment_settings_actions_test %}
                 <sw-button @click="onTest"
                            :disabled="!merchantIdFilled || !accountIdFilled || !portalIdFilled || !portalKeyFilled">
                     {{ $tc('payone-payment.settingForm.test') }}
                 </sw-button>
                 {% endblock %}
 
-                {% block payone_payment_actions_save %}
+                {% block payone_payment_settings_actions_save %}
                 <sw-button-process
                     class="sw-settings-login-registration__save-action"
                     :isLoading="isLoading"
@@ -34,7 +34,7 @@
             </template>
         {% endblock %}
 
-        {% block payone_payment_content %}
+        {% block payone_payment_settings_content %}
             <template #content>
                 <sw-card-view>
                     <sw-system-config
