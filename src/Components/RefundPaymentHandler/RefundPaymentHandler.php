@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\RefundPaymentHandler;
 
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
@@ -47,10 +48,6 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
 
     /**
      * {@inheritdoc}
-     *
-     * TODO: Sofort needs additional fields when refunding a transaction. It might be nessessary to have a refund transaction
-     * TODO: request per payment method.
-     * TODO: Sofort Error: IBAN not valid. Please verify your data.
      */
     public function refundTransaction(OrderTransactionEntity $orderTransaction, Context $context): void
     {
@@ -66,9 +63,15 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
             throw new InvalidOrderException($orderTransaction->getOrderId());
         }
 
+        $data = [
+            CustomFieldInstaller::TRANSACTION_STATE => 'refunded',
+            CustomFieldInstaller::ALLOW_REFUND      => false,
+        ];
+
         $this->dataHandler->logResponse($paymentTransaction, $context, $response);
         $this->dataHandler->incrementSequenceNumber($paymentTransaction, $context);
         $this->dataHandler->setState($paymentTransaction, $context, $this->getRefundedState($context));
+        $this->dataHandler->saveTransactionData($paymentTransaction, $context, $data);
     }
 
     private function getRefundedState(Context $context): StateMachineStateEntity
