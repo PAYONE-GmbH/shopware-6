@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
+use DateInterval;
+use DateTimeImmutable;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
@@ -12,6 +14,8 @@ use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Test\TestRequestFactory;
+use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,10 +30,14 @@ class SettingsController extends AbstractController
     /** @var TestRequestFactory */
     private $requestFactory;
 
-    public function __construct(PayoneClientInterface $client, TestRequestFactory $requestFactory)
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(PayoneClientInterface $client, TestRequestFactory $requestFactory, LoggerInterface $logger)
     {
         $this->client         = $client;
         $this->requestFactory = $requestFactory;
+        $this->logger         = $logger;
     }
 
     /**
@@ -41,9 +49,9 @@ class SettingsController extends AbstractController
         $errors         = [];
 
         foreach (ConfigurationPrefixes::CONFIGURATION_PREFIXES as $paymentClass => $configurationPrefix) {
-            $testRequest = $this->requestFactory->getRequestParameters($salesChannelId, $configurationPrefix, $this->getPaymentParameters($paymentClass));
-
             try {
+                $testRequest = $this->requestFactory->getRequestParameters($salesChannelId, $configurationPrefix, $this->getPaymentParameters($paymentClass));
+
                 $this->client->request($testRequest);
             } catch (PayoneRequestException $exception) {
                 $errors[$configurationPrefix] = true;
@@ -68,7 +76,7 @@ class SettingsController extends AbstractController
                     'cardpan'        => '5500000000000004',
                     'pseudocardpan'  => '5500000000099999',
                     'cardtype'       => 'M',
-                    'cardexpiredate' => (new \DateTimeImmutable())->add(new \DateInterval('P1Y'))->format('ym'),
+                    'cardexpiredate' => (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'),
                     'ecommercemode'  => 'internet',
                     'firstname'      => 'Test',
                     'lastname'       => 'Test',
@@ -122,7 +130,8 @@ class SettingsController extends AbstractController
                 ];
                 break;
             default:
-                return [];
+                $this->logger->error(sprintf('There is no test data defined for payment class %s', $paymentClass));
+                throw new RuntimeException(sprintf('There is no test data defined for payment class %s', $paymentClass));
                 break;
         }
     }

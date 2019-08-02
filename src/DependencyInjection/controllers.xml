@@ -27,6 +27,7 @@
         <service id="PayonePayment\Controller\SettingsController">
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Payone\Request\Test\TestRequestFactory" />
+            <argument type="service" id="PayonePayment\Util\Logger"/>
         </service>
 
         <service id="PayonePayment\Storefront\Controller\PayoneAccountCardController">
