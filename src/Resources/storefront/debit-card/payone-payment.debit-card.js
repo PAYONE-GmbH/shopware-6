@@ -21,7 +21,7 @@ export default class PayonePaymentDebitCard extends Plugin {
     }
 
     _handleOrderSubmit(event) {
-        let errorOutput = document.getElementById('errorOutput');
+        const errorOutput = document.getElementById('errorOutput');
 
         errorOutput.style.display = 'none';
 
@@ -57,7 +57,7 @@ export default class PayonePaymentDebitCard extends Plugin {
         response = JSON.parse(response);
 
         if (response.error) {
-            let errorOutput = document.getElementById('errorOutput');
+            const errorOutput = document.getElementById('errorOutput');
 
             errorOutput.innerHTML = response.error;
             errorOutput.style.display = 'block';
@@ -90,17 +90,17 @@ export default class PayonePaymentDebitCard extends Plugin {
     }
 
     _getRequestData() {
-        let iban = document.getElementById('iban');
-        let bic = document.getElementById('bic');
+        const iban = document.getElementById('iban');
+        const bic = document.getElementById('bic');
 
         return {
             'iban': iban.value,
-            'bic': bic.value
+            'bic': bic.value,
         };
     }
 
     _getManageMandateUrl() {
-        let configuration = document.getElementById('payone-configuration');
+        const configuration = document.getElementById('payone-configuration');
 
         return configuration.getAttribute('data-manage-mandate-url');
     }
@@ -112,7 +112,7 @@ export default class PayonePaymentDebitCard extends Plugin {
     }
 
     _onMandateSubmit() {
-        let checkbox = document.getElementById('accept-mandate');
+        const checkbox = document.getElementById('accept-mandate');
 
         if (checkbox.checked) {
             this._submitForm();
