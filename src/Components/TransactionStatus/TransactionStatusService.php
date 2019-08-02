@@ -83,7 +83,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             );
         }
 
-        if ($this->isTransactioNPaid($transactionData)) {
+        if ($this->isTransactionPaid($transactionData)) {
             $this->stateHandler->pay(
                 $paymentTransaction->getOrderTransaction()->getId(),
                 $salesChannelContext->getContext()
@@ -131,7 +131,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return $transactionData['txaction'] === self::ACTION_APPOINTED;
     }
 
-    private function isTransactioNPaid(array $transactionData): bool
+    private function isTransactionPaid(array $transactionData): bool
     {
         if ($transactionData['txaction'] === self::ACTION_PAID) {
             return true;
