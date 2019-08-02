@@ -28,9 +28,6 @@ class TestRequestFactory extends AbstractRequestFactory
         $this->requests[] = $systemRequestParameters;
         $this->requests[] = $additionalParameters;
 
-        $request        = $this->createRequest();
-        $this->requests = [];
-
-        return $request;
+        return $this->createRequest();
     }
 }

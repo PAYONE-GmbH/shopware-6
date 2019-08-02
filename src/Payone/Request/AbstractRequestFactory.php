@@ -16,6 +16,8 @@ abstract class AbstractRequestFactory
         foreach ($this->requests as $request) {
             $parameters += $request;
         }
+        // Clear requests to allow for multiple calls
+        $this->requests = [];
 
         ksort($parameters, SORT_NATURAL | SORT_FLAG_CASE);
 
