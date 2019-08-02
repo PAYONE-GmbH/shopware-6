@@ -9,15 +9,27 @@
         <service id="PayonePayment\Controller\CaptureController">
             <argument type="service" id="PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandler" />
             <argument type="service" id="order_transaction.repository" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <service id="PayonePayment\Controller\RefundController">
             <argument type="service" id="PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandler" />
             <argument type="service" id="order_transaction.repository" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <service id="PayonePayment\Controller\WebhookController">
             <argument type="service" id="PayonePayment\Payone\Webhook\Processor\WebhookProcessor" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <service id="PayonePayment\Controller\RedirectController">
@@ -33,16 +45,28 @@
         <service id="PayonePayment\Storefront\Controller\PayoneAccountCardController">
             <argument type="service" id="PayonePayment\Storefront\Page\Card\AccountCardPageLoader" />
             <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <service id="PayonePayment\Storefront\Controller\PayoneAccountMandateController">
             <argument type="service" id="PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader" />
             <argument type="service" id="PayonePayment\Components\MandateService\MandateService" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <service id="PayonePayment\Storefront\Controller\PayoneCheckoutManageMandateController">
             <argument type="service" id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
     </services>
 </container>
