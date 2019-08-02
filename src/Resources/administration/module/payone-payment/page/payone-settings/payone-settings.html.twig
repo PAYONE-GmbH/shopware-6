@@ -14,7 +14,7 @@
             <template #smart-bar-actions>
                 {% block payone_payment_settings_actions_test %}
                 <sw-button @click="onTest"
-                           :disabled="!merchantIdFilled || !accountIdFilled || !portalIdFilled || !portalKeyFilled">
+                           :disabled="testButtonDisabled">
                     {{ $tc('payone-payment.settingForm.test') }}
                 </sw-button>
                 {% endblock %}

@@ -27,6 +27,12 @@ export default {
         };
     },
 
+    computed: {
+        testButtonDisabled: function() {
+            return !this.merchantIdFilled || !this.accountIdFilled || !this.portalIdFilled || !this.portalKeyFilled;
+        }
+    },
+
     metaInfo() {
         return {
             title: this.$createTitle()
