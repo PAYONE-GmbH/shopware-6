@@ -83,7 +83,7 @@ Component.override('sw-order-detail-base', {
                         message: this.$tc('payone-order-buttons.capture.successMessage')
                     });
 
-                    me.reloadVersionedOrder(me.currentOrder.versionId);
+                    me.reloadEntityData();
                     me.disableButtons = false;
                 })
                 .catch((errorResponse) => {
@@ -112,7 +112,7 @@ Component.override('sw-order-detail-base', {
                         message: this.$tc('payone-order-buttons.refund.successMessage')
                     });
 
-                    me.reloadVersionedOrder(me.currentOrder.versionId);
+                    me.reloadEntityData();
                     me.disableButtons = false;
                 })
                 .catch((errorResponse) => {
