@@ -94,15 +94,15 @@ export default {
 
                 if (credentialsValid) {
                     this.createNotificationSuccess({
-                        title: this.$tc('payone-payment.settingForm.titleSuccess'),
-                        message: this.$tc('payone-payment.settingForm.messageTestSuccess')
+                        title: this.$tc('payone-payment.settingsForm.titleSuccess'),
+                        message: this.$tc('payone-payment.settingsForm.messageTestSuccess')
                     });
                 } else {
                     for(let key in errors) {
                         if(errors.hasOwnProperty(key)) {
                             this.createNotificationError({
-                                title: this.$tc('payone-payment.settingForm.titleError'),
-                                message: this.$tc('payone-payment.settingForm.messageTestError.' + key)
+                                title: this.$tc('payone-payment.settingsForm.titleError'),
+                                message: this.$tc('payone-payment.settingsForm.messageTestError.' + key)
                             });
                         }
                     }
@@ -110,8 +110,8 @@ export default {
                 this.isLoading = false;
             }).catch((errorResponse) => {
                 this.createNotificationError({
-                    title: this.$tc('payone-payment.settingForm.titleError'),
-                    message: this.$tc('payone-payment.settingForm.messageTestError.general')
+                    title: this.$tc('payone-payment.settingsForm.titleError'),
+                    message: this.$tc('payone-payment.settingsForm.messageTestError.general')
                 });
                 this.isLoading = false;
             });
