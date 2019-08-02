@@ -37,7 +37,6 @@ class SettingsController extends AbstractController
      */
     public function validateApiCredentials(Request $request): JsonResponse
     {
-        putenv('PAYONE_TEST=1');
         $salesChannelId = $request->get('salesChannelId');
         $errors         = [];
 
@@ -52,8 +51,6 @@ class SettingsController extends AbstractController
                 $errors[$configurationPrefix] = true;
             }
         }
-
-        putenv('PAYONE_TEST');
 
         return new JsonResponse(['credentialsValid' => empty($errors), 'errors' => $errors]);
     }
