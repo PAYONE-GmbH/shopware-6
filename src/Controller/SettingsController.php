@@ -41,16 +41,16 @@ class SettingsController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials", methods={"GET"})
+     * @Route("/api/v{version}/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials", methods={"POST"})
      */
     public function validateApiCredentials(Request $request): JsonResponse
     {
-        $salesChannelId = $request->get('salesChannelId');
-        $errors         = [];
+        $errors = [];
 
         foreach (ConfigurationPrefixes::CONFIGURATION_PREFIXES as $paymentClass => $configurationPrefix) {
             try {
-                $testRequest = $this->requestFactory->getRequestParameters($salesChannelId, $configurationPrefix, $this->getPaymentParameters($paymentClass));
+                $parameters  = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
+                $testRequest = $this->requestFactory->getRequestParameters($parameters);
 
                 $this->client->request($testRequest);
             } catch (PayoneRequestException $exception) {
@@ -134,5 +134,26 @@ class SettingsController extends AbstractController
                 throw new RuntimeException(sprintf('There is no test data defined for payment class %s', $paymentClass));
                 break;
         }
+    }
+
+    private function getConfigurationParameters(Request $request, string $paymentClass): array
+    {
+        $config = $request->get('credentials', []);
+        $prefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentClass];
+
+        if (!isset($config[$prefix])) {
+            $this->logger->error(sprintf('There is no configuration for payment class %s', $paymentClass));
+            throw new RuntimeException(sprintf('There is no configuration for payment class %s', $paymentClass));
+        }
+
+        return [
+            'aid'         => $config[$prefix]['accountId'],
+            'mid'         => $config[$prefix]['merchantId'],
+            'portalid'    => $config[$prefix]['portalId'],
+            'key'         => $config[$prefix]['portalKey'],
+            'api_version' => '3.10',
+            'mode'        => 'test',
+            'encoding'    => 'UTF-8',
+        ];
     }
 }

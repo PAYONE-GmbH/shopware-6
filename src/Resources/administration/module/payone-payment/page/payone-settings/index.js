@@ -17,7 +17,9 @@ export default {
     data() {
         return {
             isLoading: false,
+            isTesting: false,
             isSaveSuccessful: false,
+            isTestSuccessful: false,
             config: {},
             merchantIdFilled: false,
             accountIdFilled: false,
@@ -28,7 +30,7 @@ export default {
     },
 
     computed: {
-        testButtonDisabled: function() {
+        credentialsMissing: function() {
             return !this.merchantIdFilled || !this.accountIdFilled || !this.portalIdFilled || !this.portalKeyFilled;
         }
     },
@@ -40,8 +42,22 @@ export default {
     },
 
     methods: {
+        paymentMethodPrefixes() {
+            // TODO: Autogenerate config array with these prefixes
+            return [
+                'creditCard',
+                'debit',
+                'paypal',
+                'sofort'
+            ];
+        },
+
         saveFinish() {
             this.isSaveSuccessful = false;
+        },
+
+        testFinish() {
+            this.isTestSuccessful = false;
         },
 
         onConfigChange(config) {
@@ -70,8 +86,15 @@ export default {
                     || defaultConfig[`PayonePayment.settings.${field}`];
         },
 
+        getPaymentConfigValue(field, prefix) {
+            let uppercasedField = field.charAt(0).toUpperCase() + field.slice(1);
+
+            return this.getConfigValue(prefix + uppercasedField)
+                || this.getConfigValue(field);
+        },
+
         onSave() {
-            if (!this.merchantIdFilled || !this.accountIdFilled || !this.portalIdFilled || !this.portalKeyFilled) {
+            if (this.credentialsMissing) {
                 this.showValidationErrors = true;
                 return;
             }
@@ -86,9 +109,21 @@ export default {
             });
         },
 
-        onTest(method = '') {
-            this.isLoading = true;
-            this.PayonePaymentApiCredentialsService.validateApiCredentials(this.$refs.systemConfig.currentSalesChannelId).then((response) => {
+        onTest() {
+            this.isTesting = true;
+            this.isTestSuccessful = false;
+
+            let credentials = {};
+            this.paymentMethodPrefixes().forEach((prefix) => {
+                credentials[prefix] = {
+                    merchantId: this.getPaymentConfigValue('merchantId', prefix),
+                    accountId: this.getPaymentConfigValue('accountId', prefix),
+                    portalId: this.getPaymentConfigValue('portalId', prefix),
+                    portalKey: this.getPaymentConfigValue('portalKey', prefix)
+                };
+            });
+
+            this.PayonePaymentApiCredentialsService.validateApiCredentials(credentials).then((response) => {
                 const credentialsValid = response.credentialsValid;
                 const errors = response.errors;
 
@@ -97,6 +132,7 @@ export default {
                         title: this.$tc('payone-payment.settingsForm.titleSuccess'),
                         message: this.$tc('payone-payment.settingsForm.messageTestSuccess')
                     });
+                    this.isTestSuccessful = true;
                 } else {
                     for(let key in errors) {
                         if(errors.hasOwnProperty(key)) {
@@ -107,13 +143,13 @@ export default {
                         }
                     }
                 }
-                this.isLoading = false;
+                this.isTesting = false;
             }).catch((errorResponse) => {
                 this.createNotificationError({
                     title: this.$tc('payone-payment.settingsForm.titleError'),
                     message: this.$tc('payone-payment.settingsForm.messageTestError.general')
                 });
-                this.isLoading = false;
+                this.isTesting = false;
             });
         },
 
