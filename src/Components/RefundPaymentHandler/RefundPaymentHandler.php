@@ -67,7 +67,7 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
         $this->dataHandler->logResponse($paymentTransaction, $context, $response);
         $this->dataHandler->incrementSequenceNumber($paymentTransaction, $context);
         $this->dataHandler->saveTransactionData($paymentTransaction, $context, $data);
+
         $this->stateHandler->refund($paymentTransaction->getOrderTransaction()->getId(), $context);
     }
-
 }
