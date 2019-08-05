@@ -22,7 +22,7 @@ class TestCommand extends Command
         $this->container = $container;
     }
 
-    protected function configure(): void
+    protected function configure()
     {
         $this->setName('payone:test');
     }
@@ -30,7 +30,7 @@ class TestCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         for ($i = 0; $i < 5; ++$i) {
             var_dump(Uuid::randomHex());
