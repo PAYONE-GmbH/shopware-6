@@ -13,7 +13,7 @@ export default class PayonePaymentCreditCard extends Plugin {
             'J',
             'O',
             'U',
-            'P'
+            'P',
         ],
     };
 
@@ -21,13 +21,13 @@ export default class PayonePaymentCreditCard extends Plugin {
         this.iframe = null;
         this.orderFormDisabled = true;
 
-        let requestContainer = document.getElementById('payone-request');
+        const requestContainer = document.getElementById('payone-request');
 
-        let language = requestContainer.getAttribute('data-payone-language');
-        let request = JSON.parse(requestContainer.innerHTML);
+        const language = requestContainer.getAttribute('data-payone-language');
+        const request = JSON.parse(requestContainer.innerHTML);
 
         this._createScript(() => {
-            let config = this._getClientConfig(language);
+            const config = this._getClientConfig(language);
 
             this.iframe = new window.Payone.ClientApi.HostedIFrames(config, request);
 
@@ -97,7 +97,7 @@ export default class PayonePaymentCreditCard extends Plugin {
                     selector: 'cardexpireyear',
                     type: 'select',
                     style: this._getSelectStyle(),
-                }
+                },
             },
 
             language: window.Payone.ClientApi.Language[language],
@@ -105,13 +105,13 @@ export default class PayonePaymentCreditCard extends Plugin {
             defaultStyle: {
                 iframe: {
                     height: '100%',
-                    width: '100%'
-                }
+                    width: '100%',
+                },
             },
 
             autoCardtypeDetection: {
                 supportedCardtypes: PayonePaymentCreditCard.options.supportedCardtypes,
-                callback: this._cardDetectionCallback
+                callback: this._cardDetectionCallback,
             },
         };
     }
@@ -121,10 +121,10 @@ export default class PayonePaymentCreditCard extends Plugin {
             return;
         }
 
-        let src = 'https://cdn.pay1.de/cc/' + detectedCardtype.toLowerCase() + '/xl/default.png';
+        const src = 'https://cdn.pay1.de/cc/' + detectedCardtype.toLowerCase() + '/xl/default.png';
 
-        let errorOutput = document.getElementById('errorOutput');
-        let logo = document.getElementById('card-logo');
+        const errorOutput = document.getElementById('errorOutput');
+        const logo = document.getElementById('card-logo');
 
         logo.setAttribute('src', src);
 
@@ -133,9 +133,9 @@ export default class PayonePaymentCreditCard extends Plugin {
     }
 
     _createScript(callback) {
-        let url = 'https://secure.pay1.de/client-api/js/v1/payone_hosted.js';
+        const url = 'https://secure.pay1.de/client-api/js/v1/payone_hosted.js';
 
-        let script = document.createElement('script');
+        const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = url;
 
@@ -145,18 +145,18 @@ export default class PayonePaymentCreditCard extends Plugin {
     }
 
     _handleOrderSubmit(event) {
-        let errorOutput = document.getElementById('errorOutput');
+        const errorOutput = document.getElementById('errorOutput');
 
         errorOutput.style.display = 'none';
 
-        let savedCardPan = document.getElementById('savedpseudocardpan');
+        const savedCardPan = document.getElementById('savedpseudocardpan');
 
         if (savedCardPan && savedCardPan.value.length > 0) {
             return true;
         }
 
         if (!this.iframe.isComplete() || this.orderFormDisabled) {
-            let me  = this;
+            const me  = this;
 
             window.creditCardCheckCallback = function(response) {
                 me._payoneCheckCallback(response);
@@ -170,7 +170,7 @@ export default class PayonePaymentCreditCard extends Plugin {
         }
     }
 
-     _payoneCheckCallback(response) {
+    _payoneCheckCallback(response) {
         if (response.status === 'VALID') {
             document.getElementById('pseudocardpan').value = response.pseudocardpan;
             document.getElementById('truncatedcardpan').value = response.truncatedcardpan;
@@ -179,8 +179,8 @@ export default class PayonePaymentCreditCard extends Plugin {
 
             document.getElementById('confirmOrderForm').submit()
         } else {
-            let button = document.getElementById('confirmFormSubmit');
-            let errorOutput = document.getElementById('errorOutput');
+            const button = document.getElementById('confirmFormSubmit');
+            const errorOutput = document.getElementById('errorOutput');
 
             button.removeAttribute('disabled');
 

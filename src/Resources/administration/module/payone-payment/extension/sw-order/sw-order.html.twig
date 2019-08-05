@@ -3,30 +3,30 @@
 
     <template v-if="!isLoading" :isLoading="isLoading">
         <template v-if="hasPayonePayment(order)">
-            <sw-card class="sw-order-payone-card" :title="$tc('payone-order-buttons.title')">
+            <sw-card class="sw-order-payone-card" :title="$tc('payone-payment.title')">
                 <template v-for="transaction in order.transactions">
                     <template v-if="isPayonePayment(transaction)">
                         <sw-container columns="1fr 1fr">
                             <sw-container>
                                 <sw-description-list>
-                                    <dt>{{ $tc('payone-order-buttons.poNumber') }}</dt>
+                                    <dt>{{ $tc('payone-payment.poNumber') }}</dt>
                                     <dd class="sw-order-base__label-sales-channel">{{ transaction.customFields.payone_transaction_id }}</dd>
 
-                                    <dt>{{ $tc('payone-order-buttons.sequenceNumber') }}</dt>
+                                    <dt>{{ $tc('payone-payment.sequenceNumber') }}</dt>
                                     <dd class="sw-order-base__label-sales-channel">{{ transaction.customFields.payone_sequence_number }}</dd>
 
-                                    <dt>{{ $tc('payone-order-buttons.transactionState') }}</dt>
+                                    <dt>{{ $tc('payone-payment.transactionState') }}</dt>
                                     <dd class="sw-order-base__label-sales-channel">{{ transaction.customFields.payone_transaction_state }}</dd>
                                 </sw-description-list>
                             </sw-container>
 
                             <sw-container gap="30px">
                                 <sw-button @click="captureOrder(transaction)" :disabled="!isCapturePossible(transaction)">
-                                    {{ $tc('payone-order-buttons.capture.buttonTitle') }}
+                                    {{ $tc('payone-payment.capture.buttonTitle') }}
                                 </sw-button>
 
                                 <sw-button @click="refundOrder(transaction)" :disabled="!isRefundPossible(transaction)">
-                                    {{ $tc('payone-order-buttons.refund.buttonTitle') }}
+                                    {{ $tc('payone-payment.refund.buttonTitle') }}
                                 </sw-button>
                             </sw-container>
                         </sw-container>

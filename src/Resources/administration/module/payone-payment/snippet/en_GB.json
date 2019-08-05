@@ -1,0 +1,39 @@
+{
+    "payone-payment": {
+        "title": "PAYONE",
+        "general": {
+            "mainMenuItemGeneral": "PAYONE",
+            "descriptionTextModule": "Settings for PAYONE"
+        },
+        "capture": {
+            "buttonTitle": "Capture",
+            "successTitle": "PAYONE",
+            "successMessage": "Capture processed successfully.",
+            "errorTitle": "PAYONE"
+        },
+        "refund": {
+            "buttonTitle": "Refund",
+            "successTitle": "PAYONE",
+            "successMessage": "Refund processed successfully.",
+            "errorTitle": "PAYONE"
+        },
+        "settingsForm": {
+            "save": "Save",
+            "test": "Test API Credentials",
+            "titleSuccess": "Success",
+            "titleError": "Error",
+            "messageTestSuccess": "The API credentials were verified successfully.",
+            "messageTestError": {
+                "general": "The API credentials could not be verified successfully.",
+                "creditCard": "The API credentials for Credit Card are not valid.",
+                "debit": "The API credentials for Debit are not valid.",
+                "paypal": "The API credentials for PayPal are not valid.",
+                "sofort": "The API credentials for SOFORT are not valid."
+            }
+        },
+        "messageNotBlank": "This field must not be empty.",
+        "poNumber": "PO-Number",
+        "sequenceNumber": "Sequencenumber",
+        "transactionState": "State"
+    }
+}

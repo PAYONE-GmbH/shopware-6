@@ -13,6 +13,14 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
+        <!-- Test -->
+        <service id="PayonePayment\Payone\Request\Test\TestRequest">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Test\TestRequestFactory">
+        </service>
+
         <!-- Customer -->
         <service id="PayonePayment\Payone\Request\Customer\CustomerRequest">
             <argument type="service" id="language.repository" />

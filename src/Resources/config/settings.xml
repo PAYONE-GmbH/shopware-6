@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../../../vendor/shopware/platform/src/Core/System/SystemConfig/Schema/config.xsd">
+    <card>
+        <title>Basic configuration</title>
+        <title lang="de-DE">Grundeinstellungen</title>
+
+        <input-field>
+            <name>merchantId</name>
+            <copyable>true</copyable>
+            <label>Merchant ID</label>
+        </input-field>
+
+        <input-field>
+            <name>accountId</name>
+            <copyable>true</copyable>
+            <label>Account ID</label>
+        </input-field>
+
+        <input-field>
+            <name>portalId</name>
+            <copyable>true</copyable>
+            <label>Portal ID</label>
+        </input-field>
+
+        <input-field>
+            <name>portalKey</name>
+            <copyable>true</copyable>
+            <label>Key</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>transactionMode</name>
+            <label>Live or Testmode</label>
+            <label lang="de-DE">Live- / Testbetrieb</label>
+            <options>
+                <option>
+                    <id>test</id>
+                    <name>Test mode</name>
+                    <name lang="de-DE">Test Modus</name>
+                </option>
+                <option>
+                    <id>live</id>
+                    <name>Live mode</name>
+                    <name lang="de-DE">Live Modus</name>
+                </option>
+            </options>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Status Mapping</title>
+        <title lang="de-DE">Statusmapping</title>
+
+        <input-field type="single-select">
+            <name>paymentStatusAppointed</name>
+            <label>Status for Appointed</label>
+            <label lang="de-DE">Status für Appointed</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusCapture</name>
+            <label>Status for Capture</label>
+            <label lang="de-DE">Status für Capture</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusPaid</name>
+            <label>Status for Paid</label>
+            <label lang="de-DE">Status für Paid</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusUnderpaid</name>
+            <label>Status for Underpaid</label>
+            <label lang="de-DE">Status für Underpaid</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusCancelation</name>
+            <label>Status for Cancelation</label>
+            <label lang="de-DE">Status für Cancelation</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusRefund</name>
+            <label>Status for Refund</label>
+            <label lang="de-DE">Status für Refund</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusDebit</name>
+            <label>Status for Debit</label>
+            <label lang="de-DE">Status für Debit</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusReminder</name>
+            <label>Status for Reminder</label>
+            <label lang="de-DE">Status für Reminder</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusVAutorisierung</name>
+            <label>Status for VAutorisierung</label>
+            <label lang="de-DE">Status für VAutorisierung</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusVSettlement</name>
+            <label>Status for VSettlement</label>
+            <label lang="de-DE">Status für VSettlement</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusTransfer</name>
+            <label>Status for Transfer</label>
+            <label lang="de-DE">Status für Transfer</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusInvoice</name>
+            <label>Status for Invoice</label>
+            <label lang="de-DE">Status für Invoice</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paymentStatusFailed</name>
+            <label>Status for Failed</label>
+            <label lang="de-DE">Status für Failed</label>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Credit Card</title>
+        <title lang="de-DE">Kreditkarte</title>
+
+        <input-field>
+            <name>creditCardMerchantId</name>
+            <copyable>true</copyable>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>creditCardAccountId</name>
+            <copyable>true</copyable>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>creditCardPortalId</name>
+            <copyable>true</copyable>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>creditCardPortalKey</name>
+            <copyable>true</copyable>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>PayPal</title>
+
+        <input-field>
+            <name>paypalMerchantId</name>
+            <copyable>true</copyable>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paypalAccountId</name>
+            <copyable>true</copyable>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paypalPortalId</name>
+            <copyable>true</copyable>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paypalPortalKey</name>
+            <copyable>true</copyable>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Debit</title>
+        <title lang="de-DE">Lastschrift</title>
+
+        <input-field>
+            <name>debitMerchantId</name>
+            <copyable>true</copyable>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>debitAccountId</name>
+            <copyable>true</copyable>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>debitPortalId</name>
+            <copyable>true</copyable>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>debitPortalKey</name>
+            <copyable>true</copyable>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>SOFORT</title>
+
+        <input-field>
+            <name>sofortMerchantId</name>
+            <copyable>true</copyable>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>sofortAccountId</name>
+            <copyable>true</copyable>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>sofortPortalId</name>
+            <copyable>true</copyable>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>sofortPortalKey</name>
+            <copyable>true</copyable>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+    </card>
+</config>

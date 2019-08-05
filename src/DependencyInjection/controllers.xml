@@ -36,6 +36,12 @@
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
         </service>
 
+        <service id="PayonePayment\Controller\SettingsController">
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Payone\Request\Test\TestRequestFactory" />
+            <argument type="service" id="PayonePayment\Util\Logger"/>
+        </service>
+
         <service id="PayonePayment\Storefront\Controller\PayoneAccountCardController">
             <argument type="service" id="PayonePayment\Storefront\Page\Card\AccountCardPageLoader" />
             <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
