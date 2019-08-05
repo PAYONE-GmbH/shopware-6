@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionStatus;
 
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Struct\PaymentTransaction;
@@ -31,14 +32,19 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
 
+    /** @var ConfigReaderInterface */
+    private $configReader;
+
     public function __construct(
         EntityRepositoryInterface $orderTransactionRepository,
         OrderTransactionStateHandler $stateHandler,
-        TransactionDataHandlerInterface $dataHandler
+        TransactionDataHandlerInterface $dataHandler,
+        ConfigReaderInterface $configReader
     ) {
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->stateHandler               = $stateHandler;
         $this->dataHandler                = $dataHandler;
+        $this->configReader               = $configReader;
     }
 
     /**
@@ -76,18 +82,29 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $transactionData);
 
-        if ($this->isTransactionOpen($transactionData)) {
-            $this->stateHandler->open(
-                $paymentTransaction->getOrderTransaction()->getId(),
-                $salesChannelContext->getContext()
-            );
-        }
+        $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $configurationKey = 'paymentStatus' . ucfirst($transactionData['txaction']);
 
-        if ($this->isTransactionPaid($transactionData)) {
-            $this->stateHandler->pay(
-                $paymentTransaction->getOrderTransaction()->getId(),
+        if (!empty($configuration->get($configurationKey))) {
+            $this->dataHandler->saveTransactionState(
+                $configuration->get($configurationKey),
+                $paymentTransaction,
                 $salesChannelContext->getContext()
             );
+        } else {
+            if ($this->isTransactionOpen($transactionData)) {
+                $this->stateHandler->open(
+                    $paymentTransaction->getOrderTransaction()->getId(),
+                    $salesChannelContext->getContext()
+                );
+            }
+
+            if ($this->isTransactionPaid($transactionData)) {
+                $this->stateHandler->pay(
+                    $paymentTransaction->getOrderTransaction()->getId(),
+                    $salesChannelContext->getContext()
+                );
+            }
         }
     }
 
