@@ -11,7 +11,7 @@ use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 
 class PaymentTransaction
 {
-    /** @var ?OrderTransactionEntity */
+    /** @var OrderTransactionEntity */
     private $orderTransaction;
 
     /** @var OrderEntity */
@@ -43,7 +43,7 @@ class PaymentTransaction
         return $this->returnUrl;
     }
 
-    public function getOrderTransaction(): ?OrderTransactionEntity
+    public function getOrderTransaction(): OrderTransactionEntity
     {
         return $this->orderTransaction;
     }

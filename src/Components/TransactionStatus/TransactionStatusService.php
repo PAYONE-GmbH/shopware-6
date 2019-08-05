@@ -8,43 +8,36 @@ use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterf
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Struct\PaymentTransaction;
 use RuntimeException;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 
 class TransactionStatusService implements TransactionStatusServiceInterface
 {
-    /**
-     * payone_payment_status.action -> state_machine_state.technical_name
-     *
-     * @var array
-     */
-    private const STATE_MAPPING = [
-        'appointed' => 'open',
-        'paid'      => 'paid',
-        'capture'   => 'paid',
-        'completed' => 'paid',
-    ];
+    private const ACTION_APPOINTED = 'appointed';
+    private const ACTION_PAID      = 'paid';
+    private const ACTION_CAPTURE   = 'capture';
+    private const ACTION_COMPLETED = 'completed';
 
     /** @var EntityRepositoryInterface */
     private $orderTransactionRepository;
 
-    /** @var EntityRepositoryInterface */
-    private $stateRepository;
+    /** @var OrderTransactionStateHandler */
+    private $stateHandler;
 
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
 
     public function __construct(
         EntityRepositoryInterface $orderTransactionRepository,
-        EntityRepositoryInterface $stateRepository,
+        OrderTransactionStateHandler $stateHandler,
         TransactionDataHandlerInterface $dataHandler
     ) {
         $this->orderTransactionRepository = $orderTransactionRepository;
-        $this->stateRepository            = $stateRepository;
+        $this->stateHandler               = $stateHandler;
         $this->dataHandler                = $dataHandler;
     }
 
@@ -83,18 +76,19 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $transactionData);
 
-        $state = $this->getStateByTechnicalName($transactionData['txaction']);
-
-        if (!$state) {
-            return;
+        if ($this->isTransactionOpen($transactionData)) {
+            $this->stateHandler->open(
+                $paymentTransaction->getOrderTransaction()->getId(),
+                $salesChannelContext->getContext()
+            );
         }
 
-        $update = [
-            'id'      => $paymentTransaction->getOrderTransaction()->getId(),
-            'stateId' => $state->getId(),
-        ];
-
-        $this->orderTransactionRepository->update([$update], $salesChannelContext->getContext());
+        if ($this->isTransactionPaid($transactionData)) {
+            $this->stateHandler->pay(
+                $paymentTransaction->getOrderTransaction()->getId(),
+                $salesChannelContext->getContext()
+            );
+        }
     }
 
     private function getPaymentTransactionByPayoneTransactionId(Context $context, int $payoneTransactionId): ?PaymentTransaction
@@ -114,21 +108,6 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return PaymentTransaction::fromOrderTransaction($transaction);
     }
 
-    private function getStateByTechnicalName(string $action): ?StateMachineStateEntity
-    {
-        if (!array_key_exists($action, self::STATE_MAPPING)) {
-            return null;
-        }
-
-        $context = Context::createDefaultContext();
-
-        $criteria = new Criteria();
-        $filter   = new EqualsFilter('state_machine_state.technicalName', self::STATE_MAPPING[$action]);
-        $criteria->addFilter($filter);
-
-        return $this->stateRepository->search($criteria, $context)->first();
-    }
-
     private function shouldAllowCapture(array $transactionData, array $customFields): bool
     {
         if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== 'preauthorization') {
@@ -145,5 +124,27 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         }
 
         return $transactionData['txaction'] === 'appointed';
+    }
+
+    private function isTransactionOpen(array $transactionData): bool
+    {
+        return $transactionData['txaction'] === self::ACTION_APPOINTED;
+    }
+
+    private function isTransactionPaid(array $transactionData): bool
+    {
+        if ($transactionData['txaction'] === self::ACTION_PAID) {
+            return true;
+        }
+
+        if ($transactionData['txaction'] === self::ACTION_CAPTURE) {
+            return true;
+        }
+
+        if ($transactionData['txaction'] === self::ACTION_COMPLETED) {
+            return true;
+        }
+
+        return false;
     }
 }
