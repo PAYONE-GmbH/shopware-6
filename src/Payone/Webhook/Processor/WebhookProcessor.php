@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Webhook\Processor;
 
 use IteratorAggregate;
-use LogicException;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
@@ -46,9 +45,9 @@ class WebhookProcessor implements WebhookProcessorInterface
                 continue;
             }
 
-            return $handler->process($salesChannelContext, $data);
+            $handler->process($salesChannelContext, $data);
         }
 
-        throw new LogicException('Unable to identify a matching webhook handler');
+        return new Response(WebhookHandlerInterface::RESPONSE_TSOK);
     }
 }

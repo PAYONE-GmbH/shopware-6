@@ -71,4 +71,14 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
         $this->transactionRepository->update([$update], $context);
     }
+
+    public function saveTransactionState(string $stateId, PaymentTransaction $transaction, Context $context): void
+    {
+        $update = [
+            'id'      => $transaction->getOrderTransaction()->getId(),
+            'stateId' => $stateId,
+        ];
+
+        $this->transactionRepository->update([$update], $context);
+    }
 }
