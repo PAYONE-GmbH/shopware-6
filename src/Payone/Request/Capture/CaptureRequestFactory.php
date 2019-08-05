@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Capture;
 
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Payone\Struct\PaymentTransaction;
@@ -32,7 +33,8 @@ class CaptureRequestFactory extends AbstractRequestFactory
         );
 
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannelId()
+            $transaction->getOrder()->getSalesChannelId(),
+            ConfigurationPrefixes::CONFIGURATION_PREFIXES[$transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier()]
         );
 
         return $this->createRequest();

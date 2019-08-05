@@ -1,0 +1,70 @@
+{% block payone_payment %}
+    <sw-page class="payone-payment">
+        {% block payone_payment_header %}
+            <template #smart-bar-header>
+                <h2>
+                    {{ $tc('sw-settings.index.title') }}
+                    <sw-icon name="small-arrow-medium-right" small></sw-icon>
+                    {{ $tc('payone-payment.title') }}
+                </h2>
+            </template>
+        {% endblock %}
+
+        {% block payone_payment_actions %}
+            <template #smart-bar-actions>
+                {% block payone_payment_settings_actions_test %}
+                <sw-button-process @click="onTest"
+                           :isLoading="isTesting"
+                           :processSuccess="isTestSuccessful"
+                           :disabled="credentialsMissing || isLoading">
+                    {{ $tc('payone-payment.settingsForm.test') }}
+                </sw-button-process>
+                {% endblock %}
+
+                {% block payone_payment_settings_actions_save %}
+                <sw-button-process
+                    class="sw-settings-login-registration__save-action"
+                    :isLoading="isLoading"
+                    :processSuccess="isSaveSuccessful"
+                    :disabled="isLoading || isTesting"
+                    variant="primary"
+                    @process-finish="saveFinish"
+                    @click="onSave">
+                    {{ $tc('payone-payment.settingsForm.save') }}
+                </sw-button-process>
+                {% endblock %}
+            </template>
+        {% endblock %}
+
+        {% block payone_payment_settings_content %}
+            <template #content>
+                <sw-card-view>
+                    <sw-system-config
+                            ref="systemConfig"
+                            salesChannelSwitchable
+                            inherit
+                            @config-changed="onConfigChange"
+                            domain="PayonePayment.settings">
+                        <template #card-element="{ element, config }">
+                            <sw-form-field-renderer
+                                :config="{
+                                    componentName: 'sw-entity-single-select',
+                                    label: getInlineSnippet(element.config.label),
+                                    entity: 'state_machine_state',
+                                    criteria: getPaymentStatusCriteria(),
+                                }"
+                                v-bind="getBind(element, config)"
+                                v-model="config[element.name]"
+                                v-if="element.name.startsWith('PayonePayment.settings.paymentStatus')">
+                            </sw-form-field-renderer>
+                            <sw-form-field-renderer v-bind="getBind(element, config)"
+                                                    v-model="config[element.name]"
+                                                    v-else>
+                            </sw-form-field-renderer>
+                        </template>
+                    </sw-system-config>
+                </sw-card-view>
+            </template>
+        {% endblock %}
+    </sw-page>
+{% endblock %}

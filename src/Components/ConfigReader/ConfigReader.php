@@ -9,7 +9,7 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigReader implements ConfigReaderInterface
 {
-    public const SYSTEM_CONFIG_DOMAIN = 'PayonePayment.config.';
+    public const SYSTEM_CONFIG_DOMAIN = 'PayonePayment.settings.';
 
     /** @var SystemConfigService */
     private $systemConfigService;
@@ -19,7 +19,7 @@ class ConfigReader implements ConfigReaderInterface
         $this->systemConfigService = $systemConfigService;
     }
 
-    public function read(string $salesChannelId = '', bool $fallback = true): Configuration
+    public function read(?string $salesChannelId = null, bool $fallback = true): Configuration
     {
         $values = $this->systemConfigService->getDomain(
             self::SYSTEM_CONFIG_DOMAIN,

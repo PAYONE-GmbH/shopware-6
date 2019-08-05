@@ -35,7 +35,7 @@
         </service>
 
         <service id="PayonePayment\Payone\Client\PayoneClient">
-            <argument type="service" id="logger" />
+            <argument type="service" id="PayonePayment\Util\Logger" />
         </service>
 
         <service id="PayonePayment\Components\TransactionStatus\TransactionStatusService">
@@ -65,6 +65,11 @@
             <argument type="service" id="payone_payment_mandate.repository" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Payone\Request\GetFile\GetFileRequestFactory" />
+        </service>
+
+        <service id="PayonePayment\Util\Logger" class="Monolog\Logger">
+            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+            <argument type="string">payone_payment</argument>
         </service>
     </services>
 </container>

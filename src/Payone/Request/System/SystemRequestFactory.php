@@ -16,10 +16,11 @@ class SystemRequestFactory extends AbstractRequestFactory
         $this->systemRequest = $systemRequest;
     }
 
-    public function getRequestParameters(string $salesChannel): array
+    public function getRequestParameters(string $salesChannel, string $configurationPrefix = ''): array
     {
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $salesChannel
+            $salesChannel,
+            $configurationPrefix
         );
 
         return $this->createRequest();
