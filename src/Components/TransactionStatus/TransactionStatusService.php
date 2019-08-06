@@ -35,16 +35,21 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     /** @var ConfigReaderInterface */
     private $configReader;
 
+    /** @var EntityRepositoryInterface */
+    private $stateRepository;
+
     public function __construct(
         EntityRepositoryInterface $orderTransactionRepository,
         OrderTransactionStateHandler $stateHandler,
         TransactionDataHandlerInterface $dataHandler,
-        ConfigReaderInterface $configReader
+        ConfigReaderInterface $configReader,
+        EntityRepositoryInterface $stateRepository
     ) {
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->stateHandler               = $stateHandler;
         $this->dataHandler                = $dataHandler;
         $this->configReader               = $configReader;
+        $this->stateRepository            = $stateRepository;
     }
 
     /**
@@ -67,7 +72,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $transactionData = array_map('utf8_encode', $transactionData);
 
         $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = (int) $transactionData['sequencenumber'];
-        $data[CustomFieldInstaller::TRANSACTION_STATE] = $transactionData['txaction'];
+        $data[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
 
         $customFields = $paymentTransaction->getCustomFields();
 
@@ -83,9 +88,13 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $transactionData);
 
         $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $configurationKey = 'paymentStatus' . ucfirst($transactionData['txaction']);
+        $configurationKey = 'paymentStatus' . ucfirst(strtolower($transactionData['txaction']));
 
         if (!empty($configuration->get($configurationKey))) {
+            if (!$this->stateExists($configuration->get($configurationKey), $salesChannelContext->getContext())) {
+                throw new RuntimeException('The transaction state does not exists. The mapping is therefore invalid.');
+            }
+
             $this->dataHandler->saveTransactionState(
                 $configuration->get($configurationKey),
                 $paymentTransaction,
@@ -131,7 +140,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        return $transactionData['txaction'] === 'appointed';
+        return strtolower($transactionData['txaction']) === 'appointed';
     }
 
     private function shouldAllowRefund(array $transactionData, array $customFields): bool
@@ -140,28 +149,35 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        return $transactionData['txaction'] === 'appointed';
+        return strtolower($transactionData['txaction']) === 'appointed';
     }
 
     private function isTransactionOpen(array $transactionData): bool
     {
-        return $transactionData['txaction'] === self::ACTION_APPOINTED;
+        return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
     }
 
     private function isTransactionPaid(array $transactionData): bool
     {
-        if ($transactionData['txaction'] === self::ACTION_PAID) {
+        if (strtolower($transactionData['txaction']) === self::ACTION_PAID) {
             return true;
         }
 
-        if ($transactionData['txaction'] === self::ACTION_CAPTURE) {
+        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE) {
             return true;
         }
 
-        if ($transactionData['txaction'] === self::ACTION_COMPLETED) {
+        if (strtolower($transactionData['txaction']) === self::ACTION_COMPLETED) {
             return true;
         }
 
         return false;
+    }
+
+    private function stateExists(string $state, Context $context): bool
+    {
+        $criteria = new Criteria([$state]);
+
+        return (bool) $this->stateRepository->search($criteria, $context)->first();
     }
 }
