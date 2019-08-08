@@ -108,9 +108,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
                     $paymentTransaction->getOrderTransaction()->getId(),
                     $salesChannelContext->getContext()
                 );
-            }
-
-            if ($this->isTransactionPaid($transactionData)) {
+            } elseif ($this->isTransactionPaid($transactionData)) {
                 $this->stateHandler->pay(
                     $paymentTransaction->getOrderTransaction()->getId(),
                     $salesChannelContext->getContext()
