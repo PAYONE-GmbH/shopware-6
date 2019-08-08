@@ -18,10 +18,12 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class TransactionStatusService implements TransactionStatusServiceInterface
 {
-    private const ACTION_APPOINTED = 'appointed';
-    private const ACTION_PAID      = 'paid';
-    private const ACTION_CAPTURE   = 'capture';
-    private const ACTION_COMPLETED = 'completed';
+    private const ACTION_APPOINTED        = 'appointed';
+    private const ACTION_PAID             = 'paid';
+    private const ACTION_CAPTURE          = 'capture';
+    private const ACTION_COMPLETED        = 'completed';
+    private const ACTION_AUTHORIZATION    = 'authorization';
+    private const ACTION_PREAUTHORIZATION = 'preauthorization';
 
     /** @var EntityRepositoryInterface */
     private $orderTransactionRepository;
@@ -92,7 +94,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
         if (!empty($configuration->get($configurationKey))) {
             if (!$this->stateExists($configuration->get($configurationKey), $salesChannelContext->getContext())) {
-                throw new RuntimeException('The transaction state does not exists. The mapping is therefore invalid.');
+                throw new RuntimeException(sprintf('The mapped transaction state for %s does not exists. The mapping is therefore invalid.', $transactionData['txaction']));
             }
 
             $this->dataHandler->saveTransactionState(
@@ -136,20 +138,20 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function shouldAllowCapture(array $transactionData, array $customFields): bool
     {
-        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== 'preauthorization') {
+        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== self::ACTION_PREAUTHORIZATION) {
             return false;
         }
 
-        return strtolower($transactionData['txaction']) === 'appointed';
+        return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
     }
 
     private function shouldAllowRefund(array $transactionData, array $customFields): bool
     {
-        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== 'authorization') {
+        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== self::ACTION_AUTHORIZATION) {
             return false;
         }
 
-        return strtolower($transactionData['txaction']) === 'appointed';
+        return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
     }
 
     private function isTransactionOpen(array $transactionData): bool
