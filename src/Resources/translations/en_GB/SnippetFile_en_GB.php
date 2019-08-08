@@ -25,7 +25,7 @@ class SnippetFile_en_GB implements SnippetFileInterface
 
     public function getAuthor(): string
     {
-        return 'BS PAYONE GmbH';
+        return 'PAYONE GmbH';
     }
 
     public function isBase(): bool

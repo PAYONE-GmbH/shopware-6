@@ -37,7 +37,7 @@ class SnippetFile_de_DE implements SnippetFileInterface
      */
     public function getAuthor(): string
     {
-        return 'BS PAYONE GmbH';
+        return 'PAYONE GmbH';
     }
 
     /**

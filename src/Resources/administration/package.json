@@ -3,6 +3,6 @@
     "version": "1.0.0",
     "description": "Administration for Payone",
     "main": "index.js",
-    "author": "BS PAYONE GmbH",
+    "author": "PAYONE GmbH",
     "license": "MIT"
 }
