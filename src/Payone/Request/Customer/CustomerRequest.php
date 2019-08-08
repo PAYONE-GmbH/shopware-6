@@ -101,7 +101,7 @@ class CustomerRequest
     {
         $criteria = new Criteria([$addressEntity->getCountryId()]);
 
-        /** @var null|CurrencyEntity $language */
+        /** @var null|CountryEntity $country */
         $country = $this->countryRepository->search($criteria, $context)->first();
 
         if (null === $country) {

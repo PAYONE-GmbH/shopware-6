@@ -50,7 +50,7 @@ class CaptureRequest
     {
         $criteria = new Criteria([$order->getCurrencyId()]);
 
-        /** @var null|CurrencyEntity $language */
+        /** @var null|CurrencyEntity $currency */
         $currency = $this->currencyRepository->search($criteria, $context)->first();
 
         if (null === $currency) {
