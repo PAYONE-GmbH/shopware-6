@@ -44,7 +44,7 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function onCheckoutConfirm(CheckoutConfirmPageLoadedEvent $event)
+    public function onCheckoutConfirm(CheckoutConfirmPageLoadedEvent $event): void
     {
         $salesChannelContext = $event->getSalesChannelContext();
         $context             = $salesChannelContext->getContext();

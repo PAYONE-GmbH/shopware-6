@@ -101,13 +101,13 @@
         </input-field>
 
         <input-field type="single-select">
-            <name>paymentStatusVAutorisierung</name>
-            <label>Status for VAutorisierung</label>
-            <label lang="de-DE">Status für VAutorisierung</label>
+            <name>paymentStatusVauthorization</name>
+            <label>Status for VAuthorization</label>
+            <label lang="de-DE">Status für VAuthorization</label>
         </input-field>
 
         <input-field type="single-select">
-            <name>paymentStatusVSettlement</name>
+            <name>paymentStatusVsettlement</name>
             <label>Status for VSettlement</label>
             <label lang="de-DE">Status für VSettlement</label>
         </input-field>

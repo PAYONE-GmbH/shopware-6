@@ -7,7 +7,6 @@ namespace PayonePayment\Payone\Webhook\Handler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class TransactionStatusWebhookHandler implements WebhookHandlerInterface
@@ -38,16 +37,12 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function process(SalesChannelContext $salesChannelContext, array $data): Response
+    public function process(SalesChannelContext $salesChannelContext, array $data): void
     {
         try {
             $this->transactionStatusService->persistTransactionStatus($salesChannelContext, $data);
         } catch (Throwable $exception) {
             $this->logger->warning($exception->getMessage());
-
-            return new Response(self::RESPONSE_TSNOTOK);
         }
-
-        return new Response(self::RESPONSE_TSOK);
     }
 }

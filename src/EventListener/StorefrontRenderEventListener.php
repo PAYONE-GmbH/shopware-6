@@ -69,7 +69,7 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
         $event->setParameter('activePaymentPaymentMethods', $activePaymentMethods->get());
     }
 
-    public function onEntityWritten(EntityWrittenContainerEvent $event)
+    public function onEntityWritten(EntityWrittenContainerEvent $event): void
     {
         $ids = [];
 
@@ -102,8 +102,6 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
 
     /**
      * @param array|string $primaryKeys
-     *
-     * @return array
      */
     private function collectPrimaryKeys($primaryKeys): array
     {

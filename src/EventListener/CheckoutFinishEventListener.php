@@ -40,7 +40,7 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function onCheckoutFinish(CheckoutFinishPageLoadedEvent $event)
+    public function onCheckoutFinish(CheckoutFinishPageLoadedEvent $event): void
     {
         $salesChannelContext = $event->getSalesChannelContext();
         $context             = $salesChannelContext->getContext();
@@ -73,7 +73,7 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
 
     protected function hasDirectDebitPayment(?string $mandateIdentification): bool
     {
-        return null === $mandateIdentification;
+        return null !== $mandateIdentification;
     }
 
     private function isPayonePayment(PaymentMethodEntity $paymentMethod): bool
