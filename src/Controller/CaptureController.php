@@ -46,6 +46,7 @@ class CaptureController extends AbstractController
 
         $criteria = new Criteria([$transaction]);
         $criteria->addAssociation('order');
+        $criteria->addAssociation('paymentMethod');
 
         /** @var null|OrderTransactionEntity $orderTransaction */
         $orderTransaction = $this->transactionRepository->search($criteria, $context)->first();
