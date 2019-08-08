@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PaymentMethodInstaller implements InstallerInterface
 {
-    public const paymentMethods = [
+    public const PAYMENT_METHODS = [
         PayoneCreditCard::class,
         PayoneDebit::class,
         PayonePaypal::class,
@@ -89,7 +89,7 @@ class PaymentMethodInstaller implements InstallerInterface
     {
         $paymentMethods = [];
 
-        foreach (self::paymentMethods as $paymentMethod) {
+        foreach (self::PAYMENT_METHODS as $paymentMethod) {
             $paymentMethods[] = new $paymentMethod();
         }
 
