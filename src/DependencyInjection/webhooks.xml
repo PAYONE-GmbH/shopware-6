@@ -7,6 +7,7 @@
         <service id="PayonePayment\Payone\Webhook\Processor\WebhookProcessor">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="tagged" tag="payone.webhook.handler" />
+            <argument type="service" id="PayonePayment\Util\Logger" />
         </service>
 
         <service id="PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler">

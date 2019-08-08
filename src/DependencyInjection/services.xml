@@ -42,6 +42,8 @@
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="state_machine_state.repository" />
         </service>
 
         <service id="PayonePayment\Components\RedirectHandler\RedirectHandler">
@@ -69,6 +71,7 @@
 
         <service id="PayonePayment\Util\Logger" class="Monolog\Logger">
             <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+
             <argument type="string">payone_payment</argument>
         </service>
     </services>

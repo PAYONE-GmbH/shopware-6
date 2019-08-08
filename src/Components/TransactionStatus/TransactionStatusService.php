@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionStatus;
 
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Struct\PaymentTransaction;
@@ -17,10 +18,12 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class TransactionStatusService implements TransactionStatusServiceInterface
 {
-    private const ACTION_APPOINTED = 'appointed';
-    private const ACTION_PAID      = 'paid';
-    private const ACTION_CAPTURE   = 'capture';
-    private const ACTION_COMPLETED = 'completed';
+    private const ACTION_APPOINTED        = 'appointed';
+    private const ACTION_PAID             = 'paid';
+    private const ACTION_CAPTURE          = 'capture';
+    private const ACTION_COMPLETED        = 'completed';
+    private const ACTION_AUTHORIZATION    = 'authorization';
+    private const ACTION_PREAUTHORIZATION = 'preauthorization';
 
     /** @var EntityRepositoryInterface */
     private $orderTransactionRepository;
@@ -31,14 +34,24 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
 
+    /** @var ConfigReaderInterface */
+    private $configReader;
+
+    /** @var EntityRepositoryInterface */
+    private $stateRepository;
+
     public function __construct(
         EntityRepositoryInterface $orderTransactionRepository,
         OrderTransactionStateHandler $stateHandler,
-        TransactionDataHandlerInterface $dataHandler
+        TransactionDataHandlerInterface $dataHandler,
+        ConfigReaderInterface $configReader,
+        EntityRepositoryInterface $stateRepository
     ) {
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->stateHandler               = $stateHandler;
         $this->dataHandler                = $dataHandler;
+        $this->configReader               = $configReader;
+        $this->stateRepository            = $stateRepository;
     }
 
     /**
@@ -61,7 +74,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $transactionData = array_map('utf8_encode', $transactionData);
 
         $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = (int) $transactionData['sequencenumber'];
-        $data[CustomFieldInstaller::TRANSACTION_STATE] = $transactionData['txaction'];
+        $data[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
 
         $customFields = $paymentTransaction->getCustomFields();
 
@@ -76,18 +89,33 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $transactionData);
 
-        if ($this->isTransactionOpen($transactionData)) {
-            $this->stateHandler->open(
-                $paymentTransaction->getOrderTransaction()->getId(),
-                $salesChannelContext->getContext()
-            );
-        }
+        $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $configurationKey = 'paymentStatus' . ucfirst(strtolower($transactionData['txaction']));
 
-        if ($this->isTransactionPaid($transactionData)) {
-            $this->stateHandler->pay(
-                $paymentTransaction->getOrderTransaction()->getId(),
+        if (!empty($configuration->get($configurationKey))) {
+            if (!$this->stateExists($configuration->get($configurationKey), $salesChannelContext->getContext())) {
+                throw new RuntimeException(sprintf('The mapped transaction state for %s does not exists. The mapping is therefore invalid.', $transactionData['txaction']));
+            }
+
+            $this->dataHandler->saveTransactionState(
+                $configuration->get($configurationKey),
+                $paymentTransaction,
                 $salesChannelContext->getContext()
             );
+        } else {
+            if ($this->isTransactionOpen($transactionData)) {
+                $this->stateHandler->open(
+                    $paymentTransaction->getOrderTransaction()->getId(),
+                    $salesChannelContext->getContext()
+                );
+            }
+
+            if ($this->isTransactionPaid($transactionData)) {
+                $this->stateHandler->pay(
+                    $paymentTransaction->getOrderTransaction()->getId(),
+                    $salesChannelContext->getContext()
+                );
+            }
         }
     }
 
@@ -110,41 +138,48 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function shouldAllowCapture(array $transactionData, array $customFields): bool
     {
-        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== 'preauthorization') {
+        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== self::ACTION_PREAUTHORIZATION) {
             return false;
         }
 
-        return $transactionData['txaction'] === 'appointed';
+        return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
     }
 
     private function shouldAllowRefund(array $transactionData, array $customFields): bool
     {
-        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== 'authorization') {
+        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== self::ACTION_AUTHORIZATION) {
             return false;
         }
 
-        return $transactionData['txaction'] === 'appointed';
+        return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
     }
 
     private function isTransactionOpen(array $transactionData): bool
     {
-        return $transactionData['txaction'] === self::ACTION_APPOINTED;
+        return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
     }
 
     private function isTransactionPaid(array $transactionData): bool
     {
-        if ($transactionData['txaction'] === self::ACTION_PAID) {
+        if (strtolower($transactionData['txaction']) === self::ACTION_PAID) {
             return true;
         }
 
-        if ($transactionData['txaction'] === self::ACTION_CAPTURE) {
+        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE) {
             return true;
         }
 
-        if ($transactionData['txaction'] === self::ACTION_COMPLETED) {
+        if (strtolower($transactionData['txaction']) === self::ACTION_COMPLETED) {
             return true;
         }
 
         return false;
+    }
+
+    private function stateExists(string $state, Context $context): bool
+    {
+        $criteria = new Criteria([$state]);
+
+        return (bool) $this->stateRepository->search($criteria, $context)->first();
     }
 }
