@@ -46,6 +46,8 @@ class WebhookProcessor implements WebhookProcessorInterface
         }
 
         if (!isset($data['key']) || !in_array($data['key'], $storedKeys)) {
+            $this->logger->error('Received webhook without known portal key');
+
             return new Response(WebhookHandlerInterface::RESPONSE_TSNOTOK);
         }
 
@@ -53,18 +55,22 @@ class WebhookProcessor implements WebhookProcessorInterface
 
         foreach ($this->handlers as $handler) {
             if (!$handler->supports($salesChannelContext, $data)) {
+                $this->logger->debug(sprintf('Skipping webhook handler %s', get_class($handler)));
                 continue;
             }
 
             try {
                 $handler->process($salesChannelContext, $data);
+                $this->logger->info(sprintf('Processed webhook handler %s', get_class($handler)));
             } catch (Throwable $exception) {
-                $this->logger->error($exception->getMessage(), [
-                    'file' => $exception->getFile(),
-                    'line' => $exception->getLine(),
+                $this->logger->error(sprintf('Error during processing of webhook handler %s', get_class($handler)), [
+                    'message' => $exception->getMessage(),
+                    'file'    => $exception->getFile(),
+                    'line'    => $exception->getLine(),
                 ]);
 
                 $response = WebhookHandlerInterface::RESPONSE_TSNOTOK;
+                break;
             }
         }
 
