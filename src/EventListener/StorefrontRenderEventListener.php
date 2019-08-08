@@ -89,7 +89,7 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
 
         $clearCache = false;
 
-        foreach (PaymentMethodInstaller::paymentMethods as $paymentMethod) {
+        foreach (PaymentMethodInstaller::PAYMENT_METHODS as $paymentMethod) {
             if (in_array($paymentMethod::UUID, $ids, true)) {
                 $clearCache = true;
             }
