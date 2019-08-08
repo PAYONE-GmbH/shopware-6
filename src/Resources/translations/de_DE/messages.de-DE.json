@@ -7,7 +7,7 @@
       "cardNumber": "Kartennummer",
       "securityCode": "CVV",
       "expiryDate": "Gültig bis",
-      "savedCards": "Gespeicherte Karte",
+      "savedCards": "Gespeicherte Karte"
     },
     "debit": {
       "accountOwner": "Kontoinhaber",
