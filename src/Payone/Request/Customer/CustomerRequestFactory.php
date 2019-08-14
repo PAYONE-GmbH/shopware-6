@@ -28,13 +28,13 @@ class CustomerRequestFactory extends AbstractRequestFactory
         PaymentTransaction $transaction,
         SalesChannelContext $context
     ): array {
-        $this->requests[] = $this->customerRequest->getRequestParameters(
-            $context
-        );
-
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
             ConfigurationPrefixes::CONFIGURATION_PREFIXES[$transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier()]
+        );
+
+        $this->requests[] = $this->customerRequest->getRequestParameters(
+            $context
         );
 
         return $this->createRequest();
