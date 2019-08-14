@@ -36,11 +36,13 @@ class CreditCardPreAuthorizeRequest
             throw new InvalidOrderException($transaction->getOrder()->getId());
         }
 
+        $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
+
         return [
             'request'       => 'preauthorization',
             'clearingtype'  => 'cc',
-            'amount'        => (int) ($transaction->getOrder()->getAmountTotal() * 100),
-            'currency'      => $this->getOrderCurrency($transaction->getOrder(), $context)->getIsoCode(),
+            'amount'        => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'currency'      => $currency->getIsoCode(),
             'reference'     => $transaction->getOrder()->getOrderNumber(),
             'pseudocardpan' => $pseudoPan,
             'successurl'    => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
