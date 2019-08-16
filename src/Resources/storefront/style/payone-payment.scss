@@ -1,6 +1,7 @@
 .payone-payment.credit-card .form-control.iframe {
     padding: 0;
     border: 0;
+    height: calc(5em - #{$form-check-input-gutter});
 }
 
 .payone-payment.credit-card .card-logo-container {
@@ -9,7 +10,7 @@
 
 .payone-payment.credit-card #card-logo {
     display: block;
-    height: calc(1.5em + 1.25rem);
+    height: calc(4em - #{$form-check-input-gutter});
     border: 1px solid transparent;
     margin: 0 auto;
 }
