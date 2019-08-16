@@ -26,15 +26,15 @@ class CaptureRequestFactory extends AbstractRequestFactory
 
     public function getRequestParameters(PaymentTransaction $transaction, Context $context): array
     {
+        $this->requests[] = $this->systemRequest->getRequestParameters(
+            $transaction->getOrder()->getSalesChannelId(),
+            ConfigurationPrefixes::CONFIGURATION_PREFIXES[$transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier()]
+        );
+
         $this->requests[] = $this->captureRequest->getRequestParameters(
             $transaction->getOrder(),
             $context,
             $transaction->getCustomFields()
-        );
-
-        $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIXES[$transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier()]
         );
 
         return $this->createRequest();

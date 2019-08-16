@@ -27,14 +27,14 @@ class GetFileRequestFactory extends AbstractRequestFactory
 
     public function getRequestParameters(string $identification, SalesChannelContext $context): array
     {
-        $this->requests[] = $this->fileRequest->getRequestParameters(
-            $identification,
-            $context->getContext()
-        );
-
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $context->getSalesChannel()->getId(),
             ConfigurationPrefixes::CONFIGURATION_PREFIX_DEBIT
+        );
+
+        $this->requests[] = $this->fileRequest->getRequestParameters(
+            $identification,
+            $context->getContext()
         );
 
         $request = $this->createRequest();

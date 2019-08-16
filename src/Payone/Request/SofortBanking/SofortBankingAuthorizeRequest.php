@@ -36,13 +36,15 @@ class SofortBankingAuthorizeRequest
             throw new InvalidOrderException($transaction->getOrder()->getId());
         }
 
+        $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
+
         return [
             'request'                => 'authorization',
             'clearingtype'           => 'sb',
             'onlinebanktransfertype' => 'PNT',
             'bankcountry'            => 'DE', // TODO: possible values DE, AT, CH, NL
-            'amount'                 => (int) ($transaction->getOrder()->getAmountTotal() * 100),
-            'currency'               => $this->getOrderCurrency($transaction->getOrder(), $context)->getIsoCode(),
+            'amount'                 => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'currency'               => $currency->getIsoCode(),
             'reference'              => $transaction->getOrder()->getOrderNumber(),
             'successurl'             => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
             'errorurl'               => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),

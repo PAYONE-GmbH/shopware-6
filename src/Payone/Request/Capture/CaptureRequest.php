@@ -37,12 +37,14 @@ class CaptureRequest
             throw new InvalidOrderException($order->getId());
         }
 
+        $currency = $this->getOrderCurrency($order, $context);
+
         return [
             'request'        => 'capture',
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => (int) ($order->getAmountTotal() * 100),
-            'currency'       => $this->getOrderCurrency($order, $context)->getIsoCode(),
+            'amount'         => (int) ($order->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'currency'       => $currency->getIsoCode(),
         ];
     }
 
