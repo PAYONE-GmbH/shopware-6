@@ -79,7 +79,7 @@ class CustomerRequest
             $personalData['birthday'] = $birthday->format('Ymd');
         }
 
-        return $personalData;
+        return array_filter($personalData);
     }
 
     private function getCustomerSalutation(CustomerAddressEntity $addressEntity, Context $context): SalutationEntity
