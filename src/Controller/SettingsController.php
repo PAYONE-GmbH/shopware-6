@@ -68,13 +68,13 @@ class SettingsController extends AbstractController
     private function getPaymentParameters(string $paymentClass): array
     {
         switch ($paymentClass) {
-        case PayoneCreditCardPaymentHandler::class:
-            return [
-                'request'            => 'preauthorization',
-                'clearingtype'       => 'cc',
-                'amount'             => 100,
-                'currency'           => 'EUR',
-                'reference'          => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+            case PayoneCreditCardPaymentHandler::class:
+                return [
+                    'request'        => 'preauthorization',
+                    'clearingtype'   => 'cc',
+                    'amount'         => 100,
+                    'currency'       => 'EUR',
+                    'reference'      => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
                     'cardpan'        => '5500000000000004',
                     'pseudocardpan'  => '5500000000099999',
                     'cardtype'       => 'M',
