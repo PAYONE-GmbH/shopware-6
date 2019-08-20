@@ -22,6 +22,7 @@ class CustomFieldInstaller implements InstallerInterface
     public const TRANSACTION_DATA       = 'payone_transaction_data';
     public const USER_ID                = 'payone_user_id';
     public const LAST_REQUEST           = 'payone_last_request';
+    public const AUTHORIZATION_TYPE     = 'payone_authorization_type';
     public const TRANSACTION_STATE      = 'payone_transaction_state';
     public const ALLOW_REFUND           = 'payone_allow_refund';
     public const ALLOW_CAPTURE          = 'payone_allow_capture';
@@ -143,6 +144,12 @@ class CustomFieldInstaller implements InstallerInterface
             [
                 'id'               => '441218e612d045d99e851c0b8829dc29',
                 'name'             => self::MANDATE_IDENTIFICATION,
+                'type'             => CustomFieldTypes::TEXT,
+                'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
+            ],
+            [
+                'id'               => '6b36addf41694c798d9e6cf835ed30b6',
+                'name'             => self::AUTHORIZATION_TYPE,
                 'type'             => CustomFieldTypes::TEXT,
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
             ],
