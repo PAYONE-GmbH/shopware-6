@@ -60,7 +60,5 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
 
         $this->dataHandler->logResponse($paymentTransaction, $context, $response);
         $this->dataHandler->incrementSequenceNumber($paymentTransaction, $context);
-
-        $this->stateHandler->pay($paymentTransaction->getOrderTransaction()->getId(), $context);
     }
 }
