@@ -130,6 +130,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $criteria = new Criteria();
         $filter   = new EqualsFilter($field, $payoneTransactionId);
         $criteria->addFilter($filter);
+        $criteria->addAssociation('paymentMethod');
 
         $transaction = $this->orderTransactionRepository->search($criteria, $context)->first();
 
