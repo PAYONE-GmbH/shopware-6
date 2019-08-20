@@ -113,7 +113,11 @@ class PayoneSofortBankingPaymentHandler implements AsynchronousPaymentHandlerInt
 
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
-        return false;
+        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
+            return false;
+        }
+
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 
     public static function isRefundable(array $transactionData, array $customFields): bool
