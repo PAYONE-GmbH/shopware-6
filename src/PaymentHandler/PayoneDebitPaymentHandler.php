@@ -7,6 +7,7 @@ namespace PayonePayment\PaymentHandler;
 use DateTime;
 use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -20,7 +21,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
+class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
 {
     /** @var DebitAuthorizeRequestFactory */
     private $requestFactory;
@@ -79,6 +80,7 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
             CustomFieldInstaller::LAST_REQUEST           => $request['request'],
             CustomFieldInstaller::TRANSACTION_ID         => (string) $response['txid'],
             CustomFieldInstaller::TRANSACTION_STATE      => 'pending',
+            CustomFieldInstaller::AUTHORIZATION_TYPE     => $request['request'],
             CustomFieldInstaller::SEQUENCE_NUMBER        => -1,
             CustomFieldInstaller::USER_ID                => $response['userid'],
             CustomFieldInstaller::ALLOW_CAPTURE          => false,
@@ -96,6 +98,25 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface
             $response['mandate']['Identification'],
             $date,
             $salesChannelContext
+        );
+    }
+
+    public static function isCapturable(array $transactionData, array $customFields): bool
+    {
+        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
+            return false;
+        }
+
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED;
+    }
+
+    public static function isRefundable(array $transactionData, array $customFields): bool
+    {
+        return in_array(strtolower($transactionData['txaction']),
+            [
+                TransactionStatusService::ACTION_PAID,
+                TransactionStatusService::ACTION_CAPTURE,
+            ]
         );
     }
 }

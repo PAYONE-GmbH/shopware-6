@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Processor;
 
+use Exception;
 use IteratorAggregate;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
@@ -11,7 +12,6 @@ use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 class WebhookProcessor implements WebhookProcessorInterface
 {
@@ -62,7 +62,7 @@ class WebhookProcessor implements WebhookProcessorInterface
             try {
                 $handler->process($salesChannelContext, $data);
                 $this->logger->info(sprintf('Processed webhook handler %s', get_class($handler)));
-            } catch (Throwable $exception) {
+            } catch (Exception $exception) {
                 $this->logger->error(sprintf('Error during processing of webhook handler %s', get_class($handler)), [
                     'message' => $exception->getMessage(),
                     'file'    => $exception->getFile(),

@@ -7,6 +7,7 @@ namespace PayonePayment\Components\TransactionStatus;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentHandler\PayonePaymentHandlerInterface;
 use PayonePayment\Payone\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
@@ -18,12 +19,19 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class TransactionStatusService implements TransactionStatusServiceInterface
 {
-    private const ACTION_APPOINTED        = 'appointed';
-    private const ACTION_PAID             = 'paid';
-    private const ACTION_CAPTURE          = 'capture';
-    private const ACTION_COMPLETED        = 'completed';
-    private const ACTION_AUTHORIZATION    = 'authorization';
-    private const ACTION_PREAUTHORIZATION = 'preauthorization';
+    public const ACTION_APPOINTED        = 'appointed';
+    public const ACTION_PAID             = 'paid';
+    public const ACTION_CAPTURE          = 'capture';
+    public const ACTION_COMPLETED        = 'completed';
+    public const ACTION_DEBIT            = 'debit';
+    public const ACTION_AUTHORIZATION    = 'authorization';
+    public const ACTION_PREAUTHORIZATION = 'preauthorization';
+
+    public const STATUS_PENDING   = 'pending';
+    public const STATUS_COMPLETED = 'completed';
+
+    public const AUTHORIZATION_TYPE_PREAUTHORIZATION = 'preauthorization';
+    public const AUTHORIZATION_TYPE_AUTHORIZATION    = 'authorization';
 
     /** @var EntityRepositoryInterface */
     private $orderTransactionRepository;
@@ -76,13 +84,11 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = (int) $transactionData['sequencenumber'];
         $data[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
 
-        $customFields = $paymentTransaction->getCustomFields();
-
-        if ($this->shouldAllowCapture($transactionData, $customFields)) {
+        if ($this->shouldAllowCapture($transactionData, $paymentTransaction)) {
             $data[CustomFieldInstaller::ALLOW_CAPTURE] = true;
         }
 
-        if ($this->shouldAllowRefund($transactionData, $customFields)) {
+        if ($this->shouldAllowRefund($transactionData, $paymentTransaction)) {
             $data[CustomFieldInstaller::ALLOW_REFUND] = true;
         }
 
@@ -134,22 +140,30 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return PaymentTransaction::fromOrderTransaction($transaction);
     }
 
-    private function shouldAllowCapture(array $transactionData, array $customFields): bool
+    private function shouldAllowCapture(array $transactionData, PaymentTransaction $paymentTransaction): bool
     {
-        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== self::ACTION_PREAUTHORIZATION) {
-            return false;
+        $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
+        /** @var string&PayonePaymentHandlerInterface $handlerClass */
+        $handlerClass = $paymentMethodEntity->getHandlerIdentifier();
+
+        if (!class_exists($handlerClass)) {
+            throw new RuntimeException(sprintf('The handler class %s for payment method %s does not exist.', $paymentMethodEntity->getName(), $handlerClass));
         }
 
-        return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
+        return $handlerClass::isCapturable($transactionData, $paymentTransaction->getCustomFields());
     }
 
-    private function shouldAllowRefund(array $transactionData, array $customFields): bool
+    private function shouldAllowRefund(array $transactionData, PaymentTransaction $paymentTransaction): bool
     {
-        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== self::ACTION_AUTHORIZATION) {
-            return false;
+        $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
+        /** @var string&PayonePaymentHandlerInterface $handlerClass */
+        $handlerClass = $paymentMethodEntity->getHandlerIdentifier();
+
+        if (!class_exists($handlerClass)) {
+            throw new RuntimeException(sprintf('The handler class %s for payment method %s does not exist.', $paymentMethodEntity->getName(), $handlerClass));
         }
 
-        return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
+        return $handlerClass::isRefundable($transactionData, $paymentTransaction->getCustomFields());
     }
 
     private function isTransactionOpen(array $transactionData): bool
@@ -159,19 +173,14 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPaid(array $transactionData): bool
     {
-        if (strtolower($transactionData['txaction']) === self::ACTION_PAID) {
-            return true;
-        }
-
-        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE) {
-            return true;
-        }
-
-        if (strtolower($transactionData['txaction']) === self::ACTION_COMPLETED) {
-            return true;
-        }
-
-        return false;
+        return in_array($transactionData['txaction'],
+            [
+                self::ACTION_PAID,
+                self::ACTION_CAPTURE,
+                self::ACTION_COMPLETED,
+                self::ACTION_DEBIT,
+            ]
+        );
     }
 
     private function stateExists(string $state, Context $context): bool
