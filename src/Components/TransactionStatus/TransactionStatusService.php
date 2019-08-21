@@ -85,14 +85,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
         $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = (int) $transactionData['sequencenumber'];
         $data[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
-
-        if ($this->shouldAllowCapture($transactionData, $paymentTransaction)) {
-            $data[CustomFieldInstaller::ALLOW_CAPTURE] = true;
-        }
-
-        if ($this->shouldAllowRefund($transactionData, $paymentTransaction)) {
-            $data[CustomFieldInstaller::ALLOW_REFUND] = true;
-        }
+        $data[CustomFieldInstaller::ALLOW_CAPTURE]     = $this->shouldAllowCapture($transactionData, $paymentTransaction);
+        $data[CustomFieldInstaller::ALLOW_REFUND]      = $this->shouldAllowRefund($transactionData, $paymentTransaction);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $transactionData);
