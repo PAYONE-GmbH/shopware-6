@@ -112,11 +112,7 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface, P
 
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        return in_array(strtolower($transactionData['txaction']),
-                [
-                    TransactionStatusService::ACTION_PAID,
-                    TransactionStatusService::ACTION_CAPTURE,
-                ]
-            ) || ($transactionData['txaction'] === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0);
+        return strtolower($transactionData['txaction']) == TransactionStatusService::ACTION_PAID
+            || ($transactionData['txaction'] === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0);
     }
 }
