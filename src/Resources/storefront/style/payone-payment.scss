@@ -1,24 +1,31 @@
-.payone-payment.credit-card .form-control.iframe {
-    padding: 0;
-    border: 0;
-    height: calc(5em - #{$form-check-input-gutter});
+.payone-payment.credit-card {
+    .alert {
+        margin: 0;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .form-control.iframe {
+        padding: 0;
+        border: 0;
+        height: calc(5em - #{$form-check-input-gutter});
+    }
+
+    .card-logo-container {
+        padding-left: 10px;
+    }
+    #card-logo {
+        display: block;
+        height: calc(4em - #{$form-check-input-gutter});
+        border: 1px solid transparent;
+        margin: 0 auto;
+    }
 }
 
-.payone-payment.credit-card .card-logo-container {
-    padding-left: 10px;
-}
-
-.payone-payment.credit-card #card-logo {
-    display: block;
-    height: calc(4em - #{$form-check-input-gutter});
-    border: 1px solid transparent;
-    margin: 0 auto;
-}
-
-.payone-payment.credit-card .alert {
-    margin: 0;
-}
-
-.payone-debit-mandate-modal .modal-body {
-    padding: 0;
+.payone-debit-mandate-modal {
+    .modal-body {
+        padding: 0;
+    }
 }
