@@ -122,7 +122,7 @@ class PayoneSofortBankingPaymentHandler implements AsynchronousPaymentHandlerInt
 
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        return strtolower($transactionData['txaction']) == TransactionStatusService::ACTION_PAID
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID
             || ($transactionData['txaction'] === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0);
     }
 }
