@@ -149,6 +149,6 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
                     TransactionStatusService::ACTION_CAPTURE,
                     TransactionStatusService::ACTION_DEBIT,
                 ]
-            ) || ($transactionData['txaction'] === TransactionStatusService::ACTION_CAPTURE && $transactionData['receivable'] != '0');
+            ) || ($transactionData['txaction'] === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0);
     }
 }
