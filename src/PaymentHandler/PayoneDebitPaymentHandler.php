@@ -117,6 +117,6 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface, P
                     TransactionStatusService::ACTION_PAID,
                     TransactionStatusService::ACTION_CAPTURE,
                 ]
-            ) || ($transactionData['txaction'] === TransactionStatusService::ACTION_CAPTURE && $transactionData['receivable'] != '0');
+            ) || ($transactionData['txaction'] === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0);
     }
 }

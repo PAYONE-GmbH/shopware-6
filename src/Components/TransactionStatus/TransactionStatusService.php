@@ -100,7 +100,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $configurationKey = 'paymentStatus' . ucfirst(strtolower($transactionData['txaction']));
 
-        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && $transactionData['receivable'] == '0') {
+        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && (float) $transactionData['receivable'] === 0.0) {
             // This is a special case of a capture of 0, which means a cancellation
             $configurationKey = 'paymentStatusCancelation';
         }
@@ -200,7 +200,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     {
         return strtolower($transactionData['txaction']) === self::ACTION_CANCELATION
             || strtolower($transactionData['txaction']) === self::ACTION_FAILED
-            || (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && $transactionData['receivable'] == '0');
+            || (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && (float) $transactionData['receivable'] === 0.0);
     }
 
     private function stateExists(string $state, Context $context): bool
