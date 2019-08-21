@@ -144,11 +144,11 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
         return in_array(strtolower($transactionData['txaction']),
-            [
-                TransactionStatusService::ACTION_PAID,
-                TransactionStatusService::ACTION_CAPTURE,
-                TransactionStatusService::ACTION_DEBIT,
-            ]
-        );
+                [
+                    TransactionStatusService::ACTION_PAID,
+                    TransactionStatusService::ACTION_CAPTURE,
+                    TransactionStatusService::ACTION_DEBIT,
+                ]
+            ) || ($transactionData['txaction'] === TransactionStatusService::ACTION_CAPTURE && $transactionData['receivable'] != '0');
     }
 }
