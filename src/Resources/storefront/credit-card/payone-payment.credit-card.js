@@ -34,6 +34,10 @@ export default class PayonePaymentCreditCard extends Plugin {
             document
                 .getElementById('confirmOrderForm')
                 .addEventListener('submit', this._handleOrderSubmit.bind(this));
+
+            document
+                .getElementById('savedpseudocardpan')
+                .addEventListener('change', this._handleChangeSavedCard.bind(this));
         });
     }
 
@@ -167,6 +171,16 @@ export default class PayonePaymentCreditCard extends Plugin {
             event.preventDefault();
 
             return false;
+        }
+    }
+
+    _handleChangeSavedCard() {
+        const savedCardPan = document.getElementById('savedpseudocardpan');
+
+        if(savedCardPan.options[savedCardPan.selectedIndex].value) {
+            [...document.getElementsByClassName('credit-card-input')].forEach(function(element) { element.classList.add('hide') });
+        } else {
+            [...document.getElementsByClassName('credit-card-input')].forEach(function(element) { element.classList.remove('hide'); });
         }
     }
 
