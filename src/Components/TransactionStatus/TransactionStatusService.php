@@ -189,11 +189,10 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return in_array(strtolower($transactionData['txaction']),
             [
                 self::ACTION_PAID,
-                self::ACTION_CAPTURE,
                 self::ACTION_COMPLETED,
                 self::ACTION_DEBIT,
             ]
-        );
+        ) || (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0);
     }
 
     private function isTransactionCancelled(array $transactionData): bool
