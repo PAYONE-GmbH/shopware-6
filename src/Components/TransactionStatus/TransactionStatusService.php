@@ -26,6 +26,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     public const ACTION_DEBIT            = 'debit';
     public const ACTION_AUTHORIZATION    = 'authorization';
     public const ACTION_PREAUTHORIZATION = 'preauthorization';
+    public const ACTION_CANCELATION      = 'cancelation';
+    public const ACTION_FAILED           = 'failed';
 
     public const STATUS_PENDING   = 'pending';
     public const STATUS_COMPLETED = 'completed';
@@ -98,6 +100,11 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $configurationKey = 'paymentStatus' . ucfirst(strtolower($transactionData['txaction']));
 
+        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && $transactionData['receivable'] == '0') {
+            // This is a special case of a capture of 0, which means a cancellation
+            $configurationKey = 'paymentStatusCancelation';
+        }
+
         if (!empty($configuration->get($configurationKey))) {
             if (!$this->stateExists($configuration->get($configurationKey), $salesChannelContext->getContext())) {
                 throw new RuntimeException(sprintf('The mapped transaction state for %s does not exists. The mapping is therefore invalid.', $transactionData['txaction']));
@@ -116,6 +123,11 @@ class TransactionStatusService implements TransactionStatusServiceInterface
                 );
             } elseif ($this->isTransactionPaid($transactionData)) {
                 $this->stateHandler->pay(
+                    $paymentTransaction->getOrderTransaction()->getId(),
+                    $salesChannelContext->getContext()
+                );
+            } elseif ($this->isTransactionCancelled($transactionData)) {
+                $this->stateHandler->cancel(
                     $paymentTransaction->getOrderTransaction()->getId(),
                     $salesChannelContext->getContext()
                 );
@@ -174,7 +186,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPaid(array $transactionData): bool
     {
-        return in_array($transactionData['txaction'],
+        return in_array(strtolower($transactionData['txaction']),
             [
                 self::ACTION_PAID,
                 self::ACTION_CAPTURE,
@@ -182,6 +194,13 @@ class TransactionStatusService implements TransactionStatusServiceInterface
                 self::ACTION_DEBIT,
             ]
         );
+    }
+
+    private function isTransactionCancelled(array $transactionData): bool
+    {
+        return strtolower($transactionData['txaction']) === self::ACTION_CANCELATION
+            || strtolower($transactionData['txaction']) === self::ACTION_FAILED
+            || (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && $transactionData['receivable'] == '0');
     }
 
     private function stateExists(string $state, Context $context): bool
