@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\CapturePaymentHandler;
 
+use Exception;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -13,7 +14,6 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
-use Throwable;
 
 class CapturePaymentHandler implements CapturePaymentHandlerInterface
 {
@@ -54,7 +54,7 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
             $response = $this->client->request($request);
         } catch (PayoneRequestException $exception) {
             throw new InvalidOrderException($orderTransaction->getOrderId());
-        } catch (Throwable $exception) {
+        } catch (Exception $exception) {
             throw new InvalidOrderException($orderTransaction->getOrderId());
         }
 
