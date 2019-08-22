@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregatorResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
+use Shopware\Core\Framework\Event\NestedEventCollection;
 
 class EntityRepositoryMock implements EntityRepositoryInterface
 {
@@ -38,6 +39,7 @@ class EntityRepositoryMock implements EntityRepositoryInterface
 
     public function update(array $data, Context $context): EntityWrittenContainerEvent
     {
+        return new EntityWrittenContainerEvent(Context::createDefaultContext(), new NestedEventCollection(), []);
     }
 
     public function upsert(array $data, Context $context): EntityWrittenContainerEvent
