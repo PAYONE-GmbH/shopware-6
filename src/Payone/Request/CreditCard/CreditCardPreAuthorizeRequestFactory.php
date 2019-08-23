@@ -37,19 +37,19 @@ class CreditCardPreAuthorizeRequestFactory extends AbstractRequestFactory
         string $pseudoCardPan,
         SalesChannelContext $context
     ): array {
-        $this->requests[] = $this->preAuthorizeRequest->getRequestParameters(
-            $transaction,
-            $context->getContext(),
-            $pseudoCardPan
+        $this->requests[] = $this->systemRequest->getRequestParameters(
+            $transaction->getOrder()->getSalesChannelId(),
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
             $context
         );
 
-        $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD
+        $this->requests[] = $this->preAuthorizeRequest->getRequestParameters(
+            $transaction,
+            $context->getContext(),
+            $pseudoCardPan
         );
 
         return $this->createRequest();

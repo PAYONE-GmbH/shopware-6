@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -21,7 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
+class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
 {
     /** @var PaypalAuthorizeRequestFactory */
     private $requestFactory;
@@ -86,13 +87,14 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
         }
 
         $data = [
-            CustomFieldInstaller::LAST_REQUEST      => $request['request'],
-            CustomFieldInstaller::TRANSACTION_ID    => (string) $response['txid'],
-            CustomFieldInstaller::TRANSACTION_STATE => $response['status'],
-            CustomFieldInstaller::SEQUENCE_NUMBER   => -1,
-            CustomFieldInstaller::USER_ID           => $response['userid'],
-            CustomFieldInstaller::ALLOW_CAPTURE     => false,
-            CustomFieldInstaller::ALLOW_REFUND      => false,
+            CustomFieldInstaller::LAST_REQUEST       => $request['request'],
+            CustomFieldInstaller::TRANSACTION_ID     => (string) $response['txid'],
+            CustomFieldInstaller::TRANSACTION_STATE  => $response['status'],
+            CustomFieldInstaller::AUTHORIZATION_TYPE => $request['request'],
+            CustomFieldInstaller::SEQUENCE_NUMBER    => -1,
+            CustomFieldInstaller::USER_ID            => $response['userid'],
+            CustomFieldInstaller::ALLOW_CAPTURE      => false,
+            CustomFieldInstaller::ALLOW_REFUND       => false,
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
@@ -107,5 +109,21 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface
     public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
     {
         $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
+    }
+
+    public static function isCapturable(array $transactionData, array $customFields): bool
+    {
+        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
+            return false;
+        }
+
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED
+            && strtolower($transactionData['transaction_status']) === TransactionStatusService::STATUS_COMPLETED;
+    }
+
+    public static function isRefundable(array $transactionData, array $customFields): bool
+    {
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID
+            || ($transactionData['txaction'] === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
+use Exception;
 use PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandlerInterface;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -15,7 +16,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Throwable;
 
 class CaptureController extends AbstractController
 {
@@ -70,7 +70,7 @@ class CaptureController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST
             );
-        } catch (Throwable $exception) {
+        } catch (Exception $exception) {
             return new JsonResponse(
                 [
                     'status'  => false,

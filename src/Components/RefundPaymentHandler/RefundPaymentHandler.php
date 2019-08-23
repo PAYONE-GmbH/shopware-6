@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\RefundPaymentHandler;
 
+use Exception;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
@@ -14,7 +15,6 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
-use Throwable;
 
 class RefundPaymentHandler implements RefundPaymentHandlerInterface
 {
@@ -55,7 +55,7 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
             $response = $this->client->request($request);
         } catch (PayoneRequestException $exception) {
             throw new InvalidOrderException($orderTransaction->getOrderId());
-        } catch (Throwable $exception) {
+        } catch (Exception $exception) {
             throw new InvalidOrderException($orderTransaction->getOrderId());
         }
 

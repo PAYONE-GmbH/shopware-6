@@ -24,6 +24,8 @@ use Throwable;
 
 class SettingsController extends AbstractController
 {
+    private const REFERENCE_PREFIX_TEST = 'TESTPO-';
+
     /** @var PayoneClientInterface */
     private $client;
 
@@ -72,7 +74,7 @@ class SettingsController extends AbstractController
                     'clearingtype'   => 'cc',
                     'amount'         => 100,
                     'currency'       => 'EUR',
-                    'reference'      => random_int(10000000, 99999999),
+                    'reference'      => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
                     'cardpan'        => '5500000000000004',
                     'pseudocardpan'  => '5500000000099999',
                     'cardtype'       => 'M',
@@ -93,7 +95,7 @@ class SettingsController extends AbstractController
                     'bankaccountholder' => 'Test Test',
                     'amount'            => 100,
                     'currency'          => 'EUR',
-                    'reference'         => random_int(10000000, 99999999),
+                    'reference'         => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
                     'firstname'         => 'Test',
                     'lastname'          => 'Test',
                     'country'           => 'DE',
@@ -107,7 +109,7 @@ class SettingsController extends AbstractController
                     'wallettype'   => 'PPE',
                     'amount'       => 100,
                     'currency'     => 'EUR',
-                    'reference'    => random_int(10000000, 99999999),
+                    'reference'    => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
                     'firstname'    => 'Test',
                     'lastname'     => 'Test',
                     'country'      => 'DE',
@@ -122,7 +124,7 @@ class SettingsController extends AbstractController
                     'bankcountry'            => 'DE',
                     'amount'                 => 100,
                     'currency'               => 'EUR',
-                    'reference'              => random_int(10000000, 99999999),
+                    'reference'              => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
                     'firstname'              => 'Test',
                     'lastname'               => 'Test',
                     'country'                => 'DE',

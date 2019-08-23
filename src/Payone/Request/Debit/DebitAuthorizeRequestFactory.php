@@ -42,21 +42,21 @@ class DebitAuthorizeRequestFactory extends AbstractRequestFactory
         $bic          = $dataBag->get('bic');
         $accountOwner = $dataBag->get('accountOwner');
 
-        $this->requests[] = $this->authorizeRequest->getRequestParameters(
-            $transaction,
-            $context->getContext(),
-            $iban,
-            $bic,
-            $accountOwner
+        $this->requests[] = $this->systemRequest->getRequestParameters(
+            $transaction->getOrder()->getSalesChannelId(),
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_DEBIT
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
             $context
         );
 
-        $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_DEBIT
+        $this->requests[] = $this->authorizeRequest->getRequestParameters(
+            $transaction,
+            $context->getContext(),
+            $iban,
+            $bic,
+            $accountOwner
         );
 
         return $this->createRequest();

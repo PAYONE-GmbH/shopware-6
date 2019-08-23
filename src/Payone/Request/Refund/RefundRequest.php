@@ -40,12 +40,14 @@ class RefundRequest
             throw new InvalidOrderException($order->getId());
         }
 
+        $currency = $this->getOrderCurrency($order, $context);
+
         return [
             'request'        => 'debit',
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => -1 * (int) ($order->getAmountTotal() * 100),
-            'currency'       => $this->getOrderCurrency($order, $context)->getIsoCode(),
+            'amount'         => -1 * (int) ($order->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'currency'       => $currency->getIsoCode(),
             'settleaccount'  => 'auto',
         ];
     }

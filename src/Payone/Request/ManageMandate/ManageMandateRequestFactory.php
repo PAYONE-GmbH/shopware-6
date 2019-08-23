@@ -36,19 +36,19 @@ class ManageMandateRequestFactory extends AbstractRequestFactory
         string $iban,
         string $bic
     ): array {
-        $this->requests[] = $this->mandateRequest->getRequestParameters(
-            $context,
-            $iban,
-            $bic
+        $this->requests[] = $this->systemRequest->getRequestParameters(
+            $context->getSalesChannel()->getId(),
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_DEBIT
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
             $context
         );
 
-        $this->requests[] = $this->systemRequest->getRequestParameters(
-            $context->getSalesChannel()->getId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_DEBIT
+        $this->requests[] = $this->mandateRequest->getRequestParameters(
+            $context,
+            $iban,
+            $bic
         );
 
         return $this->createRequest();
