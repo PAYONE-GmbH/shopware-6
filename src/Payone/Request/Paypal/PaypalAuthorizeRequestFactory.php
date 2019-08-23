@@ -36,18 +36,18 @@ class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
         PaymentTransaction $transaction,
         SalesChannelContext $context
     ): array {
-        $this->requests[] = $this->authorizeRequest->getRequestParameters(
-            $transaction,
-            $context->getContext()
+        $this->requests[] = $this->systemRequest->getRequestParameters(
+            $transaction->getOrder()->getSalesChannelId(),
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYPAL
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
             $context
         );
 
-        $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYPAL
+        $this->requests[] = $this->authorizeRequest->getRequestParameters(
+            $transaction,
+            $context->getContext()
         );
 
         return $this->createRequest();

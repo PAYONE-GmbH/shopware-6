@@ -10,6 +10,8 @@
       "email": "feedback@bspayone.com"
     }
   ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "require-dev": {
     "fzaninotto/faker": "1.8.0",
     "k10r/codestyle": "^1.0",

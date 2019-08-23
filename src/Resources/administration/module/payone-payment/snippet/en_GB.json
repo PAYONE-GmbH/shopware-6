@@ -32,7 +32,7 @@
             }
         },
         "messageNotBlank": "This field must not be empty.",
-        "poNumber": "PO-Number",
+        "txid": "TXID",
         "sequenceNumber": "Sequencenumber",
         "transactionState": "State"
     }
