@@ -6,6 +6,7 @@ namespace PayonePayment\Components\CapturePaymentHandler;
 
 use Exception;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
@@ -58,7 +59,12 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
             throw new InvalidOrderException($orderTransaction->getOrderId());
         }
 
+        $data = [
+            CustomFieldInstaller::ALLOW_CAPTURE => false,
+        ];
+
         $this->dataHandler->logResponse($paymentTransaction, $context, $response);
         $this->dataHandler->incrementSequenceNumber($paymentTransaction, $context);
+        $this->dataHandler->saveTransactionData($paymentTransaction, $context, $data);
     }
 }
