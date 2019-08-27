@@ -42,37 +42,33 @@ export default class PayonePaymentCreditCard extends Plugin {
     }
 
     getSelectStyle() {
-        const styles = [
-            'width: 100%;',
-            'height: calc(1.5em + 1.45rem);',
-            'padding: .5625rem;',
-            'color: #8798a9;',
-            'vertical-align: middle;',
-            'line-height: 1.5;',
-            'font-weight: 500;',
-            'background-color: #fff;',
-            'border: .0625rem solid #d1d9e0;',
-            'border-radius: 3px;',
+        return [
+            'width: 100%',
+            'height: calc(1.5em + 1.45rem)',
+            'padding: .5625rem',
+            'color: #8798a9',
+            'vertical-align: middle',
+            'line-height: 1.5',
+            'font-weight: 500',
+            'background-color: #fff',
+            'border: .0625rem solid #d1d9e0',
+            'border-radius: 3px',
         ];
-
-        return styles.join(' ');
     }
 
     getFieldStyle() {
-        const styles = [
-            'width: 100%;',
-            'height: 100%;',
-            'padding: .5625rem;',
-            'color: #8798a9;',
-            'vertical-align: middle;',
-            'line-height: 1.5;',
-            'font-weight: 500;',
-            'background-color: #fff;',
-            'border: .0625rem solid #d1d9e0;',
-            'border-radius: .1875rem;',
+        return [
+            'width: 100%',
+            'height: 100%',
+            'padding: .5625rem',
+            'color: #8798a9',
+            'vertical-align: middle',
+            'line-height: 1.5',
+            'font-weight: 500',
+            'background-color: #fff',
+            'border: .0625rem solid #d1d9e0',
+            'border-radius: .1875rem',
         ];
-
-        return styles.join(' ');
     }
 
     getClientConfig(language) {
@@ -81,26 +77,26 @@ export default class PayonePaymentCreditCard extends Plugin {
                 cardpan: {
                     selector: 'cardpan',
                     type: 'text',
-                    style: this.getFieldStyle(),
+                    style: this.getFieldStyle().join('; '),
                 },
                 cardcvc2: {
                     selector: 'cardcvc2',
                     type: 'password',
                     size: '4',
                     maxlength: '4',
-                    style: this.getFieldStyle(),
+                    style: this.getFieldStyle().join('; '),
                 },
                 cardexpiremonth: {
                     selector: 'cardexpiremonth',
                     type: 'select',
                     size: '2',
                     maxlength: '2',
-                    style: this.getSelectStyle(),
+                    style: this.getSelectStyle().join('; '),
                 },
                 cardexpireyear: {
                     selector: 'cardexpireyear',
                     type: 'select',
-                    style: this.getSelectStyle(),
+                    style: this.getSelectStyle().join('; '),
                 },
             },
 
