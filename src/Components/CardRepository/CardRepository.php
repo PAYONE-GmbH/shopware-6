@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\CardRepository;
 
+use DateTimeInterface;
 use PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
@@ -11,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Uuid\Uuid;
 
 class CardRepository implements CardRepositoryInterface
@@ -27,6 +29,7 @@ class CardRepository implements CardRepositoryInterface
         CustomerEntity $customer,
         string $truncatedCardPan,
         string $pseudoCardPan,
+        DateTimeInterface $expiresAt,
         Context $context
     ): void {
         $card = $this->getExistingCard(
@@ -39,6 +42,7 @@ class CardRepository implements CardRepositoryInterface
             'id'               => null === $card ? Uuid::randomHex() : $card->getId(),
             'pseudoCardPan'    => $pseudoCardPan,
             'truncatedCardPan' => $truncatedCardPan,
+            'expiresAt'        => \DateTime::createFromFormat('Y-m-d', $expiresAt->format('Y-m-t'))->setTime(23, 59, 59),
             'customerId'       => $customer->getId(),
         ];
 
@@ -72,6 +76,9 @@ class CardRepository implements CardRepositoryInterface
         $criteria->addFilter(
             new EqualsFilter('payone_payment_card.customerId', $customer->getId())
         );
+        $criteria->addSorting(
+            new FieldSorting('expiresAt', FieldSorting::DESCENDING)
+        );
 
         return $this->cardRepository->search($criteria, $context);
     }
@@ -84,10 +91,7 @@ class CardRepository implements CardRepositoryInterface
         $criteria = new Criteria();
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_card.pseudoCardPan', $pseudoCardPan)
-        );
-
-        $criteria->addFilter(
+            new EqualsFilter('payone_payment_card.pseudoCardPan', $pseudoCardPan),
             new EqualsFilter('payone_payment_card.customerId', $customer->getId())
         );
 

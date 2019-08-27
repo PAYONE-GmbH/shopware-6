@@ -7,6 +7,7 @@ namespace PayonePayment\DataAbstractionLayer\Entity\Card;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\DateTimeField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
@@ -42,6 +43,7 @@ class PayonePaymentCardDefinition extends EntityDefinition
 
             (new StringField('pseudo_card_pan', 'pseudoCardPan'))->setFlags(new Required()),
             (new StringField('truncated_card_pan', 'truncatedCardPan'))->setFlags(new Required()),
+            (new DateTimeField('expires_at', 'expiresAt'))->setFlags(new Required()),
 
             new ManyToOneAssociationField('customer', 'customer_id', CustomerDefinition::class, 'id', false),
 
