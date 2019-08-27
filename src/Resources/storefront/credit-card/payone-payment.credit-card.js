@@ -27,7 +27,7 @@ export default class PayonePaymentCreditCard extends Plugin {
         const request = JSON.parse(requestContainer.innerHTML);
 
         this._createScript(() => {
-            const config = this._getClientConfig(language);
+            const config = this.getClientConfig(language);
 
             this.iframe = new window.Payone.ClientApi.HostedIFrames(config, request);
 
@@ -41,7 +41,7 @@ export default class PayonePaymentCreditCard extends Plugin {
         });
     }
 
-    _getSelectStyle() {
+    getSelectStyle() {
         const styles = [
             'width: 100%;',
             'height: calc(1.5em + 1.45rem);',
@@ -52,13 +52,13 @@ export default class PayonePaymentCreditCard extends Plugin {
             'font-weight: 500;',
             'background-color: #fff;',
             'border: .0625rem solid #d1d9e0;',
-            'border-radius: 3px',
+            'border-radius: 3px;',
         ];
 
         return styles.join(' ');
     }
 
-    _getFieldStyle() {
+    getFieldStyle() {
         const styles = [
             'width: 100%;',
             'height: 100%;',
@@ -75,32 +75,32 @@ export default class PayonePaymentCreditCard extends Plugin {
         return styles.join(' ');
     }
 
-    _getClientConfig(language) {
+    getClientConfig(language) {
         return {
             fields: {
                 cardpan: {
                     selector: 'cardpan',
                     type: 'text',
-                    style: this._getFieldStyle(),
+                    style: this.getFieldStyle(),
                 },
                 cardcvc2: {
                     selector: 'cardcvc2',
                     type: 'password',
                     size: '4',
                     maxlength: '4',
-                    style: this._getFieldStyle(),
+                    style: this.getFieldStyle(),
                 },
                 cardexpiremonth: {
                     selector: 'cardexpiremonth',
                     type: 'select',
                     size: '2',
                     maxlength: '2',
-                    style: this._getSelectStyle(),
+                    style: this.getSelectStyle(),
                 },
                 cardexpireyear: {
                     selector: 'cardexpireyear',
                     type: 'select',
-                    style: this._getSelectStyle(),
+                    style: this.getSelectStyle(),
                 },
             },
 
