@@ -1,3 +1,6 @@
+$payone-input-gutter: 1.9rem;
+$payone-logo-gutter: 1rem;
+
 .payone-payment.credit-card {
     .alert {
         margin: 0;
@@ -10,7 +13,7 @@
     .form-control.iframe {
         padding: 0;
         border: 0;
-        height: calc(5em - #{$form-check-input-gutter});
+        height: calc(5em - #{$payone-input-gutter});
     }
 
     .card-logo-container {
@@ -18,7 +21,7 @@
     }
     #card-logo {
         display: block;
-        height: calc(4em - #{$form-check-input-gutter});
+        height: calc(4em - #{$payone-logo-gutter});
         border: 1px solid transparent;
         margin: 0 auto;
     }
