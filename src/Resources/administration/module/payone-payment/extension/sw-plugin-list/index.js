@@ -1,4 +1,4 @@
-import { Component } from 'src/core/shopware';
+const { Component } = Shopware;
 import template from './sw-plugin-list.html.twig';
 
 Component.override('sw-plugin-list', {
