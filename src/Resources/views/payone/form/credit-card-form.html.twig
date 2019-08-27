@@ -14,7 +14,10 @@
 
                             {% for card in page.extensions.payone.savedCards %}
                                 {% if card.expiresAt > date() %}
-                                <option value="{{ card.pseudoCardPan }}">{{ card.truncatedCardPan }}</option>
+                                <option value="{{ card.pseudoCardPan }}">
+                                    {{ card.truncatedCardPan }}
+                                    ({{ "PayonePayment.cardPage.expiresAt" | trans({'%expiresAt%': card.expiresAt|localizeddate('medium', 'none', locale, 'UTC')}) }})
+                                </option>
                                 {% endif %}
                             {% endfor %}
                         </select>
