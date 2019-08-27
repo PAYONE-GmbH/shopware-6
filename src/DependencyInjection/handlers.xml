@@ -4,6 +4,35 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <!-- Global handlers -->
+        <service id="PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandler">
+            <argument type="service" id="PayonePayment\Payone\Request\Refund\RefundRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
+            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler" />
+        </service>
+
+        <service id="PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandler">
+            <argument type="service" id="PayonePayment\Payone\Request\Capture\CaptureRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
+            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler" />
+        </service>
+
+        <service id="PayonePayment\Components\RedirectHandler\RedirectHandler">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="router.default"/>
+        </service>
+
+        <service id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler">
+            <argument type="service" id="order_transaction.repository" />
+        </service>
+
+        <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler">
+            <argument type="service" id="translator" />
+        </service>
+
+        <!-- Payment handlers -->
         <service id="PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler">
             <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
