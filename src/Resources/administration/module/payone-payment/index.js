@@ -1,4 +1,4 @@
-import { Module } from 'src/core/shopware';
+const { Module } = Shopware;
 import payoneSettings from './page/payone-settings';
 
 import './extension/sw-order';
