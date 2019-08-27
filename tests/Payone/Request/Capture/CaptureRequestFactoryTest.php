@@ -92,6 +92,7 @@ class CaptureRequestFactoryTest extends TestCase
         $currencyEntity     = new CurrencyEntity();
         $currencyEntity->setId(self::CURRENCY_ID);
         $currencyEntity->setIsoCode('EUR');
+        $currencyEntity->setDecimalPrecision(2);
         $currencyRepository->method('search')->willReturn(
             new EntitySearchResult(
                 1,
