@@ -12,8 +12,15 @@
                                     <dt>{{ $tc('payone-payment.txid') }}</dt>
                                     <dd class="sw-order-base__label-sales-channel">{{ transaction.customFields.payone_transaction_id }}</dd>
 
-                                    <dt>{{ $tc('payone-payment.sequenceNumber') }}</dt>
-                                    <dd class="sw-order-base__label-sales-channel">{{ transaction.customFields.payone_sequence_number }}</dd>
+                                    <dt>{{ $tc('payone-payment.sequenceNumber.label') }}</dt>
+                                    <dd class="sw-order-base__label-sales-channel">
+                                        <span v-if="transaction.customFields.payone_sequence_number == -1">
+                                            {{ $tc('payone-payment.sequenceNumber.empty') }}
+                                        </span>
+                                        <span v-else>
+                                            {{ transaction.customFields.payone_sequence_number }}
+                                        </span>
+                                    </dd>
 
                                     <dt>{{ $tc('payone-payment.transactionState') }}</dt>
                                     <dd class="sw-order-base__label-sales-channel">{{ transaction.customFields.payone_transaction_state }}</dd>
