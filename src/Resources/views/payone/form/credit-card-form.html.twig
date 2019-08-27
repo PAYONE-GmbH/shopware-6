@@ -13,7 +13,9 @@
                             <option key=""></option>
 
                             {% for card in page.extensions.payone.savedCards %}
+                                {% if card.expiresAt > date() %}
                                 <option value="{{ card.pseudoCardPan }}">{{ card.truncatedCardPan }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
