@@ -1,5 +1,5 @@
 const { Application } = Shopware;
-const { ApiService } = Shopware.Service;
+const ApiService = Shopware.Classes.ApiService;
 
 class PayonePaymentApiCredentialsService extends ApiService {
     constructor(httpClient, loginService, apiEndpoint = 'payone_payment') {
