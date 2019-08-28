@@ -33,7 +33,10 @@
         },
         "messageNotBlank": "Dieser Wert darf nicht leer sein.",
         "txid": "TXID",
-        "sequenceNumber": "Sequenznummer",
+        "sequenceNumber": {
+            "label": "Sequenznummer",
+            "empty": "keine"
+        },
         "transactionState": "Status"
     }
 }

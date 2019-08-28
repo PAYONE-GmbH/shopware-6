@@ -73,16 +73,10 @@ class PaymentMethodInstaller implements InstallerInterface
 
     public function activate(ActivateContext $context): void
     {
-        foreach ($this->getPaymentMethods() as $paymentMethod) {
-            $this->activatePaymentMethod($paymentMethod, $context->getContext());
-        }
     }
 
     public function deactivate(DeactivateContext $context): void
     {
-        foreach ($this->getPaymentMethods() as $paymentMethod) {
-            $this->deactivatePaymentMethod($paymentMethod, $context->getContext());
-        }
     }
 
     private function getPaymentMethods(): array
@@ -123,16 +117,6 @@ class PaymentMethodInstaller implements InstallerInterface
 
             $this->paymentMethodSalesChannelRepository->upsert([$data], $context);
         }
-    }
-
-    private function activatePaymentMethod(PaymentMethodInterface $paymentMethod, Context $context): void
-    {
-        $data = [
-            'id'     => $paymentMethod->getId(),
-            'active' => true,
-        ];
-
-        $this->paymentMethodRepository->update([$data], $context);
     }
 
     private function deactivatePaymentMethod(PaymentMethodInterface $paymentMethod, Context $context): void
