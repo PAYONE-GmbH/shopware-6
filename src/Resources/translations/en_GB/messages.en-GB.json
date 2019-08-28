@@ -22,7 +22,9 @@
       "pageSubTitle": "Here you can manage your saved credit cards.",
       "tableHeader": "Card Numbers",
       "deleteButton": "Delete Card",
-      "noEntries": "No cards saved."
+      "noEntries": "No cards saved.",
+      "expired": "expired",
+      "expiresAt": "expires on %expiresAt%"
     },
     "mandatePage": {
       "menuName": "Direct Debit Mandates",

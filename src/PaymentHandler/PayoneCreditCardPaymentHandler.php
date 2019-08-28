@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use DateTime;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
@@ -69,6 +70,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         $pseudoCardPan      = $dataBag->get('pseudoCardPan');
         $savedPseudoCardPan = $dataBag->get('savedPseudoCardPan');
         $truncatedCardPan   = $dataBag->get('truncatedCardPan');
+        $cardExpireDate     = $dataBag->get('cardExpireDate');
 
         if (!empty($savedPseudoCardPan)) {
             $pseudoCardPan = $savedPseudoCardPan;
@@ -113,6 +115,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
                 $salesChannelContext->getCustomer(),
                 $truncatedCardPan,
                 $pseudoCardPan,
+                DateTime::createFromFormat('ym', $cardExpireDate),
                 $salesChannelContext->getContext()
             );
         }
@@ -143,7 +146,10 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
 
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID
-            || ($transactionData['txaction'] === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0);
+        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
+            return true;
+        }
+
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 }

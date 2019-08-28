@@ -1,5 +1,5 @@
-import { Application } from 'src/core/shopware';
-import ApiService from 'src/core/service/api.service';
+const { Application } = Shopware;
+const ApiService = Shopware.Classes.ApiService;
 
 class PayonePaymentService extends ApiService {
     constructor(httpClient, loginService, apiEndpoint = 'payone') {

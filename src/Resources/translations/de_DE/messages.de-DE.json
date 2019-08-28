@@ -22,7 +22,9 @@
       "pageSubTitle": "Hier können Sie die gespeicerten Kreditkarten verwalten.",
       "tableHeader": "Kartennummer",
       "deleteButton": "Karte löschen",
-      "noEntries": "Keine Kreditkarten vorhanden."
+      "noEntries": "Keine Kreditkarten vorhanden.",
+      "expired": "abgelaufen",
+      "expiresAt": "läuft am %expiresAt% ab"
     },
     "mandatePage": {
       "menuName": "SEPA-Lastschriftmandate",
