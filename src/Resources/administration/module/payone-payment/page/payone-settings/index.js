@@ -1,5 +1,5 @@
-import { Mixin } from 'src/core/shopware';
-import Criteria from 'src/core/data-new/criteria.data';
+const { Mixin } = Shopware;
+const { Criteria } = Shopware.Data;
 import template from './payone-settings.html.twig';
 
 export default {

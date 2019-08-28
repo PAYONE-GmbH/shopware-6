@@ -27,7 +27,7 @@ export default class PayonePaymentCreditCard extends Plugin {
         const request = JSON.parse(requestContainer.innerHTML);
 
         this._createScript(() => {
-            const config = this._getClientConfig(language);
+            const config = this.getClientConfig(language);
 
             this.iframe = new window.Payone.ClientApi.HostedIFrames(config, request);
 
@@ -41,66 +41,62 @@ export default class PayonePaymentCreditCard extends Plugin {
         });
     }
 
-    _getSelectStyle() {
-        const styles = [
-            'width: 100%;',
-            'height: calc(1.5em + 1.45rem);',
-            'padding: .5625rem;',
-            'color: #8798a9;',
-            'vertical-align: middle;',
-            'line-height: 1.5;',
-            'font-weight: 500;',
-            'background-color: #fff;',
-            'border: .0625rem solid #d1d9e0;',
+    getSelectStyle() {
+        return [
+            'width: 100%',
+            'height: calc(1.5em + 1.45rem)',
+            'padding: .5625rem',
+            'color: #8798a9',
+            'vertical-align: middle',
+            'line-height: 1.5',
+            'font-weight: 500',
+            'background-color: #fff',
+            'border: .0625rem solid #d1d9e0',
             'border-radius: 3px',
         ];
-
-        return styles.join(' ');
     }
 
-    _getFieldStyle() {
-        const styles = [
-            'width: 100%;',
-            'height: 100%;',
-            'padding: .5625rem;',
-            'color: #8798a9;',
-            'vertical-align: middle;',
-            'line-height: 1.5;',
-            'font-weight: 500;',
-            'background-color: #fff;',
-            'border: .0625rem solid #d1d9e0;',
-            'border-radius: .1875rem;',
+    getFieldStyle() {
+        return [
+            'width: 100%',
+            'height: 100%',
+            'padding: .5625rem',
+            'color: #8798a9',
+            'vertical-align: middle',
+            'line-height: 1.5',
+            'font-weight: 500',
+            'background-color: #fff',
+            'border: .0625rem solid #d1d9e0',
+            'border-radius: .1875rem',
         ];
-
-        return styles.join(' ');
     }
 
-    _getClientConfig(language) {
+    getClientConfig(language) {
         return {
             fields: {
                 cardpan: {
                     selector: 'cardpan',
                     type: 'text',
-                    style: this._getFieldStyle(),
+                    style: this.getFieldStyle().join('; '),
                 },
                 cardcvc2: {
                     selector: 'cardcvc2',
                     type: 'password',
                     size: '4',
                     maxlength: '4',
-                    style: this._getFieldStyle(),
+                    style: this.getFieldStyle().join('; '),
                 },
                 cardexpiremonth: {
                     selector: 'cardexpiremonth',
                     type: 'select',
                     size: '2',
                     maxlength: '2',
-                    style: this._getSelectStyle(),
+                    style: this.getSelectStyle().join('; '),
                 },
                 cardexpireyear: {
                     selector: 'cardexpireyear',
                     type: 'select',
-                    style: this._getSelectStyle(),
+                    style: this.getSelectStyle().join('; '),
                 },
             },
 
@@ -188,6 +184,7 @@ export default class PayonePaymentCreditCard extends Plugin {
         if (response.status === 'VALID') {
             document.getElementById('pseudocardpan').value = response.pseudocardpan;
             document.getElementById('truncatedcardpan').value = response.truncatedcardpan;
+            document.getElementById('cardexpiredate').value = response.cardexpiredate;
 
             this.orderFormDisabled = false;
 

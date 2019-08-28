@@ -34,7 +34,14 @@
                                 {% for card in page.cards %}
                                     {% block page_payone_account_card_table_line %}
                                         <tr>
-                                            <td>{{ card.truncatedCardPan }}</td>
+                                            <td>
+                                                {% if card.expiresAt <= date() %}<strike>{% endif %}{{ card.truncatedCardPan }}{% if card.expiresAt <= date() %}</strike>{% endif %}
+                                                {% if card.expiresAt <= date() %}
+                                                    ({{ "PayonePayment.cardPage.expired" | trans }})
+                                                {% else %}
+                                                    ({{ "PayonePayment.cardPage.expiresAt" | trans({'%expiresAt%': card.expiresAt|localizeddate('medium', 'none', locale, 'UTC')}) }})
+                                                {% endif %}
+                                            </td>
                                             <td>
                                                 <a href="{{ path('frontend.account.payone.card.delete', {'pseudoCardPan': card.pseudoCardPan}) }}" title="{{ "PayonePayment.cardPage.deleteButton" | trans }}" class="btn btn-light">
                                                     {{ "PayonePayment.cardPage.deleteButton" | trans }}
