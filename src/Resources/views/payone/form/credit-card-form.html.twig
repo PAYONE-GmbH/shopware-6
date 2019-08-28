@@ -3,6 +3,7 @@
         <fieldset>
             <input type="hidden" name="pseudoCardPan" id="pseudocardpan" form="confirmOrderForm">
             <input type="hidden" name="truncatedCardPan" id="truncatedcardpan" form="confirmOrderForm">
+            <input type="hidden" name="cardExpireDate" id="cardexpiredate" form="confirmOrderForm">
 
             {% if page.extensions.payone.savedCards.total > 0 %}
                 <div class="form-row col-md-12">
@@ -12,7 +13,12 @@
                             <option key=""></option>
 
                             {% for card in page.extensions.payone.savedCards %}
-                                <option value="{{ card.pseudoCardPan }}">{{ card.truncatedCardPan }}</option>
+                                {% if card.expiresAt > date() %}
+                                <option value="{{ card.pseudoCardPan }}">
+                                    {{ card.truncatedCardPan }}
+                                    ({{ "PayonePayment.cardPage.expiresAt" | trans({'%expiresAt%': card.expiresAt|localizeddate('medium', 'none', locale, 'UTC')}) }})
+                                </option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use DateTime;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
@@ -69,6 +70,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         $pseudoCardPan      = $dataBag->get('pseudoCardPan');
         $savedPseudoCardPan = $dataBag->get('savedPseudoCardPan');
         $truncatedCardPan   = $dataBag->get('truncatedCardPan');
+        $cardExpireDate     = $dataBag->get('cardExpireDate');
 
         if (!empty($savedPseudoCardPan)) {
             $pseudoCardPan = $savedPseudoCardPan;
@@ -113,6 +115,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
                 $salesChannelContext->getCustomer(),
                 $truncatedCardPan,
                 $pseudoCardPan,
+                DateTime::createFromFormat('ym', $cardExpireDate),
                 $salesChannelContext->getContext()
             );
         }

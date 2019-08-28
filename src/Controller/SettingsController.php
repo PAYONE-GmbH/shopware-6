@@ -16,6 +16,11 @@ use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Test\TestRequestFactory;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,11 +50,20 @@ class SettingsController extends AbstractController
     /**
      * @Route("/api/v{version}/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials", methods={"POST"})
      */
-    public function validateApiCredentials(Request $request): JsonResponse
+    public function validateApiCredentials(Request $request, Context $context): JsonResponse
     {
         $errors = [];
+        /** @var EntityRepositoryInterface $paymentMethodRepository */
+        $paymentMethodRepository = $this->get('payment_method.repository');
 
         foreach (ConfigurationPrefixes::CONFIGURATION_PREFIXES as $paymentClass => $configurationPrefix) {
+            /** @var null|PaymentMethodEntity $paymentMethod */
+            $criteria      = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', $paymentClass));
+            $paymentMethod = $paymentMethodRepository->search($criteria, $context)->first();
+            if (!$paymentMethod || !$paymentMethod->getActive()) {
+                continue;
+            }
+
             try {
                 $parameters  = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
                 $testRequest = $this->requestFactory->getRequestParameters($parameters);

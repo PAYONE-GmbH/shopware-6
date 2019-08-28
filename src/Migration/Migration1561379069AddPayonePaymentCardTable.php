@@ -24,12 +24,14 @@ class Migration1561379069AddPayonePaymentCardTable extends MigrationStep
                 
                 `pseudo_card_pan` VARCHAR(255) NOT NULL,
                 `truncated_card_pan` VARCHAR(255) NOT NULL,
+                `expires_at` DATETIME NOT NULL,
                 
                 `created_at` DATETIME(3) NOT NULL,
                 `updated_at` DATETIME(3) NULL,
                 
                 PRIMARY KEY (`id`),
                 
+                KEY `idx.payone_payment_card.expires_at` (`expires_at`),
                 KEY `fk.payone_payment_card.customer_id` (`customer_id`),
                 
                 CONSTRAINT `fk.payone_payment_card.customer_id` 
