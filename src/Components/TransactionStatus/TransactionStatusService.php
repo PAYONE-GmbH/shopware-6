@@ -7,6 +7,7 @@ namespace PayonePayment\Components\TransactionStatus;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentHandler\PayonePaymentHandlerInterface;
 use PayonePayment\Payone\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
@@ -18,12 +19,21 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class TransactionStatusService implements TransactionStatusServiceInterface
 {
-    private const ACTION_APPOINTED        = 'appointed';
-    private const ACTION_PAID             = 'paid';
-    private const ACTION_CAPTURE          = 'capture';
-    private const ACTION_COMPLETED        = 'completed';
-    private const ACTION_AUTHORIZATION    = 'authorization';
-    private const ACTION_PREAUTHORIZATION = 'preauthorization';
+    public const ACTION_APPOINTED        = 'appointed';
+    public const ACTION_PAID             = 'paid';
+    public const ACTION_CAPTURE          = 'capture';
+    public const ACTION_COMPLETED        = 'completed';
+    public const ACTION_DEBIT            = 'debit';
+    public const ACTION_AUTHORIZATION    = 'authorization';
+    public const ACTION_PREAUTHORIZATION = 'preauthorization';
+    public const ACTION_CANCELATION      = 'cancelation';
+    public const ACTION_FAILED           = 'failed';
+
+    public const STATUS_PENDING   = 'pending';
+    public const STATUS_COMPLETED = 'completed';
+
+    public const AUTHORIZATION_TYPE_PREAUTHORIZATION = 'preauthorization';
+    public const AUTHORIZATION_TYPE_AUTHORIZATION    = 'authorization';
 
     /** @var EntityRepositoryInterface */
     private $orderTransactionRepository;
@@ -75,22 +85,19 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
         $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = (int) $transactionData['sequencenumber'];
         $data[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
-
-        $customFields = $paymentTransaction->getCustomFields();
-
-        if ($this->shouldAllowCapture($transactionData, $customFields)) {
-            $data[CustomFieldInstaller::ALLOW_CAPTURE] = true;
-        }
-
-        if ($this->shouldAllowRefund($transactionData, $customFields)) {
-            $data[CustomFieldInstaller::ALLOW_REFUND] = true;
-        }
+        $data[CustomFieldInstaller::ALLOW_CAPTURE]     = $this->shouldAllowCapture($transactionData, $paymentTransaction);
+        $data[CustomFieldInstaller::ALLOW_REFUND]      = $this->shouldAllowRefund($transactionData, $paymentTransaction);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $transactionData);
 
         $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $configurationKey = 'paymentStatus' . ucfirst(strtolower($transactionData['txaction']));
+
+        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && (float) $transactionData['receivable'] === 0.0) {
+            // This is a special case of a capture of 0, which means a cancellation
+            $configurationKey = 'paymentStatusCancelation';
+        }
 
         if (!empty($configuration->get($configurationKey))) {
             if (!$this->stateExists($configuration->get($configurationKey), $salesChannelContext->getContext())) {
@@ -113,6 +120,11 @@ class TransactionStatusService implements TransactionStatusServiceInterface
                     $paymentTransaction->getOrderTransaction()->getId(),
                     $salesChannelContext->getContext()
                 );
+            } elseif ($this->isTransactionCancelled($transactionData)) {
+                $this->stateHandler->cancel(
+                    $paymentTransaction->getOrderTransaction()->getId(),
+                    $salesChannelContext->getContext()
+                );
             }
         }
     }
@@ -124,6 +136,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $criteria = new Criteria();
         $filter   = new EqualsFilter($field, $payoneTransactionId);
         $criteria->addFilter($filter);
+        $criteria->addAssociation('paymentMethod');
 
         $transaction = $this->orderTransactionRepository->search($criteria, $context)->first();
 
@@ -134,22 +147,38 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return PaymentTransaction::fromOrderTransaction($transaction);
     }
 
-    private function shouldAllowCapture(array $transactionData, array $customFields): bool
+    private function shouldAllowCapture(array $transactionData, PaymentTransaction $paymentTransaction): bool
     {
-        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== self::ACTION_PREAUTHORIZATION) {
+        $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
+        if (!$paymentMethodEntity) {
             return false;
         }
 
-        return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
+        /** @var string&PayonePaymentHandlerInterface $handlerClass */
+        $handlerClass = $paymentMethodEntity->getHandlerIdentifier();
+
+        if (!class_exists($handlerClass)) {
+            throw new RuntimeException(sprintf('The handler class %s for payment method %s does not exist.', $paymentMethodEntity->getName(), $handlerClass));
+        }
+
+        return $handlerClass::isCapturable($transactionData, $paymentTransaction->getCustomFields());
     }
 
-    private function shouldAllowRefund(array $transactionData, array $customFields): bool
+    private function shouldAllowRefund(array $transactionData, PaymentTransaction $paymentTransaction): bool
     {
-        if ($customFields[CustomFieldInstaller::LAST_REQUEST] !== self::ACTION_AUTHORIZATION) {
+        $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
+        if (!$paymentMethodEntity) {
             return false;
         }
 
-        return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
+        /** @var string&PayonePaymentHandlerInterface $handlerClass */
+        $handlerClass = $paymentMethodEntity->getHandlerIdentifier();
+
+        if (!class_exists($handlerClass)) {
+            throw new RuntimeException(sprintf('The handler class %s for payment method %s does not exist.', $paymentMethodEntity->getName(), $handlerClass));
+        }
+
+        return $handlerClass::isRefundable($transactionData, $paymentTransaction->getCustomFields());
     }
 
     private function isTransactionOpen(array $transactionData): bool
@@ -159,19 +188,24 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPaid(array $transactionData): bool
     {
-        if (strtolower($transactionData['txaction']) === self::ACTION_PAID) {
+        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
             return true;
         }
 
-        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE) {
-            return true;
-        }
+        return in_array(strtolower($transactionData['txaction']),
+            [
+                self::ACTION_PAID,
+                self::ACTION_COMPLETED,
+                self::ACTION_DEBIT,
+            ]
+        );
+    }
 
-        if (strtolower($transactionData['txaction']) === self::ACTION_COMPLETED) {
-            return true;
-        }
-
-        return false;
+    private function isTransactionCancelled(array $transactionData): bool
+    {
+        return strtolower($transactionData['txaction']) === self::ACTION_CANCELATION
+            || strtolower($transactionData['txaction']) === self::ACTION_FAILED
+            || (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && (float) $transactionData['receivable'] === 0.0);
     }
 
     private function stateExists(string $state, Context $context): bool

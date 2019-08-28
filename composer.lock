@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d1ee34f94bdff97e55ab0fd4d00d75a",
+    "content-hash": "f291b98719a67fb7676a3b0bf770fc36",
     "packages": [],
     "packages-dev": [
         {
@@ -9921,11 +9921,11 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
         "shopware/platform": 20
     },
-    "prefer-stable": false,
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": []
