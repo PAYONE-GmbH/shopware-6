@@ -11,6 +11,7 @@ use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler;
 use PayonePayment\Test\Mock\Components\ConfigReaderMock;
 use PayonePayment\Test\Mock\Repository\EntityRepositoryMock;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -35,7 +36,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
     private const ORDER_TRANSACTION_ID  = '4c8a04d0ae374bdbac305d717cdaf9c6';
     private const PAYONE_TRANSACTION_ID = 'test-transaction-id';
 
-    /** @var OrderTransactionStateHandler */
+    /** @var MockObject|OrderTransactionStateHandler */
     private $transactionStateHandler;
 
     protected function setUp(): void
@@ -76,9 +77,10 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         $orderTransactionEntity->setOrder($orderEntity);
 
         $customFields = [
-            CustomFieldInstaller::TRANSACTION_ID  => self::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER => 0,
-            CustomFieldInstaller::LAST_REQUEST    => 'authorization',
+            CustomFieldInstaller::TRANSACTION_ID     => self::PAYONE_TRANSACTION_ID,
+            CustomFieldInstaller::SEQUENCE_NUMBER    => 0,
+            CustomFieldInstaller::LAST_REQUEST       => 'authorization',
+            CustomFieldInstaller::AUTHORIZATION_TYPE => 'authorization',
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
