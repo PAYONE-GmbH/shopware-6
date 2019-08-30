@@ -6,7 +6,9 @@ namespace PayonePayment\Test\Controller;
 
 use PayonePayment\Controller\WebhookController;
 use PayonePayment\Payone\Webhook\Processor\WebhookProcessor;
+use PayonePayment\Test\Mock\Components\ConfigReaderMock;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -34,7 +36,7 @@ class WebhookControllerTest extends TestCase
     {
         // TODO: Use mocks for dependencies of WebhookProcessor
         return new WebhookController(
-            new WebhookProcessor()
+            new WebhookProcessor(new ConfigReaderMock(), new \ArrayObject([]), new NullLogger())
         );
     }
 }
