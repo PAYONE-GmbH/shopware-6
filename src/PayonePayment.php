@@ -66,4 +66,12 @@ class PayonePayment extends Plugin
         $connection->exec('DROP TABLE payone_payment_redirect');
         $connection->exec('DROP TABLE payone_payment_mandate');
     }
+
+    public function getViewPaths(): array
+    {
+        return array_merge(parent::getViewPaths(), [
+            'Resources/views/storefront',
+            'Resources/views/administration',
+        ]);
+    }
 }
