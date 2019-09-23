@@ -10,8 +10,8 @@
     <import resource="@PayonePayment/Controller/RedirectController.php" type="annotation" />
     <import resource="@PayonePayment/Controller/SettingsController.php" type="annotation" />
 
-    <import resource="@PayonePayment/Storefront/Controller/PayoneAccountCardController.php" type="annotation" />
-    <import resource="@PayonePayment/Storefront/Controller/PayoneAccountMandateController.php" type="annotation" />
+    <import resource="@PayonePayment/Storefront/Controller/AccountCardController.php" type="annotation" />
+    <import resource="@PayonePayment/Storefront/Controller/AccountMandateController.php" type="annotation" />
 
-    <import resource="@PayonePayment/Storefront/Controller/PayoneCheckoutManageMandateController.php" type="annotation" />
+    <import resource="@PayonePayment/Storefront/Controller/ManageMandateController.php" type="annotation" />
 </routes>

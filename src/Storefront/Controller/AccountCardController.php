@@ -7,6 +7,7 @@ namespace PayonePayment\Storefront\Controller;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Storefront\Page\Card\AccountCardPageLoader;
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
-class PayoneAccountCardController extends StorefrontController
+class AccountCardController extends StorefrontController
 {
     /** @var AccountCardPageLoader */
     private $accountCardPageLoader;
@@ -30,9 +31,8 @@ class PayoneAccountCardController extends StorefrontController
     }
 
     /**
+     * @RouteScope('storefront')
      * @Route("/account/card/overview", name="frontend.account.payone.card.page", options={"seo": "false"}, methods={"GET"})
-     *
-     * @throws CustomerNotLoggedInException
      */
     public function cardOverview(Request $request, SalesChannelContext $context): Response
     {
@@ -44,9 +44,8 @@ class PayoneAccountCardController extends StorefrontController
     }
 
     /**
-     * @Route("/account/card/delete", name="frontend.account.payone.card.delete", methods={"GET"})
-     *
-     * @throws CustomerNotLoggedInException
+     * @RouteScope('storefront')
+     * @Route("/account/card/delete", name="frontend.account.payone.card.delete", options={"seo": "false"}, methods={"GET"})
      */
     public function deleteCard(Request $request, SalesChannelContext $context): Response
     {

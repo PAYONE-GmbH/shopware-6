@@ -42,7 +42,7 @@
             <argument type="service" id="PayonePayment\Util\Logger"/>
         </service>
 
-        <service id="PayonePayment\Storefront\Controller\PayoneAccountCardController">
+        <service id="PayonePayment\Storefront\Controller\AccountCardController">
             <argument type="service" id="PayonePayment\Storefront\Page\Card\AccountCardPageLoader" />
             <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
 
@@ -51,7 +51,7 @@
             </call>
         </service>
 
-        <service id="PayonePayment\Storefront\Controller\PayoneAccountMandateController">
+        <service id="PayonePayment\Storefront\Controller\AccountMandateController">
             <argument type="service" id="PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader" />
             <argument type="service" id="PayonePayment\Components\MandateService\MandateService" />
 
@@ -60,7 +60,7 @@
             </call>
         </service>
 
-        <service id="PayonePayment\Storefront\Controller\PayoneCheckoutManageMandateController">
+        <service id="PayonePayment\Storefront\Controller\ManageMandateController">
             <argument type="service" id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
 
