@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 
 class RefundController extends AbstractController
 {
@@ -34,6 +35,7 @@ class RefundController extends AbstractController
     }
 
     /**
+     * @RouteScope(scopes={"api"})
      * @Route("/api/v{version}/_action/payone/refund-payment", name="api.action.payone.refund_payment", methods={"POST"})
      */
     public function refundAction(Request $request, Context $context): JsonResponse

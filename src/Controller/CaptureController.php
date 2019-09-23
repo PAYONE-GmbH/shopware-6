@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 
 class CaptureController extends AbstractController
 {
@@ -34,6 +35,7 @@ class CaptureController extends AbstractController
     }
 
     /**
+     * @RouteScope(scopes={"api"})
      * @Route("/api/v{version}/_action/payone/capture-payment", name="api.action.payone.capture_payment", methods={"POST"})
      */
     public function captureAction(Request $request, Context $context): JsonResponse
