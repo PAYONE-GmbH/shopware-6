@@ -4,19 +4,29 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\System;
 
+use PackageVersions\Versions;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Plugin\PluginService;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class SystemRequest
 {
     /** @var ConfigReaderInterface */
     private $configReader;
 
-    public function __construct(ConfigReaderInterface $configReader)
-    {
+    /** @var PluginService */
+    private $pluginService;
+
+    public function __construct(
+        ConfigReaderInterface $configReader,
+        PluginService $pluginService
+    ) {
         $this->configReader = $configReader;
+        $this->pluginService = $pluginService;
     }
 
-    public function getRequestParameters(?string $salesChannel, string $configurationPrefix = ''): array
+    public function getRequestParameters(string $salesChannel, string $configurationPrefix, Context $context): array
     {
         $configuration = $this->configReader->read($salesChannel);
 
@@ -24,6 +34,8 @@ class SystemRequest
         $merchantId = $configuration->get(sprintf('%sMerchantId', $configurationPrefix), $configuration->get('merchantId'));
         $portalId   = $configuration->get(sprintf('%sPortalId', $configurationPrefix), $configuration->get('portalId'));
         $portalKey  = $configuration->get(sprintf('%sPortalKey', $configurationPrefix), $configuration->get('portalKey'));
+
+        $plugin = $this->pluginService->getPluginByName('PayonePayment', $context);
 
         return [
             'aid'         => $accountId,
@@ -33,6 +45,10 @@ class SystemRequest
             'api_version' => '3.10',
             'mode'        => $configuration->get('transactionMode'),
             'encoding'    => 'UTF-8',
+            'solution_name' => 'kellerkinder',
+            'solution_version' => $plugin->getVersion(),
+            'integrator_name' => 'shopware6',
+            'integrator_version' => Versions::getVersion('shopware/platform'),
         ];
     }
 }

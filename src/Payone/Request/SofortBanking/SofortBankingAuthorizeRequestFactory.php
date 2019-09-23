@@ -38,7 +38,8 @@ class SofortBankingAuthorizeRequestFactory extends AbstractRequestFactory
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_SOFORT
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_SOFORT,
+            $context->getContext()
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(

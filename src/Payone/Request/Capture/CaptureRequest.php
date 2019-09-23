@@ -39,13 +39,19 @@ class CaptureRequest
 
         $currency = $this->getOrderCurrency($order, $context);
 
-        return [
+        $parameters = [
             'request'        => 'capture',
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
             'amount'         => (int) ($order->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
             'currency'       => $currency->getIsoCode(),
         ];
+
+        if (!empty($customFields[CustomFieldInstaller::WORK_ORDER_ID])) {
+            $parameters['workorderid'] = $customFields[CustomFieldInstaller::WORK_ORDER_ID];
+        }
+
+        return $parameters;
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity

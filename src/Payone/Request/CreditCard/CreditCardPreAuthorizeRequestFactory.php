@@ -39,7 +39,8 @@ class CreditCardPreAuthorizeRequestFactory extends AbstractRequestFactory
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD,
+            $context->getContext()
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
