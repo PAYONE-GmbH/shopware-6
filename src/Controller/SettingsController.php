@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 
 class SettingsController extends AbstractController
 {
@@ -48,6 +49,7 @@ class SettingsController extends AbstractController
     }
 
     /**
+     * @RouteScope(scopes={"api"})
      * @Route("/api/v{version}/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials", methods={"POST"})
      */
     public function validateApiCredentials(Request $request, Context $context): JsonResponse

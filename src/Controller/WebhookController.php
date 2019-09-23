@@ -10,6 +10,7 @@ use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 
 class WebhookController extends StorefrontController
 {
@@ -22,6 +23,7 @@ class WebhookController extends StorefrontController
     }
 
     /**
+     * @RouteScope(scopes={"storefront"})
      * @Route("/payone/webhook", name="payone_webhook", methods={"POST"})
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response

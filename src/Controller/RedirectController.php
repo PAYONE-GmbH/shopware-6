@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 
 class RedirectController
 {
@@ -23,6 +24,7 @@ class RedirectController
     }
 
     /**
+     * @RouteScope(scopes={"storefront"})
      * @Route("/payone/redirect", name="payone_redirect")
      */
     public function execute(Request $request): Response
