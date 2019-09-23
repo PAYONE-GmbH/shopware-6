@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\System;
 
+use Enqueue\Container\Container;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class SystemRequestFactory extends AbstractRequestFactory
 {
@@ -16,11 +19,12 @@ class SystemRequestFactory extends AbstractRequestFactory
         $this->systemRequest = $systemRequest;
     }
 
-    public function getRequestParameters(string $salesChannel, string $configurationPrefix = ''): array
+    public function getRequestParameters(string $salesChannel, string $configurationPrefix, Context $context): array
     {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $salesChannel,
-            $configurationPrefix
+            $configurationPrefix,
+            $context
         );
 
         return $this->createRequest();
