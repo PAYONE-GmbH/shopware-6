@@ -6,7 +6,6 @@ namespace PayonePayment\Storefront\Controller;
 
 use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader;
-use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
@@ -31,7 +30,7 @@ class AccountMandateController extends StorefrontController
     }
 
     /**
-     * @RouteScope('storefront')
+     * @RouteScope(scopes={"storefront"})
      * @Route("/account/mandate/overview", name="frontend.account.payone.mandate.page", options={"seo": "false"}, methods={"GET"})
      */
     public function mandateOverview(Request $request, SalesChannelContext $context): Response
@@ -44,7 +43,7 @@ class AccountMandateController extends StorefrontController
     }
 
     /**
-     * @RouteScope('storefront')
+     * @RouteScope(scopes={"storefront"})
      * @Route("/account/mandate/download", name="frontend.account.payone.mandate.download", options={"seo": "false"}, methods={"GET"})
      */
     public function downloadMandate(Request $request, SalesChannelContext $context): Response

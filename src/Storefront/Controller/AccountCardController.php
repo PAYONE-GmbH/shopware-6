@@ -6,7 +6,6 @@ namespace PayonePayment\Storefront\Controller;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Storefront\Page\Card\AccountCardPageLoader;
-use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
@@ -31,7 +30,7 @@ class AccountCardController extends StorefrontController
     }
 
     /**
-     * @RouteScope('storefront')
+     * @RouteScope(scopes={"storefront"})
      * @Route("/account/card/overview", name="frontend.account.payone.card.page", options={"seo": "false"}, methods={"GET"})
      */
     public function cardOverview(Request $request, SalesChannelContext $context): Response
@@ -44,7 +43,7 @@ class AccountCardController extends StorefrontController
     }
 
     /**
-     * @RouteScope('storefront')
+     * @RouteScope(scopes={"storefront"})
      * @Route("/account/card/delete", name="frontend.account.payone.card.delete", options={"seo": "false"}, methods={"GET"})
      */
     public function deleteCard(Request $request, SalesChannelContext $context): Response

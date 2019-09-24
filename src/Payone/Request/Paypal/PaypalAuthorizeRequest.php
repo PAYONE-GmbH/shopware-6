@@ -30,8 +30,11 @@ class PaypalAuthorizeRequest
         $this->currencyRepository = $currencyRepository;
     }
 
-    public function getRequestParameters(PaymentTransaction $transaction, Context $context): array
-    {
+    public function getRequestParameters(
+        PaymentTransaction $transaction,
+        Context $context,
+        ?string $workOrderId = null
+    ): array {
         if (empty($transaction->getReturnUrl())) {
             throw new InvalidOrderException($transaction->getOrder()->getId());
         }
@@ -48,6 +51,7 @@ class PaypalAuthorizeRequest
             'successurl'   => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
             'errorurl'     => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),
             'backurl'      => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),
+            'workorderid'  => $workOrderId,
         ];
     }
 

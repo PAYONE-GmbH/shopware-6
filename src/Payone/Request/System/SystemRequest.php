@@ -8,7 +8,6 @@ use PackageVersions\Versions;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Plugin\PluginService;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class SystemRequest
 {
@@ -22,7 +21,7 @@ class SystemRequest
         ConfigReaderInterface $configReader,
         PluginService $pluginService
     ) {
-        $this->configReader = $configReader;
+        $this->configReader  = $configReader;
         $this->pluginService = $pluginService;
     }
 
@@ -38,16 +37,16 @@ class SystemRequest
         $plugin = $this->pluginService->getPluginByName('PayonePayment', $context);
 
         return [
-            'aid'         => $accountId,
-            'mid'         => $merchantId,
-            'portalid'    => $portalId,
-            'key'         => $portalKey,
-            'api_version' => '3.10',
-            'mode'        => $configuration->get('transactionMode'),
-            'encoding'    => 'UTF-8',
-            'solution_name' => 'kellerkinder',
-            'solution_version' => $plugin->getVersion(),
-            'integrator_name' => 'shopware6',
+            'aid'                => $accountId,
+            'mid'                => $merchantId,
+            'portalid'           => $portalId,
+            'key'                => $portalKey,
+            'api_version'        => '3.10',
+            'mode'               => $configuration->get('transactionMode'),
+            'encoding'           => 'UTF-8',
+            'solution_name'      => 'kellerkinder',
+            'solution_version'   => $plugin->getVersion(),
+            'integrator_name'    => 'shopware6',
             'integrator_version' => Versions::getVersion('shopware/platform'),
         ];
     }

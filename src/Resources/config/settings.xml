@@ -277,40 +277,4 @@
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
         </input-field>
     </card>
-
-    <card>
-        <title>PayPal Express</title>
-
-        <input-field>
-            <name>paypalExpressMerchantId</name>
-            <copyable>true</copyable>
-            <label>Merchant ID</label>
-            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
-            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
-        </input-field>
-
-        <input-field>
-            <name>paypalExpressAccountId</name>
-            <copyable>true</copyable>
-            <label>Account ID</label>
-            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
-            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
-        </input-field>
-
-        <input-field>
-            <name>paypalExpressPortalId</name>
-            <copyable>true</copyable>
-            <label>Portal ID</label>
-            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
-            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
-        </input-field>
-
-        <input-field>
-            <name>paypalExpressPortalKey</name>
-            <copyable>true</copyable>
-            <label>Key</label>
-            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
-            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
-        </input-field>
-    </card>
 </config>

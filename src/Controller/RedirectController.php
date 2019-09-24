@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace PayonePayment\Controller;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 
 class RedirectController
 {
