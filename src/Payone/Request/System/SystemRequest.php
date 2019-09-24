@@ -44,10 +44,10 @@ class SystemRequest
             'api_version'        => '3.10',
             'mode'               => $configuration->get('transactionMode'),
             'encoding'           => 'UTF-8',
-            'solution_name'      => 'kellerkinder',
-            'solution_version'   => $plugin->getVersion(),
-            'integrator_name'    => 'shopware6',
-            'integrator_version' => Versions::getVersion('shopware/platform'),
+            'integrator_name'    => 'kellerkinder',
+            'integrator_version' => $plugin->getVersion(),
+            'solution_name'      => 'shopware6',
+            'solution_version'   => Versions::getVersion('shopware/platform'),
         ];
     }
 }
