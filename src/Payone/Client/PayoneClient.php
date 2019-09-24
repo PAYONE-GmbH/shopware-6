@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\Client;
 
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 
 class PayoneClient implements PayoneClientInterface
 {
@@ -41,11 +40,11 @@ class PayoneClient implements PayoneClientInterface
         $errno    = curl_errno($curl);
 
         if ($errno !== CURLE_OK) {
-            throw new RuntimeException('curl client error: ' . $errno);
+            throw new PayoneRequestException('curl client error: ' . $errno);
         }
 
         if (empty($response)) {
-            throw new RuntimeException('empty payone response');
+            throw new PayoneRequestException('empty payone response');
         }
 
         $data = json_decode($response, true);

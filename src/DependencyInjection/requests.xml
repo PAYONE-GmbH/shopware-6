@@ -7,6 +7,7 @@
         <!-- System -->
         <service id="PayonePayment\Payone\Request\System\SystemRequest">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="Shopware\Core\Framework\Plugin\PluginService" />
         </service>
 
         <service id="PayonePayment\Payone\Request\System\SystemRequestFactory">
@@ -18,8 +19,7 @@
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\Test\TestRequestFactory">
-        </service>
+        <service id="PayonePayment\Payone\Request\Test\TestRequestFactory" />
 
         <!-- Customer -->
         <service id="PayonePayment\Payone\Request\Customer\CustomerRequest">
@@ -62,6 +62,27 @@
 
         <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <!-- Paypal Express -->
+        <service id="PayonePayment\Payone\Request\Paypal\PaypalGetExpressCheckoutDetailsRequest">
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Paypal\PaypalGetExpressCheckoutDetailsRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalGetExpressCheckoutDetailsRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Paypal\PaypalSetExpressCheckoutRequest">
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Paypal\PaypalSetExpressCheckoutRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalSetExpressCheckoutRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>

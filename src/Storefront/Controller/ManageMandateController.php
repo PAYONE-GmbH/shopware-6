@@ -32,7 +32,7 @@ class ManageMandateController extends StorefrontController
     }
 
     /**
-     * @RouteScope('storefront')
+     * @RouteScope(scopes={"storefront"})
      * @Route("/payone/request/manage-mandate", name="frontend.payone.manage-mandate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
      */
     public function mandateOverview(Request $request, SalesChannelContext $context): JsonResponse

@@ -9,6 +9,8 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class CheckoutConfirmPaymentData extends Struct
 {
+    public const EXTENSION_NAME = 'payone';
+
     /** @var array */
     protected $cardRequest = [];
 
@@ -20,6 +22,9 @@ class CheckoutConfirmPaymentData extends Struct
 
     /** @var null|string */
     protected $template;
+
+    /** @var null|string */
+    protected $workOrderId;
 
     public function getCardRequest(): array
     {
@@ -39,5 +44,10 @@ class CheckoutConfirmPaymentData extends Struct
     public function getTemplate(): ?string
     {
         return $this->template;
+    }
+
+    public function getWorkOrderId(): ?string
+    {
+        return $this->workOrderId;
     }
 }

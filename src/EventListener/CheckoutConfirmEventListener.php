@@ -8,6 +8,8 @@ use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
 use PayonePayment\Struct\CheckoutConfirmPaymentData;
+use PayonePayment\Struct\PaypalExpressCartData;
+use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -66,9 +68,10 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
             'language'    => $language,
             'savedCards'  => $savedCards,
             'template'    => $template,
+            'workOrderId' => $this->getWorkOrderIdFromCart($event->getPage()->getCart()),
         ]);
 
-        $event->getPage()->addExtension('payone', $payoneData);
+        $event->getPage()->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
     }
 
     private function getTemplateFromPaymentMethod(PaymentMethodEntity $paymentMethod): ?string
@@ -111,5 +114,17 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         }
 
         return true;
+    }
+
+    private function getWorkOrderIdFromCart(Cart $cart): ?string
+    {
+        /** @var null|PaypalExpressCartData $extension */
+        $extension = $cart->getExtension(PaypalExpressCartData::EXTENSION_NAME);
+
+        if (null === $extension) {
+            return null;
+        }
+
+        return $extension->getWorkorderId();
     }
 }

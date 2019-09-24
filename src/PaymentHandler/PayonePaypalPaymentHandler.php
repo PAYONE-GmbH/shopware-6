@@ -62,7 +62,8 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
 
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $salesChannelContext
+            $salesChannelContext,
+            $dataBag->get('workorder')
         );
 
         try {
@@ -79,7 +80,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
             );
         }
 
-        if (empty($response['status']) && $response['status'] !== 'REDIRECT') {
+        if (empty($response['status'])) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -95,12 +96,17 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
             CustomFieldInstaller::USER_ID            => $response['userid'],
             CustomFieldInstaller::ALLOW_CAPTURE      => false,
             CustomFieldInstaller::ALLOW_REFUND       => false,
+            CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
 
-        return new RedirectResponse($response['redirecturl']);
+        if (strtolower($response['status']) === 'redirect') {
+            return new RedirectResponse($response['redirecturl']);
+        }
+
+        return new RedirectResponse($request['successurl']);
     }
 
     /**

@@ -8,13 +8,13 @@ use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
+class PaypalGetExpressCheckoutDetailsRequestFactory extends AbstractRequestFactory
 {
-    /** @var PaypalAuthorizeRequest */
-    private $authorizeRequest;
+    /** @var PaypalGetExpressCheckoutDetailsRequest */
+    private $expressCheckoutRequest;
 
     /** @var CustomerRequest */
     private $customerRequest;
@@ -23,22 +23,22 @@ class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
     private $systemRequest;
 
     public function __construct(
-        PaypalAuthorizeRequest $authorizeRequest,
+        PaypalGetExpressCheckoutDetailsRequest $expressCheckoutRequest,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
-        $this->authorizeRequest = $authorizeRequest;
-        $this->customerRequest  = $customerRequest;
-        $this->systemRequest    = $systemRequest;
+        $this->expressCheckoutRequest = $expressCheckoutRequest;
+        $this->customerRequest        = $customerRequest;
+        $this->systemRequest          = $systemRequest;
     }
 
     public function getRequestParameters(
-        PaymentTransaction $transaction,
+        Cart $cart,
         SalesChannelContext $context,
-        ?string $workOrderId = null
+        string $workOrderId
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannelId(),
+            $context->getSalesChannel()->getId(),
             ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYPAL,
             $context->getContext()
         );
@@ -47,8 +47,8 @@ class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
             $context
         );
 
-        $this->requests[] = $this->authorizeRequest->getRequestParameters(
-            $transaction,
+        $this->requests[] = $this->expressCheckoutRequest->getRequestParameters(
+            $cart,
             $context->getContext(),
             $workOrderId
         );

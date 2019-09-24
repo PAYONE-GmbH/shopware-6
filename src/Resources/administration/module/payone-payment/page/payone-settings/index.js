@@ -48,7 +48,6 @@ export default {
                 'creditCard',
                 'debit',
                 'paypal',
-                'paypalExpress',
                 'sofort'
             ];
         },

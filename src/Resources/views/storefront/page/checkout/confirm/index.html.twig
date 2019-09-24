@@ -3,6 +3,10 @@
 {% block page_checkout_confirm %}
     {{ parent() }}
 
+    {% if page.extensions.payone and page.extensions.payone.workOrderId %}
+        {% sw_include '@Storefront/page/checkout/confirm/workorder.html.twig' %}
+    {% endif %}
+
     {% if page.extensions.payone and page.extensions.payone.template %}
         {% sw_include '@Storefront/page/checkout/confirm/payment_form.html.twig' %}
     {% endif %}
