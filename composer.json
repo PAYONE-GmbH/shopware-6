@@ -1,13 +1,20 @@
 {
   "name": "payone/shopware",
   "type": "shopware-platform-plugin",
-  "description": "Payone Payment Plugin",
+  "description": "PAYONE Payment Plugin",
   "version": "1.0.0",
   "license": "MIT",
   "authors": [
     {
       "name": "PAYONE GmbH",
-      "email": "feedback@bspayone.com"
+      "email": "feedback@bspayone.com",
+      "homepage": "https://www.bspayone.com"
+    },
+    {
+      "name": "Kellerkinder GmbH",
+      "email": "hallo@kellerkinder.de",
+      "homepage": "https://www.kellerkinder.de/",
+      "role": "Contributor"
     }
   ],
   "minimum-stability": "dev",
@@ -36,14 +43,14 @@
   "extra": {
     "shopware-plugin-class": "PayonePayment\\PayonePayment",
     "plugin-icon": "src/Resources/public/plugin.png",
-    "copyright": "(c) by BS PAYONE GmbH",
+    "copyright": "(c) by PAYONE GmbH",
     "label": {
-      "de-DE": "Payone Payment",
-      "en-GB": "Payone Payment"
+      "de-DE": "PAYONE Payment",
+      "en-GB": "PAYONE Payment"
     },
     "description": {
-      "de-DE": "Payone Payment Plugin",
-      "en-GB": "Payone Payment Plugin"
+      "de-DE": "PAYONE Payment Plugin",
+      "en-GB": "PAYONE Payment Plugin"
     },
     "manufacturerLink": {
       "de-DE": "https://www.bspayone.com",
