@@ -22,6 +22,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
+use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
@@ -116,6 +117,18 @@ class ExpressCheckoutController extends StorefrontController
     public function express(SalesChannelContext $context): Response
     {
         $cart = $this->cartService->getCart($context->getToken(), $context);
+
+        try {
+            $salesChannelDataBag = new DataBag([
+                SalesChannelContextService::PAYMENT_METHOD_ID => PayonePaypal::UUID,
+            ]);
+
+            $this->salesChannelContextSwitcher->update($salesChannelDataBag, $context);
+        } catch (ConstraintViolationException $exception) {
+            return $this->forwardToRoute('frontend.checkout.confirm.page', [
+                'formViolations' => $exception,
+            ]);
+        }
 
         $setRequest = $this->checkoutRequestFactory->getRequestParameters(
             $cart,

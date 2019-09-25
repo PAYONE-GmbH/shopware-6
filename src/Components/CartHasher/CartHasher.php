@@ -81,7 +81,7 @@ class CartHasher implements CartHasherInterface
         ];
 
         if (null !== $context->getCustomer()->getBirthday()) {
-            $hashData['customer']['birthday'] = $context->getCustomer()->getBirthday()->format(DATE_W3C);
+            $hashData['birthday'] = $context->getCustomer()->getBirthday()->format(DATE_W3C);
         }
 
         return $hashData;
