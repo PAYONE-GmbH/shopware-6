@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use DateTime;
+use LogicException;
 use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
@@ -92,6 +93,10 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface, P
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
 
         $date = DateTime::createFromFormat('Ymd', $response['mandate']['DateOfSignature']);
+
+        if (empty($date)) {
+            throw new LogicException('could not parse sepa mandate signature date');
+        }
 
         $this->mandateService->saveMandate(
             $salesChannelContext->getCustomer(),

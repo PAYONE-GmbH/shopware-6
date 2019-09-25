@@ -100,10 +100,7 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param array|string $primaryKeys
-     */
-    private function collectPrimaryKeys($primaryKeys): array
+    private function collectPrimaryKeys(array $primaryKeys): array
     {
         $ids = [];
 
@@ -137,7 +134,9 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
 
     private function clearCache(Context $context): void
     {
-        $cacheKeys     = [];
+        $cacheKeys = [];
+
+        /** @var string[] $salesChannels */
         $salesChannels = $this->salesChannelRepository->searchIds(new Criteria(), $context)->getIds();
 
         foreach ($salesChannels as $salesChannel) {
