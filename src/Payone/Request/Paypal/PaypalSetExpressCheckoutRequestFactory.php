@@ -16,19 +16,14 @@ class PaypalSetExpressCheckoutRequestFactory extends AbstractRequestFactory
     /** @var PaypalSetExpressCheckoutRequest */
     private $expressCheckoutRequest;
 
-    /** @var CustomerRequest */
-    private $customerRequest;
-
     /** @var SystemRequest */
     private $systemRequest;
 
     public function __construct(
         PaypalSetExpressCheckoutRequest $expressCheckoutRequest,
-        CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
         $this->expressCheckoutRequest = $expressCheckoutRequest;
-        $this->customerRequest        = $customerRequest;
         $this->systemRequest          = $systemRequest;
     }
 
@@ -41,10 +36,6 @@ class PaypalSetExpressCheckoutRequestFactory extends AbstractRequestFactory
             $context->getSalesChannel()->getId(),
             ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYPAL,
             $context->getContext()
-        );
-
-        $this->requests[] = $this->customerRequest->getRequestParameters(
-            $context
         );
 
         $this->requests[] = $this->expressCheckoutRequest->getRequestParameters(

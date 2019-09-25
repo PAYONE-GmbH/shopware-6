@@ -16,31 +16,31 @@ class CartHasher implements CartHasherInterface
 {
     public function generateHashFromCart(Cart $cart, SalesChannelContext $context): string
     {
-        $details = $this->getDetails($cart);
+        $hashData = $this->getHashData($cart, $context);
 
-        return $this->generateHash($details, $context);
+        return $this->generateHash($hashData);
     }
 
     public function validate(OrderEntity $order, SalesChannelContext $context, string $cartHash): bool
     {
-        $details  = $this->getDetails($order);
-        $expected = $this->generateHash($details, $context);
+        $hashData = $this->getHashData($order, $context);
+        $expected = $this->generateHash($hashData);
 
         return hash_equals($expected, $cartHash);
     }
 
-    private function getDetails(Struct $entity): array
+    private function getHashData(Struct $entity, SalesChannelContext $context): array
     {
-        $details = [];
+        $hashData = [];
 
         if (!method_exists($entity, 'getLineItems')) {
-            return $details;
+            return $hashData;
         }
 
         /** @var LineItem|OrderLineItemEntity $item */
         foreach ($entity->getLineItems() as $item) {
             $detail = [
-                'id'       => $item->getId(),
+                'id'       => $item->getReferencedId(),
                 'type'     => $item->getType(),
                 'quantity' => $item->getQuantity(),
             ];
@@ -49,17 +49,49 @@ class CartHasher implements CartHasherInterface
                 $detail['price'] = $item->getPrice()->getTotalPrice();
             }
 
-            $details[$item->getId()] = $detail;
+            $hashData[] = $detail;
         }
 
-        return $details;
+        $hashData['currency']       = $context->getCurrency()->getId();
+        $hashData['paymentMethod']  = $context->getPaymentMethod()->getId();
+        $hashData['shippingMethod'] = $context->getShippingMethod()->getId();
+
+        if (null === $context->getCustomer()) {
+            return $hashData;
+        }
+
+        $billingAddress = $context->getCustomer()->getActiveBillingAddress();
+        if (null !== $billingAddress) {
+            $hashData['address'] = [
+                'salutation'      => $billingAddress->getSalutationId(),
+                'title'           => $billingAddress->getTitle(),
+                'firstname'       => $billingAddress->getFirstName(),
+                'lastname'        => $billingAddress->getLastName(),
+                'street'          => $billingAddress->getStreet(),
+                'addressaddition' => $billingAddress->getAdditionalAddressLine1(),
+                'zip'             => $billingAddress->getZipcode(),
+                'city'            => $billingAddress->getCity(),
+                'country'         => $billingAddress->getCountryId(),
+            ];
+        }
+
+        $hashData['customer'] = [
+            'language' => $context->getCustomer()->getLanguageId(),
+            'email'    => $context->getCustomer()->getEmail(),
+        ];
+
+        if (null !== $context->getCustomer()->getBirthday()) {
+            $hashData['customer']['birthday'] = $context->getCustomer()->getBirthday()->format(DATE_W3C);
+        }
+
+        return $hashData;
     }
 
-    private function generateHash(array $details, SalesChannelContext $context): string
+    private function generateHash(array $hashData): string
     {
-        $data = json_encode([$details, $context], JSON_PRESERVE_ZERO_FRACTION);
+        $json = json_encode($hashData, JSON_PRESERVE_ZERO_FRACTION);
 
-        if (empty($data)) {
+        if (empty($json)) {
             throw new LogicException('could not generatae hash');
         }
 
@@ -69,6 +101,6 @@ class CartHasher implements CartHasherInterface
             throw new LogicException('empty app secret');
         }
 
-        return hash_hmac('sha256', $data, $secret);
+        return hash_hmac('sha256', $json, $secret);
     }
 }
