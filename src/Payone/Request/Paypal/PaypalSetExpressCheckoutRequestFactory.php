@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\Request\Paypal;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
-use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
