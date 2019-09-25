@@ -68,8 +68,17 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
             'language'    => $language,
             'savedCards'  => $savedCards,
             'template'    => $template,
-            'workOrderId' => $this->getWorkOrderIdFromCart($event->getPage()->getCart()),
         ]);
+
+        /** @var null|PaypalExpressCartData $extension */
+        $extension = $event->getPage()->getCart()->getExtension(PaypalExpressCartData::EXTENSION_NAME);
+
+        if (null !== $extension) {
+            $payoneData->assign([
+                'workOrderId' => $extension->getWorkorderId(),
+                'cartHash'    => $extension->getCartHash(),
+            ]);
+        }
 
         $event->getPage()->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
     }
