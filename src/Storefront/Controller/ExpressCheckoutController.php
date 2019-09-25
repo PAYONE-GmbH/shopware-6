@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Storefront\Controller;
 
-use PayonePayment\Components\CartHasher\CartHasher;
+use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -36,6 +36,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 class ExpressCheckoutController extends StorefrontController
 {
@@ -72,6 +73,9 @@ class ExpressCheckoutController extends StorefrontController
     /** @var SalesChannelContextSwitcher */
     private $salesChannelContextSwitcher;
 
+    /** @var CartHasherInterface */
+    private $cartHasher;
+
     /** @var RouterInterface */
     private $router;
 
@@ -87,6 +91,7 @@ class ExpressCheckoutController extends StorefrontController
         EntityRepositoryInterface $countryRepository,
         TranslatorInterface $translator,
         SalesChannelContextSwitcher $salesChannelContextSwitcher,
+        CartHasherInterface $cartHasher,
         RouterInterface $router
     ) {
         $this->checkoutRequestFactory        = $checkoutRequestFactory;
@@ -100,12 +105,13 @@ class ExpressCheckoutController extends StorefrontController
         $this->countryRepository             = $countryRepository;
         $this->translator                    = $translator;
         $this->salesChannelContextSwitcher   = $salesChannelContextSwitcher;
+        $this->cartHasher                    = $cartHasher;
         $this->router                        = $router;
     }
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/express-checkout", name="frontend.account.payone.express-checkout")
+     * @Route("/payone/express-checkout", name="frontend.account.payone.express-checkout", options={"seo": "false"}, methods={"GET"})
      */
     public function express(SalesChannelContext $context): Response
     {
@@ -130,10 +136,16 @@ class ExpressCheckoutController extends StorefrontController
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/express-redirect", name="frontend.account.payone.express-checkout-handler")
+     * @Route("/payone/express-checkout-handler", name="frontend.account.payone.express-checkout-handler", options={"seo": "false"}, methods={"GET"})
      */
     public function redirectHandler(SalesChannelContext $context, Request $request): Response
     {
+        try {
+            $this->handleStateResponse($request->get('state'));
+        } catch (Throwable $exception) {
+            return $this->redirectToRoute('frontend.checkout.cart.page');
+        }
+
         $cart = $this->cartService->getCart($context->getToken(), $context);
 
         /** @var null|PaypalExpressCartData $cartExtension */
@@ -152,8 +164,11 @@ class ExpressCheckoutController extends StorefrontController
             throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
         }
 
-        $customerDataBag = $this->getCustomerDataBagFromResponse($response, $context->getContext());
+        if (empty($response['addpaydata'])) {
+            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+        }
 
+        $customerDataBag = $this->getCustomerDataBagFromResponse($response, $context->getContext());
         $this->accountRegistrationService->register($customerDataBag, true, $context);
 
         $newContextToken = $this->accountService->login($response['addpaydata']['email'], $context, true);
@@ -183,7 +198,7 @@ class ExpressCheckoutController extends StorefrontController
 
         $cartData->assign(array_filter([
             'workOrderId' => $workOrderId,
-            'hash'        => CartHasher::generateHash($cart, $context),
+            'cartHash'    => $this->cartHasher->generateHashFromCart($cart, $context),
         ]));
 
         $cart->addExtension(PaypalExpressCartData::EXTENSION_NAME, $cartData);
@@ -198,10 +213,6 @@ class ExpressCheckoutController extends StorefrontController
 
     private function getCustomerDataBagFromResponse(array $response, Context $context): DataBag
     {
-        if (empty($response['addpaydata'])) {
-            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
-        }
-
         $salutationId = $this->getSalutationId($context);
         $countryId    = $this->getCountryIdByCode($response['addpaydata']['shipping_country'], $context);
 
@@ -256,5 +267,20 @@ class ExpressCheckoutController extends StorefrontController
         }
 
         return $country->getId();
+    }
+
+    private function handleStateResponse(string $state): void
+    {
+        if (empty($state)) {
+            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+        }
+
+        if ($state === 'cancel') {
+            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+        }
+
+        if ($state === 'error') {
+            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+        }
     }
 }

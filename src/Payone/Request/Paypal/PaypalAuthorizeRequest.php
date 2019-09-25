@@ -41,7 +41,7 @@ class PaypalAuthorizeRequest
 
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
-        return [
+        return array_filter([
             'request'      => 'authorization',
             'clearingtype' => 'wlt',
             'wallettype'   => 'PPE',
@@ -52,7 +52,7 @@ class PaypalAuthorizeRequest
             'errorurl'     => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),
             'backurl'      => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),
             'workorderid'  => $workOrderId,
-        ];
+        ]);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity

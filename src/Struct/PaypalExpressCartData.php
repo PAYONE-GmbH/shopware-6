@@ -14,15 +14,15 @@ class PaypalExpressCartData extends Struct
     protected $workOrderId;
 
     /** @var string */
-    protected $hash;
+    protected $cartHash;
 
     public function getWorkorderId(): string
     {
         return $this->workOrderId;
     }
 
-    public function getHash(): string
+    public function getCartHash(): string
     {
-        return $this->hash;
+        return $this->cartHash;
     }
 }
