@@ -173,7 +173,7 @@ class ExpressCheckoutController extends StorefrontController
 
         $newContextToken = $this->accountService->login($response['addpaydata']['email'], $context, true);
 
-        $newSalesChannelContext = $this->salesChannelContextFactory->create(
+        $context = $this->salesChannelContextFactory->create(
             $newContextToken,
             $context->getSalesChannel()->getId()
         );
@@ -182,8 +182,9 @@ class ExpressCheckoutController extends StorefrontController
             SalesChannelContextService::PAYMENT_METHOD_ID => PayonePaypal::UUID,
         ]);
 
-        $this->salesChannelContextSwitcher->update($salesChannelDataBag, $newSalesChannelContext);
+        $this->salesChannelContextSwitcher->update($salesChannelDataBag, $context);
 
+        $cart = $this->cartService->getCart($context->getToken(), $context);
         $this->addCartExtenson($cart, $context, $response['workorderid']);
 
         return $this->redirectToRoute('frontend.checkout.confirm.page');
