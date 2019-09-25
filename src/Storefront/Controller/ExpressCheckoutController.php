@@ -22,7 +22,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
-use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
@@ -124,7 +123,7 @@ class ExpressCheckoutController extends StorefrontController
             ]);
 
             $this->salesChannelContextSwitcher->update($salesChannelDataBag, $context);
-        } catch (ConstraintViolationException $exception) {
+        } catch (Throwable $exception) {
             return $this->forwardToRoute('frontend.checkout.confirm.page', [
                 'formViolations' => $exception,
             ]);
@@ -182,13 +181,15 @@ class ExpressCheckoutController extends StorefrontController
         }
 
         $customerDataBag = $this->getCustomerDataBagFromResponse($response, $context->getContext());
-        $this->accountRegistrationService->register($customerDataBag, true, $context);
-
+        $customerId      = $this->accountRegistrationService->register($customerDataBag, true, $context);
         $newContextToken = $this->accountService->login($response['addpaydata']['email'], $context, true);
 
-        $context = $this->salesChannelContextFactory->create(
+        $newContext = $this->salesChannelContextFactory->create(
             $newContextToken,
-            $context->getSalesChannel()->getId()
+            $context->getSalesChannel()->getId(),
+            [
+                SalesChannelContextService::CUSTOMER_ID => $customerId,
+            ]
         );
 
         $salesChannelDataBag = new DataBag([
@@ -197,8 +198,8 @@ class ExpressCheckoutController extends StorefrontController
 
         $this->salesChannelContextSwitcher->update($salesChannelDataBag, $context);
 
-        $cart = $this->cartService->getCart($context->getToken(), $context);
-        $this->addCartExtenson($cart, $context, $response['workorderid']);
+        $cart = $this->cartService->getCart($newContext->getToken(), $context);
+        $this->addCartExtenson($cart, $newContext, $response['workorderid']);
 
         return $this->redirectToRoute('frontend.checkout.confirm.page');
     }

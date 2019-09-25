@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentMethod;
 
-use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 
 class PayonePaypalExpress implements PaymentMethodInterface
 {
@@ -17,7 +17,7 @@ class PayonePaypalExpress implements PaymentMethodInterface
     private $description = '';
 
     /** @var string */
-    private $paymentHandler = PayonePaypalPaymentHandler::class;
+    private $paymentHandler = PayonePaypalExpressPaymentHandler::class;
 
     /** @var null|string */
     private $template;
