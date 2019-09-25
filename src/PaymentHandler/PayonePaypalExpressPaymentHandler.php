@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
@@ -22,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
+class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
 {
     /** @var PaypalAuthorizeRequestFactory */
     private $requestFactory;
@@ -39,18 +40,23 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
     /** @var PaymentStateHandlerInterface */
     private $stateHandler;
 
+    /** @var CartHasherInterface */
+    private $cartHasher;
+
     public function __construct(
         PaypalAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
-        PaymentStateHandlerInterface $stateHandler
+        PaymentStateHandlerInterface $stateHandler,
+        CartHasherInterface $cartHasher
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
         $this->translator     = $translator;
         $this->dataHandler    = $dataHandler;
         $this->stateHandler   = $stateHandler;
+        $this->cartHasher     = $cartHasher;
     }
 
     /**
@@ -60,9 +66,12 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
     {
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
 
+        $workOrderId = $this->getWorkOrderId($transaction, $dataBag, $salesChannelContext);
+
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $salesChannelContext
+            $salesChannelContext,
+            $workOrderId
         );
 
         try {
@@ -95,6 +104,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
             CustomFieldInstaller::USER_ID            => $response['userid'],
             CustomFieldInstaller::ALLOW_CAPTURE      => false,
             CustomFieldInstaller::ALLOW_REFUND       => false,
+            CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
@@ -110,8 +120,11 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
     /**
      * {@inheritdoc}
      */
-    public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
-    {
+    public function finalize(
+        AsyncPaymentTransactionStruct $transaction,
+        Request $request,
+        SalesChannelContext $salesChannelContext
+    ): void {
         $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
     }
 
@@ -132,5 +145,29 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
         }
 
         return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+    }
+
+    private function getWorkOrderId(
+        AsyncPaymentTransactionStruct $transaction,
+        RequestDataBag $dataBag,
+        SalesChannelContext $context
+    ): ?string {
+        $workOrderId = $dataBag->get('workorder');
+
+        if (null === $workOrderId) {
+            return null;
+        }
+
+        $cartHash = $dataBag->get('carthash');
+
+        if (null === $cartHash) {
+            return null;
+        }
+
+        if (!$this->cartHasher->validate($transaction->getOrder(), $context, $cartHash)) {
+            return null;
+        }
+
+        return $workOrderId;
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Storefront\Controller;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
-use PayonePayment\PaymentMethod\PayonePaypal;
+use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalGetExpressCheckoutDetailsRequestFactory;
@@ -120,7 +120,7 @@ class ExpressCheckoutController extends StorefrontController
 
         try {
             $salesChannelDataBag = new DataBag([
-                SalesChannelContextService::PAYMENT_METHOD_ID => PayonePaypal::UUID,
+                SalesChannelContextService::PAYMENT_METHOD_ID => PayonePaypalExpress::UUID,
             ]);
 
             $this->salesChannelContextSwitcher->update($salesChannelDataBag, $context);
@@ -192,7 +192,7 @@ class ExpressCheckoutController extends StorefrontController
         );
 
         $salesChannelDataBag = new DataBag([
-            SalesChannelContextService::PAYMENT_METHOD_ID => PayonePaypal::UUID,
+            SalesChannelContextService::PAYMENT_METHOD_ID => PayonePaypalExpress::UUID,
         ]);
 
         $this->salesChannelContextSwitcher->update($salesChannelDataBag, $context);
