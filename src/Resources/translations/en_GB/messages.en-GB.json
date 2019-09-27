@@ -47,6 +47,9 @@
       "question": "I accept the direct debit mandate",
       "cancel": "Cancel",
       "confirm": "Submit"
+    },
+    "paypalExpress": {
+      "buttonTitle": "PayPal Express"
     }
   }
 }

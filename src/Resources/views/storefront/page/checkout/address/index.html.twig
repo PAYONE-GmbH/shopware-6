@@ -3,9 +3,15 @@
 {% block page_checkout_address_login_toggle %}
     {{ parent() }}
 
-    <div class="row">
-        <div class="col-5 pb-2">
-            payone express button
-        </div>
-    </div>
+    {% if not context.customer %}
+        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePaymentPaymentMethods %}
+            <div class="row">
+                <div class="col-5 pb-2">
+                    <a href="{{ path('frontend.account.payone.express-checkout') }}" title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}" class="btn btn-light">
+                        {{ "PayonePayment.paypalExpress.buttonTitle" | trans }}
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
 {% endblock %}

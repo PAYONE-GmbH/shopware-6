@@ -3,7 +3,13 @@
 {% block component_offcanvas_cart_actions %}
     {{ parent() }}
 
-    <div>
-        payone express button
-    </div>
+    {% if not context.customer %}
+        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePaymentPaymentMethods %}
+            <div>
+                <a href="{{ path('frontend.account.payone.express-checkout') }}" title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}" class="btn btn-light">
+                    {{ "PayonePayment.paypalExpress.buttonTitle" | trans }}
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
 {% endblock %}
