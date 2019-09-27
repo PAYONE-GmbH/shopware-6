@@ -3,7 +3,13 @@
 {% block page_checkout_aside_actions %}
     {{ parent() }}
 
-    <div class="checkout-aside-action">
-        payone express button
-    </div>
+    {% if not context.customer %}
+        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePaymentPaymentMethods %}
+            <div class="checkout-aside-action">
+                <a href="{{ path('frontend.account.payone.express-checkout') }}" title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}" class="btn btn-block btn-primary">
+                    {{ "PayonePayment.paypalExpress.buttonTitle" | trans }}
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
 {% endblock %}
