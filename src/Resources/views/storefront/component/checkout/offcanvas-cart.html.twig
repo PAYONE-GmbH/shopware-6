@@ -5,11 +5,13 @@
 
     {% if not context.customer %}
         {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePaymentPaymentMethods %}
-            <div>
-                <a href="{{ path('frontend.account.payone.express-checkout') }}" title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}" class="btn btn-light">
-                    {{ "PayonePayment.paypalExpress.buttonTitle" | trans }}
-                </a>
-            </div>
+            {% block utilities_offcanvas_payone_paypal_express_button %}
+                <div>
+                    <a href="{{ path('frontend.account.payone.express-checkout') }}" title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}" class="btn btn-block btn-primary">
+                        {{ "PayonePayment.paypalExpress.buttonTitle" | trans }}
+                    </a>
+                </div>
+            {% endblock %}
         {% endif %}
     {% endif %}
 {% endblock %}
