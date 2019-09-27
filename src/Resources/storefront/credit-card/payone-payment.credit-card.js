@@ -31,13 +31,16 @@ export default class PayonePaymentCreditCard extends Plugin {
 
             this.iframe = new window.Payone.ClientApi.HostedIFrames(config, request);
 
-            document
-                .getElementById('confirmOrderForm')
-                .addEventListener('submit', this._handleOrderSubmit.bind(this));
+            const field = document.getElementById('savedpseudocardpan');
+            const form = document.getElementById('confirmOrderForm');
 
-            document
-                .getElementById('savedpseudocardpan')
-                .addEventListener('change', this._handleChangeSavedCard.bind(this));
+            if (field) {
+                field.addEventListener('change', this._handleChangeSavedCard.bind(this));
+            }
+
+            if (form) {
+                form.addEventListener('submit', this._handleOrderSubmit.bind(this));
+            }
         });
     }
 
@@ -174,9 +177,13 @@ export default class PayonePaymentCreditCard extends Plugin {
         const savedCardPan = document.getElementById('savedpseudocardpan');
 
         if(savedCardPan.options[savedCardPan.selectedIndex].value) {
-            [...document.getElementsByClassName('credit-card-input')].forEach(function(element) { element.classList.add('hide') });
+            [...document.getElementsByClassName('credit-card-input')].forEach(function(element) {
+                element.classList.add('hide')
+            });
         } else {
-            [...document.getElementsByClassName('credit-card-input')].forEach(function(element) { element.classList.remove('hide'); });
+            [...document.getElementsByClassName('credit-card-input')].forEach(function(element) {
+                element.classList.remove('hide');
+            });
         }
     }
 
