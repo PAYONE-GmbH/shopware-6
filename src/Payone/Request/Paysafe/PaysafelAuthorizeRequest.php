@@ -14,7 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
-class PaypalAuthorizeRequest
+class PaysafelAuthorizeRequest
 {
     /** @var RedirectHandler */
     private $redirectHandler;
@@ -42,7 +42,7 @@ class PaypalAuthorizeRequest
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
         return array_filter([
-            'request'      => 'authorization',
+            'request'      => 'fnc',
             'clearingtype' => 'wlt',
             'wallettype'   => 'PPE',
             'amount'       => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),

@@ -10,7 +10,7 @@ use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalGetExpressCheckoutDetailsRequestFactory;
 use PayonePayment\Payone\Request\Paypal\PaypalSetExpressCheckoutRequestFactory;
-use PayonePayment\Struct\PaypalExpressCartData;
+use PayonePayment\Storefront\Struct\PaypalExpressCartData;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;

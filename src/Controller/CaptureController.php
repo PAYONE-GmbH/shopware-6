@@ -62,6 +62,7 @@ class CaptureController extends AbstractController
         }
 
         try {
+            // TODO: paysafe braucht einen eigneen capure handler (anderer request)
             $this->captureHandler->captureTransaction($orderTransaction, $context);
         } catch (PayoneRequestException $exception) {
             return new JsonResponse(

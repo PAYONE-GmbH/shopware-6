@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\ConfigReader;
 
-use PayonePayment\Payone\Struct\Configuration;
+use PayonePayment\Struct\Configuration;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigReader implements ConfigReaderInterface

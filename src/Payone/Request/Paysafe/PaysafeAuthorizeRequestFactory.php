@@ -11,9 +11,9 @@ use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
+class PaysafeAuthorizeRequestFactory extends AbstractRequestFactory
 {
-    /** @var PaypalAuthorizeRequest */
+    /** @var PaysafelAuthorizeRequest */
     private $authorizeRequest;
 
     /** @var CustomerRequest */
@@ -23,7 +23,7 @@ class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
     private $systemRequest;
 
     public function __construct(
-        PaypalAuthorizeRequest $authorizeRequest,
+        PaysafelAuthorizeRequest $authorizeRequest,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
