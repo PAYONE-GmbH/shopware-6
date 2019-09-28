@@ -7,7 +7,7 @@
         {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePaymentPaymentMethods %}
             {% block page_checkout_payone_paypal_express_button %}
                 <div class="checkout-aside-action">
-                    <a href="{{ path('frontend.account.payone.express-checkout') }}" title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}" class="btn btn-block btn-primary">
+                    <a href="{{ path('frontend.account.payone.express-checkout') }}" title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}" class="btn btn-block btn-primary payone--paypal-express">
                         {{ "PayonePayment.paypalExpress.buttonTitle" | trans }}
                     </a>
                 </div>
