@@ -151,20 +151,16 @@ class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInt
         AsyncPaymentTransactionStruct $transaction,
         RequestDataBag $dataBag,
         SalesChannelContext $context
-    ): ?string {
+    ): ?string
+    {
+        $cartHash = $dataBag->get('carthash');
         $workOrderId = $dataBag->get('workorder');
 
-        if (null === $workOrderId) {
+        if (null === $workOrderId || null === $cartHash) {
             return null;
         }
 
-        $cartHash = $dataBag->get('carthash');
-
-        if (null === $cartHash) {
-            return null;
-        }
-
-        if (!$this->cartHasher->validate($transaction->getOrder(), $context, $cartHash)) {
+        if (!$this->cartHasher->validate($transaction->getOrder(), $cartHash, $context)) {
             return null;
         }
 
