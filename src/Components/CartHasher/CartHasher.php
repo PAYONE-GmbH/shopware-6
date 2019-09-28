@@ -21,7 +21,7 @@ class CartHasher implements CartHasherInterface
         return $this->generateHash($hashData);
     }
 
-    public function validate(OrderEntity $order, SalesChannelContext $context, string $cartHash): bool
+    public function validate(OrderEntity $order, string $cartHash, SalesChannelContext $context): bool
     {
         $hashData = $this->getHashData($order, $context);
         $expected = $this->generateHash($hashData);
@@ -29,6 +29,9 @@ class CartHasher implements CartHasherInterface
         return hash_equals($expected, $cartHash);
     }
 
+    /**
+     * @param OrderEntity|Cart $entity
+     */
     private function getHashData(Struct $entity, SalesChannelContext $context): array
     {
         $hashData = [];
@@ -37,7 +40,6 @@ class CartHasher implements CartHasherInterface
             return $hashData;
         }
 
-        /** @var LineItem|OrderLineItemEntity $item */
         foreach ($entity->getLineItems() as $item) {
             $detail = [
                 'id'       => $item->getReferencedId(),
@@ -92,7 +94,7 @@ class CartHasher implements CartHasherInterface
         $json = json_encode($hashData, JSON_PRESERVE_ZERO_FRACTION);
 
         if (empty($json)) {
-            throw new LogicException('could not generatae hash');
+            throw new LogicException('could not generate hash');
         }
 
         $secret = getenv('APP_SECRET');
