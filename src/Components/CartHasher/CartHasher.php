@@ -6,8 +6,6 @@ namespace PayonePayment\Components\CartHasher;
 
 use LogicException;
 use Shopware\Core\Checkout\Cart\Cart;
-use Shopware\Core\Checkout\Cart\LineItem\LineItem;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -30,7 +28,7 @@ class CartHasher implements CartHasherInterface
     }
 
     /**
-     * @param OrderEntity|Cart $entity
+     * @param Cart|OrderEntity $entity
      */
     private function getHashData(Struct $entity, SalesChannelContext $context): array
     {
