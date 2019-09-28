@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Debit;
 
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;

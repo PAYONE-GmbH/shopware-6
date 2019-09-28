@@ -2,26 +2,27 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Struct;
+namespace PayonePayment\Struct;
 
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
+use Shopware\Core\Framework\Struct\Struct;
 
-class PaymentTransaction
+class PaymentTransaction extends Struct
 {
     /** @var OrderTransactionEntity */
-    private $orderTransaction;
+    protected $orderTransaction;
 
     /** @var OrderEntity */
-    private $order;
+    protected $order;
 
     /** @var array */
-    private $customFields;
+    protected $customFields;
 
     /** @var null|string */
-    private $returnUrl;
+    protected $returnUrl;
 
     public function getCustomFields(): array
     {

@@ -6,7 +6,7 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\DataAbstractionLayer\Entity\Mandate\PayonePaymentMandateEntity;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\Struct\CheckoutFinishPaymentData;
+use PayonePayment\Storefront\Struct\CheckoutFinishPaymentData;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;

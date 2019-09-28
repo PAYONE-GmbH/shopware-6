@@ -6,7 +6,7 @@ namespace PayonePayment\Components\TransactionDataHandler;
 
 use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 

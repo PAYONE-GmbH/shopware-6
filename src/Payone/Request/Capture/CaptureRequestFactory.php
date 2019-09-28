@@ -7,7 +7,7 @@ namespace PayonePayment\Payone\Request\Capture;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 
 class CaptureRequestFactory extends AbstractRequestFactory
@@ -32,6 +32,7 @@ class CaptureRequestFactory extends AbstractRequestFactory
             $context
         );
 
+        // wenn paydirekt hol quatsch aus anderem request
         $this->requests[] = $this->captureRequest->getRequestParameters(
             $transaction->getOrder(),
             $context,
