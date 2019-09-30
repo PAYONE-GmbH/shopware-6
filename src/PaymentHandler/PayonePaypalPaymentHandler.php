@@ -79,7 +79,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
             );
         }
 
-        if (empty($response['status']) && $response['status'] !== 'REDIRECT') {
+        if (empty($response['status']) || $response['status'] === 'ERROR') {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -100,7 +100,11 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
 
-        return new RedirectResponse($response['redirecturl']);
+        if (strtolower($response['status']) === 'redirect') {
+            return new RedirectResponse($response['redirecturl']);
+        }
+
+        return new RedirectResponse($request['successurl']);
     }
 
     /**

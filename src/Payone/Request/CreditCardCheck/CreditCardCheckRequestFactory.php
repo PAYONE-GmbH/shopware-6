@@ -27,7 +27,8 @@ class CreditCardCheckRequestFactory extends AbstractRequestFactory
     {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $context->getSalesChannel()->getId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD,
+            $context->getContext()
         );
 
         $this->requests[] = $this->creditCardRequest->getRequestParameters();

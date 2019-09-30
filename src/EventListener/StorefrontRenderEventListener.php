@@ -73,12 +73,12 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
     {
         $ids = [];
 
-        $paymentMethodEvents = $event->getEventByDefinition(PaymentMethodDefinition::class);
+        $paymentMethodEvents = $event->getEventByEntityName(PaymentMethodDefinition::ENTITY_NAME);
         if (null !== $paymentMethodEvents) {
             $ids = array_merge($ids, $this->collectPrimaryKeys($paymentMethodEvents->getIds()));
         }
 
-        $salesChannelEvents = $event->getEventByDefinition(SalesChannelPaymentMethodDefinition::class);
+        $salesChannelEvents = $event->getEventByEntityName(SalesChannelPaymentMethodDefinition::ENTITY_NAME);
         if (null !== $salesChannelEvents) {
             $ids = array_merge($ids, $this->collectPrimaryKeys($salesChannelEvents->getIds()));
         }
@@ -100,10 +100,7 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param array|string $primaryKeys
-     */
-    private function collectPrimaryKeys($primaryKeys): array
+    private function collectPrimaryKeys(array $primaryKeys): array
     {
         $ids = [];
 
@@ -137,7 +134,9 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
 
     private function clearCache(Context $context): void
     {
-        $cacheKeys     = [];
+        $cacheKeys = [];
+
+        /** @var string[] $salesChannels */
         $salesChannels = $this->salesChannelRepository->searchIds(new Criteria(), $context)->getIds();
 
         foreach ($salesChannels as $salesChannel) {

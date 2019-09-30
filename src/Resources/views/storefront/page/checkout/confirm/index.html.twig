@@ -1,0 +1,21 @@
+{% sw_extends '@Storefront/page/checkout/confirm/index.html.twig' %}
+
+{% block page_checkout_confirm_form_submit %}
+    {{ parent() }}
+
+    {% if page.extensions.payone and page.extensions.payone.workOrderId %}
+        {% sw_include '@Storefront/page/checkout/confirm/field/work_order.html.twig' %}
+    {% endif %}
+
+    {% if page.extensions.payone and page.extensions.payone.cartHash %}
+        {% sw_include '@Storefront/page/checkout/confirm/field/cart_hash.html.twig' %}
+    {% endif %}
+{% endblock %}
+
+{% block page_checkout_confirm %}
+    {{ parent() }}
+
+    {% if page.extensions.payone and page.extensions.payone.template %}
+        {% sw_include '@Storefront/page/checkout/confirm/payment_form.html.twig' %}
+    {% endif %}
+{% endblock %}

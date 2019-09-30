@@ -6,7 +6,7 @@ namespace PayonePayment\Storefront\Controller;
 
 use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader;
-use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
-class PayoneAccountMandateController extends StorefrontController
+class AccountMandateController extends StorefrontController
 {
     /** @var AccountMandatePageLoader */
     private $accountMandatePageLoader;
@@ -30,9 +30,8 @@ class PayoneAccountMandateController extends StorefrontController
     }
 
     /**
+     * @RouteScope(scopes={"storefront"})
      * @Route("/account/mandate/overview", name="frontend.account.payone.mandate.page", options={"seo": "false"}, methods={"GET"})
-     *
-     * @throws CustomerNotLoggedInException
      */
     public function mandateOverview(Request $request, SalesChannelContext $context): Response
     {
@@ -44,9 +43,8 @@ class PayoneAccountMandateController extends StorefrontController
     }
 
     /**
-     * @Route("/account/mandate/download", name="frontend.account.payone.mandate.download", methods={"GET"})
-     *
-     * @throws CustomerNotLoggedInException
+     * @RouteScope(scopes={"storefront"})
+     * @Route("/account/mandate/download", name="frontend.account.payone.mandate.download", options={"seo": "false"}, methods={"GET"})
      */
     public function downloadMandate(Request $request, SalesChannelContext $context): Response
     {

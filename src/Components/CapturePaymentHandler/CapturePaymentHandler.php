@@ -12,7 +12,6 @@ use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
 use PayonePayment\Payone\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 
@@ -27,19 +26,14 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
 
-    /** @var OrderTransactionStateHandler */
-    private $stateHandler;
-
     public function __construct(
         CaptureRequestFactory $requestFactory,
         PayoneClientInterface $client,
-        TransactionDataHandlerInterface $dataHandler,
-        OrderTransactionStateHandler $stateHandler
+        TransactionDataHandlerInterface $dataHandler
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
         $this->dataHandler    = $dataHandler;
-        $this->stateHandler   = $stateHandler;
     }
 
     /**

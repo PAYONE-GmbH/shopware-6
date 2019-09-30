@@ -68,7 +68,7 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
             'mandate' => $this->getMandate($mandateIdentification, $context),
         ]);
 
-        $event->getPage()->addExtension('payone', $payoneData);
+        $event->getPage()->addExtension(CheckoutFinishPaymentData::EXTENSION_NAME, $payoneData);
     }
 
     protected function hasDirectDebitPayment(?string $mandateIdentification): bool

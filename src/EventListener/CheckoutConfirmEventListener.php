@@ -6,8 +6,10 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
 use PayonePayment\Struct\CheckoutConfirmPaymentData;
+use PayonePayment\Struct\PaypalExpressCartData;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -40,11 +42,14 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'onCheckoutConfirm',
+            CheckoutConfirmPageLoadedEvent::class => [
+                ['addPayonePageData'],
+                ['hideInternalPaymentMethods'],
+            ],
         ];
     }
 
-    public function onCheckoutConfirm(CheckoutConfirmPageLoadedEvent $event): void
+    public function addPayonePageData(CheckoutConfirmPageLoadedEvent $event): void
     {
         $salesChannelContext = $event->getSalesChannelContext();
         $context             = $salesChannelContext->getContext();
@@ -68,7 +73,38 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
             'template'    => $template,
         ]);
 
-        $event->getPage()->addExtension('payone', $payoneData);
+        /** @var null|PaypalExpressCartData $extension */
+        $extension = $event->getPage()->getCart()->getExtension(PaypalExpressCartData::EXTENSION_NAME);
+
+        if (null !== $extension) {
+            $payoneData->assign([
+                'workOrderId' => $extension->getWorkorderId(),
+                'cartHash'    => $extension->getCartHash(),
+            ]);
+        }
+
+        $event->getPage()->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+    }
+
+    public function hideInternalPaymentMethods(CheckoutConfirmPageLoadedEvent $event)
+    {
+        $internalPaymentMethods = [
+            PayonePaypalExpress::UUID,
+        ];
+
+        $salesChannelContext = $event->getSalesChannelContext();
+
+        $event->getPage()->setPaymentMethods(
+            $event->getPage()->getPaymentMethods()->filter(
+                static function (PaymentMethodEntity $entity) use ($internalPaymentMethods, $salesChannelContext) {
+                    if ($salesChannelContext->getPaymentMethod()->getId() === $entity->getId()) {
+                        return true;
+                    }
+
+                    return !in_array($entity->getId(), $internalPaymentMethods, true);
+                }
+            )
+        );
     }
 
     private function getTemplateFromPaymentMethod(PaymentMethodEntity $paymentMethod): ?string

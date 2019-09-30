@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Controller;
 
 use PayonePayment\Payone\Webhook\Processor\WebhookProcessorInterface;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,7 @@ class WebhookController extends StorefrontController
     }
 
     /**
+     * @RouteScope(scopes={"storefront"})
      * @Route("/payone/webhook", name="payone_webhook", methods={"POST"})
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
