@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\CardRepository;
 
-use DateTimeInterface;
+use DateTime;
 use PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
@@ -29,7 +29,7 @@ class CardRepository implements CardRepositoryInterface
         CustomerEntity $customer,
         string $truncatedCardPan,
         string $pseudoCardPan,
-        DateTimeInterface $expiresAt,
+        DateTime $expiresAt,
         Context $context
     ): void {
         $card = $this->getExistingCard(
@@ -38,11 +38,14 @@ class CardRepository implements CardRepositoryInterface
             $context
         );
 
+        $expiresAt->setTime(23, 59, 59);
+        $expiresAt->modify('last day of this month');
+
         $data = [
             'id'               => null === $card ? Uuid::randomHex() : $card->getId(),
             'pseudoCardPan'    => $pseudoCardPan,
             'truncatedCardPan' => $truncatedCardPan,
-            'expiresAt'        => \DateTime::createFromFormat('Y-m-d', $expiresAt->format('Y-m-t'))->setTime(23, 59, 59),
+            'expiresAt'        => $expiresAt,
             'customerId'       => $customer->getId(),
         ];
 

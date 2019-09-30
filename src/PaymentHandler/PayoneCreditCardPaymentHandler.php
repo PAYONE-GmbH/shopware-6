@@ -111,13 +111,17 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
 
         if (empty($savedPseudoCardPan)) {
-            $this->cardRepository->saveCard(
-                $salesChannelContext->getCustomer(),
-                $truncatedCardPan,
-                $pseudoCardPan,
-                DateTime::createFromFormat('ym', $cardExpireDate),
-                $salesChannelContext->getContext()
-            );
+            $expiresAt = DateTime::createFromFormat('ym', $cardExpireDate);
+
+            if (!empty($expiresAt)) {
+                $this->cardRepository->saveCard(
+                    $salesChannelContext->getCustomer(),
+                    $truncatedCardPan,
+                    $pseudoCardPan,
+                    $expiresAt,
+                    $salesChannelContext->getContext()
+                );
+            }
         }
 
         if (strtolower($response['status']) === 'redirect') {

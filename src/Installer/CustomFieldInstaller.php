@@ -18,6 +18,7 @@ class CustomFieldInstaller implements InstallerInterface
 {
     public const TRANSACTION_ID         = 'payone_transaction_id';
     public const SEQUENCE_NUMBER        = 'payone_sequence_number';
+    public const WORK_ORDER_ID          = 'payone_work_order_id';
     public const MANDATE_IDENTIFICATION = 'payone_mandate_identification';
     public const TRANSACTION_DATA       = 'payone_transaction_data';
     public const USER_ID                = 'payone_user_id';
@@ -150,6 +151,12 @@ class CustomFieldInstaller implements InstallerInterface
             [
                 'id'               => '6b36addf41694c798d9e6cf835ed30b6',
                 'name'             => self::AUTHORIZATION_TYPE,
+                'type'             => CustomFieldTypes::TEXT,
+                'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
+            ],
+            [
+                'id'               => 'd60f960523e74981a5bc23e238a9d8fb',
+                'name'             => self::WORK_ORDER_ID,
                 'type'             => CustomFieldTypes::TEXT,
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
             ],

@@ -111,7 +111,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             );
         } else {
             if ($this->isTransactionOpen($transactionData)) {
-                $this->stateHandler->open(
+                $this->stateHandler->reopen(
                     $paymentTransaction->getOrderTransaction()->getId(),
                     $salesChannelContext->getContext()
                 );

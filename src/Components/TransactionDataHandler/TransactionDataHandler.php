@@ -31,7 +31,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         ];
 
         $transaction->getOrderTransaction()->setCustomFields($customFields);
-        $transaction->setCustomFields($customFields);
+        $transaction->setCustomFields(array_filter($customFields));
 
         $this->transactionRepository->update([$update], $context);
     }

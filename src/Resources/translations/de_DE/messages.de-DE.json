@@ -47,6 +47,9 @@
       "question": "Ich erteile das SEPA-Laschtschriftmandat",
       "cancel": "Abbruch",
       "confirm": "Absenden"
+    },
+    "paypalExpress": {
+      "buttonTitle": "PayPal Express"
     }
   }
 }

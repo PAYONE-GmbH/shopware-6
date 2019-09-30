@@ -7,6 +7,7 @@ namespace PayonePayment\Storefront\Controller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
-class PayoneCheckoutManageMandateController extends StorefrontController
+class ManageMandateController extends StorefrontController
 {
     /** @var ManageMandateRequestFactory */
     private $requestFactory;
@@ -31,6 +32,7 @@ class PayoneCheckoutManageMandateController extends StorefrontController
     }
 
     /**
+     * @RouteScope(scopes={"storefront"})
      * @Route("/payone/request/manage-mandate", name="frontend.payone.manage-mandate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
      */
     public function mandateOverview(Request $request, SalesChannelContext $context): JsonResponse
