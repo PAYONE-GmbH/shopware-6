@@ -22,6 +22,9 @@ class PayoneCreditCard implements PaymentMethodInterface
     /** @var null|string */
     private $template = 'credit-card-form.html.twig';
 
+    /** @var array  */
+    private $translations = [];
+
     public function getId(): string
     {
         return self::UUID;
@@ -45,5 +48,10 @@ class PayoneCreditCard implements PaymentMethodInterface
     public function getTemplate(): ?string
     {
         return $this->template;
+    }
+
+    public function getTranslations(): array
+    {
+        return $this->translations;
     }
 }

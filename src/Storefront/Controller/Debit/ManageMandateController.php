@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Storefront\Controller;
+namespace PayonePayment\Storefront\Controller\Debit;
 
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -33,7 +33,7 @@ class ManageMandateController extends StorefrontController
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/request/manage-mandate", name="frontend.payone.manage-mandate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
+     * @Route("/payone/request/manage-mandate", name="frontend.payone.debit.manage-mandate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
      */
     public function mandateOverview(Request $request, SalesChannelContext $context): JsonResponse
     {

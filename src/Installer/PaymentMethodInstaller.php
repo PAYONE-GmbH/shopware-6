@@ -9,6 +9,8 @@ use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
+use PayonePayment\PaymentMethod\PayonePaysafeInstallment;
+use PayonePayment\PaymentMethod\PayonePaysafeInvoicing;
 use PayonePayment\PaymentMethod\PayoneSofortBanking;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Framework\Context;
@@ -29,6 +31,8 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneDebit::class,
         PayonePaypal::class,
         PayonePaypalExpress::class,
+        PayonePaysafeInstallment::class,
+        PayonePaysafeInvoicing::class,
         PayoneSofortBanking::class,
     ];
 
@@ -99,12 +103,14 @@ class PaymentMethodInstaller implements InstallerInterface
         $data = [
             'id'                => $paymentMethod->getId(),
             'name'              => $paymentMethod->getName(),
-            'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
+            'description' => $paymentMethod->getDescription(),
+             'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
             'pluginId'          => $pluginId,
             'customFields'      => [
                 CustomFieldInstaller::TEMPLATE  => $paymentMethod->getTemplate(),
                 CustomFieldInstaller::IS_PAYONE => true,
             ],
+            'translations' => $paymentMethod->getTranslations()
         ];
 
         $this->paymentMethodRepository->upsert([$data], $context);

@@ -5,22 +5,23 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentMethod;
 
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaysafePaymentHandler;
 
-class PayonePaypalExpress implements PaymentMethodInterface
+class PayonePaysafeInstallment implements PaymentMethodInterface
 {
-    public const UUID = '5ddf648859a84396a98c97a1a92c107f';
+    public const UUID = '569b46970ad2458ca8f17f1ebb754137';
 
     /** @var string */
-    private $name = 'Payone Paypal Express';
+    private $name = 'Payone Paysafe Installment';
 
     /** @var string */
     private $description = '';
 
     /** @var string */
-    private $paymentHandler = PayonePaypalExpressPaymentHandler::class;
+    private $paymentHandler = PayonePaysafePaymentHandler::class;
 
     /** @var null|string */
-    private $template;
+    private $template = 'paysafe-installment-form.html.twig';
 
     /** @var array  */
     private $translations = [];

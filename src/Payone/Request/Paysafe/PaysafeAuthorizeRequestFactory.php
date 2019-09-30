@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\Paypal;
+namespace PayonePayment\Payone\Request\Paysafe;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
@@ -13,7 +13,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaysafeAuthorizeRequestFactory extends AbstractRequestFactory
 {
-    /** @var PaysafelAuthorizeRequest */
+    /** @var PaysafeAuthorizeRequest */
     private $authorizeRequest;
 
     /** @var CustomerRequest */
@@ -23,7 +23,7 @@ class PaysafeAuthorizeRequestFactory extends AbstractRequestFactory
     private $systemRequest;
 
     public function __construct(
-        PaysafelAuthorizeRequest $authorizeRequest,
+        PaysafeAuthorizeRequest $authorizeRequest,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
@@ -39,7 +39,7 @@ class PaysafeAuthorizeRequestFactory extends AbstractRequestFactory
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYPAL,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYSAFE,
             $context->getContext()
         );
 

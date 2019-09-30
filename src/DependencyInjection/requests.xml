@@ -64,6 +64,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
         </service>
 
         <!-- Paypal Express -->

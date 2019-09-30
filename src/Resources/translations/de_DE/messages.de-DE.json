@@ -38,7 +38,7 @@
       "noEntries": "Keine SEPA-Lastschriftmandate vorhanden."
     },
     "checkoutPage": {
-      "cardTitle": "Zahlungsinformationen"
+      "defaultCardTitle": "Zahlungsinformationen"
     },
     "finishPage": {
       "mandateIdentification": "SEPA-Laschtschriftmandat"
@@ -50,6 +50,21 @@
     },
     "paypalExpress": {
       "buttonTitle": "PayPal Express"
+    },
+    "paysafe": {
+      "invoicing": {
+        "cardTitle": "Payolution Safe Invoicing",
+        "birthday": {
+          "label": "",
+          "day": "",
+          "month": "",
+          "year": ""
+        },
+        "consentCheckbox": {
+          "introduction": "Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an payolution bin ich einverstanden.",
+          "textWithLink": "Meine <a data-toggle=\"modal\" data-url=\"%link%\" href=\"%link%\" title=\"Einwilligung\">Einwilligung</a> kann ich jederzeit mit Wirkung für die Zukunft wiederrufen."
+        }
+      }
     }
   }
 }

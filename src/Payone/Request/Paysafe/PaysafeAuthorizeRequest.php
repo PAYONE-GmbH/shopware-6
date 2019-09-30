@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\Paypal;
+namespace PayonePayment\Payone\Request\Paysafe;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Struct\PaymentTransaction;
@@ -14,7 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
-class PaysafelAuthorizeRequest
+class PaysafeAuthorizeRequest
 {
     /** @var RedirectHandler */
     private $redirectHandler;
@@ -43,8 +43,6 @@ class PaysafelAuthorizeRequest
 
         return array_filter([
             'request'      => 'fnc',
-            'clearingtype' => 'wlt',
-            'wallettype'   => 'PPE',
             'amount'       => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
             'currency'     => $currency->getIsoCode(),
             'reference'    => $transaction->getOrder()->getOrderNumber(),

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
-
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
     <card>
         <title>Basic configuration</title>
         <title lang="de-DE">Grundeinstellungen</title>
@@ -285,6 +283,60 @@
         <input-field>
             <name>sofortPortalKey</name>
             <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Paysafe</title>
+
+        <input-field>
+            <name>paysafeMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paysafeAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paysafePortalId</name>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paysafePortalKey</name>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paysafeChannelName</name>
+            <label>Channel Name</label>
+            <label lang="de-DE">Channel Name</label>
+        </input-field>
+
+        <input-field>
+            <name>paysafeChannelPassword</name>
+            <label>Channel Password</label>
+            <label lang="de-DE">Channel Passwort</label>
+            <helpText>Wird auf der Einwilligung genannt.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paysafeCompanyName</name>
+            <label>Company Name</label>
+            <label lang="de-DE">Firmenname</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
         </input-field>
