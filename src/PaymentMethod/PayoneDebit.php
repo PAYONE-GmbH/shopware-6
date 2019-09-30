@@ -11,7 +11,7 @@ class PayoneDebit implements PaymentMethodInterface
     public const UUID = '1b017bef157b4222b734659361d996fd';
 
     /** @var string */
-    private $name = 'Payone Debit';
+    private $name = 'Payone SEPA Lastschrift';
 
     /** @var string */
     private $description = '';
@@ -21,6 +21,9 @@ class PayoneDebit implements PaymentMethodInterface
 
     /** @var null|string */
     private $template = 'debit-form.html.twig';
+
+    /** @var array  */
+    private $translations = [];
 
     public function getId(): string
     {
@@ -45,5 +48,10 @@ class PayoneDebit implements PaymentMethodInterface
     public function getTemplate(): ?string
     {
         return $this->template;
+    }
+
+    public function getTranslations(): array
+    {
+        return $this->translations;
     }
 }

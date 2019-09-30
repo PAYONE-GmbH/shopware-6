@@ -26,6 +26,9 @@ class CheckoutConfirmPaymentData extends Struct
     /** @var null|string */
     protected $workOrderId;
 
+    /** @var null|string */
+    protected $cartHash = '';
+
     public function getCardRequest(): array
     {
         return $this->cardRequest;
@@ -49,5 +52,10 @@ class CheckoutConfirmPaymentData extends Struct
     public function getWorkOrderId(): ?string
     {
         return $this->workOrderId;
+    }
+
+    public function getCartHash(): ?string
+    {
+        return $this->cartHash;
     }
 }

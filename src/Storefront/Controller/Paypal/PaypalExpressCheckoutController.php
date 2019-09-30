@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Storefront\Controller;
+namespace PayonePayment\Storefront\Controller\Paypal;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
@@ -38,7 +38,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class ExpressCheckoutController extends StorefrontController
+class PaypalExpressCheckoutController extends StorefrontController
 {
     /** @var PaypalSetExpressCheckoutRequestFactory */
     private $checkoutRequestFactory;
@@ -111,7 +111,7 @@ class ExpressCheckoutController extends StorefrontController
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/express-checkout", name="frontend.account.payone.express-checkout", options={"seo": "false"}, methods={"GET"})
+     * @Route("/payone/express-checkout", name="frontend.account.payone.paypal.express-checkout", options={"seo": "false"}, methods={"GET"})
      */
     public function express(SalesChannelContext $context): Response
     {
@@ -148,7 +148,7 @@ class ExpressCheckoutController extends StorefrontController
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/express-checkout-handler", name="frontend.account.payone.express-checkout-handler", options={"seo": "false"}, methods={"GET"})
+     * @Route("/payone/express-checkout-handler", name="frontend.account.payone.paypal.express-checkout-handler", options={"seo": "false"}, methods={"GET"})
      */
     public function redirectHandler(SalesChannelContext $context, Request $request): Response
     {
@@ -223,7 +223,7 @@ class ExpressCheckoutController extends StorefrontController
 
     private function generateReturnUrl(): string
     {
-        return $this->router->generate('frontend.account.payone.express-checkout-handler', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        return $this->router->generate('frontend.account.payone.paypal.express-checkout-handler', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     private function getCustomerDataBagFromResponse(array $response, Context $context): DataBag

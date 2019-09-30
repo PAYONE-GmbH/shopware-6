@@ -25,6 +25,9 @@ class PayoneSofortBanking implements PaymentMethodInterface
     /** @var null|string */
     private $template;
 
+    /** @var array  */
+    private $translations = [];
+
     public function getId(): string
     {
         return self::UUID;
@@ -48,5 +51,10 @@ class PayoneSofortBanking implements PaymentMethodInterface
     public function getTemplate(): ?string
     {
         return $this->template;
+    }
+
+    public function getTranslations(): array
+    {
+        return $this->translations;
     }
 }

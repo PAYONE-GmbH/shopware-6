@@ -37,26 +37,18 @@ class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInt
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
 
-    /** @var PaymentStateHandlerInterface */
-    private $stateHandler;
-
-    /** @var CartHasherInterface */
-    private $cartHasher;
-
     public function __construct(
         PaypalAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
-        PaymentStateHandlerInterface $stateHandler,
-        CartHasherInterface $cartHasher
+        PaymentStateHandlerInterface $stateHandler
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
         $this->translator     = $translator;
         $this->dataHandler    = $dataHandler;
         $this->stateHandler   = $stateHandler;
-        $this->cartHasher     = $cartHasher;
     }
 
     /**
@@ -66,12 +58,10 @@ class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInt
     {
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
 
-        $workOrderId = $this->getWorkOrderId($transaction, $dataBag, $salesChannelContext);
-
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $salesChannelContext,
-            $workOrderId
+            $dataBag,
+            $salesChannelContext
         );
 
         try {
@@ -145,29 +135,5 @@ class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInt
         }
 
         return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
-    }
-
-    private function getWorkOrderId(
-        AsyncPaymentTransactionStruct $transaction,
-        RequestDataBag $dataBag,
-        SalesChannelContext $context
-    ): ?string {
-        $workOrderId = $dataBag->get('workorder');
-
-        if (null === $workOrderId) {
-            return null;
-        }
-
-        $cartHash = $dataBag->get('carthash');
-
-        if (null === $cartHash) {
-            return null;
-        }
-
-        if (!$this->cartHasher->validate($transaction->getOrder(), $context, $cartHash)) {
-            return null;
-        }
-
-        return $workOrderId;
     }
 }

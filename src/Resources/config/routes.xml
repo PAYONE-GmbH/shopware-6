@@ -10,10 +10,12 @@
     <import resource="@PayonePayment/Controller/RedirectController.php" type="annotation" />
     <import resource="@PayonePayment/Controller/SettingsController.php" type="annotation" />
 
-    <import resource="@PayonePayment/Storefront/Controller/AccountCardController.php" type="annotation" />
-    <import resource="@PayonePayment/Storefront/Controller/AccountMandateController.php" type="annotation" />
+    <import resource="@PayonePayment/Storefront/Controller/Account/AccountCardController.php" type="annotation" />
+    <import resource="@PayonePayment/Storefront/Controller/Account/AccountMandateController.php" type="annotation" />
 
-    <import resource="@PayonePayment/Storefront/Controller/ManageMandateController.php" type="annotation" />
+    <import resource="@PayonePayment/Storefront/Controller/Debit/ManageMandateController.php" type="annotation" />
 
-    <import resource="@PayonePayment/Storefront/Controller/ExpressCheckoutController.php" type="annotation" />
+    <import resource="@PayonePayment/Storefront/Controller/Paypal/PaypalExpressCheckoutController.php" type="annotation" />
+
+    <import resource="@PayonePayment/Storefront/Controller/Paysafe/PaysafeInvoicingController.php" type="annotation" />
 </routes>

@@ -1,33 +1,42 @@
 <div class="payone-payment debit">
-    <div class="card">
-        <fieldset>
-            <div class="form-row col-md-12">
-                <div class="form-group col-md-12">
-                    <label class="form-label" for="accountOwner">{{ "PayonePayment.debit.accountOwner" | trans }}</label>
-                    <input class="form-control payone-input" id="accountOwner" name="accountOwner" form="confirmOrderForm" />
-                </div>
-            </div>
+    {% block page_checkout_confirm_payone_card_title_debit_card %}
+        <div class="card-title">
+            {{ "PayonePayment.checkoutConfirmPage.defaultCardTitle" | trans }}
+        </div>
+    {% endblock %}
 
-            <div class="form-row col-md-12">
-                <div class="form-group col-md-12">
-                    <label class="form-label" for="iban">{{ "PayonePayment.debit.iban" | trans }}</label>
-                    <input class="form-control payone-input" id="iban" name="iban" form="confirmOrderForm" />
+    {% block page_checkout_confirm_payone_card_content_debit_card %}
+        <div class="card">
+            <fieldset>
+                <div class="form-row col-md-12">
+                    <div class="form-group col-md-12">
+                        <label class="form-label" for="accountOwner">{{ "PayonePayment.debit.accountOwner" | trans }}</label>
+                        <input class="form-control payone-input" id="accountOwner" name="accountOwner" form="confirmOrderForm" />
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-row col-md-12">
-                <div class="form-group col-md-12">
-                    <label class="form-label" for="bic">{{ "PayonePayment.debit.bic" | trans }}</label>
-                    <input class="form-control payone-input" id="bic" name="bic" form="confirmOrderForm" />
+                <div class="form-row col-md-12">
+                    <div class="form-group col-md-12">
+                        <label class="form-label" for="iban">{{ "PayonePayment.debit.iban" | trans }}</label>
+                        <input class="form-control payone-input" id="iban" name="iban" form="confirmOrderForm" />
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-row col-md-12">
-                <div class="form-group col-md-12" >
-                    <div id="errorOutput" class="alert alert-warning" role="alert" style="display: none;"></div>
+                <div class="form-row col-md-12">
+                    <div class="form-group col-md-12">
+                        <label class="form-label" for="bic">{{ "PayonePayment.debit.bic" | trans }}</label>
+                        <input class="form-control payone-input" id="bic" name="bic" form="confirmOrderForm" />
+                    </div>
                 </div>
-            </div>
-        </fieldset>
-    </div>
+
+                <div class="form-row col-md-12">
+                    <div class="form-group col-md-12" >
+                        <div id="errorOutput" class="alert alert-warning" role="alert" style="display: none;"></div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <div data-is-payone-debit-card="true" id="payone-configuration" data-manage-mandate-url="{{ path('frontend.payone.debit.manage-mandate') }}"></div>
+    {% endblock %}
 </div>
-

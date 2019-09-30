@@ -2,20 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\Paypal;
+namespace PayonePayment\Payone\Request\Paysafe;
 
-use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Struct\PaymentTransaction;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
+class PaysafePreCheckRequestFactory extends AbstractRequestFactory
 {
-    /** @var PaypalAuthorizeRequest */
+    /** @var PaysafeAuthorizeRequest */
     private $authorizeRequest;
 
     /** @var CustomerRequest */
@@ -24,37 +22,30 @@ class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
     /** @var SystemRequest */
     private $systemRequest;
 
-    /** @var CartHasherInterface */
-    private $cartHasher;
-
     public function __construct(
-        PaypalAuthorizeRequest $authorizeRequest,
+        PaysafeAuthorizeRequest $authorizeRequest,
         CustomerRequest $customerRequest,
-        SystemRequest $systemRequest,
-        CartHasherInterface $cartHasher
+        SystemRequest $systemRequest
     ) {
         $this->authorizeRequest = $authorizeRequest;
         $this->customerRequest  = $customerRequest;
         $this->systemRequest    = $systemRequest;
-        $this->cartHasher = $cartHasher;
     }
 
     public function getRequestParameters(
         PaymentTransaction $transaction,
-        RequestDataBag $dataBag,
-        SalesChannelContext $context
+        SalesChannelContext $context,
+        ?string $workOrderId = null
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYPAL,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYSAFE,
             $context->getContext()
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
             $context
         );
-
-        $workOrderId = $this->getWorkOrderId($transaction, $dataBag, $context);
 
         $this->requests[] = $this->authorizeRequest->getRequestParameters(
             $transaction,
@@ -63,29 +54,5 @@ class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
         );
 
         return $this->createRequest();
-    }
-
-    private function getWorkOrderId(
-        PaymentTransaction $transaction,
-        RequestDataBag $dataBag,
-        SalesChannelContext $context
-    ): ?string {
-        $workOrderId = $dataBag->get('workorder');
-
-        if (null === $workOrderId) {
-            return null;
-        }
-
-        $cartHash = $dataBag->get('carthash');
-
-        if (null === $cartHash) {
-            return null;
-        }
-
-        if (!$this->cartHasher->validate($transaction->getOrder(), $context, $cartHash)) {
-            return null;
-        }
-
-        return $workOrderId;
     }
 }

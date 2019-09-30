@@ -2,22 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\Paypal;
+namespace PayonePayment\Payone\Request\Paysafe;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaypalAuthorizeRequest
+class PaysafePreCheckRequest
 {
     /** @var RedirectHandler */
     private $redirectHandler;
@@ -45,9 +42,7 @@ class PaypalAuthorizeRequest
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
         return array_filter([
-            'request'      => 'authorization',
-            'clearingtype' => 'wlt',
-            'wallettype'   => 'PPE',
+            'request'      => 'fnc',
             'amount'       => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
             'currency'     => $currency->getIsoCode(),
             'reference'    => $transaction->getOrder()->getOrderNumber(),

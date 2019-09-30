@@ -16,6 +16,6 @@
     {{ parent() }}
 
     {% if page.extensions.payone and page.extensions.payone.template %}
-        {% sw_include '@Storefront/page/checkout/confirm/payment_form.html.twig' %}
+        {% sw_include '@Storefront/payone/form/' ~ page.extensions.payone.template %}
     {% endif %}
 {% endblock %}
