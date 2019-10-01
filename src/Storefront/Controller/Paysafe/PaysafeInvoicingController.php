@@ -24,6 +24,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
+use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
@@ -73,7 +74,8 @@ class PaysafeInvoicingController extends StorefrontController
             throw new NotFoundHttpException();
         }
 
-        $content = file_get_contents(self::URL . base64_encode($companyName));
+        /** @var string $content */
+        $content = (string) file_get_contents(self::URL . base64_encode($companyName));
 
         if (empty($content)) {
             $this->logger->error('Could not fetch invoicing consent modal content, paysafe returned a empty response.');

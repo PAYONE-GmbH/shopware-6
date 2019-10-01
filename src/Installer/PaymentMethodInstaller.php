@@ -105,6 +105,7 @@ class PaymentMethodInstaller implements InstallerInterface
             'name'              => $paymentMethod->getName(),
             'description' => $paymentMethod->getDescription(),
              'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
+            'position' => $paymentMethod->getPosition(),
             'pluginId'          => $pluginId,
             'customFields'      => [
                 CustomFieldInstaller::TEMPLATE  => $paymentMethod->getTemplate(),

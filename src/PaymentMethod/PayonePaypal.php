@@ -25,6 +25,9 @@ class PayonePaypal implements PaymentMethodInterface
     /** @var array  */
     private $translations = [];
 
+    /** @var int */
+    private $position = 102;
+
     public function getId(): string
     {
         return self::UUID;
@@ -53,5 +56,10 @@ class PayonePaypal implements PaymentMethodInterface
     public function getTranslations(): array
     {
         return $this->translations;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
     }
 }

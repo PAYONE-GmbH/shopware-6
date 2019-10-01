@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use DateTime;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
-use PayonePayment\Payone\Request\Paypal\PaysafeAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\Paysafe\PaysafeInvoicingAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
+use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -23,9 +26,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayonePaysafePaymentHandler implements AsynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
+class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
 {
-    /** @var PaysafeAuthorizeRequestFactory */
+    /** @var PaysafeInvoicingAuthorizeRequestFactory */
     private $requestFactory;
 
     /** @var PayoneClientInterface */
@@ -40,29 +43,37 @@ class PayonePaysafePaymentHandler implements AsynchronousPaymentHandlerInterface
     /** @var PaymentStateHandlerInterface */
     private $stateHandler;
 
+    /** @var EntityRepositoryInterface */
+    private $customerRepository;
+
     public function __construct(
-        PaysafeAuthorizeRequestFactory $requestFactory,
+        PaysafeInvoicingAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
-        PaymentStateHandlerInterface $stateHandler
+        PaymentStateHandlerInterface $stateHandler,
+        EntityRepositoryInterface $customerRepository
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
         $this->translator     = $translator;
         $this->dataHandler    = $dataHandler;
         $this->stateHandler   = $stateHandler;
+        $this->customerRepository = $customerRepository;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
+    public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
-        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction);
+
+        $this->saveBirthdayToCustomer($dataBag, $salesChannelContext);
 
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
+            $dataBag,
             $salesChannelContext
         );
 
@@ -100,20 +111,6 @@ class PayonePaysafePaymentHandler implements AsynchronousPaymentHandlerInterface
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
-
-        if (strtolower($response['status']) === 'redirect') {
-            return new RedirectResponse($response['redirecturl']);
-        }
-
-        return new RedirectResponse($request['successurl']);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
-    {
-        $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
     }
 
     public static function isCapturable(array $transactionData, array $customFields): bool
@@ -133,5 +130,51 @@ class PayonePaysafePaymentHandler implements AsynchronousPaymentHandlerInterface
         }
 
         return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+    }
+
+    private function saveBirthdayToCustomer(RequestDataBag $dataBag, SalesChannelContext $context): void
+    {
+        if (null === $context->getCustomer() || !$this->shouldUpdateCustomerBirthday($dataBag, $context)) {
+            return;
+        }
+
+        $birthday = (new DateTime())->setDate(
+            (int) $dataBag->get('paysafeBirthdayYear'),
+            (int) $dataBag->get('paysafeBirthdayMonth'),
+            (int) $dataBag->get('paysafeBirthdayDay')
+        );
+
+        $data = [
+            'id' => $context->getCustomer()->getId(),
+            'birthday' => $birthday,
+        ];
+
+        $this->customerRepository->update([$data], $context->getContext());
+
+    }
+
+    private function shouldUpdateCustomerBirthday(RequestDataBag $dataBag, SalesChannelContext $context): bool
+    {
+        if (null === $context->getCustomer()) {
+            return false;
+        }
+
+        if (null !== $context->getCustomer()->getBirthday()) {
+            return false;
+        }
+
+        if (empty($dataBag->get('paysafeBirthdayYear'))) {
+            return false;
+        }
+
+        if (empty($dataBag->get('paysafeBirthdayMonth'))) {
+            return false;
+        }
+
+        if (empty($dataBag->get('paysafeBirthdayDay'))) {
+            return false;
+        }
+
+        return true;
     }
 }

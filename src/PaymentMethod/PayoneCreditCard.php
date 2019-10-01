@@ -25,6 +25,9 @@ class PayoneCreditCard implements PaymentMethodInterface
     /** @var array  */
     private $translations = [];
 
+    /** @var int */
+    private $position = 100;
+
     public function getId(): string
     {
         return self::UUID;
@@ -53,5 +56,10 @@ class PayoneCreditCard implements PaymentMethodInterface
     public function getTranslations(): array
     {
         return $this->translations;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
     }
 }

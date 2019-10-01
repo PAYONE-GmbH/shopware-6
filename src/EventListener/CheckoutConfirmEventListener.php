@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
@@ -15,8 +18,11 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Language\LanguageEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class CheckoutConfirmEventListener implements EventSubscriberInterface
 {
@@ -51,26 +57,27 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
 
     public function addPayonePageData(CheckoutConfirmPageLoadedEvent $event): void
     {
-        $salesChannelContext = $event->getSalesChannelContext();
-        $context             = $salesChannelContext->getContext();
+        $context = $event->getSalesChannelContext();
 
-        if (!$this->isPayonePayment($salesChannelContext->getPaymentMethod())) {
+        if (!$this->isPayonePayment($context->getPaymentMethod())) {
             return;
         }
 
-        $cardRequest = $this->requestFactory->getRequestParameters($salesChannelContext);
-        $savedCards  = $this->cardRepository->getCards($salesChannelContext->getCustomer(), $context);
+        $cardRequest = $this->requestFactory->getRequestParameters($context);
+        $savedCards  = $this->cardRepository->getCards($context->getCustomer(), $context->getContext());
 
-        $language = $this->getCustomerLanguage($context);
-        $template = $this->getTemplateFromPaymentMethod($salesChannelContext->getPaymentMethod());
-
+        $language = $this->getCustomerLanguage($context->getContext());
+        $template = $this->getTemplateFromPaymentMethod($context->getPaymentMethod());
+        $birthday = $this->getCustomerBirthday($context);
+        
         $payoneData = new CheckoutConfirmPaymentData();
-
+        
         $payoneData->assign([
             'cardRequest' => $cardRequest,
             'language'    => $language,
             'savedCards'  => $savedCards,
             'template'    => $template,
+            'birthday' => $birthday,
         ]);
 
         /** @var null|PaypalExpressCartData $extension */
@@ -92,12 +99,12 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
             PayonePaypalExpress::UUID,
         ];
 
-        $salesChannelContext = $event->getSalesChannelContext();
+        $context = $event->getSalesChannelContext();
 
         $event->getPage()->setPaymentMethods(
             $event->getPage()->getPaymentMethods()->filter(
-                static function (PaymentMethodEntity $entity) use ($internalPaymentMethods, $salesChannelContext) {
-                    if ($salesChannelContext->getPaymentMethod()->getId() === $entity->getId()) {
+                static function (PaymentMethodEntity $entity) use ($internalPaymentMethods, $context) {
+                    if ($context->getPaymentMethod()->getId() === $entity->getId()) {
                         return true;
                     }
 
@@ -147,5 +154,14 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         }
 
         return true;
+    }
+
+    private function getCustomerBirthday(SalesChannelContext $context): ?DateTimeInterface
+    {
+        if (null === $context->getCustomer()) {
+            return null;
+        }
+
+        return $context->getCustomer()->getBirthday();
     }
 }

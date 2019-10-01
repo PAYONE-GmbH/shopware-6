@@ -329,16 +329,16 @@
             <name>paysafeChannelPassword</name>
             <label>Channel Password</label>
             <label lang="de-DE">Channel Passwort</label>
-            <helpText>Wird auf der Einwilligung genannt.</helpText>
-            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+            <helpText>Wird auf der Einwilligung genannt.</helpText> <!-- TODO -->
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText><!-- TODO -->
         </input-field>
 
         <input-field>
             <name>paysafeCompanyName</name>
             <label>Company Name</label>
             <label lang="de-DE">Firmenname</label>
-            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
-            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText><!-- TODO -->
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText><!-- TODO -->
         </input-field>
     </card>
 </config>

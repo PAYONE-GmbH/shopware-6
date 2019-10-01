@@ -73,6 +73,17 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
+        <service id="PayonePayment\PaymentHandler\PayonePaysafeInvoicingPaymentHandler">
+            <argument type="service" id="PayonePayment\Payone\Request\Paysafe\PaysafeInvoicingAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
+            <argument type="service" id="customer.repository" />
+
+            <tag name="shopware.payment.method.sync" />
+        </service>
+
         <service id="PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler">
             <argument type="service" id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
