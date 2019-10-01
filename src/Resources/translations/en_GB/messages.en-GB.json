@@ -55,14 +55,14 @@
       "invoicing": {
         "cardTitle": "Payolution Safe Invoicing",
         "birthday": {
-          "label": "",
-          "day": "",
-          "month": "",
-          "year": ""
+          "label": "Date of birth",
+          "day": "Day",
+          "month": "Month",
+          "year": "Year"
         },
         "consentCheckbox": {
-          "introduction": "Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an payolution bin ich einverstanden.",
-          "textWithLink": "Meine <a data-toggle=\"modal\" data-url=\"%link%\" href=\"%link%\" title=\"Einwilligung\">Einwilligung</a> kann ich jederzeit mit Wirkung für die Zukunft wiederrufen."
+          "introduction": "With the transmission of the data necessary for the completion of the invoice purchase, an identity check and credit check to payolution I agree.",
+          "textWithLink": "I can revoke my <a href=\"%link%\" title=\"Einwilligung\" target=\"_blank\">consent</a>  at any time with effect for the future."
         }
       }
     }

@@ -20,9 +20,15 @@
         </service>
 
         <service id="PayonePayment\EventListener\StorefrontRenderEventListener">
-            <argument type="service" id="shopware.cache"/>
+            <argument type="service" id="cache.object"/>
             <argument type="service" id="sales_channel.payment_method.repository"/>
             <argument type="service" id="sales_channel.repository" />
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\OrderValidationListener">
+            <argument type="service" id="request_stack" />
 
             <tag name="kernel.event_subscriber"/>
         </service>

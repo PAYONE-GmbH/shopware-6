@@ -4,53 +4,53 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Paysafe;
 
-use PayonePayment\Components\RedirectHandler\RedirectHandler;
+use DateTime;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
-class PaysafeAuthorizeRequest
+class PaysafeInvoicingAuthorizeRequest
 {
-    /** @var RedirectHandler */
-    private $redirectHandler;
-
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
 
-    public function __construct(
-        RedirectHandler $redirectHandler,
-        EntityRepositoryInterface $currencyRepository
-    ) {
-        $this->redirectHandler    = $redirectHandler;
+    public function __construct(EntityRepositoryInterface $currencyRepository)
+    {
         $this->currencyRepository = $currencyRepository;
     }
 
     public function getRequestParameters(
         PaymentTransaction $transaction,
-        Context $context,
-        ?string $workOrderId = null
+        RequestDataBag $dataBag,
+        Context $context
     ): array {
-        if (empty($transaction->getReturnUrl())) {
-            throw new InvalidOrderException($transaction->getOrder()->getId());
-        }
-
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
-        return array_filter([
-            'request'      => 'fnc',
+        $request = [
+            'request'      => 'authorization',
+            'clearingtype' => 'fnc',
+            'financingtype' => 'PYV',
             'amount'       => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
             'currency'     => $currency->getIsoCode(),
             'reference'    => $transaction->getOrder()->getOrderNumber(),
-            'successurl'   => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
-            'errorurl'     => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),
-            'backurl'      => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),
-            'workorderid'  => $workOrderId,
-        ]);
+        ];
+
+        if ($this->hasBirthdayParameters($dataBag)) {
+            $birthday = (new DateTime())->setDate(
+                (int) $dataBag->get('paysafeBirthdayYear'),
+                (int) $dataBag->get('paysafeBirthdayMonth'),
+                (int) $dataBag->get('paysafeBirthdayDay')
+            );
+
+            $request['birthday'] =  $birthday->format('Ymd');
+        }
+
+        return array_filter($request);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity
@@ -65,5 +65,22 @@ class PaysafeAuthorizeRequest
         }
 
         return $currency;
+    }
+
+    private function hasBirthdayParameters(RequestDataBag $dataBag): bool
+    {
+        if (empty($dataBag->get('paysafeBirthdayYear'))) {
+            return false;
+        }
+
+        if (empty($dataBag->get('paysafeBirthdayMonth'))) {
+            return false;
+        }
+
+        if (empty($dataBag->get('paysafeBirthdayDay'))) {
+            return false;
+        }
+
+        return true;
     }
 }

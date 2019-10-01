@@ -9,11 +9,12 @@ use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Struct\PaymentTransaction;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaysafeAuthorizeRequestFactory extends AbstractRequestFactory
+class PaysafeInvoicingAuthorizeRequestFactory extends AbstractRequestFactory
 {
-    /** @var PaysafeAuthorizeRequest */
+    /** @var PaysafeInvoicingAuthorizeRequest */
     private $authorizeRequest;
 
     /** @var CustomerRequest */
@@ -23,7 +24,7 @@ class PaysafeAuthorizeRequestFactory extends AbstractRequestFactory
     private $systemRequest;
 
     public function __construct(
-        PaysafeAuthorizeRequest $authorizeRequest,
+        PaysafeInvoicingAuthorizeRequest $authorizeRequest,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
@@ -34,8 +35,8 @@ class PaysafeAuthorizeRequestFactory extends AbstractRequestFactory
 
     public function getRequestParameters(
         PaymentTransaction $transaction,
-        SalesChannelContext $context,
-        ?string $workOrderId = null
+        RequestDataBag $dataBag,
+        SalesChannelContext $context
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
@@ -49,8 +50,8 @@ class PaysafeAuthorizeRequestFactory extends AbstractRequestFactory
 
         $this->requests[] = $this->authorizeRequest->getRequestParameters(
             $transaction,
-            $context->getContext(),
-            $workOrderId
+            $dataBag,
+            $context->getContext()
         );
 
         return $this->createRequest();

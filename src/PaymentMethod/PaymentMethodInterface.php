@@ -17,4 +17,6 @@ interface PaymentMethodInterface
     public function getTemplate(): ?string;
 
     public function getTranslations(): array;
+
+    public function getPosition(): int;
 }

@@ -33,3 +33,11 @@ $payone-logo-gutter: 1rem;
         padding: 0;
     }
 }
+
+.payone-payment.paysafe-invoicing {
+    .consent-label {
+        a {
+            color: red;
+        }
+    }
+}

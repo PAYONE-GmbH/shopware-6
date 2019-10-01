@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentMethod;
 
-use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePaysafePaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaysafeInvoicingPaymentHandler;
 
 class PayonePaysafeInvoicing implements PaymentMethodInterface
 {
@@ -18,13 +17,16 @@ class PayonePaysafeInvoicing implements PaymentMethodInterface
     private $description = '';
 
     /** @var string */
-    private $paymentHandler = PayonePaysafePaymentHandler::class;
+    private $paymentHandler = PayonePaysafeInvoicingPaymentHandler::class;
 
     /** @var null|string */
     private $template = 'paysafe-invoicing-form.html.twig';
 
     /** @var array  */
     private $translations = [];
+
+    /** @var int */
+    private $position = 105;
 
     public function getId(): string
     {
@@ -54,5 +56,10 @@ class PayonePaysafeInvoicing implements PaymentMethodInterface
     public function getTranslations(): array
     {
         return $this->translations;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
     }
 }

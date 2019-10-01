@@ -28,6 +28,9 @@ class PayoneSofortBanking implements PaymentMethodInterface
     /** @var array  */
     private $translations = [];
 
+    /** @var int */
+    private $position = 106;
+
     public function getId(): string
     {
         return self::UUID;
@@ -56,5 +59,10 @@ class PayoneSofortBanking implements PaymentMethodInterface
     public function getTranslations(): array
     {
         return $this->translations;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
     }
 }
