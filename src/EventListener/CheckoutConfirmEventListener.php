@@ -68,7 +68,6 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
 
         $language = $this->getCustomerLanguage($context->getContext());
         $template = $this->getTemplateFromPaymentMethod($context->getPaymentMethod());
-        $birthday = $this->getCustomerBirthday($context);
         
         $payoneData = new CheckoutConfirmPaymentData();
         
@@ -77,7 +76,6 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
             'language'    => $language,
             'savedCards'  => $savedCards,
             'template'    => $template,
-            'birthday' => $birthday,
         ]);
 
         /** @var null|PaypalExpressCartData $extension */
@@ -154,14 +152,5 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
         }
 
         return true;
-    }
-
-    private function getCustomerBirthday(SalesChannelContext $context): ?DateTimeInterface
-    {
-        if (null === $context->getCustomer()) {
-            return null;
-        }
-
-        return $context->getCustomer()->getBirthday();
     }
 }

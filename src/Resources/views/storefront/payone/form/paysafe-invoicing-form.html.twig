@@ -7,76 +7,66 @@
 
     {% block page_checkout_confirm_payone_card_content_paysafe_installment %}
         <div class="card">
-            {% if not page.extensions.payone.birthday %}
-                <div class="form-row">
-                    <div class="col-12">
-                        <label for="personalBirthday">
-                            {{ "PayonePayment.paysafe.invoicing.birthday.label" | trans }}{{ "general.required" | trans }}
-                        </label>
-                    </div>
+            <div class="form-row">
+                <div class="col-12">
+                    <label for="personalBirthday">
+                        {{ "PayonePayment.paysafe.invoicing.birthday.label" | trans }}{{ "general.required" | trans }}
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-4 col-md-2">
+                    <select name="paysafeBirthdayDay" class="custom-select{% if formViolations.getViolations('/paysafeBirthdayDay') is not empty %} is-invalid{% endif %}" required="required" form="confirmOrderForm" id="personalBirthday" >
+                        {% if not birthday %}
+                            <option selected="selected" value="">
+                                {{ "PayonePayment.paysafe.invoicing.birthday.day" | trans }}
+                            </option>
+                        {% endif %}
+
+                        {% for day in range(1, 31) %}
+                            <option value="{{ day }}">
+                                {{ day }}
+                            </option>
+                        {% endfor %}
+                    </select>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group col-4 col-md-2">
-                        <select name="paysafeBirthdayDay" class="custom-select{% if formViolations.getViolations('/paysafeBirthdayDay') is not empty %} is-invalid{% endif %}" required="required" form="confirmOrderForm" id="personalBirthday" >
-                            {% if not birthday %}
-                                <option selected="selected" value="">
-                                    {{ "PayonePayment.paysafe.invoicing.birthday.day" | trans }}
-                                </option>
-                            {% endif %}
+                <div class="form-group col-4 col-md-2">
+                    <select name="paysafeBirthdayMonth" class="custom-select{% if formViolations.getViolations('/paysafeBirthdayMonth') is not empty %} is-invalid{% endif %}" required="required" form="confirmOrderForm">
+                        {% if not birthmonth %}
+                            <option selected="selected" value="">
+                                {{ "PayonePayment.paysafe.invoicing.birthday.month" | trans }}
+                            </option>
+                        {% endif %}
 
-                            {% for day in range(1, 31) %}
-                                <option value="{{ day }}">
-                                    {{ day }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="form-group col-4 col-md-2">
-                        <select name="paysafeBirthdayMonth" class="custom-select{% if formViolations.getViolations('/paysafeBirthdayMonth') is not empty %} is-invalid{% endif %}" required="required" form="confirmOrderForm">
-                            {% if not birthmonth %}
-                                <option selected="selected" value="">
-                                    {{ "PayonePayment.paysafe.invoicing.birthday.month" | trans }}
-                                </option>
-                            {% endif %}
-
-                            {% for month in range(1, 12) %}
-                                <option value="{{ month }}">
-                                    {{ month }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="form-group col-4 col-md-2">
-                        {% set currentYear = "now" | date('Y') %}
-                        {% set startYear = currentYear - 120 %}
-
-                        <select name="paysafeBirthdayYear" class="custom-select{% if formViolations.getViolations('/paysafeBirthdayYear') is not empty %} is-invalid{% endif %}" required="required" form="confirmOrderForm">
-                            {% if not birthyear %}
-                                <option selected="selected" value="">
-                                    {{ "PayonePayment.paysafe.invoicing.birthday.year" | trans }}
-                                </option>
-                            {% endif %}
-
-                            {% for year in range(currentYear, startYear) %}
-                                <option value="{{ year }}">
-                                    {{ year }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                        {% for month in range(1, 12) %}
+                            <option value="{{ month }}">
+                                {{ month }}
+                            </option>
+                        {% endfor %}
+                    </select>
                 </div>
-            {% else %}
-                {% set birthday = page.extensions.payone.birthday | date('d') %}
-                {% set birthmonth = page.extensions.payone.birthday | date('m') %}
-                {% set birthyear = page.extensions.payone.birthday | date('Y') %}
 
-                <input type="hidden" name="paysafeBirthdayDay" value="{{ birthday }}">
-                <input type="hidden" name="paysafeBirthdayMonth" value="{{ birthmonth }}">
-                <input type="hidden" name="paysafeBirthdayYear" value="{{ birthyear }}">
-            {% endif %}
+                <div class="form-group col-4 col-md-2">
+                    {% set currentYear = "now" | date('Y') %}
+                    {% set startYear = currentYear - 120 %}
+
+                    <select name="paysafeBirthdayYear" class="custom-select{% if formViolations.getViolations('/paysafeBirthdayYear') is not empty %} is-invalid{% endif %}" required="required" form="confirmOrderForm">
+                        {% if not birthyear %}
+                            <option selected="selected" value="">
+                                {{ "PayonePayment.paysafe.invoicing.birthday.year" | trans }}
+                            </option>
+                        {% endif %}
+
+                        {% for year in range(currentYear, startYear) %}
+                            <option value="{{ year }}">
+                                {{ year }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
 
             <div class="form-row">
                 <div class="form-group col-12">
