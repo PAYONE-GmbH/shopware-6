@@ -25,11 +25,11 @@ class PayonePaypal implements PaymentMethodInterface
     /** @var array */
     private $translations = [
         'de-DE' => [
-            'name' => 'Payone PayPal',
+            'name'        => 'Payone PayPal',
             'description' => 'Zahlen Sie sicher und bequem mit PayPal.',
         ],
         'en-GB' => [
-            'name' => 'Payone PayPal',
+            'name'        => 'Payone PayPal',
             'description' => 'Pay easily and secure with PayPal.',
         ],
     ];

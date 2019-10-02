@@ -25,11 +25,11 @@ class PayonePaysafeInstallment implements PaymentMethodInterface
     /** @var array */
     private $translations = [
         'de-DE' => [
-            'name' => 'Payone Paysafe Installment',
+            'name'        => 'Payone Paysafe Installment',
             'description' => '',
         ],
         'en-GB' => [
-            'name' => 'Payone Paysafe Installment',
+            'name'        => 'Payone Paysafe Installment',
             'description' => '',
         ],
     ];

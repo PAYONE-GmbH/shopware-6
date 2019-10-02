@@ -25,11 +25,11 @@ class PayonePaypalExpress implements PaymentMethodInterface
     /** @var array */
     private $translations = [
         'de-DE' => [
-            'name' => 'Payone PayPal Express',
+            'name'        => 'Payone PayPal Express',
             'description' => 'Zahlen Sie sicher und bequem mit PayPal Express.',
         ],
         'en-GB' => [
-            'name' => 'Payone PayPal Express',
+            'name'        => 'Payone PayPal Express',
             'description' => 'Pay easily and secure with PayPal Express.',
         ],
     ];
