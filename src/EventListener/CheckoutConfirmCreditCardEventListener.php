@@ -5,16 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\EventListener;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
-use PayonePayment\PaymentMethod\PayonePaypalExpress;
-use PayonePayment\PaymentMethod\PayonePaysafeInstallment;
-use PayonePayment\PaymentMethod\PayonePaysafeInvoicing;
-use PayonePayment\Payone\Client\PayoneClient;
 use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
-use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -46,13 +40,13 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'addPayonePageData'
+            CheckoutConfirmPageLoadedEvent::class => 'addPayonePageData',
         ];
     }
 
     public function addPayonePageData(CheckoutConfirmPageLoadedEvent $event): void
     {
-        $page = $event->getPage();
+        $page    = $event->getPage();
         $context = $event->getSalesChannelContext();
 
         if ($context->getPaymentMethod()->getId() !== PayoneCreditCard::UUID) {
