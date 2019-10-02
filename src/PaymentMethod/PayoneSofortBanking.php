@@ -28,11 +28,11 @@ class PayoneSofortBanking implements PaymentMethodInterface
     /** @var array */
     private $translations = [
         'de-DE' => [
-            'name' => 'Payone Sofort',
+            'name'        => 'Payone Sofort',
             'description' => 'Überweisen Sie schnell und sicher mit Ihren Online Banking Zugangsdaten.',
         ],
         'en-GB' => [
-            'name' => 'Payone Sofort',
+            'name'        => 'Payone Sofort',
             'description' => 'Wire the amount instantly with your online banking credentials.',
         ],
     ];

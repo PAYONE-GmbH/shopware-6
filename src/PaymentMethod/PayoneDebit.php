@@ -14,7 +14,7 @@ class PayoneDebit implements PaymentMethodInterface
     private $name = 'Payone SEPA Lastschrift';
 
     /** @var string */
-    private $description = '';
+    private $description = 'We\'ll automatically debit the amount from your bank account.';
 
     /** @var string */
     private $paymentHandler = PayoneDebitPaymentHandler::class;
@@ -25,12 +25,12 @@ class PayoneDebit implements PaymentMethodInterface
     /** @var array */
     private $translations = [
         'de-DE' => [
-            'name' => 'test',
-            'description' => 'test',
+            'name'        => 'Payone SEPA Lastschrift',
+            'description' => 'Wir ziehen den Betrag bequem und automatisch von Ihrem Bankkonto ein.',
         ],
         'en-GB' => [
-            'name' => 'test',
-            'description' => 'test',
+            'name'        => 'SEPA Direct Debit',
+            'description' => 'We\'ll automatically debit the amount from your bank account.',
         ],
     ];
 

@@ -25,11 +25,11 @@ class PayoneCreditCard implements PaymentMethodInterface
     /** @var array */
     private $translations = [
         'de-DE' => [
-            'name' => 'Payone Kreditkarte',
+            'name'        => 'Payone Kreditkarte',
             'description' => 'Zahlen Sie sicher mit Ihrer Kreditkarte über unseren PCI DSS zertifizierten Zahlungsprovider. Nach der Bestellung werden Sie ggf. auf eine Seite Ihrer Bank weitergeleitet, um die Zahlung zu autorisieren.',
         ],
         'en-GB' => [
-            'name' => 'Payone Credit Card',
+            'name'        => 'Payone Credit Card',
             'description' => 'Use your credit card to safely pay through our PCI DSS certified payment provider. After your order, you may be redirected to your bank to authorize the payment.',
         ],
     ];

@@ -25,11 +25,11 @@ class PayonePaysafeInvoicing implements PaymentMethodInterface
     /** @var array */
     private $translations = [
         'de-DE' => [
-            'name' => 'Payone Paysafe Invoicing',
+            'name'        => 'Payone Paysafe Invoicing',
             'description' => '',
         ],
         'en-GB' => [
-            'name' => 'Payone Paysafe Invoicing',
+            'name'        => 'Payone Paysafe Invoicing',
             'description' => '',
         ],
     ];
