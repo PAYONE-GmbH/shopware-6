@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
+use DateTime;
+use DateTimeInterface;
+use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\PaymentMethod\PayonePaysafeInvoicing;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
 use Shopware\Core\PlatformRequest;
@@ -11,7 +14,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OrderValidationListener implements EventSubscriberInterface
@@ -42,19 +44,22 @@ class OrderValidationListener implements EventSubscriberInterface
         // TODO: can be removed when https://github.com/shopware/platform/pull/226 is merged
         $context = $this->getContextFromRequest($request);
 
-        if (!$this->isPayonePaysafeInvoicingPaymentMethod($context)) {
-            return;
+        if ($this->isPayonePaysafeInvoicingPaymentMethod($context)) {
+            $event->getDefinition()->add(
+                'paysafeInvoicingConsent',
+                new NotBlank()
+            );
+
+            $event->getDefinition()->add(
+                'paysafeInvoicingBirthday',
+                new Birthday(['value' => $this->getMinimumDate()])
+            );
         }
+    }
 
-        $event->getDefinition()->add(
-            'paysafeInvoicingConsent',
-            new NotBlank()
-        );
-
-        $event->getDefinition()->add(
-            'paysafeInvoicingBirthday',
-            new LessThanOrEqual('-18 years')
-        );
+    private function getMinimumDate(): DateTimeInterface
+    {
+        return (new DateTime())->modify('-18 years')->setTime(0,0);
     }
 
     private function getContextFromRequest(Request $request): SalesChannelContext
