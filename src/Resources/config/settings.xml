@@ -289,52 +289,84 @@
     </card>
 
     <card>
-        <title>Paysafe</title>
+        <title>Paysafe Installment</title>
 
         <input-field>
-            <name>paysafeMerchantId</name>
+            <name>paysafeInstallmentMerchantId</name>
             <label>Merchant ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
         </input-field>
 
         <input-field>
-            <name>paysafeAccountId</name>
+            <name>paysafeInstallmentAccountId</name>
             <label>Account ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
         </input-field>
 
         <input-field>
-            <name>paysafePortalId</name>
+            <name>paysafeInstallmentPortalId</name>
             <label>Portal ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
         </input-field>
 
         <input-field>
-            <name>paysafePortalKey</name>
+            <name>paysafeInstallmentPortalKey</name>
             <label>Key</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
         </input-field>
 
         <input-field>
-            <name>paysafeChannelName</name>
+            <name>paysafeInstallmentChannelName</name>
             <label>Channel Name</label>
             <label lang="de-DE">Channel Name</label>
         </input-field>
 
         <input-field>
-            <name>paysafeChannelPassword</name>
+            <name>paysafeInstallmentChannelPassword</name>
             <label>Channel Password</label>
             <label lang="de-DE">Channel Passwort</label>
             <helpText>Wird auf der Einwilligung genannt.</helpText> <!-- TODO -->
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText><!-- TODO -->
         </input-field>
+    </card>
+
+    <card>
+        <title>Paysafe Invoicing</title>
 
         <input-field>
-            <name>paysafeCompanyName</name>
+            <name>paysafeInvoicingMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paysafeInvoicingAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paysafeInvoicingPortalId</name>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paysafeInvoicingPortalKey</name>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paysafeInvoicingCompanyName</name>
             <label>Company Name</label>
             <label lang="de-DE">Firmenname</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText><!-- TODO -->

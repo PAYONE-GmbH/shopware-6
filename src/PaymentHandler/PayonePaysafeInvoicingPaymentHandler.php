@@ -89,15 +89,18 @@ class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerI
             CustomFieldInstaller::ALLOW_CAPTURE      => false,
             CustomFieldInstaller::ALLOW_REFUND       => false,
             CustomFieldInstaller::CLEARING_REFERENCE => $request[''], // TODO
-            CustomFieldInstaller::CAPTURE_MODE => 'completed',
-            CustomFieldInstaller::CLEARING_TYPE => 'fnc',
-            CustomFieldInstaller::FINANCING_TYPE => 'PYV',
+            CustomFieldInstaller::CAPTURE_MODE       => 'completed',
+            CustomFieldInstaller::CLEARING_TYPE      => 'fnc',
+            CustomFieldInstaller::FINANCING_TYPE     => 'PYV',
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
         if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
@@ -108,6 +111,9 @@ class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerI
             && strtolower($transactionData['transaction_status']) === TransactionStatusService::STATUS_COMPLETED;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
         if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {

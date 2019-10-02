@@ -120,6 +120,9 @@ class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInt
         $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
         if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
@@ -130,6 +133,9 @@ class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInt
             && strtolower($transactionData['transaction_status']) === TransactionStatusService::STATUS_COMPLETED;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
         if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {

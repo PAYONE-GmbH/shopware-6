@@ -37,7 +37,7 @@ class PaysafeInvoicingController extends StorefrontController
     {
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
 
-        $companyName = $configuration->get('paysafeCompanyName');
+        $companyName = $configuration->get('paysafeInvoicingCompanyName');
 
         if (empty($companyName)) {
             $this->logger->error('Could not fetch invoicing consent modal content - paysafe company name is empty.');

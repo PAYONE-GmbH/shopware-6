@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\PaysafeInstallment;
 
 use DateTime;
-use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\Cart;
-use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -33,12 +31,12 @@ class PaysafePreCheckRequest
         $currency = $this->getCurrency($context->getCurrencyId(), $context);
 
         $request = [
-            'request'       => 'genericpayment',
+            'request'             => 'genericpayment',
             'add_paydata[action]' => 'pre_check',
-            'clearingtype'  => 'fnc',
-            'financingtype' => 'PYV',
-            'amount'        => (int) ($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision())),
-            'currency'      => $currency->getIsoCode(),
+            'clearingtype'        => 'fnc',
+            'financingtype'       => 'PYV',
+            'amount'              => (int) ($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision())),
+            'currency'            => $currency->getIsoCode(),
         ];
 
         if (!empty($dataBag->get('paysafeInvoicingBirthday'))) {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\Paysafe;
+namespace PayonePayment\Payone\Request\PaysafeInstallment;
 
 use DateTime;
 use PayonePayment\Struct\PaymentTransaction;
