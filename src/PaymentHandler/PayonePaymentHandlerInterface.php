@@ -7,18 +7,12 @@ namespace PayonePayment\PaymentHandler;
 interface PayonePaymentHandlerInterface
 {
     /**
-     * @param array $transactionData
-     * @param array $customFields
-     *
-     * @return bool
+     * Called from the administration controllers to verify if a transaction can be captured.
      */
     public static function isCapturable(array $transactionData, array $customFields): bool;
 
     /**
-     * @param array $transactionData
-     * @param array $customFields
-     *
-     * @return bool
+     * Called from the administration controllers to verify if a transaction can be refunded.
      */
     public static function isRefundable(array $transactionData, array $customFields): bool;
 }

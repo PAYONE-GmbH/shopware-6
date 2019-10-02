@@ -14,10 +14,10 @@ class PayoneSofortBanking implements PaymentMethodInterface
     public const UUID = '9022c4733d14411e84a78707088487aa';
 
     /** @var string */
-    private $name = 'Payone Sofort Banking';
+    private $name = 'Payone Sofort';
 
     /** @var string */
-    private $description = '';
+    private $description = 'Wire the amount instantly with your online banking credentials.';
 
     /** @var string */
     private $paymentHandler = PayoneSofortBankingPaymentHandler::class;
@@ -26,7 +26,16 @@ class PayoneSofortBanking implements PaymentMethodInterface
     private $template;
 
     /** @var array */
-    private $translations = [];
+    private $translations = [
+        'de-DE' => [
+            'name' => 'Payone Sofort',
+            'description' => 'Überweisen Sie schnell und sicher mit Ihren Online Banking Zugangsdaten.',
+        ],
+        'en-GB' => [
+            'name' => 'Payone Sofort',
+            'description' => 'Wire the amount instantly with your online banking credentials.',
+        ],
+    ];
 
     /** @var int */
     private $position = 106;

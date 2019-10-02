@@ -23,7 +23,16 @@ class PayonePaysafeInstallment implements PaymentMethodInterface
     private $template = 'paysafe-installment-form.html.twig';
 
     /** @var array */
-    private $translations = [];
+    private $translations = [
+        'de-DE' => [
+            'name' => 'Payone Paysafe Installment',
+            'description' => '',
+        ],
+        'en-GB' => [
+            'name' => 'Payone Paysafe Installment',
+            'description' => '',
+        ],
+    ];
 
     /** @var int */
     private $position = 104;
