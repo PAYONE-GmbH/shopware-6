@@ -32,7 +32,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OrderValidationListener implements EventSubscriberInterface
@@ -74,36 +76,10 @@ class OrderValidationListener implements EventSubscriberInterface
             new NotBlank()
         );
 
-        $comparisonDate = $this->getMinimumDate();
-
         $event->getDefinition()->add(
-            'paysafeBirthdayDay',
-            new NotBlank(),
-            new GreaterThanOrEqual([
-                'value' => (int) $comparisonDate->format('j')
-            ])
+            'paysafeInvoicingBirthday',
+            new LessThanOrEqual('-18 years')
         );
-
-        $event->getDefinition()->add(
-            'paysafeBirthdayMonth',
-            new NotBlank(),
-            new GreaterThanOrEqual([
-                'value' => (int) $comparisonDate->format('n')
-            ])
-        );
-
-        $event->getDefinition()->add(
-            'paysafeBirthdayYear',
-            new NotBlank(),
-            new GreaterThanOrEqual([
-                'value' => (int) $comparisonDate->format('Y')
-            ])
-        );
-    }
-
-    private function getMinimumDate(): DateTimeInterface
-    {
-        return (new DateTime())->modify('-17 years');
     }
 
     private function getContextFromRequest(Request $request): SalesChannelContext

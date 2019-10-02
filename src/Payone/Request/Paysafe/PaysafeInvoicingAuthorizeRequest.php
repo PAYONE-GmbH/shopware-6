@@ -40,12 +40,8 @@ class PaysafeInvoicingAuthorizeRequest
             'reference'    => $transaction->getOrder()->getOrderNumber(),
         ];
 
-        if ($this->hasBirthdayParameters($dataBag)) {
-            $birthday = (new DateTime())->setDate(
-                (int) $dataBag->get('paysafeBirthdayYear'),
-                (int) $dataBag->get('paysafeBirthdayMonth'),
-                (int) $dataBag->get('paysafeBirthdayDay')
-            );
+        if (!empty($dataBag->get('paysafeInvoicingBirthday'))) {
+            $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('paysafeInvoicingBirthday'));
 
             $request['birthday'] =  $birthday->format('Ymd');
         }
@@ -65,22 +61,5 @@ class PaysafeInvoicingAuthorizeRequest
         }
 
         return $currency;
-    }
-
-    private function hasBirthdayParameters(RequestDataBag $dataBag): bool
-    {
-        if (empty($dataBag->get('paysafeBirthdayYear'))) {
-            return false;
-        }
-
-        if (empty($dataBag->get('paysafeBirthdayMonth'))) {
-            return false;
-        }
-
-        if (empty($dataBag->get('paysafeBirthdayDay'))) {
-            return false;
-        }
-
-        return true;
     }
 }
