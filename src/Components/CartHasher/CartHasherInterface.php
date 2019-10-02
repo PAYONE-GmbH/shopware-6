@@ -12,5 +12,5 @@ interface CartHasherInterface
 {
     public function generateHashFromCart(Cart $cart, SalesChannelContext $context): string;
 
-    public function validate(OrderEntity $orderEntity, SalesChannelContext $context, string $cartHash): bool;
+    public function validate(OrderEntity $orderEntity, string $cartHash, SalesChannelContext $context): bool;
 }
