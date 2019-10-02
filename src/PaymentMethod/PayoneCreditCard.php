@@ -22,7 +22,7 @@ class PayoneCreditCard implements PaymentMethodInterface
     /** @var null|string */
     private $template = 'credit-card-form.html.twig';
 
-    /** @var array  */
+    /** @var array */
     private $translations = [];
 
     /** @var int */

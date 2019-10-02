@@ -4,44 +4,19 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use DateTime;
-use DateTimeImmutable;
-use DateTimeInterface;
-use PayonePayment\Components\CardRepository\CardRepositoryInterface;
-use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use PayonePayment\PaymentMethod\PayonePaysafeInvoicing;
-use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
-use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
-use PayonePayment\Storefront\Struct\PaypalExpressCartData;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\Framework\Validation\DataValidationDefinition;
-use Shopware\Core\Framework\Validation\DataValidator;
-use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OrderValidationListener implements EventSubscriberInterface
 {
-    /**
-     * @var RequestStack
-     */
+    /** @var RequestStack */
     private $requestStack;
 
     public function __construct(RequestStack $requestStack)
@@ -52,7 +27,7 @@ class OrderValidationListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            'framework.validation.order.create' => 'validateOrderData'
+            'framework.validation.order.create' => 'validateOrderData',
         ];
     }
 

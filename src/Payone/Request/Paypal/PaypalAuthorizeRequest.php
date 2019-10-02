@@ -8,14 +8,11 @@ use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaypalAuthorizeRequest
 {

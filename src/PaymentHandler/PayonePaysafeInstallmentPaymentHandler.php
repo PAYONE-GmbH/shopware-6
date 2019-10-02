@@ -62,6 +62,7 @@ class PayonePaysafeInstallmentPaymentHandler implements AsynchronousPaymentHandl
 
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
+            $dataBag,
             $salesChannelContext
         );
 

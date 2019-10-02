@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use DateTime;
-use DateTimeImmutable;
-use DateTimeInterface;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
@@ -18,11 +15,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Language\LanguageEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
 
 class CheckoutConfirmEventListener implements EventSubscriberInterface
 {
@@ -68,9 +62,9 @@ class CheckoutConfirmEventListener implements EventSubscriberInterface
 
         $language = $this->getCustomerLanguage($context->getContext());
         $template = $this->getTemplateFromPaymentMethod($context->getPaymentMethod());
-        
+
         $payoneData = new CheckoutConfirmPaymentData();
-        
+
         $payoneData->assign([
             'cardRequest' => $cardRequest,
             'language'    => $language,
