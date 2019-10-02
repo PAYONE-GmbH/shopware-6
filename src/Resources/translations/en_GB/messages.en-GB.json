@@ -1,4 +1,7 @@
 {
+  "error": {
+    "paysafeInvoicingBirthday": "test"
+  },
   "PayonePayment": {
     "errorMessages": {
       "genericError": "A error has occurred."

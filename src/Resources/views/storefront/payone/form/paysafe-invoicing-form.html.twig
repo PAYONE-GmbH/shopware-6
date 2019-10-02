@@ -9,62 +9,21 @@
         <div class="card">
             <div class="form-row">
                 <div class="col-12">
-                    <label for="personalBirthday">
+                    <label for="paysafeInvoicingBirthday">
                         {{ "PayonePayment.paysafe.invoicing.birthday.label" | trans }}{{ "general.required" | trans }}
                     </label>
                 </div>
-            </div>
 
-            <div class="form-row">
-                <div class="form-group col-4 col-md-2">
-                    <select name="paysafeBirthdayDay" class="custom-select{% if formViolations.getViolations('/paysafeBirthdayDay') is not empty %} is-invalid{% endif %}" required="required" form="confirmOrderForm" id="personalBirthday" >
-                        {% if not birthday %}
-                            <option selected="selected" value="">
-                                {{ "PayonePayment.paysafe.invoicing.birthday.day" | trans }}
-                            </option>
-                        {% endif %}
-
-                        {% for day in range(1, 31) %}
-                            <option value="{{ day }}">
-                                {{ day }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-group col-4 col-md-2">
-                    <select name="paysafeBirthdayMonth" class="custom-select{% if formViolations.getViolations('/paysafeBirthdayMonth') is not empty %} is-invalid{% endif %}" required="required" form="confirmOrderForm">
-                        {% if not birthmonth %}
-                            <option selected="selected" value="">
-                                {{ "PayonePayment.paysafe.invoicing.birthday.month" | trans }}
-                            </option>
-                        {% endif %}
-
-                        {% for month in range(1, 12) %}
-                            <option value="{{ month }}">
-                                {{ month }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-group col-4 col-md-2">
-                    {% set currentYear = "now" | date('Y') %}
-                    {% set startYear = currentYear - 120 %}
-
-                    <select name="paysafeBirthdayYear" class="custom-select{% if formViolations.getViolations('/paysafeBirthdayYear') is not empty %} is-invalid{% endif %}" required="required" form="confirmOrderForm">
-                        {% if not birthyear %}
-                            <option selected="selected" value="">
-                                {{ "PayonePayment.paysafe.invoicing.birthday.year" | trans }}
-                            </option>
-                        {% endif %}
-
-                        {% for year in range(currentYear, startYear) %}
-                            <option value="{{ year }}">
-                                {{ year }}
-                            </option>
-                        {% endfor %}
-                    </select>
+                <div class="form-group col-4">
+                    <input
+                        type="date"
+                        id="paysafeInvoicingBirthday"
+                        name="paysafeInvoicingBirthday"
+                        class="form-control{% if formViolations.getViolations('/paysafeInvoicingBirthday') is not empty %} is-invalid{% endif %}"
+                        form="confirmOrderForm"
+                        required="required"
+                        {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}
+                    />
                 </div>
             </div>
 
@@ -80,7 +39,7 @@
                         />
 
                         <label for="paysafeInvoicingConsent" class="custom-control-label consent-label">
-                            {{ "PayonePayment.paysafe.invoicing.consentCheckbox.introduction" | trans }}<br>
+                            {{ "PayonePayment.paysafe.invoicing.consentCheckbox.introduction" | trans }}
                             {{ "PayonePayment.paysafe.invoicing.consentCheckbox.textWithLink" | trans({
                                 '%link%': path('frontend.account.payone.paysafe.invoicing-consent')
                             }) | raw }}

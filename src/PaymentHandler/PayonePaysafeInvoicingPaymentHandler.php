@@ -40,26 +40,16 @@ class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerI
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
 
-    /** @var PaymentStateHandlerInterface */
-    private $stateHandler;
-
-    /** @var EntityRepositoryInterface */
-    private $customerRepository;
-
     public function __construct(
         PaysafeInvoicingAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
-        PaymentStateHandlerInterface $stateHandler,
-        EntityRepositoryInterface $customerRepository
+        TransactionDataHandlerInterface $dataHandler
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
         $this->translator     = $translator;
         $this->dataHandler    = $dataHandler;
-        $this->stateHandler   = $stateHandler;
-        $this->customerRepository = $customerRepository;
     }
 
     /**
@@ -68,8 +58,6 @@ class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerI
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
         $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction);
-
-        $this->saveBirthdayToCustomer($dataBag, $salesChannelContext);
 
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
@@ -130,51 +118,5 @@ class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerI
         }
 
         return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
-    }
-
-    private function saveBirthdayToCustomer(RequestDataBag $dataBag, SalesChannelContext $context): void
-    {
-        if (null === $context->getCustomer() || !$this->shouldUpdateCustomerBirthday($dataBag, $context)) {
-            return;
-        }
-
-        $birthday = (new DateTime())->setDate(
-            (int) $dataBag->get('paysafeBirthdayYear'),
-            (int) $dataBag->get('paysafeBirthdayMonth'),
-            (int) $dataBag->get('paysafeBirthdayDay')
-        );
-
-        $data = [
-            'id' => $context->getCustomer()->getId(),
-            'birthday' => $birthday,
-        ];
-
-        $this->customerRepository->update([$data], $context->getContext());
-
-    }
-
-    private function shouldUpdateCustomerBirthday(RequestDataBag $dataBag, SalesChannelContext $context): bool
-    {
-        if (null === $context->getCustomer()) {
-            return false;
-        }
-
-        if (null !== $context->getCustomer()->getBirthday()) {
-            return false;
-        }
-
-        if (empty($dataBag->get('paysafeBirthdayYear'))) {
-            return false;
-        }
-
-        if (empty($dataBag->get('paysafeBirthdayMonth'))) {
-            return false;
-        }
-
-        if (empty($dataBag->get('paysafeBirthdayDay'))) {
-            return false;
-        }
-
-        return true;
     }
 }
