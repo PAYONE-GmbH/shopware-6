@@ -101,13 +101,11 @@ class PaymentMethodInstaller implements InstallerInterface
         $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(PayonePayment::class, $context);
 
         $data = [
-            'id'                 => $paymentMethod->getId(),
-            'name'               => $paymentMethod->getName(),
-            'description'        => $paymentMethod->getDescription(),
-             'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
-            'position'           => $paymentMethod->getPosition(),
-            'pluginId'           => $pluginId,
-            'customFields'       => [
+            'id'                => $paymentMethod->getId(),
+            'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
+            'position'          => $paymentMethod->getPosition(),
+            'pluginId'          => $pluginId,
+            'customFields'      => [
                 CustomFieldInstaller::TEMPLATE  => $paymentMethod->getTemplate(),
                 CustomFieldInstaller::IS_PAYONE => true,
             ],
