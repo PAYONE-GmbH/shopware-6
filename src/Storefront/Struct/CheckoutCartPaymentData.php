@@ -6,7 +6,7 @@ namespace PayonePayment\Storefront\Struct;
 
 use Shopware\Core\Framework\Struct\Struct;
 
-class PaypalExpressCartData extends Struct
+class CheckoutCartPaymentData extends Struct
 {
     public const EXTENSION_NAME = 'payone';
 

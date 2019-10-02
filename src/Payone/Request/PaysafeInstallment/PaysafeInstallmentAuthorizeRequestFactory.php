@@ -12,9 +12,9 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaysafeInvoicingAuthorizeRequestFactory extends AbstractRequestFactory
+class PaysafeInstallmentAuthorizeRequestFactory extends AbstractRequestFactory
 {
-    /** @var PaysafeInvoicingAuthorizeRequest */
+    /** @var PaysafeInvoicingPreAuthorizeRequest */
     private $authorizeRequest;
 
     /** @var CustomerRequest */
@@ -24,7 +24,7 @@ class PaysafeInvoicingAuthorizeRequestFactory extends AbstractRequestFactory
     private $systemRequest;
 
     public function __construct(
-        PaysafeInvoicingAuthorizeRequest $authorizeRequest,
+        PaysafeInvoicingPreAuthorizeRequest $authorizeRequest,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {

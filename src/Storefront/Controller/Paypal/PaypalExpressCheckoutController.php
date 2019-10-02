@@ -10,7 +10,7 @@ use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalGetExpressCheckoutDetailsRequestFactory;
 use PayonePayment\Payone\Request\Paypal\PaypalSetExpressCheckoutRequestFactory;
-use PayonePayment\Storefront\Struct\PaypalExpressCartData;
+use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
@@ -160,8 +160,8 @@ class PaypalExpressCheckoutController extends StorefrontController
 
         $cart = $this->cartService->getCart($context->getToken(), $context);
 
-        /** @var null|PaypalExpressCartData $cartExtension */
-        $cartExtension = $cart->getExtension(PaypalExpressCartData::EXTENSION_NAME);
+        /** @var null|CheckoutCartPaymentData $cartExtension */
+        $cartExtension = $cart->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
 
         if (null === $cartExtension) {
             throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
@@ -209,14 +209,14 @@ class PaypalExpressCheckoutController extends StorefrontController
         SalesChannelContext $context,
         string $workOrderId
     ): void {
-        $cartData = new PaypalExpressCartData();
+        $cartData = new CheckoutCartPaymentData();
 
         $cartData->assign(array_filter([
             'workOrderId' => $workOrderId,
             'cartHash'    => $this->cartHasher->generateHashFromCart($cart, $context),
         ]));
 
-        $cart->addExtension(PaypalExpressCartData::EXTENSION_NAME, $cartData);
+        $cart->addExtension(CheckoutCartPaymentData::EXTENSION_NAME, $cartData);
 
         $this->cartService->recalculate($cart, $context);
     }
