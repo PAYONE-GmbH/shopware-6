@@ -135,6 +135,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
         $criteria = new Criteria();
         $filter   = new EqualsFilter($field, $payoneTransactionId);
+
         $criteria->addFilter($filter);
         $criteria->addAssociation('paymentMethod');
 
@@ -194,20 +195,19 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return true;
         }
 
-        return in_array(strtolower($transactionData['txaction']),
-            [
-                self::ACTION_PAID,
-                self::ACTION_COMPLETED,
-                self::ACTION_DEBIT,
-            ]
-        );
+        return in_array(strtolower($transactionData['txaction']), [
+            self::ACTION_PAID,
+            self::ACTION_COMPLETED,
+            self::ACTION_DEBIT,
+        ]);
     }
 
     private function isTransactionCancelled(array $transactionData): bool
     {
         return strtolower($transactionData['txaction']) === self::ACTION_CANCELATION
             || strtolower($transactionData['txaction']) === self::ACTION_FAILED
-            || (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && (float) $transactionData['receivable'] === 0.0);
+            || (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE
+                && (float) $transactionData['receivable'] === 0.0);
     }
 
     private function stateExists(string $state, Context $context): bool
