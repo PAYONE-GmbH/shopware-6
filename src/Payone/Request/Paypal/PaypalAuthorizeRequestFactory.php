@@ -36,7 +36,7 @@ class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
         $this->authorizeRequest = $authorizeRequest;
         $this->customerRequest  = $customerRequest;
         $this->systemRequest    = $systemRequest;
-        $this->cartHasher = $cartHasher;
+        $this->cartHasher       = $cartHasher;
     }
 
     public function getRequestParameters(

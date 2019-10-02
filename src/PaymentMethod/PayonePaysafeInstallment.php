@@ -22,7 +22,7 @@ class PayonePaysafeInstallment implements PaymentMethodInterface
     /** @var null|string */
     private $template = 'paysafe-installment-form.html.twig';
 
-    /** @var array  */
+    /** @var array */
     private $translations = [];
 
     /** @var int */

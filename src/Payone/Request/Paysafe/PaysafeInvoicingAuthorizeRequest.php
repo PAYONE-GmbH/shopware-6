@@ -32,18 +32,20 @@ class PaysafeInvoicingAuthorizeRequest
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
         $request = [
-            'request'      => 'authorization',
-            'clearingtype' => 'fnc',
+            'request'       => 'authorization',
+            'clearingtype'  => 'fnc',
             'financingtype' => 'PYV',
-            'amount'       => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
-            'currency'     => $currency->getIsoCode(),
-            'reference'    => $transaction->getOrder()->getOrderNumber(),
+            'amount'        => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'currency'      => $currency->getIsoCode(),
+            'reference'     => $transaction->getOrder()->getOrderNumber(),
         ];
 
         if (!empty($dataBag->get('paysafeInvoicingBirthday'))) {
             $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('paysafeInvoicingBirthday'));
 
-            $request['birthday'] =  $birthday->format('Ymd');
+            if (!empty($birthday)) {
+                $request['birthday'] = $birthday->format('Ymd');
+            }
         }
 
         return array_filter($request);

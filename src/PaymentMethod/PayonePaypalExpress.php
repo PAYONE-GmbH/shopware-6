@@ -22,7 +22,7 @@ class PayonePaypalExpress implements PaymentMethodInterface
     /** @var null|string */
     private $template;
 
-    /** @var array  */
+    /** @var array */
     private $translations = [];
 
     /** @var int */

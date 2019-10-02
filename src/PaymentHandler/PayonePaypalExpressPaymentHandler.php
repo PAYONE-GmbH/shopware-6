@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
@@ -36,6 +35,9 @@ class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInt
 
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
+
+    /** @var PaymentStateHandlerInterface */
+    private $stateHandler;
 
     public function __construct(
         PaypalAuthorizeRequestFactory $requestFactory,

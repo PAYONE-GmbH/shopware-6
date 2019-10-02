@@ -22,7 +22,7 @@ class PayoneDebit implements PaymentMethodInterface
     /** @var null|string */
     private $template = 'debit-form.html.twig';
 
-    /** @var array  */
+    /** @var array */
     private $translations = [];
 
     /** @var int */
