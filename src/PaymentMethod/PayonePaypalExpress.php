@@ -14,7 +14,7 @@ class PayonePaypalExpress implements PaymentMethodInterface
     private $name = 'Payone Paypal Express';
 
     /** @var string */
-    private $description = '';
+    private $description = 'Pay easily and secure with PayPal Express.';
 
     /** @var string */
     private $paymentHandler = PayonePaypalExpressPaymentHandler::class;
@@ -23,7 +23,16 @@ class PayonePaypalExpress implements PaymentMethodInterface
     private $template;
 
     /** @var array */
-    private $translations = [];
+    private $translations = [
+        'de-DE' => [
+            'name' => 'Payone PayPal Express',
+            'description' => 'Zahlen Sie sicher und bequem mit PayPal Express.',
+        ],
+        'en-GB' => [
+            'name' => 'Payone PayPal Express',
+            'description' => 'Pay easily and secure with PayPal Express.',
+        ],
+    ];
 
     /** @var int */
     private $position = 103;

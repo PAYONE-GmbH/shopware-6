@@ -36,11 +36,6 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
         $this->dataHandler    = $dataHandler;
     }
 
-    public function supports(OrderTransactionEntity $orderTransaction, Context $context): bool
-    {
-        return true;
-    }
-
     /**
      * {@inheritdoc}
      */

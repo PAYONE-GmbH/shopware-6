@@ -23,7 +23,16 @@ class PayonePaysafeInvoicing implements PaymentMethodInterface
     private $template = 'paysafe-invoicing-form.html.twig';
 
     /** @var array */
-    private $translations = [];
+    private $translations = [
+        'de-DE' => [
+            'name' => 'Payone Paysafe Invoicing',
+            'description' => '',
+        ],
+        'en-GB' => [
+            'name' => 'Payone Paysafe Invoicing',
+            'description' => '',
+        ],
+    ];
 
     /** @var int */
     private $position = 105;

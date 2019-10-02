@@ -62,7 +62,6 @@ class RefundController extends AbstractController
         }
 
         try {
-            // TODO: paysafe braucht einen eigneen capure handler (anderer request)
             $this->refundHandler->refundTransaction($orderTransaction, $context);
         } catch (PayoneRequestException $exception) {
             return new JsonResponse(
