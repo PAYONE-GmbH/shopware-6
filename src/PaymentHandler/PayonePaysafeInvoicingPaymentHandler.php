@@ -88,7 +88,8 @@ class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerI
             CustomFieldInstaller::USER_ID            => $response['userid'],
             CustomFieldInstaller::ALLOW_CAPTURE      => false,
             CustomFieldInstaller::ALLOW_REFUND       => false,
-            CustomFieldInstaller::CLEARING_REFERENCE => $request[''], // TODO
+            CustomFieldInstaller::WORK_ORDER_ID =>  $response['addpaydata']['workorderid'],
+            CustomFieldInstaller::CLEARING_REFERENCE => $response['addpaydata']['clearing_reference'],
             CustomFieldInstaller::CAPTURE_MODE       => 'completed',
             CustomFieldInstaller::CLEARING_TYPE      => 'fnc',
             CustomFieldInstaller::FINANCING_TYPE     => 'PYV',
@@ -103,7 +104,7 @@ class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerI
      */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
-        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
+         if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
             return false;
         }
 
