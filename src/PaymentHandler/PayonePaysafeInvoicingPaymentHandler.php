@@ -9,7 +9,7 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Paysafe\PaysafeInvoicingAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\PaysafeInvoicing\PaysafeInvoicingPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
@@ -21,7 +21,7 @@ use Throwable;
 
 class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
 {
-    /** @var PaysafeInvoicingAuthorizeRequestFactory */
+    /** @var PaysafeInvoicingPreAuthorizeRequestFactory */
     private $requestFactory;
 
     /** @var PayoneClientInterface */
@@ -34,7 +34,7 @@ class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerI
     private $dataHandler;
 
     public function __construct(
-        PaysafeInvoicingAuthorizeRequestFactory $requestFactory,
+        PaysafeInvoicingPreAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler
@@ -88,6 +88,10 @@ class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerI
             CustomFieldInstaller::USER_ID            => $response['userid'],
             CustomFieldInstaller::ALLOW_CAPTURE      => false,
             CustomFieldInstaller::ALLOW_REFUND       => false,
+            CustomFieldInstaller::CLEARING_REFERENCE => $request[''], // TODO
+            CustomFieldInstaller::CAPTURE_MODE => 'completed',
+            CustomFieldInstaller::CLEARING_TYPE => 'fnc',
+            CustomFieldInstaller::FINANCING_TYPE => 'PYV',
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
