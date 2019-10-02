@@ -4,11 +4,30 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="PayonePayment\EventListener\CheckoutConfirmEventListener">
+        <service id="PayonePayment\EventListener\CheckoutConfirmCartDataEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmCreditCardEventListener">
             <argument type="service" id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory" />
             <argument type="service" id="language.repository" />
             <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
 
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmPaypalExpressEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmPaysafeEventListener">
+            <argument type="service" id="PayonePayment\Payone\Request\Paysafe\PaysafePreCheckRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmTemplateEventListener">
             <tag name="kernel.event_subscriber"/>
         </service>
 

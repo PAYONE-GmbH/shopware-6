@@ -74,7 +74,7 @@
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePaysafeInvoicingPaymentHandler">
-            <argument type="service" id="PayonePayment\Payone\Request\Paysafe\PaysafeInvoicingAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\PaysafeInvoicing\PaysafeInvoicingPreAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />

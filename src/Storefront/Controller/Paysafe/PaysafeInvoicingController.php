@@ -33,7 +33,7 @@ class PaysafeInvoicingController extends StorefrontController
      * @RouteScope(scopes={"storefront"})
      * @Route("/payone/invoicing-consent", name="frontend.account.payone.paysafe.invoicing-consent", options={"seo": "false"}, methods={"GET", "POST"}, defaults={"id": null, "XmlHttpRequest": true})
      */
-    public function fetchConsentModalContent(SalesChannelContext $context): Response
+    public function displayContentPage(SalesChannelContext $context): Response
     {
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
 

@@ -18,4 +18,5 @@
     <import resource="@PayonePayment/Storefront/Controller/Paypal/PaypalExpressCheckoutController.php" type="annotation" />
 
     <import resource="@PayonePayment/Storefront/Controller/Paysafe/PaysafeInvoicingController.php" type="annotation" />
+    <import resource="@PayonePayment/Storefront/Controller/Paysafe/PaysafeInstallmentController.php" type="annotation" />
 </routes>

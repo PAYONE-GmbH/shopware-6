@@ -97,5 +97,11 @@
                 <argument type="service" id="service_container"/>
             </call>
         </service>
+
+        <service id="PayonePayment\Storefront\Controller\Paysafe\PaysafeInstallmentController">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
     </services>
 </container>

@@ -2,19 +2,21 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\Paysafe;
+namespace PayonePayment\Payone\Request\PaysafeInstallment;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Struct\PaymentTransaction;
+use Shopware\Core\Checkout\Cart\Cart;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaysafePreCheckRequestFactory extends AbstractRequestFactory
 {
-    /** @var PaysafeAuthorizeRequest */
-    private $authorizeRequest;
+    /** @var PaysafePreCheckRequest */
+    private $checkRequest;
 
     /** @var CustomerRequest */
     private $customerRequest;
@@ -23,22 +25,22 @@ class PaysafePreCheckRequestFactory extends AbstractRequestFactory
     private $systemRequest;
 
     public function __construct(
-        PaysafeAuthorizeRequest $authorizeRequest,
+        PaysafePreCheckRequest $authorizeRequest,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
-        $this->authorizeRequest = $authorizeRequest;
+        $this->checkRequest = $authorizeRequest;
         $this->customerRequest  = $customerRequest;
         $this->systemRequest    = $systemRequest;
     }
 
     public function getRequestParameters(
-        PaymentTransaction $transaction,
-        SalesChannelContext $context,
-        ?string $workOrderId = null
+        Cart $cart,
+        RequestDataBag $dataBag,
+        SalesChannelContext $context
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannelId(),
+            $context->getSalesChannel()->getId(),
             ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYSAFE,
             $context->getContext()
         );
@@ -47,10 +49,10 @@ class PaysafePreCheckRequestFactory extends AbstractRequestFactory
             $context
         );
 
-        $this->requests[] = $this->authorizeRequest->getRequestParameters(
-            $transaction,
-            $context->getContext(),
-            $workOrderId
+        $this->requests[] = $this->checkRequest->getRequestParameters(
+            $cart,
+            $dataBag,
+            $context->getContext()
         );
 
         return $this->createRequest();
