@@ -12,6 +12,10 @@ export default class PayonePaymentPaysafeInvoicing extends Plugin {
     }
 
     _handleOrderSubmit(event) {
+        this._validateInvoicingConstentCheckbox(event);
+    }
+
+    _validateInvoicingConstentCheckbox(event) {
         const checkbox = document.getElementById('paysafeInvoicingConsent');
 
         if (checkbox.checked) {
