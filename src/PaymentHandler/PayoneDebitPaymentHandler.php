@@ -53,6 +53,9 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface, P
         $this->mandateService = $mandateService;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
         $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction);
@@ -106,6 +109,9 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface, P
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
         if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
@@ -115,6 +121,9 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface, P
         return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
         if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {

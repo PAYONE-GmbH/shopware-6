@@ -40,7 +40,7 @@ class PaysafeInvoicingPreAuthorizeRequestFactory extends AbstractRequestFactory
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYSAFE,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYSAFE_INVOICING,
             $context->getContext()
         );
 

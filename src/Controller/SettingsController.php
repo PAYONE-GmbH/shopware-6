@@ -9,7 +9,10 @@ use DateTimeImmutable;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaysafeInstallmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaysafeInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -118,6 +121,7 @@ class SettingsController extends AbstractController
                     'successurl'        => 'https://www.payone.com',
                 ];
                 break;
+            case PayonePaypalExpressPaymentHandler::class:
             case PayonePaypalPaymentHandler::class:
                 return [
                     'request'      => 'preauthorization',
@@ -145,6 +149,21 @@ class SettingsController extends AbstractController
                     'lastname'               => 'Test',
                     'country'                => 'DE',
                     'successurl'             => 'https://www.payone.com',
+                ];
+                break;
+            case PayonePaysafeInstallmentPaymentHandler::class:
+            case PayonePaysafeInvoicingPaymentHandler::class:
+                return [
+                    'request'      => 'preauthorization',
+                    'clearingtype' => 'wlt',
+                    'wallettype'   => 'PPE',
+                    'amount'       => 100,
+                    'currency'     => 'EUR',
+                    'reference'    => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'firstname'    => 'Test',
+                    'lastname'     => 'Test',
+                    'country'      => 'DE',
+                    'successurl'   => 'https://www.payone.com',
                 ];
                 break;
             default:

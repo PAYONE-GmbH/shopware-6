@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace PayonePayment\Storefront\Controller\Paysafe;
 
-use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PaysafeInstallmentController extends StorefrontController
