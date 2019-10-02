@@ -21,7 +21,7 @@ class BirthdayValidator extends AbstractComparisonValidator
     {
         $birthday = DateTime::createFromFormat('Y-m-d', $value1);
 
-        return $value2->diff($birthday)->days <= 0;
+        return $birthday < $value2;
     }
 
     /**
