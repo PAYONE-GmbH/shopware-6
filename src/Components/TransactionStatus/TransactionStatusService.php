@@ -150,6 +150,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     private function shouldAllowCapture(array $transactionData, PaymentTransaction $paymentTransaction): bool
     {
         $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
+
         if (!$paymentMethodEntity) {
             return false;
         }
@@ -167,6 +168,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     private function shouldAllowRefund(array $transactionData, PaymentTransaction $paymentTransaction): bool
     {
         $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
+
         if (!$paymentMethodEntity) {
             return false;
         }
