@@ -30,9 +30,6 @@ class CheckoutConfirmPaymentData extends Struct
     /** @var null|string */
     protected $cartHash = '';
 
-    /** @var null|DateTimeInterface */
-    protected $birthday;
-
     public function getCardRequest(): array
     {
         return $this->cardRequest;
@@ -61,10 +58,5 @@ class CheckoutConfirmPaymentData extends Struct
     public function getCartHash(): ?string
     {
         return $this->cartHash;
-    }
-
-    public function getBirthday(): ?DateTimeInterface
-    {
-        return $this->birthday;
     }
 }
