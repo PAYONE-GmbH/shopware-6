@@ -30,9 +30,9 @@ class CustomFieldInstaller implements InstallerInterface
     public const ALLOW_CAPTURE          = 'payone_allow_capture';
     public const TEMPLATE               = 'payone_template';
     public const IS_PAYONE              = 'payone_payment';
-    public const CAPTURE_MODE = 'payone_capture_mode';
-    public const CLEARING_TYPE = 'payone_clearing_type';
-    public const FINANCING_TYPE = 'payone_financing_type';
+    public const CAPTURE_MODE           = 'payone_capture_mode';
+    public const CLEARING_TYPE          = 'payone_clearing_type';
+    public const FINANCING_TYPE         = 'payone_financing_type';
 
     public const FIELDSET_ID_ORDER_TRANSACTION = 'aacbcf9bedfb4827853b75c5fd278d3f';
     public const FIELDSET_ID_PAYMENT_METHOD    = 'ed39626e94fd4dfe9d81976fdbcdb06c';

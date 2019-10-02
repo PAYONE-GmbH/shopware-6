@@ -59,7 +59,7 @@ class OrderValidationListener implements EventSubscriberInterface
 
     private function getMinimumDate(): DateTimeInterface
     {
-        return (new DateTime())->modify('-18 years')->setTime(0,0);
+        return (new DateTime())->modify('-18 years')->setTime(0, 0);
     }
 
     private function getContextFromRequest(Request $request): SalesChannelContext

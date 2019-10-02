@@ -5,12 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\Validator;
 
 use DateTime;
-use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\AbstractComparisonValidator;
-use Symfony\Component\Validator\Constraints\LessThanOrEqual;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\ConstraintValidator;
-use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class BirthdayValidator extends AbstractComparisonValidator
 {
