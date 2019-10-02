@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClient;
 use PayonePayment\Payone\Request\PaysafeInstallment\PaysafePreCheckRequestFactory;
-use Shopware\Core\Framework\Validation\DataBag\DataBag;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Throwable;
 
 class CheckoutConfirmPaysafeEventListener implements EventSubscriberInterface
 {
@@ -19,10 +21,10 @@ class CheckoutConfirmPaysafeEventListener implements EventSubscriberInterface
     private $client;
 
     public function __construct(
-        PaysafePreCheckRequestFactory $paysafePreCheckRequestFactory,
+        PaysafePreCheckRequestFactory $requestFactory,
         PayoneClient $client
     ) {
-        $this->requestFactory = $paysafePreCheckRequestFactory;
+        $this->requestFactory = $requestFactory;
         $this->client         = $client;
     }
 
@@ -35,8 +37,24 @@ class CheckoutConfirmPaysafeEventListener implements EventSubscriberInterface
 
     public function preCheck(CheckoutConfirmPageLoadedEvent $event)
     {
+        return;
+
         // TODO: call precheck if needed
 
-        $dataBag = new DataBag();
+        $dataBag = new RequestDataBag();
+
+        $request = $this->requestFactory->getRequestParameters(
+            $event->getPage()->getCart(),
+            $dataBag,
+            $event->getSalesChannelContext()
+        );
+
+        try {
+            $response = $this->client->request($request);
+        } catch (PayoneRequestException $exception) {
+            // TODO: error handling
+        } catch (Throwable $exception) {
+            // TODO: error handling
+        }
     }
 }
