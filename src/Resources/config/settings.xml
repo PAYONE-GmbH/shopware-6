@@ -323,14 +323,16 @@
             <name>paysafeInstallmentChannelName</name>
             <label>Channel Name</label>
             <label lang="de-DE">Channel Name</label>
+            <helpText>Username for the URL to the EU Standard Credit Information hosted by Paysafe.</helpText>
+            <helpText lang="de-DE">Benutzername für die URL zu den EU-Standard-Kreditinformationen, die von Paysafe gehostet werden.</helpText> <!-- TODO -->
         </input-field>
 
         <input-field>
             <name>paysafeInstallmentChannelPassword</name>
             <label>Channel Password</label>
             <label lang="de-DE">Channel Passwort</label>
-            <helpText>Wird auf der Einwilligung genannt.</helpText> <!-- TODO -->
-            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText><!-- TODO -->
+            <helpText>Password for the url to the EU Standard Credit Information hosted by Paysafe.</helpText>
+            <helpText lang="de-DE">Passwort für die url zu den EU-Standard-Kreditinformationen, die von Paysafe gehostet werden.</helpText> <!-- TODO -->
         </input-field>
     </card>
 
@@ -369,8 +371,8 @@
             <name>paysafeInvoicingCompanyName</name>
             <label>Company Name</label>
             <label lang="de-DE">Firmenname</label>
-            <helpText>Uses the basic configuration value if nothing is entered here.</helpText><!-- TODO -->
-            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText><!-- TODO -->
+            <helpText>Is displayed in the supplementary notes to the privacy statement for purchase on account.</helpText>
+            <helpText lang="de-DE">Wird in den ergänzenden Hinweisen zur Datenschutzerklärung für Kauf auf Rechnung angezeigt.</helpText>
         </input-field>
     </card>
 </config>

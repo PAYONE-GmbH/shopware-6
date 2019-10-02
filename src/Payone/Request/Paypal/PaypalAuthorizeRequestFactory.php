@@ -82,7 +82,7 @@ class PaypalAuthorizeRequestFactory extends AbstractRequestFactory
             return null;
         }
 
-        if (!$this->cartHasher->validate($transaction->getOrder(), $context, $cartHash)) {
+        if (!$this->cartHasher->validate($transaction->getOrder(), $cartHash, $context)) {
             return null;
         }
 
