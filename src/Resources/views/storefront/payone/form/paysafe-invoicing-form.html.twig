@@ -22,7 +22,6 @@
                         class="form-control{% if formViolations.getViolations('/paysafeInvoicingBirthday') is not empty %} is-invalid{% endif %}"
                         form="confirmOrderForm"
                         required="required"
-                        {% if context.customer.birthday is not empty %}value="{{ context.customer.birthday|date('Y-m-d') }}"{% endif %}
                     />
                 </div>
             </div>

@@ -1,7 +1,4 @@
 {
-  "error": {
-    "paysafeInvoicingBirthday": "test"
-  },
   "PayonePayment": {
     "errorMessages": {
       "genericError": "Es ist ein Fehler aufgetreten."
@@ -69,5 +66,8 @@
         }
       }
     }
+  },
+  "error": {
+    "VIOLATION::PAYSAFE_BIRTHDAY_NOT_VALID": "Das eingegbene Geburtstag ist nicht valide."
   }
 }
