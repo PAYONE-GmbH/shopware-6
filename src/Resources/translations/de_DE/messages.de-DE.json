@@ -63,7 +63,7 @@
         },
         "consentCheckbox": {
           "introduction": "Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an payolution bin ich einverstanden.",
-          "textWithLink": "Meine <a href=\"%link%\" title=\"Einwilligung\" target=\"_blank\">Einwilligung</a> kann ich jederzeit mit Wirkung für die Zukunft wiederrufen."
+          "textWithLink": "Meine <a href=\"%link%\" data-url=\"%link%\" data-modal-class=\"paysafe\" data-toggle=\"modal\" title=\"Einwilligung\">Einwilligung</a> kann ich jederzeit mit Wirkung für die Zukunft wiederrufen."
         }
       }
     }

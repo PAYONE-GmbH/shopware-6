@@ -31,7 +31,7 @@ class PaysafeInvoicingController extends StorefrontController
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/invoicing-consent", name="frontend.account.payone.paysafe.invoicing-consent", options={"seo": "false"}, methods={"GET", "POST"}, defaults={"id": null, "XmlHttpRequest": true})
+     * @Route("/payone/invoicing-consent", name="frontend.account.payone.paysafe.invoicing-consent", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
      */
     public function displayContentPage(SalesChannelContext $context): Response
     {
@@ -53,6 +53,9 @@ class PaysafeInvoicingController extends StorefrontController
 
             throw new NotFoundHttpException();
         }
+
+        $content = strstr($content, '<header>');
+        $content = strstr($content, '</footer>', true) . '</footer>';
 
         return new Response($content);
     }
