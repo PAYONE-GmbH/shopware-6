@@ -176,7 +176,7 @@ export default class PayonePaymentCreditCard extends Plugin {
     _handleChangeSavedCard() {
         const savedCardPan = document.getElementById('savedpseudocardpan');
 
-        if(savedCardPan.options[savedCardPan.selectedIndex].value) {
+        if (savedCardPan.options[savedCardPan.selectedIndex].value !== 'new') {
             [...document.getElementsByClassName('credit-card-input')].forEach(function(element) {
                 element.classList.add('hide')
             });

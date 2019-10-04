@@ -3,7 +3,8 @@
     "errorMessages": {
       "genericError": "A error has occurred."
     },
-    "creditCard":{
+    "creditCard": {
+      "newCard": "Use a new credit card",
       "cardNumber": "Card number",
       "securityCode": "Security code",
       "expiryDate": "Expiry date",
