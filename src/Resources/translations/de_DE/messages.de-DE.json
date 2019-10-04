@@ -3,7 +3,8 @@
     "errorMessages": {
       "genericError": "Es ist ein Fehler aufgetreten."
     },
-    "creditCard":{
+    "creditCard": {
+      "newCard": "Eine neue Kreditkarte verwenden",
       "cardNumber": "Kartennummer",
       "securityCode": "CVV",
       "expiryDate": "Gültig bis",

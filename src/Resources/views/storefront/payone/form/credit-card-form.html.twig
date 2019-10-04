@@ -17,7 +17,7 @@
                         <div class="form-group col-md-6">
                             <label class="form-label" for="savedPseudoCardPan">{{ "PayonePayment.creditCard.savedCards" | trans }}</label>
                             <select class="form-control" id="savedpseudocardpan" name="savedPseudoCardPan" form="confirmOrderForm">
-                                <option key=""></option>
+                                <option value="new">{{ "PayonePayment.creditCard.newCard" | trans }}</option>
 
                                 {% for card in page.extensions.payone.savedCards %}
                                     {% if card.expiresAt > date() %}
