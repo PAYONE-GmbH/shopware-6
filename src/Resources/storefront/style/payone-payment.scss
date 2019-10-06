@@ -1,6 +1,12 @@
 $payone-input-gutter: 1.9rem;
 $payone-logo-gutter: 1rem;
 
+.payone-payment {
+    .card {
+        margin-bottom: 1.5rem;
+    }
+}
+
 .payone-payment.credit-card {
     .alert {
         margin: 0;
@@ -34,7 +40,15 @@ $payone-logo-gutter: 1rem;
     }
 }
 
-.payone-payment.paysafe-invoicing {
+.payone-payment.payolution-invoicing {
+    .consent-label {
+        a {
+            color: red;
+        }
+    }
+}
+
+.payone-payment.payolution-installment {
     .consent-label {
         a {
             color: red;

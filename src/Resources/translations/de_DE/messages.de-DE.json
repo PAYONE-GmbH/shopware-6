@@ -52,23 +52,19 @@
     "paypalExpress": {
       "buttonTitle": "PayPal Express"
     },
-    "paysafe": {
-      "invoicing": {
-        "cardTitle": "Payolution Safe Invoicing",
-        "birthday": {
-          "label": "Geburtsdatum",
-          "day": "Tag",
-          "month": "Monat",
-          "year": "Jahr"
-        },
-        "consentCheckbox": {
-          "introduction": "Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an payolution bin ich einverstanden.",
-          "textWithLink": "Meine <a href=\"%link%\" data-url=\"%link%\" data-modal-class=\"paysafe\" data-toggle=\"modal\" title=\"Einwilligung\">Einwilligung</a> kann ich jederzeit mit Wirkung für die Zukunft wiederrufen."
-        }
+    "payolution": {
+      "cardTitleInvoicing": "Payolution Safe Invoicing",
+      "cardTitleInstallment": "Payolution Installment",
+      "birthday": {
+        "label": "Geburtsdatum"
+      },
+      "consentCheckbox": {
+        "introduction": "Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an payolution bin ich einverstanden.",
+        "textWithLink": "Meine <a href=\"%link%\" data-url=\"%link%\" data-modal-class=\"payolution\" data-toggle=\"modal\" title=\"Einwilligung\">Einwilligung</a> kann ich jederzeit mit Wirkung für die Zukunft wiederrufen."
       }
     }
   },
   "error": {
-    "VIOLATION::PAYSAFE_BIRTHDAY_NOT_VALID": "Das eingegbene Geburtstag ist nicht valide."
+    "VIOLATION::PAYOLUTION_BIRTHDAY_NOT_VALID": "Das eingegbene Geburtstag ist nicht valide."
   }
 }

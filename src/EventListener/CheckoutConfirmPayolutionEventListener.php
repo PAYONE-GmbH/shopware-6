@@ -6,22 +6,22 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClient;
-use PayonePayment\Payone\Request\PaysafeInstallment\PaysafePreCheckRequestFactory;
+use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionPreCheckRequestFactory;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Throwable;
 
-class CheckoutConfirmPaysafeEventListener implements EventSubscriberInterface
+class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
 {
-    /** @var PaysafePreCheckRequestFactory */
+    /** @var PayolutionPreCheckRequestFactory */
     private $requestFactory;
 
     /** @var PayoneClient */
     private $client;
 
     public function __construct(
-        PaysafePreCheckRequestFactory $requestFactory,
+        PayolutionPreCheckRequestFactory $requestFactory,
         PayoneClient $client
     ) {
         $this->requestFactory = $requestFactory;

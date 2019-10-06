@@ -19,7 +19,8 @@ export default class PayonePaymentCreditCard extends Plugin {
 
     init() {
         this.iframe = null;
-        this.orderFormDisabled = true;
+
+        this._disableSubmitButton();
 
         const requestContainer = document.getElementById('payone-request');
 
@@ -119,6 +120,26 @@ export default class PayonePaymentCreditCard extends Plugin {
         };
     }
 
+    _disableSubmitButton() {
+        this.orderFormDisabled = true;
+
+        const button = document.getElementById('confirmFormSubmit');
+
+        if (button) {
+            button.setAttribute('disabled', 'disabled');
+        }
+    }
+
+    _activateSubmitButton() {
+        this.orderFormDisabled = false;
+
+        const button = document.getElementById('confirmFormSubmit');
+
+        if (button) {
+            button.removeAttribute('disabled');
+        }
+    }
+
     _cardDetectionCallback(detectedCardtype) {
         if (detectedCardtype === '-' || detectedCardtype === '?') {
             return;
@@ -176,7 +197,7 @@ export default class PayonePaymentCreditCard extends Plugin {
     _handleChangeSavedCard() {
         const savedCardPan = document.getElementById('savedpseudocardpan');
 
-        if (savedCardPan.options[savedCardPan.selectedIndex].value !== 'new') {
+        if (savedCardPan.options[savedCardPan.selectedIndex].value) {
             [...document.getElementsByClassName('credit-card-input')].forEach(function(element) {
                 element.classList.add('hide')
             });
@@ -193,7 +214,7 @@ export default class PayonePaymentCreditCard extends Plugin {
             document.getElementById('truncatedcardpan').value = response.truncatedcardpan;
             document.getElementById('cardexpiredate').value = response.cardexpiredate;
 
-            this.orderFormDisabled = false;
+            this._activateSubmitButton();
 
             document.getElementById('confirmOrderForm').submit()
         } else {

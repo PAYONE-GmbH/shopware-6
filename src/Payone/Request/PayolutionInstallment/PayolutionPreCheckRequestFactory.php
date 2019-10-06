@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\PaysafeInstallment;
+namespace PayonePayment\Payone\Request\PayolutionInstallment;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
@@ -12,9 +12,9 @@ use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaysafePreCheckRequestFactory extends AbstractRequestFactory
+class PayolutionPreCheckRequestFactory extends AbstractRequestFactory
 {
-    /** @var PaysafePreCheckRequest */
+    /** @var PayolutionPreCheckRequest */
     private $checkRequest;
 
     /** @var CustomerRequest */
@@ -24,7 +24,7 @@ class PaysafePreCheckRequestFactory extends AbstractRequestFactory
     private $systemRequest;
 
     public function __construct(
-        PaysafePreCheckRequest $authorizeRequest,
+        PayolutionPreCheckRequest $authorizeRequest,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
@@ -40,7 +40,7 @@ class PaysafePreCheckRequestFactory extends AbstractRequestFactory
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $context->getSalesChannel()->getId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYSAFE_INSTALLMENT,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYOLUTION_INSTALLMENT,
             $context->getContext()
         );
 

@@ -1,0 +1,17 @@
+<div class="payone-payment payolution-invoicing">
+    {% block page_checkout_confirm_payone_card_title_payolution_installment %}
+        <div class="card-title">
+            {{ "PayonePayment.payolution.cardTitleInvoicing"  |  trans }}
+        </div>
+    {% endblock %}
+
+    {% block page_checkout_confirm_payone_card_content_payolution_installment %}
+        <div class="card">
+            {% sw_include '@Storefront/payone/payolution/consent-checkbox.html.twig' with {
+                    style: 'default',
+            } %}
+        </div>
+
+        <div data-is-payone-payolution-invoicing="true"></div>
+    {% endblock %}
+</div>

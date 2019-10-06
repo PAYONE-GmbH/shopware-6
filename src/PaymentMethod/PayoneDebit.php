@@ -20,7 +20,7 @@ class PayoneDebit implements PaymentMethodInterface
     private $paymentHandler = PayoneDebitPaymentHandler::class;
 
     /** @var null|string */
-    private $template = 'debit-form.html.twig';
+    private $template = '@Storefront/payone/debit/debit-form.html.twig';
 
     /** @var array */
     private $translations = [
@@ -29,7 +29,7 @@ class PayoneDebit implements PaymentMethodInterface
             'description' => 'Wir ziehen den Betrag bequem und automatisch von Ihrem Bankkonto ein.',
         ],
         'en-GB' => [
-            'name'        => 'SEPA Direct Debit',
+            'name'        => 'Payone SEPA Direct Debit',
             'description' => 'We\'ll automatically debit the amount from your bank account.',
         ],
     ];

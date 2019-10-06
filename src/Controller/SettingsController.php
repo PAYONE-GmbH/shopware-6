@@ -11,8 +11,8 @@ use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePaysafeInstallmentPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePaysafeInvoicingPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -151,8 +151,8 @@ class SettingsController extends AbstractController
                     'successurl'             => 'https://www.payone.com',
                 ];
                 break;
-            case PayonePaysafeInstallmentPaymentHandler::class:
-            case PayonePaysafeInvoicingPaymentHandler::class:
+            case PayonePayolutionInstallmentPaymentHandler::class:
+            case PayonePayolutionInvoicingPaymentHandler::class:
                 return [
                     'request'      => 'preauthorization',
                     'clearingtype' => 'wlt',

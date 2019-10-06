@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\PaysafeInvoicing;
+namespace PayonePayment\Payone\Request\PayolutionInvoicing;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
@@ -12,9 +12,9 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaysafeInvoicingPreAuthorizeRequestFactory extends AbstractRequestFactory
+class PayolutionInvoicingPreAuthorizeRequestFactory extends AbstractRequestFactory
 {
-    /** @var PaysafeInvoicingPreAuthorizeRequest */
+    /** @var PayolutionInvoicingPreAuthorizeRequest */
     private $authorizeRequest;
 
     /** @var CustomerRequest */
@@ -24,7 +24,7 @@ class PaysafeInvoicingPreAuthorizeRequestFactory extends AbstractRequestFactory
     private $systemRequest;
 
     public function __construct(
-        PaysafeInvoicingPreAuthorizeRequest $authorizeRequest,
+        PayolutionInvoicingPreAuthorizeRequest $authorizeRequest,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
@@ -40,7 +40,7 @@ class PaysafeInvoicingPreAuthorizeRequestFactory extends AbstractRequestFactory
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYSAFE_INVOICING,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYOLUTION_INVOICING,
             $context->getContext()
         );
 
