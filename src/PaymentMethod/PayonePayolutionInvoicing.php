@@ -4,38 +4,38 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentMethod;
 
-use PayonePayment\PaymentHandler\PayonePaysafeInstallmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 
-class PayonePaysafeInstallment implements PaymentMethodInterface
+class PayonePayolutionInvoicing implements PaymentMethodInterface
 {
-    public const UUID = '569b46970ad2458ca8f17f1ebb754137';
+    public const UUID = '0407fd0a5c4b4d2bafc88379efe8cf8d';
 
     /** @var string */
-    private $name = 'Payone Paysafe Installment';
+    private $name = 'Payone Payolution Invoicing';
 
     /** @var string */
     private $description = '';
 
     /** @var string */
-    private $paymentHandler = PayonePaysafeInstallmentPaymentHandler::class;
+    private $paymentHandler = PayonePayolutionInvoicingPaymentHandler::class;
 
     /** @var null|string */
-    private $template = 'paysafe-installment-form.html.twig';
+    private $template = '@Storefront/payone/payolution/payolution-invoicing-form.html.twig';
 
     /** @var array */
     private $translations = [
         'de-DE' => [
-            'name'        => 'Payone Paysafe Installment',
+            'name'        => 'Payone Payolution Invoicing',
             'description' => '',
         ],
         'en-GB' => [
-            'name'        => 'Payone Paysafe Installment',
+            'name'        => 'Payone Payolution Invoicing',
             'description' => '',
         ],
     ];
 
     /** @var int */
-    private $position = 104;
+    private $position = 105;
 
     public function getId(): string
     {

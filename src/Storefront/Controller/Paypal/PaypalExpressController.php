@@ -38,7 +38,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PaypalExpressCheckoutController extends StorefrontController
+class PaypalExpressController extends StorefrontController
 {
     /** @var PaypalSetExpressCheckoutRequestFactory */
     private $checkoutRequestFactory;
@@ -111,7 +111,7 @@ class PaypalExpressCheckoutController extends StorefrontController
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/express-checkout", name="frontend.account.payone.paypal.express-checkout", options={"seo": "false"}, methods={"GET"})
+     * @Route("/payone/paypal/express-checkout", name="frontend.account.payone.paypal.express-checkout", options={"seo": "false"}, methods={"GET"})
      */
     public function express(SalesChannelContext $context): Response
     {
@@ -148,7 +148,7 @@ class PaypalExpressCheckoutController extends StorefrontController
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/express-checkout-handler", name="frontend.account.payone.paypal.express-checkout-handler", options={"seo": "false"}, methods={"GET"})
+     * @Route("/payone/paypal/redirect-handler", name="frontend.account.payone.paypal.express-checkout-handler", options={"seo": "false"}, methods={"GET"})
      */
     public function redirectHandler(SalesChannelContext $context, Request $request): Response
     {

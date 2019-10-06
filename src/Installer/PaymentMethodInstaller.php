@@ -9,8 +9,8 @@ use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
-use PayonePayment\PaymentMethod\PayonePaysafeInstallment;
-use PayonePayment\PaymentMethod\PayonePaysafeInvoicing;
+use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
+use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\PaymentMethod\PayoneSofortBanking;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Framework\Context;
@@ -31,8 +31,8 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneDebit::class,
         PayonePaypal::class,
         PayonePaypalExpress::class,
-        PayonePaysafeInstallment::class,
-        PayonePaysafeInvoicing::class,
+        PayonePayolutionInstallment::class,
+        PayonePayolutionInvoicing::class,
         PayoneSofortBanking::class,
     ];
 

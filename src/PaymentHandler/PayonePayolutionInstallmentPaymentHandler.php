@@ -9,7 +9,7 @@ use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PayonePaysafeInstallmentPaymentHandler implements SynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
+class PayonePayolutionInstallmentPaymentHandler implements SynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
 {
     /**
      * {@inheritdoc}

@@ -8,8 +8,8 @@ use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePaysafeInstallmentPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePaysafeInvoicingPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 
 interface ConfigurationPrefixes
@@ -18,8 +18,8 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_DEBIT               = 'debit';
     public const CONFIGURATION_PREFIX_PAYPAL              = 'paypal';
     public const CONFIGURATION_PREFIX_PAYPAL_EXPRESS      = 'paypalExpress';
-    public const CONFIGURATION_PREFIX_PAYSAFE_INVOICING   = 'paysafeInvoicing';
-    public const CONFIGURATION_PREFIX_PAYSAFE_INSTALLMENT = 'paysafeInstallment';
+    public const CONFIGURATION_PREFIX_PAYOLUTION_INVOICING   = 'payolutionInvoicing';
+    public const CONFIGURATION_PREFIX_PAYOLUTION_INSTALLMENT = 'payolutionInstallment';
     public const CONFIGURATION_PREFIX_SOFORT              = 'sofort';
 
     public const CONFIGURATION_PREFIXES = [
@@ -27,8 +27,8 @@ interface ConfigurationPrefixes
         PayoneDebitPaymentHandler::class              => self::CONFIGURATION_PREFIX_DEBIT,
         PayonePaypalPaymentHandler::class             => self::CONFIGURATION_PREFIX_PAYPAL,
         PayonePaypalExpressPaymentHandler::class      => self::CONFIGURATION_PREFIX_PAYPAL_EXPRESS,
-        PayonePaysafeInvoicingPaymentHandler::class   => self::CONFIGURATION_PREFIX_PAYSAFE_INVOICING,
-        PayonePaysafeInstallmentPaymentHandler::class => self::CONFIGURATION_PREFIX_PAYSAFE_INSTALLMENT,
+        PayonePayolutionInvoicingPaymentHandler::class   => self::CONFIGURATION_PREFIX_PAYOLUTION_INVOICING,
+        PayonePayolutionInstallmentPaymentHandler::class => self::CONFIGURATION_PREFIX_PAYOLUTION_INSTALLMENT,
         PayoneSofortBankingPaymentHandler::class      => self::CONFIGURATION_PREFIX_SOFORT,
     ];
 }

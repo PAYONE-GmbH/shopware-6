@@ -1,0 +1,61 @@
+<div class="payone-payment payolution-installment">
+    {% block page_checkout_confirm_payone_card_title_payolution_installment %}
+        <div class="card-title">
+            {{ "PayonePayment.payolution.cardTitleInstallment"  |  trans }}
+        </div>
+    {% endblock %}
+
+    {% block page_checkout_confirm_payone_card_content_payolution_installment %}
+        <div class="card">
+            <div class="row">
+                <div class="col-4 headline consent">
+                    <div>1. Check Installment availability</div>
+                </div>
+
+                <div class="col-4 headline installments">
+                    <div>2. Installment selection</div>
+                </div>
+
+                <div class="col-4 headline calculation">
+                    <div>3. Overview and Account Information</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4 consent">
+                    {% sw_include '@Storefront/payone/payolution/consent-checkbox.html.twig' with {
+                        style: 'wide'
+                    } %}
+                </div>
+
+                <div class="col-4 installments">
+                    <select name="test">
+                        <option value="test">asds</option>
+                        <option value="tes2t">asds2</option>
+                        <option value="tes3t">3asds</option>
+                    </select>
+                </div>
+
+                <div class="col-4 calculation">
+                    <div>stuff</div>
+                </div>
+            </div>
+
+            <div class="row buttons">
+                <div class="col-4 consent">
+                    button
+                </div>
+
+                <div class="col-4 installments">
+                    download link
+                </div>
+
+                <div class="col-4 calculation">
+                    button maybe
+                </div>
+            </div>
+        </div>
+
+        <div data-is-payone-payolution-invoicing="true" data-precheck-url="{{ path('frontend.account.payone.payolution.precheck') }}"></div>
+    {% endblock %}
+</div>

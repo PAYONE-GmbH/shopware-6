@@ -69,7 +69,7 @@
             </call>
         </service>
 
-        <service id="PayonePayment\Storefront\Controller\Paypal\PaypalExpressCheckoutController">
+        <service id="PayonePayment\Storefront\Controller\Paypal\PaypalExpressController">
             <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalSetExpressCheckoutRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalGetExpressCheckoutDetailsRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
@@ -89,16 +89,10 @@
             </call>
         </service>
 
-        <service id="PayonePayment\Storefront\Controller\Paysafe\PaysafeInvoicingController">
+        <service id="PayonePayment\Storefront\Controller\Payolution\PayolutionController">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="PayonePayment\Util\Logger" />
 
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
-        </service>
-
-        <service id="PayonePayment\Storefront\Controller\Paysafe\PaysafeInstallmentController">
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>

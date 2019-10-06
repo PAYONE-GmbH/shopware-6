@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\PaysafeInstallment;
+namespace PayonePayment\Payone\Request\PayolutionInvoicing;
 
 use DateTime;
 use PayonePayment\Struct\PaymentTransaction;
@@ -14,7 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
-class PaysafeInstallmentAuthorizeRequest
+class PayolutionInvoicingPreAuthorizeRequest
 {
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
@@ -40,8 +40,8 @@ class PaysafeInstallmentAuthorizeRequest
             'reference'     => $transaction->getOrder()->getOrderNumber(),
         ];
 
-        if (!empty($dataBag->get('paysafeInvoicingBirthday'))) {
-            $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('paysafeInvoicingBirthday'));
+        if (!empty($dataBag->get('payolutionBirthday'))) {
+            $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
 
             if (!empty($birthday)) {
                 $request['birthday'] = $birthday->format('Ymd');

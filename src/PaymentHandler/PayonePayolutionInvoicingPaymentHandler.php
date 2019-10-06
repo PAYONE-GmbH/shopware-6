@@ -9,7 +9,7 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\PaysafeInvoicing\PaysafeInvoicingPreAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
@@ -19,9 +19,9 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
+class PayonePayolutionInvoicingPaymentHandler implements SynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
 {
-    /** @var PaysafeInvoicingPreAuthorizeRequestFactory */
+    /** @var PayolutionInvoicingPreAuthorizeRequestFactory */
     private $requestFactory;
 
     /** @var PayoneClientInterface */
@@ -34,7 +34,7 @@ class PayonePaysafeInvoicingPaymentHandler implements SynchronousPaymentHandlerI
     private $dataHandler;
 
     public function __construct(
-        PaysafeInvoicingPreAuthorizeRequestFactory $requestFactory,
+        PayolutionInvoicingPreAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler

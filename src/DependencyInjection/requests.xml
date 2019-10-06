@@ -147,24 +147,24 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
-        <!-- PaysafeInvoicing -->
-        <service id="PayonePayment\Payone\Request\PaysafeInvoicing\PaysafeInvoicingPreAuthorizeRequest">
+        <!-- PayolutionInvoicing -->
+        <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequest">
             <argument type="service" id="currency.repository" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\PaysafeInvoicing\PaysafeInvoicingPreAuthorizeRequestFactory">
-            <argument type="service" id="PayonePayment\Payone\Request\PaysafeInvoicing\PaysafeInvoicingPreAuthorizeRequest" />
+        <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
-        <!-- PaysafeInstallment -->
-        <service id="PayonePayment\Payone\Request\PaysafeInstallment\PaysafePreCheckRequest">
+        <!-- PayolutionInstallment -->
+        <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionPreCheckRequest">
             <argument type="service" id="currency.repository" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\PaysafeInstallment\PaysafePreCheckRequestFactory">
-            <argument type="service" id="PayonePayment\Payone\Request\PaysafeInstallment\PaysafePreCheckRequest" />
+        <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionPreCheckRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionPreCheckRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>

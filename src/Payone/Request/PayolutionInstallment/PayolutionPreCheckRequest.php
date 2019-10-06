@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\PaysafeInstallment;
+namespace PayonePayment\Payone\Request\PayolutionInstallment;
 
 use DateTime;
 use RuntimeException;
@@ -13,7 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
-class PaysafePreCheckRequest
+class PayolutionPreCheckRequest
 {
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
@@ -39,8 +39,8 @@ class PaysafePreCheckRequest
             'currency'            => $currency->getIsoCode(),
         ];
 
-        if (!empty($dataBag->get('paysafeInvoicingBirthday'))) {
-            $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('paysafeInvoicingBirthday'));
+        if (!empty($dataBag->get('payolutionBirthday'))) {
+            $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
 
             if (!empty($birthday)) {
                 $request['birthday'] = $birthday->format('Ymd');

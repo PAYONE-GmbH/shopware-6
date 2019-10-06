@@ -7,7 +7,9 @@ namespace PayonePayment\EventListener;
 use DateTime;
 use DateTimeInterface;
 use PayonePayment\Components\Validator\Birthday;
-use PayonePayment\PaymentMethod\PayonePaysafeInvoicing;
+use PayonePayment\PaymentMethod\PayoneCreditCard;
+use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
+use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -44,14 +46,14 @@ class OrderValidationListener implements EventSubscriberInterface
         // TODO: can be removed when https://github.com/shopware/platform/pull/226 is merged
         $context = $this->getContextFromRequest($request);
 
-        if ($this->isPayonePaysafeInvoicingPaymentMethod($context)) {
+        if ($this->isPayonePayolutionPaymentMethod($context)) {
             $event->getDefinition()->add(
-                'paysafeInvoicingConsent',
+                'payolutionConsent',
                 new NotBlank()
             );
 
             $event->getDefinition()->add(
-                'paysafeInvoicingBirthday',
+                'payolutionBirthday',
                 new Birthday(['value' => $this->getMinimumDate()])
             );
         }
@@ -67,8 +69,13 @@ class OrderValidationListener implements EventSubscriberInterface
         return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
     }
 
-    private function isPayonePaysafeInvoicingPaymentMethod(SalesChannelContext $context): bool
+    private function isPayonePayolutionPaymentMethod(SalesChannelContext $context): bool
     {
-        return $context->getPaymentMethod()->getId() === PayonePaysafeInvoicing::UUID;
+        $paymentMethods = [
+            PayonePayolutionInstallment::UUID,
+            PayonePayolutionInvoicing::UUID
+        ];
+
+        return in_array($context->getPaymentMethod()->getId(), $paymentMethods, true);
     }
 }
