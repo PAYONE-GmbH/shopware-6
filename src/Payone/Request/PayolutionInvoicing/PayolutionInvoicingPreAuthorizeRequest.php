@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\Request\PayolutionInvoicing;
 use DateTime;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -48,6 +49,16 @@ class PayolutionInvoicingPreAuthorizeRequest
             }
         }
 
+        $address = $this->getOrderBillingAddress($transaction->getOrder());
+
+        if (null === $address) {
+            throw new RuntimeException('missing order customer billing address');
+        }
+
+        if ($address->getCompany()) {
+            $request['add_paydata[b2b]'] = 'yes';
+        }
+
         return array_filter($request);
     }
 
@@ -63,5 +74,16 @@ class PayolutionInvoicingPreAuthorizeRequest
         }
 
         return $currency;
+    }
+
+    private function getOrderBillingAddress(OrderEntity $order): ?OrderAddressEntity
+    {
+        foreach ($order->getAddresses() as $address) {
+            if ($address->getId() === $order->getBillingAddressId()) {
+                return $address;
+            }
+        }
+
+        return null;
     }
 }

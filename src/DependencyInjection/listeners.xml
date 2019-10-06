@@ -46,7 +46,7 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="PayonePayment\EventListener\OrderValidationListener">
+        <service id="PayonePayment\EventListener\OrderValidationEventListener">
             <argument type="service" id="request_stack" />
 
             <tag name="kernel.event_subscriber"/>

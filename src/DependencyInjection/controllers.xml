@@ -91,6 +91,11 @@
 
         <service id="PayonePayment\Storefront\Controller\Payolution\PayolutionController">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionPreCheckRequestFactory" />
             <argument type="service" id="PayonePayment\Util\Logger" />
 
             <call method="setContainer">

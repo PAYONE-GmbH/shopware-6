@@ -12,11 +12,11 @@
                     <div>1. Check Installment availability</div>
                 </div>
 
-                <div class="col-4 headline installments">
+                <div class="col-4 headline installments hidden">
                     <div>2. Installment selection</div>
                 </div>
 
-                <div class="col-4 headline calculation">
+                <div class="col-4 headline calculation hidden">
                     <div>3. Overview and Account Information</div>
                 </div>
             </div>
@@ -28,34 +28,38 @@
                     } %}
                 </div>
 
-                <div class="col-4 installments">
-                    <select name="test">
+                <div class="col-4 installments hidden">
+                    <label class="form-label" for="payolutionInstallments">Please select number of installments{{ "general.required" | trans }}</label>
+
+                    <select class="form-control" id="payolutionInstallments" name="test">
                         <option value="test">asds</option>
                         <option value="tes2t">asds2</option>
                         <option value="tes3t">3asds</option>
                     </select>
                 </div>
 
-                <div class="col-4 calculation">
+                <div class="col-4 calculation hidden">
                     <div>stuff</div>
                 </div>
             </div>
 
             <div class="row buttons">
                 <div class="col-4 consent">
-                    button
+                    <button id="checkInstallmentButton" class="btn btn-primary btn-block btn-lg">
+                        Check Installment availability
+                    </button>
                 </div>
 
-                <div class="col-4 installments">
+                <div class="col-4 installments hidden">
                     download link
                 </div>
 
-                <div class="col-4 calculation">
+                <div class="col-4 calculation hidden">
                     button maybe
                 </div>
             </div>
         </div>
 
-        <div data-is-payone-payolution-invoicing="true" data-precheck-url="{{ path('frontend.account.payone.payolution.precheck') }}"></div>
+        <div id="payone-configuration" data-is-payone-payolution-invoicing="true" data-precheck-url="{{ path('frontend.account.payone.payolution.precheck') }}"></div>
     {% endblock %}
 </div>

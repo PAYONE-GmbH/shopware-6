@@ -54,4 +54,20 @@ $payone-logo-gutter: 1rem;
             color: red;
         }
     }
+
+    .disabled {
+        opacity: 0.5;
+    }
+
+    .hidden {
+        opacity: 0;
+    }
+
+    .headline {
+        color: #3f4c58;
+        font-size: 0.9rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
 }

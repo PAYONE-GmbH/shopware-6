@@ -12,7 +12,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class CartHasher implements CartHasherInterface
 {
-    public function generateHashFromCart(Cart $cart, SalesChannelContext $context): string
+    public function generate(Cart $cart, SalesChannelContext $context): string
     {
         $hashData = $this->getHashData($cart, $context);
 

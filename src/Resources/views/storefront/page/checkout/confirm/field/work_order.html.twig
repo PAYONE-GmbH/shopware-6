@@ -1,3 +1,9 @@
 {% block page_checkout_confirm_payone_workorder_field %}
-    <input type="hidden" form="confirmOrderForm" name="workorder" value="{{ page.extensions.payone.workOrderId }}"/>
+    {% set value = null %}
+
+    {% if page.extensions.payone and page.extensions.payone.workOrderId %}
+        {% set value = page.extensions.payone.workOrderId %}
+    {% endif %}
+
+    <input type="hidden" form="confirmOrderForm" id="payoneWorkOrder" name="workorder" value="{{ value }}"/>
 {% endblock %}

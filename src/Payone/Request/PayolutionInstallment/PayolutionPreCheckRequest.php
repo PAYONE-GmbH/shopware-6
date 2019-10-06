@@ -33,8 +33,9 @@ class PayolutionPreCheckRequest
         $request = [
             'request'             => 'genericpayment',
             'add_paydata[action]' => 'pre_check',
+            'add_paydata[payment_type]' => 'Payolution-Installment',
             'clearingtype'        => 'fnc',
-            'financingtype'       => 'PYV',
+            'financingtype'       => 'PYS',
             'amount'              => (int) ($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision())),
             'currency'            => $currency->getIsoCode(),
         ];

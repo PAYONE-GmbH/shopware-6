@@ -213,7 +213,7 @@ class PaypalExpressController extends StorefrontController
 
         $cartData->assign(array_filter([
             'workOrderId' => $workOrderId,
-            'cartHash'    => $this->cartHasher->generateHashFromCart($cart, $context),
+            'cartHash'    => $this->cartHasher->generate($cart, $context),
         ]));
 
         $cart->addExtension(CheckoutCartPaymentData::EXTENSION_NAME, $cartData);

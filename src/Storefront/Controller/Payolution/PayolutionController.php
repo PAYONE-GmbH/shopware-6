@@ -4,16 +4,24 @@ declare(strict_types=1);
 
 namespace PayonePayment\Storefront\Controller\Payolution;
 
+use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
+use PayonePayment\Payone\Client\PayoneClientInterface;
+use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionPreCheckRequestFactory;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
+use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayolutionController extends StorefrontController
 {
@@ -22,18 +30,45 @@ class PayolutionController extends StorefrontController
     /** @var ConfigReaderInterface */
     private $configReader;
 
+    /** @var CartService */
+    private $cartService;
+
+    /** @var CartHasherInterface */
+    private $cartHasher;
+
+    /** @var PayoneClientInterface */
+    private $client;
+
+    /** @var TranslatorInterface */
+    private $translator;
+
+    /** @var PayolutionPreCheckRequestFactory */
+    private $preCheckRequestFactory;
+
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(ConfigReaderInterface $configReader, LoggerInterface $logger)
-    {
+    public function __construct(
+        ConfigReaderInterface $configReader,
+        CartService $cartService,
+        CartHasherInterface $cartHasher,
+        PayoneClientInterface $client,
+        TranslatorInterface $translator,
+        PayolutionPreCheckRequestFactory $preCheckRequestFactory,
+        LoggerInterface $logger
+    ) {
         $this->configReader = $configReader;
+        $this->cartService = $cartService;
+        $this->cartHasher = $cartHasher;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->preCheckRequestFactory = $preCheckRequestFactory;
         $this->logger       = $logger;
     }
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/payolution/invoicing-consent", name="frontend.account.payone.payolution.invoicing-consent", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
+     * @Route("/payone/payolution/consent", name="frontend.account.payone.payolution.consent", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
      */
     public function displayContentModal(SalesChannelContext $context): Response
     {
@@ -72,16 +107,33 @@ class PayolutionController extends StorefrontController
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/payolution/preCheck", name="frontend.account.payone.payolution.precheck", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
+     * @Route("/payone/payolution/preCheck", name="frontend.account.payone.payolution.precheck", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
      */
-    public function preCheck(SalesChannelContext $context): Response
+    public function preCheck(SalesChannelContext $context, RequestDataBag $dataBag): Response
     {
-        return new Response();
+        $cart = $this->cartService->getCart($context->getToken(), $context);
+
+        $request = $this->preCheckRequestFactory->getRequestParameters($cart, $dataBag, $context);
+
+        try {
+            $response = $this->client->request($request);
+        } catch (PayoneRequestException $exception) {
+            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+        }
+
+        $response['cartHash'] = $this->cartHasher->generate($cart, $context);
+
+        // TODO: call calculation endpoint and retrieve plans
+        // TODO: remove calculation route
+        // TODO: rename preCheck to something meaningfull
+        //
+
+        return new Response(json_encode($response, JSON_PRESERVE_ZERO_FRACTION));
     }
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/payolution/calculation", name="frontend.account.payone.payolution.calculation", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
+     * @Route("/payone/payolution/calculation", name="frontend.account.payone.payolution.calculation", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
      */
     public function calculation(SalesChannelContext $context): Response
     {
