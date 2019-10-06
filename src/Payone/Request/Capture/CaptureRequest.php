@@ -63,7 +63,7 @@ class CaptureRequest
             $parameters['financingtype'] = $customFields[CustomFieldInstaller::FINANCING_TYPE];
         }
 
-        // TODO add capturemode, clearingtype, financingtype via customfield when paysafe is used
+        // TODO add capturemode, clearingtype, financingtype via customfield when payolution is used
 
         return $parameters;
     }
