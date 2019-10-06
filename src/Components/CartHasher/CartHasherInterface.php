@@ -10,7 +10,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 interface CartHasherInterface
 {
-    public function generateHashFromCart(Cart $cart, SalesChannelContext $context): string;
+    public function generate(Cart $cart, SalesChannelContext $context): string;
 
     public function validate(OrderEntity $orderEntity, string $cartHash, SalesChannelContext $context): bool;
 }

@@ -22,7 +22,9 @@ export default class PayonePaymentPayolutionInvoicing extends Plugin {
     _validateConstentCheckbox(event) {
         const checkbox = document.getElementById('payolutionConsent');
 
-        if (!checkbox || checkbox.checked) {
+        if (checkbox.checked) {
+            checkbox.classList.remove('is-invalid');
+
             return;
         }
 

@@ -1,6 +1,6 @@
 <div class="form-row">
-    <div class="form-group col-12">
-        <label for="payolutionBirthday">
+    <div class="col-12">
+        <label class="form-label" for="payolutionBirthday">
             {{ "PayonePayment.payolution.birthday.label" | trans }}{{ "general.required" | trans }}
         </label>
     </div>
@@ -31,7 +31,7 @@
             <label for="payolutionConsent" class="custom-control-label consent-label">
                 {{ "PayonePayment.payolution.consentCheckbox.introduction" | trans }}
                 {{ "PayonePayment.payolution.consentCheckbox.textWithLink" | trans({
-                    '%link%': path('frontend.account.payone.payolution.invoicing-consent')
+                    '%link%': path('frontend.account.payone.payolution.consent')
                 }) | raw }}
             </label>
         </div>

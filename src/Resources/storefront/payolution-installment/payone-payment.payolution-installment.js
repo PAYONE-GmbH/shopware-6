@@ -2,7 +2,6 @@
 
 import Plugin from 'src/script/plugin-system/plugin.class';
 import HttpClient from 'src/script/service/http-client.service';
-import PseudoModalUtil from 'src/script/utility/modal-extension/pseudo-modal.util';
 import PageLoadingIndicatorUtil from 'src/script/utility/loading-indicator/page-loading-indicator.util';
 
 export default class PayonePaymentPayolutionInstallment extends Plugin {
@@ -17,10 +16,43 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
 
     _registerEventListeners() {
         const form = document.getElementById('confirmOrderForm');
+        const buttonPreCheck = document.getElementById('checkInstallmentButton');
 
         if (form) {
             form.addEventListener('submit', this._handleOrderSubmit.bind(this));
         }
+
+        if (buttonPreCheck) {
+            buttonPreCheck.addEventListener('click', this._handlePreCheckButtonClick.bind(this));
+        }
+    }
+
+    _handlePreCheckButtonClick(event) {
+        this._validateConstentCheckbox(event);
+        this._validateBirthdayInput(event);
+
+        if (event.defaultPrevented) {
+            return;
+        }
+
+        PageLoadingIndicatorUtil.create();
+
+        const data = JSON.stringify(this._getRequestData());
+
+        this._client.abort();
+        this._client.post(this._getPreCheckUrl(), data, response => this._handlePreCheckCallback(response));
+    }
+
+    _handlePreCheckCallback(response) {
+        PageLoadingIndicatorUtil.remove();
+
+        if (response.status !== 'OK') {
+            return;
+        }
+
+        // TODO: save workorder id to dom (and use during preAuth)
+        // TODO: save carthash to dom (and validate inside the paymenthandler)
+        // TODO: if a payment plan is selected, activate order submit button
     }
 
     _handleOrderSubmit(event) {
@@ -29,7 +61,14 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         }
 
         this._validateConstentCheckbox(event);
-        this._preCheck();
+        this._validateBirthdayInput(event);
+
+        if (event.defaultPrevented) {
+            return;
+        }
+
+
+        // TODO: validate that a payment plan was selected
     }
 
     _disableSubmitButton() {
@@ -52,11 +91,6 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         }
     }
 
-    _preCheck() {
-        this._client.abort();
-        this._client.get(this._getPreCheckUrl(), [], content => this._openModal(content));
-    }
-
     _getPreCheckUrl() {
         const configuration = document.getElementById('payone-configuration');
 
@@ -67,6 +101,8 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         const checkbox = document.getElementById('payolutionConsent');
 
         if (checkbox.checked) {
+            checkbox.classList.remove('is-invalid');
+
             return;
         }
 
@@ -76,6 +112,25 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         });
 
         checkbox.classList.add('is-invalid');
+
+        event.preventDefault();
+    }
+
+    _validateBirthdayInput(event) {
+        const input = document.getElementById('payolutionBirthday');
+
+        if (input.value) {
+            input.classList.remove('is-invalid');
+
+            return;
+        }
+
+        input.scrollIntoView({
+            block: 'start',
+            behavior: 'smooth',
+        });
+
+        input.classList.add('is-invalid');
 
         event.preventDefault();
     }
@@ -92,56 +147,20 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
     }
 
     _submitForm() {
-        this.orderFormDisabled = false;
+        this._activateSubmitButton();
 
-        document
-            .getElementById('confirmOrderForm')
-            .submit();
-    }
+        const form = document.getElementById('confirmOrderForm');
 
-    _openModal(response) {
-        response = JSON.parse(response);
-
-        if (response.error) {
-            const errorOutput = document.getElementById('errorOutput');
-
-            errorOutput.innerHTML = response.error;
-            errorOutput.style.display = 'block';
-
-            PageLoadingIndicatorUtil.remove();
-
-            return;
+        if (form) {
+            form.submit();
         }
-
-        if (response.mandate.Status === 'active') {
-            this._submitForm();
-
-            return;
-        }
-
-        const pseudoModal = new PseudoModalUtil(response.modal_content);
-
-        pseudoModal.open(this._onOpen.bind(this, pseudoModal));
-    }
-
-    _onOpen(pseudoModal) {
-        const modal = pseudoModal.getModal();
-
-        modal.classList.add('payone-debit-mandate-modal');
-        window.PluginManager.initializePlugins();
-
-        this._registerEvents();
-
-        PageLoadingIndicatorUtil.remove();
     }
 
     _getRequestData() {
-        const iban = document.getElementById('iban');
-        const bic = document.getElementById('bic');
+        const birthday = document.getElementById('payolutionBirthday');
 
         return {
-            'iban': iban.value,
-            'bic': bic.value,
+            'payolutionBirthday': birthday.value,
         };
     }
 
