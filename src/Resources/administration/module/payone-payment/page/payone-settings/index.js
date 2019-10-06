@@ -49,8 +49,8 @@ export default {
                 'debit',
                 'paypal',
                 'paypalExpress',
-                'paysafeInvoicing',
-                'paysafeInstallment',
+                'payolutionInvoicing',
+                'payolutionInstallment',
                 'sofort'
             ];
         },

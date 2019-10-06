@@ -29,8 +29,8 @@
                 "debit": "The API credentials for Debit are not valid.",
                 "paypalExpress": "The API credentials for PayPal Express are not valid.",
                 "paypal": "The API credentials for PayPal are not valid.",
-                "paysafeInstallment": "The API credentials for Paysafe Installment are not valid.",
-                "paysafeInvoicing": "The API credentials for Paysafe Invoicing are not valid.",
+                "payolutionInstallment": "The API credentials for Payolution Installment are not valid.",
+                "payolutionInvoicing": "The API credentials for Payolution Invoicing are not valid.",
                 "sofort": "The API credentials for SOFORT are not valid."
             }
         },

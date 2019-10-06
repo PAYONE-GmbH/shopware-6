@@ -29,8 +29,8 @@
                 "debit": "Die API-Zugangsdaten für Lastschrift sind nicht korrekt.",
                 "paypalExpress": "Die API-Zugangsdaten für PayPal Express sind nicht korrekt.",
                 "paypal": "Die API-Zugangsdaten für PayPal sind nicht korrekt.",
-                "paysafeInstallment": "Die API-Zugangsdaten für Paysafe Installment sind nicht korrekt.",
-                "paysafeInvoicing": "Die API-Zugangsdaten für Paysafe Invoicing sind nicht korrekt.",
+                "payolutionInstallment": "Die API-Zugangsdaten für Payolution Installment sind nicht korrekt.",
+                "payolutionInvoicing": "Die API-Zugangsdaten für Payolution Invoicing sind nicht korrekt.",
                 "sofort": "Die API-Zugangsdaten für SOFORT sind nicht korrekt."
             }
         },
