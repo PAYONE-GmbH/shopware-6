@@ -7,7 +7,6 @@ namespace PayonePayment\EventListener;
 use DateTime;
 use DateTimeInterface;
 use PayonePayment\Components\Validator\Birthday;
-use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
@@ -16,7 +15,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Validator\Constraints\EqualTo;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OrderValidationEventListener implements EventSubscriberInterface
@@ -74,7 +72,7 @@ class OrderValidationEventListener implements EventSubscriberInterface
     {
         $paymentMethods = [
             PayonePayolutionInstallment::UUID,
-            PayonePayolutionInvoicing::UUID
+            PayonePayolutionInvoicing::UUID,
         ];
 
         return in_array($context->getPaymentMethod()->getId(), $paymentMethods, true);

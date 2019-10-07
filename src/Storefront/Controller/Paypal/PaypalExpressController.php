@@ -67,9 +67,6 @@ class PaypalExpressController extends StorefrontController
     /** @var EntityRepositoryInterface */
     private $countryRepository;
 
-    /** @var TranslatorInterface */
-    private $translator;
-
     /** @var SalesChannelContextSwitcher */
     private $salesChannelContextSwitcher;
 
@@ -89,7 +86,6 @@ class PaypalExpressController extends StorefrontController
         SalesChannelContextFactory $salesChannelContextFactory,
         EntityRepositoryInterface $salutationRepository,
         EntityRepositoryInterface $countryRepository,
-        TranslatorInterface $translator,
         SalesChannelContextSwitcher $salesChannelContextSwitcher,
         CartHasherInterface $cartHasher,
         RouterInterface $router
@@ -103,7 +99,6 @@ class PaypalExpressController extends StorefrontController
         $this->salesChannelContextFactory    = $salesChannelContextFactory;
         $this->salutationRepository          = $salutationRepository;
         $this->countryRepository             = $countryRepository;
-        $this->translator                    = $translator;
         $this->salesChannelContextSwitcher   = $salesChannelContextSwitcher;
         $this->cartHasher                    = $cartHasher;
         $this->router                        = $router;
@@ -138,7 +133,7 @@ class PaypalExpressController extends StorefrontController
         try {
             $response = $this->client->request($setRequest);
         } catch (PayoneRequestException $exception) {
-            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+            throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
         $this->addCartExtenson($cart, $context, $response['workorderid']);
@@ -164,7 +159,7 @@ class PaypalExpressController extends StorefrontController
         $cartExtension = $cart->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
 
         if (null === $cartExtension) {
-            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+            throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
         $workOrderId = $cartExtension->getWorkorderId();
@@ -173,11 +168,11 @@ class PaypalExpressController extends StorefrontController
         try {
             $response = $this->client->request($getRequest);
         } catch (PayoneRequestException $exception) {
-            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+            throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
         if (empty($response['addpaydata'])) {
-            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+            throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
         $customerDataBag = $this->getCustomerDataBagFromResponse($response, $context->getContext());
@@ -261,7 +256,7 @@ class PaypalExpressController extends StorefrontController
         $salutation = $this->salutationRepository->search($criteria, $context)->first();
 
         if (null === $salutation) {
-            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+            throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
         return $salutation->getId();
@@ -287,15 +282,15 @@ class PaypalExpressController extends StorefrontController
     private function handleStateResponse(string $state): void
     {
         if (empty($state)) {
-            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+            throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
         if ($state === 'cancel') {
-            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+            throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
         if ($state === 'error') {
-            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+            throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
     }
 }

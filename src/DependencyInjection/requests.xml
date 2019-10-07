@@ -168,5 +168,15 @@
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
+
+        <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionCalculationRequest">
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionCalculationRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionCalculationRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
     </services>
 </container>

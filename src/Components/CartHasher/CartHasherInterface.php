@@ -6,11 +6,18 @@ namespace PayonePayment\Components\CartHasher;
 
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 interface CartHasherInterface
 {
-    public function generate(Cart $cart, SalesChannelContext $context): string;
+    /**
+     * @param Cart|OrderEntity $entity
+     */
+    public function generate(Struct $entity, SalesChannelContext $context): string;
 
-    public function validate(OrderEntity $orderEntity, string $cartHash, SalesChannelContext $context): bool;
+    /**
+     * @param Cart|OrderEntity $entity
+     */
+    public function validate(Struct $entity, string $cartHash, SalesChannelContext $context): bool;
 }

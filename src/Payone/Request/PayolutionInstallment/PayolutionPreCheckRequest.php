@@ -31,13 +31,13 @@ class PayolutionPreCheckRequest
         $currency = $this->getCurrency($context->getCurrencyId(), $context);
 
         $request = [
-            'request'             => 'genericpayment',
-            'add_paydata[action]' => 'pre_check',
+            'request'                   => 'genericpayment',
+            'add_paydata[action]'       => 'pre_check',
             'add_paydata[payment_type]' => 'Payolution-Installment',
-            'clearingtype'        => 'fnc',
-            'financingtype'       => 'PYS',
-            'amount'              => (int) ($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision())),
-            'currency'            => $currency->getIsoCode(),
+            'clearingtype'              => 'fnc',
+            'financingtype'             => 'PYS',
+            'amount'                    => (int) ($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision())),
+            'currency'                  => $currency->getIsoCode(),
         ];
 
         if (!empty($dataBag->get('payolutionBirthday'))) {

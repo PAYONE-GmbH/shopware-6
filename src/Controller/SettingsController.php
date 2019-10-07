@@ -9,10 +9,10 @@ use DateTimeImmutable;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -151,19 +151,36 @@ class SettingsController extends AbstractController
                     'successurl'             => 'https://www.payone.com',
                 ];
                 break;
-            case PayonePayolutionInstallmentPaymentHandler::class:
             case PayonePayolutionInvoicingPaymentHandler::class:
                 return [
-                    'request'      => 'preauthorization',
-                    'clearingtype' => 'wlt',
-                    'wallettype'   => 'PPE',
+                    'request'      => 'genericpayment',
+                    'clearingtype' => 'fnc',
+                    'financingtype'   => 'PYV',
+                    'add_paydata[action]'       => 'pre_check',
+                    'add_paydata[payment_type]' => 'Payolution-Invoicing',
                     'amount'       => 100,
                     'currency'     => 'EUR',
                     'reference'    => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'birthday' => '19900505',
                     'firstname'    => 'Test',
                     'lastname'     => 'Test',
                     'country'      => 'DE',
-                    'successurl'   => 'https://www.payone.com',
+                ];
+                break;
+            case PayonePayolutionInstallmentPaymentHandler::class:
+                return [
+                    'request'      => 'genericpayment',
+                    'clearingtype' => 'fnc',
+                    'financingtype'   => 'PYS',
+                    'add_paydata[action]'       => 'pre_check',
+                    'add_paydata[payment_type]' => 'Payolution-Installment',
+                    'amount'       => 100,
+                    'currency'     => 'EUR',
+                    'reference'    => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'birthday' => '19900505',
+                    'firstname'    => 'Test',
+                    'lastname'     => 'Test',
+                    'country'      => 'DE',
                 ];
                 break;
             default:

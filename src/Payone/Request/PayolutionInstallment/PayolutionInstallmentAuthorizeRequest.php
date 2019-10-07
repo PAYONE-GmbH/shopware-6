@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\PayolutionInstallment;
 
 use DateTime;
+use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -32,7 +33,7 @@ class PayolutionInstallmentAuthorizeRequest
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
         $request = [
-            'request'       => 'preauthorization',
+            'request'       => 'authorization',
             'clearingtype'  => 'fnc',
             'financingtype' => 'PYV',
             'amount'        => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
@@ -46,6 +47,10 @@ class PayolutionInstallmentAuthorizeRequest
             if (!empty($birthday)) {
                 $request['birthday'] = $birthday->format('Ymd');
             }
+        }
+
+        if (!empty($customFields[CustomFieldInstaller::WORK_ORDER_ID])) {
+            $parameters['workorderid'] = $customFields[CustomFieldInstaller::WORK_ORDER_ID];
         }
 
         return array_filter($request);
