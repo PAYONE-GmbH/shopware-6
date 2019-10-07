@@ -3,10 +3,12 @@
 {% block document_payment_shipping_inner %}
     {{ parent() }}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInstallment::UUID') == order.transactions.first.paymentMethod.id %}
-        {% if order.transactions.first.customFields.payone_clearing_reference %}
-            <br>
-            {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_reference}) }}<br>
+    {% block payone_installment_clearing_reference %}
+        {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInstallment::UUID') == order.transactions.first.paymentMethod.id %}
+            {% if order.transactions.first.customFields.payone_clearing_reference %}
+                <br>
+                {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_reference}) }}<br>
+            {% endif %}
         {% endif %}
-    {% endif %}
+    {% endblock %}
 {% endblock %}
