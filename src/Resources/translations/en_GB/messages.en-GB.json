@@ -58,6 +58,10 @@
       "birthday": {
         "label": "Date of birth"
       },
+      "installment": {
+        "select": "%amount% per month - %duration% installments",
+        "info": "%index%. installment: %amount% (due %date%)"
+      },
       "consentCheckbox": {
         "introduction": "With the transmission of the data necessary for the completion of the invoice purchase, an identity check and credit check to payolution I agree.",
         "textWithLink": "I can revoke my <a href=\"%link%\" data-url=\"%link%\" data-modal-class=\"payolution\" data-toggle=\"modal\" title=\"Einwilligung\">consent</a>  at any time with effect for the future."

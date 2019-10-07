@@ -10,7 +10,6 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuthorizeRequestFactory;
-use PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
@@ -48,8 +47,9 @@ class PayonePayolutionInstallmentPaymentHandler implements SynchronousPaymentHan
         $this->client         = $client;
         $this->translator     = $translator;
         $this->dataHandler    = $dataHandler;
-        $this->cartHasher = $cartHasher;
+        $this->cartHasher     = $cartHasher;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -57,7 +57,7 @@ class PayonePayolutionInstallmentPaymentHandler implements SynchronousPaymentHan
     {
         $cartHash = $dataBag->get('carthash');
 
-        if ($this->cartHasher->validate($transaction->getOrder(), $cartHash, $salesChannelContext)) {
+        if (!$this->cartHasher->validate($transaction->getOrder(), $cartHash, $salesChannelContext)) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')

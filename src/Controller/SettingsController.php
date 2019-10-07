@@ -153,34 +153,34 @@ class SettingsController extends AbstractController
                 break;
             case PayonePayolutionInvoicingPaymentHandler::class:
                 return [
-                    'request'      => 'genericpayment',
-                    'clearingtype' => 'fnc',
-                    'financingtype'   => 'PYV',
+                    'request'                   => 'genericpayment',
+                    'clearingtype'              => 'fnc',
+                    'financingtype'             => 'PYV',
                     'add_paydata[action]'       => 'pre_check',
                     'add_paydata[payment_type]' => 'Payolution-Invoicing',
-                    'amount'       => 100,
-                    'currency'     => 'EUR',
-                    'reference'    => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
-                    'birthday' => '19900505',
-                    'firstname'    => 'Test',
-                    'lastname'     => 'Test',
-                    'country'      => 'DE',
+                    'amount'                    => 100,
+                    'currency'                  => 'EUR',
+                    'reference'                 => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'birthday'                  => '19900505',
+                    'firstname'                 => 'Test',
+                    'lastname'                  => 'Test',
+                    'country'                   => 'DE',
                 ];
                 break;
             case PayonePayolutionInstallmentPaymentHandler::class:
                 return [
-                    'request'      => 'genericpayment',
-                    'clearingtype' => 'fnc',
-                    'financingtype'   => 'PYS',
+                    'request'                   => 'genericpayment',
+                    'clearingtype'              => 'fnc',
+                    'financingtype'             => 'PYS',
                     'add_paydata[action]'       => 'pre_check',
                     'add_paydata[payment_type]' => 'Payolution-Installment',
-                    'amount'       => 100,
-                    'currency'     => 'EUR',
-                    'reference'    => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
-                    'birthday' => '19900505',
-                    'firstname'    => 'Test',
-                    'lastname'     => 'Test',
-                    'country'      => 'DE',
+                    'amount'                    => 100,
+                    'currency'                  => 'EUR',
+                    'reference'                 => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'birthday'                  => '19900505',
+                    'firstname'                 => 'Test',
+                    'lastname'                  => 'Test',
+                    'country'                   => 'DE',
                 ];
                 break;
             default:

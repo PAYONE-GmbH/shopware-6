@@ -8,6 +8,7 @@ use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -33,12 +34,15 @@ class PayolutionInstallmentAuthorizeRequest
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
         $request = [
-            'request'       => 'authorization',
-            'clearingtype'  => 'fnc',
-            'financingtype' => 'PYV',
-            'amount'        => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
-            'currency'      => $currency->getIsoCode(),
-            'reference'     => $transaction->getOrder()->getOrderNumber(),
+            'request'           => 'authorization',
+            'clearingtype'      => 'fnc',
+            'financingtype'     => 'PYS',
+            'amount'            => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'currency'          => $currency->getIsoCode(),
+            'reference'         => $transaction->getOrder()->getOrderNumber(),
+            'iban'              => $dataBag->get('payolutionIban'),
+            'bic'               => $dataBag->get('payolutionBic'),
+            'bankaccountholder' => $dataBag->get('payolutionAccountOwner'),
         ];
 
         if (!empty($dataBag->get('payolutionBirthday'))) {
@@ -53,7 +57,28 @@ class PayolutionInstallmentAuthorizeRequest
             $parameters['workorderid'] = $customFields[CustomFieldInstaller::WORK_ORDER_ID];
         }
 
+        $address = $this->getOrderBillingAddress($transaction->getOrder());
+
+        if (null === $address) {
+            throw new RuntimeException('missing order customer billing address');
+        }
+
+        if ($address->getCompany()) {
+            $request['add_paydata[b2b]'] = 'yes';
+        }
+
         return array_filter($request);
+    }
+
+    private function getOrderBillingAddress(OrderEntity $order): ?OrderAddressEntity
+    {
+        foreach ($order->getAddresses() as $address) {
+            if ($address->getId() === $order->getBillingAddressId()) {
+                return $address;
+            }
+        }
+
+        return null;
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity

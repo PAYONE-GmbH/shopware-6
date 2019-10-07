@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\PayolutionInstallment;
 
-use PayonePayment\Installer\CustomFieldInstaller;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Framework\Context;
