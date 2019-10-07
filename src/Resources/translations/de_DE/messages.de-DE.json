@@ -59,8 +59,25 @@
         "label": "Geburtsdatum"
       },
       "installment": {
+        "step1": "1. Verfügbakeit prüfen",
+        "step2": "2. Rate auswählen",
+        "step3": "3. Übersicht und Kontoinformationen",
+        "checkAvailabilityButton": "Verfügbakeit prüfen",
+        "downloadButton": "Kreditinformationen herunterladen",
         "select": "%amount% pro Monat - %duration% Raten",
-        "info": "%index%. Rate: %amount% (fällig am %date%)"
+        "info": "%index%. Rate: %amount% (fällig am %date%)",
+        "numberOfInstallments": "Anzahl der Raten:",
+        "financingAmount": "Finanzierungsbetrag:",
+        "total": "Total:",
+        "interestRate": "Nominalzins:",
+        "effectiveInterestRate": "Effektivzins:",
+        "monthlyInstallment": "Monatliche Rate:",
+        "accountOwner": "Kontoinhaber",
+        "iban": "IBAN",
+        "bic": "BIC"
+      },
+      "document": {
+        "clearingReference": "Referenz: %reference%"
       },
       "consentCheckbox": {
         "introduction": "Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an payolution bin ich einverstanden.",

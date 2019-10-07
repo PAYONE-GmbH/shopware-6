@@ -1,0 +1,12 @@
+{% sw_extends '@Framework/documents/invoice.html.twig' %}
+
+{% block document_payment_shipping_inner %}
+    {{ parent() }}
+
+    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInstallment::UUID') == order.transactions.first.paymentMethod.id %}
+        {% if order.transactions.first.customFields.payone_clearing_reference %}
+            <br>
+            {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_reference}) }}<br>
+        {% endif %}
+    {% endif %}
+{% endblock %}

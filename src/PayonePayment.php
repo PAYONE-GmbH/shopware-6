@@ -77,6 +77,7 @@ class PayonePayment extends Plugin
     {
         return array_merge(parent::getViewPaths(), [
             'Resources/views/storefront',
+            'Resources/views/framework',
         ]);
     }
 }
