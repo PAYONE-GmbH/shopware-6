@@ -16,7 +16,7 @@ class CheckoutCartPaymentData extends Struct
     /** @var string */
     protected $cartHash = '';
 
-    /** @var array  */
+    /** @var array */
     protected $calculationResponse = [];
 
     public function getWorkorderId(): string

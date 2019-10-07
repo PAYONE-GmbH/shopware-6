@@ -7,7 +7,6 @@ namespace PayonePayment\Payone\Request\PayolutionInvoicing;
 use DateTime;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
-use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
