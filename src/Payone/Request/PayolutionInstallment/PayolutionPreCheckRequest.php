@@ -30,7 +30,7 @@ class PayolutionPreCheckRequest
     ): array {
         $currency = $this->getCurrency($context->getCurrencyId(), $context);
 
-        $request = [
+        $parameters = [
             'request'                   => 'genericpayment',
             'add_paydata[action]'       => 'pre_check',
             'add_paydata[payment_type]' => 'Payolution-Installment',
@@ -44,11 +44,11 @@ class PayolutionPreCheckRequest
             $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
 
             if (!empty($birthday)) {
-                $request['birthday'] = $birthday->format('Ymd');
+                $parameters['birthday'] = $birthday->format('Ymd');
             }
         }
 
-        return array_filter($request);
+        return array_filter($parameters);
     }
 
     private function getCurrency(string $id, Context $context): CurrencyEntity

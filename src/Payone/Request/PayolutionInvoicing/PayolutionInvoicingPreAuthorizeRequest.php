@@ -49,13 +49,13 @@ class PayolutionInvoicingPreAuthorizeRequest
             }
         }
 
-        $address = $this->getOrderBillingAddress($transaction->getOrder());
+        $customer = $transaction->getOrder()->getOrderCustomer();
 
-        if (null === $address) {
+        if (null === $customer) {
             throw new RuntimeException('missing order customer billing address');
         }
 
-        if ($address->getCompany()) {
+        if ($customer->getCompany()) {
             $request['add_paydata[b2b]'] = 'yes';
         }
 
@@ -74,16 +74,5 @@ class PayolutionInvoicingPreAuthorizeRequest
         }
 
         return $currency;
-    }
-
-    private function getOrderBillingAddress(OrderEntity $order): ?OrderAddressEntity
-    {
-        foreach ($order->getAddresses() as $address) {
-            if ($address->getId() === $order->getBillingAddressId()) {
-                return $address;
-            }
-        }
-
-        return null;
     }
 }

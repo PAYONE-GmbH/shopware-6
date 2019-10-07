@@ -33,10 +33,11 @@ class PayolutionInstallmentAuthorizeRequest
     ): array {
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
-        $request = [
+        $parameters = [
             'request'           => 'authorization',
             'clearingtype'      => 'fnc',
             'financingtype'     => 'PYS',
+            'add_paydata[installment_duration]' => (int) $dataBag->get('payolutionInstallmentDuration'),
             'amount'            => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
             'currency'          => $currency->getIsoCode(),
             'reference'         => $transaction->getOrder()->getOrderNumber(),
@@ -49,36 +50,25 @@ class PayolutionInstallmentAuthorizeRequest
             $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
 
             if (!empty($birthday)) {
-                $request['birthday'] = $birthday->format('Ymd');
+                $parameters['birthday'] = $birthday->format('Ymd');
             }
         }
 
-        if (!empty($customFields[CustomFieldInstaller::WORK_ORDER_ID])) {
-            $parameters['workorderid'] = $customFields[CustomFieldInstaller::WORK_ORDER_ID];
+        if (!empty($dataBag->get('workorder'))) {
+            $parameters['workorderid'] = $dataBag->get('workorder');
         }
 
-        $address = $this->getOrderBillingAddress($transaction->getOrder());
+        $customer = $transaction->getOrder()->getOrderCustomer();
 
-        if (null === $address) {
+        if (null === $customer) {
             throw new RuntimeException('missing order customer billing address');
         }
 
-        if ($address->getCompany()) {
-            $request['add_paydata[b2b]'] = 'yes';
+        if ($customer->getCompany()) {
+            $parameters['add_paydata[b2b]'] = 'yes';
         }
 
-        return array_filter($request);
-    }
-
-    private function getOrderBillingAddress(OrderEntity $order): ?OrderAddressEntity
-    {
-        foreach ($order->getAddresses() as $address) {
-            if ($address->getId() === $order->getBillingAddressId()) {
-                return $address;
-            }
-        }
-
-        return null;
+        return array_filter($parameters);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity

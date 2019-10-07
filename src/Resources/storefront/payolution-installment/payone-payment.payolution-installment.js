@@ -79,7 +79,7 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
     }
 
     _registerSelectionEventListeners() {
-        const select = document.getElementById('payolutionInstallment');
+        const select = document.getElementById('payolutionInstallmentDuration');
 
         select.addEventListener ('change', function (event) {
             const duration = event.target.value;
@@ -145,7 +145,7 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         this._validateInput(event, 'payolutionAccountOwner');
         this._validateInput(event, 'payolutionIban');
         this._validateInput(event, 'payolutionBic');
-        this._validateInput(event, 'payolutionInstallment');
+        this._validateInput(event, 'payolutionInstallmentDuration');
     }
 
     _disableSubmitButton() {
