@@ -79,7 +79,6 @@
             <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory" />
             <argument type="service" id="salutation.repository"/>
             <argument type="service" id="country.repository"/>
-            <argument type="service" id="translator" />
             <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher" />
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
             <argument type="service" id="router.default" />
@@ -94,8 +93,9 @@
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionPreCheckRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionCalculationRequestFactory" />
+            <argument type="service" id="request_stack" />
             <argument type="service" id="PayonePayment\Util\Logger" />
 
             <call method="setContainer">

@@ -16,18 +16,19 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
 
     _registerEventListeners() {
         const form = document.getElementById('confirmOrderForm');
-        const buttonPreCheck = document.getElementById('checkInstallmentButton');
+        const buttonCalculation = document.getElementById('checkInstallmentButton');
 
         if (form) {
             form.addEventListener('submit', this._handleOrderSubmit.bind(this));
         }
 
-        if (buttonPreCheck) {
-            buttonPreCheck.addEventListener('click', this._handlePreCheckButtonClick.bind(this));
+        if (buttonCalculation) {
+            buttonCalculation.addEventListener('click', this._handleCalculationButtonClick.bind(this));
         }
     }
 
-    _handlePreCheckButtonClick(event) {
+    _handleCalculationButtonClick(event) {
+        this._hideErrorBox();
         this._validateConstentCheckbox(event);
         this._validateBirthdayInput(event);
 
@@ -40,19 +41,73 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         const data = JSON.stringify(this._getRequestData());
 
         this._client.abort();
-        this._client.post(this._getPreCheckUrl(), data, response => this._handlePreCheckCallback(response));
+        this._client.post(this._getCalculationUrl(), data, response => this._handleCalculationCallback(response));
     }
 
-    _handlePreCheckCallback(response) {
+    _handleCalculationCallback(response) {
+        response = JSON.parse(response);
+
         PageLoadingIndicatorUtil.remove();
 
         if (response.status !== 'OK') {
+            this._showErrorBox();
+
             return;
         }
 
-        // TODO: save workorder id to dom (and use during preAuth)
-        // TODO: save carthash to dom (and validate inside the paymenthandler)
-        // TODO: if a payment plan is selected, activate order submit button
+        const workorder = document.getElementById('payoneWorkOrder');
+        const carthash = document.getElementById('payoneCartHash');
+
+        workorder.value = response.workorderid;
+        carthash.value = response.carthash;
+
+        this._displayInstallmentSelection(response);
+        this._displayInstallmentSelection(response);
+        this._enableSecondStep();
+    }
+
+    _showErrorBox() {
+        const container = document.getElementById('payolutionErrorContainer');
+
+        if (container) {
+            container.hidden = false;
+        }
+    }
+
+    _hideErrorBox() {
+        const container = document.getElementById('payolutionErrorContainer');
+
+        if (container) {
+            container.hidden = true;
+        }
+    }
+
+    _enableSecondStep() {
+        const elements = document.querySelectorAll('.payolution-installment .hidden');
+
+        elements.forEach(function(element) {
+            element.classList.remove('hidden')
+        });
+    }
+
+    _displayInstallmentSelection(response) {
+        const container = document.getElementById('installmentSelection');
+
+        if (!container) {
+            return;
+        }
+
+        container.innerHTML = response.installmentSelection;
+    }
+
+    _displayCalculationOverview(response) {
+        const container = document.getElementById('calculationOverview');
+
+        if (!container) {
+            return;
+        }
+
+        container.innerHTML = response.calculationOverview;
     }
 
     _handleOrderSubmit(event) {
@@ -91,10 +146,10 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         }
     }
 
-    _getPreCheckUrl() {
+    _getCalculationUrl() {
         const configuration = document.getElementById('payone-configuration');
 
-        return configuration.getAttribute('data-precheck-url');
+        return configuration.getAttribute('data-calculation-url');
     }
 
     _validateConstentCheckbox(event) {
@@ -135,17 +190,6 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         event.preventDefault();
     }
 
-    _getModal(event) {
-        event.preventDefault();
-
-        PageLoadingIndicatorUtil.create();
-
-        const data = this._getRequestData();
-
-        this._client.abort();
-        this._client.post(this._getManageMandateUrl(), JSON.stringify(data), content => this._openModal(content));
-    }
-
     _submitForm() {
         this._activateSubmitButton();
 
@@ -158,29 +202,13 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
 
     _getRequestData() {
         const birthday = document.getElementById('payolutionBirthday');
+        const workorder = document.getElementById('payoneWorkOrder');
+        const carthash = document.getElementById('payoneCartHash');
 
         return {
             'payolutionBirthday': birthday.value,
+            'workorder': workorder.value,
+            'carthash': carthash.value,
         };
-    }
-
-    _getManageMandateUrl() {
-        const configuration = document.getElementById('payone-configuration');
-
-        return configuration.getAttribute('data-manage-mandate-url');
-    }
-
-    _registerEvents() {
-        document
-            .getElementById('mandateSubmit')
-            .addEventListener('click', this._onMandateSubmit.bind(this));
-    }
-
-    _onMandateSubmit() {
-        const checkbox = document.getElementById('accept-mandate');
-
-        if (checkbox.checked) {
-            this._submitForm();
-        }
     }
 }

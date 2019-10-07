@@ -1,65 +1,75 @@
 <div class="payone-payment payolution-installment">
     {% block page_checkout_confirm_payone_card_title_payolution_installment %}
         <div class="card-title">
-            {{ "PayonePayment.payolution.cardTitleInstallment"  |  trans }}
+            {{ "PayonePayment.payolution.cardTitleInstallment" | trans }}
         </div>
     {% endblock %}
 
+    <div id="payolutionErrorContainer" hidden="hidden">
+        {% sw_include '@Storefront/utilities/alert.html.twig' with {
+            type: "danger",
+            content: "PayonePayment.errorMessages.genericError" | trans
+        } %}
+    </div>
+
     {% block page_checkout_confirm_payone_card_content_payolution_installment %}
-        <div class="card">
+        <div class="card payolution-installment--card step1">
             <div class="row">
                 <div class="col-4 headline consent">
                     <div>1. Check Installment availability</div>
                 </div>
 
-                <div class="col-4 headline installments hidden">
+                <div class="col-4 headline installments">
                     <div>2. Installment selection</div>
                 </div>
 
-                <div class="col-4 headline calculation hidden">
+                <div class="col-4 headline calculation">
                     <div>3. Overview and Account Information</div>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-4 consent">
+                <div class="col-4 form consent">
                     {% sw_include '@Storefront/payone/payolution/consent-checkbox.html.twig' with {
                         style: 'wide'
                     } %}
                 </div>
 
-                <div class="col-4 installments hidden">
+                <div class="col-4 form installments hidden">
                     <label class="form-label" for="payolutionInstallments">Please select number of installments{{ "general.required" | trans }}</label>
 
-                    <select class="form-control" id="payolutionInstallments" name="test">
-                        <option value="test">asds</option>
-                        <option value="tes2t">asds2</option>
-                        <option value="tes3t">3asds</option>
-                    </select>
+                    <div id="installmentSelection">
+
+                    </div>
                 </div>
 
-                <div class="col-4 calculation hidden">
+                <div class="col-4 form calculation hidden">
                     <div>stuff</div>
+
+
+                    <div id="calculationOverview">
+
+                    </div>
                 </div>
             </div>
 
             <div class="row buttons">
-                <div class="col-4 consent">
+                <div class="col-4 buttons consent">
                     <button id="checkInstallmentButton" class="btn btn-primary btn-block btn-lg">
                         Check Installment availability
                     </button>
                 </div>
 
-                <div class="col-4 installments hidden">
+                <div class="col-4 buttons installments hidden">
                     download link
                 </div>
 
-                <div class="col-4 calculation hidden">
+                <div class="col-4 buttons calculation hidden">
                     button maybe
                 </div>
             </div>
         </div>
 
-        <div id="payone-configuration" data-is-payone-payolution-invoicing="true" data-precheck-url="{{ path('frontend.account.payone.payolution.precheck') }}"></div>
+        <div id="payone-configuration" data-is-payone-payolution-invoicing="true" data-calculation-url="{{ path('frontend.account.payone.payolution.calculation') }}"></div>
     {% endblock %}
 </div>

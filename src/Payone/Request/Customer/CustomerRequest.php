@@ -60,7 +60,7 @@ class CustomerRequest
         }
 
         $personalData = [
-            'company' => $billingAddress->getCompany(),
+            'company'         => $billingAddress->getCompany(),
             'salutation'      => $this->getCustomerSalutation($billingAddress, $context->getContext())->getDisplayName(),
             'title'           => $billingAddress->getTitle(),
             'firstname'       => $billingAddress->getFirstName(),
