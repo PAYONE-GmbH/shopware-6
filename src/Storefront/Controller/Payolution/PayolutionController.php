@@ -13,6 +13,7 @@ use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionCalculationRequestFactory;
 use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionPreCheckRequestFactory;
+use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\Cart;
@@ -21,10 +22,13 @@ use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
@@ -50,9 +54,6 @@ class PayolutionController extends StorefrontController
     /** @var PayolutionCalculationRequestFactory */
     private $calculationRequestFactory;
 
-    /** @var RequestStack */
-    private $requestStack;
-
     /** @var LoggerInterface */
     private $logger;
 
@@ -63,7 +64,6 @@ class PayolutionController extends StorefrontController
         PayoneClientInterface $client,
         PayolutionPreCheckRequestFactory $preCheckRequestFactory,
         PayolutionCalculationRequestFactory $calculationRequestFactory,
-        RequestStack $requestStack,
         LoggerInterface $logger
     ) {
         $this->configReader              = $configReader;
@@ -72,7 +72,6 @@ class PayolutionController extends StorefrontController
         $this->client                    = $client;
         $this->preCheckRequestFactory    = $preCheckRequestFactory;
         $this->calculationRequestFactory = $calculationRequestFactory;
-        $this->requestStack              = $requestStack;
         $this->logger                    = $logger;
     }
 
@@ -119,7 +118,7 @@ class PayolutionController extends StorefrontController
      * @RouteScope(scopes={"storefront"})
      * @Route("/payone/payolution/calculation", name="frontend.account.payone.payolution.calculation", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
      */
-    public function calculation(SalesChannelContext $context, RequestDataBag $dataBag): JsonResponse
+    public function calculation(RequestDataBag $dataBag, SalesChannelContext $context): JsonResponse
     {
         try {
             $cart = $this->cartService->getCart($context->getToken(), $context);
@@ -157,6 +156,8 @@ class PayolutionController extends StorefrontController
 
             $response['installmentSelection'] = $this->getInstallmentSelectionHtml($calculationResponse);
             $response['calculationOverview']  = $this->geCalculationOverviewHtml($calculationResponse);
+            
+            $this->saveCalculationResponse($cart, $calculationResponse, $context);
         } catch (Throwable $exception) {
             $response = [
                 'status'  => 'ERROR',
@@ -171,11 +172,76 @@ class PayolutionController extends StorefrontController
      * @RouteScope(scopes={"storefront"})
      * @Route("/payone/payolution/download", name="frontend.account.payone.payolution.download", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
      */
-    public function download(SalesChannelContext $context): Response
+    public function download(Request $request, SalesChannelContext $context): Response
     {
-        // TODO: implement download controller for payment plan
+        $duration = (int) $request->get('duration');
 
-        return new Response();
+        if (empty($duration)) {
+            throw new UnprocessableEntityHttpException();
+        }
+
+        $cart = $this->cartService->getCart($context->getToken(), $context);
+
+        if (!$cart->hasExtension(CheckoutCartPaymentData::EXTENSION_NAME)) {
+            throw new UnprocessableEntityHttpException();
+        }
+
+        $configuration = $this->configReader->read($context->getSalesChannel()->getId());
+
+        $url = $this->getCreditInformationUrlFromCart($cart, $duration);
+        $channel = $configuration->get('payolutionInstallmentChannelName');
+        $password = $configuration->get('payolutionInstallmentChannelPassword');
+
+        if (empty($url) || empty($channel) || empty($password)) {
+            $this->logger->error('Could not fetch standard credit information document for payolution installment, please verify the channel credentials.');
+
+            throw new UnprocessableEntityHttpException();
+        }
+
+        $streamContext = stream_context_create([
+            'http' => [
+                'header' => 'Authorization: Basic ' . base64_encode($channel . ':' . $password)
+            ]
+        ]);
+
+        $document = file_get_contents($url, false, $streamContext);
+
+        if (empty($document)) {
+            $this->logger->error('Could not fetch standard credit information document for payolution installment, empty document response.');
+
+            throw new UnprocessableEntityHttpException();
+        }
+
+        $response = new Response($document);
+
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            'credit-information.pdf'
+        );
+
+        $response->headers->set('Content-Disposition', $disposition);
+
+        return $response;
+    }
+
+    private function getCreditInformationUrlFromCart(Cart $cart, int $duration): ?string
+    {
+        /** @var CheckoutCartPaymentData $extension */
+        $extension = $cart->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
+
+        $calculationResponse = $extension->getCalculationResponse();
+
+        if (empty($calculationResponse)) {
+            return null;
+        }
+
+        foreach ($calculationResponse['addpaydata'] as $installment) {
+            if ($installment['Duration'] === $duration) {
+                return $installment['StandardCreditInformationUrl'];
+            }
+        }
+
+        return null;
     }
 
     private function prepareCalculationOutput(array $response): array
@@ -223,7 +289,7 @@ class PayolutionController extends StorefrontController
         return $response;
     }
 
-    private function isPreCheckNeeded(Cart $cart, RequestDataBag $dataBag, SalesChannelContext $context)
+    private function isPreCheckNeeded(Cart $cart, RequestDataBag $dataBag, SalesChannelContext $context): bool
     {
         $cartHash = $dataBag->get('carthash');
 
@@ -290,5 +356,18 @@ class PayolutionController extends StorefrontController
         }
 
         return $value;
+    }
+
+    private function saveCalculationResponse(Cart $cart, array $calculationResponse, SalesChannelContext $context): void
+    {
+        $cartData = new CheckoutCartPaymentData();
+
+        $cartData->assign(array_filter([
+            'calculationResponse'    => $calculationResponse,
+        ]));
+
+        $cart->addExtension(CheckoutCartPaymentData::EXTENSION_NAME, $cartData);
+
+        $this->cartService->recalculate($cart, $context);
     }
 }

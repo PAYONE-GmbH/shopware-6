@@ -95,7 +95,6 @@
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionPreCheckRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionCalculationRequestFactory" />
-            <argument type="service" id="request_stack" />
             <argument type="service" id="PayonePayment\Util\Logger" />
 
             <call method="setContainer">
