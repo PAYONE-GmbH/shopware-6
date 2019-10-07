@@ -59,8 +59,25 @@
         "label": "Date of birth"
       },
       "installment": {
+        "step1": "1. Check Installment availability",
+        "step2": "2. Installment selection",
+        "step3": "3. Overview and Account Information",
+        "checkAvailabilityButton": "Check Installment availability",
+        "downloadButton": "Download Installment Draft",
         "select": "%amount% per month - %duration% installments",
-        "info": "%index%. installment: %amount% (due %date%)"
+        "info": "%index%. installment: %amount% (due %date%)",
+        "numberOfInstallments": "No. of installments:",
+        "financingAmount": "Financingamount:",
+        "total": "Total:",
+        "interestRate": "Nominal interest:",
+        "effectiveInterestRate": "Effective interest:",
+        "monthlyInstallment": "Monthly rate:",
+        "accountOwner": "Account owner",
+        "iban": "IBAN",
+        "bic": "BIC"
+      },
+      "document": {
+        "clearingReference": "Reference: %reference%"
       },
       "consentCheckbox": {
         "introduction": "With the transmission of the data necessary for the completion of the invoice purchase, an identity check and credit check to payolution I agree.",

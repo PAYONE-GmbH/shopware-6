@@ -26,7 +26,7 @@
         {% endfor %}
 
         <div class="creditInformationButton">
-            <a class="btn btn-secondary btn-lg" href="{{ url('frontend.account.payone.payolution.download', {'duration': element.Duration}) }}">Download Installment Draft</a>
+            <a class="btn-link" href="{{ url('frontend.account.payone.payolution.download', {'duration': element.Duration}) }}">{{ "PayonePayment.payolution.installment.downloadButton" | trans }}</a>
         </div>
     </div>
 {% endfor %}
