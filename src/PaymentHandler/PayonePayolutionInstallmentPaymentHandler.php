@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -118,7 +119,12 @@ class PayonePayolutionInstallmentPaymentHandler implements SynchronousPaymentHan
      */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
-        // TODO: Implement isCapturable() method.
+        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
+            return false;
+        }
+
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED
+            && strtolower($transactionData['transaction_status']) === TransactionStatusService::STATUS_COMPLETED;
     }
 
     /**
@@ -126,6 +132,10 @@ class PayonePayolutionInstallmentPaymentHandler implements SynchronousPaymentHan
      */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        // TODO: Implement isRefundable() method.
+        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
+            return true;
+        }
+
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 }
