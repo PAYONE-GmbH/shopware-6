@@ -25,7 +25,6 @@ use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -156,7 +155,7 @@ class PayolutionController extends StorefrontController
 
             $response['installmentSelection'] = $this->getInstallmentSelectionHtml($calculationResponse);
             $response['calculationOverview']  = $this->geCalculationOverviewHtml($calculationResponse);
-            
+
             $this->saveCalculationResponse($cart, $calculationResponse, $context);
         } catch (Throwable $exception) {
             $response = [
@@ -188,8 +187,8 @@ class PayolutionController extends StorefrontController
 
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
 
-        $url = $this->getCreditInformationUrlFromCart($cart, $duration);
-        $channel = $configuration->get('payolutionInstallmentChannelName');
+        $url      = $this->getCreditInformationUrlFromCart($cart, $duration);
+        $channel  = $configuration->get('payolutionInstallmentChannelName');
         $password = $configuration->get('payolutionInstallmentChannelPassword');
 
         if (empty($url) || empty($channel) || empty($password)) {
@@ -200,8 +199,8 @@ class PayolutionController extends StorefrontController
 
         $streamContext = stream_context_create([
             'http' => [
-                'header' => 'Authorization: Basic ' . base64_encode($channel . ':' . $password)
-            ]
+                'header' => 'Authorization: Basic ' . base64_encode($channel . ':' . $password),
+            ],
         ]);
 
         $document = file_get_contents($url, false, $streamContext);
@@ -320,7 +319,7 @@ class PayolutionController extends StorefrontController
 
     /**
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return mixed
      */
@@ -363,7 +362,7 @@ class PayolutionController extends StorefrontController
         $cartData = new CheckoutCartPaymentData();
 
         $cartData->assign(array_filter([
-            'calculationResponse'    => $calculationResponse,
+            'calculationResponse' => $calculationResponse,
         ]));
 
         $cart->addExtension(CheckoutCartPaymentData::EXTENSION_NAME, $cartData);

@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\PayolutionInstallment;
 
 use DateTime;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
-use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -34,16 +32,16 @@ class PayolutionInstallmentAuthorizeRequest
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
         $parameters = [
-            'request'           => 'authorization',
-            'clearingtype'      => 'fnc',
-            'financingtype'     => 'PYS',
+            'request'                           => 'authorization',
+            'clearingtype'                      => 'fnc',
+            'financingtype'                     => 'PYS',
             'add_paydata[installment_duration]' => (int) $dataBag->get('payolutionInstallmentDuration'),
-            'amount'            => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
-            'currency'          => $currency->getIsoCode(),
-            'reference'         => $transaction->getOrder()->getOrderNumber(),
-            'iban'              => $dataBag->get('payolutionIban'),
-            'bic'               => $dataBag->get('payolutionBic'),
-            'bankaccountholder' => $dataBag->get('payolutionAccountOwner'),
+            'amount'                            => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'currency'                          => $currency->getIsoCode(),
+            'reference'                         => $transaction->getOrder()->getOrderNumber(),
+            'iban'                              => $dataBag->get('payolutionIban'),
+            'bic'                               => $dataBag->get('payolutionBic'),
+            'bankaccountholder'                 => $dataBag->get('payolutionAccountOwner'),
         ];
 
         if (!empty($dataBag->get('payolutionBirthday'))) {
