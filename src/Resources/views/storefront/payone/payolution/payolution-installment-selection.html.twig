@@ -1,3 +1,28 @@
-{% for installment in addpaydata  %}
-test
+<div class="form-group">
+    <label class="form-label" for="payolutionInstallment">Please select number of installments{{ "general.required" | trans }}</label>
+
+    <select class="form-control" id="payolutionInstallment" name="payolutionInstallment" form="confirmOrderForm">
+        {% for element in addpaydata  %}
+            <option value="{{ element.Duration }}">
+                {{ "PayonePayment.payolution.installment.select" | trans({
+                    '%duration%': element.Duration,
+                    '%amount%':  element.Installment[0].Amount | currency(element.Currency)
+                }) }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+{% for element in addpaydata  %}
+    <div class="installmentDetail" data-duration="{{ element.Duration }}" {% if not loop.first %}hidden="hidden"{% endif %}>
+        {% for installment in element.Installment %}
+            <div class="installment">
+                {{ "PayonePayment.payolution.installment.info" | trans({
+                    '%index%': loop.index,
+                    '%amount%':  element.Installment[0].Amount | currency(element.Currency),
+                    '%date%': installment.Due | localizeddate('medium', 'none', locale, 'UTC')
+                }) }}
+            </div>
+        {% endfor %}
+    </div>
 {% endfor %}

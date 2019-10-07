@@ -18,7 +18,7 @@ class CartHasher implements CartHasherInterface
     ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function generate(Struct $entity, SalesChannelContext $context): string
     {
@@ -32,7 +32,7 @@ class CartHasher implements CartHasherInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function validate(Struct $entity, string $cartHash, SalesChannelContext $context): bool
     {

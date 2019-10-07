@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Storefront\Controller\Payolution;
 
-use LogicException;
+use DateTime;
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
@@ -19,7 +19,6 @@ use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\SalesChannelRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,9 +26,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
-use Twig\Environment;
 
 class PayolutionController extends StorefrontController
 {
@@ -75,7 +72,7 @@ class PayolutionController extends StorefrontController
         $this->client                    = $client;
         $this->preCheckRequestFactory    = $preCheckRequestFactory;
         $this->calculationRequestFactory = $calculationRequestFactory;
-        $this->requestStack = $requestStack;
+        $this->requestStack              = $requestStack;
         $this->logger                    = $logger;
     }
 
@@ -112,8 +109,8 @@ class PayolutionController extends StorefrontController
             throw new NotFoundHttpException();
         }
 
-        $content = strstr($content, '<header>');
-        $content = strstr($content, '</footer>', true) . '</footer>';
+        $content = (string) strstr($content, '<header>');
+        $content = (string) strstr($content, '</footer>', true) . '</footer>';
 
         return new Response($content);
     }
@@ -159,15 +156,26 @@ class PayolutionController extends StorefrontController
             $calculationResponse = $this->prepareCalculationOutput($calculationResponse);
 
             $response['installmentSelection'] = $this->getInstallmentSelectionHtml($calculationResponse);
-            $response['calculationOverview'] = $this->geCalculationOverviewHtml($calculationResponse);
+            $response['calculationOverview']  = $this->geCalculationOverviewHtml($calculationResponse);
         } catch (Throwable $exception) {
             $response = [
-                'status' => 'ERROR',
-                'message' => $exception->getMessage()
+                'status'  => 'ERROR',
+                'message' => $exception->getMessage(),
             ];
         }
 
         return new JsonResponse($response);
+    }
+
+    /**
+     * @RouteScope(scopes={"storefront"})
+     * @Route("/payone/payolution/download", name="frontend.account.payone.payolution.download", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
+     */
+    public function download(SalesChannelContext $context): Response
+    {
+        // TODO: implement download controller for payment plan
+
+        return new Response();
     }
 
     private function prepareCalculationOutput(array $response): array
@@ -175,11 +183,11 @@ class PayolutionController extends StorefrontController
         $data = [];
 
         foreach ($response['addpaydata'] as $key => $value) {
-            $key = str_replace('PaymentDetails_', '', $key);
+            $key  = str_replace('PaymentDetails_', '', $key);
             $keys = explode('_', $key);
 
             if (count($keys) === 4) {
-                $data[$keys[0]][$keys[1]][$keys[2]][$keys[3]] = $value;
+                $data[$keys[0]][$keys[1]][$keys[2]][$keys[3]] = $this->convertType($keys[3], $value);
 
                 uksort($data[$keys[0]][$keys[1]][$keys[2]], 'strcmp');
                 uksort($data[$keys[0]][$keys[1]], 'strcmp');
@@ -187,14 +195,14 @@ class PayolutionController extends StorefrontController
             }
 
             if (count($keys) === 3) {
-                $data[$keys[0]][$keys[1]][$keys[2]] = $value;
+                $data[$keys[0]][$keys[1]][$keys[2]] = $this->convertType($keys[2], $value);
 
                 uksort($data[$keys[0]][$keys[1]], 'strcmp');
                 uksort($data[$keys[0]], 'strcmp');
             }
 
             if (count($keys) === 2) {
-                $data[$keys[0]][$keys[1]] = $value;
+                $data[$keys[0]][$keys[1]] = $this->convertType($keys[1], $value);
 
                 uksort($data[$keys[0]], 'strcmp');
             }
@@ -213,17 +221,6 @@ class PayolutionController extends StorefrontController
         }
 
         return $response;
-    }
-
-    /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/payolution/download", name="frontend.account.payone.payolution.download", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
-     */
-    public function download(SalesChannelContext $context): Response
-    {
-        // TODO: implement download controller for payment plan
-
-        return new Response();
     }
 
     private function isPreCheckNeeded(Cart $cart, RequestDataBag $dataBag, SalesChannelContext $context)
@@ -253,5 +250,45 @@ class PayolutionController extends StorefrontController
         $view = '@PayonePayment/payone/payolution/payolution-calculation-overview.html.twig';
 
         return $this->renderView($view, $calculationResponse);
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    private function convertType(string $key, $value)
+    {
+        $float = [
+            'Amount',
+            'InterestRate',
+            'OriginalAmount',
+            'TotalAmount',
+            'EffectiveInterestRate',
+            'MinimumInstallmentFee',
+        ];
+
+        $int = [
+            'Duration',
+        ];
+
+        $date = [
+            'Due',
+        ];
+
+        if (in_array($key, $float)) {
+            return (float) $value;
+        }
+
+        if (in_array($key, $int)) {
+            return (int) $value;
+        }
+
+        if (in_array($key, $date)) {
+            return DateTime::createFromFormat('Y-m-d', $value);
+        }
+
+        return $value;
     }
 }

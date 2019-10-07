@@ -29,8 +29,9 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
 
     _handleCalculationButtonClick(event) {
         this._hideErrorBox();
-        this._validateConstentCheckbox(event);
-        this._validateBirthdayInput(event);
+
+        this._validateField(event, 'payolutionConsent');
+        this._validateInput(event, 'payolutionBirthday');
 
         if (event.defaultPrevented) {
             return;
@@ -62,8 +63,36 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         carthash.value = response.carthash;
 
         this._displayInstallmentSelection(response);
-        this._displayInstallmentSelection(response);
+        this._displayCalculationOverview(response);
+        this._registerSelectionEventListeners();
         this._enableSecondStep();
+        this._activateSubmitButton();
+        this._hideCheckInstallmentButton();
+    }
+
+    _hideCheckInstallmentButton() {
+        const buttonCalculation = document.getElementById('checkInstallmentButton');
+
+        if (buttonCalculation) {
+            buttonCalculation.classList.add('hidden');
+        }
+    }
+
+    _registerSelectionEventListeners() {
+        const select = document.getElementById('payolutionInstallment');
+
+        select.addEventListener ('change', function (event) {
+            const duration = event.target.value;
+            const elements = document.querySelectorAll('.installmentDetail');
+
+            elements.forEach(function(element) {
+                if (element.dataset.duration === duration) {
+                    element.hidden = false;
+                } else {
+                    element.hidden = 'hidden';
+                }
+            });
+        });
     }
 
     _showErrorBox() {
@@ -111,19 +140,12 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
     }
 
     _handleOrderSubmit(event) {
-        if (!this.orderFormDisabled) {
-            return;
-        }
-
-        this._validateConstentCheckbox(event);
-        this._validateBirthdayInput(event);
-
-        if (event.defaultPrevented) {
-            return;
-        }
-
-
-        // TODO: validate that a payment plan was selected
+        this._validateField(event, 'payolutionConsent');
+        this._validateInput(event, 'payolutionBirthday');
+        this._validateInput(event, 'payolutionAccountOwner');
+        this._validateInput(event, 'payolutionIban');
+        this._validateInput(event, 'payolutionBic');
+        this._validateInput(event, 'payolutionInstallment');
     }
 
     _disableSubmitButton() {
@@ -152,8 +174,8 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         return configuration.getAttribute('data-calculation-url');
     }
 
-    _validateConstentCheckbox(event) {
-        const checkbox = document.getElementById('payolutionConsent');
+    _validateField(event, field) {
+        const checkbox = document.getElementById(field);
 
         if (checkbox.checked) {
             checkbox.classList.remove('is-invalid');
@@ -171,8 +193,8 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         event.preventDefault();
     }
 
-    _validateBirthdayInput(event) {
-        const input = document.getElementById('payolutionBirthday');
+    _validateInput(event, field) {
+        const input = document.getElementById(field);
 
         if (input.value) {
             input.classList.remove('is-invalid');
@@ -188,16 +210,6 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         input.classList.add('is-invalid');
 
         event.preventDefault();
-    }
-
-    _submitForm() {
-        this._activateSubmitButton();
-
-        const form = document.getElementById('confirmOrderForm');
-
-        if (form) {
-            form.submit();
-        }
     }
 
     _getRequestData() {
