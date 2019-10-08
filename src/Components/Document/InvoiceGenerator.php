@@ -7,6 +7,7 @@ namespace PayonePayment\Components\Document;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Document\Struct\InvoiceDocumentData;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
+use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use Shopware\Core\Checkout\Document\DocumentConfiguration;
 use Shopware\Core\Checkout\Document\DocumentGenerator\DocumentGeneratorInterface;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -61,7 +62,7 @@ class InvoiceGenerator implements DocumentGeneratorInterface
     private function isPayoneInstallmentPaymentMethod(OrderEntity $order): bool
     {
         foreach ($order->getTransactions() as $transaction) {
-            if ($transaction->getPaymentMethodId() === PayonePayolutionInstallment::UUID) {
+            if ($transaction->getPaymentMethodId() === PayonePayolutionInvoicing::UUID) {
                 return true;
             }
         }
