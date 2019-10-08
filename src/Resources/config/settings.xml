@@ -384,5 +384,21 @@
             <helpText>Is displayed in the supplementary notes to the privacy statement for purchase on account.</helpText>
             <helpText lang="de-DE">Wird in den ergänzenden Hinweisen zur Datenschutzerklärung für Kauf auf Rechnung angezeigt.</helpText>
         </input-field>
+
+        <input-field>
+            <name>payolutionInvoicingIban</name>
+            <label>IBAN</label>
+            <label lang="de-DE">IBAN</label>
+            <helpText>IBAN which is displayed on the invoice next to the payment reference.</helpText>
+            <helpText lang="de-DE">IBAN welche auf der Rechnung neben der Zahlungsreferenz angezeigt wird</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInvoicingBic</name>
+            <label>BIC</label>
+            <label lang="de-DE">BIC</label>
+            <helpText>BIC which is displayed on the invoice next to the payment reference.</helpText>
+            <helpText lang="de-DE">BIC welche auf der Rechnung neben der Zahlungsreferenz angezeigt wird</helpText>
+        </input-field>
     </card>
 </config>
