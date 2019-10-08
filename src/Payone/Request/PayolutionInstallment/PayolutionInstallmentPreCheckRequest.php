@@ -5,30 +5,18 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\PayolutionInstallment;
 
 use DateTime;
-use RuntimeException;
 use Shopware\Core\Checkout\Cart\Cart;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PayolutionInstallmentPreCheckRequest
 {
-    /** @var EntityRepositoryInterface */
-    private $currencyRepository;
-
-    public function __construct(EntityRepositoryInterface $currencyRepository)
-    {
-        $this->currencyRepository = $currencyRepository;
-    }
-
     public function getRequestParameters(
         Cart $cart,
         RequestDataBag $dataBag,
-        Context $context
+        SalesChannelContext $context
     ): array {
-        $currency = $this->getCurrency($context->getCurrencyId(), $context);
+        $currency = $context->getCurrency();
 
         $parameters = [
             'request'                   => 'genericpayment',
@@ -49,19 +37,5 @@ class PayolutionInstallmentPreCheckRequest
         }
 
         return array_filter($parameters);
-    }
-
-    private function getCurrency(string $id, Context $context): CurrencyEntity
-    {
-        $criteria = new Criteria([$id]);
-
-        /** @var null|CurrencyEntity $currency */
-        $currency = $this->currencyRepository->search($criteria, $context)->first();
-
-        if (null === $currency) {
-            throw new RuntimeException('missing currency entity');
-        }
-
-        return $currency;
     }
 }

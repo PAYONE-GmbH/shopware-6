@@ -150,6 +150,7 @@
         <!-- PayolutionInvoicing -->
         <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequest">
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="order_address.repository" />
         </service>
 
         <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequestFactory">
@@ -158,9 +159,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreCheckRequest">
-            <argument type="service" id="currency.repository" />
-        </service>
+        <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreCheckRequest" />
 
         <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreCheckRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreCheckRequest" />
@@ -169,9 +168,7 @@
         </service>
 
         <!-- PayolutionInstallment -->
-        <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequest">
-            <argument type="service" id="currency.repository" />
-        </service>
+        <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequest" />
 
         <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequest" />
@@ -179,9 +176,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentCalculationRequest">
-            <argument type="service" id="currency.repository" />
-        </service>
+        <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentCalculationRequest" />
 
         <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentCalculationRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentCalculationRequest" />
@@ -191,6 +186,7 @@
 
         <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuthorizeRequest">
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="order_address.repository" />
         </service>
 
         <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuthorizeRequestFactory">

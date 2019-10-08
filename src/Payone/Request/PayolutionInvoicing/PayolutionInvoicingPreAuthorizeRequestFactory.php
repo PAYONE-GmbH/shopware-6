@@ -51,7 +51,7 @@ class PayolutionInvoicingPreAuthorizeRequestFactory extends AbstractRequestFacto
         $this->requests[] = $this->authorizeRequest->getRequestParameters(
             $transaction,
             $dataBag,
-            $context->getContext()
+            $context
         );
 
         return $this->createRequest();

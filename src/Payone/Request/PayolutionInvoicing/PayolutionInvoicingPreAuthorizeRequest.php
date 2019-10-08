@@ -7,29 +7,37 @@ namespace PayonePayment\Payone\Request\PayolutionInvoicing;
 use DateTime;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PayolutionInvoicingPreAuthorizeRequest
 {
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
 
-    public function __construct(EntityRepositoryInterface $currencyRepository)
-    {
-        $this->currencyRepository = $currencyRepository;
+    /** @var EntityRepositoryInterface */
+    private $orderAddressRepository;
+
+    public function __construct(
+        EntityRepositoryInterface $currencyRepository,
+        EntityRepositoryInterface $orderAddressRepository
+    ) {
+        $this->currencyRepository     = $currencyRepository;
+        $this->orderAddressRepository = $orderAddressRepository;
     }
 
     public function getRequestParameters(
         PaymentTransaction $transaction,
         RequestDataBag $dataBag,
-        Context $context
+        SalesChannelContext $context
     ): array {
-        $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
+        $currency = $this->getOrderCurrency($transaction->getOrder(), $context->getContext());
 
         $parameters = [
             'request'       => 'preauthorization',
@@ -52,14 +60,11 @@ class PayolutionInvoicingPreAuthorizeRequest
             $parameters['workorderid'] = $dataBag->get('workorder');
         }
 
-        $customer = $transaction->getOrder()->getOrderCustomer();
+        $billingAddress = $this->getBillingAddress($transaction->getOrder(), $context->getContext());
 
-        if (null === $customer) {
-            throw new RuntimeException('missing order customer billing address');
-        }
-
-        if ($customer->getCompany()) {
-            $parameters['add_paydata[b2b]'] = 'yes';
+        if ($billingAddress->getCompany()) {
+            $parameters['add_paydata[b2b]']         = 'yes';
+            $parameters['add_paydata[company_uid]'] = $billingAddress->getVatId();
         }
 
         return array_filter($parameters);
@@ -77,5 +82,19 @@ class PayolutionInvoicingPreAuthorizeRequest
         }
 
         return $currency;
+    }
+
+    private function getBillingAddress(OrderEntity $order, Context $context): OrderAddressEntity
+    {
+        $criteria = new Criteria([$order->getBillingAddressId()]);
+
+        /** @var null|OrderAddressEntity $address */
+        $address = $this->orderAddressRepository->search($criteria, $context)->first();
+
+        if (null === $address) {
+            throw new RuntimeException('missing order customer billing address');
+        }
+
+        return $address;
     }
 }

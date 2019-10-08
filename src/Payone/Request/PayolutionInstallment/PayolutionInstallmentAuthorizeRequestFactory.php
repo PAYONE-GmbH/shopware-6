@@ -51,7 +51,7 @@ class PayolutionInstallmentAuthorizeRequestFactory extends AbstractRequestFactor
         $this->requests[] = $this->authorizeRequest->getRequestParameters(
             $transaction,
             $dataBag,
-            $context->getContext()
+            $context
         );
 
         return $this->createRequest();

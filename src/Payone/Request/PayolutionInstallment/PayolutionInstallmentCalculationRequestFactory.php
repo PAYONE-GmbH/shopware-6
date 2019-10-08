@@ -51,7 +51,7 @@ class PayolutionInstallmentCalculationRequestFactory extends AbstractRequestFact
         $this->requests[] = $this->calculationRequest->getRequestParameters(
             $cart,
             $dataBag,
-            $context->getContext()
+            $context
         );
 
         return $this->createRequest();
