@@ -79,6 +79,8 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             'stateId' => $stateId,
         ];
 
-        $this->transactionRepository->update([$update], $context);
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($update): void {
+            $this->transactionRepository->update([$update], $context);
+        });
     }
 }
