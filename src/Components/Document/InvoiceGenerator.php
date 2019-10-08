@@ -6,7 +6,6 @@ namespace PayonePayment\Components\Document;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Document\Struct\InvoiceDocumentData;
-use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use Shopware\Core\Checkout\Document\DocumentConfiguration;
 use Shopware\Core\Checkout\Document\DocumentGenerator\DocumentGeneratorInterface;
