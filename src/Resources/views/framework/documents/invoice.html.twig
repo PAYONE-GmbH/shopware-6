@@ -9,6 +9,13 @@
                 <br>
                 {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_reference}) }}<br>
             {% endif %}
+        {% endif %}
+
+        {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.first.paymentMethod.id %}
+            {% if order.transactions.first.customFields.payone_clearing_reference %}
+                <br>
+                {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_reference}) }}<br>
+            {% endif %}
 
             {% if order.extensions.payone_document %}
                 {{ 'PayonePayment.payolution.document.iban' | trans({'%iban%': order.extensions.payone_document.iban}) }}<br>
