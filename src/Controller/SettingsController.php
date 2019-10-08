@@ -158,13 +158,18 @@ class SettingsController extends AbstractController
                     'financingtype'             => 'PYV',
                     'add_paydata[action]'       => 'pre_check',
                     'add_paydata[payment_type]' => 'Payolution-Invoicing',
-                    'amount'                    => 100,
+                    'amount'                    => 10000,
                     'currency'                  => 'EUR',
                     'reference'                 => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
                     'birthday'                  => '19900505',
                     'firstname'                 => 'Test',
                     'lastname'                  => 'Test',
                     'country'                   => 'DE',
+                    'email'                     => 'test@example.com',
+                    'street'                    => 'teststreet 2',
+                    'zip'                       => '12345',
+                    'city'                      => 'Test',
+                    'ip'                        => '127.0.0.1',
                 ];
                 break;
             case PayonePayolutionInstallmentPaymentHandler::class:
@@ -174,13 +179,18 @@ class SettingsController extends AbstractController
                     'financingtype'             => 'PYS',
                     'add_paydata[action]'       => 'pre_check',
                     'add_paydata[payment_type]' => 'Payolution-Installment',
-                    'amount'                    => 100,
+                    'amount'                    => 10000,
                     'currency'                  => 'EUR',
                     'reference'                 => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
                     'birthday'                  => '19900505',
                     'firstname'                 => 'Test',
                     'lastname'                  => 'Test',
                     'country'                   => 'DE',
+                    'email'                     => 'test@example.com',
+                    'street'                    => 'teststreet 2',
+                    'zip'                       => '12345',
+                    'city'                      => 'Test',
+                    'ip'                        => '127.0.0.1',
                 ];
                 break;
             default:
