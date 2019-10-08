@@ -21,7 +21,7 @@
         </service>
 
         <service id="PayonePayment\EventListener\CheckoutConfirmPayolutionEventListener">
-            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionPreCheckRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
 
             <tag name="kernel.event_subscriber"/>

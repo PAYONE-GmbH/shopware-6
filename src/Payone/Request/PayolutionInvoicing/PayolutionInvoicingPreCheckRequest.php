@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\PayolutionInvoicing;
 
 use DateTime;
-use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
-use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
-class PayolutionInvoicingPreAuthorizeRequest
+class PayolutionInvoicingPreCheckRequest
 {
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
@@ -25,19 +24,20 @@ class PayolutionInvoicingPreAuthorizeRequest
     }
 
     public function getRequestParameters(
-        PaymentTransaction $transaction,
+        Cart $cart,
         RequestDataBag $dataBag,
         Context $context
     ): array {
-        $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
+        $currency = $this->getCurrency($context->getCurrencyId(), $context);
 
         $parameters = [
-            'request'       => 'preauthorization',
-            'clearingtype'  => 'fnc',
-            'financingtype' => 'PYV',
-            'amount'        => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
-            'currency'      => $currency->getIsoCode(),
-            'reference'     => $transaction->getOrder()->getOrderNumber(),
+            'request'                   => 'genericpayment',
+            'add_paydata[action]'       => 'pre_check',
+            'add_paydata[payment_type]' => 'Payolution-Invoicing',
+            'clearingtype'              => 'fnc',
+            'financingtype'             => 'PYV',
+            'amount'                    => (int) ($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision())),
+            'currency'                  => $currency->getIsoCode(),
         ];
 
         if (!empty($dataBag->get('payolutionBirthday'))) {
@@ -48,32 +48,18 @@ class PayolutionInvoicingPreAuthorizeRequest
             }
         }
 
-        if (!empty($dataBag->get('workorder'))) {
-            $parameters['workorderid'] = $dataBag->get('workorder');
-        }
-
-        $customer = $transaction->getOrder()->getOrderCustomer();
-
-        if (null === $customer) {
-            throw new RuntimeException('missing order customer billing address');
-        }
-
-        if ($customer->getCompany()) {
-            $parameters['add_paydata[b2b]'] = 'yes';
-        }
-
         return array_filter($parameters);
     }
 
-    private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity
+    private function getCurrency(string $id, Context $context): CurrencyEntity
     {
-        $criteria = new Criteria([$order->getCurrencyId()]);
+        $criteria = new Criteria([$id]);
 
         /** @var null|CurrencyEntity $currency */
         $currency = $this->currencyRepository->search($criteria, $context)->first();
 
         if (null === $currency) {
-            throw new RuntimeException('missing order currency entity');
+            throw new RuntimeException('missing currency entity');
         }
 
         return $currency;

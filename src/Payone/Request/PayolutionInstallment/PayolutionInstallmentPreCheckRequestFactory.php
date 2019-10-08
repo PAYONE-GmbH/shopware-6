@@ -12,10 +12,10 @@ use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PayolutionCalculationRequestFactory extends AbstractRequestFactory
+class PayolutionInstallmentPreCheckRequestFactory extends AbstractRequestFactory
 {
-    /** @var PayolutionCalculationRequest */
-    private $calculationRequest;
+    /** @var PayolutionInstallmentPreCheckRequest */
+    private $checkRequest;
 
     /** @var CustomerRequest */
     private $customerRequest;
@@ -24,13 +24,13 @@ class PayolutionCalculationRequestFactory extends AbstractRequestFactory
     private $systemRequest;
 
     public function __construct(
-        PayolutionCalculationRequest $calculationRequest,
+        PayolutionInstallmentPreCheckRequest $authorizeRequest,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
-        $this->calculationRequest = $calculationRequest;
-        $this->customerRequest    = $customerRequest;
-        $this->systemRequest      = $systemRequest;
+        $this->checkRequest    = $authorizeRequest;
+        $this->customerRequest = $customerRequest;
+        $this->systemRequest   = $systemRequest;
     }
 
     public function getRequestParameters(
@@ -48,7 +48,7 @@ class PayolutionCalculationRequestFactory extends AbstractRequestFactory
             $context
         );
 
-        $this->requests[] = $this->calculationRequest->getRequestParameters(
+        $this->requests[] = $this->checkRequest->getRequestParameters(
             $cart,
             $dataBag,
             $context->getContext()

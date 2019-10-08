@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\PayolutionInstallment;
+namespace PayonePayment\Payone\Request\PayolutionInvoicing;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
@@ -12,9 +12,9 @@ use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PayolutionPreCheckRequestFactory extends AbstractRequestFactory
+class PayolutionInvoicingPreCheckRequestFactory extends AbstractRequestFactory
 {
-    /** @var PayolutionPreCheckRequest */
+    /** @var PayolutionInvoicingPreCheckRequest */
     private $checkRequest;
 
     /** @var CustomerRequest */
@@ -24,7 +24,7 @@ class PayolutionPreCheckRequestFactory extends AbstractRequestFactory
     private $systemRequest;
 
     public function __construct(
-        PayolutionPreCheckRequest $authorizeRequest,
+        PayolutionInvoicingPreCheckRequest $authorizeRequest,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {

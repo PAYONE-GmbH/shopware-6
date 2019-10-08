@@ -88,7 +88,7 @@ class PayonePayolutionInvoicingPaymentHandler implements SynchronousPaymentHandl
             CustomFieldInstaller::USER_ID            => $response['userid'],
             CustomFieldInstaller::ALLOW_CAPTURE      => false,
             CustomFieldInstaller::ALLOW_REFUND       => false,
-            CustomFieldInstaller::WORK_ORDER_ID      => $response['addpaydata']['workorderid'],
+            CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
             CustomFieldInstaller::CLEARING_REFERENCE => $response['addpaydata']['clearing_reference'],
             CustomFieldInstaller::CAPTURE_MODE       => 'completed',
             CustomFieldInstaller::CLEARING_TYPE      => 'fnc',
