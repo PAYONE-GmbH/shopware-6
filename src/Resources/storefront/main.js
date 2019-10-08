@@ -8,7 +8,7 @@ const PluginManager = window.PluginManager;
 PluginManager.register('PayonePaymentCreditCard', PayonePaymentCreditCard, '[data-is-payone-credit-card]');
 PluginManager.register('PayonePaymentDebitCard', PayonePaymentDebitCard, '[data-is-payone-debit-card]');
 PluginManager.register('PayonePaymentPayolutionInvoicing', PayonePaymentPayolutionInvoicing, '[data-is-payone-payolution-invoicing]');
-PluginManager.register('PayonePaymentPayolutionInvoicing', PayonePaymentPayolutionInstallment, '[data-is-payone-payolution-installment]');
+PluginManager.register('PayonePaymentPayolutionInstallment', PayonePaymentPayolutionInstallment, '[data-is-payone-payolution-installment]');
 
 if (module.hot) {
     module.hot.accept();

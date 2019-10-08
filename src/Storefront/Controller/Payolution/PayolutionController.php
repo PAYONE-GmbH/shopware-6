@@ -11,8 +11,9 @@ use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionCalculationRequestFactory;
-use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionPreCheckRequestFactory;
+use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentCalculationRequestFactory;
+use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequestFactory;
+use PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreCheckRequestFactory;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -47,11 +48,14 @@ class PayolutionController extends StorefrontController
     /** @var PayoneClientInterface */
     private $client;
 
-    /** @var PayolutionPreCheckRequestFactory */
-    private $preCheckRequestFactory;
+    /** @var PayolutionInvoicingPreCheckRequestFactory */
+    private $invoicingPreCheckRequestFactory;
 
-    /** @var PayolutionCalculationRequestFactory */
-    private $calculationRequestFactory;
+    /** @var PayolutionInstallmentPreCheckRequestFactory */
+    private $installmentPreCheckRequestFactory;
+
+    /** @var PayolutionInstallmentCalculationRequestFactory */
+    private $installmentCalculationRequestFactory;
 
     /** @var LoggerInterface */
     private $logger;
@@ -61,17 +65,19 @@ class PayolutionController extends StorefrontController
         CartService $cartService,
         CartHasherInterface $cartHasher,
         PayoneClientInterface $client,
-        PayolutionPreCheckRequestFactory $preCheckRequestFactory,
-        PayolutionCalculationRequestFactory $calculationRequestFactory,
+        PayolutionInvoicingPreCheckRequestFactory $invoicingPreCheckRequestFactory,
+        PayolutionInstallmentPreCheckRequestFactory $installmentPreCheckRequestFactory,
+        PayolutionInstallmentCalculationRequestFactory $installmentCalculationRequestFactory,
         LoggerInterface $logger
     ) {
-        $this->configReader              = $configReader;
-        $this->cartService               = $cartService;
-        $this->cartHasher                = $cartHasher;
-        $this->client                    = $client;
-        $this->preCheckRequestFactory    = $preCheckRequestFactory;
-        $this->calculationRequestFactory = $calculationRequestFactory;
-        $this->logger                    = $logger;
+        $this->configReader                         = $configReader;
+        $this->cartService                          = $cartService;
+        $this->cartHasher                           = $cartHasher;
+        $this->client                               = $client;
+        $this->invoicingPreCheckRequestFactory      = $invoicingPreCheckRequestFactory;
+        $this->installmentPreCheckRequestFactory    = $installmentPreCheckRequestFactory;
+        $this->installmentCalculationRequestFactory = $installmentCalculationRequestFactory;
+        $this->logger                               = $logger;
     }
 
     /**
@@ -115,14 +121,36 @@ class PayolutionController extends StorefrontController
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/payolution/calculation", name="frontend.account.payone.payolution.calculation", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
+     * @Route("/payone/payolution/invoicing/validate", name="frontend.payone.payolution.invoicing.validate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
+     */
+    public function validate(RequestDataBag $dataBag, SalesChannelContext $context): JsonResponse
+    {
+        $cart = $this->cartService->getCart($context->getToken(), $context);
+
+        $checkRequest = $this->invoicingPreCheckRequestFactory->getRequestParameters($cart, $dataBag, $context);
+
+        try {
+            $response = $this->client->request($checkRequest);
+        } catch (PayoneRequestException $exception) {
+            $response = [
+                'status'  => 'ERROR',
+                'message' => $exception->getMessage(),
+            ];
+        }
+
+        return new JsonResponse($response);
+    }
+
+    /**
+     * @RouteScope(scopes={"storefront"})
+     * @Route("/payone/payolution/installment/calculation", name="frontend.payone.payolution.installment.calculation", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
      */
     public function calculation(RequestDataBag $dataBag, SalesChannelContext $context): JsonResponse
     {
         try {
             $cart = $this->cartService->getCart($context->getToken(), $context);
 
-            $checkRequest = $this->preCheckRequestFactory->getRequestParameters($cart, $dataBag, $context);
+            $checkRequest = $this->installmentPreCheckRequestFactory->getRequestParameters($cart, $dataBag, $context);
 
             if ($this->isPreCheckNeeded($cart, $dataBag, $context)) {
                 try {
@@ -143,7 +171,7 @@ class PayolutionController extends StorefrontController
                 ];
             }
 
-            $calculationRequest = $this->calculationRequestFactory->getRequestParameters($cart, $dataBag, $context);
+            $calculationRequest = $this->installmentCalculationRequestFactory->getRequestParameters($cart, $dataBag, $context);
 
             try {
                 $calculationResponse = $this->client->request($calculationRequest);
@@ -169,7 +197,7 @@ class PayolutionController extends StorefrontController
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/payolution/download", name="frontend.account.payone.payolution.download", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
+     * @Route("/payone/payolution/installment/download", name="frontend.payone.payolution.installment.download", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
      */
     public function download(Request $request, SalesChannelContext $context): Response
     {
