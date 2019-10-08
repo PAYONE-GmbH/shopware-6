@@ -9,6 +9,11 @@
                 <br>
                 {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_reference}) }}<br>
             {% endif %}
+
+            {% if order.extensions.payone_document %}
+                {{ 'PayonePayment.payolution.document.iban' | trans({'%iban%': order.extensions.payone_document.iban}) }}<br>
+                {{ 'PayonePayment.payolution.document.bic' | trans({'%bic%': order.extensions.payone_document.bic}) }}<br>
+            {% endif %}
         {% endif %}
     {% endblock %}
 {% endblock %}

@@ -77,7 +77,9 @@
         "bic": "BIC"
       },
       "document": {
-        "clearingReference": "Referenz: %reference%"
+        "clearingReference": "Referenz: %reference%",
+        "iban": "IBAN: %iban%",
+        "bic": "BIC: %bic%"
       },
       "consentCheckbox": {
         "introduction": "Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an payolution bin ich einverstanden.",

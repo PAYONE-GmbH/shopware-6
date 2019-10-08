@@ -6,6 +6,7 @@
     <imports>
         <import resource="commands.xml" />
         <import resource="controllers.xml" />
+        <import resource="decorations.xml"/>
         <import resource="entities.xml" />
         <import resource="handlers.xml" />
         <import resource="listeners.xml" />

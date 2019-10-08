@@ -77,7 +77,9 @@
         "bic": "BIC"
       },
       "document": {
-        "clearingReference": "Reference: %reference%"
+        "clearingReference": "Reference: %reference%",
+        "iban": "IBAN: %iban%",
+        "bic": "BIC: %bic%"
       },
       "consentCheckbox": {
         "introduction": "With the transmission of the data necessary for the completion of the invoice purchase, an identity check and credit check to payolution I agree.",
