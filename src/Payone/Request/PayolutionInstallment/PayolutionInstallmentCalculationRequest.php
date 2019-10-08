@@ -6,28 +6,17 @@ namespace PayonePayment\Payone\Request\PayolutionInstallment;
 
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\Cart;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PayolutionInstallmentCalculationRequest
 {
-    /** @var EntityRepositoryInterface */
-    private $currencyRepository;
-
-    public function __construct(EntityRepositoryInterface $currencyRepository)
-    {
-        $this->currencyRepository = $currencyRepository;
-    }
-
     public function getRequestParameters(
         Cart $cart,
         RequestDataBag $dataBag,
-        Context $context
+        SalesChannelContext $context
     ): array {
-        $currency = $this->getCurrency($context->getCurrencyId(), $context);
+        $currency = $context->getCurrency();
 
         $parameters = [
             'request'             => 'genericpayment',
@@ -42,20 +31,17 @@ class PayolutionInstallmentCalculationRequest
             $parameters['workorderid'] = $dataBag->get('workorder');
         }
 
-        return $parameters;
-    }
+        $customer = $context->getCustomer();
 
-    private function getCurrency(string $id, Context $context): CurrencyEntity
-    {
-        $criteria = new Criteria([$id]);
-
-        /** @var null|CurrencyEntity $currency */
-        $currency = $this->currencyRepository->search($criteria, $context)->first();
-
-        if (null === $currency) {
-            throw new RuntimeException('missing currency entity');
+        if (null === $customer || null === $customer->getActiveBillingAddress()) {
+            throw new RuntimeException('missing order customer billing address');
         }
 
-        return $currency;
+        if ($customer->getActiveBillingAddress()->getCompany()) {
+            //$parameters['add_paydata[b2b]'] = 'yes';
+            //$parameters['add_paydata[company_uid]'] = $customer->getActiveBillingAddress()->getVatId();
+        }
+
+        return $parameters;
     }
 }

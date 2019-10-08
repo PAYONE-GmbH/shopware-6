@@ -51,7 +51,7 @@ class PayolutionInstallmentPreCheckRequestFactory extends AbstractRequestFactory
         $this->requests[] = $this->checkRequest->getRequestParameters(
             $cart,
             $dataBag,
-            $context->getContext()
+            $context
         );
 
         return $this->createRequest();

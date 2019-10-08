@@ -28,13 +28,52 @@ export default class PayonePaymentPayolutionInvoicing extends Plugin {
             return;
         }
 
-        this._validateConstentCheckbox(event);
+        this._validateField(event, 'payolutionConsent');
+        this._validateInput(event, 'payolutionBirthday');
 
         if (event.defaultPrevented) {
             return;
         }
 
         this._validatePaymentAcceptance();
+
+        event.preventDefault();
+    }
+
+    _validateField(event, field) {
+        const checkbox = document.getElementById(field);
+
+        if (checkbox.checked) {
+            checkbox.classList.remove('is-invalid');
+
+            return;
+        }
+
+        checkbox.scrollIntoView({
+            block: 'start',
+            behavior: 'smooth',
+        });
+
+        checkbox.classList.add('is-invalid');
+
+        event.preventDefault();
+    }
+
+    _validateInput(event, field) {
+        const input = document.getElementById(field);
+
+        if (input.value) {
+            input.classList.remove('is-invalid');
+
+            return;
+        }
+
+        input.scrollIntoView({
+            block: 'start',
+            behavior: 'smooth',
+        });
+
+        input.classList.add('is-invalid');
 
         event.preventDefault();
     }
@@ -70,25 +109,6 @@ export default class PayonePaymentPayolutionInvoicing extends Plugin {
         const configuration = document.getElementById('payone-configuration');
 
         return configuration.getAttribute('data-validate-url');
-    }
-
-    _validateConstentCheckbox(event) {
-        const checkbox = document.getElementById('payolutionConsent');
-
-        if (checkbox.checked) {
-            checkbox.classList.remove('is-invalid');
-
-            return;
-        }
-
-        checkbox.scrollIntoView({
-            block: 'start',
-            behavior: 'smooth',
-        });
-
-        checkbox.classList.add('is-invalid');
-
-        event.preventDefault();
     }
 
     _showErrorBox() {
