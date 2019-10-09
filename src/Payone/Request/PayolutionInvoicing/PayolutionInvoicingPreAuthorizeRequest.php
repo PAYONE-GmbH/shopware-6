@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\PayolutionInvoicing;
 
 use DateTime;
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -24,12 +25,17 @@ class PayolutionInvoicingPreAuthorizeRequest
     /** @var EntityRepositoryInterface */
     private $orderAddressRepository;
 
+    /** @var ConfigReaderInterface */
+    private $configReader;
+
     public function __construct(
         EntityRepositoryInterface $currencyRepository,
-        EntityRepositoryInterface $orderAddressRepository
+        EntityRepositoryInterface $orderAddressRepository,
+        ConfigReaderInterface $configReader
     ) {
         $this->currencyRepository     = $currencyRepository;
         $this->orderAddressRepository = $orderAddressRepository;
+        $this->configReader           = $configReader;
     }
 
     public function getRequestParameters(
@@ -60,11 +66,13 @@ class PayolutionInvoicingPreAuthorizeRequest
             $parameters['workorderid'] = $dataBag->get('workorder');
         }
 
-        $billingAddress = $this->getBillingAddress($transaction->getOrder(), $context->getContext());
+        if ($this->transferCompanyData($context)) {
+            $billingAddress = $this->getBillingAddress($transaction->getOrder(), $context->getContext());
 
-        if ($billingAddress->getCompany()) {
-            $parameters['add_paydata[b2b]']         = 'yes';
-            $parameters['add_paydata[company_uid]'] = $billingAddress->getVatId();
+            if ($billingAddress->getCompany()) {
+                $parameters['add_paydata[b2b]']         = 'yes';
+                $parameters['add_paydata[company_uid]'] = $billingAddress->getVatId();
+            }
         }
 
         return array_filter($parameters);
@@ -96,5 +104,12 @@ class PayolutionInvoicingPreAuthorizeRequest
         }
 
         return $address;
+    }
+
+    private function transferCompanyData(SalesChannelContext $context): bool
+    {
+        $configuration = $this->configReader->read($context->getSalesChannel()->getId());
+
+        return !empty($configuration->get('payolutionInvoicingTransferCompanyData'));
     }
 }

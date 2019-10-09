@@ -398,7 +398,13 @@
             <label>BIC</label>
             <label lang="de-DE">BIC</label>
             <helpText>BIC which is displayed on the invoice next to the payment reference.</helpText>
-            <helpText lang="de-DE">BIC welche auf der Rechnung neben der Zahlungsreferenz angezeigt wird</helpText>
+            <helpText lang="de-DE">BIC welche auf der Rechnung neben der Zahlungsreferenz angezeigt wird.</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>payolutionInvoicingTransferCompanyData</name>
+            <label>Sets the b2b flag if the customer's company name is present.</label>
+            <label lang="de-DE">Setzt das b2b-Flag, wenn beim Kunden der Firmennamen gesetzt ist.</label>
         </input-field>
     </card>
 </config>

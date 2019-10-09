@@ -7,7 +7,6 @@ namespace PayonePayment\Payone\Request\PayolutionInstallment;
 use DateTime;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
-use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -23,7 +22,7 @@ class PayolutionInstallmentAuthorizeRequest
 
     public function __construct(EntityRepositoryInterface $currencyRepository)
     {
-        $this->currencyRepository     = $currencyRepository;
+        $this->currencyRepository = $currencyRepository;
     }
 
     public function getRequestParameters(
