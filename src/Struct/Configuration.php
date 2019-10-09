@@ -15,7 +15,7 @@ class Configuration extends Struct
         $this->configuration = $configuration;
     }
 
-    public function get(string $key, string $default = ''): string
+    public function get(string $key, string $default = '')
     {
         if (!array_key_exists($key, $this->configuration)) {
             return $default;
