@@ -21,15 +21,9 @@ class PayolutionInstallmentAuthorizeRequest
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
 
-    /** @var EntityRepositoryInterface */
-    private $orderAddressRepository;
-
-    public function __construct(
-        EntityRepositoryInterface $currencyRepository,
-        EntityRepositoryInterface $orderAddressRepository
-    ) {
+    public function __construct(EntityRepositoryInterface $currencyRepository)
+    {
         $this->currencyRepository     = $currencyRepository;
-        $this->orderAddressRepository = $orderAddressRepository;
     }
 
     public function getRequestParameters(
@@ -64,13 +58,6 @@ class PayolutionInstallmentAuthorizeRequest
             $parameters['workorderid'] = $dataBag->get('workorder');
         }
 
-        $billingAddress = $this->getBillingAddress($transaction->getOrder(), $context->getContext());
-
-        if ($billingAddress->getCompany()) {
-            $parameters['add_paydata[b2b]']         = 'yes';
-            $parameters['add_paydata[company_uid]'] = $billingAddress->getVatId();
-        }
-
         return array_filter($parameters);
     }
 
@@ -86,19 +73,5 @@ class PayolutionInstallmentAuthorizeRequest
         }
 
         return $currency;
-    }
-
-    private function getBillingAddress(OrderEntity $order, Context $context): OrderAddressEntity
-    {
-        $criteria = new Criteria([$order->getBillingAddressId()]);
-
-        /** @var null|OrderAddressEntity $address */
-        $address = $this->orderAddressRepository->search($criteria, $context)->first();
-
-        if (null === $address) {
-            throw new RuntimeException('missing order customer billing address');
-        }
-
-        return $address;
     }
 }

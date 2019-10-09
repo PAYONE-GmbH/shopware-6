@@ -37,11 +37,6 @@ class PayolutionInstallmentCalculationRequest
             throw new RuntimeException('missing order customer billing address');
         }
 
-        if ($customer->getActiveBillingAddress()->getCompany()) {
-            //$parameters['add_paydata[b2b]'] = 'yes';
-            //$parameters['add_paydata[company_uid]'] = $customer->getActiveBillingAddress()->getVatId();
-        }
-
         return $parameters;
     }
 }
