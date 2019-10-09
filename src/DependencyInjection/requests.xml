@@ -186,7 +186,6 @@
 
         <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuthorizeRequest">
             <argument type="service" id="currency.repository" />
-            <argument type="service" id="order_address.repository" />
         </service>
 
         <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuthorizeRequestFactory">
