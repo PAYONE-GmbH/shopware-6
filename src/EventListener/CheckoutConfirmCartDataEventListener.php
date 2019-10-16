@@ -38,8 +38,6 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
             ]);
         }
 
-        $event->getPage()->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
-
         $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
     }
 }

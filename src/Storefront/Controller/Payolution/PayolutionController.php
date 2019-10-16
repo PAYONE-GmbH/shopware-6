@@ -27,7 +27,6 @@ use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
@@ -101,16 +100,16 @@ class PayolutionController extends StorefrontController
         if (empty($companyName)) {
             $this->logger->error('Could not fetch invoicing consent modal content - payolution company name is empty.');
 
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         /** @var string $content */
         $content = (string) file_get_contents(self::URL . base64_encode($companyName));
 
         if (empty($content)) {
-            $this->logger->error('Could not fetch invoicing consent modal content, payolution returned a empty response.');
+            $this->logger->error('Could not fetch invoicing consent modal content, payolution returned an empty response.');
 
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $content = (string) strstr($content, '<header>');
@@ -204,12 +203,16 @@ class PayolutionController extends StorefrontController
         $duration = (int) $request->get('duration');
 
         if (empty($duration)) {
+            $this->logger->error('Could not fetch standard credit information document for payolution installment, missing required duration parameter.');
+
             throw new UnprocessableEntityHttpException();
         }
 
         $cart = $this->cartService->getCart($context->getToken(), $context);
 
         if (!$cart->hasExtension(CheckoutCartPaymentData::EXTENSION_NAME)) {
+            $this->logger->error('Could not fetch standard credit information document for payolution installment, credit information missing from cart.');
+
             throw new UnprocessableEntityHttpException();
         }
 

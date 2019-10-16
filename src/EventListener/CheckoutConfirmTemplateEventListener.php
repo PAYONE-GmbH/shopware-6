@@ -32,7 +32,7 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
         $template = $this->getTemplateFromPaymentMethod($context->getPaymentMethod());
 
         if ($page->hasExtension(CheckoutCartPaymentData::EXTENSION_NAME)) {
-            $payoneData = $event->getPage()->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
+            $payoneData = $page->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
         } else {
             $payoneData = new CheckoutConfirmPaymentData();
         }

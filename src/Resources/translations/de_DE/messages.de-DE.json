@@ -88,6 +88,6 @@
     }
   },
   "error": {
-    "VIOLATION::PAYOLUTION_BIRTHDAY_NOT_VALID": "Das eingegbene Geburtstag ist nicht valide."
+    "VIOLATION::PAYOLUTION_BIRTHDAY_NOT_VALID": "Für diese Zahlung müssen Sie über 18 Jahre alt sein."
   }
 }
