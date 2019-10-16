@@ -8,6 +8,7 @@ use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -16,11 +17,13 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'hideInstallmentPaymentMethodForComapanies',
+            CheckoutConfirmPageLoadedEvent::class      => 'hideInstallmentPaymentMethodForComapanies',
+            AccountPaymentMethodPageLoadedEvent::class => 'hideInstallmentPaymentMethodForComapanies',
         ];
     }
 
-    public function hideInstallmentPaymentMethodForComapanies(CheckoutConfirmPageLoadedEvent $event): void
+    /** @param AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event */
+    public function hideInstallmentPaymentMethodForComapanies($event): void
     {
         $customer = $event->getSalesChannelContext()->getCustomer();
 
