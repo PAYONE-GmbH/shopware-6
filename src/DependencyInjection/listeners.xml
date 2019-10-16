@@ -39,7 +39,7 @@
         </service>
 
         <service id="PayonePayment\EventListener\StorefrontRenderEventListener">
-            <argument type="service" id="cache.app"/>
+            <argument type="service" id="cache.object"/>
             <argument type="service" id="sales_channel.payment_method.repository"/>
             <argument type="service" id="sales_channel.repository" />
 

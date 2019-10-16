@@ -32,7 +32,6 @@ class CaptureRequestFactory extends AbstractRequestFactory
             $context
         );
 
-        // wenn paydirekt hol quatsch aus anderem request
         $this->requests[] = $this->captureRequest->getRequestParameters(
             $transaction->getOrder(),
             $context,

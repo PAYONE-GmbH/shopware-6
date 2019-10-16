@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace PayonePayment\Components\Validator;
 
 use DateTime;
+use DateTimeInterface as DateTimeInterfaceAlias;
 use Symfony\Component\Validator\Constraints\AbstractComparisonValidator;
 
 class BirthdayValidator extends AbstractComparisonValidator
 {
     /**
-     * Compares the two given values to find if their relationship is valid.
+     * @param string                 $value1
+     * @param DateTimeInterfaceAlias $value2
      *
-     * @param mixed $value1 The first value to compare
-     * @param mixed $value2 The second value to compare
-     *
-     * @return bool true if the relationship is valid, false otherwise
+     * @return bool true if value1 is lower than value2, false otherwise
      */
     protected function compareValues($value1, $value2)
     {

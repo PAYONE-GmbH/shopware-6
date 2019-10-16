@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\EventListener;
 
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
-use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -47,11 +46,11 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
     {
         return $paymentMethods->filter(
             static function (PaymentMethodEntity $paymentMethod) use ($billingAddress) {
-               if ($paymentMethod->getId() !== PayonePayolutionInstallment::UUID) {
-                   return true;
-               }
+                if ($paymentMethod->getId() !== PayonePayolutionInstallment::UUID) {
+                    return true;
+                }
 
-               return empty($billingAddress->getCompany());
+                return empty($billingAddress->getCompany());
             }
         );
     }

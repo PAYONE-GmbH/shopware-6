@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\EventListener;
 
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -18,24 +19,32 @@ class CheckoutConfirmPaypalExpressEventListener implements EventSubscriberInterf
         ];
     }
 
-    public function hideInternalPaymentMethods(CheckoutConfirmPageLoadedEvent $event)
+    public function hideInternalPaymentMethods(CheckoutConfirmPageLoadedEvent $event): void
+    {
+        $activePaymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
+
+        $event->getPage()->setPaymentMethods(
+            $this->filterPaymentMethods(
+                $event->getPage()->getPaymentMethods(),
+                $activePaymentMethod
+            )
+        );
+    }
+
+    private function filterPaymentMethods(PaymentMethodCollection $paymentMethods, PaymentMethodEntity $activePaymentMethod): PaymentMethodCollection
     {
         $internalPaymentMethods = [
             PayonePaypalExpress::UUID,
         ];
 
-        $context = $event->getSalesChannelContext();
-
-        $event->getPage()->setPaymentMethods(
-            $event->getPage()->getPaymentMethods()->filter(
-                static function (PaymentMethodEntity $entity) use ($internalPaymentMethods, $context) {
-                    if ($context->getPaymentMethod()->getId() === $entity->getId()) {
-                        return true;
-                    }
-
-                    return !in_array($entity->getId(), $internalPaymentMethods, true);
+        return $paymentMethods->filter(
+            static function (PaymentMethodEntity $paymentMethod) use ($internalPaymentMethods, $activePaymentMethod) {
+                if ($activePaymentMethod->getId() === $paymentMethod->getId()) {
+                    return true;
                 }
-            )
+
+                return !in_array($paymentMethod->getId(), $internalPaymentMethods, true);
+            }
         );
     }
 }
