@@ -15,6 +15,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -76,19 +77,19 @@ class PayonePayolutionInstallmentPaymentHandler implements SynchronousPaymentHan
         try {
             $response = $this->client->request($request);
         } catch (PayoneRequestException $exception) {
-            throw new AsyncPaymentProcessException(
+            throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
         } catch (Throwable $exception) {
-            throw new AsyncPaymentProcessException(
+            throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
 
         if (empty($response['status']) || $response['status'] === 'ERROR') {
-            throw new AsyncPaymentProcessException(
+            throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
