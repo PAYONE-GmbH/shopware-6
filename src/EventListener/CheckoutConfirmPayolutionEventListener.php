@@ -4,57 +4,55 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
-use PayonePayment\Payone\Client\PayoneClient;
-use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequestFactory;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
+use PayonePayment\PaymentMethod\PayonePaypalExpress;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Throwable;
 
 class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
 {
-    /** @var PayolutionInstallmentPreCheckRequestFactory */
-    private $requestFactory;
-
-    /** @var PayoneClient */
-    private $client;
-
-    public function __construct(
-        PayolutionInstallmentPreCheckRequestFactory $requestFactory,
-        PayoneClient $client
-    ) {
-        $this->requestFactory = $requestFactory;
-        $this->client         = $client;
-    }
-
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'preCheck',
+            CheckoutConfirmPageLoadedEvent::class => 'hideInstallmentPaymentMethodForComapanies',
         ];
     }
 
-    public function preCheck(CheckoutConfirmPageLoadedEvent $event)
+    public function hideInstallmentPaymentMethodForComapanies(CheckoutConfirmPageLoadedEvent $event): void
     {
-        return;
+        $customer = $event->getSalesChannelContext()->getCustomer();
 
-        // TODO: call precheck if needed
-
-        $dataBag = new RequestDataBag();
-
-        $request = $this->requestFactory->getRequestParameters(
-            $event->getPage()->getCart(),
-            $dataBag,
-            $event->getSalesChannelContext()
-        );
-
-        try {
-            $response = $this->client->request($request);
-        } catch (PayoneRequestException $exception) {
-            // TODO: error handling
-        } catch (Throwable $exception) {
-            // TODO: error handling
+        if (null === $customer) {
+            return;
         }
+
+        $billingAddress = $customer->getActiveBillingAddress();
+
+        if (null === $billingAddress) {
+            return;
+        }
+
+        $event->getPage()->setPaymentMethods(
+            $this->filterPaymentMethods(
+                $event->getPage()->getPaymentMethods(),
+                $billingAddress
+            )
+        );
+    }
+
+    private function filterPaymentMethods(PaymentMethodCollection $paymentMethods, CustomerAddressEntity $billingAddress): PaymentMethodCollection
+    {
+        return $paymentMethods->filter(
+            static function (PaymentMethodEntity $paymentMethod) use ($billingAddress) {
+               if ($paymentMethod->getId() !== PayonePayolutionInstallment::UUID) {
+                   return true;
+               }
+
+               return empty($billingAddress->getCompany());
+            }
+        );
     }
 }
