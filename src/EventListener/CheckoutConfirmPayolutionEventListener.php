@@ -4,57 +4,83 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
+use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
 {
+    /** @var ConfigReaderInterface */
+    private $configReader;
+
+    public function __construct(ConfigReaderInterface $configReader)
+    {
+        $this->configReader = $configReader;
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hideInstallmentPaymentMethodForComapanies',
-            AccountPaymentMethodPageLoadedEvent::class => 'hideInstallmentPaymentMethodForComapanies',
+            CheckoutConfirmPageLoadedEvent::class      => 'hidePaymentMethodsForComapanies',
+            AccountPaymentMethodPageLoadedEvent::class => 'hidePaymentMethodsForComapanies',
         ];
     }
 
     /** @param AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event */
-    public function hideInstallmentPaymentMethodForComapanies($event): void
+    public function hidePaymentMethodsForComapanies($event): void
     {
-        $customer = $event->getSalesChannelContext()->getCustomer();
+        $paymentMethods = $event->getPage()->getPaymentMethods();
+
+        if (!$this->customerHasCompanyAddress($event->getSalesChannelContext())) {
+            return;
+        }
+
+        $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionInstallment::UUID);
+
+        if ($this->companyDataHandlingIsDisabled($event->getSalesChannelContext())) {
+            $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionInvoicing::UUID);
+        }
+
+        $event->getPage()->setPaymentMethods($paymentMethods);
+    }
+
+    private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethod): PaymentMethodCollection
+    {
+        return $paymentMethods->filter(
+            static function (PaymentMethodEntity $entity) use ($paymentMethod) {
+                return $entity->getId() !== $paymentMethod;
+            }
+        );
+    }
+
+    private function customerHasCompanyAddress(SalesChannelContext $context): bool
+    {
+        $customer = $context->getCustomer();
 
         if (null === $customer) {
-            return;
+            return false;
         }
 
         $billingAddress = $customer->getActiveBillingAddress();
 
         if (null === $billingAddress) {
-            return;
+            return false;
         }
 
-        $event->getPage()->setPaymentMethods(
-            $this->filterPaymentMethods(
-                $event->getPage()->getPaymentMethods(),
-                $billingAddress
-            )
-        );
+        return !empty($billingAddress->getCompany());
     }
 
-    private function filterPaymentMethods(PaymentMethodCollection $paymentMethods, CustomerAddressEntity $billingAddress): PaymentMethodCollection
+    private function companyDataHandlingIsDisabled(SalesChannelContext $context): bool
     {
-        return $paymentMethods->filter(
-            static function (PaymentMethodEntity $paymentMethod) use ($billingAddress) {
-                if ($paymentMethod->getId() !== PayonePayolutionInstallment::UUID) {
-                    return true;
-                }
+        $configuration = $this->configReader->read($context->getSalesChannel()->getId());
 
-                return empty($billingAddress->getCompany());
-            }
-        );
+        return (bool) $configuration->get('payolutionInvoicingTransferCompanyData');
     }
 }
