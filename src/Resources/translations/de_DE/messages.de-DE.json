@@ -88,6 +88,7 @@
     }
   },
   "error": {
-    "VIOLATION::PAYOLUTION_BIRTHDAY_NOT_VALID": "Für diese Zahlung müssen Sie über 18 Jahre alt sein."
+    "VIOLATION::PAYONE_BIRTHDAY_NOT_VALID": "Für diese Zahlung müssen Sie über 18 Jahre alt sein.",
+    "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "Die ausgewählte Zahlungsweise ist nicht verfügbar."
   }
 }
