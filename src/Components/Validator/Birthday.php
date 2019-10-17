@@ -7,7 +7,7 @@ namespace PayonePayment\Components\Validator;
 use Symfony\Component\Validator\Constraints\AbstractComparison;
 
 /**
- * @Annotation
+ * @Annotation *
  * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  */
 class Birthday extends AbstractComparison
@@ -17,6 +17,6 @@ class Birthday extends AbstractComparison
     public $message = 'This value should be less than or equal to {{ compared_value }}.';
 
     protected static $errorNames = [
-        self::TOO_HIGH_ERROR => 'PAYOLUTION_BIRTHDAY_NOT_VALID',
+        self::TOO_HIGH_ERROR => 'PAYONE_BIRTHDAY_NOT_VALID',
     ];
 }

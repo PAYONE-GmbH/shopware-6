@@ -7,6 +7,7 @@ namespace PayonePayment\EventListener;
 use DateTime;
 use DateTimeInterface;
 use PayonePayment\Components\Validator\Birthday;
+use PayonePayment\Components\Validator\PaymentMethod;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
@@ -55,6 +56,13 @@ class OrderValidationEventListener implements EventSubscriberInterface
                 'payolutionBirthday',
                 new Birthday(['value' => $this->getMinimumDate()])
             );
+
+            if ($this->customerHasCompanyAddress($context)) {
+                $event->getDefinition()->add(
+                    'payonePaymentMethod',
+                    new PaymentMethod(['value' => $context->getPaymentMethod()])
+                );
+            }
         }
     }
 
@@ -76,5 +84,22 @@ class OrderValidationEventListener implements EventSubscriberInterface
         ];
 
         return in_array($context->getPaymentMethod()->getId(), $paymentMethods, true);
+    }
+
+    private function customerHasCompanyAddress(SalesChannelContext $context): bool
+    {
+        $customer = $context->getCustomer();
+
+        if (null === $customer) {
+            return false;
+        }
+
+        $billingAddress = $customer->getActiveBillingAddress();
+
+        if (null === $billingAddress || empty($billingAddress->getCompany())) {
+            return false;
+        }
+
+        return $context->getPaymentMethod()->getId() === PayonePayolutionInstallment::UUID;
     }
 }
