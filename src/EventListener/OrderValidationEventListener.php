@@ -6,6 +6,7 @@ namespace PayonePayment\EventListener;
 
 use DateTime;
 use DateTimeInterface;
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Components\Validator\PaymentMethod;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
@@ -23,9 +24,13 @@ class OrderValidationEventListener implements EventSubscriberInterface
     /** @var RequestStack */
     private $requestStack;
 
-    public function __construct(RequestStack $requestStack)
+    /** @var ConfigReaderInterface */
+    private $configReader;
+
+    public function __construct(RequestStack $requestStack, ConfigReaderInterface $configReader)
     {
         $this->requestStack = $requestStack;
+        $this->configReader = $configReader;
     }
 
     public static function getSubscribedEvents(): array
@@ -46,7 +51,7 @@ class OrderValidationEventListener implements EventSubscriberInterface
         // TODO: can be removed when https://github.com/shopware/platform/pull/226 is merged
         $context = $this->getContextFromRequest($request);
 
-        if ($this->isPayonePayolutionPaymentMethod($context)) {
+        if ($this->isPayonePayolutionInstallment($context) || $this->isPayonePayolutionInvoicing($context)) {
             $event->getDefinition()->add(
                 'payolutionConsent',
                 new NotBlank()
@@ -57,11 +62,22 @@ class OrderValidationEventListener implements EventSubscriberInterface
                 new Birthday(['value' => $this->getMinimumDate()])
             );
 
-            if ($this->customerHasCompanyAddress($context)) {
-                $event->getDefinition()->add(
-                    'payonePaymentMethod',
-                    new PaymentMethod(['value' => $context->getPaymentMethod()])
-                );
+            if ($this->isPayonePayolutionInstallment($context)) {
+                if ($this->customerHasCompanyAddress($context)) {
+                    $event->getDefinition()->add(
+                        'payonePaymentMethod',
+                        new PaymentMethod(['value' => $context->getPaymentMethod()])
+                    );
+                }
+            }
+
+            if ($this->isPayonePayolutionInvoicing($context) && $this->companyDataHandlingIsDisabled($context)) {
+                if ($this->customerHasCompanyAddress($context)) {
+                    $event->getDefinition()->add(
+                        'payonePaymentMethod',
+                        new PaymentMethod(['value' => $context->getPaymentMethod()])
+                    );
+                }
             }
         }
     }
@@ -76,14 +92,14 @@ class OrderValidationEventListener implements EventSubscriberInterface
         return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
     }
 
-    private function isPayonePayolutionPaymentMethod(SalesChannelContext $context): bool
+    private function isPayonePayolutionInstallment(SalesChannelContext $context): bool
     {
-        $paymentMethods = [
-            PayonePayolutionInstallment::UUID,
-            PayonePayolutionInvoicing::UUID,
-        ];
+        return $context->getPaymentMethod()->getId() === PayonePayolutionInstallment::UUID;
+    }
 
-        return in_array($context->getPaymentMethod()->getId(), $paymentMethods, true);
+    private function isPayonePayolutionInvoicing(SalesChannelContext $context): bool
+    {
+        return $context->getPaymentMethod()->getId() === PayonePayolutionInvoicing::UUID;
     }
 
     private function customerHasCompanyAddress(SalesChannelContext $context): bool
@@ -96,10 +112,17 @@ class OrderValidationEventListener implements EventSubscriberInterface
 
         $billingAddress = $customer->getActiveBillingAddress();
 
-        if (null === $billingAddress || empty($billingAddress->getCompany())) {
+        if (null === $billingAddress) {
             return false;
         }
 
-        return $context->getPaymentMethod()->getId() === PayonePayolutionInstallment::UUID;
+        return !empty($billingAddress->getCompany());
+    }
+
+    private function companyDataHandlingIsDisabled(SalesChannelContext $context): bool
+    {
+        $configuration = $this->configReader->read($context->getSalesChannel()->getId());
+
+        return (bool) $configuration->get('payolutionInvoicingTransferCompanyData');
     }
 }

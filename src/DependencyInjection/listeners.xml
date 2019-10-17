@@ -21,8 +21,7 @@
         </service>
 
         <service id="PayonePayment\EventListener\CheckoutConfirmPayolutionEventListener">
-            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequestFactory" />
-            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
 
             <tag name="kernel.event_subscriber"/>
         </service>
@@ -48,6 +47,7 @@
 
         <service id="PayonePayment\EventListener\OrderValidationEventListener">
             <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
 
             <tag name="kernel.event_subscriber"/>
         </service>
