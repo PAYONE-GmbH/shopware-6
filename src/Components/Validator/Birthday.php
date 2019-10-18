@@ -7,7 +7,7 @@ namespace PayonePayment\Components\Validator;
 use Symfony\Component\Validator\Constraints\AbstractComparison;
 
 /**
- * @Annotation *
+ * @Annotation
  * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  */
 class Birthday extends AbstractComparison
