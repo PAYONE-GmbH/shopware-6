@@ -11,10 +11,10 @@ class PayonePayolutionInvoicing implements PaymentMethodInterface
     public const UUID = '0407fd0a5c4b4d2bafc88379efe8cf8d';
 
     /** @var string */
-    private $name = 'Payone Payolution Invoicing';
+    private $name = 'Payone Invoice';
 
     /** @var string */
-    private $description = '';
+    private $description = 'Pay the invoice after receiving the goods.';
 
     /** @var string */
     private $paymentHandler = PayonePayolutionInvoicingPaymentHandler::class;
@@ -25,12 +25,12 @@ class PayonePayolutionInvoicing implements PaymentMethodInterface
     /** @var array */
     private $translations = [
         'de-DE' => [
-            'name'        => 'Payone Payolution Invoicing',
-            'description' => '',
+            'name'        => 'Payone Rechnung',
+            'description' => 'Sie zahlen entspannt nach Erhalt der Ware auf Rechnung.',
         ],
         'en-GB' => [
-            'name'        => 'Payone Payolution Invoicing',
-            'description' => '',
+            'name'        => 'Payone Invoice',
+            'description' => 'Pay the invoice after receiving the goods.',
         ],
     ];
 
