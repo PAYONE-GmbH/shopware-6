@@ -123,6 +123,6 @@ class OrderValidationEventListener implements EventSubscriberInterface
     {
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
 
-        return (bool) $configuration->get('payolutionInvoicingTransferCompanyData');
+        return !((bool) $configuration->get('payolutionInvoicingTransferCompanyData'));
     }
 }
