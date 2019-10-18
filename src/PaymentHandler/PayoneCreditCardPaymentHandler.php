@@ -13,7 +13,7 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
@@ -67,18 +67,9 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
     {
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
 
-        $pseudoCardPan      = $dataBag->get('pseudoCardPan');
-        $savedPseudoCardPan = $dataBag->get('savedPseudoCardPan');
-        $truncatedCardPan   = $dataBag->get('truncatedCardPan');
-        $cardExpireDate     = $dataBag->get('cardExpireDate');
-
-        if (!empty($savedPseudoCardPan)) {
-            $pseudoCardPan = $savedPseudoCardPan;
-        }
-
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $pseudoCardPan,
+            $dataBag,
             $salesChannelContext
         );
 
@@ -110,6 +101,11 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
 
+        $truncatedCardPan   = $dataBag->get('truncatedCardPan');
+        $cardExpireDate     = $dataBag->get('cardExpireDate');
+        $savedPseudoCardPan = $dataBag->get('savedPseudoCardPan');
+        $pseudoCardPan      = $dataBag->get('pseudoCardPan');
+
         if (empty($savedPseudoCardPan)) {
             $expiresAt = DateTime::createFromFormat('ym', $cardExpireDate);
 
@@ -139,6 +135,9 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
         if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
@@ -148,6 +147,9 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
         if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {

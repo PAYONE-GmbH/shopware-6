@@ -49,6 +49,8 @@ export default {
                 'debit',
                 'paypal',
                 'paypalExpress',
+                'payolutionInvoicing',
+                'payolutionInstallment',
                 'sofort'
             ];
         },

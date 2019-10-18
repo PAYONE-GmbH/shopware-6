@@ -2,19 +2,22 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Struct;
+namespace PayonePayment\Storefront\Struct;
 
 use Shopware\Core\Framework\Struct\Struct;
 
-class PaypalExpressCartData extends Struct
+class CheckoutCartPaymentData extends Struct
 {
     public const EXTENSION_NAME = 'payone';
 
     /** @var string */
-    protected $workOrderId;
+    protected $workOrderId = '';
 
     /** @var string */
-    protected $cartHash;
+    protected $cartHash = '';
+
+    /** @var array */
+    protected $calculationResponse = [];
 
     public function getWorkorderId(): string
     {
@@ -24,5 +27,10 @@ class PaypalExpressCartData extends Struct
     public function getCartHash(): string
     {
         return $this->cartHash;
+    }
+
+    public function getCalculationResponse(): array
+    {
+        return $this->calculationResponse;
     }
 }

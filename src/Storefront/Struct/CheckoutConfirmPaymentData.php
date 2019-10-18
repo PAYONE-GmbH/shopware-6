@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Struct;
+namespace PayonePayment\Storefront\Struct;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Struct\Struct;
@@ -25,6 +25,9 @@ class CheckoutConfirmPaymentData extends Struct
 
     /** @var null|string */
     protected $workOrderId;
+
+    /** @var null|string */
+    protected $cartHash = '';
 
     public function getCardRequest(): array
     {
@@ -49,5 +52,10 @@ class CheckoutConfirmPaymentData extends Struct
     public function getWorkOrderId(): ?string
     {
         return $this->workOrderId;
+    }
+
+    public function getCartHash(): ?string
+    {
+        return $this->cartHash;
     }
 }

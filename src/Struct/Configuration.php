@@ -2,18 +2,20 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Struct;
+namespace PayonePayment\Struct;
 
-class Configuration
+use Shopware\Core\Framework\Struct\Struct;
+
+class Configuration extends Struct
 {
-    private $configuration = [];
+    protected $configuration = [];
 
     public function __construct(array $configuration)
     {
         $this->configuration = $configuration;
     }
 
-    public function get(string $key, string $default = ''): string
+    public function get(string $key, string $default = '')
     {
         if (!array_key_exists($key, $this->configuration)) {
             return $default;

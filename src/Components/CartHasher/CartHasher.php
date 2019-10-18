@@ -12,16 +12,35 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class CartHasher implements CartHasherInterface
 {
-    public function generateHashFromCart(Cart $cart, SalesChannelContext $context): string
+    private const VALID_TYPES = [
+        Cart::class,
+        OrderEntity::class,
+    ];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generate(Struct $entity, SalesChannelContext $context): string
     {
-        $hashData = $this->getHashData($cart, $context);
+        if (!in_array(get_class($entity), self::VALID_TYPES, true)) {
+            throw new LogicException('unsupported struct type during hash creation or validation');
+        }
+
+        $hashData = $this->getHashData($entity, $context);
 
         return $this->generateHash($hashData);
     }
 
-    public function validate(OrderEntity $order, string $cartHash, SalesChannelContext $context): bool
+    /**
+     * {@inheritdoc}
+     */
+    public function validate(Struct $entity, string $cartHash, SalesChannelContext $context): bool
     {
-        $hashData = $this->getHashData($order, $context);
+        if (!in_array(get_class($entity), self::VALID_TYPES, true)) {
+            throw new LogicException('unsupported struct type during hash creation or validation');
+        }
+
+        $hashData = $this->getHashData($entity, $context);
         $expected = $this->generateHash($hashData);
 
         return hash_equals($expected, $cartHash);

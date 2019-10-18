@@ -14,13 +14,28 @@ class PayonePaypalExpress implements PaymentMethodInterface
     private $name = 'Payone Paypal Express';
 
     /** @var string */
-    private $description = '';
+    private $description = 'Pay easily and secure with PayPal Express.';
 
     /** @var string */
     private $paymentHandler = PayonePaypalExpressPaymentHandler::class;
 
     /** @var null|string */
     private $template;
+
+    /** @var array */
+    private $translations = [
+        'de-DE' => [
+            'name'        => 'Payone PayPal Express',
+            'description' => 'Zahlen Sie sicher und bequem mit PayPal Express.',
+        ],
+        'en-GB' => [
+            'name'        => 'Payone PayPal Express',
+            'description' => 'Pay easily and secure with PayPal Express.',
+        ],
+    ];
+
+    /** @var int */
+    private $position = 103;
 
     public function getId(): string
     {
@@ -45,5 +60,15 @@ class PayonePaypalExpress implements PaymentMethodInterface
     public function getTemplate(): ?string
     {
         return $this->template;
+    }
+
+    public function getTranslations(): array
+    {
+        return $this->translations;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
     }
 }
