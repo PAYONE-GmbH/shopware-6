@@ -14,7 +14,6 @@ use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuth
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -60,7 +59,7 @@ class PayonePayolutionInstallmentPaymentHandler implements SynchronousPaymentHan
         $cartHash = $dataBag->get('carthash');
 
         if (!$this->cartHasher->validate($transaction->getOrder(), $cartHash, $salesChannelContext)) {
-            throw new AsyncPaymentProcessException(
+            throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
