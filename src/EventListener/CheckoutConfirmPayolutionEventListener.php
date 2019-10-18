@@ -7,7 +7,6 @@ namespace PayonePayment\EventListener;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -28,13 +27,13 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hidePaymentMethodsForComapanies',
-            AccountPaymentMethodPageLoadedEvent::class => 'hidePaymentMethodsForComapanies',
+            CheckoutConfirmPageLoadedEvent::class      => 'hidePaymentMethodsForCompanies',
+            AccountPaymentMethodPageLoadedEvent::class => 'hidePaymentMethodsForCompanies',
         ];
     }
 
     /** @param AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event */
-    public function hidePaymentMethodsForComapanies($event): void
+    public function hidePaymentMethodsForCompanies($event): void
     {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
@@ -51,11 +50,11 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
         $event->getPage()->setPaymentMethods($paymentMethods);
     }
 
-    private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethod): PaymentMethodCollection
+    private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection
     {
         return $paymentMethods->filter(
-            static function (PaymentMethodEntity $entity) use ($paymentMethod) {
-                return $entity->getId() !== $paymentMethod;
+            static function (PaymentMethodEntity $paymentMethod) use ($paymentMethodId) {
+                return $paymentMethod->getId() !== $paymentMethodId;
             }
         );
     }

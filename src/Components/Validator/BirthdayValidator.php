@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace PayonePayment\Components\Validator;
 
 use DateTime;
-use DateTimeInterface as DateTimeInterfaceAlias;
+use DateTimeInterface;
 use Symfony\Component\Validator\Constraints\AbstractComparisonValidator;
 
 class BirthdayValidator extends AbstractComparisonValidator
 {
     /**
-     * @param string                 $value1
-     * @param DateTimeInterfaceAlias $value2
+     * @param string            $value1
+     * @param DateTimeInterface $value2
      *
      * @return bool true if value1 is lower than value2, false otherwise
      */
