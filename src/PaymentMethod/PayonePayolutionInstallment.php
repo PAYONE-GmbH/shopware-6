@@ -11,10 +11,10 @@ class PayonePayolutionInstallment implements PaymentMethodInterface
     public const UUID = '569b46970ad2458ca8f17f1ebb754137';
 
     /** @var string */
-    private $name = 'Payone Payolution Installment';
+    private $name = 'Payone Installment';
 
     /** @var string */
-    private $description = '';
+    private $description = 'Easily pay in monthly installments.';
 
     /** @var string */
     private $paymentHandler = PayonePayolutionInstallmentPaymentHandler::class;
@@ -25,12 +25,12 @@ class PayonePayolutionInstallment implements PaymentMethodInterface
     /** @var array */
     private $translations = [
         'de-DE' => [
-            'name'        => 'Payone Payolution Installment',
-            'description' => '',
+            'name'        => 'Payone Ratenkauf',
+            'description' => 'Bezahlen Sie einfach und bequem in monatlichen Raten.',
         ],
         'en-GB' => [
-            'name'        => 'Payone Payolution Installment',
-            'description' => '',
+            'name'        => 'Payone Installment',
+            'description' => 'Easily pay in monthly installments.',
         ],
     ];
 
