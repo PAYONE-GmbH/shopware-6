@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
@@ -12,7 +11,7 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
@@ -40,23 +39,18 @@ class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInt
     /** @var PaymentStateHandlerInterface */
     private $stateHandler;
 
-    /** @var CartHasherInterface */
-    private $cartHasher;
-
     public function __construct(
         PaypalAuthorizeRequestFactory $requestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
-        PaymentStateHandlerInterface $stateHandler,
-        CartHasherInterface $cartHasher
+        PaymentStateHandlerInterface $stateHandler
     ) {
         $this->requestFactory = $requestFactory;
         $this->client         = $client;
         $this->translator     = $translator;
         $this->dataHandler    = $dataHandler;
         $this->stateHandler   = $stateHandler;
-        $this->cartHasher     = $cartHasher;
     }
 
     /**
@@ -66,12 +60,10 @@ class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInt
     {
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
 
-        $workOrderId = $this->getWorkOrderId($transaction, $dataBag, $salesChannelContext);
-
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
-            $salesChannelContext,
-            $workOrderId
+            $dataBag,
+            $salesChannelContext
         );
 
         try {
@@ -128,6 +120,9 @@ class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInt
         $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
         if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
@@ -138,6 +133,9 @@ class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInt
             && strtolower($transactionData['transaction_status']) === TransactionStatusService::STATUS_COMPLETED;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
         if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
@@ -145,24 +143,5 @@ class PayonePaypalExpressPaymentHandler implements AsynchronousPaymentHandlerInt
         }
 
         return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
-    }
-
-    private function getWorkOrderId(
-        AsyncPaymentTransactionStruct $transaction,
-        RequestDataBag $dataBag,
-        SalesChannelContext $context
-    ): ?string {
-        $cartHash    = $dataBag->get('carthash');
-        $workOrderId = $dataBag->get('workorder');
-
-        if (null === $workOrderId || null === $cartHash) {
-            return null;
-        }
-
-        if (!$this->cartHasher->validate($transaction->getOrder(), $cartHash, $context)) {
-            return null;
-        }
-
-        return $workOrderId;
     }
 }

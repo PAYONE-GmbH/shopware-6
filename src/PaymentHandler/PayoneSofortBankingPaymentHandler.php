@@ -11,7 +11,7 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
@@ -111,6 +111,9 @@ class PayoneSofortBankingPaymentHandler implements AsynchronousPaymentHandlerInt
         $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
         if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
@@ -120,6 +123,9 @@ class PayoneSofortBankingPaymentHandler implements AsynchronousPaymentHandlerInt
         return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
         if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {

@@ -23,8 +23,9 @@ abstract class AbstractRequestFactory
         $parameters = [];
 
         foreach ($this->requests as $request) {
-            $parameters += $request;
+            $parameters = array_merge($parameters, $request);
         }
+
         // Clear requests to allow for multiple calls
         $this->requests = [];
 

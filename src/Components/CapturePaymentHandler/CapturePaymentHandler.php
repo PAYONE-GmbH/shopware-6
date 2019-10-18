@@ -10,7 +10,7 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;

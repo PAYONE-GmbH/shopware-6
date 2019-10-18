@@ -4,11 +4,29 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="PayonePayment\EventListener\CheckoutConfirmEventListener">
+        <service id="PayonePayment\EventListener\CheckoutConfirmCartDataEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmCreditCardEventListener">
             <argument type="service" id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory" />
             <argument type="service" id="language.repository" />
             <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
 
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmPaypalExpressEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmPayolutionEventListener">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmTemplateEventListener">
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -20,9 +38,16 @@
         </service>
 
         <service id="PayonePayment\EventListener\StorefrontRenderEventListener">
-            <argument type="service" id="shopware.cache"/>
+            <argument type="service" id="cache.object"/>
             <argument type="service" id="sales_channel.payment_method.repository"/>
             <argument type="service" id="sales_channel.repository" />
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\OrderValidationEventListener">
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
 
             <tag name="kernel.event_subscriber"/>
         </service>

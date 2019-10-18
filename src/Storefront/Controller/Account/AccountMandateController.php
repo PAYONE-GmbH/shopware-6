@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Storefront\Controller;
+namespace PayonePayment\Storefront\Controller\Account;
 
 use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader;

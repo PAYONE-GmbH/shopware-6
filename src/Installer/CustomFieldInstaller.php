@@ -24,11 +24,15 @@ class CustomFieldInstaller implements InstallerInterface
     public const USER_ID                = 'payone_user_id';
     public const LAST_REQUEST           = 'payone_last_request';
     public const AUTHORIZATION_TYPE     = 'payone_authorization_type';
+    public const CLEARING_REFERENCE     = 'payone_clearing_reference';
     public const TRANSACTION_STATE      = 'payone_transaction_state';
     public const ALLOW_REFUND           = 'payone_allow_refund';
     public const ALLOW_CAPTURE          = 'payone_allow_capture';
     public const TEMPLATE               = 'payone_template';
     public const IS_PAYONE              = 'payone_payment';
+    public const CAPTURE_MODE           = 'payone_capture_mode';
+    public const CLEARING_TYPE          = 'payone_clearing_type';
+    public const FINANCING_TYPE         = 'payone_financing_type';
 
     public const FIELDSET_ID_ORDER_TRANSACTION = 'aacbcf9bedfb4827853b75c5fd278d3f';
     public const FIELDSET_ID_PAYMENT_METHOD    = 'ed39626e94fd4dfe9d81976fdbcdb06c';
@@ -157,6 +161,30 @@ class CustomFieldInstaller implements InstallerInterface
             [
                 'id'               => 'd60f960523e74981a5bc23e238a9d8fb',
                 'name'             => self::WORK_ORDER_ID,
+                'type'             => CustomFieldTypes::TEXT,
+                'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
+            ],
+            [
+                'id'               => 'b75b43ff4dc4489b9fa5d83ae09bbab4',
+                'name'             => self::CLEARING_REFERENCE,
+                'type'             => CustomFieldTypes::TEXT,
+                'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
+            ],
+            [
+                'id'               => 'c788637908a64308acefd9b773374e8f',
+                'name'             => self::CLEARING_TYPE,
+                'type'             => CustomFieldTypes::TEXT,
+                'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
+            ],
+            [
+                'id'               => '1b2a4a60534c46c297458865a6f56877',
+                'name'             => self::FINANCING_TYPE,
+                'type'             => CustomFieldTypes::TEXT,
+                'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
+            ],
+            [
+                'id'               => '9eb83e0a6a814bb8b3a34c8877bcc094',
+                'name'             => self::CAPTURE_MODE,
                 'type'             => CustomFieldTypes::TEXT,
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
             ],

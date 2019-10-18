@@ -11,7 +11,7 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
@@ -62,6 +62,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
 
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
+            $dataBag,
             $salesChannelContext
         );
 
@@ -115,6 +116,9 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
         $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
         if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
@@ -125,6 +129,9 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
             && strtolower($transactionData['transaction_status']) === TransactionStatusService::STATUS_COMPLETED;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
         if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {

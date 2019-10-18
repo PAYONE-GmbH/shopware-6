@@ -7,6 +7,8 @@ namespace PayonePayment\Installer;
 use PayonePayment\PaymentMethod\PaymentMethodInterface;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
+use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
+use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use PayonePayment\PaymentMethod\PayoneSofortBanking;
@@ -29,6 +31,8 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneDebit::class,
         PayonePaypal::class,
         PayonePaypalExpress::class,
+        PayonePayolutionInstallment::class,
+        PayonePayolutionInvoicing::class,
         PayoneSofortBanking::class,
     ];
 
@@ -98,13 +102,14 @@ class PaymentMethodInstaller implements InstallerInterface
 
         $data = [
             'id'                => $paymentMethod->getId(),
-            'name'              => $paymentMethod->getName(),
             'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
+            'position'          => $paymentMethod->getPosition(),
             'pluginId'          => $pluginId,
             'customFields'      => [
                 CustomFieldInstaller::TEMPLATE  => $paymentMethod->getTemplate(),
                 CustomFieldInstaller::IS_PAYONE => true,
             ],
+            'translations' => $paymentMethod->getTranslations(),
         ];
 
         $this->paymentMethodRepository->upsert([$data], $context);
