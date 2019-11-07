@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Payone\Request\Capture;
 
+use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Payone\Request\Capture\CaptureRequest;
 use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Mock\Components\ConfigReaderMock;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -21,6 +22,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\Framework\Plugin\PluginEntity;
+use Shopware\Core\Framework\Plugin\PluginService;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
 class CaptureRequestFactoryTest extends TestCase
@@ -36,28 +39,38 @@ class CaptureRequestFactoryTest extends TestCase
 
         $request = $factory->getRequestParameters($this->getPaymentTransaction(), Context::createDefaultContext());
 
-        $this->assertEquals(
+        Assert::assertArraySubset(
             [
-                'aid'            => '',
-                'amount'         => 10000,
-                'api_version'    => '3.10',
-                'currency'       => 'EUR',
-                'encoding'       => 'UTF-8',
-                'key'            => '',
-                'mid'            => '',
-                'mode'           => '',
-                'portalid'       => '',
-                'request'        => 'capture',
-                'sequencenumber' => 1,
-                'txid'           => 'test-transaction-id',
+                'aid'             => '',
+                'amount'          => 10000,
+                'api_version'     => '3.10',
+                'currency'        => 'EUR',
+                'encoding'        => 'UTF-8',
+                'key'             => '',
+                'mid'             => '',
+                'mode'            => '',
+                'portalid'        => '',
+                'request'         => 'capture',
+                'sequencenumber'  => 1,
+                'txid'            => 'test-transaction-id',
+                'integrator_name' => 'kellerkinder',
+                'solution_name'   => 'shopware6',
             ],
             $request
         );
+
+        $this->assertArrayHasKey('integrator_version', $request);
+        $this->assertArrayHasKey('solution_version', $request);
     }
 
     protected function getSystemRequest(): SystemRequest
     {
-        return new SystemRequest(new ConfigReaderMock());
+        $pluginService = $this->createMock(PluginService::class);
+        $pluginEntity  = new PluginEntity();
+        $pluginEntity->setVersion('1');
+        $pluginService->method('getPluginByName')->willReturn($pluginEntity);
+
+        return new SystemRequest(new ConfigReaderMock(), $pluginService);
     }
 
     protected function getPaymentTransaction(): PaymentTransaction

@@ -10,6 +10,7 @@ function getProjectDir(): string
     if (isset($_SERVER['PROJECT_ROOT']) && file_exists($_SERVER['PROJECT_ROOT'])) {
         return $_SERVER['PROJECT_ROOT'];
     }
+
     if (isset($_ENV['PROJECT_ROOT']) && file_exists($_ENV['PROJECT_ROOT'])) {
         return $_ENV['PROJECT_ROOT'];
     }

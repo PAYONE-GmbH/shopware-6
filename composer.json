@@ -20,16 +20,19 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require-dev": {
+    "dms/phpunit-arraysubset-asserts": "^0.1.0",
     "fzaninotto/faker": "1.8.0",
     "k10r/codestyle": "^1.0",
     "phpstan/phpstan": "^0.11",
     "phpstan/phpstan-phpunit": "^0.11",
     "phpunit/phpunit": "^8.1",
-    "shopware/platform": "dev-master"
+    "shopware/administration": "*",
+    "shopware/core": "*",
+    "shopware/storefront": "*"
   },
   "autoload": {
     "psr-4": {
-      "PayonePayment\\": "src"
+      "PayonePayment\\": "src/"
     }
   },
   "autoload-dev": {
