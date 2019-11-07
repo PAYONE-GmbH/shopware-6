@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Mock\Factory;
 
-use PayonePayment\Components\RedirectHandler\RedirectHandler;
-use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequest;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Test\Constants;
@@ -21,7 +19,6 @@ use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\Framework\Plugin\PluginEntity;
 use Shopware\Core\Framework\Plugin\PluginService;
 use Shopware\Core\System\Country\CountryEntity;
-use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\Salutation\SalutationEntity;
@@ -37,26 +34,6 @@ trait RequestFactoryTestTrait
         $pluginService->method('getPluginByName')->willReturn($pluginEntity);
 
         return new SystemRequest(new ConfigReaderMock(), $pluginService);
-    }
-
-    private function getPreAuthorizeRequest(): CreditCardPreAuthorizeRequest
-    {
-        $currencyRepository = $this->createMock(EntityRepository::class);
-        $currencyEntity     = new CurrencyEntity();
-        $currencyEntity->setId(Constants::CURRENCY_ID);
-        $currencyEntity->setIsoCode('EUR');
-        $currencyEntity->setDecimalPrecision(2);
-        $currencyRepository->method('search')->willReturn(
-            new EntitySearchResult(
-                1,
-                new EntityCollection([$currencyEntity]),
-                null,
-                new Criteria(),
-                Context::createDefaultContext()
-            )
-        );
-
-        return new CreditCardPreAuthorizeRequest($this->createMock(RedirectHandler::class), $currencyRepository);
     }
 
     private function getCustomerRequest(): CustomerRequest
