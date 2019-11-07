@@ -8,7 +8,8 @@ use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class CreditCardPreAuthorizeRequestFactory extends AbstractRequestFactory
@@ -34,12 +35,20 @@ class CreditCardPreAuthorizeRequestFactory extends AbstractRequestFactory
 
     public function getRequestParameters(
         PaymentTransaction $transaction,
-        string $pseudoCardPan,
+        RequestDataBag $dataBag,
         SalesChannelContext $context
     ): array {
+        $pseudoCardPan      = $dataBag->get('pseudoCardPan');
+        $savedPseudoCardPan = $dataBag->get('savedPseudoCardPan');
+
+        if (!empty($savedPseudoCardPan)) {
+            $pseudoCardPan = $savedPseudoCardPan;
+        }
+
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD,
+            $context->getContext()
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(

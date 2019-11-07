@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\CreditCard;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;

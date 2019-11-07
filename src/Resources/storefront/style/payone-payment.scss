@@ -1,9 +1,16 @@
 $payone-input-gutter: 1.9rem;
 $payone-logo-gutter: 1rem;
 
+.payone-payment {
+    .card {
+        margin-bottom: 1.5rem;
+    }
+}
+
 .payone-payment.credit-card {
     .alert {
         margin: 0;
+        padding: 5px;
     }
 
     .hide {
@@ -30,5 +37,49 @@ $payone-logo-gutter: 1rem;
 .payone-debit-mandate-modal {
     .modal-body {
         padding: 0;
+    }
+}
+
+.payone-payment.payolution-invoicing {
+    .consent-label {
+        a {
+            color: red;
+        }
+    }
+}
+
+.payone-payment.payolution-installment {
+    .consent-label {
+        a {
+            color: red;
+        }
+    }
+
+    .hidden {
+        opacity: 0;
+    }
+
+    .headline {
+        color: #3f4c58;
+        font-size: 0.9rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+
+    .creditInformationButton {
+        margin-top: 1.25rem;
+    }
+
+    .installmentOverview {
+        margin-bottom: 1.25rem;
+    }
+
+    .table th, .table td {
+        padding: 0;
+    }
+
+    .installment {
+        font-size: 0.8rem;
     }
 }

@@ -6,7 +6,7 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\DataAbstractionLayer\Entity\Mandate\PayonePaymentMandateEntity;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\Struct\CheckoutFinishPaymentData;
+use PayonePayment\Storefront\Struct\CheckoutFinishPaymentData;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -68,7 +68,7 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
             'mandate' => $this->getMandate($mandateIdentification, $context),
         ]);
 
-        $event->getPage()->addExtension('payone', $payoneData);
+        $event->getPage()->addExtension(CheckoutFinishPaymentData::EXTENSION_NAME, $payoneData);
     }
 
     protected function hasDirectDebitPayment(?string $mandateIdentification): bool

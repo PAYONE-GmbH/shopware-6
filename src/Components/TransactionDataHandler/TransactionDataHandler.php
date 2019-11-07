@@ -6,7 +6,7 @@ namespace PayonePayment\Components\TransactionDataHandler;
 
 use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 
@@ -31,7 +31,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         ];
 
         $transaction->getOrderTransaction()->setCustomFields($customFields);
-        $transaction->setCustomFields($customFields);
+        $transaction->setCustomFields(array_filter($customFields));
 
         $this->transactionRepository->update([$update], $context);
     }
@@ -79,6 +79,8 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             'stateId' => $stateId,
         ];
 
-        $this->transactionRepository->update([$update], $context);
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($update): void {
+            $this->transactionRepository->update([$update], $context);
+        });
     }
 }

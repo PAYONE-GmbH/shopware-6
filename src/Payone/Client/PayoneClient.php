@@ -37,6 +37,7 @@ class PayoneClient implements PayoneClientInterface
         curl_setopt($curl, CURLOPT_POSTFIELDS, $parameters);
         curl_setopt($curl, CURLOPT_URL, 'https://api.pay1.de/post-gateway/');
 
+        /** @var false|string $response */
         $response = curl_exec($curl);
         $errno    = curl_errno($curl);
 

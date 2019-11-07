@@ -7,7 +7,7 @@ namespace PayonePayment\Payone\Request\Customer;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class CustomerRequestFactory extends AbstractRequestFactory
@@ -30,7 +30,8 @@ class CustomerRequestFactory extends AbstractRequestFactory
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIXES[$transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier()]
+            ConfigurationPrefixes::CONFIGURATION_PREFIXES[$transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier()],
+            $context->getContext()
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(

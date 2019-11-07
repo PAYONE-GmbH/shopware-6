@@ -1,31 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../../../vendor/shopware/platform/src/Core/System/SystemConfig/Schema/config.xsd">
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
+
     <card>
         <title>Basic configuration</title>
         <title lang="de-DE">Grundeinstellungen</title>
 
         <input-field>
             <name>merchantId</name>
-            <copyable>true</copyable>
             <label>Merchant ID</label>
         </input-field>
 
         <input-field>
             <name>accountId</name>
-            <copyable>true</copyable>
             <label>Account ID</label>
         </input-field>
 
         <input-field>
             <name>portalId</name>
-            <copyable>true</copyable>
             <label>Portal ID</label>
         </input-field>
 
         <input-field>
             <name>portalKey</name>
-            <copyable>true</copyable>
             <label>Key</label>
         </input-field>
 
@@ -137,7 +134,6 @@
 
         <input-field>
             <name>creditCardMerchantId</name>
-            <copyable>true</copyable>
             <label>Merchant ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -145,7 +141,6 @@
 
         <input-field>
             <name>creditCardAccountId</name>
-            <copyable>true</copyable>
             <label>Account ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -153,7 +148,6 @@
 
         <input-field>
             <name>creditCardPortalId</name>
-            <copyable>true</copyable>
             <label>Portal ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -161,7 +155,6 @@
 
         <input-field>
             <name>creditCardPortalKey</name>
-            <copyable>true</copyable>
             <label>Key</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -173,7 +166,6 @@
 
         <input-field>
             <name>paypalMerchantId</name>
-            <copyable>true</copyable>
             <label>Merchant ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -181,7 +173,6 @@
 
         <input-field>
             <name>paypalAccountId</name>
-            <copyable>true</copyable>
             <label>Account ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -189,7 +180,6 @@
 
         <input-field>
             <name>paypalPortalId</name>
-            <copyable>true</copyable>
             <label>Portal ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -197,7 +187,38 @@
 
         <input-field>
             <name>paypalPortalKey</name>
-            <copyable>true</copyable>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>PayPal Express</title>
+
+        <input-field>
+            <name>paypalExpressMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paypalExpressAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paypalExpressPortalId</name>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paypalExpressPortalKey</name>
             <label>Key</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -210,7 +231,6 @@
 
         <input-field>
             <name>debitMerchantId</name>
-            <copyable>true</copyable>
             <label>Merchant ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -218,7 +238,6 @@
 
         <input-field>
             <name>debitAccountId</name>
-            <copyable>true</copyable>
             <label>Account ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -226,7 +245,6 @@
 
         <input-field>
             <name>debitPortalId</name>
-            <copyable>true</copyable>
             <label>Portal ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -234,7 +252,6 @@
 
         <input-field>
             <name>debitPortalKey</name>
-            <copyable>true</copyable>
             <label>Key</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -246,7 +263,6 @@
 
         <input-field>
             <name>sofortMerchantId</name>
-            <copyable>true</copyable>
             <label>Merchant ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -254,7 +270,6 @@
 
         <input-field>
             <name>sofortAccountId</name>
-            <copyable>true</copyable>
             <label>Account ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -262,7 +277,6 @@
 
         <input-field>
             <name>sofortPortalId</name>
-            <copyable>true</copyable>
             <label>Portal ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
@@ -270,10 +284,127 @@
 
         <input-field>
             <name>sofortPortalKey</name>
-            <copyable>true</copyable>
             <label>Key</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Payolution Installment</title>
+
+        <input-field>
+            <name>payolutionInstallmentMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInstallmentAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInstallmentPortalId</name>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInstallmentPortalKey</name>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInstallmentCompanyName</name>
+            <label>Company Name</label>
+            <label lang="de-DE">Firmenname</label>
+            <helpText>Is displayed in the supplementary notes to the privacy statement for purchase on account.</helpText>
+            <helpText lang="de-DE">Wird in den ergänzenden Hinweisen zur Datenschutzerklärung für Kauf auf Rechnung angezeigt.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInstallmentChannelName</name>
+            <label>Channel Name</label>
+            <label lang="de-DE">Channel Name</label>
+            <helpText>Username for the URL to the EU Standard Credit Information hosted by Payolution.</helpText>
+            <helpText lang="de-DE">Benutzername für die URL zu den EU-Standard-Kreditinformationen, die von Payolution gehostet werden.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInstallmentChannelPassword</name>
+            <label>Channel Password</label>
+            <label lang="de-DE">Channel Passwort</label>
+            <helpText>Password for the url to the EU Standard Credit Information hosted by Payolution.</helpText>
+            <helpText lang="de-DE">Passwort für die url zu den EU-Standard-Kreditinformationen, die von Payolution gehostet werden.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Payolution Invoicing</title>
+
+        <input-field>
+            <name>payolutionInvoicingMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInvoicingAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInvoicingPortalId</name>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInvoicingPortalKey</name>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInvoicingCompanyName</name>
+            <label>Company Name</label>
+            <label lang="de-DE">Firmenname</label>
+            <helpText>Is displayed in the supplementary notes to the privacy statement for purchase on account.</helpText>
+            <helpText lang="de-DE">Wird in den ergänzenden Hinweisen zur Datenschutzerklärung für Kauf auf Rechnung angezeigt.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInvoicingIban</name>
+            <label>IBAN</label>
+            <label lang="de-DE">IBAN</label>
+            <helpText>IBAN which is displayed on the invoice next to the payment reference.</helpText>
+            <helpText lang="de-DE">IBAN welche auf der Rechnung neben der Zahlungsreferenz angezeigt wird</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionInvoicingBic</name>
+            <label>BIC</label>
+            <label lang="de-DE">BIC</label>
+            <helpText>BIC which is displayed on the invoice next to the payment reference.</helpText>
+            <helpText lang="de-DE">BIC welche auf der Rechnung neben der Zahlungsreferenz angezeigt wird.</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>payolutionInvoicingTransferCompanyData</name>
+            <label>Sets the b2b flag if the customer's company name is present.</label>
+            <label lang="de-DE">Setzt das b2b-Flag, wenn beim Kunden der Firmennamen gesetzt ist.</label>
         </input-field>
     </card>
 </config>
