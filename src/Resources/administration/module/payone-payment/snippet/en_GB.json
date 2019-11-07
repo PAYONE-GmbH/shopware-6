@@ -27,7 +27,10 @@
                 "general": "The API credentials could not be verified successfully.",
                 "creditCard": "The API credentials for Credit Card are not valid.",
                 "debit": "The API credentials for Debit are not valid.",
+                "paypalExpress": "The API credentials for PayPal Express are not valid.",
                 "paypal": "The API credentials for PayPal are not valid.",
+                "payolutionInstallment": "The API credentials for Payolution Installment are not valid.",
+                "payolutionInvoicing": "The API credentials for Payolution Invoicing are not valid.",
                 "sofort": "The API credentials for SOFORT are not valid."
             }
         },

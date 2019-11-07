@@ -14,13 +14,28 @@ class PayoneCreditCard implements PaymentMethodInterface
     private $name = 'Payone Credit Card';
 
     /** @var string */
-    private $description = '';
+    private $description = 'Use your credit card to safely pay through our PCI DSS certified payment provider. After your order, you may be redirected to your bank to authorize the payment.';
 
     /** @var string */
     private $paymentHandler = PayoneCreditCardPaymentHandler::class;
 
     /** @var null|string */
-    private $template = 'credit-card-form.html.twig';
+    private $template = '@Storefront/payone/credit-card/credit-card-form.html.twig';
+
+    /** @var array */
+    private $translations = [
+        'de-DE' => [
+            'name'        => 'Payone Kreditkarte',
+            'description' => 'Zahlen Sie sicher mit Ihrer Kreditkarte über unseren PCI DSS zertifizierten Zahlungsprovider. Nach der Bestellung werden Sie ggf. auf eine Seite Ihrer Bank weitergeleitet, um die Zahlung zu autorisieren.',
+        ],
+        'en-GB' => [
+            'name'        => 'Payone Credit Card',
+            'description' => 'Use your credit card to safely pay through our PCI DSS certified payment provider. After your order, you may be redirected to your bank to authorize the payment.',
+        ],
+    ];
+
+    /** @var int */
+    private $position = 100;
 
     public function getId(): string
     {
@@ -45,5 +60,15 @@ class PayoneCreditCard implements PaymentMethodInterface
     public function getTemplate(): ?string
     {
         return $this->template;
+    }
+
+    public function getTranslations(): array
+    {
+        return $this->translations;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
     }
 }

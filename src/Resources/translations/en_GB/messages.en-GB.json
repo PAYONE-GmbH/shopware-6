@@ -3,7 +3,8 @@
     "errorMessages": {
       "genericError": "A error has occurred."
     },
-    "creditCard":{
+    "creditCard": {
+      "newCard": "Use a new credit card",
       "cardNumber": "Card number",
       "securityCode": "Security code",
       "expiryDate": "Expiry date",
@@ -38,7 +39,7 @@
       "noEntries": "No mandates saved."
     },
     "checkoutConfirmPage": {
-      "cardTitle": "Payment Information"
+      "defaultCardTitle": "Payment Information"
     },
     "checkoutFinishPage": {
       "mandateIdentification": "Direct Debit Mandate"
@@ -47,6 +48,47 @@
       "question": "I accept the direct debit mandate",
       "cancel": "Cancel",
       "confirm": "Submit"
+    },
+    "paypalExpress": {
+      "buttonTitle": "PayPal Express"
+    },
+    "payolution": {
+      "cardTitleInvoicing": "Payolution Safe Invoicing",
+      "cardTitleInstallment": "Payolution Installment",
+      "birthday": {
+        "label": "Date of birth"
+      },
+      "installment": {
+        "step1": "1. Check Installment availability",
+        "step2": "2. Installment selection",
+        "step3": "3. Overview and Account Information",
+        "checkAvailabilityButton": "Check Installment availability",
+        "downloadButton": "Download Installment Draft",
+        "select": "%amount% per month - %duration% installments",
+        "info": "%index%. installment: %amount% (due %date%)",
+        "numberOfInstallments": "No. of installments:",
+        "financingAmount": "Financingamount:",
+        "total": "Total:",
+        "interestRate": "Nominal interest:",
+        "effectiveInterestRate": "Effective interest:",
+        "monthlyInstallment": "Monthly rate:",
+        "accountOwner": "Account owner",
+        "iban": "IBAN",
+        "bic": "BIC"
+      },
+      "document": {
+        "clearingReference": "Reference: %reference%",
+        "iban": "IBAN: %iban%",
+        "bic": "BIC: %bic%"
+      },
+      "consentCheckbox": {
+        "introduction": "With the transmission of the data necessary for the completion of the invoice purchase, an identity check and credit check to payolution I agree.",
+        "textWithLink": "I can revoke my <a href=\"%link%\" data-url=\"%link%\" data-modal-class=\"payolution\" data-toggle=\"modal\" title=\"Einwilligung\">consent</a>  at any time with effect for the future."
+      }
     }
+  },
+  "error": {
+    "VIOLATION::PAYONE_BIRTHDAY_NOT_VALID": "For this payment you must be over 18 years old.",
+    "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "The selected payment method is not available."
   }
 }

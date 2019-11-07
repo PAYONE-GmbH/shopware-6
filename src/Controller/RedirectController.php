@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Controller;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +24,7 @@ class RedirectController
     }
 
     /**
+     * @RouteScope(scopes={"storefront"})
      * @Route("/payone/redirect", name="payone_redirect")
      */
     public function execute(Request $request): Response

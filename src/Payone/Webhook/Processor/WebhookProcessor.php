@@ -42,7 +42,13 @@ class WebhookProcessor implements WebhookProcessorInterface
         ];
 
         foreach (ConfigurationPrefixes::CONFIGURATION_PREFIXES as $prefix) {
-            $storedKeys[] = hash('md5', $config->get(sprintf('%sPortalKey', $prefix)));
+            $key = $config->get(sprintf('%sPortalKey', $prefix));
+
+            if (empty($key)) {
+                continue;
+            }
+
+            $storedKeys[] = hash('md5', $key);
         }
 
         if (!isset($data['key']) || !in_array($data['key'], $storedKeys)) {
@@ -56,11 +62,13 @@ class WebhookProcessor implements WebhookProcessorInterface
         foreach ($this->handlers as $handler) {
             if (!$handler->supports($salesChannelContext, $data)) {
                 $this->logger->debug(sprintf('Skipping webhook handler %s', get_class($handler)));
+
                 continue;
             }
 
             try {
                 $handler->process($salesChannelContext, $data);
+
                 $this->logger->info(sprintf('Processed webhook handler %s', get_class($handler)));
             } catch (Exception $exception) {
                 $this->logger->error(sprintf('Error during processing of webhook handler %s', get_class($handler)), [

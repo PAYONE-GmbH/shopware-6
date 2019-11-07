@@ -7,7 +7,7 @@ namespace PayonePayment\Payone\Request\Refund;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 
 class RefundRequestFactory extends AbstractRequestFactory
@@ -28,7 +28,8 @@ class RefundRequestFactory extends AbstractRequestFactory
     {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIXES[$transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier()]
+            ConfigurationPrefixes::CONFIGURATION_PREFIXES[$transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier()],
+            $context
         );
 
         $this->requests[] = $this->refundRequest->getRequestParameters(

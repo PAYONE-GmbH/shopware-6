@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <routes xmlns="http://symfony.com/schema/routing"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://symfony.com/schema/routing
-    http://symfony.com/schema/routing/routing-1.0.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <import resource="@PayonePayment/Controller/WebhookController.php" type="annotation" />
-    <import resource="@PayonePayment/Controller/RefundController.php" type="annotation" />
-    <import resource="@PayonePayment/Controller/CaptureController.php" type="annotation" />
-    <import resource="@PayonePayment/Controller/RedirectController.php" type="annotation" />
-    <import resource="@PayonePayment/Controller/SettingsController.php" type="annotation" />
+    <import resource="@PayonePayment/Controller/WebhookController.php" type="annotation"/>
+    <import resource="@PayonePayment/Controller/RefundController.php" type="annotation"/>
+    <import resource="@PayonePayment/Controller/CaptureController.php" type="annotation"/>
+    <import resource="@PayonePayment/Controller/RedirectController.php" type="annotation"/>
+    <import resource="@PayonePayment/Controller/SettingsController.php" type="annotation"/>
 
-    <import resource="@PayonePayment/Storefront/Controller/PayoneAccountCardController.php" type="annotation" />
-    <import resource="@PayonePayment/Storefront/Controller/PayoneAccountMandateController.php" type="annotation" />
+    <import resource="@PayonePayment/Storefront/Controller/Account/AccountCardController.php" type="annotation"/>
+    <import resource="@PayonePayment/Storefront/Controller/Account/AccountMandateController.php" type="annotation"/>
 
-    <import resource="@PayonePayment/Storefront/Controller/PayoneCheckoutManageMandateController.php" type="annotation" />
+    <import resource="@PayonePayment/Storefront/Controller/Debit/ManageMandateController.php" type="annotation"/>
+
+    <import resource="@PayonePayment/Storefront/Controller/Paypal/PaypalExpressController.php" type="annotation"/>
+
+    <import resource="@PayonePayment/Storefront/Controller/Payolution/PayolutionController.php" type="annotation"/>
 </routes>

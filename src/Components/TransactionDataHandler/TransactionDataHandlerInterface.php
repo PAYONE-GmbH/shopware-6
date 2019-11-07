@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionDataHandler;
 
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 
 interface TransactionDataHandlerInterface

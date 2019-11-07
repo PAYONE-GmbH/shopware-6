@@ -8,7 +8,7 @@ use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class SofortBankingAuthorizeRequestFactory extends AbstractRequestFactory
@@ -38,7 +38,8 @@ class SofortBankingAuthorizeRequestFactory extends AbstractRequestFactory
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_SOFORT
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_SOFORT,
+            $context->getContext()
         );
 
         $this->requests[] = $this->customerRequest->getRequestParameters(

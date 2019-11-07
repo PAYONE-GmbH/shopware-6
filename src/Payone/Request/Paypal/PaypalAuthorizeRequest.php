@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\Paypal;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
@@ -30,15 +30,18 @@ class PaypalAuthorizeRequest
         $this->currencyRepository = $currencyRepository;
     }
 
-    public function getRequestParameters(PaymentTransaction $transaction, Context $context): array
-    {
+    public function getRequestParameters(
+        PaymentTransaction $transaction,
+        Context $context,
+        ?string $workOrderId = null
+    ): array {
         if (empty($transaction->getReturnUrl())) {
             throw new InvalidOrderException($transaction->getOrder()->getId());
         }
 
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
-        return [
+        return array_filter([
             'request'      => 'authorization',
             'clearingtype' => 'wlt',
             'wallettype'   => 'PPE',
@@ -48,7 +51,8 @@ class PaypalAuthorizeRequest
             'successurl'   => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
             'errorurl'     => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),
             'backurl'      => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),
-        ];
+            'workorderid'  => $workOrderId,
+        ]);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity

@@ -8,7 +8,7 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayonePaymentHandlerInterface;
-use PayonePayment\Payone\Struct\PaymentTransaction;
+use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Framework\Context;
@@ -111,7 +111,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             );
         } else {
             if ($this->isTransactionOpen($transactionData)) {
-                $this->stateHandler->open(
+                $this->stateHandler->reopen(
                     $paymentTransaction->getOrderTransaction()->getId(),
                     $salesChannelContext->getContext()
                 );
@@ -135,6 +135,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
         $criteria = new Criteria();
         $filter   = new EqualsFilter($field, $payoneTransactionId);
+
         $criteria->addFilter($filter);
         $criteria->addAssociation('paymentMethod');
 
@@ -150,6 +151,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     private function shouldAllowCapture(array $transactionData, PaymentTransaction $paymentTransaction): bool
     {
         $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
+
         if (!$paymentMethodEntity) {
             return false;
         }
@@ -167,6 +169,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     private function shouldAllowRefund(array $transactionData, PaymentTransaction $paymentTransaction): bool
     {
         $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
+
         if (!$paymentMethodEntity) {
             return false;
         }
@@ -192,20 +195,19 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return true;
         }
 
-        return in_array(strtolower($transactionData['txaction']),
-            [
-                self::ACTION_PAID,
-                self::ACTION_COMPLETED,
-                self::ACTION_DEBIT,
-            ]
-        );
+        return in_array(strtolower($transactionData['txaction']), [
+            self::ACTION_PAID,
+            self::ACTION_COMPLETED,
+            self::ACTION_DEBIT,
+        ]);
     }
 
     private function isTransactionCancelled(array $transactionData): bool
     {
         return strtolower($transactionData['txaction']) === self::ACTION_CANCELATION
             || strtolower($transactionData['txaction']) === self::ACTION_FAILED
-            || (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && (float) $transactionData['receivable'] === 0.0);
+            || (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE
+                && (float) $transactionData['receivable'] === 0.0);
     }
 
     private function stateExists(string $state, Context $context): bool

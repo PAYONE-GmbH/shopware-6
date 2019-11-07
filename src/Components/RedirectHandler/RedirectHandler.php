@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\RedirectHandler;
 
 use Doctrine\DBAL\Connection;
+use LogicException;
 use RuntimeException;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -26,7 +27,13 @@ class RedirectHandler
 
     public function encode(string $url): string
     {
-        $hash = base64_encode(hash_hmac('sha256', $url, getenv('APP_SECRET')));
+        $secret = getenv('APP_SECRET');
+
+        if (empty($secret)) {
+            throw new LogicException('empty app secret');
+        }
+
+        $hash = base64_encode(hash_hmac('sha256', $url, $secret));
 
         $this->connection->insert('payone_payment_redirect', [
             'id'   => Uuid::randomBytes(),
