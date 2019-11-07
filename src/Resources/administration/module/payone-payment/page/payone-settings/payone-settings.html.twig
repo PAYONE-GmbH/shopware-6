@@ -13,25 +13,25 @@
         {% block payone_payment_actions %}
             <template #smart-bar-actions>
                 {% block payone_payment_settings_actions_test %}
-                <sw-button-process @click="onTest"
-                           :isLoading="isTesting"
-                           :processSuccess="isTestSuccessful"
-                           :disabled="credentialsMissing || isLoading">
-                    {{ $tc('payone-payment.settingsForm.test') }}
-                </sw-button-process>
+                    <sw-button-process @click="onTest"
+                               :isLoading="isTesting"
+                               :processSuccess="isTestSuccessful"
+                               :disabled="credentialsMissing || isLoading">
+                        {{ $tc('payone-payment.settingsForm.test') }}
+                    </sw-button-process>
                 {% endblock %}
 
                 {% block payone_payment_settings_actions_save %}
-                <sw-button-process
-                    class="sw-settings-login-registration__save-action"
-                    :isLoading="isLoading"
-                    :processSuccess="isSaveSuccessful"
-                    :disabled="isLoading || isTesting"
-                    variant="primary"
-                    @process-finish="saveFinish"
-                    @click="onSave">
-                    {{ $tc('payone-payment.settingsForm.save') }}
-                </sw-button-process>
+                    <sw-button-process
+                        class="sw-settings-login-registration__save-action"
+                        :isLoading="isLoading"
+                        :processSuccess="isSaveSuccessful"
+                        :disabled="isLoading || isTesting"
+                        variant="primary"
+                        @process-finish="saveFinish"
+                        @click="onSave">
+                        {{ $tc('payone-payment.settingsForm.save') }}
+                    </sw-button-process>
                 {% endblock %}
             </template>
         {% endblock %}
