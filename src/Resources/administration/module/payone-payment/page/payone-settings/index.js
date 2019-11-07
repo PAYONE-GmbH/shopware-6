@@ -1,10 +1,8 @@
-const { Mixin } = Shopware;
+const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
 import template from './payone-settings.html.twig';
 
-export default {
-    name: 'payone-settings',
-
+Component.register('payone-settings', {
     template,
 
     mixins: [
@@ -197,4 +195,4 @@ export default {
             return criteria;
         }
     }
-};
+});

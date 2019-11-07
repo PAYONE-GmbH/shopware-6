@@ -1,5 +1,5 @@
 const { Module } = Shopware;
-import payoneSettings from './page/payone-settings';
+import './page/payone-settings';
 
 import './extension/sw-order';
 import './extension/sw-settings-index';
@@ -28,7 +28,7 @@ Module.register('payone-payment', {
 
     routes: {
         index: {
-            component: payoneSettings,
+            component: 'payone-settings',
             path: 'index',
             meta: {
                 parentPath: 'sw.settings.index'

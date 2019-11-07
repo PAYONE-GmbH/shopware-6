@@ -20,7 +20,7 @@ export default class PayonePaymentCreditCard extends Plugin {
     init() {
         this.iframe = null;
 
-        this._disableSubmitButton();
+        this.orderFormDisabled = true;
 
         const requestContainer = document.getElementById('payone-request');
 
@@ -120,26 +120,6 @@ export default class PayonePaymentCreditCard extends Plugin {
         };
     }
 
-    _disableSubmitButton() {
-        this.orderFormDisabled = true;
-
-        const button = document.getElementById('confirmFormSubmit');
-
-        if (button) {
-            button.setAttribute('disabled', 'disabled');
-        }
-    }
-
-    _activateSubmitButton() {
-        this.orderFormDisabled = false;
-
-        const button = document.getElementById('confirmFormSubmit');
-
-        if (button) {
-            button.removeAttribute('disabled');
-        }
-    }
-
     _cardDetectionCallback(detectedCardtype) {
         if (detectedCardtype === '-' || detectedCardtype === '?') {
             return;
@@ -214,7 +194,7 @@ export default class PayonePaymentCreditCard extends Plugin {
             document.getElementById('truncatedcardpan').value = response.truncatedcardpan;
             document.getElementById('cardexpiredate').value = response.cardexpiredate;
 
-            this._activateSubmitButton();
+            this.orderFormDisabled = false;
 
             document.getElementById('confirmOrderForm').submit()
         } else {
