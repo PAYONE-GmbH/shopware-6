@@ -2,21 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Test\Payone\Request\CreditCard;
+namespace PayonePayment\Test\Payone\Request\Debit;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
-use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
-use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequest;
-use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
+use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
+use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest;
+use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -27,39 +25,40 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
-class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
+class DebitAuthorizeRequestFactoryTest extends TestCase
 {
     use RequestFactoryTestTrait;
 
     public function testCorrectRequestParameters()
     {
-        $factory = new CreditCardPreAuthorizeRequestFactory($this->getPreAuthorizeRequest(), $this->getCustomerRequest(), $this->getSystemRequest());
+        $factory = new DebitAuthorizeRequestFactory($this->getDebitAuthorizeRequest(), $this->getCustomerRequest(), $this->getSystemRequest());
 
         $salesChannelContext = $this->getSalesChannelContext();
 
-        $request = $factory->getRequestParameters($this->getPaymentTransaction(), new RequestDataBag(['pseudoCardPan' => '']), $salesChannelContext);
+        $dataBag = new RequestDataBag([
+            'iban'         => '',
+            'bic'          => '',
+            'accountOwner' => '',
+        ]);
+        $request = $factory->getRequestParameters($this->getPaymentTransaction(), $dataBag, $salesChannelContext);
 
         Assert::assertArraySubset(
             [
                 'aid'             => '',
                 'amount'          => 10000,
                 'api_version'     => '3.10',
-                'backurl'         => '',
-                'clearingtype'    => 'cc',
+                'clearingtype'    => 'elv',
                 'currency'        => 'EUR',
                 'encoding'        => 'UTF-8',
-                'errorurl'        => '',
                 'integrator_name' => 'kellerkinder',
                 'key'             => '',
                 'language'        => 'de',
                 'mid'             => '',
                 'mode'            => '',
                 'portalid'        => '',
-                'pseudocardpan'   => '',
                 'reference'       => '1',
-                'request'         => 'preauthorization',
+                'request'         => 'authorization',
                 'solution_name'   => 'shopware6',
-                'successurl'      => '',
             ],
             $request
         );
@@ -81,7 +80,7 @@ class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
 
         $paymentMethodEntity = new PaymentMethodEntity();
-        $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);
+        $paymentMethodEntity->setHandlerIdentifier(PayoneDebitPaymentHandler::class);
         $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
 
         $orderTransactionEntity->setOrder($orderEntity);
@@ -92,12 +91,10 @@ class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        $paymentTransactionStruct = new AsyncPaymentTransactionStruct($orderTransactionEntity, $orderEntity, 'test-url');
-
-        return PaymentTransaction::fromAsyncPaymentTransactionStruct($paymentTransactionStruct);
+        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
     }
 
-    private function getPreAuthorizeRequest(): CreditCardPreAuthorizeRequest
+    private function getDebitAuthorizeRequest(): DebitAuthorizeRequest
     {
         $currencyRepository = $this->createMock(EntityRepository::class);
         $currencyEntity     = new CurrencyEntity();
@@ -114,6 +111,6 @@ class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
             )
         );
 
-        return new CreditCardPreAuthorizeRequest($this->createMock(RedirectHandler::class), $currencyRepository);
+        return new DebitAuthorizeRequest($currencyRepository);
     }
 }
