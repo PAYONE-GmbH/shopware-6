@@ -80,6 +80,7 @@ class CartHasher implements CartHasherInterface
         }
 
         $billingAddress = $context->getCustomer()->getActiveBillingAddress();
+
         if (null !== $billingAddress) {
             $hashData['address'] = [
                 'salutation'      => $billingAddress->getSalutationId(),

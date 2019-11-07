@@ -50,7 +50,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         $salesChannelContext = Generator::createSalesChannelContext($context);
         $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
 
-        $this->transactionStateHandler->expects($this->once())->method('open')->with(self::ORDER_TRANSACTION_ID);
+        $this->transactionStateHandler->expects($this->once())->method('reopen')->with(self::ORDER_TRANSACTION_ID);
 
         $this->createHandler()->process($salesChannelContext, [
             'txid'           => self::PAYONE_TRANSACTION_ID,

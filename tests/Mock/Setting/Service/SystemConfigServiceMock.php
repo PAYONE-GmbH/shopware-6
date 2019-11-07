@@ -14,6 +14,7 @@ class SystemConfigServiceMock extends SystemConfigService
     public function get(string $key, ?string $salesChannelId = null, bool $inherit = true)
     {
         $salesChannelId = (string) $salesChannelId;
+
         if (!isset($this->data[$salesChannelId][$key])) {
             return null;
         }
@@ -34,6 +35,7 @@ class SystemConfigServiceMock extends SystemConfigService
             }
         }
         $salesChannelId = (string) $salesChannelId;
+
         if (!isset($this->data[$salesChannelId])) {
             return $values;
         }
@@ -50,6 +52,7 @@ class SystemConfigServiceMock extends SystemConfigService
     public function set(string $key, $value, ?string $salesChannelId = null): void
     {
         $salesChannelId = (string) $salesChannelId;
+
         if (!isset($this->data[$salesChannelId])) {
             $this->data[$salesChannelId] = [];
         }

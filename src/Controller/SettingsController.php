@@ -65,6 +65,7 @@ class SettingsController extends AbstractController
             /** @var null|PaymentMethodEntity $paymentMethod */
             $criteria      = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', $paymentClass));
             $paymentMethod = $paymentMethodRepository->search($criteria, $context)->first();
+
             if (!$paymentMethod || !$paymentMethod->getActive()) {
                 continue;
             }
@@ -104,6 +105,7 @@ class SettingsController extends AbstractController
                     'country'        => 'DE',
                     'successurl'     => 'https://www.payone.com',
                 ];
+
                 break;
             case PayoneDebitPaymentHandler::class:
                 return [
@@ -120,6 +122,7 @@ class SettingsController extends AbstractController
                     'country'           => 'DE',
                     'successurl'        => 'https://www.payone.com',
                 ];
+
                 break;
             case PayonePaypalExpressPaymentHandler::class:
             case PayonePaypalPaymentHandler::class:
@@ -135,6 +138,7 @@ class SettingsController extends AbstractController
                     'country'      => 'DE',
                     'successurl'   => 'https://www.payone.com',
                 ];
+
                 break;
             case PayoneSofortBankingPaymentHandler::class:
                 return [
@@ -150,6 +154,7 @@ class SettingsController extends AbstractController
                     'country'                => 'DE',
                     'successurl'             => 'https://www.payone.com',
                 ];
+
                 break;
             case PayonePayolutionInvoicingPaymentHandler::class:
                 return [
@@ -171,6 +176,7 @@ class SettingsController extends AbstractController
                     'city'                      => 'Test',
                     'ip'                        => '127.0.0.1',
                 ];
+
                 break;
             case PayonePayolutionInstallmentPaymentHandler::class:
                 return [
@@ -192,10 +198,12 @@ class SettingsController extends AbstractController
                     'city'                      => 'Test',
                     'ip'                        => '127.0.0.1',
                 ];
+
                 break;
             default:
                 $this->logger->error(sprintf('There is no test data defined for payment class %s', $paymentClass));
                 throw new RuntimeException(sprintf('There is no test data defined for payment class %s', $paymentClass));
+
                 break;
         }
     }
