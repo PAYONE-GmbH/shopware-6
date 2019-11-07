@@ -8,7 +8,7 @@ use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\CartHasher\CartHasher;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
@@ -85,7 +85,7 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
 
         $paymentMethodEntity = new PaymentMethodEntity();
-        $paymentMethodEntity->setHandlerIdentifier(PayoneDebitPaymentHandler::class);
+        $paymentMethodEntity->setHandlerIdentifier(PayonePaypalPaymentHandler::class);
         $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
 
         $orderTransactionEntity->setOrder($orderEntity);

@@ -7,7 +7,7 @@ namespace PayonePayment\Test\Payone\Request\SofortBanking;
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequest;
 use PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
@@ -76,7 +76,7 @@ class SofortBankingAuthorizeRequestFactoryTest extends TestCase
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
 
         $paymentMethodEntity = new PaymentMethodEntity();
-        $paymentMethodEntity->setHandlerIdentifier(PayoneDebitPaymentHandler::class);
+        $paymentMethodEntity->setHandlerIdentifier(PayoneSofortBankingPaymentHandler::class);
         $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
 
         $orderTransactionEntity->setOrder($orderEntity);
