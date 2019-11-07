@@ -24,11 +24,22 @@ use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Shopware\Core\Framework\Translation\Translator;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
 class PayoneCreditCardPaymentHandlerTest extends TestCase
 {
     use KernelTestBehaviour;
+
+    /** @var Translator */
+    private $translator;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->translator = $this->getContainer()->get('translator');
+    }
 
     public function testRequestOnPay()
     {
@@ -38,9 +49,9 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $requestFactory,
             $client,
-            $this->getContainer()->get('translator'),
+            $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
-            new PaymentStateHandler($this->getContainer()->get('translator')),
+            new PaymentStateHandler($this->translator),
             $cardRepository
         );
 
@@ -81,9 +92,9 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $requestFactory,
             $client,
-            $this->getContainer()->get('translator'),
+            $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
-            new PaymentStateHandler($this->getContainer()->get('translator')),
+            new PaymentStateHandler($this->translator),
             $cardRepository
         );
 
@@ -125,9 +136,9 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $requestFactory,
             $client,
-            $this->getContainer()->get('translator'),
+            $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
-            new PaymentStateHandler($this->getContainer()->get('translator')),
+            new PaymentStateHandler($this->translator),
             $cardRepository
         );
 
