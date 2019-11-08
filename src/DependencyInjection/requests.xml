@@ -8,6 +8,7 @@
         <service id="PayonePayment\Payone\Request\System\SystemRequest">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="Shopware\Core\Framework\Plugin\PluginService" />
+            <argument>%kernel.shopware_version%</argument>
         </service>
 
         <service id="PayonePayment\Payone\Request\System\SystemRequestFactory">

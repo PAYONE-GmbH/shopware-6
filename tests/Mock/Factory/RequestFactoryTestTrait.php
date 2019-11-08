@@ -33,7 +33,7 @@ trait RequestFactoryTestTrait
         $pluginEntity->setVersion('1');
         $pluginService->method('getPluginByName')->willReturn($pluginEntity);
 
-        return new SystemRequest(new ConfigReaderMock(), $pluginService);
+        return new SystemRequest(new ConfigReaderMock(), $pluginService, '1.0.0-test');
     }
 
     private function getCustomerRequest(): CustomerRequest

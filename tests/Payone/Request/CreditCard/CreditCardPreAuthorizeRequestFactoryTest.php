@@ -37,7 +37,7 @@ class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
 
         $salesChannelContext = $this->getSalesChannelContext();
 
-        $request = $factory->getRequestParameters($this->getPaymentTransaction(), new RequestDataBag(['pseudoCardPan' => '']), $salesChannelContext);
+        $request = $factory->getRequestParameters($this->getPaymentTransaction(), new RequestDataBag(['pseudoCardPan' => 'my-pan']), $salesChannelContext);
 
         Assert::assertArraySubset(
             [
@@ -45,21 +45,27 @@ class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
                 'amount'          => 10000,
                 'api_version'     => '3.10',
                 'backurl'         => '',
+                'city'            => 'Some City',
                 'clearingtype'    => 'cc',
                 'currency'        => 'EUR',
+                'email'           => 'first.last@example.com',
                 'encoding'        => 'UTF-8',
                 'errorurl'        => '',
-                'integrator_name' => 'kellerkinder',
+                'firstname'       => 'First',
+                'integrator_name' => 'shopware6',
                 'key'             => '',
                 'language'        => 'de',
+                'lastname'        => 'Last',
                 'mid'             => '',
                 'mode'            => '',
                 'portalid'        => '',
-                'pseudocardpan'   => '',
+                'pseudocardpan'   => 'my-pan',
                 'reference'       => '1',
                 'request'         => 'preauthorization',
-                'solution_name'   => 'shopware6',
+                'solution_name'   => 'kellerkinder',
+                'street'          => 'Some Street 1',
                 'successurl'      => '',
+                'zip'             => '12345',
             ],
             $request
         );
