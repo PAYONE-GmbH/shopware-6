@@ -14,7 +14,7 @@ variables:
 
 composer:
   stage: setup
-  image: "edbizarro/gitlab-ci-pipeline-php:7.3"
+  image: "edbizarro/gitlab-ci-pipeline-php:7.2"
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
   artifacts:
@@ -28,7 +28,7 @@ composer:
 
 phpstan:
   stage: test
-  image: "edbizarro/gitlab-ci-pipeline-php:7.3"
+  image: "edbizarro/gitlab-ci-pipeline-php:7.2"
   dependencies:
     - composer
   script:
@@ -36,7 +36,7 @@ phpstan:
 
 codestyle:
   stage: test
-  image: "edbizarro/gitlab-ci-pipeline-php:7.3"
+  image: "edbizarro/gitlab-ci-pipeline-php:7.2"
   dependencies:
     - composer
   script:
@@ -47,7 +47,7 @@ codestyle:
       - .php_cs.cache
 
 phpunit:
-  image: "edbizarro/gitlab-ci-pipeline-php:7.3"
+  image: "edbizarro/gitlab-ci-pipeline-php:7.2"
   stage: test
   services:
     - mysql:5.7
@@ -55,7 +55,7 @@ phpunit:
     - composer
   script:
     - sudo apt-get update && sudo apt-get install default-mysql-client -y
-    - git clone https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
+    - git clone -b v6.0.0+ea1.1 https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
     - mv ${CI_PROJECT_DIR}/opt /tmp/opt
     - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/${CI_PROJECT_NAME}
     - mv /tmp/opt ${CI_PROJECT_DIR}/opt
