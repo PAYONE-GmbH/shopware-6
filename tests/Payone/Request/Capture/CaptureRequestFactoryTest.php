@@ -41,15 +41,15 @@ class CaptureRequestFactoryTest extends TestCase
                 'api_version'     => '3.10',
                 'currency'        => 'EUR',
                 'encoding'        => 'UTF-8',
+                'integrator_name' => 'shopware6',
                 'key'             => '',
                 'mid'             => '',
                 'mode'            => '',
                 'portalid'        => '',
                 'request'         => 'capture',
                 'sequencenumber'  => 1,
+                'solution_name'   => 'kellerkinder',
                 'txid'            => 'test-transaction-id',
-                'integrator_name' => 'kellerkinder',
-                'solution_name'   => 'shopware6',
             ],
             $request
         );

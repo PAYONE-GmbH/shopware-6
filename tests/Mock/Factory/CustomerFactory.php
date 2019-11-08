@@ -16,17 +16,17 @@ class CustomerFactory
         $customer = new CustomerEntity();
 
         $customer->setLanguageId(Defaults::LANGUAGE_SYSTEM);
-        $customer->setFirstName('');
-        $customer->setLastName('');
-        $customer->setEmail('');
+        $customer->setFirstName('First');
+        $customer->setLastName('Last');
+        $customer->setEmail('first.last@example.com');
 
         $address = new CustomerAddressEntity();
         $address->setSalutationId(Constants::SALUTATION_ID);
-        $address->setFirstName('');
-        $address->setLastName('');
-        $address->setStreet('');
-        $address->setZipcode('');
-        $address->setCity('');
+        $address->setFirstName('First');
+        $address->setLastName('Last');
+        $address->setStreet('Some Street 1');
+        $address->setZipcode('12345');
+        $address->setCity('Some City');
         $address->setCountryId(Constants::COUNTRY_ID);
 
         $customer->setActiveBillingAddress($address);

@@ -48,8 +48,8 @@ class RefundRequestFactoryTest extends TestCase
                 'request'         => 'debit',
                 'sequencenumber'  => 2,
                 'txid'            => 'test-transaction-id',
-                'integrator_name' => 'kellerkinder',
-                'solution_name'   => 'shopware6',
+                'integrator_name' => 'shopware6',
+                'solution_name'   => 'kellerkinder',
             ],
             $request
         );
