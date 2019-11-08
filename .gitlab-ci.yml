@@ -55,7 +55,7 @@ phpunit:
     - composer
   script:
     - sudo apt-get update && sudo apt-get install default-mysql-client -y
-    - git clone -b v6.0.0+ea1.1 https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
+    - git clone -b v6.0.0+ea2 https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
     - mv ${CI_PROJECT_DIR}/opt /tmp/opt
     - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/${CI_PROJECT_NAME}
     - mv /tmp/opt ${CI_PROJECT_DIR}/opt
@@ -63,7 +63,6 @@ phpunit:
     - cd ${CI_PROJECT_DIR}/opt/shopware && php ${CI_PROJECT_DIR}/opt/shopware/psh.phar init
     - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:install --activate ${CI_PROJECT_NAME}
     - cd ${CI_PROJECT_DIR}/opt/shopware && composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
-    - cd ${CI_PROJECT_DIR}/opt/shopware && php ${CI_PROJECT_DIR}/opt/shopware/psh.phar init-test-databases
     - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && ${CI_PROJECT_DIR}/opt/shopware/vendor/bin/phpunit
     - cd ${CI_PROJECT_DIR}/opt/shopware && php -d pcov.enabled=1 -d pcov.directory=${CI_PROJECT_DIR}
         vendor/bin/phpunit

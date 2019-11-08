@@ -20,7 +20,9 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": "^7.2"
+    "shopware/core": "*",
+    "shopware/administration": "*",
+    "shopware/storefront": "*"
   },
   "require-dev": {
     "dms/phpunit-arraysubset-asserts": "^0.1.0",
