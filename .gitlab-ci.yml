@@ -69,7 +69,6 @@ phpunit:
     - cd ${CI_PROJECT_DIR}/opt/shopware && php ${CI_PROJECT_DIR}/opt/shopware/psh.phar init
     - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:install --activate ${CI_PROJECT_NAME}
     - cd ${CI_PROJECT_DIR}/opt/shopware && composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
-    - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && ${CI_PROJECT_DIR}/opt/shopware/vendor/bin/phpunit
     - cd ${CI_PROJECT_DIR}/opt/shopware && php -d pcov.enabled=1 -d pcov.directory=${CI_PROJECT_DIR}
         vendor/bin/phpunit
         --configuration custom/plugins/${CI_PROJECT_NAME}/phpunit.xml.dist
@@ -81,6 +80,6 @@ phpunit:
   coverage: '/^\s*Lines:\s*(\d+(?:\.\d+)?%)/'
   artifacts:
     paths:
-      - build/artifacts/phpunit.clover.xml
+      - opt/shopware/build/artifacts/phpunit.clover.xml
     reports:
-      junit: build/artifacts/phpunit.junit.xml
+      junit: opt/shopware/build/artifacts/phpunit.junit.xml
