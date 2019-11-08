@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Controller;
 
+use PayonePayment\Components\TransactionDataHandler\TransactionDataHandler;
 use PayonePayment\Controller\WebhookController;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use PayonePayment\Payone\Webhook\Processor\WebhookProcessor;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Components\ConfigReaderMock;
 use PayonePayment\Test\Mock\Factory\TransactionStatusWebhookHandlerFactory;
+use PayonePayment\Test\Mock\Repository\EntityRepositoryMock;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -17,7 +19,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStat
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class WebhookControllerTest extends TestCase
@@ -99,13 +101,18 @@ class WebhookControllerTest extends TestCase
 
     private function createWebhookController(): WebhookController
     {
+        $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
+            $this->createMock(EntityRepositoryInterface::class),
+            $this->transactionStateHandler,
+            new TransactionDataHandler(new EntityRepositoryMock()),
+            []
+        );
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
-            $this->createMock(EntityRepository::class),
-            $this->transactionStateHandler
+            $transactionStatusService
         );
 
         return new WebhookController(
-            new WebhookProcessor(new ConfigReaderMock(), new \ArrayObject([$transactionStatusHandler]), new NullLogger())
+            new WebhookProcessor(new ConfigReaderMock([]), new \ArrayObject([$transactionStatusHandler]), new NullLogger())
         );
     }
 }

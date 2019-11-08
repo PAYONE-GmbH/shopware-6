@@ -6,6 +6,7 @@ namespace PayonePayment\Test\Mock\Factory;
 
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
+use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler;
@@ -27,11 +28,24 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 
 class TransactionStatusWebhookHandlerFactory
 {
+    public static function createHandler(
+        TransactionStatusServiceInterface $transactionStatusService
+    ): TransactionStatusWebhookHandler {
+        return new TransactionStatusWebhookHandler(
+            $transactionStatusService,
+            new NullLogger()
+        );
+    }
+
     /**
      * @param EntityRepositoryInterface&MockObject $orderTransactionRepository
      */
-    public static function createHandler(EntityRepositoryInterface $orderTransactionRepository, OrderTransactionStateHandler $transactionStateHandler): TransactionStatusWebhookHandler
-    {
+    public static function createTransactionStatusService(
+        EntityRepositoryInterface $orderTransactionRepository,
+        OrderTransactionStateHandler $transactionStateHandler,
+        TransactionDataHandler $transactionDataHandler,
+        array $configuration = []
+    ): TransactionStatusServiceInterface {
         $orderTransactionEntity = new OrderTransactionEntity();
         $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
 
@@ -65,15 +79,12 @@ class TransactionStatusWebhookHandlerFactory
             )
         );
 
-        return new TransactionStatusWebhookHandler(
-            new TransactionStatusService(
-                $orderTransactionRepository,
-                $transactionStateHandler,
-                new TransactionDataHandler(new EntityRepositoryMock()),
-                new ConfigReaderMock(),
-                new EntityRepositoryMock()
-            ),
-            new NullLogger()
+        return new TransactionStatusService(
+            $orderTransactionRepository,
+            $transactionStateHandler,
+            $transactionDataHandler,
+            new ConfigReaderMock($configuration),
+            new EntityRepositoryMock()
         );
     }
 }

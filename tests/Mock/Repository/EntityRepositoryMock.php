@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Mock\Repository;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
@@ -35,6 +36,7 @@ class EntityRepositoryMock implements EntityRepositoryInterface
 
     public function search(Criteria $criteria, Context $context): EntitySearchResult
     {
+        return new EntitySearchResult(0, new EntityCollection([]), null, $criteria, $context);
     }
 
     public function update(array $data, Context $context): EntityWrittenContainerEvent
