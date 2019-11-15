@@ -2,7 +2,7 @@
     <sw-page class="payone-payment">
         {% block payone_payment_header %}
             <template #smart-bar-header>
-                <h2>
+                <h2>Test 123
                     {{ $tc('sw-settings.index.title') }}
                     <sw-icon name="small-arrow-medium-right" small></sw-icon>
                     {{ $tc('payone-payment.title') }}
@@ -18,6 +18,15 @@
                            :processSuccess="isTestSuccessful"
                            :disabled="credentialsMissing || isLoading">
                     {{ $tc('payone-payment.settingsForm.test') }}
+                </sw-button-process>
+                {% endblock %}
+
+                {% block payone_payment_settings_actions_export %}
+                <sw-button-process @click="onExport"
+                                   :isLoading="isExporting"
+                                   :processSuccess="isExportSuccessful"
+                                   :disabled="isLoading">
+                    {{ $tc('payone-payment.settingsForm.export') }}
                 </sw-button-process>
                 {% endblock %}
 
