@@ -68,7 +68,15 @@ class PayonePaypalPaymentHandlerTest extends TestCase
             ]
         );
 
-        $response = $paymentHandler->pay(new AsyncPaymentTransactionStruct($paymentTransaction->getOrderTransaction(), $paymentTransaction->getOrder(), ''), $dataBag, Generator::createSalesChannelContext());
+        $response = $paymentHandler->pay(
+            new AsyncPaymentTransactionStruct(
+                $paymentTransaction->getOrderTransaction(),
+                $paymentTransaction->getOrder(),
+                ''
+            ),
+            $dataBag,
+            Generator::createSalesChannelContext()
+        );
 
         $this->assertEquals($response->getTargetUrl(), 'test-url');
     }
