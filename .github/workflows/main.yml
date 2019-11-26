@@ -37,8 +37,6 @@ jobs:
       run: php -m
     - name: Composer setup
       run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
-    - name: PHPStan
-      run: vendor/bin/phpstan analyse -l 6 -c phpstan.neon tests src
     - name: Codestyle
       run: vendor/bin/php-cs-fixer fix -v --dry-run
     - name: PHPUnit
@@ -50,7 +48,8 @@ jobs:
         printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"localhost\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"shopware\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"root\"" > /tmp/shopware/.psh.yaml.override
         cd /tmp/shopware
         git checkout tags/${{ matrix.shopware-versions }}
-        php psh.phar init 
+        php psh.phar init
+        vendor/bin/phpstan analyse -l 6 -c phpstan.neon --autoload-file=vendor/autoload.php custom/plugins/PayonePayment/tests custom/plugins/PayonePayment/src 
         php /tmp/shopware/bin/console plugin:refresh
         php /tmp/shopware/bin/console plugin:install --activate PayonePayment
         /tmp/shopware/vendor/bin/phpunit --configuration custom/plugins/PayonePayment/phpunit.xml.dist
