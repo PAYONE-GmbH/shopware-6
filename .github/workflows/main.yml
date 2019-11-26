@@ -1,0 +1,56 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  run:
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      max-parallel: 15
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ['7.3']
+        shopware-versions: ['v6.0.0+ea2']
+    name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
+    services:
+      mysql:
+        image: mysql:5.7.27
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+        - 3306
+        volumes:
+        - $HOME/mysql:/var/lib/mysql
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Install PHP
+      uses: shivammathur/setup-php@master
+      with:
+        php-version: ${{ matrix.php-versions }}
+        extension-csv: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip
+    - name: Check PHP Version
+      run: php -v
+    - name: Check Composer Version
+      run: composer -V
+    - name: Check PHP Extensions
+      run: php -m
+    - name: Composer setup
+      run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
+    - name: PHPStan
+      run: vendor/bin/phpstan analyse -l 6 -c phpstan.neon tests src
+    - name: Codestyle
+      run: vendor/bin/php-cs-fixer fix -v --dry-run
+    - name: PHPUnit
+      run: |
+        mkdir /tmp/shopware
+        git clone https://github.com/shopware/development /tmp/shopware
+        mkdir /tmp/shopware/custom/plugins/PayonePayment
+        cp -r * /tmp/shopware/custom/plugins/PayonePayment/
+        printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"localhost\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"shopware\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"root\"" > /tmp/shopware/.psh.yaml.override
+        cd /tmp/shopware
+        git checkout tags/${{ matrix.shopware-versions }}
+        php psh.phar init 
+        php /tmp/shopware/bin/console plugin:refresh
+        php /tmp/shopware/bin/console plugin:install --activate PayonePayment
+        /tmp/shopware/vendor/bin/phpunit --configuration custom/plugins/PayonePayment/phpunit.xml.dist
