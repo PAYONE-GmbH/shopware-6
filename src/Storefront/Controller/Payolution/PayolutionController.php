@@ -348,12 +348,6 @@ class PayolutionController extends StorefrontController
         return $this->renderView($view, $calculationResponse);
     }
 
-    /**
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return mixed
-     */
     private function convertType(string $key, $value)
     {
         $float = [

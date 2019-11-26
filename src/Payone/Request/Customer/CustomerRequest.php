@@ -76,6 +76,7 @@ class CustomerRequest
         ];
 
         $birthday = $context->getCustomer()->getBirthday();
+
         if (null !== $birthday) {
             $personalData['birthday'] = $birthday->format('Ymd');
         }

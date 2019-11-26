@@ -78,6 +78,7 @@ class WebhookProcessor implements WebhookProcessorInterface
                 ]);
 
                 $response = WebhookHandlerInterface::RESPONSE_TSNOTOK;
+
                 break;
             }
         }
