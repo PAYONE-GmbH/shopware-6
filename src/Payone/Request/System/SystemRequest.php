@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\System;
 
-use PackageVersions\Versions;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Plugin\PluginService;
@@ -17,12 +16,17 @@ class SystemRequest
     /** @var PluginService */
     private $pluginService;
 
+    /** @var string */
+    private $shopwareVersion;
+
     public function __construct(
         ConfigReaderInterface $configReader,
-        PluginService $pluginService
+        PluginService $pluginService,
+        string $shopwareVersion
     ) {
-        $this->configReader  = $configReader;
-        $this->pluginService = $pluginService;
+        $this->configReader    = $configReader;
+        $this->pluginService   = $pluginService;
+        $this->shopwareVersion = $shopwareVersion;
     }
 
     public function getRequestParameters(string $salesChannel, string $configurationPrefix, Context $context): array
@@ -44,10 +48,10 @@ class SystemRequest
             'api_version'        => '3.10',
             'mode'               => $configuration->get('transactionMode'),
             'encoding'           => 'UTF-8',
-            'integrator_name'    => 'kellerkinder',
-            'integrator_version' => $plugin->getVersion(),
-            'solution_name'      => 'shopware6',
-            'solution_version'   => Versions::getVersion('shopware/platform'),
+            'integrator_name'    => 'shopware6',
+            'integrator_version' => $this->shopwareVersion,
+            'solution_name'      => 'kellerkinder',
+            'solution_version'   => $plugin->getVersion(),
         ];
     }
 }

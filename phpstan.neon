@@ -6,3 +6,5 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
     ignoreErrors:
         - '#Property(.*)does not accept object(.*)#'
+    excludes_analyse:
+        - tests/Bootstrap.php
