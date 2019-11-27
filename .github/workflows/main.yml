@@ -9,7 +9,7 @@ jobs:
       max-parallel: 15
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ['7.2']
+        php-versions: ['7.3']
         shopware-versions: ['v6.0.0+ea2']
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
