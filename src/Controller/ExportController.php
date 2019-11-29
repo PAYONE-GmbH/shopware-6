@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: a.levitsky
- * Date: 15.11.2019
- * Time: 11:21
+ * Api Controller for config export
  */
 
 namespace PayonePayment\Controller;
