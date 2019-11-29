@@ -407,4 +407,42 @@
             <label lang="de-DE">Setzt das b2b-Flag, wenn beim Kunden der Firmennamen gesetzt ist.</label>
         </input-field>
     </card>
+
+    <card>
+        <title>Payolution Debit</title>
+
+        <input-field>
+            <name>payolutionDebitMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionDebitAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionDebitPortalId</name>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>payolutionDebitPortalKey</name>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>payolutionDebitTransferCompanyData</name>
+            <label>Sets the b2b flag if the customer's company name is present.</label>
+            <label lang="de-DE">Setzt das b2b-Flag, wenn beim Kunden der Firmennamen gesetzt ist.</label>
+        </input-field>
+    </card>
 </config>
