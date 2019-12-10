@@ -10,7 +10,6 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitPreAuthorizeRequestFactory;
-use PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
@@ -39,11 +38,37 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler
-    ) {
+    )
+    {
         $this->requestFactory = $requestFactory;
-        $this->client         = $client;
-        $this->translator     = $translator;
-        $this->dataHandler    = $dataHandler;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function isCapturable(array $transactionData, array $customFields): bool
+    {
+        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
+            return false;
+        }
+
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED
+            && strtolower($transactionData['transaction_status']) === TransactionStatusService::STATUS_COMPLETED;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function isRefundable(array $transactionData, array $customFields): bool
+    {
+        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float)$transactionData['receivable'] !== 0.0) {
+            return true;
+        }
+
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 
     /**
@@ -89,48 +114,23 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
         }
 
         $data = [
-            CustomFieldInstaller::LAST_REQUEST       => $request['request'],
-            CustomFieldInstaller::TRANSACTION_ID     => (string) $response['txid'],
-            CustomFieldInstaller::TRANSACTION_STATE  => $response['status'],
+            CustomFieldInstaller::LAST_REQUEST => $request['request'],
+            CustomFieldInstaller::TRANSACTION_ID => (string)$response['txid'],
+            CustomFieldInstaller::TRANSACTION_STATE => $response['status'],
             CustomFieldInstaller::AUTHORIZATION_TYPE => $request['request'],
-            CustomFieldInstaller::SEQUENCE_NUMBER    => -1,
-            CustomFieldInstaller::USER_ID            => $response['userid'],
-            CustomFieldInstaller::ALLOW_CAPTURE      => false,
-            CustomFieldInstaller::ALLOW_REFUND       => false,
-            CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
+            CustomFieldInstaller::SEQUENCE_NUMBER => -1,
+            CustomFieldInstaller::USER_ID => $response['userid'],
+            CustomFieldInstaller::ALLOW_CAPTURE => false,
+            CustomFieldInstaller::ALLOW_REFUND => false,
+            CustomFieldInstaller::WORK_ORDER_ID => $dataBag->get('workorder'),
             CustomFieldInstaller::CLEARING_REFERENCE => $response['addpaydata']['clearing_reference'],
-            CustomFieldInstaller::CAPTURE_MODE       => 'completed',
-            CustomFieldInstaller::CLEARING_TYPE      => 'fnc',
-            CustomFieldInstaller::FINANCING_TYPE     => 'PYD',
+            CustomFieldInstaller::CAPTURE_MODE => 'completed',
+            CustomFieldInstaller::CLEARING_TYPE => 'fnc',
+            CustomFieldInstaller::FINANCING_TYPE => 'PYD',
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function isCapturable(array $transactionData, array $customFields): bool
-    {
-        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
-            return false;
-        }
-
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED
-            && strtolower($transactionData['transaction_status']) === TransactionStatusService::STATUS_COMPLETED;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function isRefundable(array $transactionData, array $customFields): bool
-    {
-        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
-            return true;
-        }
-
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 
     /**

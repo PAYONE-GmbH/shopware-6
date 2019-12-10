@@ -32,29 +32,31 @@ class PayolutionDebitPreAuthorizeRequest
         EntityRepositoryInterface $currencyRepository,
         EntityRepositoryInterface $orderAddressRepository,
         ConfigReaderInterface $configReader
-    ) {
-        $this->currencyRepository     = $currencyRepository;
+    )
+    {
+        $this->currencyRepository = $currencyRepository;
         $this->orderAddressRepository = $orderAddressRepository;
-        $this->configReader           = $configReader;
+        $this->configReader = $configReader;
     }
 
     public function getRequestParameters(
         PaymentTransaction $transaction,
         RequestDataBag $dataBag,
         SalesChannelContext $context
-    ): array {
+    ): array
+    {
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context->getContext());
 
         $parameters = [
-            'request'       => 'preauthorization',
-            'clearingtype'  => 'fnc',
+            'request' => 'preauthorization',
+            'clearingtype' => 'fnc',
             'financingtype' => 'PYD',
-            'amount'        => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
-            'currency'      => $currency->getIsoCode(),
-            'reference'     => $transaction->getOrder()->getOrderNumber(),
+            'amount' => (int)($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'currency' => $currency->getIsoCode(),
+            'reference' => $transaction->getOrder()->getOrderNumber(),
 
-            'iban'     => $dataBag->get('payolutionIban'),
-            'bic'     => $dataBag->get('payolutionBic'),
+            'iban' => $dataBag->get('payolutionIban'),
+            'bic' => $dataBag->get('payolutionBic'),
         ];
 
         if (!empty($dataBag->get('payolutionBirthday'))) {
@@ -73,7 +75,7 @@ class PayolutionDebitPreAuthorizeRequest
             $billingAddress = $this->getBillingAddress($transaction->getOrder(), $context->getContext());
 
             if ($billingAddress->getCompany()) {
-                $parameters['add_paydata[b2b]']         = 'yes';
+                $parameters['add_paydata[b2b]'] = 'yes';
                 $parameters['add_paydata[company_uid]'] = $billingAddress->getVatId();
             }
         }
@@ -95,6 +97,13 @@ class PayolutionDebitPreAuthorizeRequest
         return $currency;
     }
 
+    private function transferCompanyData(SalesChannelContext $context): bool
+    {
+        $configuration = $this->configReader->read($context->getSalesChannel()->getId());
+
+        return !empty($configuration->get('payolutionDebitTransferCompanyData'));
+    }
+
     private function getBillingAddress(OrderEntity $order, Context $context): OrderAddressEntity
     {
         $criteria = new Criteria([$order->getBillingAddressId()]);
@@ -107,12 +116,5 @@ class PayolutionDebitPreAuthorizeRequest
         }
 
         return $address;
-    }
-
-    private function transferCompanyData(SalesChannelContext $context): bool
-    {
-        $configuration = $this->configReader->read($context->getSalesChannel()->getId());
-
-        return !empty($configuration->get('payolutionDebitTransferCompanyData'));
     }
 }
