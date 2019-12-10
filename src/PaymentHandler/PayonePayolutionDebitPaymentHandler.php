@@ -53,6 +53,15 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
     {
         $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction);
 
+        try {
+            $this->validate($dataBag);
+        } catch (PayoneRequestException $e) {
+            throw new SyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
+
         $request = $this->requestFactory->getRequestParameters(
             $paymentTransaction,
             $dataBag,
@@ -72,7 +81,6 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
-
         if (empty($response['status']) || $response['status'] === 'ERROR') {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
@@ -123,5 +131,19 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
         }
 
         return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+    }
+
+    /**
+     * @param RequestDataBag $dataBag
+     * @throws PayoneRequestException
+     */
+    private function validate(RequestDataBag $dataBag)
+    {
+        if ($dataBag->get('payolutionConsent') !== 'on') {
+            throw new PayoneRequestException('No payolutionConsent');
+        }
+        if ($dataBag->get('payolutionMandate') !== 'on') {
+            throw new PayoneRequestException('No payolutionMandate');
+        }
     }
 }
