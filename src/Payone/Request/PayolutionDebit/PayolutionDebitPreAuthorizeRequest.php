@@ -52,6 +52,9 @@ class PayolutionDebitPreAuthorizeRequest
             'amount'        => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
             'currency'      => $currency->getIsoCode(),
             'reference'     => $transaction->getOrder()->getOrderNumber(),
+
+            'iban'     => $dataBag->get('payolutionIban'),
+            'bic'     => $dataBag->get('payolutionBic'),
         ];
 
         if (!empty($dataBag->get('payolutionBirthday'))) {
