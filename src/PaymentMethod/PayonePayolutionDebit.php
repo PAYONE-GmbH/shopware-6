@@ -28,11 +28,11 @@ class PayonePayolutionDebit extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name' => 'Payone Paysafe Pay Later Lastschrift',
+            'name'        => 'Payone Paysafe Pay Later Lastschrift',
             'description' => 'Sie zahlen per Lastschrift.',
         ],
         'en-GB' => [
-            'name' => 'Payone Paysafe Pay Later Debit',
+            'name'        => 'Payone Paysafe Pay Later Debit',
             'description' => 'Pay by debit.',
         ],
     ];

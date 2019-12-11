@@ -40,13 +40,13 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
         TransactionDataHandlerInterface $dataHandler
     ) {
         $this->requestFactory = $requestFactory;
-        $this->client = $client;
-        $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
+        $this->client         = $client;
+        $this->translator     = $translator;
+        $this->dataHandler    = $dataHandler;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
@@ -59,7 +59,7 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
@@ -71,7 +71,7 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
