@@ -38,8 +38,7 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler
-    )
-    {
+    ) {
         $this->requestFactory = $requestFactory;
         $this->client = $client;
         $this->translator = $translator;
@@ -47,7 +46,7 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
@@ -60,7 +59,7 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
@@ -72,7 +71,7 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
@@ -114,19 +113,19 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
         }
 
         $data = [
-            CustomFieldInstaller::LAST_REQUEST => $request['request'],
-            CustomFieldInstaller::TRANSACTION_ID => (string)$response['txid'],
-            CustomFieldInstaller::TRANSACTION_STATE => $response['status'],
+            CustomFieldInstaller::LAST_REQUEST       => $request['request'],
+            CustomFieldInstaller::TRANSACTION_ID     => (string) $response['txid'],
+            CustomFieldInstaller::TRANSACTION_STATE  => $response['status'],
             CustomFieldInstaller::AUTHORIZATION_TYPE => $request['request'],
-            CustomFieldInstaller::SEQUENCE_NUMBER => -1,
-            CustomFieldInstaller::USER_ID => $response['userid'],
-            CustomFieldInstaller::ALLOW_CAPTURE => false,
-            CustomFieldInstaller::ALLOW_REFUND => false,
-            CustomFieldInstaller::WORK_ORDER_ID => $dataBag->get('workorder'),
+            CustomFieldInstaller::SEQUENCE_NUMBER    => -1,
+            CustomFieldInstaller::USER_ID            => $response['userid'],
+            CustomFieldInstaller::ALLOW_CAPTURE      => false,
+            CustomFieldInstaller::ALLOW_REFUND       => false,
+            CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
             CustomFieldInstaller::CLEARING_REFERENCE => $response['addpaydata']['clearing_reference'],
-            CustomFieldInstaller::CAPTURE_MODE => 'completed',
-            CustomFieldInstaller::CLEARING_TYPE => 'fnc',
-            CustomFieldInstaller::FINANCING_TYPE => 'PYD',
+            CustomFieldInstaller::CAPTURE_MODE       => 'completed',
+            CustomFieldInstaller::CLEARING_TYPE      => 'fnc',
+            CustomFieldInstaller::FINANCING_TYPE     => 'PYD',
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
@@ -142,6 +141,7 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
         if ($dataBag->get('payolutionConsent') !== 'on') {
             throw new PayoneRequestException('No payolutionConsent');
         }
+
         if ($dataBag->get('payolutionMandate') !== 'on') {
             throw new PayoneRequestException('No payolutionMandate');
         }
