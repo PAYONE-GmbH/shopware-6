@@ -33,9 +33,9 @@ class PayolutionDebitPreAuthorizeRequest
         EntityRepositoryInterface $orderAddressRepository,
         ConfigReaderInterface $configReader
     ) {
-        $this->currencyRepository = $currencyRepository;
+        $this->currencyRepository     = $currencyRepository;
         $this->orderAddressRepository = $orderAddressRepository;
-        $this->configReader = $configReader;
+        $this->configReader           = $configReader;
     }
 
     public function getRequestParameters(
@@ -46,7 +46,7 @@ class PayolutionDebitPreAuthorizeRequest
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context->getContext());
 
         $parameters = [
-            'request' => 'preauthorization',
+            'request'       => 'preauthorization',
             'clearingtype'  => 'fnc',
             'financingtype' => 'PYD',
             'amount'        => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
@@ -72,7 +72,7 @@ class PayolutionDebitPreAuthorizeRequest
             $billingAddress = $this->getBillingAddress($transaction->getOrder(), $context->getContext());
 
             if ($billingAddress->getCompany()) {
-                $parameters['add_paydata[b2b]'] = 'yes';
+                $parameters['add_paydata[b2b]']         = 'yes';
                 $parameters['add_paydata[company_uid]'] = $billingAddress->getVatId();
             }
         }
