@@ -13,6 +13,7 @@
                 name="payolutionBirthday"
                 class="form-control{% if formViolations.getViolations('/payolutionBirthday') is not empty %} is-invalid{% endif %}"
                 form="confirmOrderForm"
+                required="required"
             />
         </div>
     </div>
@@ -26,6 +27,7 @@
                     id="payolutionConsent"
                     form="confirmOrderForm"
                     name="payolutionConsent"
+                    required="required"
                 />
 
                 <label for="payolutionConsent" class="custom-control-label consent-label">

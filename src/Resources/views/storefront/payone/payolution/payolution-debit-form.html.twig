@@ -26,6 +26,7 @@
                     name="payolutionAccountHolder"
                     class="form-control{% if formViolations.getViolations('/payolutionAccountHolder') is not empty %} is-invalid{% endif %}"
                     form="confirmOrderForm"
+                    required="required"
                 />
             </div>
         </div>
@@ -43,6 +44,7 @@
                     name="payolutionIban"
                     class="form-control{% if formViolations.getViolations('/payolutionIban') is not empty %} is-invalid{% endif %}"
                     form="confirmOrderForm"
+                    required="required"
                 />
             </div>
         </div>
@@ -60,30 +62,13 @@
                     name="payolutionBic"
                     class="form-control{% if formViolations.getViolations('/payolutionBic') is not empty %} is-invalid{% endif %}"
                     form="confirmOrderForm"
+                    required="required"
                 />
             </div>
         </div>
-
-        <div class="form-row">
-            <div class="form-group col-12">
-                <div class="custom-control custom-checkbox">
-                    <input
-                        type="checkbox"
-                        class="custom-control-input{% if formViolations.getViolations('/payolutionConsent') is not empty %} is-invalid{% endif %}"
-                        id="payolutionConsent"
-                        form="confirmOrderForm"
-                        name="payolutionConsent"
-                    />
-
-                    <label for="payolutionConsent" class="custom-control-label consent-label">
-                        {{ "PayonePayment.payolution.consentCheckbox.introduction" | trans }}
-                        {{ "PayonePayment.payolution.consentCheckbox.textWithLink" | trans({
-                            '%link%': path('frontend.account.payone.payolution.consent')
-                        }) | raw }}
-                    </label>
-                </div>
-            </div>
-        </div>
+        {% sw_include '@Storefront/payone/payolution/consent-checkbox.html.twig' with {
+            style: 'wide'
+        } %}
 
         <div class="form-row">
             <div class="form-group col-12">
@@ -94,6 +79,7 @@
                         id="payolutionMandate"
                         form="confirmOrderForm"
                         name="payolutionMandate"
+                        required="required"
                     />
 
                     <label for="payolutionMandate" class="custom-control-label consent-label">
