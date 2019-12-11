@@ -105,6 +105,7 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
+
         if (empty($response['status']) || $response['status'] === 'ERROR') {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
