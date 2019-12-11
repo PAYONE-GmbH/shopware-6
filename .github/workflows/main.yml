@@ -39,7 +39,7 @@ jobs:
     - name: Composer setup
       run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     - name: Codestyle
-      run: vendor/bin/php-cs-fixer fix -v --dry-run
+      run: vendor/bin/php-cs-fixer fix -v --dry-run --diff
     - name: PHPUnit
       run: |
         mkdir /tmp/shopware
