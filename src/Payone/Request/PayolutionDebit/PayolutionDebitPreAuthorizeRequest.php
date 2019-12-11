@@ -32,8 +32,7 @@ class PayolutionDebitPreAuthorizeRequest
         EntityRepositoryInterface $currencyRepository,
         EntityRepositoryInterface $orderAddressRepository,
         ConfigReaderInterface $configReader
-    )
-    {
+    ) {
         $this->currencyRepository = $currencyRepository;
         $this->orderAddressRepository = $orderAddressRepository;
         $this->configReader = $configReader;
@@ -43,20 +42,18 @@ class PayolutionDebitPreAuthorizeRequest
         PaymentTransaction $transaction,
         RequestDataBag $dataBag,
         SalesChannelContext $context
-    ): array
-    {
+    ): array {
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context->getContext());
 
         $parameters = [
             'request' => 'preauthorization',
-            'clearingtype' => 'fnc',
+            'clearingtype'  => 'fnc',
             'financingtype' => 'PYD',
-            'amount' => (int)($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
-            'currency' => $currency->getIsoCode(),
-            'reference' => $transaction->getOrder()->getOrderNumber(),
-
-            'iban' => $dataBag->get('payolutionIban'),
-            'bic' => $dataBag->get('payolutionBic'),
+            'amount'        => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'currency'      => $currency->getIsoCode(),
+            'reference'     => $transaction->getOrder()->getOrderNumber(),
+            'iban'          => $dataBag->get('payolutionIban'),
+            'bic'           => $dataBag->get('payolutionBic'),
         ];
 
         if (!empty($dataBag->get('payolutionBirthday'))) {
