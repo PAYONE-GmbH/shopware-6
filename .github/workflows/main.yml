@@ -7,10 +7,11 @@ jobs:
     runs-on: ${{ matrix.operating-system }}
     strategy:
       max-parallel: 15
+      fail-fast: false
       matrix:
         operating-system: [ubuntu-latest]
         php-versions: ['7.3']
-        shopware-versions: ['v6.0.0+ea2']
+        shopware-versions: ['v6.1.0-rc2']
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
       mysql:
@@ -49,7 +50,6 @@ jobs:
         cd /tmp/shopware
         git checkout tags/${{ matrix.shopware-versions }}
         php psh.phar init
-        vendor/bin/phpstan analyse -l 6 -c phpstan.neon --autoload-file=vendor/autoload.php custom/plugins/PayonePayment/tests custom/plugins/PayonePayment/src 
         php /tmp/shopware/bin/console plugin:refresh
         php /tmp/shopware/bin/console plugin:install --activate PayonePayment
         /tmp/shopware/vendor/bin/phpunit --configuration custom/plugins/PayonePayment/phpunit.xml.dist
