@@ -112,6 +112,31 @@ export default {
             });
         },
 
+        onExport() {
+            this.isExporting = true;
+            this.isExportSuccessful = false;
+
+            this.PayonePaymentApiConfigExportService.getConfig().then((response) => {
+
+
+
+                this.createNotificationSuccess({
+                    title: this.$tc('payone-payment.settingsForm.titleSuccess'),
+                    message: this.$tc('payone-payment.settingsForm.messageTestSuccess')
+                });
+            }).catch((errorResponse) => {
+                this.createNotificationError({
+                    title: this.$tc('payone-payment.settingsForm.titleError'),
+                    message: this.$tc('payone-payment.settingsForm.messageTestError.general')
+                });
+                this.isExporting = false;
+                this.isExportSuccessful = false;
+            });
+
+            this.isExportSuccessful = true;
+            this.isExporting = false;
+        },
+
         onTest() {
             this.isTesting = true;
             this.isTestSuccessful = false;

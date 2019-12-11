@@ -21,6 +21,15 @@
                 </sw-button-process>
                 {% endblock %}
 
+                {% block payone_payment_settings_actions_export %}
+                <sw-button-process @click="onExport"
+                                   :isLoading="isExporting"
+                                   :processSuccess="isExportSuccessful"
+                                   :disabled="isLoading">
+                    {{ $tc('payone-payment.settingsForm.export') }}
+                </sw-button-process>
+                {% endblock %}
+
                 {% block payone_payment_settings_actions_save %}
                 <sw-button-process
                     class="sw-settings-login-registration__save-action"
