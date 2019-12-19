@@ -6,7 +6,7 @@
     {% endblock %}
 
     <div id="payolutionErrorContainer" hidden="hidden">
-        {% sw_include '@Storefront/utilities/alert.html.twig' with {
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
             type: "danger",
             content: "PayonePayment.errorMessages.genericError" | trans
         } %}
@@ -66,7 +66,7 @@
                 />
             </div>
         </div>
-        {% sw_include '@Storefront/payone/payolution/consent-checkbox.html.twig' with {
+        {% sw_include '@Storefront/storefront/payone/payolution/consent-checkbox.html.twig' with {
             style: 'wide'
         } %}
 
