@@ -23,7 +23,7 @@ class PayonePayolutionDebit extends AbstractPaymentMethod
     protected $paymentHandler = PayonePayolutionDebitPaymentHandler::class;
 
     /** @var null|string */
-    protected $template = '@Storefront/payone/payolution/payolution-debit-form.html.twig';
+    protected $template = '@Storefront/storefront/payone/payolution/payolution-debit-form.html.twig';
 
     /** @var array */
     protected $translations = [
