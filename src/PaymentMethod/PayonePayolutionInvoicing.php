@@ -6,69 +6,37 @@ namespace PayonePayment\PaymentMethod;
 
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 
-class PayonePayolutionInvoicing implements PaymentMethodInterface
+class PayonePayolutionInvoicing extends AbstractPaymentMethod
 {
     public const UUID = '0407fd0a5c4b4d2bafc88379efe8cf8d';
 
     /** @var string */
-    private $name = 'Payone Invoice';
+    protected $id = self::UUID;
 
     /** @var string */
-    private $description = 'Pay the invoice after receiving the goods.';
+    protected $name = 'Payone Paysafe Pay Later Invoice';
 
     /** @var string */
-    private $paymentHandler = PayonePayolutionInvoicingPaymentHandler::class;
+    protected $description = 'Invoice payment by Paysafe Pay Later.';
+
+    /** @var string */
+    protected $paymentHandler = PayonePayolutionInvoicingPaymentHandler::class;
 
     /** @var null|string */
-    private $template = '@Storefront/payone/payolution/payolution-invoicing-form.html.twig';
+    protected $template = '@Storefront/payone/payolution/payolution-invoicing-form.html.twig';
 
     /** @var array */
-    private $translations = [
+    protected $translations = [
         'de-DE' => [
-            'name'        => 'Payone Rechnung',
+            'name'        => 'Payone Paysafe Pay Later Rechnung',
             'description' => 'Sie zahlen entspannt nach Erhalt der Ware auf Rechnung.',
         ],
         'en-GB' => [
-            'name'        => 'Payone Invoice',
+            'name'        => 'Payone Paysafe Pay Later Invoice',
             'description' => 'Pay the invoice after receiving the goods.',
         ],
     ];
 
     /** @var int */
-    private $position = 105;
-
-    public function getId(): string
-    {
-        return self::UUID;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getPaymentHandler(): string
-    {
-        return $this->paymentHandler;
-    }
-
-    public function getTemplate(): ?string
-    {
-        return $this->template;
-    }
-
-    public function getTranslations(): array
-    {
-        return $this->translations;
-    }
-
-    public function getPosition(): int
-    {
-        return $this->position;
-    }
+    protected $position = 105;
 }
