@@ -1,4 +1,6 @@
 <div class="payone-payment payolution-installment">
+    <input type="hidden" id="payoneCsrfTokenPayolutionInstallmentCalculation" value="{{ sw_csrf('frontend.payone.payolution.installment.calculation', {'mode': 'token'}) }}">
+
     {% block page_checkout_confirm_payone_card_title_payolution_installment %}
         <div class="card-title">
             {{ "PayonePayment.payolution.cardTitleInstallment" | trans }}
