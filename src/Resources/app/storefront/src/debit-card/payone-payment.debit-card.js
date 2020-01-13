@@ -90,10 +90,12 @@ export default class PayonePaymentDebitCard extends Plugin {
     }
 
     _getRequestData() {
+        const csrfToken = document.getElementById('payoneCsrfTokenDebitManageMandate');
         const iban = document.getElementById('iban');
         const bic = document.getElementById('bic');
 
         return {
+            '_csrf_token': csrfToken.value,
             'iban': iban.value,
             'bic': bic.value,
         };
