@@ -1,4 +1,6 @@
 <div class="payone-payment payolution-invoicing">
+    <input type="hidden" id="payoneCsrfTokenPayolutionInvoiceValidation" value="{{ sw_csrf('frontend.payone.payolution.invoicing.validate', {'mode': 'token'}) }}">
+
     {% block page_checkout_confirm_payone_card_title_payolution_installment %}
         <div class="card-title">
             {{ "PayonePayment.payolution.cardTitleInvoicing" | trans }}
