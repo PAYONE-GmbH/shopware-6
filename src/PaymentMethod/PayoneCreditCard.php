@@ -20,7 +20,7 @@ class PayoneCreditCard implements PaymentMethodInterface
     private $paymentHandler = PayoneCreditCardPaymentHandler::class;
 
     /** @var null|string */
-    private $template = '@Storefront/payone/credit-card/credit-card-form.html.twig';
+    private $template = '@Storefront/storefront/payone/credit-card/credit-card-form.html.twig';
 
     /** @var array */
     private $translations = [
