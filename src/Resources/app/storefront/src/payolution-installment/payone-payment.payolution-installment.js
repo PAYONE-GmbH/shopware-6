@@ -1,8 +1,8 @@
 /* eslint-disable import/no-unresolved */
 
-import Plugin from 'src/script/plugin-system/plugin.class';
-import HttpClient from 'src/script/service/http-client.service';
-import PageLoadingIndicatorUtil from 'src/script/utility/loading-indicator/page-loading-indicator.util';
+import Plugin from 'src/plugin-system/plugin.class';
+import HttpClient from 'src/service/http-client.service';
+import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
 
 export default class PayonePaymentPayolutionInstallment extends Plugin {
     init() {
@@ -213,11 +213,13 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
     }
 
     _getRequestData() {
+        const csrfToken = document.getElementById('payoneCsrfTokenPayolutionInstallmentCalculation');
         const birthday = document.getElementById('payolutionBirthday');
         const workorder = document.getElementById('payoneWorkOrder');
         const carthash = document.getElementById('payoneCartHash');
 
         return {
+            '_csrf_token': csrfToken.value,
             'payolutionBirthday': birthday.value,
             'workorder': workorder.value,
             'carthash': carthash.value,

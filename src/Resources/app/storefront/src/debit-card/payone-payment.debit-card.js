@@ -1,9 +1,9 @@
 /* eslint-disable import/no-unresolved */
 
-import Plugin from 'src/script/plugin-system/plugin.class';
-import HttpClient from 'src/script/service/http-client.service';
-import PseudoModalUtil from 'src/script/utility/modal-extension/pseudo-modal.util';
-import PageLoadingIndicatorUtil from 'src/script/utility/loading-indicator/page-loading-indicator.util';
+import Plugin from 'src/plugin-system/plugin.class';
+import HttpClient from 'src/service/http-client.service';
+import PseudoModalUtil from 'src/utility/modal-extension/pseudo-modal.util';
+import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
 
 export default class PayonePaymentDebitCard extends Plugin {
     static options = {
@@ -90,10 +90,12 @@ export default class PayonePaymentDebitCard extends Plugin {
     }
 
     _getRequestData() {
+        const csrfToken = document.getElementById('payoneCsrfTokenDebitManageMandate');
         const iban = document.getElementById('iban');
         const bic = document.getElementById('bic');
 
         return {
+            '_csrf_token': csrfToken.value,
             'iban': iban.value,
             'bic': bic.value,
         };
