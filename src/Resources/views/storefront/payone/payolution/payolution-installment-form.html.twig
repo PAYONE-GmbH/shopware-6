@@ -1,4 +1,6 @@
 <div class="payone-payment payolution-installment">
+    <input type="hidden" id="payoneCsrfTokenPayolutionInstallmentCalculation" value="{{ sw_csrf('frontend.payone.payolution.installment.calculation', {'mode': 'token'}) }}">
+
     {% block page_checkout_confirm_payone_card_title_payolution_installment %}
         <div class="card-title">
             {{ "PayonePayment.payolution.cardTitleInstallment" | trans }}
@@ -6,7 +8,7 @@
     {% endblock %}
 
     <div id="payolutionErrorContainer" hidden="hidden">
-        {% sw_include '@Storefront/utilities/alert.html.twig' with {
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
             type: "danger",
             content: "PayonePayment.errorMessages.genericError" | trans
         } %}
@@ -30,7 +32,7 @@
 
             <div class="row">
                 <div class="col-4 form consent">
-                    {% sw_include '@Storefront/payone/payolution/consent-checkbox.html.twig' with {
+                    {% sw_include '@Storefront/storefront/payone/payolution/consent-checkbox.html.twig' with {
                         style: 'wide'
                     } %}
                 </div>

@@ -21,7 +21,7 @@
                     {{ "PayonePayment.payolution.installment.info" | trans({
                         '%index%': loop.index,
                         '%amount%':  element.Installment[0].Amount | currency(element.Currency),
-                        '%date%': installment.Due | localizeddate('medium', 'none', locale, 'UTC')
+                        '%date%': installment.Due | format_date('medium', 'none', locale, 'UTC')
                     }) }}
                 </div>
             {% endfor %}
