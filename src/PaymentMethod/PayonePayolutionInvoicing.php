@@ -20,7 +20,7 @@ class PayonePayolutionInvoicing implements PaymentMethodInterface
     private $paymentHandler = PayonePayolutionInvoicingPaymentHandler::class;
 
     /** @var null|string */
-    private $template = '@Storefront/payone/payolution/payolution-invoicing-form.html.twig';
+    private $template = '@Storefront/storefront/payone/payolution/payolution-invoicing-form.html.twig';
 
     /** @var array */
     private $translations = [

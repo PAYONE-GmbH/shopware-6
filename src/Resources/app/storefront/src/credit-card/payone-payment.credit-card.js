@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 
-import Plugin from 'src/script/plugin-system/plugin.class';
+import Plugin from 'src/plugin-system/plugin.class';
 
 export default class PayonePaymentCreditCard extends Plugin {
     static options = {

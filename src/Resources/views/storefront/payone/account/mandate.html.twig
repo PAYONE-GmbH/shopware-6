@@ -1,4 +1,4 @@
-{% sw_extends '@Storefront/page/account/_page.html.twig' %}
+{% sw_extends '@Storefront/storefront/page/account/_page.html.twig' %}
 
 {# @var page \PayonePayment\Storefront\Page\Mandate\AccountMandatePage #}
 {# @var card \PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardEntity #}
@@ -16,7 +16,7 @@
                 {% endblock %}
             </div>
         {% endblock %}
-        
+
         {% block page_payone_account_mandate_content %}
             <div class="card">
                 {% if page.mandates | length > 0 %}
