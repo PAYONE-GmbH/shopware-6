@@ -23,7 +23,7 @@ class PayonePayolutionInstallment extends AbstractPaymentMethod
     protected $paymentHandler = PayonePayolutionInstallmentPaymentHandler::class;
 
     /** @var null|string */
-    private $template = '@Storefront/storefront/payone/payolution/payolution-installment-form.html.twig';
+    protected $template = '@Storefront/storefront/payone/payolution/payolution-installment-form.html.twig';
 
     /** @var array */
     protected $translations = [
