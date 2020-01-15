@@ -58,6 +58,15 @@
       "birthday": {
         "label": "Geburtsdatum"
       },
+      "accountHolder": {
+          "label": "Kontoinhaber"
+      },
+      "iban": {
+          "label": "IBAN"
+      },
+      "bic": {
+          "label": "BIC"
+      },
       "installment": {
         "step1": "1. Verfügbakeit prüfen",
         "step2": "2. Rate auswählen",

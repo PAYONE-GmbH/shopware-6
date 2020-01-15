@@ -23,7 +23,7 @@ class PayonePayolutionInvoicing extends AbstractPaymentMethod
     protected $paymentHandler = PayonePayolutionInvoicingPaymentHandler::class;
 
     /** @var null|string */
-    protected $template = '@Storefront/payone/payolution/payolution-invoicing-form.html.twig';
+    private $template = '@Storefront/storefront/payone/payolution/payolution-invoicing-form.html.twig';
 
     /** @var array */
     protected $translations = [

@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
@@ -178,6 +179,30 @@ class SettingsController extends AbstractController
                 ];
 
                 break;
+
+            case PayonePayolutionDebitPaymentHandler::class:
+                return [
+                    'request'                   => 'genericpayment',
+                    'clearingtype'              => 'fnc',
+                    'financingtype'             => 'PYD',
+                    'add_paydata[action]'       => 'pre_check',
+                    'add_paydata[payment_type]' => 'Payolution-Debit',
+                    'amount'                    => 10000,
+                    'currency'                  => 'EUR',
+                    'reference'                 => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'birthday'                  => '19900505',
+                    'firstname'                 => 'Test',
+                    'lastname'                  => 'Test',
+                    'country'                   => 'DE',
+                    'email'                     => 'test@example.com',
+                    'street'                    => 'teststreet 2',
+                    'zip'                       => '12345',
+                    'city'                      => 'Test',
+                    'ip'                        => '127.0.0.1',
+                    'iban'                      => 'DE00123456782599100004',
+                    'bic'                       => 'TESTTEST',
+                ];
+
             case PayonePayolutionInstallmentPaymentHandler::class:
                 return [
                     'request'                   => 'genericpayment',

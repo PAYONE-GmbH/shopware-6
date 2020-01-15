@@ -7,6 +7,7 @@ namespace PayonePayment\Installer;
 use PayonePayment\PaymentMethod\PaymentMethodInterface;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
+use PayonePayment\PaymentMethod\PayonePayolutionDebit;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\PaymentMethod\PayonePaypal;
@@ -33,6 +34,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayonePaypalExpress::class,
         PayonePayolutionInstallment::class,
         PayonePayolutionInvoicing::class,
+        PayonePayolutionDebit::class,
         PayoneSofortBanking::class,
     ];
 
