@@ -55,8 +55,18 @@
     "payolution": {
       "cardTitleInvoicing": "Payolution Safe Invoicing",
       "cardTitleInstallment": "Payolution Installment",
+      "cardTitleDebit": "Payolution Debit",
       "birthday": {
         "label": "Geburtsdatum"
+      },
+      "accountHolder": {
+          "label": "Kontoinhaber"
+      },
+      "iban": {
+          "label": "IBAN"
+      },
+      "bic": {
+          "label": "BIC"
       },
       "installment": {
         "step1": "1. Verfügbakeit prüfen",
@@ -84,6 +94,9 @@
       "consentCheckbox": {
         "introduction": "Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an payolution bin ich einverstanden.",
         "textWithLink": "Meine <a href=\"%link%\" data-url=\"%link%\" data-modal-class=\"payolution\" data-toggle=\"modal\" title=\"Einwilligung\">Einwilligung</a> kann ich jederzeit mit Wirkung für die Zukunft wiederrufen."
+      },
+      "mandateCheckbox": {
+        "textWithLink": "Hiermit erteile ich das <a href=\"%link%\" target=\"_blank\" title=\"Paysafe Pay Later SEPA-Mandat\">SEPA-Lastschriftmandat</a>."
       }
     }
   },
