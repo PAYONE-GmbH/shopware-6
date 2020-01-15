@@ -69,10 +69,10 @@
           "label": "BIC"
       },
       "installment": {
-        "step1": "1. Verfügbakeit prüfen",
+        "step1": "1. Verfügbarkeit prüfen",
         "step2": "2. Rate auswählen",
         "step3": "3. Übersicht und Kontoinformationen",
-        "checkAvailabilityButton": "Verfügbakeit prüfen",
+        "checkAvailabilityButton": "Verfügbarkeit prüfen",
         "downloadButton": "Kreditinformationen herunterladen",
         "select": "%amount% pro Monat - %duration% Raten",
         "info": "%index%. Rate: %amount% (fällig am %date%)",
