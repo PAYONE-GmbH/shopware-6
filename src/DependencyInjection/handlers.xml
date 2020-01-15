@@ -92,6 +92,15 @@
             <tag name="shopware.payment.method.sync" />
         </service>
 
+        <service id="PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler">
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitPreAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
+
+            <tag name="shopware.payment.method.sync" />
+        </service>
+
         <service id="PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler">
             <argument type="service" id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />

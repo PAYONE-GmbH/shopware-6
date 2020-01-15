@@ -336,14 +336,14 @@ class PayolutionController extends StorefrontController
 
     private function getInstallmentSelectionHtml(array $calculationResponse): string
     {
-        $view = '@PayonePayment/payone/payolution/payolution-installment-selection.html.twig';
+        $view = '@PayonePayment/storefront/payone/payolution/payolution-installment-selection.html.twig';
 
         return $this->renderView($view, $calculationResponse);
     }
 
     private function geCalculationOverviewHtml(array $calculationResponse): string
     {
-        $view = '@PayonePayment/payone/payolution/payolution-calculation-overview.html.twig';
+        $view = '@PayonePayment/storefront/payone/payolution/payolution-calculation-overview.html.twig';
 
         return $this->renderView($view, $calculationResponse);
     }

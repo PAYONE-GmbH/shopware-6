@@ -24,7 +24,7 @@ class WebhookController extends StorefrontController
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/webhook", name="payone_webhook", methods={"POST"})
+     * @Route("/payone/webhook", name="payone_webhook", defaults={"csrf_protected": false}, methods={"POST"})
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {
