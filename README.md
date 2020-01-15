@@ -31,11 +31,11 @@ Please refer to our extensive online documentation at https://docs.payone.com/di
 
 ## Support and Contact
 
-BS PAYONE GmbH
-Office Kiel
-Fraunhoferstraße 2–4
-24118 Kiel, Germany
-Phone +49 431 25968-400
+BS PAYONE GmbH<br>
+Office Kiel<br>
+Fraunhoferstraße 2–4<br>
+24118 Kiel, Germany<br>
+Phone +49 431 25968-400<br>
 shopware@payone.com
 
 ## License
