@@ -38,7 +38,7 @@
       "downloadButton": "Mandat herunterladen",
       "noEntries": "Keine SEPA-Lastschriftmandate vorhanden."
     },
-    "checkoutPage": {
+    "checkoutConfirmPage": {
       "defaultCardTitle": "Zahlungsinformationen"
     },
     "finishPage": {
