@@ -181,7 +181,7 @@ class PayolutionController extends StorefrontController
             $calculationResponse = $this->prepareCalculationOutput($calculationResponse);
 
             $response['installmentSelection'] = $this->getInstallmentSelectionHtml($calculationResponse);
-            $response['calculationOverview']  = $this->geCalculationOverviewHtml($calculationResponse);
+            $response['calculationOverview']  = $this->getCalculationOverviewHtml($calculationResponse);
 
             $this->saveCalculationResponse($cart, $calculationResponse, $context);
         } catch (Throwable $exception) {
@@ -341,7 +341,7 @@ class PayolutionController extends StorefrontController
         return $this->renderView($view, $calculationResponse);
     }
 
-    private function geCalculationOverviewHtml(array $calculationResponse): string
+    private function getCalculationOverviewHtml(array $calculationResponse): string
     {
         $view = '@PayonePayment/storefront/payone/payolution/payolution-calculation-overview.html.twig';
 
