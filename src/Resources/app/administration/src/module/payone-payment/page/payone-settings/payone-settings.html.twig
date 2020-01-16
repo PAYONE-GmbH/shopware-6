@@ -12,11 +12,23 @@
 
         {% block payone_payment_actions %}
             <template #smart-bar-actions>
+                {% block payone_payment_settings_actions_feedback %}
+                    <sw-button
+                        @click="isSupportModalOpen = true"
+                        :disabled="false"
+                        variant="ghost"
+                        :square="false"
+                        :block="false"
+                        :isLoading="false">
+                        Support
+                    </sw-button>
+                {% endblock %}
+
                 {% block payone_payment_settings_actions_test %}
                     <sw-button-process @click="onTest"
-                               :isLoading="isTesting"
-                               :processSuccess="isTestSuccessful"
-                               :disabled="credentialsMissing || isLoading">
+                       :isLoading="isTesting"
+                       :processSuccess="isTestSuccessful"
+                       :disabled="credentialsMissing || isLoading">
                         {{ $tc('payone-payment.settingsForm.test') }}
                     </sw-button-process>
                 {% endblock %}
@@ -38,6 +50,45 @@
 
         {% block payone_payment_settings_content %}
             <template #content>
+                <sw-modal
+                    v-if="isSupportModalOpen"
+                    @modal-close="isSupportModalOpen = false"
+                    title="Get in Touch With Our Team">
+                    <p>
+                        <sw-button
+                            :disabled="false"
+                            variant="ghost"
+                            :square="false"
+                            :block="false"
+                            :isLoading="false"
+                            link="https://docs.payone.com/display/public/INT/Shopware+6+Plugin">
+                            Dokumentation
+                        </sw-button>
+                    </p>
+                    <p>
+                        <sw-button
+                            :disabled="false"
+                            variant="ghost"
+                            :square="false"
+                            :block="false"
+                            :isLoading="false"
+                            link="mailto:tech.support@payone.com">
+                            Tech Support
+                        </sw-button>
+                    </p>
+                    <p>
+                        <sw-button
+                            :disabled="false"
+                            variant="ghost"
+                            :square="false"
+                            :block="false"
+                            :isLoading="false"
+                            link="https://github.com/PAYONE-GmbH/shopware-6">
+                            GitHub
+                        </sw-button>
+                    </p>
+                </sw-modal>
+
                 <sw-card-view>
                     <sw-system-config
                             ref="systemConfig"
