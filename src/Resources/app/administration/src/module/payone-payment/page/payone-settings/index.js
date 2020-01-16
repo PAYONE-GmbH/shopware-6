@@ -23,7 +23,8 @@ Component.register('payone-settings', {
             accountIdFilled: false,
             portalIdFilled: false,
             portalKeyFilled: false,
-            showValidationErrors: false
+            showValidationErrors: false,
+            isSupportModalOpen: false,
         };
     },
 
