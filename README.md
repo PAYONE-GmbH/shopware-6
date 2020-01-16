@@ -1,16 +1,22 @@
-# PAYONE Payment for Shopware 6
+PAYONE Payment for Shopware 6
+=============================
 
-This plugin enables merchants to accept payments in a simple and convenient way. We offer state-of-the art integration of the most used payment methods directly into your checkout. 
+This plugin enables merchants to accept payments in a simple and convenient way.
+We offer state-of-the art integration of the most used payment methods directly
+into your checkout. 
 
-# Open for Feedback
+## Open for Feedback
 
-This plugin is a complete rewrite of our Shopware plugin and we'd love to hear your feedback on it! Drop us a message at shopware@payone.com or open an issue if you've found a bug.
+This plugin is a complete rewrite of our Shopware 5 plugin and we'd love to hear your
+feedback on it! Drop us a message at shopware@payone.com or open an issue if
+you've found a bug.
 
 ## Super Bonus for Early Adopters
 
-We'd especially love to hear from you if you plan on going live using the plugin so we can assist and show some appreciation to the first adopters. :crown:
+We'd especially love to hear from you if you plan on going live using the plugin
+so we can assist and show some appreciation to the first adopters. :crown:
 
-# Installation
+## Installation
 
 The plugin can easily be integrated via Composer:
 
@@ -23,19 +29,21 @@ php bin/console cache:clear
 
 ## Not a Customer Yet?
 
-If you don't have a PAYONE Merchant Account yet, get in touch and we'll setup a test account for you!
+If you don't have a PAYONE Merchant Account yet, get in touch and we'll setup
+a test account for you!
 
-# Documentation
+## Documentation
 
-Please refer to our extensive online documentation at https://docs.payone.com/display/public/INT/Shopware+6+Plugin 
+Please refer to our extensive online documentation at
+https://docs.payone.com/display/public/INT/Shopware+6+Plugin 
 
 ## Support and Contact
 
-BS PAYONE GmbH<br>
-Office Kiel<br>
-Fraunhoferstraße 2–4<br>
-24118 Kiel, Germany<br>
-Phone +49 431 25968-400<br>
+PAYONE GmbH  
+Office Kiel  
+Fraunhoferstraße 2–4  
+24118 Kiel, Germany  
+Phone +49 431 25968-400  
 shopware@payone.com
 
 ## License
