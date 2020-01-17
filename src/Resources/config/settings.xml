@@ -412,6 +412,14 @@
         <title>Payolution Debit</title>
 
         <input-field>
+            <name>payolutionDebitCompanyName</name>
+            <label>Company Name</label>
+            <label lang="de-DE">Firmenname</label>
+            <helpText>Is displayed in the supplementary notes to the privacy statement for purchase on account.</helpText>
+            <helpText lang="de-DE">Wird in den ergänzenden Hinweisen zur Datenschutzerklärung für Kauf auf Rechnung angezeigt.</helpText>
+        </input-field>
+
+        <input-field>
             <name>payolutionDebitMerchantId</name>
             <label>Merchant ID</label>
             <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
