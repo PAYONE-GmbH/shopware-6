@@ -7,6 +7,7 @@ namespace PayonePayment\Storefront\Controller\Payolution;
 use DateTime;
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\PaymentMethod\PayonePayolutionDebit;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
@@ -87,14 +88,19 @@ class PayolutionController extends StorefrontController
     {
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
 
-        $companyName = '';
-
-        if ($context->getPaymentMethod()->getId() === PayonePayolutionInvoicing::UUID) {
-            $companyName = $configuration->get('payolutionInvoicingCompanyName');
-        }
-
-        if ($context->getPaymentMethod()->getId() === PayonePayolutionInstallment::UUID) {
-            $companyName = $configuration->get('payolutionInstallmentCompanyName');
+        switch ($context->getPaymentMethod()->getId()) {
+            case PayonePayolutionInvoicing::UUID:
+                $companyName = $configuration->get('payolutionInvoicingCompanyName');
+                break;
+            case PayonePayolutionInstallment::UUID:
+                $companyName = $configuration->get('payolutionInstallmentCompanyName');
+                break;
+            case PayonePayolutionDebit::UUID:
+                $companyName = $configuration->get('payolutionDebitCompanyName');
+                break;
+            default:
+                $companyName = null;
+                break;
         }
 
         if (empty($companyName)) {
