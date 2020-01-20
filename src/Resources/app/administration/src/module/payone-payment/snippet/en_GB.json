@@ -34,6 +34,22 @@
                 "sofort": "The API credentials for SOFORT are not valid."
             }
         },
+        "supportModal": {
+            "menuButton": "Support",
+            "title": "How Can We Help You?",
+            "documentation": {
+                "description": "Read our online manual",
+                "button": "Online Manual"
+            },
+            "support": {
+                "description": "Contact our technical support",
+                "button": "Tech Support"
+            },
+            "repository": {
+                "description": "Report errors on GitHub",
+                "button": "GitHub"
+            }
+        },
         "messageNotBlank": "This field must not be empty.",
         "txid": "TXID",
         "sequenceNumber": {

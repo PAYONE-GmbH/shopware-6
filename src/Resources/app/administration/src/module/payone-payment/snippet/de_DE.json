@@ -34,6 +34,22 @@
                 "sofort": "Die API-Zugangsdaten für SOFORT sind nicht korrekt."
             }
         },
+        "supportModal": {
+            "menuButton": "Support",
+            "title": "Wie können wir Ihnen helfen?",
+            "documentation": {
+                "description": "Lesen Sie unsere Online-Dokumentation",
+                "button": "Dokumentation"
+            },
+            "support": {
+                "description": "Kontaktieren Sie unseren technischen Support",
+                "button": "Technischer Support"
+            },
+            "repository": {
+                "description": "Melden Sie Fehler und Verbesserungen auf GitHub",
+                "button": "GitHub"
+            }
+        },
         "messageNotBlank": "Dieser Wert darf nicht leer sein.",
         "txid": "TXID",
         "sequenceNumber": {
