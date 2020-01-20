@@ -41,7 +41,7 @@
     "checkoutConfirmPage": {
       "defaultCardTitle": "Zahlungsinformationen"
     },
-    "finishPage": {
+    "checkoutFinishPage": {
       "mandateIdentification": "SEPA-Laschtschriftmandat"
     },
     "mandateModal": {
