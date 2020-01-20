@@ -15,6 +15,10 @@
             </call>
         </service>
 
+        <service id="PayonePayment\Controller\RedirectController">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+        </service>
+
         <service id="PayonePayment\Controller\RefundController">
             <argument type="service" id="PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandler" />
             <argument type="service" id="order_transaction.repository" />
@@ -32,13 +36,10 @@
             </call>
         </service>
 
-        <service id="PayonePayment\Controller\RedirectController">
-            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
-        </service>
-
         <service id="PayonePayment\Controller\SettingsController">
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Payone\Request\Test\TestRequestFactory" />
+            <argument type="service" id="state_machine_transition.repository" />
             <argument type="service" id="PayonePayment\Util\Logger"/>
         </service>
 
@@ -69,6 +70,21 @@
             </call>
         </service>
 
+        <service id="PayonePayment\Storefront\Controller\Payolution\PayolutionController">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreCheckRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentCalculationRequestFactory" />
+            <argument type="service" id="PayonePayment\Util\Logger" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
         <service id="PayonePayment\Storefront\Controller\Paypal\PaypalExpressController">
             <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalSetExpressCheckoutRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalGetExpressCheckoutDetailsRequestFactory" />
@@ -82,21 +98,6 @@
             <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher" />
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
             <argument type="service" id="router.default" />
-
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
-        </service>
-
-        <service id="PayonePayment\Storefront\Controller\Payolution\PayolutionController">
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
-            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
-            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
-            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreCheckRequestFactory" />
-            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequestFactory" />
-            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentCalculationRequestFactory" />
-            <argument type="service" id="PayonePayment\Util\Logger" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

@@ -6,15 +6,16 @@ namespace PayonePayment\Components\RefundPaymentHandler;
 
 use Exception;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 
 class RefundPaymentHandler implements RefundPaymentHandlerInterface
 {
@@ -27,19 +28,19 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
 
-    /** @var OrderTransactionStateHandler */
-    private $stateHandler;
+    /** @var TransactionStatusServiceInterface */
+    private $transactionStatusService;
 
     public function __construct(
         RefundRequestFactory $requestFactory,
         PayoneClientInterface $client,
         TransactionDataHandlerInterface $dataHandler,
-        OrderTransactionStateHandler $stateHandler
+        TransactionStatusServiceInterface $transactionStatusService
     ) {
-        $this->requestFactory = $requestFactory;
-        $this->client         = $client;
-        $this->dataHandler    = $dataHandler;
-        $this->stateHandler   = $stateHandler;
+        $this->requestFactory           = $requestFactory;
+        $this->client                   = $client;
+        $this->dataHandler              = $dataHandler;
+        $this->transactionStatusService = $transactionStatusService;
     }
 
     /**
@@ -68,6 +69,6 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
         $this->dataHandler->incrementSequenceNumber($paymentTransaction, $context);
         $this->dataHandler->saveTransactionData($paymentTransaction, $context, $data);
 
-        $this->stateHandler->refund($paymentTransaction->getOrderTransaction()->getId(), $context);
+        $this->transactionStatusService->transitionByName($context, $paymentTransaction->getOrderTransaction(), StateMachineTransitionActions::ACTION_REFUND);
     }
 }
