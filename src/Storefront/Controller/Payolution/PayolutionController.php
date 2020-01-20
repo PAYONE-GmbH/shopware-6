@@ -91,15 +91,22 @@ class PayolutionController extends StorefrontController
         switch ($context->getPaymentMethod()->getId()) {
             case PayonePayolutionInvoicing::UUID:
                 $companyName = $configuration->get('payolutionInvoicingCompanyName');
+
                 break;
+
             case PayonePayolutionInstallment::UUID:
                 $companyName = $configuration->get('payolutionInstallmentCompanyName');
+
                 break;
+
             case PayonePayolutionDebit::UUID:
                 $companyName = $configuration->get('payolutionDebitCompanyName');
+
                 break;
+
             default:
                 $companyName = null;
+
                 break;
         }
 
