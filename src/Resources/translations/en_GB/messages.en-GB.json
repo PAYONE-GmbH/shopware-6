@@ -53,8 +53,8 @@
       "buttonTitle": "PayPal Express"
     },
     "payolution": {
-      "cardTitleInvoicing": "Payolution Safe Invoicing",
-      "cardTitleInstallment": "Payolution Installment",
+      "cardTitleInvoicing": "Paysafe Pay Later Invoice",
+      "cardTitleInstallment": "Paysafe Pay Later Installment",
       "cardTitleDebit": "Paysafe Pay Later Debit",
       "birthday": {
         "label": "Date of birth"
