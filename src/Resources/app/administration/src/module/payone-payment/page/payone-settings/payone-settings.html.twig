@@ -20,7 +20,7 @@
                         :square="false"
                         :block="false"
                         :isLoading="false">
-                        Support
+                        {{ $tc('payone-payment.supportModal.menuButton') }}
                     </sw-button>
                 {% endblock %}
 
@@ -53,40 +53,61 @@
                 <sw-modal
                     v-if="isSupportModalOpen"
                     @modal-close="isSupportModalOpen = false"
-                    title="Get in Touch With Our Team">
-                    <p>
-                        <sw-button
-                            :disabled="false"
-                            variant="ghost"
-                            :square="false"
-                            :block="false"
-                            :isLoading="false"
-                            link="https://docs.payone.com/display/public/INT/Shopware+6+Plugin">
-                            Dokumentation
-                        </sw-button>
-                    </p>
-                    <p>
-                        <sw-button
-                            :disabled="false"
-                            variant="ghost"
-                            :square="false"
-                            :block="false"
-                            :isLoading="false"
-                            link="mailto:tech.support@payone.com">
-                            Tech Support
-                        </sw-button>
-                    </p>
-                    <p>
-                        <sw-button
-                            :disabled="false"
-                            variant="ghost"
-                            :square="false"
-                            :block="false"
-                            :isLoading="false"
-                            link="https://github.com/PAYONE-GmbH/shopware-6">
-                            GitHub
-                        </sw-button>
-                    </p>
+                    :title="$tc('payone-payment.supportModal.title')"
+                    class="payone-feedback sw-modal--large">
+                    <sw-container columns="1fr 1fr 1fr">
+                        <div class="payone-feedback__col">
+                            <div class="payone-feedback__icon">
+                                <sw-icon name="default-documentation-file" large="true"></sw-icon>
+                            </div>
+                            <p class="payone-feedback__desc">
+                                {{ $tc('payone-payment.supportModal.documentation.description') }}
+                            </p>
+                            <sw-button
+                                :disabled="false"
+                                variant="primary"
+                                :square="false"
+                                :block="false"
+                                :isLoading="false"
+                                link="https://docs.payone.com/display/public/INT/Shopware+6+Plugin">
+                                {{ $tc('payone-payment.supportModal.documentation.button') }}
+                            </sw-button>
+                        </div>
+                        <div class="payone-feedback__col">
+                            <div class="payone-feedback__icon">
+                                <sw-icon name="default-device-headset" large="true"></sw-icon>
+                            </div>
+                            <p class="payone-feedback__desc">
+                                {{ $tc('payone-payment.supportModal.support.description') }}
+                            </p>
+                            <sw-button
+                                :disabled="false"
+                                variant="primary"
+                                :square="false"
+                                :block="false"
+                                :isLoading="false"
+                                link="mailto:tech.support@payone.com">
+                                {{ $tc('payone-payment.supportModal.support.button') }}
+                            </sw-button>
+                        </div>
+                        <div class="payone-feedback__col">
+                            <div class="payone-feedback__icon">
+                                <sw-icon name="default-text-code" large="true"></sw-icon>
+                            </div>
+                            <p class="payone-feedback__desc">
+                                {{ $tc('payone-payment.supportModal.repository.description') }}
+                            </p>
+                            <sw-button
+                                :disabled="false"
+                                variant="primary"
+                                :square="false"
+                                :block="false"
+                                :isLoading="false"
+                                link="https://github.com/PAYONE-GmbH/shopware-6">
+                                {{ $tc('payone-payment.supportModal.repository.button') }}
+                            </sw-button>
+                        </div>
+                    </sw-container>
                 </sw-modal>
 
                 <sw-card-view>

@@ -1,6 +1,7 @@
 const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
 import template from './payone-settings.html.twig';
+import './style.scss';
 
 Component.register('payone-settings', {
     template,
