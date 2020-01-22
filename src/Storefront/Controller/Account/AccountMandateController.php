@@ -39,7 +39,7 @@ class AccountMandateController extends StorefrontController
 
         $page = $this->accountMandatePageLoader->load($request, $context);
 
-        return $this->renderStorefront('@Storefront/payone/account/mandate.html.twig', ['page' => $page]);
+        return $this->renderStorefront('@Storefront/storefront/payone/account/mandate.html.twig', ['page' => $page]);
     }
 
     /**
