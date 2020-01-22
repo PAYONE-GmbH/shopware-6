@@ -23,7 +23,7 @@
                                     {% if card.expiresAt > date() %}
                                         <option value="{{ card.pseudoCardPan }}">
                                             {{ card.truncatedCardPan }}
-                                            ({{ "PayonePayment.cardPage.expiresAt" | trans({'%expiresAt%': card.expiresAt | format_date('medium', 'none', locale, 'UTC')}) }})
+                                            ({{ "PayonePayment.cardPage.expiresAt" | trans({'%expiresAt%': card.expiresAt | format_date('medium')}) }})
                                         </option>
                                     {% endif %}
                                 {% endfor %}
