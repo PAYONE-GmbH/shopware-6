@@ -24,8 +24,8 @@ use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
-use Shopware\Core\Framework\Translation\Translator;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Symfony\Component\Translation\Translator;
 
 class PayoneCreditCardPaymentHandlerTest extends TestCase
 {
