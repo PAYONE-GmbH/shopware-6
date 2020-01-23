@@ -52,7 +52,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     public function enhanceStatusWebhookData(PaymentTransaction $paymentTransaction, array $transactionData): array
     {
-        $transactionData = array_map('utf8_encode', $transactionData);
+        $data = array_map('utf8_encode', $transactionData);
 
         $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = (int) $transactionData['sequencenumber'];
         $data[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);

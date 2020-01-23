@@ -48,15 +48,15 @@ Component.register('payone-settings', {
     methods: {
         createdComponent() {
             var me = this;
+
             this.PayonePaymentSettingsService.getStateMachineTransitionActions()
                 .then((result) => {
                     result.data.forEach((element) => {
                         me.stateMachineTransitionActions.push({
                             "label": me.$tc('payone-payment.transitionActionNames.'+ element.label ),
-                            "value": me.$tc('payone-payment.transitionActionNames.'+ element.value ),
+                            "value": element.value,
                         })
                     });
-                    window.console.table(me.stateMachineTransitionActions);
                 });
         },
 

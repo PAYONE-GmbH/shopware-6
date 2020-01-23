@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Handler;
 
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandler;
+use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Struct\PaymentTransaction;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Throwable;
 
 class TransactionStatusWebhookHandler implements WebhookHandlerInterface
 {
     /** @var TransactionStatusServiceInterface */
     private $transactionStatusService;
 
-    /** @var TransactionDataHandler */
+    /** @var TransactionDataHandlerInterface */
     private $transactionDataHandler;
 
     /** @var LoggerInterface */
@@ -24,7 +23,7 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
 
     public function __construct(
         TransactionStatusServiceInterface $transactionStatusService,
-        TransactionDataHandler $transactionDataHandler,
+        TransactionDataHandlerInterface $transactionDataHandler,
         LoggerInterface $logger
     ) {
         $this->transactionStatusService = $transactionStatusService;
@@ -46,26 +45,22 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
      */
     public function process(SalesChannelContext $salesChannelContext, array $data): void
     {
-        try {
-            /** @var null|PaymentTransaction $paymentTransaction */
-            $paymentTransaction = $this->transactionDataHandler->getPaymentTransactionByPayoneTransactionId(
-                $salesChannelContext->getContext(),
-                (int) $data['txid']
-            );
+        /** @var null|PaymentTransaction $paymentTransaction */
+        $paymentTransaction = $this->transactionDataHandler->getPaymentTransactionByPayoneTransactionId(
+            $salesChannelContext->getContext(),
+            (int) $data['txid']
+        );
 
-            if (!$paymentTransaction) {
-                $this->logger->warning(sprintf('Could not get transaction for id %s', (int) $data['txid']));
+        if (!$paymentTransaction) {
+            $this->logger->warning(sprintf('Could not get transaction for id %s', (int) $data['txid']));
 
-                return;
-            }
-
-            $enhancedData = $this->transactionDataHandler->enhanceStatusWebhookData($paymentTransaction, $data);
-            $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-            $this->transactionDataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $enhancedData);
-
-            $this->transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction->getOrderTransaction(), $data);
-        } catch (Throwable $exception) {
-            $this->logger->warning($exception->getMessage(), $exception->getTrace());
+            return;
         }
+
+        $data = $this->transactionDataHandler->enhanceStatusWebhookData($paymentTransaction, $data);
+
+        $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->transactionDataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction->getOrderTransaction(), $data);
     }
 }
