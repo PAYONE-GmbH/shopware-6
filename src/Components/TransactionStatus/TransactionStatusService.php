@@ -10,16 +10,11 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefi
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Exception\DefinitionNotFoundException;
-use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\StateMachine\Exception\IllegalTransitionException;
-use Shopware\Core\System\StateMachine\Exception\StateMachineInvalidEntityIdException;
-use Shopware\Core\System\StateMachine\Exception\StateMachineInvalidStateFieldException;
-use Shopware\Core\System\StateMachine\Exception\StateMachineNotFoundException;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
 
@@ -123,18 +118,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
                 ),
                 $context
             );
-        } catch (DefinitionNotFoundException $e) {
-            $this->logger->warning($e->getMessage(), $e->getTrace());
-        } catch (InconsistentCriteriaIdsException $e) {
-            $this->logger->warning($e->getMessage(), $e->getTrace());
-        } catch (IllegalTransitionException $e) {
-            $this->logger->warning($e->getMessage(), $e->getTrace());
-        } catch (StateMachineInvalidEntityIdException $e) {
-            $this->logger->warning($e->getMessage(), $e->getTrace());
-        } catch (StateMachineInvalidStateFieldException $e) {
-            $this->logger->warning($e->getMessage(), $e->getTrace());
-        } catch (StateMachineNotFoundException $e) {
-            $this->logger->warning($e->getMessage(), $e->getTrace());
+        } catch (IllegalTransitionException $exception) {
+            /** false-positiv handling (paid -> paid, open -> open) */
         }
     }
 
