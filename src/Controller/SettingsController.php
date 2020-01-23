@@ -85,7 +85,7 @@ class SettingsController extends AbstractController
         }
 
         $this->logger->info('payone plugin credentials validated', [
-            'success'      => empty($errors),
+            'success' => empty($errors),
             'results' => $errors,
         ]);
 
