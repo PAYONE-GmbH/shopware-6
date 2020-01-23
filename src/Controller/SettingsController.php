@@ -59,6 +59,7 @@ class SettingsController extends AbstractController
     public function validateApiCredentials(Request $request, Context $context): JsonResponse
     {
         $errors = [];
+
         /** @var EntityRepositoryInterface $paymentMethodRepository */
         $paymentMethodRepository = $this->get('payment_method.repository');
 
@@ -82,6 +83,11 @@ class SettingsController extends AbstractController
                 $errors[$configurationPrefix] = true;
             }
         }
+
+        $this->logger->info('payone plugin credentials validated', [
+            'success'      => empty($errors),
+            'results' => $errors,
+        ]);
 
         return new JsonResponse(['credentialsValid' => empty($errors), 'errors' => $errors]);
     }
@@ -240,6 +246,7 @@ class SettingsController extends AbstractController
 
         if (!isset($config[$prefix])) {
             $this->logger->error(sprintf('There is no configuration for payment class %s', $paymentClass));
+
             throw new RuntimeException(sprintf('There is no configuration for payment class %s', $paymentClass));
         }
 
