@@ -20,9 +20,11 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "shopware/core": "*",
-    "shopware/administration": "*",
-    "shopware/storefront": "*"
+    "php": "^7.2",
+    "ext-curl": "*",
+    "shopware/core": "^6.1",
+    "shopware/storefront": "^6.1",
+    "shopware/administration":"^6.1"
   },
   "require-dev": {
     "dms/phpunit-arraysubset-asserts": "^0.1.0",
@@ -43,7 +45,10 @@
     }
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "platform": {
+      "php": "7.2.9"
+    }
   },
   "extra": {
     "shopware-plugin-class": "PayonePayment\\PayonePayment",
