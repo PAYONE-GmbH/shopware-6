@@ -1,5 +1,5 @@
 {
-  "name": "payone/shopware",
+  "name": "payone-gmbh/shopware-6",
   "type": "shopware-platform-plugin",
   "description": "PAYONE Payment Plugin",
   "version": "1.0.0",
@@ -7,8 +7,8 @@
   "authors": [
     {
       "name": "PAYONE GmbH",
-      "email": "feedback@bspayone.com",
-      "homepage": "https://www.bspayone.com"
+      "email": "shopware@payone.com",
+      "homepage": "https://www.payone.com"
     },
     {
       "name": "Kellerkinder GmbH",
@@ -58,12 +58,12 @@
       "en-GB": "PAYONE Payment Plugin"
     },
     "manufacturerLink": {
-      "de-DE": "https://www.bspayone.com",
-      "en-GB": "https://www.bspayone.com"
+      "de-DE": "https://www.payone.com",
+      "en-GB": "https://www.payone.com"
     },
     "supportLink": {
-      "de-DE": "https://www.bspayone.com",
-      "en-GB": "https://www.bspayone.com"
+      "de-DE": "https://www.payone.com",
+      "en-GB": "https://www.payone.com"
     }
   }
 }

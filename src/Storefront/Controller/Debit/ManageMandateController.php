@@ -52,7 +52,7 @@ class ManageMandateController extends StorefrontController
             if (!empty($response['mandate']['HtmlText'])) {
                 $response['mandate']['HtmlText'] = urldecode($response['mandate']['HtmlText']);
 
-                $content = $this->renderView('@PayonePayment/payone/mandate/mandate.html.twig', $response);
+                $content = $this->renderView('@PayonePayment/storefront/payone/mandate/mandate.html.twig', $response);
 
                 $response['modal_content'] = $content;
             }

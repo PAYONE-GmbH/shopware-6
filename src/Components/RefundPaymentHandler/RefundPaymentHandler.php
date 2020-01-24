@@ -69,6 +69,10 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
         $this->dataHandler->incrementSequenceNumber($paymentTransaction, $context);
         $this->dataHandler->saveTransactionData($paymentTransaction, $context, $data);
 
-        $this->transactionStatusService->transitionByName($context, $paymentTransaction->getOrderTransaction(), StateMachineTransitionActions::ACTION_REFUND);
+        $this->transactionStatusService->transitionByName(
+            $context,
+            $paymentTransaction->getOrderTransaction()->getId(),
+            StateMachineTransitionActions::ACTION_REFUND
+        );
     }
 }
