@@ -25,17 +25,13 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     public const ACTION_CAPTURE          = 'capture';
     public const ACTION_COMPLETED        = 'completed';
     public const ACTION_DEBIT            = 'debit';
-    public const ACTION_AUTHORIZATION    = 'authorization';
-    public const ACTION_PREAUTHORIZATION = 'preauthorization';
     public const ACTION_CANCELATION      = 'cancelation';
     public const ACTION_FAILED           = 'failed';
 
     public const STATUS_PREFIX    = 'paymentStatus';
-    public const STATUS_PENDING   = 'pending';
     public const STATUS_COMPLETED = 'completed';
 
     public const AUTHORIZATION_TYPE_PREAUTHORIZATION = 'preauthorization';
-    public const AUTHORIZATION_TYPE_AUTHORIZATION    = 'authorization';
 
     /** @var StateMachineRegistry */
     private $stateMachineRegistry;
@@ -66,9 +62,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower($transactionData['txaction']));
 
-        if ((float) $transactionData['receivable'] === 0.0
-            && strtolower($transactionData['txaction']) === self::ACTION_CAPTURE) {
-            // This is a special case of a capture of 0, which means a cancellation
+        if ($this->isZeroCapture($transactionData)) {
             $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower(self::ACTION_CANCELATION));
         }
 
@@ -85,25 +79,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         }
 
         if (!empty($transitionName)) {
-            $this->transitionByName($salesChannelContext->getContext(), $orderTransactionEntity, $transitionName);
+            $this->executeTransition($salesChannelContext->getContext(), $orderTransactionEntity->getId(), strtolower($transitionName));
         }
-    }
-
-    public function transitionByName(Context $context, OrderTransactionEntity $orderTransactionEntity, string $transitionName): void
-    {
-        $transitionName = strtolower($transitionName);
-
-        if (!$this->isTransitionAllowed($context, $orderTransactionEntity->getStateId(), $transitionName)) {
-            $this->logger->warning(sprintf(
-                'Transaction %s is not allowed for state with id: %s',
-                $transitionName,
-                $orderTransactionEntity->getStateId()
-            ));
-
-            return;
-        }
-
-        $this->executeTransition($context, $orderTransactionEntity->getId(), $transitionName);
     }
 
     private function executeTransition(Context $context, string $transactionId, string $transitionName): void
@@ -123,21 +100,6 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         }
     }
 
-    private function isTransitionAllowed(Context $context, string $currentStateId, string $transitionName): bool
-    {
-        if (empty($transitionName)) {
-            return false;
-        }
-
-        $isAllowedCriteria = (new Criteria())
-            ->addFilter(new EqualsFilter('fromStateId', $currentStateId))
-            ->addFilter(new EqualsFilter('actionName', $transitionName));
-
-        $isAllowedSearchResult = $this->stateMachineTransitionRepository->search($isAllowedCriteria, $context);
-
-        return $isAllowedSearchResult->getTotal() > 0;
-    }
-
     private function isTransactionOpen(array $transactionData): bool
     {
         return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
@@ -149,18 +111,30 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return true;
         }
 
-        return in_array(strtolower($transactionData['txaction']), [
-            self::ACTION_PAID,
-            self::ACTION_COMPLETED,
-            self::ACTION_DEBIT,
-        ]);
+        return in_array(
+            strtolower($transactionData['txaction']),
+            [
+                self::ACTION_PAID,
+                self::ACTION_COMPLETED,
+                self::ACTION_DEBIT,
+            ],
+        true
+        );
     }
 
     private function isTransactionCancelled(array $transactionData): bool
     {
         return strtolower($transactionData['txaction']) === self::ACTION_CANCELATION
             || strtolower($transactionData['txaction']) === self::ACTION_FAILED
-            || (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE
-                && (float) $transactionData['receivable'] === 0.0);
+            || $this->isZeroCapture($transactionData);
+    }
+
+    /**
+     * This is a special case of a capture of 0, which means a cancellation
+     */
+    private function isZeroCapture(array $transactionData): bool
+    {
+        return strtolower($transactionData['txaction']) === self::ACTION_CAPTURE
+            && (float) $transactionData['receivable'] === 0.0;
     }
 }

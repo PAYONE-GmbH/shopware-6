@@ -6,7 +6,6 @@ namespace PayonePayment\Components\TransactionDataHandler;
 
 use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\PaymentHandler\PayonePaymentHandlerInterface;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Framework\Context;
@@ -38,16 +37,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             return null;
         }
 
-        $paymentTransaction = PaymentTransaction::fromOrderTransaction($transaction);
-
-        if (!$paymentTransaction) {
-            throw new RuntimeException(sprintf(
-                'Could not find an order transaction by payone transaction id "%s"',
-                $payoneTransactionId
-            ));
-        }
-
-        return $paymentTransaction;
+        return PaymentTransaction::fromOrderTransaction($transaction);
     }
 
     public function enhanceStatusWebhookData(PaymentTransaction $paymentTransaction, array $transactionData): array
@@ -73,7 +63,6 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         ];
 
         $transaction->getOrderTransaction()->setCustomFields($customFields);
-        $transaction->setCustomFields(array_filter($customFields));
 
         $this->transactionRepository->update([$update], $context);
     }
@@ -128,17 +117,10 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     private function shouldAllowCapture(PaymentTransaction $paymentTransaction, array $transactionData): bool
     {
-        $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
+        $handlerClass = $this->getHandlerIdentifier($paymentTransaction);
 
-        if (!$paymentMethodEntity) {
+        if (!$handlerClass) {
             return false;
-        }
-
-        /** @var PayonePaymentHandlerInterface|string $handlerClass */
-        $handlerClass = $paymentMethodEntity->getHandlerIdentifier();
-
-        if (!class_exists($handlerClass)) {
-            throw new RuntimeException(sprintf('The handler class %s for payment method %s does not exist.', $paymentMethodEntity->getName(), $handlerClass));
         }
 
         return $handlerClass::isCapturable($transactionData, $paymentTransaction->getCustomFields());
@@ -146,19 +128,29 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     private function shouldAllowRefund(PaymentTransaction $paymentTransaction, array $transactionData): bool
     {
-        $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
+        $handlerClass = $this->getHandlerIdentifier($paymentTransaction);
 
-        if (!$paymentMethodEntity) {
+        if (!$handlerClass) {
             return false;
         }
 
-        /** @var string&PayonePaymentHandlerInterface $handlerClass */
+        return $handlerClass::isRefundable($transactionData, $paymentTransaction->getCustomFields());
+    }
+
+    private function getHandlerIdentifier(PaymentTransaction $paymentTransaction): string
+    {
+        $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
+
+        if (!$paymentMethodEntity) {
+            return '';
+        }
+
         $handlerClass = $paymentMethodEntity->getHandlerIdentifier();
 
         if (!class_exists($handlerClass)) {
             throw new RuntimeException(sprintf('The handler class %s for payment method %s does not exist.', $paymentMethodEntity->getName(), $handlerClass));
         }
 
-        return $handlerClass::isRefundable($transactionData, $paymentTransaction->getCustomFields());
+        return $handlerClass;
     }
 }
