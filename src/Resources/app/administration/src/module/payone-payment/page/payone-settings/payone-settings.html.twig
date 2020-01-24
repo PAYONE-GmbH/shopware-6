@@ -1,68 +1,140 @@
 {% block payone_payment %}
-    <sw-page class="payone-payment">
-        {% block payone_payment_header %}
-            <template #smart-bar-header>
-                <h2>
-                    {{ $tc('sw-settings.index.title') }}
-                    <sw-icon name="small-arrow-medium-right" small></sw-icon>
-                    {{ $tc('payone-payment.title') }}
-                </h2>
-            </template>
+<sw-page class="payone-payment">
+    {% block payone_payment_header %}
+    <template #smart-bar-header>
+        <h2>
+            {{ $tc('sw-settings.index.title') }}
+            <sw-icon name="small-arrow-medium-right" small></sw-icon>
+            {{ $tc('payone-payment.title') }}
+        </h2>
+    </template>
+    {% endblock %}
+
+    {% block payone_payment_actions %}
+    <template #smart-bar-actions>
+        {% block payone_payment_settings_actions_feedback %}
+        <sw-button
+                @click="isSupportModalOpen = true"
+                :disabled="false"
+                variant="ghost"
+                :square="false"
+                :block="false"
+                :isLoading="false">
+            {{ $tc('payone-payment.supportModal.menuButton') }}
+        </sw-button>
         {% endblock %}
 
-        {% block payone_payment_actions %}
-            <template #smart-bar-actions>
-                {% block payone_payment_settings_actions_test %}
-                    <sw-button-process @click="onTest"
-                               :isLoading="isTesting"
-                               :processSuccess="isTestSuccessful"
-                               :disabled="credentialsMissing || isLoading">
-                        {{ $tc('payone-payment.settingsForm.test') }}
-                    </sw-button-process>
-                {% endblock %}
-
-                {% block payone_payment_settings_actions_save %}
-                    <sw-button-process
-                        class="sw-settings-login-registration__save-action"
-                        :isLoading="isLoading"
-                        :processSuccess="isSaveSuccessful"
-                        :disabled="isLoading || isTesting"
-                        variant="primary"
-                        @process-finish="saveFinish"
-                        @click="onSave">
-                        {{ $tc('payone-payment.settingsForm.save') }}
-                    </sw-button-process>
-                {% endblock %}
-            </template>
+        {% block payone_payment_settings_actions_test %}
+        <sw-button-process @click="onTest"
+                           :isLoading="isTesting"
+                           :processSuccess="isTestSuccessful"
+                           :disabled="credentialsMissing || isLoading">
+            {{ $tc('payone-payment.settingsForm.test') }}
+        </sw-button-process>
         {% endblock %}
 
-        {% block payone_payment_settings_content %}
-            <template #content>
-                <sw-card-view>
-                    <sw-system-config
-                            ref="systemConfig"
-                            salesChannelSwitchable
-                            inherit
-                            @config-changed="onConfigChange"
-                            domain="PayonePayment.settings">
-                        <template #card-element="{ element, config }">
-                            <sw-form-field-renderer
-                                    v-if="element.name.startsWith('PayonePayment.settings.paymentStatus')"
-                                    :config="{
+        {% block payone_payment_settings_actions_save %}
+        <sw-button-process
+                class="sw-settings-login-registration__save-action"
+                :isLoading="isLoading"
+                :processSuccess="isSaveSuccessful"
+                :disabled="isLoading || isTesting"
+                variant="primary"
+                @process-finish="saveFinish"
+                @click="onSave">
+            {{ $tc('payone-payment.settingsForm.save') }}
+        </sw-button-process>
+        {% endblock %}
+    </template>
+    {% endblock %}
+
+    {% block payone_payment_settings_content %}
+    <template #content>
+        <sw-modal
+                v-if="isSupportModalOpen"
+                @modal-close="isSupportModalOpen = false"
+                :title="$tc('payone-payment.supportModal.title')"
+                class="payone-feedback sw-modal--large">
+            <sw-container columns="1fr 1fr 1fr">
+                <div class="payone-feedback__col">
+                    <div class="payone-feedback__icon">
+                        <sw-icon name="default-documentation-file" large="true"></sw-icon>
+                    </div>
+                    <p class="payone-feedback__desc">
+                        {{ $tc('payone-payment.supportModal.documentation.description') }}
+                    </p>
+                    <sw-button
+                            :disabled="false"
+                            variant="primary"
+                            :square="false"
+                            :block="false"
+                            :isLoading="false"
+                            link="https://docs.payone.com/display/public/INT/Shopware+6+Plugin">
+                        {{ $tc('payone-payment.supportModal.documentation.button') }}
+                    </sw-button>
+                </div>
+                <div class="payone-feedback__col">
+                    <div class="payone-feedback__icon">
+                        <sw-icon name="default-device-headset" large="true"></sw-icon>
+                    </div>
+                    <p class="payone-feedback__desc">
+                        {{ $tc('payone-payment.supportModal.support.description') }}
+                    </p>
+                    <sw-button
+                            :disabled="false"
+                            variant="primary"
+                            :square="false"
+                            :block="false"
+                            :isLoading="false"
+                            link="mailto:tech.support@payone.com">
+                        {{ $tc('payone-payment.supportModal.support.button') }}
+                    </sw-button>
+                </div>
+                <div class="payone-feedback__col">
+                    <div class="payone-feedback__icon">
+                        <sw-icon name="default-text-code" large="true"></sw-icon>
+                    </div>
+                    <p class="payone-feedback__desc">
+                        {{ $tc('payone-payment.supportModal.repository.description') }}
+                    </p>
+                    <sw-button
+                            :disabled="false"
+                            variant="primary"
+                            :square="false"
+                            :block="false"
+                            :isLoading="false"
+                            link="https://github.com/PAYONE-GmbH/shopware-6">
+                        {{ $tc('payone-payment.supportModal.repository.button') }}
+                    </sw-button>
+                </div>
+            </sw-container>
+        </sw-modal>
+
+        <sw-card-view>
+            <sw-system-config
+                    ref="systemConfig"
+                    salesChannelSwitchable
+                    inherit
+                    @config-changed="onConfigChange"
+                    domain="PayonePayment.settings">
+                <template #card-element="{ element, config }">
+                    <sw-form-field-renderer
+                            v-if="element.name.startsWith('PayonePayment.settings.paymentStatus')"
+                            :config="{
                                         componentName: 'sw-single-select',
                                         label: getInlineSnippet(element.config.label),
                                         helpText: getInlineSnippet(element.config.helpText),
                                         options: stateMachineTransitionActions,
                                     }"
-                                    v-model="config[element.name]"/>
-                            <sw-form-field-renderer
-                                    v-else
-                                    v-bind="getBind(element, config)"
-                                    v-model="config[element.name]"/>
-                        </template>
-                    </sw-system-config>
-                </sw-card-view>
-            </template>
-        {% endblock %}
-    </sw-page>
+                            v-model="config[element.name]"/>
+                    <sw-form-field-renderer
+                            v-else
+                            v-bind="getBind(element, config)"
+                            v-model="config[element.name]"/>
+                </template>
+            </sw-system-config>
+        </sw-card-view>
+    </template>
+    {% endblock %}
+</sw-page>
 {% endblock %}

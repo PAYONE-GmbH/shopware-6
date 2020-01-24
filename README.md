@@ -1,46 +1,54 @@
-# PayonePayment
+PAYONE Payment for Shopware 6
+=============================
 
-## How to change field styling
+[![CI Status](https://github.com/PAYONE-GmbH/shopware-6/workflows/CI/badge.svg?branch=master)](https://github.com/PAYONE-GmbH/shopware-6/actions)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/PAYONE-GmbH/shopware-6/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/PAYONE-GmbH/shopware-6/?branch=master)
+[![LICENSE](https://img.shields.io/github/license/PAYONE-GmbH/shopware-6.svg)](LICENSE)
 
-Some payment methods like credit cards have custom field styling for the iframe-based input fields. You can change the field styling by creating a new plugin depending on this plugin via composer.
+This plugin enables merchants to accept payments in a simple and convenient way.
+We offer state-of-the art integration of the most used payment methods directly
+into your checkout. 
 
-In the new plugin you can then define an overriding javascript plugin like this (example uses `custom/plugins/MyPlugin/src/Resources/storefront/my-payone-payment/my-payone-payment.credit-card.plugin.js`):
+## Open for Feedback
 
-```js
-import PayonePaymentCreditCard from '../../../../../PayonePayment/src/Resources/storefront/credit-card/payone-payment.credit-card';
+This plugin is a complete rewrite of our Shopware 5 plugin and we'd love to hear your
+feedback on it! Drop us a message at shopware@payone.com or open an issue if
+you've found a bug.
 
-export default class MyPayonePaymentCreditCard extends PayonePaymentCreditCard
-{
-    getFieldStyle() {
-        const style = super.getFieldStyle();
+## Super Bonus for Early Adopters
 
-        style.push('height: 300px');
+We'd especially love to hear from you if you plan on going live using the plugin
+so we can assist and show some appreciation to the first adopters. :crown:
 
-        return style;
-    }
-    getSelectStyle(){
-        const style = super.getSelectStyle();
+## Installation
 
-        style.push('background-color: black');
+The plugin can easily be integrated via Composer:
 
-        return style;
-    }
-}
+```
+composer require payone-gmbh/shopware-6
+php bin/console plugin:install PayonePayment
+php bin/console plugin:activate PayonePayment
+php bin/console cache:clear
 ```
 
-Then you can register the overriding plugin in your `custom/plugins/MyPlugin/src/Resources/storefront/main.js`:
+## Not a Customer Yet?
 
-```js
-import MyPayonePaymentCreditCard from './my-payone-payment/my-payone-payment.credit-card.plugin';
+If you don't have a PAYONE Merchant Account yet, get in touch and we'll setup
+a test account for you!
 
-const PluginManager = window.PluginManager;
-PluginManager.override('PayonePaymentCreditCard', MyPayonePaymentCreditCard, '[data-is-payone-credit-card]');
+## Documentation
 
-// Necessary for the webpack hot module reloading server
-if (module.hot) {
-    module.hot.accept();
-}
-```
+Please refer to our extensive online documentation at
+https://docs.payone.com/display/public/INT/Shopware+6+Plugin 
+
+## Support and Contact
+
+PAYONE GmbH  
+Office Kiel  
+Fraunhoferstraße 2–4  
+24118 Kiel, Germany  
+Phone +49 431 25968-400  
+shopware@payone.com
 
 ## License
 
