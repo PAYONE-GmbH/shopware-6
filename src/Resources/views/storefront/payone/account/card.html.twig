@@ -39,7 +39,7 @@
                                                 {% if card.expiresAt <= date() %}
                                                     ({{ "PayonePayment.cardPage.expired" | trans }})
                                                 {% else %}
-                                                    ({{ "PayonePayment.cardPage.expiresAt" | trans({'%expiresAt%': card.expiresAt|format_date('medium', 'none', locale, 'UTC')}) }})
+                                                    ({{ "PayonePayment.cardPage.expiresAt" | trans({'%expiresAt%': card.expiresAt | format_date('medium')}) }})
                                                 {% endif %}
                                             </td>
                                             <td>
