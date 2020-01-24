@@ -48,14 +48,13 @@ export default class PayonePaymentCreditCard extends Plugin {
     getSelectStyle() {
         return [
             'width: 100%',
-            'height: calc(1.5em + 1.45rem)',
             'padding: .5625rem',
             'color: #8798a9',
             'vertical-align: middle',
             'line-height: 1.5',
             'font-weight: 500',
             'background-color: #fff',
-            'border: .0625rem solid #d1d9e0',
+            'border: none',
             'border-radius: 3px',
         ];
     }
@@ -70,7 +69,7 @@ export default class PayonePaymentCreditCard extends Plugin {
             'line-height: 1.5',
             'font-weight: 500',
             'background-color: #fff',
-            'border: .0625rem solid #d1d9e0',
+            'border: none',
             'border-radius: .1875rem',
         ];
     }
