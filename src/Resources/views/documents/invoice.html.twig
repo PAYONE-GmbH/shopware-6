@@ -21,6 +21,8 @@
         {% endblock %}
 
         {% if order.extensions.payone_document %}
+            <br>
+            <strong>{{ 'PayonePayment.payolution.document.invoicingDescription' | trans }}</strong>
             {% block document_payment_payone_invoicing_iban %}
                 {{ 'PayonePayment.payolution.document.iban' | trans({'%iban%': order.extensions.payone_document.iban}) }}<br>
             {% endblock %}

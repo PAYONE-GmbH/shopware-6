@@ -89,6 +89,7 @@
       },
       "document": {
         "clearingReference": "Reference: %reference%",
+        "invoicingDescription": "Please transfer the outstanding amount to the following bank account:",
         "iban": "IBAN: %iban%",
         "bic": "BIC: %bic%"
       },
