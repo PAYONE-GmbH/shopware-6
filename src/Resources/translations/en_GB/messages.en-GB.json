@@ -8,7 +8,8 @@
       "cardNumber": "Card number",
       "securityCode": "Security code",
       "expiryDate": "Expiry date",
-      "savedCards": "Saved card"
+      "savedCards": "Saved card",
+      "iframeError": "Please verify the fields and make sure no field is empty."
     },
     "debit": {
       "accountOwner": "Account owner",
