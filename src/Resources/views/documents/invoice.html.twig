@@ -30,6 +30,15 @@
             {% endblock %}
         {% endif %}
     {% endif %}
+
+    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionDebit::UUID') == order.transactions.first.paymentMethod.id %}
+        {% block document_payment_payone_debit_clearing_reference %}
+            {% if order.transactions.first.customFields.payone_clearing_reference %}
+                <br>
+                {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_reference}) }}<br>
+            {% endif %}
+        {% endblock %}
+    {% endif %}
 {% endblock %}
 
 {% block document_footer_bank_name %}
