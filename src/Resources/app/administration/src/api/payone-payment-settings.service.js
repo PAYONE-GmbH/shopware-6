@@ -1,7 +1,7 @@
 const { Application } = Shopware;
 const ApiService = Shopware.Classes.ApiService;
 
-class PayonePaymentApiCredentialsService extends ApiService {
+class PayonePaymentSettingsService extends ApiService {
     constructor(httpClient, loginService, apiEndpoint = 'payone_payment') {
         super(httpClient, loginService, apiEndpoint);
     }
@@ -23,11 +23,27 @@ class PayonePaymentApiCredentialsService extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    getStateMachineTransitionActions() {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient
+            .get(
+                `_action/${this.getApiBasePath()}/get-state-machine-transition-actions`,
+                {
+                    headers: headers
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
 }
 
-Application.addServiceProvider('PayonePaymentApiCredentialsService', (container) => {
+Application.addServiceProvider('PayonePaymentSettingsService', (container) => {
     const initContainer = Application.getContainer('init');
 
-    return new PayonePaymentApiCredentialsService(initContainer.httpClient, container.loginService);
+    return new PayonePaymentSettingsService(initContainer.httpClient, container.loginService);
 });
 
