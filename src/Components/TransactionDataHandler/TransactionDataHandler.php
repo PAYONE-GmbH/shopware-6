@@ -57,14 +57,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
         $customFields = array_merge($customFields, $data);
 
-        $update = [
-            'id'           => $transaction->getOrderTransaction()->getId(),
-            'customFields' => $customFields,
-        ];
-
-        $transaction->getOrderTransaction()->setCustomFields($customFields);
-
-        $this->transactionRepository->update([$update], $context);
+        $this->updateTransactionCustomFields($transaction, $context, $customFields);
     }
 
     public function logResponse(PaymentTransaction $transaction, Context $context, array $response): void
@@ -75,15 +68,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
         $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
 
-        $update = [
-            'id'           => $transaction->getOrderTransaction()->getId(),
-            'customFields' => $customFields,
-        ];
-
-        $transaction->getOrderTransaction()->setCustomFields($customFields);
-        $transaction->setCustomFields($customFields);
-
-        $this->transactionRepository->update([$update], $context);
+        $this->updateTransactionCustomFields($transaction, $context, $customFields);
     }
 
     public function incrementSequenceNumber(PaymentTransaction $transaction, Context $context): void
@@ -92,15 +77,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
         ++$customFields[CustomFieldInstaller::SEQUENCE_NUMBER];
 
-        $update = [
-            'id'           => $transaction->getOrderTransaction()->getId(),
-            'customFields' => $customFields,
-        ];
-
-        $transaction->getOrderTransaction()->setCustomFields($customFields);
-        $transaction->setCustomFields($customFields);
-
-        $this->transactionRepository->update([$update], $context);
+        $this->updateTransactionCustomFields($transaction, $context, $customFields);
     }
 
     public function saveTransactionState(string $stateId, PaymentTransaction $transaction, Context $context): void
@@ -113,6 +90,19 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($update): void {
             $this->transactionRepository->update([$update], $context);
         });
+    }
+
+    private function updateTransactionCustomFields(PaymentTransaction $transaction, Context $context, array $customFields): void
+    {
+        $update = [
+            'id'           => $transaction->getOrderTransaction()->getId(),
+            'customFields' => $customFields,
+        ];
+
+        $transaction->getOrderTransaction()->setCustomFields($customFields);
+        $transaction->setCustomFields($customFields);
+
+        $this->transactionRepository->update([$update], $context);
     }
 
     private function shouldAllowCapture(PaymentTransaction $paymentTransaction, array $transactionData): bool
