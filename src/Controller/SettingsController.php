@@ -115,7 +115,7 @@ class SettingsController extends AbstractController
         $searchResult    = $this->stateMachineTransitionRepository->search($criteria, $context);
         $transitionNames = [];
 
-        if ($searchResult && count($searchResult->getElements()) > 0) {
+        if (count($searchResult->getElements()) > 0) {
             foreach ($searchResult->getElements() as $stateMachineAction) {
                 $transitionNames[] = [
                     'label' => $stateMachineAction->getActionName(),
