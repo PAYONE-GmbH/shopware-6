@@ -50,6 +50,21 @@
                 "button": "GitHub"
             }
         },
+        "transitionActionNames": {
+            "cancel": "Cancel",
+            "complete": "Complete",
+            "pay": "Pay",
+            "pay_partially": "Pay partially",
+            "process": "Process",
+            "refund": "Refund",
+            "refund_partially": "Refund partially",
+            "remind": "Remind",
+            "reopen": "Reopen",
+            "retour": "Retour",
+            "retour_partially": "Retour partially",
+            "ship": "Ship",
+            "ship_partially": "Ship partially"
+        },
         "messageNotBlank": "This field must not be empty.",
         "txid": "TXID",
         "sequenceNumber": {
