@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Controller;
 
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandler;
+use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Controller\WebhookController;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use PayonePayment\Payone\Webhook\Processor\WebhookProcessor;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Components\ConfigReaderMock;
 use PayonePayment\Test\Mock\Factory\TransactionStatusWebhookHandlerFactory;
-use PayonePayment\Test\Mock\Repository\EntityRepositoryMock;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -19,7 +18,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStat
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
 class WebhookControllerTest extends TestCase
@@ -101,14 +100,19 @@ class WebhookControllerTest extends TestCase
 
     private function createWebhookController(): WebhookController
     {
+        $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
+
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
-            $this->createMock(EntityRepositoryInterface::class),
+            $stateMachineRegistry,
             $this->transactionStateHandler,
-            new TransactionDataHandler(new EntityRepositoryMock()),
             []
         );
+
+        $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
+
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
-            $transactionStatusService
+            $transactionStatusService,
+            $transactionDataHandler
         );
 
         return new WebhookController(

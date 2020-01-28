@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace PayonePayment\Components\TransactionStatus;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\StateMachine\Exception\IllegalTransitionException;
@@ -34,25 +32,15 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     /** @var StateMachineRegistry */
     private $stateMachineRegistry;
 
-    /** @var EntityRepositoryInterface */
-    private $stateMachineTransitionRepository;
-
     /** @var ConfigReaderInterface */
     private $configReader;
 
-    /** @var LoggerInterface */
-    private $logger;
-
     public function __construct(
         StateMachineRegistry $stateMachineRegistry,
-        EntityRepositoryInterface $stateMachineTransitionRepository,
-        ConfigReaderInterface $configReader,
-        LoggerInterface $logger
+        ConfigReaderInterface $configReader
     ) {
-        $this->stateMachineRegistry             = $stateMachineRegistry;
-        $this->stateMachineTransitionRepository = $stateMachineTransitionRepository;
-        $this->configReader                     = $configReader;
-        $this->logger                           = $logger;
+        $this->stateMachineRegistry = $stateMachineRegistry;
+        $this->configReader         = $configReader;
     }
 
     public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, OrderTransactionEntity $orderTransactionEntity, array $transactionData): void
