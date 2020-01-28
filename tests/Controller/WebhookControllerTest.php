@@ -104,7 +104,6 @@ class WebhookControllerTest extends TestCase
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
             $stateMachineRegistry,
-            $this->transactionStateHandler,
             []
         );
 
