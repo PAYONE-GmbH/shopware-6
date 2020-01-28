@@ -1,5 +1,5 @@
 const { Component, Mixin } = Shopware;
-const { Criteria } = Shopware.Data;
+
 import template from './payone-settings.html.twig';
 import './style.scss';
 
@@ -11,7 +11,7 @@ Component.register('payone-settings', {
         Mixin.getByName('sw-inline-snippet')
     ],
 
-    inject: ['PayonePaymentApiCredentialsService'],
+    inject: [ 'PayonePaymentSettingsService' ],
 
     data() {
         return {
@@ -26,7 +26,12 @@ Component.register('payone-settings', {
             portalKeyFilled: false,
             showValidationErrors: false,
             isSupportModalOpen: false,
+            stateMachineTransitionActions: []
         };
+    },
+
+    created() {
+        this.createdComponent();
     },
 
     computed: {
@@ -42,6 +47,20 @@ Component.register('payone-settings', {
     },
 
     methods: {
+        createdComponent() {
+            var me = this;
+
+            this.PayonePaymentSettingsService.getStateMachineTransitionActions()
+                .then((result) => {
+                    result.data.forEach((element) => {
+                        me.stateMachineTransitionActions.push({
+                            "label": me.$tc('payone-payment.transitionActionNames.'+ element.label ),
+                            "value": element.value,
+                        })
+                    });
+                });
+        },
+
         paymentMethodPrefixes() {
             // TODO: Autogenerate config array with these prefixes
             return [
@@ -126,7 +145,7 @@ Component.register('payone-settings', {
                 };
             });
 
-            this.PayonePaymentApiCredentialsService.validateApiCredentials(credentials).then((response) => {
+            this.PayonePaymentSettingsService.validateApiCredentials(credentials).then((response) => {
                 const credentialsValid = response.credentialsValid;
                 const errors = response.errors;
 
@@ -188,13 +207,6 @@ Component.register('payone-settings', {
             }
 
             return element;
-        },
-
-        getPaymentStatusCriteria() {
-            const criteria = new Criteria(1, 100);
-            criteria.addFilter(Criteria.equals('stateMachine.technicalName', 'order_transaction.state'));
-
-            return criteria;
         }
     }
 });

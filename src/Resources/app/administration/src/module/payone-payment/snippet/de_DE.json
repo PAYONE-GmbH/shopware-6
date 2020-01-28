@@ -50,6 +50,21 @@
                 "button": "GitHub"
             }
         },
+        "transitionActionNames": {
+            "cancel": "Stornieren",
+            "complete": "Abschließen",
+            "pay":  "Bezahlen",
+            "pay_partially": "Teilweise bezahlen",
+            "process":  "Durchführen",
+            "refund": "Rückerstatten",
+            "refund_partially":  "Teilweise rückerstatten",
+            "remind": "Erinnern",
+            "reopen":  "Wieder öffnen",
+            "retour": "Retoure",
+            "retour_partially":  "Teilweise retounieren",
+            "ship": "Versenden",
+            "ship_partially":  "Teilweise versenden"
+        },
         "messageNotBlank": "Dieser Wert darf nicht leer sein.",
         "txid": "TXID",
         "sequenceNumber": {
