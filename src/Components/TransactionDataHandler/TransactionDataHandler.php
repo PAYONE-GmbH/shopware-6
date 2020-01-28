@@ -36,13 +36,13 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $this->transactionRepository->update([$update], $context);
     }
 
-    public function logResponse(PaymentTransaction $transaction, Context $context, array $response): void
+    public function logResponse(PaymentTransaction $transaction, Context $context, array $data): void
     {
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
 
         $key = (new DateTime())->format(DATE_ATOM);
 
-        $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $response;
+        $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $data;
 
         $update = [
             'id'           => $transaction->getOrderTransaction()->getId(),
