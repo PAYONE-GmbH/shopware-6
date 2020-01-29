@@ -51,6 +51,7 @@ Component.register('payone-settings', {
                 'paypalExpress',
                 'payolutionInvoicing',
                 'payolutionInstallment',
+                'payolutionDebit',
                 'sofort'
             ];
         },
