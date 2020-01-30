@@ -21,6 +21,8 @@
         {% endblock %}
 
         {% if order.extensions.payone_document %}
+            <br>
+            <strong>{{ 'PayonePayment.payolution.document.invoicingDescription' | trans }}</strong>
             {% block document_payment_payone_invoicing_iban %}
                 {{ 'PayonePayment.payolution.document.iban' | trans({'%iban%': order.extensions.payone_document.iban}) }}<br>
             {% endblock %}
@@ -29,6 +31,15 @@
                 {{ 'PayonePayment.payolution.document.bic' | trans({'%bic%': order.extensions.payone_document.bic}) }}<br>
             {% endblock %}
         {% endif %}
+    {% endif %}
+
+    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionDebit::UUID') == order.transactions.first.paymentMethod.id %}
+        {% block document_payment_payone_debit_clearing_reference %}
+            {% if order.transactions.first.customFields.payone_clearing_reference %}
+                <br>
+                {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_reference}) }}<br>
+            {% endif %}
+        {% endblock %}
     {% endif %}
 {% endblock %}
 
