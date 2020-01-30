@@ -99,7 +99,7 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
+        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
 
         $truncatedCardPan   = $dataBag->get('truncatedCardPan');
         $cardExpireDate     = $dataBag->get('cardExpireDate');

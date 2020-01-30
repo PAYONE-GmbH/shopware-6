@@ -89,7 +89,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $data[CustomFieldInstaller::ALLOW_REFUND]      = $this->shouldAllowRefund($transactionData, $paymentTransaction);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $transactionData);
+        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['transaction' => $transactionData]);
 
         $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $configurationKey = 'paymentStatus' . ucfirst(strtolower($transactionData['txaction']));
