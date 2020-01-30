@@ -8,7 +8,8 @@
       "cardNumber": "Kartennummer",
       "securityCode": "CVV",
       "expiryDate": "Gültig bis",
-      "savedCards": "Gespeicherte Karte"
+      "savedCards": "Gespeicherte Karte",
+      "iframeError": "Bitte prüfen Sie, ob alle Felder korrekt und vollständig ausgefüllt sind."
     },
     "debit": {
       "accountOwner": "Kontoinhaber",
@@ -88,6 +89,7 @@
       },
       "document": {
         "clearingReference": "Referenz: %reference%",
+        "invoicingDescription": "Bitte überweisen Sie den ausstehenden Betrag auf das folgende Konto:",
         "iban": "IBAN: %iban%",
         "bic": "BIC: %bic%"
       },

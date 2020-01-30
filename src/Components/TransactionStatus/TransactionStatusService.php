@@ -109,7 +109,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
                 self::ACTION_COMPLETED,
                 self::ACTION_DEBIT,
             ],
-        true
+            true
         );
     }
 
