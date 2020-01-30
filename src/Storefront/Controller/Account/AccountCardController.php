@@ -39,7 +39,7 @@ class AccountCardController extends StorefrontController
 
         $page = $this->accountCardPageLoader->load($request, $context);
 
-        return $this->renderStorefront('@Storefront/payone/account/card.html.twig', ['page' => $page]);
+        return $this->renderStorefront('@Storefront/storefront/payone/account/card.html.twig', ['page' => $page]);
     }
 
     /**

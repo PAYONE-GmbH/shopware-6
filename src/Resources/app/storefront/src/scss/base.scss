@@ -19,7 +19,8 @@ $payone-logo-gutter: 1rem;
 
     .form-control.iframe {
         padding: 0;
-        border: 0;
+        border: .0625rem solid #d1d9e0;
+        border-radius: 3px;
         height: calc(5em - #{$payone-input-gutter});
     }
 

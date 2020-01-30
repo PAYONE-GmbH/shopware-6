@@ -20,6 +20,7 @@ export default class PayonePaymentCreditCard extends Plugin {
     init() {
         this.iframe = null;
 
+        this.iframeFieldCheckerStarted = false;
         this.orderFormDisabled = true;
 
         const requestContainer = document.getElementById('payone-request');
@@ -48,14 +49,13 @@ export default class PayonePaymentCreditCard extends Plugin {
     getSelectStyle() {
         return [
             'width: 100%',
-            'height: calc(1.5em + 1.45rem)',
             'padding: .5625rem',
             'color: #8798a9',
             'vertical-align: middle',
             'line-height: 1.5',
             'font-weight: 500',
             'background-color: #fff',
-            'border: .0625rem solid #d1d9e0',
+            'border: none',
             'border-radius: 3px',
         ];
     }
@@ -70,7 +70,7 @@ export default class PayonePaymentCreditCard extends Plugin {
             'line-height: 1.5',
             'font-weight: 500',
             'background-color: #fff',
-            'border: .0625rem solid #d1d9e0',
+            'border: none',
             'border-radius: .1875rem',
         ];
     }
@@ -88,6 +88,7 @@ export default class PayonePaymentCreditCard extends Plugin {
                     type: 'password',
                     size: '4',
                     maxlength: '4',
+                    length: { 'A': 4, 'V': 3, 'M': 3, 'J': 0 },
                     style: this.getFieldStyle().join('; '),
                 },
                 cardexpiremonth: {
@@ -159,17 +160,39 @@ export default class PayonePaymentCreditCard extends Plugin {
             return true;
         }
 
-        if (!this.iframe.isComplete() || this.orderFormDisabled) {
-            const me  = this;
+        // Check if the hosted IFrame fields are invalid,
+        // if so, show error message and prevent form submit.
+        if (!this.iframe.isComplete()) {
+            const iframeError = document.getElementById('iframeErrorOutput');
 
-            window.creditCardCheckCallback = function(response) {
-                me._payoneCheckCallback(response);
-            };
+            // Register an interval to after the first time the
+            // user clicked the submit button to re-check the fields.
+            if (!this.iframeFieldCheckerStarted) {
+                setInterval(() => {
+                    if (this.iframe.isComplete()) {
+                        iframeError.style.display = 'none';
+                    } else {
+                        iframeError.style.display = 'block';
+                    }
+                }, 250);
+            }
 
-            this.iframe.creditCardCheck('creditCardCheckCallback');
-
+            // Flag that the check interval has started and prevent
+            // submitting the form.
+            this.iframeFieldCheckerStarted = true;
             event.preventDefault();
+            return false;
+        }
 
+        // Perform the credit card check if no check was performed
+        // before or the prior check was not successful.
+        if (this.orderFormDisabled) {
+            window.payoneCreditCardCheckCallback = this._payoneCheckCallback.bind(this);
+            this.iframe.creditCardCheck('payoneCreditCardCheckCallback');
+
+            // Prevent form submit, credit card check handler takes
+            // care about submitting the form.
+            event.preventDefault();
             return false;
         }
     }
