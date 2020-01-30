@@ -64,7 +64,7 @@ class RefundPaymentHandler implements RefundPaymentHandlerInterface
             CustomFieldInstaller::ALLOW_REFUND      => false,
         ];
 
-        $this->dataHandler->logResponse($paymentTransaction, $context, $response);
+        $this->dataHandler->logResponse($paymentTransaction, $context, ['request' => $request, 'response' => $response]);
         $this->dataHandler->incrementSequenceNumber($paymentTransaction, $context);
         $this->dataHandler->saveTransactionData($paymentTransaction, $context, $data);
 
