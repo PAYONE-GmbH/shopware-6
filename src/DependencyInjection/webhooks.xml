@@ -12,6 +12,7 @@
 
         <service id="PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler">
             <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService"/>
+            <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
             <argument type="service" id="PayonePayment\Util\Logger" />
 
             <tag name="payone.webhook.handler" />

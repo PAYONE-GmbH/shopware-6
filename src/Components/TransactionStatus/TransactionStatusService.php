@@ -5,183 +5,90 @@ declare(strict_types=1);
 namespace PayonePayment\Components\TransactionStatus;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
-use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\PaymentHandler\PayonePaymentHandlerInterface;
-use PayonePayment\Struct\PaymentTransaction;
-use RuntimeException;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
+use Shopware\Core\System\StateMachine\Exception\IllegalTransitionException;
+use Shopware\Core\System\StateMachine\StateMachineRegistry;
+use Shopware\Core\System\StateMachine\Transition;
 
 class TransactionStatusService implements TransactionStatusServiceInterface
 {
-    public const ACTION_APPOINTED        = 'appointed';
-    public const ACTION_PAID             = 'paid';
-    public const ACTION_CAPTURE          = 'capture';
-    public const ACTION_COMPLETED        = 'completed';
-    public const ACTION_DEBIT            = 'debit';
-    public const ACTION_AUTHORIZATION    = 'authorization';
-    public const ACTION_PREAUTHORIZATION = 'preauthorization';
-    public const ACTION_CANCELATION      = 'cancelation';
-    public const ACTION_FAILED           = 'failed';
+    public const ACTION_APPOINTED   = 'appointed';
+    public const ACTION_PAID        = 'paid';
+    public const ACTION_CAPTURE     = 'capture';
+    public const ACTION_COMPLETED   = 'completed';
+    public const ACTION_DEBIT       = 'debit';
+    public const ACTION_CANCELATION = 'cancelation';
+    public const ACTION_FAILED      = 'failed';
 
-    public const STATUS_PENDING   = 'pending';
+    public const STATUS_PREFIX    = 'paymentStatus';
     public const STATUS_COMPLETED = 'completed';
 
     public const AUTHORIZATION_TYPE_PREAUTHORIZATION = 'preauthorization';
-    public const AUTHORIZATION_TYPE_AUTHORIZATION    = 'authorization';
 
-    /** @var EntityRepositoryInterface */
-    private $orderTransactionRepository;
-
-    /** @var OrderTransactionStateHandler */
-    private $stateHandler;
-
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    /** @var StateMachineRegistry */
+    private $stateMachineRegistry;
 
     /** @var ConfigReaderInterface */
     private $configReader;
 
-    /** @var EntityRepositoryInterface */
-    private $stateRepository;
-
     public function __construct(
-        EntityRepositoryInterface $orderTransactionRepository,
-        OrderTransactionStateHandler $stateHandler,
-        TransactionDataHandlerInterface $dataHandler,
-        ConfigReaderInterface $configReader,
-        EntityRepositoryInterface $stateRepository
+        StateMachineRegistry $stateMachineRegistry,
+        ConfigReaderInterface $configReader
     ) {
-        $this->orderTransactionRepository = $orderTransactionRepository;
-        $this->stateHandler               = $stateHandler;
-        $this->dataHandler                = $dataHandler;
-        $this->configReader               = $configReader;
-        $this->stateRepository            = $stateRepository;
+        $this->stateMachineRegistry = $stateMachineRegistry;
+        $this->configReader         = $configReader;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function persistTransactionStatus(SalesChannelContext $salesChannelContext, array $transactionData): void
+    public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, OrderTransactionEntity $orderTransactionEntity, array $transactionData): void
     {
-        $paymentTransaction = $this->getPaymentTransactionByPayoneTransactionId(
-            $salesChannelContext->getContext(),
-            (int) $transactionData['txid']
-        );
-
-        if (!$paymentTransaction) {
-            throw new RuntimeException(sprintf(
-                'Could not find an order transaction by payone transaction id "%s"',
-                $transactionData['txid']
-            ));
-        }
-
-        $transactionData = array_map('utf8_encode', $transactionData);
-
-        $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = (int) $transactionData['sequencenumber'];
-        $data[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
-        $data[CustomFieldInstaller::ALLOW_CAPTURE]     = $this->shouldAllowCapture($transactionData, $paymentTransaction);
-        $data[CustomFieldInstaller::ALLOW_REFUND]      = $this->shouldAllowRefund($transactionData, $paymentTransaction);
-
-        $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['transaction' => $transactionData]);
-
         $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $configurationKey = 'paymentStatus' . ucfirst(strtolower($transactionData['txaction']));
+        $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower($transactionData['txaction']));
 
-        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && (float) $transactionData['receivable'] === 0.0) {
-            // This is a special case of a capture of 0, which means a cancellation
-            $configurationKey = 'paymentStatusCancelation';
+        if ($this->isZeroCapture($transactionData)) {
+            $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower(self::ACTION_CANCELATION));
         }
 
-        if (!empty($configuration->get($configurationKey))) {
-            if (!$this->stateExists($configuration->get($configurationKey), $salesChannelContext->getContext())) {
-                throw new RuntimeException(sprintf('The mapped transaction state for %s does not exists. The mapping is therefore invalid.', $transactionData['txaction']));
-            }
+        $transitionName = $configuration->get($configurationKey);
 
-            $this->dataHandler->saveTransactionState(
-                $configuration->get($configurationKey),
-                $paymentTransaction,
-                $salesChannelContext->getContext()
-            );
-        } else {
+        if (empty($transitionName)) {
             if ($this->isTransactionOpen($transactionData)) {
-                $this->stateHandler->reopen(
-                    $paymentTransaction->getOrderTransaction()->getId(),
-                    $salesChannelContext->getContext()
-                );
+                $transitionName = StateMachineTransitionActions::ACTION_REOPEN;
             } elseif ($this->isTransactionPaid($transactionData)) {
-                $this->stateHandler->pay(
-                    $paymentTransaction->getOrderTransaction()->getId(),
-                    $salesChannelContext->getContext()
-                );
+                $transitionName = StateMachineTransitionActions::ACTION_PAY;
             } elseif ($this->isTransactionCancelled($transactionData)) {
-                $this->stateHandler->cancel(
-                    $paymentTransaction->getOrderTransaction()->getId(),
-                    $salesChannelContext->getContext()
-                );
+                $transitionName = StateMachineTransitionActions::ACTION_CANCEL;
             }
         }
+
+        if (!empty($transitionName)) {
+            $this->executeTransition($salesChannelContext->getContext(), $orderTransactionEntity->getId(), strtolower($transitionName));
+        }
     }
 
-    private function getPaymentTransactionByPayoneTransactionId(Context $context, int $payoneTransactionId): ?PaymentTransaction
+    public function transitionByName(Context $context, string $transactionId, string $transitionName): void
     {
-        $field = 'order_transaction.customFields.' . CustomFieldInstaller::TRANSACTION_ID;
-
-        $criteria = new Criteria();
-        $filter   = new EqualsFilter($field, $payoneTransactionId);
-
-        $criteria->addFilter($filter);
-        $criteria->addAssociation('paymentMethod');
-
-        $transaction = $this->orderTransactionRepository->search($criteria, $context)->first();
-
-        if (null === $transaction) {
-            return null;
-        }
-
-        return PaymentTransaction::fromOrderTransaction($transaction);
+        $this->executeTransition($context, $transactionId, strtolower($transitionName));
     }
 
-    private function shouldAllowCapture(array $transactionData, PaymentTransaction $paymentTransaction): bool
+    private function executeTransition(Context $context, string $transactionId, string $transitionName): void
     {
-        $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
-
-        if (!$paymentMethodEntity) {
-            return false;
+        try {
+            $this->stateMachineRegistry->transition(
+                new Transition(
+                    OrderTransactionDefinition::ENTITY_NAME,
+                    $transactionId,
+                    $transitionName,
+                    'stateId'
+                ),
+                $context
+            );
+        } catch (IllegalTransitionException $exception) {
+            /** false-positiv handling (paid -> paid, open -> open) */
         }
-
-        /** @var string&PayonePaymentHandlerInterface $handlerClass */
-        $handlerClass = $paymentMethodEntity->getHandlerIdentifier();
-
-        if (!class_exists($handlerClass)) {
-            throw new RuntimeException(sprintf('The handler class %s for payment method %s does not exist.', $paymentMethodEntity->getName(), $handlerClass));
-        }
-
-        return $handlerClass::isCapturable($transactionData, $paymentTransaction->getCustomFields());
-    }
-
-    private function shouldAllowRefund(array $transactionData, PaymentTransaction $paymentTransaction): bool
-    {
-        $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
-
-        if (!$paymentMethodEntity) {
-            return false;
-        }
-
-        /** @var string&PayonePaymentHandlerInterface $handlerClass */
-        $handlerClass = $paymentMethodEntity->getHandlerIdentifier();
-
-        if (!class_exists($handlerClass)) {
-            throw new RuntimeException(sprintf('The handler class %s for payment method %s does not exist.', $paymentMethodEntity->getName(), $handlerClass));
-        }
-
-        return $handlerClass::isRefundable($transactionData, $paymentTransaction->getCustomFields());
     }
 
     private function isTransactionOpen(array $transactionData): bool
@@ -195,25 +102,30 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return true;
         }
 
-        return in_array(strtolower($transactionData['txaction']), [
-            self::ACTION_PAID,
-            self::ACTION_COMPLETED,
-            self::ACTION_DEBIT,
-        ]);
+        return in_array(
+            strtolower($transactionData['txaction']),
+            [
+                self::ACTION_PAID,
+                self::ACTION_COMPLETED,
+                self::ACTION_DEBIT,
+            ],
+            true
+        );
     }
 
     private function isTransactionCancelled(array $transactionData): bool
     {
         return strtolower($transactionData['txaction']) === self::ACTION_CANCELATION
             || strtolower($transactionData['txaction']) === self::ACTION_FAILED
-            || (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE
-                && (float) $transactionData['receivable'] === 0.0);
+            || $this->isZeroCapture($transactionData);
     }
 
-    private function stateExists(string $state, Context $context): bool
+    /**
+     * This is a special case of a capture of 0, which means a cancellation
+     */
+    private function isZeroCapture(array $transactionData): bool
     {
-        $criteria = new Criteria([$state]);
-
-        return (bool) $this->stateRepository->search($criteria, $context)->first();
+        return strtolower($transactionData['txaction']) === self::ACTION_CAPTURE
+            && (float) $transactionData['receivable'] === 0.0;
     }
 }

@@ -104,6 +104,10 @@ class PayonePayolutionInvoicingPaymentHandler implements SynchronousPaymentHandl
      */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
+        if (!array_key_exists(CustomFieldInstaller::AUTHORIZATION_TYPE, $customFields)) {
+            return false;
+        }
+
         if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
             return false;
         }

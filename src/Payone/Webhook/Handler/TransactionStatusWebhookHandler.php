@@ -4,24 +4,30 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Handler;
 
+use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
+use PayonePayment\Struct\PaymentTransaction;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Throwable;
 
 class TransactionStatusWebhookHandler implements WebhookHandlerInterface
 {
     /** @var TransactionStatusServiceInterface */
     private $transactionStatusService;
 
+    /** @var TransactionDataHandlerInterface */
+    private $transactionDataHandler;
+
     /** @var LoggerInterface */
     private $logger;
 
     public function __construct(
         TransactionStatusServiceInterface $transactionStatusService,
+        TransactionDataHandlerInterface $transactionDataHandler,
         LoggerInterface $logger
     ) {
         $this->transactionStatusService = $transactionStatusService;
+        $this->transactionDataHandler   = $transactionDataHandler;
         $this->logger                   = $logger;
     }
 
@@ -39,10 +45,22 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
      */
     public function process(SalesChannelContext $salesChannelContext, array $data): void
     {
-        try {
-            $this->transactionStatusService->persistTransactionStatus($salesChannelContext, $data);
-        } catch (Throwable $exception) {
-            $this->logger->warning($exception->getMessage());
+        /** @var null|PaymentTransaction $paymentTransaction */
+        $paymentTransaction = $this->transactionDataHandler->getPaymentTransactionByPayoneTransactionId(
+            $salesChannelContext->getContext(),
+            (int) $data['txid']
+        );
+
+        if (!$paymentTransaction) {
+            $this->logger->warning(sprintf('Could not get transaction for id %s', (int) $data['txid']));
+
+            return;
         }
+
+        $data = $this->transactionDataHandler->enhanceStatusWebhookData($paymentTransaction, $data);
+
+        $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->transactionDataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['transaction' => $data]);
+        $this->transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction->getOrderTransaction(), $data);
     }
 }

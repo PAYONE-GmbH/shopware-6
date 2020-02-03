@@ -25,6 +25,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Grouping\FieldGrouping;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,14 +43,22 @@ class SettingsController extends AbstractController
     /** @var TestRequestFactory */
     private $requestFactory;
 
+    /** @var EntityRepositoryInterface */
+    private $stateMachineTransitionRepository;
+
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(PayoneClientInterface $client, TestRequestFactory $requestFactory, LoggerInterface $logger)
-    {
-        $this->client         = $client;
-        $this->requestFactory = $requestFactory;
-        $this->logger         = $logger;
+    public function __construct(
+        PayoneClientInterface $client,
+        TestRequestFactory $requestFactory,
+        EntityRepositoryInterface $stateMachineTransitionRepository,
+        LoggerInterface $logger
+    ) {
+        $this->client                           = $client;
+        $this->requestFactory                   = $requestFactory;
+        $this->stateMachineTransitionRepository = $stateMachineTransitionRepository;
+        $this->logger                           = $logger;
     }
 
     /**
@@ -84,6 +93,32 @@ class SettingsController extends AbstractController
         }
 
         return new JsonResponse(['credentialsValid' => empty($errors), 'errors' => $errors]);
+    }
+
+    /**
+     * @RouteScope(scopes={"api"})
+     * @Route("/api/v{version}/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions", methods={"GET"})
+     */
+    public function getStateMachineTransitionActions(Request $request, Context $context): JsonResponse
+    {
+        $criteria = (new Criteria())
+            ->addAssociation('stateMachine')
+            ->addFilter(new EqualsFilter('stateMachine.technicalName', 'order_transaction.state'))
+            ->addGroupField(new FieldGrouping('actionName'));
+
+        $searchResult    = $this->stateMachineTransitionRepository->search($criteria, $context);
+        $transitionNames = [];
+
+        if (count($searchResult->getElements()) > 0) {
+            foreach ($searchResult->getElements() as $stateMachineAction) {
+                $transitionNames[] = [
+                    'label' => $stateMachineAction->getActionName(),
+                    'value' => $stateMachineAction->getActionName(),
+                ];
+            }
+        }
+
+        return new JsonResponse(['data' => $transitionNames, 'total' => count($transitionNames)]);
     }
 
     private function getPaymentParameters(string $paymentClass): array
