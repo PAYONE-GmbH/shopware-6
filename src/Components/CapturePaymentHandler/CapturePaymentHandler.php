@@ -57,7 +57,7 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
             CustomFieldInstaller::ALLOW_CAPTURE => false,
         ];
 
-        $this->dataHandler->logResponse($paymentTransaction, $context, $response);
+        $this->dataHandler->logResponse($paymentTransaction, $context, ['request' => $request, 'response' => $response]);
         $this->dataHandler->incrementSequenceNumber($paymentTransaction, $context);
         $this->dataHandler->saveTransactionData($paymentTransaction, $context, $data);
     }

@@ -99,7 +99,7 @@ class PayonePaypalPaymentHandler implements AsynchronousPaymentHandlerInterface,
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
+        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
 
         if (strtolower($response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);

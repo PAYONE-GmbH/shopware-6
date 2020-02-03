@@ -60,7 +60,7 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
         $data = $this->transactionDataHandler->enhanceStatusWebhookData($paymentTransaction, $data);
 
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->transactionDataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->transactionDataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['transaction' => $data]);
         $this->transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction->getOrderTransaction(), $data);
     }
 }

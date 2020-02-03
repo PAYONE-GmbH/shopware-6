@@ -93,7 +93,7 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface, P
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
+        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
 
         $date = DateTime::createFromFormat('Ymd', $response['mandate']['DateOfSignature']);
 

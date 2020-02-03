@@ -130,7 +130,7 @@ class PayonePayolutionDebitPaymentHandler implements SynchronousPaymentHandlerIn
         ];
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), $response);
+        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
     }
 
     /**
