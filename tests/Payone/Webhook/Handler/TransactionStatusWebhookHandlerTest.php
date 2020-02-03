@@ -4,25 +4,25 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Payone\Webhook\Handler;
 
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandler;
-use PayonePayment\Components\TransactionStatus\TransactionStatusService;
+use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
+use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
-use PayonePayment\Test\Mock\Components\ConfigReaderMock;
 use PayonePayment\Test\Mock\Factory\TransactionStatusWebhookHandlerFactory;
-use PayonePayment\Test\Mock\Repository\EntityRepositoryMock;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
+use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
-use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
+use Shopware\Core\System\StateMachine\StateMachineRegistry;
+use Shopware\Core\System\StateMachine\Transition;
 
 class TransactionStatusWebhookHandlerTest extends TestCase
 {
@@ -42,24 +42,65 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         $salesChannelContext = Generator::createSalesChannelContext($context);
         $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
 
-        $this->transactionStateHandler->expects($this->once())->method('reopen')->with(Constants::ORDER_TRANSACTION_ID);
+        $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
+        $stateMachineRegistry->expects($this->once())->method('transition')->with(
+            new Transition(
+                OrderTransactionDefinition::ENTITY_NAME,
+                Constants::ORDER_TRANSACTION_ID,
+                'reopen',
+                'stateId'
+            ),
+            $context
+        );
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
-            $this->createMock(EntityRepositoryInterface::class),
-            $this->transactionStateHandler,
-            new TransactionDataHandler(new EntityRepositoryMock()),
+            $stateMachineRegistry,
             []
         );
+
+        $orderTransactionEntity = new OrderTransactionEntity();
+        $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
+
+        $orderEntity = new OrderEntity();
+        $orderEntity->setId(Constants::ORDER_ID);
+        $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
+        $orderEntity->setAmountTotal(100);
+        $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+
+        $paymentMethodEntity = new PaymentMethodEntity();
+        $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);
+        $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
+
+        $orderTransactionEntity->setOrder($orderEntity);
+
+        $customFields = [
+            CustomFieldInstaller::TRANSACTION_ID     => Constants::PAYONE_TRANSACTION_ID,
+            CustomFieldInstaller::SEQUENCE_NUMBER    => 0,
+            CustomFieldInstaller::LAST_REQUEST       => 'authorization',
+            CustomFieldInstaller::AUTHORIZATION_TYPE => 'authorization',
+        ];
+        $orderTransactionEntity->setCustomFields($customFields);
+
+        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+
+        $transactionData = [
+            'txid'           => Constants::PAYONE_TRANSACTION_ID,
+            'txaction'       => 'appointed',
+            'sequencenumber' => '0',
+        ];
+
+        $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
+        $transactionDataHandler->expects($this->once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
+        $transactionDataHandler->expects($this->once())->method('enhanceStatusWebhookData')->willReturn($transactionData);
+
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
-            $transactionStatusService
+            $transactionStatusService,
+            $transactionDataHandler
         );
+
         $transactionStatusHandler->process(
             $salesChannelContext,
-            [
-                'txid'           => Constants::PAYONE_TRANSACTION_ID,
-                'txaction'       => 'appointed',
-                'sequencenumber' => '0',
-            ]
+            $transactionData
         );
     }
 
@@ -69,41 +110,67 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         $salesChannelContext = Generator::createSalesChannelContext($context);
         $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
 
-        $statusRepository           = $this->createMock(EntityRepositoryInterface::class);
-        $dataHandler                = $this->createTestProxy(TransactionDataHandler::class, [new EntityRepositoryMock()]);
-        $orderTransactionRepository = $this->createMock(EntityRepositoryInterface::class);
-        $transactionStatusService   = $this->createTestProxy(TransactionStatusService::class, [
-            $orderTransactionRepository,
-            $this->transactionStateHandler,
-            $dataHandler,
-            new ConfigReaderMock([
-                'paymentStatusAppointed' => 'test-state',
-            ]),
-            $statusRepository,
-        ]);
-        $stateEntity = new StateMachineStateEntity();
-        $stateEntity->setId('test-state');
-        $statusRepository->expects($this->once())->method('search')->willReturn(
-            new EntitySearchResult(1, new EntityCollection([$stateEntity]), null, new Criteria(), Context::createDefaultContext())
-        );
-        $orderTransactionEntity = new OrderTransactionEntity();
-        $orderTransactionEntity->setId('test-transaction');
-        $orderTransactionRepository->expects($this->once())->method('search')->willReturn(
-            new EntitySearchResult(1, new EntityCollection([$orderTransactionEntity]), null, new Criteria(), Context::createDefaultContext())
-        );
-        $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
-            $transactionStatusService
+        $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
+        $stateMachineRegistry->expects($this->once())->method('transition')->with(
+            new Transition(
+                OrderTransactionDefinition::ENTITY_NAME,
+                Constants::ORDER_TRANSACTION_ID,
+                'paid',
+                'stateId'
+            ),
+            $context
         );
 
-        $dataHandler->expects($this->once())->method('saveTransactionState')->with('test-state');
+        $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
+            $stateMachineRegistry,
+            [
+                'paymentStatusAppointed' => 'paid',
+            ]
+        );
+
+        $orderTransactionEntity = new OrderTransactionEntity();
+        $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
+
+        $orderEntity = new OrderEntity();
+        $orderEntity->setId(Constants::ORDER_ID);
+        $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
+        $orderEntity->setAmountTotal(100);
+        $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+
+        $paymentMethodEntity = new PaymentMethodEntity();
+        $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);
+        $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
+
+        $orderTransactionEntity->setOrder($orderEntity);
+
+        $customFields = [
+            CustomFieldInstaller::TRANSACTION_ID     => Constants::PAYONE_TRANSACTION_ID,
+            CustomFieldInstaller::SEQUENCE_NUMBER    => 0,
+            CustomFieldInstaller::LAST_REQUEST       => 'authorization',
+            CustomFieldInstaller::AUTHORIZATION_TYPE => 'authorization',
+        ];
+        $orderTransactionEntity->setCustomFields($customFields);
+
+        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+
+        $transactionData = [
+            'txid'           => Constants::PAYONE_TRANSACTION_ID,
+            'txaction'       => 'appointed',
+            'sequencenumber' => '0',
+        ];
+
+        $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
+        $transactionDataHandler->expects($this->once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
+        $transactionDataHandler->expects($this->once())->method('enhanceStatusWebhookData')->willReturn($transactionData);
+
+        $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
+            $transactionStatusService,
+            $transactionDataHandler
+        );
 
         $transactionStatusHandler->process(
             $salesChannelContext,
-            [
-                'txid'           => Constants::PAYONE_TRANSACTION_ID,
-                'txaction'       => 'appointed',
-                'sequencenumber' => '0',
-            ]
+            $transactionData
         );
     }
 }
