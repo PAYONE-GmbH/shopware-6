@@ -36,10 +36,6 @@ class RefundRequest
             throw new InvalidOrderException($order->getId());
         }
 
-        if ($customFields[CustomFieldInstaller::SEQUENCE_NUMBER] < 1) {
-            throw new InvalidOrderException($order->getId());
-        }
-
         $currency = $this->getOrderCurrency($order, $context);
 
         return [
