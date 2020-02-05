@@ -32,7 +32,7 @@ class RefundRequest
             throw new InvalidOrderException($order->getId());
         }
 
-        if (empty($customFields[CustomFieldInstaller::SEQUENCE_NUMBER])) {
+        if (!isset($customFields[CustomFieldInstaller::SEQUENCE_NUMBER])) {
             throw new InvalidOrderException($order->getId());
         }
 
