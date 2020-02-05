@@ -9,7 +9,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\Refund\RefundRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
-            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler" />
+            <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService" />
         </service>
 
         <service id="PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandler">
