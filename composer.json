@@ -11,15 +11,18 @@
       "homepage": "https://www.payone.com"
     },
     {
-      "name": "Kellerkinder GmbH",
-      "email": "hallo@kellerkinder.de",
-      "homepage": "https://www.kellerkinder.de/",
+      "name": "Kellerkinder Pluginwerk GmbH",
+      "email": "hallo@pluginwerk.de",
+      "homepage": "https://www.pluginwerk.de",
       "role": "Contributor"
     }
   ],
-  "minimum-stability": "dev",
+  "minimum-stability": "RC",
   "prefer-stable": true,
   "require": {
+    "php": "^7.2",
+    "ext-curl": "*",
+    "ext-json": "*",
     "shopware/core": "*",
     "shopware/administration": "*",
     "shopware/storefront": "*"
