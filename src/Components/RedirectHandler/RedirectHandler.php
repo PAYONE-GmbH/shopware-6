@@ -7,6 +7,7 @@ namespace PayonePayment\Components\RedirectHandler;
 use Doctrine\DBAL\Connection;
 use LogicException;
 use RuntimeException;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -39,6 +40,7 @@ class RedirectHandler
             'id'   => Uuid::randomBytes(),
             'hash' => $hash,
             'url'  => $url,
+            'created_at' => date(Defaults::STORAGE_DATE_FORMAT)
         ]);
 
         $params = [
