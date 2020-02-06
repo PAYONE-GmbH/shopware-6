@@ -1,2 +1,2 @@
 # 1.0.0
-- Erste Version der Payone Payment Integration für Shopware 6.1
+- Erste Version der PAYONE Payment Integration für Shopware 6.1
