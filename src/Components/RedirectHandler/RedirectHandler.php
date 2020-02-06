@@ -40,7 +40,7 @@ class RedirectHandler
             'id'         => Uuid::randomBytes(),
             'hash'       => $hash,
             'url'        => $url,
-            'created_at' => date(Defaults::STORAGE_DATE_FORMAT),
+            'created_at' => date(Defaults::STORAGE_DATE_TIME_FORMAT),
         ]);
 
         $params = [
