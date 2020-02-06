@@ -1,6 +1,7 @@
 stages:
   - setup
   - test
+  - package
 
 cache:
   key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -83,3 +84,15 @@ phpunit:
       - opt/shopware/build/artifacts/phpunit.clover.xml
     reports:
       junit: opt/shopware/build/artifacts/phpunit.junit.xml
+
+package:
+  image: kellerkinder/shopware-package-plugin:latest
+  stage: package
+  only:
+    - tags
+    - master
+  script:
+    - package-plugin
+  artifacts:
+    paths:
+      - $CI_PROJECT_NAME.zip
