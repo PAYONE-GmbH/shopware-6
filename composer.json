@@ -17,14 +17,15 @@
       "role": "Contributor"
     }
   ],
-  "minimum-stability": "dev",
+  "minimum-stability": "RC",
   "prefer-stable": true,
   "require": {
     "php": "^7.2",
     "ext-curl": "*",
-    "shopware/core": "^6.1",
-    "shopware/storefront": "^6.1",
-    "shopware/administration":"^6.1"
+    "ext-json": "*",
+    "shopware/core": "*",
+    "shopware/administration": "*",
+    "shopware/storefront": "*"
   },
   "require-dev": {
     "dms/phpunit-arraysubset-asserts": "^0.1.0",
