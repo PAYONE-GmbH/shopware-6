@@ -227,19 +227,21 @@ class PaypalExpressController extends StorefrontController
 
         return new DataBag([
             'salutationId'   => $salutationId,
-            'email'          => $response['addpaydata']['email'],
-            'firstName'      => $response['addpaydata']['shipping_firstname'],
-            'lastName'       => $response['addpaydata']['shipping_lastname'],
+            'email'          => utf8_decode($response['addpaydata']['email']),
+            'firstName'      => utf8_decode($response['addpaydata']['shipping_firstname']),
+            'lastName'       => utf8_decode($response['addpaydata']['shipping_lastname']),
             'billingAddress' => array_filter([
-                'firstName'              => $response['addpaydata']['shipping_firstname'],
-                'lastName'               => $response['addpaydata']['shipping_lastname'],
+                'firstName'              => utf8_decode($response['addpaydata']['shipping_firstname']),
+                'lastName'               => utf8_decode($response['addpaydata']['shipping_lastname']),
                 'salutationId'           => $salutationId,
-                'street'                 => $response['addpaydata']['shipping_street'],
-                'zipcode'                => $response['addpaydata']['shipping_zip'],
+                'street'                 => utf8_decode($response['addpaydata']['shipping_street']),
+                'zipcode'                => utf8_decode($response['addpaydata']['shipping_zip']),
                 'countryId'              => $countryId,
-                'phone'                  => $response['addpaydata']['telephonenumber'],
-                'city'                   => $response['addpaydata']['shipping_city'],
-                'additionalAddressLine1' => $response['addpaydata']['shipping_addressaddition'] ?? null,
+                'phone'                  => utf8_decode($response['addpaydata']['telephonenumber']),
+                'city'                   => utf8_decode($response['addpaydata']['shipping_city']),
+                'additionalAddressLine1' => isset($response['addpaydata']['shipping_addressaddition'])
+                    ? utf8_decode($response['addpaydata']['shipping_addressaddition'])
+                    : null,
             ]),
         ]);
     }
