@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Installer;
 
+use Doctrine\DBAL\Connection;
 use PayonePayment\PaymentMethod\PaymentMethodInterface;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
@@ -50,12 +51,16 @@ class PaymentMethodInstaller implements InstallerInterface
     /** @var EntityRepositoryInterface */
     private $paymentMethodSalesChannelRepository;
 
+    /** @var Connection */
+    private $connection;
+
     public function __construct(ContainerInterface $container)
     {
         $this->pluginIdProvider                    = $container->get(PluginIdProvider::class);
         $this->paymentMethodRepository             = $container->get('payment_method.repository');
         $this->salesChannelRepository              = $container->get('sales_channel.repository');
         $this->paymentMethodSalesChannelRepository = $container->get('sales_channel_payment_method.repository');
+        $this->connection                          = $container->get(Connection::class);
     }
 
     public function install(InstallContext $context): void
@@ -102,19 +107,29 @@ class PaymentMethodInstaller implements InstallerInterface
     {
         $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(PayonePayment::class, $context);
 
+        $customFields = [
+            CustomFieldInstaller::TEMPLATE  => $paymentMethod->getTemplate(),
+            CustomFieldInstaller::IS_PAYONE => true,
+        ];
+
         $data = [
             'id'                => $paymentMethod->getId(),
             'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
             'position'          => $paymentMethod->getPosition(),
             'pluginId'          => $pluginId,
-            'customFields'      => [
-                CustomFieldInstaller::TEMPLATE  => $paymentMethod->getTemplate(),
-                CustomFieldInstaller::IS_PAYONE => true,
-            ],
-            'translations' => $paymentMethod->getTranslations(),
+            'customFields'      => $customFields,
+            'translations'      => $paymentMethod->getTranslations(),
         ];
 
         $this->paymentMethodRepository->upsert([$data], $context);
+
+        // TODO: This is a quite ugly workaround for the custom field translation problem here.
+        // The custom fields are only set for the current language which results in non loading
+        // checkout contents for other language contexts. We need a proper way to install the
+        // custom fields for all languages but not only the current one.
+        $customFields[CustomFieldInstaller::IS_PAYONE] = 1;
+        $customFields                                  = json_encode($customFields, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $this->connection->exec("UPDATE `payment_method_translation` SET `custom_fields` = '{$customFields}' WHERE `custom_fields` IS NULL AND `payment_method_id` = UNHEX('{$paymentMethod->getId()}');");
 
         $channels = $this->salesChannelRepository->searchIds(new Criteria(), $context);
 
