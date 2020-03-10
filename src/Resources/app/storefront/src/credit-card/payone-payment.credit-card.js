@@ -88,7 +88,7 @@ export default class PayonePaymentCreditCard extends Plugin {
                     type: 'password',
                     size: '4',
                     maxlength: '4',
-                    length: { 'A': 4, 'V': 3, 'M': 3, 'J': 0 },
+                    length: { 'V': 3, 'M': 3, 'A': 4, 'D': 3, 'J': 0, 'O': 3, 'P': 3, 'U': 3 },
                     style: this.getFieldStyle().join('; '),
                 },
                 cardexpiremonth: {
