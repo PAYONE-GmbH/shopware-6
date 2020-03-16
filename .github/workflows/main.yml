@@ -36,6 +36,8 @@ jobs:
       run: composer -V
     - name: Check PHP Extensions
       run: php -m
+    - name: Start MySQL
+      run: sudo /etc/init.d/mysql start
     - name: Composer setup
       run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     - name: Codestyle
