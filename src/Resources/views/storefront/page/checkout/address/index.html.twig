@@ -8,9 +8,7 @@
             {% block page_checkout_address_payone_paypal_express_button %}
                 <div class="row">
                     <div class="col-5 pb-2">
-                        <a href="{{ path('frontend.account.payone.paypal.express-checkout') }}" title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}" class="btn btn-block btn-primary">
-                            {{ "PayonePayment.paypalExpress.buttonTitle" | trans }}
-                        </a>
+                        {% sw_include '@PayonePayment/storefront/component/checkout/paypal-button.html.twig' %}
                     </div>
                 </div>
             {% endblock %}

@@ -1,0 +1,10 @@
+{% block component_payone_paypal_button %}
+    <a href="{{ path('frontend.account.payone.paypal.express-checkout') }}" title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}">
+        <img
+            src="{{ asset('bundles/payonepayment/payment/paypal/ecs/checkout-logo-medium-de.png') }}"
+            srcset="{{ asset('bundles/payonepayment/payment/paypal/ecs/checkout-logo-medium-de.png') }}, {{ asset('bundles/payonepayment/payment/paypal/ecs/checkout-logo-medium-de-2x.png') }} 2x"
+            title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}"
+            alt="PayPal Express Checkout Button"
+        >
+    </a>
+{% endblock %}
