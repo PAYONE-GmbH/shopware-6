@@ -17,7 +17,7 @@ jobs:
         mkdir ./PayonePayment
         cp -r src CHANGELOG* README.md composer.json ./PayonePayment/
     - name: Build the zip
-      uses: thedoctor0/zip-release@master
+      uses: thedoctor0/zip-release@v0.2.1
       with:
         path: ./PayonePayment/
         filename: PayonePayment-${{ env.RELEASE_VERSION }}.zip
