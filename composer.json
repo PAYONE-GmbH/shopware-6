@@ -30,7 +30,7 @@
   "require-dev": {
     "dms/phpunit-arraysubset-asserts": "^0.1.0",
     "fzaninotto/faker": "1.8.0",
-    "k10r/codestyle": "^1.0",
+    "k10r/codestyle": "1.0.10",
     "phpstan/phpstan": "^0.11",
     "phpstan/phpstan-phpunit": "^0.11",
     "phpunit/phpunit": "^8.1"
