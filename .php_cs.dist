@@ -8,4 +8,8 @@ $finder = PhpCsFixer\Finder::create()
 
 return K10r\Codestyle\PHP72::create()
     ->setUsingCache(true)
-    ->setFinder($finder);
+    ->setFinder($finder)
+    ->setRules([
+        // Allow multiline throw expressions
+        'single_line_throw' => false,
+    ]);
