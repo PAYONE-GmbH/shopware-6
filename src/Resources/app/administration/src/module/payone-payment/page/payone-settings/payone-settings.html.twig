@@ -112,11 +112,18 @@
 
         <sw-card-view>
             <sw-system-config
+                    class="payone-config__wrapper"
                     ref="systemConfig"
                     salesChannelSwitchable
                     inherit
                     @config-changed="onConfigChange"
                     domain="PayonePayment.settings">
+                <template #afterElements="{ card, config }">
+                    <a class="payone-config__collapsible-handle" @click="onClickCollapsibleHandle">
+                        <sw-icon name="default-arrow-head-down" class="payone-config__collapsible-handle-open"></sw-icon>
+                        <sw-icon name="default-arrow-head-up" class="payone-config__collapsible-handle-close"></sw-icon>
+                    </a>
+                </template>
                 <template #card-element="{ element, config }">
                     <sw-form-field-renderer
                             v-if="element.name.startsWith('PayonePayment.settings.paymentStatus')"
