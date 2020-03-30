@@ -33,7 +33,9 @@
 
         <!-- Payment handlers -->
         <service id="PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
