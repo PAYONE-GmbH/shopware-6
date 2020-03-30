@@ -6,34 +6,30 @@ namespace PayonePayment\PaymentHandler;
 
 use DateTime;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
+use PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory;
 use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
-class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
+class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
     /** @var CreditCardPreAuthorizeRequestFactory */
-    private $requestFactory;
+    private $preAuthRequestFactory;
 
-    /** @var PayoneClientInterface */
-    private $client;
-
-    /** @var TranslatorInterface */
-    private $translator;
+    /** @var CreditCardAuthorizeRequestFactory */
+    private $authRequestFactory;
 
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
@@ -45,19 +41,25 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
     private $cardRepository;
 
     public function __construct(
-        CreditCardPreAuthorizeRequestFactory $requestFactory,
+        ConfigReaderInterface $configReader,
+        CreditCardPreAuthorizeRequestFactory $preAuthRequestFactory,
+        CreditCardAuthorizeRequestFactory $authRequestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         PaymentStateHandlerInterface $stateHandler,
         CardRepositoryInterface $cardRepository
     ) {
-        $this->requestFactory = $requestFactory;
-        $this->client         = $client;
-        $this->translator     = $translator;
-        $this->dataHandler    = $dataHandler;
-        $this->stateHandler   = $stateHandler;
-        $this->cardRepository = $cardRepository;
+        parent::__construct(
+            $configReader,
+            $client,
+            $translator
+        );
+        $this->preAuthRequestFactory = $preAuthRequestFactory;
+        $this->authRequestFactory    = $authRequestFactory;
+        $this->dataHandler           = $dataHandler;
+        $this->stateHandler          = $stateHandler;
+        $this->cardRepository        = $cardRepository;
     }
 
     /**
@@ -65,38 +67,33 @@ class PayoneCreditCardPaymentHandler implements AsynchronousPaymentHandlerInterf
      */
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
     {
+        // Get configured authorization method
+        $authorizationMethod = $this->getAuthorizationMethod(
+            $transaction->getOrder()->getSalesChannelId(),
+            'creditCardAuthorizationMethod',
+            'preauthorization'
+        );
+
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
 
-        $request = $this->requestFactory->getRequestParameters(
+        // Select request factory based on configured authorization method
+        $factory = $authorizationMethod === 'preauthorization'
+            ? $this->preAuthRequestFactory
+            : $this->authRequestFactory;
+
+        $request = $factory->getRequestParameters(
             $paymentTransaction,
             $dataBag,
             $salesChannelContext
         );
 
-        try {
-            $response = $this->client->request($request);
-        } catch (PayoneRequestException $exception) {
-            throw new AsyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $exception->getResponse()['error']['CustomerMessage']
-            );
-        } catch (Throwable $exception) {
-            throw new AsyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
+        $response = $this->sendRequest($request, $transaction);
 
-        $data = [
-            CustomFieldInstaller::LAST_REQUEST       => $request['request'],
-            CustomFieldInstaller::TRANSACTION_ID     => (string) $response['txid'],
-            CustomFieldInstaller::TRANSACTION_STATE  => $response['status'],
-            CustomFieldInstaller::AUTHORIZATION_TYPE => $request['request'],
-            CustomFieldInstaller::SEQUENCE_NUMBER    => -1,
-            CustomFieldInstaller::USER_ID            => $response['userid'],
-            CustomFieldInstaller::ALLOW_CAPTURE      => false,
-            CustomFieldInstaller::ALLOW_REFUND       => false,
-        ];
+        // Prepare custom fields for the transaction
+        $data = $this->prepareTransactionCustomFields($request, $response, [
+            CustomFieldInstaller::ALLOW_CAPTURE => false,
+            CustomFieldInstaller::ALLOW_REFUND  => false,
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);

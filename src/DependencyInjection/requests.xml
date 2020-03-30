@@ -106,6 +106,17 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
+        <service id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
         <!-- Debit -->
         <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest">
             <argument type="service" id="currency.repository" />
