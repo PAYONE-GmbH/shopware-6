@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
+use PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingAuthorizeRequestFactory;
 use PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
@@ -19,10 +21,13 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayonePayolutionInvoicingPaymentHandler implements SynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
+class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
     /** @var PayolutionInvoicingPreAuthorizeRequestFactory */
-    private $requestFactory;
+    private $preAuthRequestFactory;
+
+    /** @var PayolutionInvoicingAuthorizeRequestFactory */
+    private $authRequestFactory;
 
     /** @var PayoneClientInterface */
     private $client;
@@ -34,15 +39,19 @@ class PayonePayolutionInvoicingPaymentHandler implements SynchronousPaymentHandl
     private $dataHandler;
 
     public function __construct(
-        PayolutionInvoicingPreAuthorizeRequestFactory $requestFactory,
+        ConfigReaderInterface $configReader,
+        PayolutionInvoicingPreAuthorizeRequestFactory $preAuthRequestFactory,
+        PayolutionInvoicingAuthorizeRequestFactory $authRequestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler
     ) {
-        $this->requestFactory = $requestFactory;
-        $this->client         = $client;
-        $this->translator     = $translator;
-        $this->dataHandler    = $dataHandler;
+        parent::__construct($configReader);
+        $this->preAuthRequestFactory = $preAuthRequestFactory;
+        $this->authRequestFactory    = $authRequestFactory;
+        $this->client                = $client;
+        $this->translator            = $translator;
+        $this->dataHandler           = $dataHandler;
     }
 
     /**
@@ -50,9 +59,21 @@ class PayonePayolutionInvoicingPaymentHandler implements SynchronousPaymentHandl
      */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
+        // Get configured authorization method
+        $authorizationMethod = $this->getAuthorizationMethod(
+            $transaction->getOrder()->getSalesChannelId(),
+            'creditCardAuthorizationMethod',
+            'preauthorization'
+        );
+
         $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction);
 
-        $request = $this->requestFactory->getRequestParameters(
+        // Select request factory based on configured authorization method
+        $factory = $authorizationMethod === 'preauthorization'
+            ? $this->preAuthRequestFactory
+            : $this->authRequestFactory;
+
+        $request = $factory->getRequestParameters(
             $paymentTransaction,
             $dataBag,
             $salesChannelContext
@@ -79,13 +100,9 @@ class PayonePayolutionInvoicingPaymentHandler implements SynchronousPaymentHandl
             );
         }
 
-        $data = [
-            CustomFieldInstaller::LAST_REQUEST       => $request['request'],
-            CustomFieldInstaller::TRANSACTION_ID     => (string) $response['txid'],
+        // Prepare custom fields for the transaction
+        $data = $this->prepareTransactionCustomFields($request, $response, [
             CustomFieldInstaller::TRANSACTION_STATE  => $response['status'],
-            CustomFieldInstaller::AUTHORIZATION_TYPE => $request['request'],
-            CustomFieldInstaller::SEQUENCE_NUMBER    => -1,
-            CustomFieldInstaller::USER_ID            => $response['userid'],
             CustomFieldInstaller::ALLOW_CAPTURE      => false,
             CustomFieldInstaller::ALLOW_REFUND       => false,
             CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
@@ -93,7 +110,7 @@ class PayonePayolutionInvoicingPaymentHandler implements SynchronousPaymentHandl
             CustomFieldInstaller::CAPTURE_MODE       => 'completed',
             CustomFieldInstaller::CLEARING_TYPE      => 'fnc',
             CustomFieldInstaller::FINANCING_TYPE     => 'PYV',
-        ];
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);

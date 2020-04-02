@@ -8,12 +8,12 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PayolutionInvoicingPreAuthorizeRequest extends AbstractPayolutionInvoicingAuthorizeRequest
+class PayolutionInvoicingAuthorizeRequest extends AbstractPayolutionInvoicingAuthorizeRequest
 {
     public function getRequestParameters(PaymentTransaction $transaction, RequestDataBag $dataBag, SalesChannelContext $context): array
     {
         return array_merge(parent::getRequestParameters($transaction, $dataBag, $context), [
-            'request' => 'preauthorization',
+            'request' => 'authorization',
         ]);
     }
 }
