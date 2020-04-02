@@ -6,32 +6,28 @@ namespace PayonePayment\PaymentHandler;
 
 use DateTime;
 use LogicException;
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\Debit\DebitPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
-class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface, PayonePaymentHandlerInterface
+class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
+    /** @var DebitPreAuthorizeRequestFactory */
+    private $preAuthRequestFactory;
+
     /** @var DebitAuthorizeRequestFactory */
-    private $requestFactory;
-
-    /** @var PayoneClientInterface */
-    private $client;
-
-    /** @var TranslatorInterface */
-    private $translator;
+    private $authRequestFactory;
 
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
@@ -40,17 +36,19 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface, P
     private $mandateService;
 
     public function __construct(
-        DebitAuthorizeRequestFactory $requestFactory,
+        ConfigReaderInterface $configReader,
+        DebitPreAuthorizeRequestFactory $preAuthRequestFactory,
+        DebitAuthorizeRequestFactory $authRequestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         MandateServiceInterface $mandateService
     ) {
-        $this->requestFactory = $requestFactory;
-        $this->client         = $client;
-        $this->translator     = $translator;
-        $this->dataHandler    = $dataHandler;
-        $this->mandateService = $mandateService;
+        parent::__construct($configReader, $client, $translator);
+        $this->preAuthRequestFactory = $preAuthRequestFactory;
+        $this->authRequestFactory    = $authRequestFactory;
+        $this->dataHandler           = $dataHandler;
+        $this->mandateService        = $mandateService;
     }
 
     /**
@@ -58,39 +56,35 @@ class PayoneDebitPaymentHandler implements SynchronousPaymentHandlerInterface, P
      */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
+        // Get configured authorization method
+        $authorizationMethod = $this->getAuthorizationMethod(
+            $transaction->getOrder()->getSalesChannelId(),
+            'debitAuthorizationMethod',
+            'authorization'
+        );
+
         $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction);
 
-        $request = $this->requestFactory->getRequestParameters(
+        // Select request factory based on configured authorization method
+        $factory = $authorizationMethod === 'preauthorization'
+            ? $this->preAuthRequestFactory
+            : $this->authRequestFactory;
+
+        $request = $factory->getRequestParameters(
             $paymentTransaction,
             $dataBag,
             $salesChannelContext
         );
 
-        try {
-            $response = $this->client->request($request);
-        } catch (PayoneRequestException $exception) {
-            throw new SyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $exception->getResponse()['error']['CustomerMessage']
-            );
-        } catch (Throwable $exception) {
-            throw new SyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
+        $response = $this->sendRequest($request, $transaction);
 
-        $data = [
-            CustomFieldInstaller::LAST_REQUEST           => $request['request'],
-            CustomFieldInstaller::TRANSACTION_ID         => (string) $response['txid'],
-            CustomFieldInstaller::TRANSACTION_STATE      => 'pending',
-            CustomFieldInstaller::AUTHORIZATION_TYPE     => $request['request'],
-            CustomFieldInstaller::SEQUENCE_NUMBER        => -1,
-            CustomFieldInstaller::USER_ID                => $response['userid'],
+        // Prepare custom fields for the transaction
+        $data = $this->prepareTransactionCustomFields($request, $response, [
             CustomFieldInstaller::ALLOW_CAPTURE          => false,
             CustomFieldInstaller::ALLOW_REFUND           => false,
+            CustomFieldInstaller::TRANSACTION_STATE      => 'pending',
             CustomFieldInstaller::MANDATE_IDENTIFICATION => $response['mandate']['Identification'],
-        ];
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);

@@ -8,7 +8,7 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
@@ -62,11 +62,11 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      * the received response parameters.
      *
      * @param array $request The request parameters to send.
-     * @param AsyncPaymentTransactionStruct $transaction The related transaction struct.
+     * @param SyncPaymentTransactionStruct $transaction The related transaction struct.
      * @return array The response parameters.
      * @throws AsyncPaymentProcessException If the payment fails for any reason.
      */
-    protected function sendRequest(array $request, AsyncPaymentTransactionStruct $transaction): array
+    protected function sendRequest(array $request, SyncPaymentTransactionStruct $transaction): array
     {
         try {
             return $this->client->request($request);
@@ -97,7 +97,6 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
             CustomFieldInstaller::AUTHORIZATION_TYPE => $request['request'],
             CustomFieldInstaller::LAST_REQUEST       => $request['request'],
             CustomFieldInstaller::TRANSACTION_ID     => (string) $response['txid'],
-            CustomFieldInstaller::TRANSACTION_STATE  => $response['status'],
             CustomFieldInstaller::SEQUENCE_NUMBER    => -1,
             CustomFieldInstaller::USER_ID            => $response['userid'],
         ], $fields);
