@@ -87,7 +87,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
-            'creditCardAuthorizationMethod',
+            'payolutionDebitAuthorizationMethod',
             'preauthorization'
         );
 
