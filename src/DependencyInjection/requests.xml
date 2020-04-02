@@ -61,8 +61,20 @@
             <argument type="service" id="currency.repository" />
         </service>
 
+        <service id="PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
         <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
