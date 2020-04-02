@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\PayolutionDebit;
+namespace PayonePayment\Payone\Request\Debit;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
@@ -12,10 +12,10 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-abstract class AbstractPayolutionDebitRequestFactory extends AbstractRequestFactory
+abstract class AbstractDebitAuthorizeRequestFactory extends AbstractRequestFactory
 {
-    /** @var AbstractPayolutionDebitRequest */
-    private $payolutionDebitRequest;
+    /** @var AbstractDebitAuthorizeRequest */
+    private $debitRequest;
 
     /** @var CustomerRequest */
     private $customerRequest;
@@ -24,13 +24,13 @@ abstract class AbstractPayolutionDebitRequestFactory extends AbstractRequestFact
     private $systemRequest;
 
     public function __construct(
-        AbstractPayolutionDebitRequest $payolutionDebitRequest,
+        AbstractDebitAuthorizeRequest $debitRequest,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
-        $this->payolutionDebitRequest = $payolutionDebitRequest;
-        $this->customerRequest        = $customerRequest;
-        $this->systemRequest          = $systemRequest;
+        $this->debitRequest     = $debitRequest;
+        $this->customerRequest  = $customerRequest;
+        $this->systemRequest    = $systemRequest;
     }
 
     public function getRequestParameters(
@@ -38,9 +38,13 @@ abstract class AbstractPayolutionDebitRequestFactory extends AbstractRequestFact
         RequestDataBag $dataBag,
         SalesChannelContext $context
     ): array {
+        $iban         = $dataBag->get('iban');
+        $bic          = $dataBag->get('bic');
+        $accountOwner = $dataBag->get('accountOwner');
+
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYOLUTION_DEBIT,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_DEBIT,
             $context->getContext()
         );
 
@@ -48,10 +52,12 @@ abstract class AbstractPayolutionDebitRequestFactory extends AbstractRequestFact
             $context
         );
 
-        $this->requests[] = $this->payolutionDebitRequest->getRequestParameters(
+        $this->requests[] = $this->debitRequest->getRequestParameters(
             $transaction,
-            $dataBag,
-            $context
+            $context->getContext(),
+            $iban,
+            $bic,
+            $accountOwner
         );
 
         return $this->createRequest();

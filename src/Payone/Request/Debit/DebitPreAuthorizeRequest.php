@@ -7,7 +7,7 @@ namespace PayonePayment\Payone\Request\Debit;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 
-class DebitPreAuthorizeRequest extends AbstractDebitRequest
+class DebitPreAuthorizeRequest extends AbstractDebitAuthorizeRequest
 {
     public function getRequestParameters(PaymentTransaction $transaction, Context $context, string $iban, string $bic, string $accountOwner): array
     {

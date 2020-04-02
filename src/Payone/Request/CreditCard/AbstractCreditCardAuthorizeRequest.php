@@ -14,7 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
-abstract class AbstractCreditCardRequest
+abstract class AbstractCreditCardAuthorizeRequest
 {
     /** @var RedirectHandler */
     protected $redirectHandler;
