@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\PayolutionDebit;
 
-class PayolutionDebitPreAuthorizeRequestFactory extends AbstractPayolutionDebitRequestFactory
+class PayolutionDebitAuthorizeRequestFactory extends AbstractPayolutionDebitRequestFactory
 {
 }
