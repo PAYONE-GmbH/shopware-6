@@ -43,27 +43,6 @@
                 </option>
             </options>
         </input-field>
-
-        <input-field type="single-select">
-            <name>authorizationMethod</name>
-            <label>Payment Authorization Method</label>
-            <label lang="de-DE">Autorisierungsmethode für Zahlungen</label>
-            <helpText>Use this option to select the default authorization method for payments.</helpText>
-            <helpText lang="de-DE">Mit dieser Option können Sie die standardmäßige Autorisierungsmethode für Zahlungen einstellen.</helpText>
-            <defaultValue>preauthorization</defaultValue>
-            <options>
-                <option>
-                    <id>preauthorization</id>
-                    <name>Pre-authorization</name>
-                    <name lang="de-DE">Vorautorisierung</name>
-                </option>
-                <option>
-                    <id>authorization</id>
-                    <name>Authorization</name>
-                    <name lang="de-DE">Autorisierung</name>
-                </option>
-            </options>
-        </input-field>
     </card>
 
     <card>
@@ -187,13 +166,7 @@
             <label lang="de-DE">Autorisierungsmethode</label>
             <helpText>Use this option to set the authorization method for this payment type.</helpText>
             <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
-            <defaultValue>default</defaultValue>
             <options>
-                <option>
-                    <id>default</id>
-                    <name>-- Use default --</name>
-                    <name lang="de-DE">-- Verwende Standard --</name>
-                </option>
                 <option>
                     <id>preauthorization</id>
                     <name>Pre-authorization</name>
@@ -245,13 +218,7 @@
             <label lang="de-DE">Autorisierungsmethode</label>
             <helpText>Use this option to set the authorization method for this payment type.</helpText>
             <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
-            <defaultValue>default</defaultValue>
             <options>
-                <option>
-                    <id>default</id>
-                    <name>-- Use default --</name>
-                    <name lang="de-DE">-- Verwende Standard --</name>
-                </option>
                 <option>
                     <id>preauthorization</id>
                     <name>Pre-authorization</name>
@@ -303,13 +270,7 @@
             <label lang="de-DE">Autorisierungsmethode</label>
             <helpText>Use this option to set the authorization method for this payment type.</helpText>
             <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
-            <defaultValue>default</defaultValue>
             <options>
-                <option>
-                    <id>default</id>
-                    <name>-- Use default --</name>
-                    <name lang="de-DE">-- Verwende Standard --</name>
-                </option>
                 <option>
                     <id>preauthorization</id>
                     <name>Pre-authorization</name>
@@ -362,13 +323,7 @@
             <label lang="de-DE">Autorisierungsmethode</label>
             <helpText>Use this option to set the authorization method for this payment type.</helpText>
             <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
-            <defaultValue>default</defaultValue>
             <options>
-                <option>
-                    <id>default</id>
-                    <name>-- Use default --</name>
-                    <name lang="de-DE">-- Verwende Standard --</name>
-                </option>
                 <option>
                     <id>preauthorization</id>
                     <name>Pre-authorization</name>
@@ -420,13 +375,7 @@
             <label lang="de-DE">Autorisierungsmethode</label>
             <helpText>Use this option to set the authorization method for this payment type.</helpText>
             <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
-            <defaultValue>default</defaultValue>
             <options>
-                <option>
-                    <id>default</id>
-                    <name>-- Use default --</name>
-                    <name lang="de-DE">-- Verwende Standard --</name>
-                </option>
                 <option>
                     <id>preauthorization</id>
                     <name>Pre-authorization</name>
@@ -502,13 +451,7 @@
             <label lang="de-DE">Autorisierungsmethode</label>
             <helpText>Use this option to set the authorization method for this payment type.</helpText>
             <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
-            <defaultValue>default</defaultValue>
             <options>
-                <option>
-                    <id>default</id>
-                    <name>-- Use default --</name>
-                    <name lang="de-DE">-- Verwende Standard --</name>
-                </option>
                 <option>
                     <id>preauthorization</id>
                     <name>Pre-authorization</name>
@@ -590,13 +533,7 @@
             <label lang="de-DE">Autorisierungsmethode</label>
             <helpText>Use this option to set the authorization method for this payment type.</helpText>
             <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
-            <defaultValue>default</defaultValue>
             <options>
-                <option>
-                    <id>default</id>
-                    <name>-- Use default --</name>
-                    <name lang="de-DE">-- Verwende Standard --</name>
-                </option>
                 <option>
                     <id>preauthorization</id>
                     <name>Pre-authorization</name>
@@ -662,13 +599,7 @@
             <label lang="de-DE">Autorisierungsmethode</label>
             <helpText>Use this option to set the authorization method for this payment type.</helpText>
             <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
-            <defaultValue>default</defaultValue>
             <options>
-                <option>
-                    <id>default</id>
-                    <name>-- Use default --</name>
-                    <name lang="de-DE">-- Verwende Standard --</name>
-                </option>
                 <option>
                     <id>preauthorization</id>
                     <name>Pre-authorization</name>
