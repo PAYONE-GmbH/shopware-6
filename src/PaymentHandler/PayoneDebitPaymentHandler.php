@@ -11,15 +11,18 @@ use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory;
 use PayonePayment\Payone\Request\Debit\DebitPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
@@ -28,6 +31,12 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
 
     /** @var DebitAuthorizeRequestFactory */
     private $authRequestFactory;
+
+    /** @var PayoneClientInterface */
+    protected $client;
+
+    /** @var TranslatorInterface */
+    protected $translator;
 
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
@@ -44,9 +53,11 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
         TransactionDataHandlerInterface $dataHandler,
         MandateServiceInterface $mandateService
     ) {
-        parent::__construct($configReader, $client, $translator);
+        parent::__construct($configReader);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
+        $this->client                = $client;
+        $this->translator            = $translator;
         $this->dataHandler           = $dataHandler;
         $this->mandateService        = $mandateService;
     }
@@ -76,7 +87,19 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
             $salesChannelContext
         );
 
-        $response = $this->sendRequest($request, $transaction);
+        try {
+            $response = $this->client->request($request);
+        } catch (PayoneRequestException $exception) {
+            throw new SyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $exception->getResponse()['error']['CustomerMessage']
+            );
+        } catch (Throwable $exception) {
+            throw new SyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
 
         // Prepare custom fields for the transaction
         $data = $this->prepareTransactionCustomFields($request, $response, [

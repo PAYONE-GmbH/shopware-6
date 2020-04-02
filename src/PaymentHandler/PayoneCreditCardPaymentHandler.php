@@ -11,17 +11,20 @@ use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory;
 use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
+use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
@@ -30,6 +33,12 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
 
     /** @var CreditCardAuthorizeRequestFactory */
     private $authRequestFactory;
+
+    /** @var PayoneClientInterface */
+    protected $client;
+
+    /** @var TranslatorInterface */
+    protected $translator;
 
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
@@ -50,13 +59,11 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
         PaymentStateHandlerInterface $stateHandler,
         CardRepositoryInterface $cardRepository
     ) {
-        parent::__construct(
-            $configReader,
-            $client,
-            $translator
-        );
+        parent::__construct($configReader);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
+        $this->client                = $client;
+        $this->translator            = $translator;
         $this->dataHandler           = $dataHandler;
         $this->stateHandler          = $stateHandler;
         $this->cardRepository        = $cardRepository;
@@ -87,7 +94,19 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             $salesChannelContext
         );
 
-        $response = $this->sendRequest($request, $transaction);
+        try {
+            $response = $this->client->request($request);
+        } catch (PayoneRequestException $exception) {
+            throw new AsyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $exception->getResponse()['error']['CustomerMessage']
+            );
+        } catch (Throwable $exception) {
+            throw new AsyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
 
         // Prepare custom fields for the transaction
         $data = $this->prepareTransactionCustomFields($request, $response, [
