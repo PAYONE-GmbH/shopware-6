@@ -6,12 +6,6 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
-use PayonePayment\Payone\Client\PayoneClientInterface;
-use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 /**
  * A base class for payment handlers which implements common processing
@@ -22,20 +16,10 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     /** @var ConfigReaderInterface */
     protected $configReader;
 
-    /** @var PayoneClientInterface */
-    protected $client;
-
-    /** @var TranslatorInterface */
-    protected $translator;
-
     public function __construct(
-        ConfigReaderInterface $configReader,
-        PayoneClientInterface $client,
-        TranslatorInterface $translator
+        ConfigReaderInterface $configReader
     ) {
         $this->configReader = $configReader;
-        $this->client       = $client;
-        $this->translator   = $translator;
     }
 
     /**
@@ -55,32 +39,6 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         return $authorizationMethod === 'default'
             ? $defaultAuthorizationMethod
             : $authorizationMethod;
-    }
-
-    /**
-     * Sends the provided request parameters to PAYONE and returns
-     * the received response parameters.
-     *
-     * @param array $request The request parameters to send.
-     * @param SyncPaymentTransactionStruct $transaction The related transaction struct.
-     * @return array The response parameters.
-     * @throws AsyncPaymentProcessException If the payment fails for any reason.
-     */
-    protected function sendRequest(array $request, SyncPaymentTransactionStruct $transaction): array
-    {
-        try {
-            return $this->client->request($request);
-        } catch (PayoneRequestException $exception) {
-            throw new AsyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $exception->getResponse()['error']['CustomerMessage']
-            );
-        } catch (Throwable $exception) {
-            throw new AsyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
     }
 
     /**
