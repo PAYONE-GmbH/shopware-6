@@ -8,7 +8,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PayolutionDebitAuthorizeRequest extends AbstractPayolutionDebitRequest
+class PayolutionDebitAuthorizeRequest extends AbstractPayolutionDebitAuthorizeRequest
 {
     public function getRequestParameters(PaymentTransaction $transaction, RequestDataBag $dataBag, SalesChannelContext $context): array
     {

@@ -12,7 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
-abstract class AbstractDebitRequest
+abstract class AbstractDebitAuthorizeRequest
 {
     /** @var EntityRepositoryInterface */
     private $currencyRepository;

@@ -17,7 +17,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-abstract class AbstractPayolutionDebitRequest
+abstract class AbstractPayolutionDebitAuthorizeRequest
 {
     /** @var EntityRepositoryInterface */
     private $currencyRepository;

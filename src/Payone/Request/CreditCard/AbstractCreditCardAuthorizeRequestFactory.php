@@ -12,9 +12,9 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-abstract class AbstractCreditCardRequestFactory extends AbstractRequestFactory
+abstract class AbstractCreditCardAuthorizeRequestFactory extends AbstractRequestFactory
 {
-    /** @var AbstractCreditCardRequest */
+    /** @var AbstractCreditCardAuthorizeRequest */
     protected $creditCardRequest;
 
     /** @var CustomerRequest */
@@ -24,7 +24,7 @@ abstract class AbstractCreditCardRequestFactory extends AbstractRequestFactory
     protected $systemRequest;
 
     public function __construct(
-        AbstractCreditCardRequest $authorizeRequest,
+        AbstractCreditCardAuthorizeRequest $authorizeRequest,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
