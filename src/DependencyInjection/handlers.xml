@@ -72,6 +72,7 @@
         <service id="PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
