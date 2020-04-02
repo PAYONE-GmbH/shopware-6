@@ -62,7 +62,7 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandl
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
-            'creditCardAuthorizationMethod',
+            'payolutionInvoicingAuthorizationMethod',
             'preauthorization'
         );
 
