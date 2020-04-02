@@ -32,13 +32,8 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      */
     protected function getAuthorizationMethod(string $salesChannelId, string $configKey, string $default): string
     {
-        $configuration              = $this->configReader->read($salesChannelId);
-        $defaultAuthorizationMethod = $configuration->get('authorizationMethod', $default);
-        $authorizationMethod        = $configuration->get($configKey, $defaultAuthorizationMethod);
-
-        return $authorizationMethod === 'default'
-            ? $defaultAuthorizationMethod
-            : $authorizationMethod;
+        $configuration = $this->configReader->read($salesChannelId);
+        return $configuration->get($configKey, $default);
     }
 
     /**
