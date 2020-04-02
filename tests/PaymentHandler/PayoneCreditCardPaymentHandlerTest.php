@@ -7,14 +7,17 @@ namespace PayonePayment\Test\PaymentHandler;
 use DateInterval;
 use DateTimeImmutable;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
+use PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory;
 use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
+use PayonePayment\Test\Mock\Components\ConfigReaderMock;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -43,11 +46,19 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
 
     public function testRequestOnPay()
     {
-        $client         = $this->createMock(PayoneClientInterface::class);
-        $requestFactory = $this->createMock(CreditCardPreAuthorizeRequestFactory::class);
-        $cardRepository = $this->createMock(CardRepositoryInterface::class);
+        $configReader = new ConfigReaderMock([
+            'creditCardAuthorizationMethod' => 'preauthorization',
+        ]);
+
+        $client                = $this->createMock(PayoneClientInterface::class);
+        $preAuthRequestFactory = $this->createMock(CreditCardPreAuthorizeRequestFactory::class);
+        $authRequestFactory    = $this->createMock(CreditCardAuthorizeRequestFactory::class);
+        $cardRepository        = $this->createMock(CardRepositoryInterface::class);
+
         $paymentHandler = new PayoneCreditCardPaymentHandler(
-            $requestFactory,
+            $configReader,
+            $preAuthRequestFactory,
+            $authRequestFactory,
             $client,
             $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
@@ -62,7 +73,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $dataBag->set('savedPseudoCardPan', '');
         $dataBag->set('pseudoCardPan', '');
 
-        $requestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
+        $preAuthRequestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
             [
                 'request'    => '',
                 'successurl' => 'test-url',
@@ -94,11 +105,19 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
 
     public function testRequestOnPayWithRedirect()
     {
-        $client         = $this->createMock(PayoneClientInterface::class);
-        $requestFactory = $this->createMock(CreditCardPreAuthorizeRequestFactory::class);
-        $cardRepository = $this->createMock(CardRepositoryInterface::class);
+        $configReader = new ConfigReaderMock([
+            'creditCardAuthorizationMethod' => 'preauthorization',
+        ]);
+
+        $client                = $this->createMock(PayoneClientInterface::class);
+        $preAuthRequestFactory = $this->createMock(CreditCardPreAuthorizeRequestFactory::class);
+        $authRequestFactory    = $this->createMock(CreditCardAuthorizeRequestFactory::class);
+        $cardRepository        = $this->createMock(CardRepositoryInterface::class);
+
         $paymentHandler = new PayoneCreditCardPaymentHandler(
-            $requestFactory,
+            $configReader,
+            $preAuthRequestFactory,
+            $authRequestFactory,
             $client,
             $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
@@ -113,7 +132,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $dataBag->set('savedPseudoCardPan', '');
         $dataBag->set('pseudoCardPan', '');
 
-        $requestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
+        $preAuthRequestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
             [
                 'request'    => '',
                 'successurl' => 'test-url',
@@ -146,11 +165,19 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
 
     public function testRequestOnPaySavedCard()
     {
-        $client         = $this->createMock(PayoneClientInterface::class);
-        $requestFactory = $this->createMock(CreditCardPreAuthorizeRequestFactory::class);
-        $cardRepository = $this->createMock(CardRepositoryInterface::class);
+        $configReader = new ConfigReaderMock([
+            'creditCardAuthorizationMethod' => 'preauthorization',
+        ]);
+
+        $client                = $this->createMock(PayoneClientInterface::class);
+        $preAuthRequestFactory = $this->createMock(CreditCardPreAuthorizeRequestFactory::class);
+        $authRequestFactory    = $this->createMock(CreditCardAuthorizeRequestFactory::class);
+        $cardRepository        = $this->createMock(CardRepositoryInterface::class);
+
         $paymentHandler = new PayoneCreditCardPaymentHandler(
-            $requestFactory,
+            $configReader,
+            $preAuthRequestFactory,
+            $authRequestFactory,
             $client,
             $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
@@ -165,7 +192,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $dataBag->set('savedPseudoCardPan', 'saved-pan');
         $dataBag->set('pseudoCardPan', '');
 
-        $requestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
+        $preAuthRequestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
             [
                 'request'    => '',
                 'successurl' => 'test-url',
