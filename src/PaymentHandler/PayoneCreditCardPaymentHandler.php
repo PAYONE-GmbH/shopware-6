@@ -91,8 +91,9 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
 
         // Prepare custom fields for the transaction
         $data = $this->prepareTransactionCustomFields($request, $response, [
-            CustomFieldInstaller::ALLOW_CAPTURE => false,
-            CustomFieldInstaller::ALLOW_REFUND  => false,
+            CustomFieldInstaller::ALLOW_CAPTURE      => false,
+            CustomFieldInstaller::ALLOW_REFUND       => false,
+            CustomFieldInstaller::TRANSACTION_STATE  => $response['status']
         ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
