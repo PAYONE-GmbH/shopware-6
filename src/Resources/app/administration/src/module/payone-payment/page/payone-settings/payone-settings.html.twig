@@ -118,7 +118,7 @@
                     inherit
                     @config-changed="onConfigChange"
                     domain="PayonePayment.settings">
-                <template #afterElements="{ card, config }">
+                <template #beforeElements="{ card, config }">
                     <a class="payone-config__collapsible-handle" @click="onClickCollapsibleHandle">
                         <sw-icon name="default-arrow-head-down" class="payone-config__collapsible-handle-open"></sw-icon>
                         <sw-icon name="default-arrow-head-up" class="payone-config__collapsible-handle-close"></sw-icon>

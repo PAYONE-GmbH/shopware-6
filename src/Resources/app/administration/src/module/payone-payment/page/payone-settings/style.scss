@@ -29,11 +29,17 @@
 
 .payone-config__wrapper {
     .sw-card {
+        .sw-card__content {
+            padding-top: 0;
+        }
+
         .payone-config__collapsible-handle {
-            padding: 30px;
+            padding: 35px;
+            padding-top: 5px;
+            padding-right: 0;
             display: block;
             width: 100%;
-            text-align: center;
+            text-align: right;
             margin: 0 auto;
             cursor: pointer;
 
@@ -52,7 +58,8 @@
             }
 
             .payone-config__collapsible-handle {
-                padding: 30px;
+                padding: 5px;
+                padding-right: 30px;
             }
 
             .payone-config__collapsible-handle-close {
