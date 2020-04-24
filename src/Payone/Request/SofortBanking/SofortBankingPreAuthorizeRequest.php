@@ -7,12 +7,12 @@ namespace PayonePayment\Payone\Request\SofortBanking;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 
-class SofortBankingAuthorizeRequest extends AbstractSofortBankingAuthorizeRequest
+class SofortBankingPreAuthorizeRequest extends AbstractSofortBankingAuthorizeRequest
 {
     public function getRequestParameters(PaymentTransaction $transaction, Context $context): array
     {
         return array_merge(parent::getRequestParameters($transaction, $context), [
-            'request' => 'authorization',
+            'request' => 'preauthorization',
         ]);
     }
 }

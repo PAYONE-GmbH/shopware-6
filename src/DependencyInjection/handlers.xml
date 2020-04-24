@@ -33,7 +33,9 @@
 
         <!-- Payment handlers -->
         <service id="PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
@@ -44,6 +46,8 @@
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayoneDebitPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Payone\Request\Debit\DebitPreAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
@@ -54,6 +58,8 @@
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePaypalPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
@@ -64,6 +70,8 @@
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
@@ -74,7 +82,9 @@
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
@@ -83,6 +93,8 @@
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
@@ -93,7 +105,9 @@
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitPreAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
@@ -102,6 +116,8 @@
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Payone\Request\SofortBanking\SofortBankingPreAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
