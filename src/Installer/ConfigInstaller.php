@@ -16,6 +16,16 @@ class ConfigInstaller implements InstallerInterface
 {
     public const DEFAULT_VALUES = [
         'transactionMode' => 'test',
+
+        // Default authorization modes for payment methods
+        'creditCardAuthorizationMethod'            => 'preauthorization',
+        'debitAuthorizationMethod'                 => 'authorization',
+        'payolutionDebitAuthorizationMethod'       => 'preauthorization',
+        'payolutionInstallmentAuthorizationMethod' => 'authorization',
+        'payolutionInvoicingAuthorizationMethod'   => 'preauthorization',
+        'paypalAuthorizationMethod'                => 'preauthorization',
+        'paypalExpressAuthorizationMethod'         => 'preauthorization',
+        'sofortAuthorizationMethod'                => 'authorization',
     ];
 
     /** @var SystemConfigService */

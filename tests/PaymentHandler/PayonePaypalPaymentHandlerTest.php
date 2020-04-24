@@ -10,8 +10,10 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
+use PayonePayment\Test\Mock\Components\ConfigReaderMock;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -40,10 +42,18 @@ class PayonePaypalPaymentHandlerTest extends TestCase
 
     public function testRequestOnPay()
     {
-        $client         = $this->createMock(PayoneClientInterface::class);
-        $requestFactory = $this->createMock(PaypalAuthorizeRequestFactory::class);
+        $configReader = new ConfigReaderMock([
+            'paypalAuthorizationMethod' => 'authorization',
+        ]);
+
+        $client                = $this->createMock(PayoneClientInterface::class);
+        $preAuthRequestFactory = $this->createMock(PaypalPreAuthorizeRequestFactory::class);
+        $authRequestFactory    = $this->createMock(PaypalAuthorizeRequestFactory::class);
+
         $paymentHandler = new PayonePaypalPaymentHandler(
-            $requestFactory,
+            $configReader,
+            $preAuthRequestFactory,
+            $authRequestFactory,
             $client,
             $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
@@ -53,7 +63,7 @@ class PayonePaypalPaymentHandlerTest extends TestCase
         $paymentTransaction = $this->getPaymentTransaction();
         $dataBag            = new RequestDataBag();
 
-        $requestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
+        $authRequestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
             [
                 'request'    => '',
                 'successurl' => 'test-url',

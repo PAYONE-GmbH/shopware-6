@@ -61,8 +61,20 @@
             <argument type="service" id="currency.repository" />
         </service>
 
+        <service id="PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
         <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
@@ -106,13 +118,34 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
+        <service id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
         <!-- Debit -->
         <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest">
             <argument type="service" id="currency.repository" />
         </service>
 
+        <service id="PayonePayment\Payone\Request\Debit\DebitPreAuthorizeRequest">
+            <argument type="service" id="currency.repository" />
+        </service>
+
         <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Debit\DebitPreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Debit\DebitPreAuthorizeRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
@@ -123,8 +156,19 @@
             <argument type="service" id="currency.repository" />
         </service>
 
+        <service id="PayonePayment\Payone\Request\SofortBanking\SofortBankingPreAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
         <service id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\SofortBanking\SofortBankingPreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\SofortBanking\SofortBankingPreAuthorizeRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
@@ -155,8 +199,20 @@
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
+        <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingAuthorizeRequest">
+            <argument type="service" id="currency.repository" />
+            <argument type="service" id="order_address.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+        </service>
+
         <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingAuthorizeRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
@@ -190,8 +246,18 @@
             <argument type="service" id="currency.repository" />
         </service>
 
+        <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreAuthorizeRequest">
+            <argument type="service" id="currency.repository" />
+        </service>
+
         <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreAuthorizeRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
@@ -203,8 +269,20 @@
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
+        <service id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitAuthorizeRequest">
+            <argument type="service" id="currency.repository" />
+            <argument type="service" id="order_address.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+        </service>
+
         <service id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitPreAuthorizeRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitPreAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitAuthorizeRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
