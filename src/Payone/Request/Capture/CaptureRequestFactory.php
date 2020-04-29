@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace PayonePayment\Payone\Request\Capture;
 
@@ -8,10 +8,15 @@ use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Struct\PaymentTransaction;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 
 class CaptureRequestFactory extends AbstractRequestFactory
 {
+    public const FULL_CAPTURE   = 0;
+    public const AMOUNT_CAPTURE = 1;
+    public const LINE_CAPTURE   = 2;
+
     /** @var CaptureRequest */
     private $captureRequest;
 
@@ -24,20 +29,49 @@ class CaptureRequestFactory extends AbstractRequestFactory
         $this->systemRequest  = $systemRequest;
     }
 
-    public function getRequestParameters(PaymentTransaction $transaction, Context $context): array
+    public function getFullRequest(OrderTransactionEntity $transaction, Context $context): array
     {
-        $this->requests[] = $this->systemRequest->getRequestParameters(
+        $this->requests[] = $this->getBaseCaptureParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIXES[$transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier()],
+            $transaction->getPaymentMethod()->getHandlerIdentifier(),
             $context
         );
 
-        $this->requests[] = $this->captureRequest->getRequestParameters(
+        $this->requests[] = $this->captureRequest->getFullRequestParameters(
             $transaction->getOrder(),
             $context,
             $transaction->getCustomFields()
         );
 
         return $this->createRequest();
+    }
+
+    public function getPartialRequest(float $totalAmount, OrderTransactionEntity $transaction, Context $context): array
+    {
+        $this->requests[] = $this->getBaseCaptureParameters(
+            $transaction->getOrder()->getSalesChannelId(),
+            $transaction->getPaymentMethod()->getHandlerIdentifier(),
+            $context
+        );
+
+        $currency = $transaction->getOrder()->getCurrency();
+
+        $this->requests[] = $this->captureRequest->getPartialRequestParameters(
+            $totalAmount,
+            $currency->getDecimalPrecision(),
+            $currency->getIsoCode(),
+            $transaction->getCustomFields()
+        );
+
+        return $this->createRequest();
+    }
+
+    protected function getBaseCaptureParameters(string $salesChannelId, string $paymentMethodIdentifier, Context $context): array
+    {
+        return $this->systemRequest->getRequestParameters(
+            $salesChannelId,
+            ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentMethodIdentifier],
+            $context
+        );
     }
 }

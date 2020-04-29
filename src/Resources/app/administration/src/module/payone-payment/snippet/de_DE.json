@@ -9,13 +9,44 @@
             "buttonTitle": "Capture",
             "successTitle": "PAYONE",
             "successMessage": "Capture erfolgreich durchgeführt.",
-            "errorTitle": "PAYONE"
+            "errorTitle": "PAYONE",
+            "tooltips": {
+                "impossible": "Einzug unmöglich"
+            }
         },
         "refund": {
             "buttonTitle": "Refund",
             "successTitle": "PAYONE",
             "successMessage": "Refund erfolgreich durchgeführt.",
-            "errorTitle": "PAYONE"
+            "errorTitle": "PAYONE",
+            "tooltips": {
+                "impossible": "Erstattung unmöglich"
+            }
+        },
+        "modal": {
+            "capture": {
+                "title": "Einzug",
+                "submit": "Einziehen",
+                "amount": "Einzugswert",
+                "captured": "Eingezogener Wert"
+            },
+            "refund": {
+                "title": "Erstattung",
+                "submit": "Erstatten",
+                "amount": "Erstattungswert",
+                "refunded": "Erstatteter Wert"
+            },
+            "close": "Schließen",
+            "orderAmount": "Bestellungswert",
+            "remainingAmount": "Ausstehender Wert",
+            "labelComment": "Label comment",
+            "descriptionHelpText": "Description help text",
+            "columns": {
+                "reference": "Referenz",
+                "product": "Produkt",
+                "quantity": "Anzahl",
+                "price": "Preis"
+            }
         },
         "settingsForm": {
             "save": "Speichern",

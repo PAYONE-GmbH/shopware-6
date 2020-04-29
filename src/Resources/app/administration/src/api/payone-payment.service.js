@@ -6,14 +6,12 @@ class PayonePaymentService extends ApiService {
         super(httpClient, loginService, apiEndpoint);
     }
 
-    capturePayment(transaction) {
+    capturePayment(requestBody) {
         const apiRoute = `_action/${this.getApiBasePath()}/capture-payment`;
 
         return this.httpClient.post(
             apiRoute,
-            {
-                transaction: transaction
-            },
+            requestBody,
             {
                 headers: this.getBasicHeaders()
             }
@@ -22,14 +20,12 @@ class PayonePaymentService extends ApiService {
         });
     }
 
-    refundPayment(transaction) {
+    refundPayment(requestBody) {
         const apiRoute = `_action/${this.getApiBasePath()}/refund-payment`;
 
         return this.httpClient.post(
             apiRoute,
-            {
-                transaction: transaction
-            },
+            requestBody,
             {
                 headers: this.getBasicHeaders()
             }

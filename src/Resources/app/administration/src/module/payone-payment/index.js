@@ -1,4 +1,9 @@
 const { Module } = Shopware;
+
+import './component/capture';
+import './component/refund';
+import './component/order-items';
+
 import './page/payone-settings';
 
 import './extension/sw-order';
