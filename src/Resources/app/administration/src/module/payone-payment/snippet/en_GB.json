@@ -9,13 +9,44 @@
             "buttonTitle": "Capture",
             "successTitle": "PAYONE",
             "successMessage": "Capture processed successfully.",
-            "errorTitle": "PAYONE"
+            "errorTitle": "PAYONE",
+            "tooltips": {
+                "impossible": "Capture impossible"
+            }
         },
         "refund": {
             "buttonTitle": "Refund",
             "successTitle": "PAYONE",
             "successMessage": "Refund processed successfully.",
-            "errorTitle": "PAYONE"
+            "errorTitle": "PAYONE",
+            "tooltips": {
+                "impossible": "Refund impossible"
+            }
+        },
+        "modal": {
+            "capture": {
+                "title": "Capture",
+                "submit": "Capture",
+                "amount": "Capture amount",
+                "captured": "Captured amount"
+            },
+            "refund": {
+                "title": "Refund",
+                "submit": "Refund",
+                "amount": "Refund amount",
+                "refunded": "Refunded amount"
+            },
+            "orderAmount": "Order amount",
+            "remainingAmount": "Remaining amount",
+            "descriptionHelpText": "Description help text",
+            "close": "Close",
+            "labelComment": "Label comment",
+            "columns": {
+                "reference": "Reference",
+                "product": "Product",
+                "quantity": "Quantity",
+                "price": "Price"
+            }
         },
         "settingsForm": {
             "save": "Save",

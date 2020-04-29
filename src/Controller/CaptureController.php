@@ -40,49 +40,16 @@ class CaptureController extends AbstractController
      */
     public function captureAction(Request $request, Context $context): JsonResponse
     {
-        $transaction = $request->get('transaction');
+        $transactionId = $request->get('orderTransactionId');
 
-        if (empty($transaction)) {
+        if (empty($transactionId)) {
             return new JsonResponse(['status' => false, 'message' => 'missing order transaction id'], Response::HTTP_NOT_FOUND);
         }
 
-        $criteria = new Criteria([$transaction]);
-        $criteria->addAssociation('order');
-        $criteria->addAssociation('paymentMethod');
-
-        /** @var null|OrderTransactionEntity $orderTransaction */
-        $orderTransaction = $this->transactionRepository->search($criteria, $context)->first();
-
-        if (null === $orderTransaction) {
-            return new JsonResponse(['status' => false, 'message' => 'no order transaction found'], Response::HTTP_NOT_FOUND);
+        if((bool) $request->get('complete', false)) {
+            return $this->captureHandler->fullCapture($transactionId, $context);
         }
 
-        if (null === $orderTransaction->getOrder()) {
-            return new JsonResponse(['status' => false, 'message' => 'no order found'], Response::HTTP_NOT_FOUND);
-        }
-
-        try {
-            $this->captureHandler->captureTransaction($orderTransaction, $context);
-        } catch (PayoneRequestException $exception) {
-            return new JsonResponse(
-                [
-                    'status'  => false,
-                    'message' => $exception->getResponse()['error']['ErrorMessage'],
-                    'code'    => $exception->getResponse()['error']['ErrorCode'],
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
-        } catch (Exception $exception) {
-            return new JsonResponse(
-                [
-                    'status'  => false,
-                    'message' => $exception->getMessage(),
-                    'code'    => 0,
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-        return new JsonResponse(['status' => true]);
+        return $this->captureHandler->partialCapture($request->request, $context);
     }
 }

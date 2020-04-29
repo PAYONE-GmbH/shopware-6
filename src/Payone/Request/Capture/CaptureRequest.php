@@ -23,7 +23,18 @@ class CaptureRequest
         $this->currencyRepository = $currencyRepository;
     }
 
-    public function getRequestParameters(OrderEntity $order, Context $context, array $customFields): array
+    public function getPartialRequestParameters(float $totalAmount, int $decimalPrecision, string $currencyIsoCode, array $customFields): array
+    {
+        return [
+            'request'        => 'capture',
+            'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
+            'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
+            'amount'         => (int) ($totalAmount * (10 ** $decimalPrecision)),
+            'currency'       => $currencyIsoCode,
+        ];
+    }
+
+    public function getFullRequestParameters(OrderEntity $order, Context $context, array $customFields): array
     {
         if (empty($customFields[CustomFieldInstaller::TRANSACTION_ID])) {
             throw new InvalidOrderException($order->getId());

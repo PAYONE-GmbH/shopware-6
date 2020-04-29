@@ -16,6 +16,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\Capture\CaptureRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
+            <argument type="service" id="order_transaction.repository" />
         </service>
 
         <service id="PayonePayment\Components\RedirectHandler\RedirectHandler">
