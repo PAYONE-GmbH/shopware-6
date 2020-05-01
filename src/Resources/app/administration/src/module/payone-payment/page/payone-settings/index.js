@@ -215,6 +215,7 @@ Component.register('payone-settings', {
             if (config !== this.config) {
                 this.onConfigChange(config);
             }
+
             if (this.showValidationErrors) {
                 if (element.name === 'PayonePayment.settings.merchantId' && !this.merchantIdFilled) {
                     element.config.error = {
@@ -244,9 +245,5 @@ Component.register('payone-settings', {
 
             return element;
         },
-
-        onClickCollapsibleHandle(event) {
-            event.currentTarget.closest('.sw-card').classList.toggle('payone-config__collapsible-open');
-        }
     }
 });
