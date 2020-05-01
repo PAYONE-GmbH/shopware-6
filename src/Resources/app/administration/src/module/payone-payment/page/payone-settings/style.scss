@@ -29,47 +29,29 @@
 
 .payone-config__wrapper {
     .sw-card {
-        .sw-card__content {
-            padding-top: 0;
+        .payone-config__collapsible-container {
+            text-align: right;
+
+            &:not(.collapsed) {
+                margin-bottom: 22px;
+            }
         }
 
         .payone-config__collapsible-handle {
-            padding: 35px;
-            padding-top: 5px;
-            padding-right: 0;
-            display: block;
-            width: 100%;
-            text-align: right;
-            margin: 0 auto;
             cursor: pointer;
+            color: $color-darkgray-200;
+
+            border: 1px solid $color-gray-300;
+            border-radius: $border-radius-default;
+
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            line-height: 0;
+            padding: 5px;
 
             &:hover {
                 background-color: $color-shopware-brand-50;
-            }
-        }
-
-        &:not(.payone-config__collapsible-open) {
-            .sw-card__content {
-                padding: 0;
-            }
-
-            .sw-field--default {
-                display: none;
-            }
-
-            .payone-config__collapsible-handle {
-                padding: 5px;
-                padding-right: 30px;
-            }
-
-            .payone-config__collapsible-handle-close {
-                display: none;
-            }
-        }
-
-        &.payone-config__collapsible-open {
-            .payone-config__collapsible-handle-open {
-                display: none;
             }
         }
     }
