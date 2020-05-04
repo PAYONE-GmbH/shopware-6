@@ -29,11 +29,11 @@ class CaptureRequestFactory extends AbstractRequestFactory
         $this->systemRequest  = $systemRequest;
     }
 
-    public function getFullRequest(OrderTransactionEntity $transaction, Context $context): array
+    public function getFullRequest(PaymentTransaction $transaction, Context $context): array
     {
         $this->requests[] = $this->getBaseCaptureParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            $transaction->getPaymentMethod()->getHandlerIdentifier(),
+            $transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier(),
             $context
         );
 
@@ -46,11 +46,11 @@ class CaptureRequestFactory extends AbstractRequestFactory
         return $this->createRequest();
     }
 
-    public function getPartialRequest(float $totalAmount, OrderTransactionEntity $transaction, Context $context): array
+    public function getPartialRequest(float $totalAmount, PaymentTransaction $transaction, Context $context): array
     {
         $this->requests[] = $this->getBaseCaptureParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            $transaction->getPaymentMethod()->getHandlerIdentifier(),
+            $transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier(),
             $context
         );
 
