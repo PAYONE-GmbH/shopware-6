@@ -34,22 +34,30 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
     /** @var EntityRepositoryInterface */
     private $transactionRepository;
 
+    /** @var EntityRepositoryInterface */
+    private $orderLineItemRepository;
+
     /** @var Context */
     protected $context;
 
     /** @var OrderTransactionEntity */
     protected $transaction;
 
+    /** @var PaymentTransaction */
+    protected $paymentTransaction;
+
     public function __construct(
         CaptureRequestFactory $requestFactory,
         PayoneClientInterface $client,
         TransactionDataHandlerInterface $dataHandler,
-        EntityRepositoryInterface $transactionRepository
+        EntityRepositoryInterface $transactionRepository,
+        EntityRepositoryInterface $orderLineItemRepository
     ) {
-        $this->requestFactory        = $requestFactory;
-        $this->client                = $client;
-        $this->dataHandler           = $dataHandler;
-        $this->transactionRepository = $transactionRepository;
+        $this->requestFactory          = $requestFactory;
+        $this->client                  = $client;
+        $this->dataHandler             = $dataHandler;
+        $this->transactionRepository   = $transactionRepository;
+        $this->orderLineItemRepository = $orderLineItemRepository;
     }
 
     public function fullCapture(string $transactionId, Context $context): JsonResponse
@@ -68,7 +76,22 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
             return new JsonResponse(['status' => false, 'message' => 'no order found'], Response::HTTP_NOT_FOUND);
         }
 
-        return $this->executeRequest($this->requestFactory->getFullRequest($this->transaction, $this->context));
+        $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($this->transaction);
+
+        $requestResponse =  $this->executeRequest(
+            $this->requestFactory->getFullRequest(
+                $this->paymentTransaction,
+                $this->context
+            )
+        );
+
+        if(!$this->isValidRequestResponse($requestResponse)) {
+            return $requestResponse;
+        }
+
+        $this->postRequestHandling($this->transaction->getAmount()->getTotalPrice());
+
+        return $requestResponse;
     }
 
     public function partialCapture(
@@ -89,34 +112,24 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
             return new JsonResponse(['status' => false, 'message' => 'no order found'], Response::HTTP_NOT_FOUND);
         }
 
-        $requestResult = $this->executeRequest(
+        $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($this->transaction);
+
+        $requestResponse = $this->executeRequest(
             $this->requestFactory->getPartialRequest(
-                (float) $parameterBag->get('captureAmount'),
-                $this->transaction,
+                (float)$parameterBag->get('captureAmount'),
+                $this->paymentTransaction,
                 $this->context
             )
         );
 
-        $orderLines = $parameterBag->get('orderLines');
-
-        if (empty($orderLines)) {
-            return $requestResult;
+        if(!$this->isValidRequestResponse($requestResponse)) {
+            return $requestResponse;
         }
 
-        $decodedResultContent = $requestResult->getContent();
+        $this->postRequestHandling((float)$parameterBag->get('captureAmount'));
+        $this->orderLineHandling($parameterBag->get('orderLines'));
 
-        if ($decodedResultContent['status']) {
-            foreach ($orderLines as $orderLine) {
-                $customFieldData = [
-                    'id' => $orderLine['id'],
-                    'customFields' => [
-                        CustomFieldInstaller::CAPTURED_QUANTITY => $orderLine['quantity']
-                    ]
-                ];
-                //TODO:
-//                $this->orderLineItemRepository->update([$customFieldData], $context);
-            }
-        }
+        return $requestResponse;
     }
 
     protected function getTransaction(string $transactionId): ?OrderTransactionEntity
@@ -138,11 +151,6 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
 
         try {
             $response = $this->client->request($request);
-
-            $data = [CustomFieldInstaller::ALLOW_CAPTURE => false];
-
-            $this->dataHandler->incrementSequenceNumber($paymentTransaction, $this->context);
-            $this->dataHandler->saveTransactionData($paymentTransaction, $this->context, $data);
         } catch (PayoneRequestException $exception) {
             $requestResult = new JsonResponse(
                 [
@@ -166,5 +174,47 @@ class CapturePaymentHandler implements CapturePaymentHandlerInterface
         $this->dataHandler->logResponse($paymentTransaction, $this->context, compact('request', 'response'));
 
         return $requestResult;
+    }
+
+    protected function postRequestHandling(float $captureAmount): void
+    {
+        $currency = $this->paymentTransaction->getOrder()->getCurrency();
+
+        if (!empty($currency)) {
+            $data = [CustomFieldInstaller::CAPTURED_AMOUNT => (int)($captureAmount * (10 ** $currency->getDecimalPrecision()))];
+        }
+
+        $this->dataHandler->incrementSequenceNumber($this->paymentTransaction, $this->context);
+        $this->dataHandler->saveTransactionData($this->paymentTransaction, $this->context, !empty($data) ? $data : []);
+    }
+
+    protected function orderLineHandling(array $orderLines): void
+    {
+        if (empty($orderLines)) {
+            return;
+        }
+
+        foreach ($orderLines as $orderLine) {
+            $customFieldData = [
+                'id'           => $orderLine['id'],
+                'customFields' => [
+                    CustomFieldInstaller::CAPTURED_QUANTITY => $orderLine['quantity'],
+                ],
+            ];
+
+            $this->orderLineItemRepository->update([$customFieldData], $this->context);
+        }
+    }
+
+    protected function isValidRequestResponse(JsonResponse $requestResponse): bool
+    {
+        /** @var false|string $requestContent */
+        $requestContent = $requestResponse->getContent();
+
+        if($requestContent) {
+            $decodedResultContent = json_decode($requestContent, true);
+        }
+
+        return !(empty($decodedResultContent) || $decodedResultContent['status']);
     }
 }

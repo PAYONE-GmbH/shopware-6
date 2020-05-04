@@ -28,11 +28,41 @@ class CaptureRequestFactoryTest extends TestCase
 {
     use RequestFactoryTestTrait;
 
-    public function testCorrectRequestParameters()
+    public function testCorrectFullCaptureRequestParameters(): void
     {
         $factory = new CaptureRequestFactory($this->getCaptureRequest(), $this->getSystemRequest());
 
-        $request = $factory->getRequestParameters($this->getPaymentTransaction(), Context::createDefaultContext());
+        $request = $factory->getFullRequest($this->getPaymentTransaction(), Context::createDefaultContext());
+
+        Assert::assertArraySubset(
+            [
+                'aid'             => '',
+                'amount'          => 10000,
+                'api_version'     => '3.10',
+                'currency'        => 'EUR',
+                'encoding'        => 'UTF-8',
+                'integrator_name' => 'shopware6',
+                'key'             => '',
+                'mid'             => '',
+                'mode'            => '',
+                'portalid'        => '',
+                'request'         => 'capture',
+                'sequencenumber'  => 1,
+                'solution_name'   => 'kellerkinder',
+                'txid'            => 'test-transaction-id',
+            ],
+            $request
+        );
+
+        $this->assertArrayHasKey('integrator_version', $request);
+        $this->assertArrayHasKey('solution_version', $request);
+    }
+
+    public function testCorrectPartialCaptureRequestParameters(): void
+    {
+        $factory = new CaptureRequestFactory($this->getCaptureRequest(), $this->getSystemRequest());
+
+        $request = $factory->getPartialRequest(10000, $this->getPaymentTransaction(), Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
