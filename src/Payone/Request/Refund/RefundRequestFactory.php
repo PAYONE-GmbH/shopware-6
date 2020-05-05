@@ -24,7 +24,7 @@ class RefundRequestFactory extends AbstractRequestFactory
         $this->refundRequest = $refundRequest;
     }
 
-    public function getFullRequestParameters(PaymentTransaction $transaction, Context $context): array
+    public function getFullRequest(PaymentTransaction $transaction, Context $context): array
     {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),

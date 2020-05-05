@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\PaymentHandler;
 
 use Exception;
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandler;
 use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
@@ -22,22 +20,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @property TransactionDataHandler $dataHandler
- * @property PayoneClientInterface $client
- * @property OrderTransactionEntity $transaction
- * @property PaymentTransaction $paymentTransaction
- * @property Context $context
- * @property CaptureRequestFactory|RefundRequestFactory $requestFactory
- * @property EntityRepositoryInterface $transactionRepository
- * @property EntityRepositoryInterface $orderLineItemRepository
- */
 abstract class AbstractPaymentHandler
 {
+    protected const AMOUNT_CUSTOM_FIELD = '';
+    protected const QUANTITY_CUSTOM_FIELD = '';
+
     /** @var EntityRepositoryInterface */
     protected $orderLineItemRepository;
 
-    /** @var CaptureRequestFactory */
+    /** @var CaptureRequestFactory|RefundRequestFactory */
     protected $requestFactory;
 
     /** @var PayoneClientInterface */

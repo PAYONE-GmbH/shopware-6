@@ -13,10 +13,6 @@ use Shopware\Core\Framework\Context;
 
 class CaptureRequestFactory extends AbstractRequestFactory
 {
-    public const FULL_CAPTURE   = 0;
-    public const AMOUNT_CAPTURE = 1;
-    public const LINE_CAPTURE   = 2;
-
     /** @var CaptureRequest */
     private $captureRequest;
 
