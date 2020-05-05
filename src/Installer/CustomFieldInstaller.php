@@ -89,7 +89,7 @@ class CustomFieldInstaller implements InstallerInterface
                 ],
             ],
             [
-                'id'     => self::FIELDSET_ID_ORDER_TRANSACTION,
+                'id'     => self::FIELDSET_ID_ORDER_LINE_ITEM,
                 'name'   => 'order_line_item_payone_payment',
                 'config' => [
                     'label' => [
