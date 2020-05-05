@@ -62,7 +62,7 @@ class CaptureRequestFactoryTest extends TestCase
     {
         $factory = new CaptureRequestFactory($this->getCaptureRequest(), $this->getSystemRequest());
 
-        $request = $factory->getPartialRequest(10000, $this->getPaymentTransaction(), Context::createDefaultContext());
+        $request = $factory->getPartialRequest(100.00, $this->getPaymentTransaction(), Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [

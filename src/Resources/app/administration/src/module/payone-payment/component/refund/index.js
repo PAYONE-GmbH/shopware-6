@@ -29,14 +29,26 @@ Component.register('payone-refund-button', {
             showRefundModal: false,
             isRefundSuccessful: false,
             selection: [],
-            refundAmount: 0.0,
             description: ''
         };
     },
 
     computed: {
         remainingAmount() {
-            return this.order.captured_amount - this.order.refunded_amount;
+            if (!this.transaction.customFields) {
+                return this.transaction.amount.totalPrice;
+            }
+
+            return this.transaction.customFields.payone_captured_amount - this.refundedAmount;
+        },
+
+        refundedAmount() {
+            window.console.log(this.transaction);
+            if (!this.transaction.customFields) {
+                return 0;
+            }
+
+            return this.transaction.customFields.payone_refunded_amount === undefined ? 0 : this.transaction.customFields.payone_refunded_amount;
         },
 
         buttonEnabled() {
@@ -44,7 +56,7 @@ Component.register('payone-refund-button', {
                 return false;
             }
 
-            return this.transaction.customFields.payone_allow_refund;
+            return this.remainingAmount > 0;
         },
 
         maxRefundAmount() {
@@ -79,8 +91,7 @@ Component.register('payone-refund-button', {
             this.showRefundModal = true;
             this.isRefundSuccessful = false;
 
-            this.refundAmount = this.remainingAmount / (10 ** this.order.decimal_precision);
-            this.description = '';
+            this.refundAmount = this.remainingAmount / (10 ** this.order.currency.decimal_precision);
             this.selection = [];
         },
 
@@ -93,39 +104,33 @@ Component.register('payone-refund-button', {
         },
 
         refundOrder() {
+            const request = {
+                orderTransactionId: this.transaction.id,
+                payone_order_id: this.transaction.customFields.payone_transaction_id,
+                salesChannel: this.order.salesChannel,
+                amount: this.refundAmount,
+                orderLines: [],
+                complete: this.refundAmount === this.maxRefundAmount
+            };
             this.isLoading = true;
-
-            const orderLines = [];
 
             this.selection.forEach((selection) => {
                 this.order.order_lines.forEach((order_item) => {
                     if (order_item.reference === selection.reference && selection.selected && selection.quantity > 0) {
-                        const copy = { ...order_item };
+                        const copy = { ...order_item },
+                            taxRate = copy.tax_rate / (10 ** this.order.decimal_precision);
 
                         copy.quantity = selection.quantity;
                         copy.total_amount = copy.unit_price * copy.quantity;
 
-                        const taxRate = copy.tax_rate / (10 ** this.order.decimal_precision);
-
                         copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
 
-                        orderLines.push(copy);
+                        request.orderLines.push(copy);
                     }
                 });
             });
 
-            const request = {
-                orderTransactionId: this.order.orderTransactionId,
-                payone_order_id: this.order.order_id,
-                salesChannel: this.order.salesChannel,
-                refundAmount: this.refundAmount,
-                description: this.description,
-                orderLines: JSON.stringify(orderLines),
-                decimalPrecision: this.order.decimal_precision,
-                complete: this.refundAmount === this.maxRefundAmount
-            };
-
-            this.payonePaymentOrderService.refundOrder(request).then(() => {
+            this.PayonePaymentService.refundPayment(request).then(() => {
                 this.createNotificationSuccess({
                     title: this.$tc('payone-payment-order-management.messages.refundSuccessTitle'),
                     message: this.$tc('payone-payment-order-management.messages.refundSuccessMessage')

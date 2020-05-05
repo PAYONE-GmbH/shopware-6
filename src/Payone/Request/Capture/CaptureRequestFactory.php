@@ -37,7 +37,7 @@ class CaptureRequestFactory extends AbstractRequestFactory
             $context
         );
 
-        $this->requests[] = $this->captureRequest->getFullRequestParameters(
+        $this->requests[] = $this->captureRequest->getRequestParameters(
             $transaction->getOrder(),
             $context,
             $transaction->getCustomFields()
@@ -54,13 +54,11 @@ class CaptureRequestFactory extends AbstractRequestFactory
             $context
         );
 
-        $currency = $transaction->getOrder()->getCurrency();
-
-        $this->requests[] = $this->captureRequest->getPartialRequestParameters(
-            $totalAmount,
-            $currency->getDecimalPrecision(),
-            $currency->getIsoCode(),
-            $transaction->getCustomFields()
+        $this->requests[] = $this->captureRequest->getRequestParameters(
+            $transaction->getOrder(),
+            $context,
+            $transaction->getCustomFields(),
+            $totalAmount
         );
 
         return $this->createRequest();

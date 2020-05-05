@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\TransactionStatus;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
@@ -43,8 +44,9 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $this->configReader         = $configReader;
     }
 
-    public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, OrderTransactionEntity $orderTransactionEntity, array $transactionData): void
+    public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, PaymentTransaction $paymentTransaction, array $transactionData): void
     {
+        $orderTransactionEntity = $paymentTransaction->getOrderTransaction();
         $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower($transactionData['txaction']));
 
@@ -59,6 +61,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
                 $transitionName = StateMachineTransitionActions::ACTION_REOPEN;
             } elseif ($this->isTransactionPaid($transactionData)) {
                 $transitionName = StateMachineTransitionActions::ACTION_PAY;
+            } elseif ($this->isTransactionPartialPaid($transactionData, $paymentTransaction)) {
+                $transitionName = StateMachineTransitionActions::ACTION_PAY_PARTIALLY;
             } elseif ($this->isTransactionCancelled($transactionData)) {
                 $transitionName = StateMachineTransitionActions::ACTION_CANCEL;
             }
@@ -111,6 +115,28 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             ],
             true
         );
+    }
+
+    private function isTransactionPartialPaid(array $transactionData, PaymentTransaction $orderTransactionEntity): bool
+    {
+        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE) {
+            $currency =  $orderTransactionEntity->getOrder()->getCurrency();
+
+            if ($currency === null) {
+               return false;
+            }
+
+            $recievable = (float) number_format($transactionData['recievable'], $currency->getDecimalPrecision(), '.', '');
+            $recievable = (int) $recievable * (10 ** $currency->getDecimalPrecision());
+            $price = (float) number_format($transactionData['price'], $currency->getDecimalPrecision(), '.', '');
+            $price = (int) $price * (10 ** $currency->getDecimalPrecision());
+
+            if ($price !== $recievable) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function isTransactionCancelled(array $transactionData): bool

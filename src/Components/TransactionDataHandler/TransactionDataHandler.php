@@ -29,7 +29,9 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
         $criteria = (new Criteria())
             ->addFilter(new EqualsFilter($field, $payoneTransactionId))
-            ->addAssociation('paymentMethod');
+            ->addAssociation('paymentMethod')
+            ->addAssociation('order')
+            ->addAssociation('order.currency');
 
         $transaction = $this->transactionRepository->search($criteria, $context)->first();
 

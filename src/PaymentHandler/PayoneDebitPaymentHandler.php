@@ -103,9 +103,9 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
 
         // Prepare custom fields for the transaction
         $data = $this->prepareTransactionCustomFields($request, $response, [
-            CustomFieldInstaller::ALLOW_CAPTURE          => false,
-            CustomFieldInstaller::ALLOW_REFUND           => false,
             CustomFieldInstaller::TRANSACTION_STATE      => 'pending',
+            CustomFieldInstaller::CAPTURED_AMOUNT    => 0,
+            CustomFieldInstaller::REFUNDED_AMOUNT    => 0,
             CustomFieldInstaller::MANDATE_IDENTIFICATION => $response['mandate']['Identification'],
         ]);
 

@@ -24,7 +24,7 @@ class RefundRequestFactory extends AbstractRequestFactory
         $this->refundRequest = $refundRequest;
     }
 
-    public function getRequestParameters(PaymentTransaction $transaction, Context $context): array
+    public function getFullRequestParameters(PaymentTransaction $transaction, Context $context): array
     {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
@@ -36,6 +36,24 @@ class RefundRequestFactory extends AbstractRequestFactory
             $transaction->getOrder(),
             $context,
             $transaction->getCustomFields()
+        );
+
+        return $this->createRequest();
+    }
+
+    public function getPartialRequest(float $totalAmount, PaymentTransaction $transaction, Context $context): array
+    {
+        $this->requests[] = $this->systemRequest->getRequestParameters(
+            $transaction->getOrder()->getSalesChannelId(),
+            ConfigurationPrefixes::CONFIGURATION_PREFIXES[$transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier()],
+            $context
+        );
+
+        $this->requests[] = $this->refundRequest->getRequestParameters(
+            $transaction->getOrder(),
+            $context,
+            $transaction->getCustomFields(),
+            $totalAmount
         );
 
         return $this->createRequest();

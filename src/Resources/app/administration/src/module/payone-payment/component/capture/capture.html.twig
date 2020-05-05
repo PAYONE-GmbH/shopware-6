@@ -6,8 +6,7 @@
         </sw-button>
     </sw-container>
 
-    <sw-modal v-if="true" @modal-close="closeCaptureModal" :title="$tc(`payone-payment.modal.capture.title`)" class="payone-payment-detail--capture-modal">
-{#    <sw-modal v-if="openCaptureModal" @modal-close="closeCaptureModal" :title="$tc(`payone-payment.modal.title`)" class="payone-payment-detail--capture-modal">#}
+    <sw-modal v-if="showCaptureModal" @modal-close="closeCaptureModal" :title="$tc(`payone-payment.modal.capture.title`)" class="payone-payment-detail--capture-modal">
         <payone-order-items
                 :order="order"
                 mode="capture"
@@ -22,8 +21,6 @@
                 <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.remainingAmount')" :value="remainingAmount | currency(order.currency.shortName)"></sw-text-field>
                 <sw-number-field required="required" numberType="float" :digits="order.decimal_precision" :label="$tc('payone-payment.modal.capture.amount')" v-model="captureAmount" :min="minCaptureAmount" :max="maxCaptureAmount"></sw-number-field>
             </sw-container>
-
-            <sw-textarea-field :helpText="$tc('payone-payment.modal.descriptionHelpText')" v-on:input="onChangeDescription" :label="$tc('payone-payment.modal.labelComment')" v-model="description"></sw-textarea-field>
         </div>
 
         <template slot="modal-footer">

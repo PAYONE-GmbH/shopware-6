@@ -16,13 +16,11 @@
 
         <div class="payone-payment-detail--refund-modal--content">
             <sw-container columns="1fr 1fr" gap="0 32px">
-{#                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.orderAmount')" :value="order.order_amount | currency(order.currency.shortName)"></sw-text-field>#}
-{#                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.refund.refunded')" :value="order.refunded_amount | currency(order.currency.shortName)"></sw-text-field>#}
-{#                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.remainingAmount')" :value="remainingAmount | currency(order.currency.shortName)"></sw-text-field>#}
+                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.orderAmount')" :value="transaction.amount.totalPrice | currency(order.currency.shortName)"></sw-text-field>
+                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.refund.refunded')" :value="refundedAmount | currency(order.currency.shortName)"></sw-text-field>
+                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.remainingAmount')" :value="remainingAmount | currency(order.currency.shortName)"></sw-text-field>
                 <sw-number-field required="required" numberType="float" :digits="order.decimal_precision" :label="$tc('payone-payment.modal.refund.amount')" v-model="refundAmount" :min="minRefundValue" :max="maxRefundAmount"></sw-number-field>
             </sw-container>
-
-            <sw-textarea-field :helpText="$tc('payone-payment.modal.descriptionHelpText')" v-on:input="onChangeDescription" :label="$tc('payone-payment.modal.labelComment')" v-model="description"></sw-textarea-field>
         </div>
 
         <template slot="modal-footer">

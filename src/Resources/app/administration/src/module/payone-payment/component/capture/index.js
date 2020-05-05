@@ -40,6 +40,11 @@ Component.register('payone-capture-button', {
         },
 
         capturedAmount() {
+            window.console.log(this.transaction);
+            if (!this.transaction.customFields) {
+                return 0;
+            }
+
             return this.transaction.customFields.payone_captured_amount === undefined ? 0 : this.transaction.customFields.payone_captured_amount;
         },
 
@@ -48,7 +53,7 @@ Component.register('payone-capture-button', {
                 return false;
             }
 
-            return this.transaction.customFields.payone_allow_capture;
+            return this.remainingAmount > 0;
         },
 
         maxCaptureAmount() {
@@ -82,7 +87,6 @@ Component.register('payone-capture-button', {
             this.isCaptureSuccessful = false;
 
             this.captureAmount = this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
-            this.description = '';
             this.selection = [];
         },
 
@@ -99,10 +103,8 @@ Component.register('payone-capture-button', {
                 orderTransactionId: this.transaction.id,
                 payone_order_id: this.transaction.customFields.payone_transaction_id,
                 salesChannel: this.order.salesChannel,
-                captureAmount: this.captureAmount,
-                description: this.description,
+                amount: this.captureAmount,
                 orderLines: [],
-                decimalPrecision: this.order.currency.decimalPrecision,
                 complete: this.captureAmount === this.maxCaptureAmount
             };
             this.isLoading = true;

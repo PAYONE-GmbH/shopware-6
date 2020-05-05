@@ -41,35 +41,6 @@ Component.override('sw-order-detail-base', {
             });
 
             return isPayone;
-        },
-
-        captureOrder(transaction) {
-            let me = this;
-
-            if (!this.isPayonePayment(transaction)) {
-                return;
-            }
-
-            me.disableButtons = true;
-
-            this.PayonePaymentService.capturePayment(transaction.id)
-                .then(() => {
-                    this.createNotificationSuccess({
-                        title: this.$tc('payone-payment.capture.successTitle'),
-                        message: this.$tc('payone-payment.capture.successMessage')
-                    });
-
-                    me.reloadEntityData();
-                    me.disableButtons = false;
-                })
-                .catch((errorResponse) => {
-                    this.createNotificationError({
-                        title: this.$tc('payone-payment.capture.errorTitle'),
-                        message: errorResponse.response.data.message
-                    });
-
-                    me.disableButtons = false;
-                });
         }
     }
 });

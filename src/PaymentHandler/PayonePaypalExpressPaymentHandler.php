@@ -111,8 +111,8 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
         // Prepare custom fields for the transaction
         $data = $this->prepareTransactionCustomFields($request, $response, [
             CustomFieldInstaller::TRANSACTION_STATE  => $response['status'],
-            CustomFieldInstaller::ALLOW_CAPTURE      => false,
-            CustomFieldInstaller::ALLOW_REFUND       => false,
+            CustomFieldInstaller::CAPTURED_AMOUNT    => 0,
+            CustomFieldInstaller::REFUNDED_AMOUNT    => 0,
             CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
         ]);
 
