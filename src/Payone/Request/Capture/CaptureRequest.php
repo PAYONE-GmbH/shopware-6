@@ -23,19 +23,16 @@ class CaptureRequest
         $this->currencyRepository = $currencyRepository;
     }
 
-    public function getPartialRequestParameters(float $totalAmount, int $decimalPrecision, string $currencyIsoCode, array $customFields): array
+    public function getRequestParameters(OrderEntity $order, Context $context, array $customFields, float $totalAmount = null): array
     {
-        return [
-            'request'        => 'capture',
-            'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
-            'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => (int) ($totalAmount * (10 ** $decimalPrecision)),
-            'currency'       => $currencyIsoCode,
-        ];
-    }
+        $currency = $this->getOrderCurrency($order, $context);
 
-    public function getFullRequestParameters(OrderEntity $order, Context $context, array $customFields): array
-    {
+        if ($totalAmount === null) {
+            $totalAmount = $order->getAmountTotal();
+        } else {
+            $totalAmount = (float)number_format($totalAmount, $currency->getDecimalPrecision());
+        }
+
         if (empty($customFields[CustomFieldInstaller::TRANSACTION_ID])) {
             throw new InvalidOrderException($order->getId());
         }
@@ -54,7 +51,7 @@ class CaptureRequest
             'request'        => 'capture',
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => (int) ($order->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'amount'         => (int) ($totalAmount * (10 ** $currency->getDecimalPrecision())),
             'currency'       => $currency->getIsoCode(),
         ];
 

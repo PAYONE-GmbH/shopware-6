@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Controller;
 
 use Exception;
-use PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandlerInterface;
+use PayonePayment\Components\PaymentHandler\Refund\RefundPaymentHandlerInterface;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
@@ -23,16 +23,7 @@ class RefundController extends AbstractController
     /** @var RefundPaymentHandlerInterface */
     private $refundHandler;
 
-    /** @var EntityRepositoryInterface */
-    private $transactionRepository;
-
-    public function __construct(
-        RefundPaymentHandlerInterface $captureHandler,
-        EntityRepositoryInterface $transactionRepository
-    ) {
-        $this->refundHandler         = $captureHandler;
-        $this->transactionRepository = $transactionRepository;
-    }
+    public function __construct(RefundPaymentHandlerInterface $captureHandler) {$this->refundHandler = $captureHandler;}
 
     /**
      * @RouteScope(scopes={"api"})
@@ -40,49 +31,14 @@ class RefundController extends AbstractController
      */
     public function refundAction(Request $request, Context $context): JsonResponse
     {
-        $transaction = $request->get('transaction');
-
-        if (empty($transaction)) {
+        if (empty($request->get('orderTransactionId'))) {
             return new JsonResponse(['status' => false, 'message' => 'missing order transaction id'], Response::HTTP_NOT_FOUND);
         }
 
-        $criteria = new Criteria([$transaction]);
-        $criteria->addAssociation('order');
-        $criteria->addAssociation('paymentMethod');
-
-        /** @var null|OrderTransactionEntity $orderTransaction */
-        $orderTransaction = $this->transactionRepository->search($criteria, $context)->first();
-
-        if (null === $orderTransaction) {
-            return new JsonResponse(['status' => false, 'message' => 'no order transaction found'], Response::HTTP_NOT_FOUND);
+        if((bool) $request->get('complete', false)) {
+            return $this->refundHandler->fullRefund($request->request, $context);
         }
 
-        if (null === $orderTransaction->getOrder()) {
-            return new JsonResponse(['status' => false, 'message' => 'no order found'], Response::HTTP_NOT_FOUND);
-        }
-
-        try {
-            $this->refundHandler->refundTransaction($orderTransaction, $context);
-        } catch (PayoneRequestException $exception) {
-            return new JsonResponse(
-                [
-                    'status'  => false,
-                    'message' => $exception->getResponse()['error']['ErrorMessage'],
-                    'code'    => $exception->getResponse()['error']['ErrorCode'],
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
-        } catch (Exception $exception) {
-            return new JsonResponse(
-                [
-                    'status'  => false,
-                    'message' => $exception->getMessage(),
-                    'code'    => 0,
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-        return new JsonResponse(['status' => true]);
+        return $this->refundHandler->partialRefund($request->request, $context);
     }
 }

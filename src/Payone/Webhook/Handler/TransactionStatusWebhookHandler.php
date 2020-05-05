@@ -51,7 +51,7 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
             (int) $data['txid']
         );
 
-        if (!$paymentTransaction) {
+        if (!empty($paymentTransaction)) {
             $this->logger->warning(sprintf('Could not get transaction for id %s', (int) $data['txid']));
 
             return;
@@ -61,6 +61,6 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
 
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->transactionDataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['transaction' => $data]);
-        $this->transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction->getOrderTransaction(), $data);
+        $this->transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction, $data);
     }
 }

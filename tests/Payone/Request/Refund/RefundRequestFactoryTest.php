@@ -28,11 +28,41 @@ class RefundRequestFactoryTest extends TestCase
 {
     use RequestFactoryTestTrait;
 
-    public function testCorrectRequestParameters()
+    public function testCorrectFullRequestParameters()
     {
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest());
 
-        $request = $factory->getRequestParameters($this->getPaymentTransaction(), Context::createDefaultContext());
+        $request = $factory->getFullRequestParameters($this->getPaymentTransaction(), Context::createDefaultContext());
+
+        Assert::assertArraySubset(
+            [
+                'aid'             => '',
+                'amount'          => -10000,
+                'api_version'     => '3.10',
+                'currency'        => 'EUR',
+                'encoding'        => 'UTF-8',
+                'key'             => '',
+                'mid'             => '',
+                'mode'            => '',
+                'portalid'        => '',
+                'request'         => 'debit',
+                'sequencenumber'  => 2,
+                'txid'            => 'test-transaction-id',
+                'integrator_name' => 'shopware6',
+                'solution_name'   => 'kellerkinder',
+            ],
+            $request
+        );
+
+        $this->assertArrayHasKey('integrator_version', $request);
+        $this->assertArrayHasKey('solution_version', $request);
+    }
+
+    public function testCorrectPartialRequestParameters()
+    {
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest());
+
+        $request = $factory->getPartialRequest(-100.00, $this->getPaymentTransaction(), Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
