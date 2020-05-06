@@ -62,7 +62,7 @@ class RefundRequestFactoryTest extends TestCase
     {
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest());
 
-        $request = $factory->getPartialRequest(-100.00, $this->getPaymentTransaction(), Context::createDefaultContext());
+        $request = $factory->getPartialRequest(100.00, $this->getPaymentTransaction(), Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [

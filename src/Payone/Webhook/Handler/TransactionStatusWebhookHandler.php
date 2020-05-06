@@ -51,7 +51,7 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
             (int) $data['txid']
         );
 
-        if (!empty($paymentTransaction)) {
+        if (null === $paymentTransaction) {
             $this->logger->warning(sprintf('Could not get transaction for id %s', (int) $data['txid']));
 
             return;
