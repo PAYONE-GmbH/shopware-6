@@ -112,25 +112,41 @@
 
         <sw-card-view>
             <sw-system-config
+                    class="payone-config__wrapper"
                     ref="systemConfig"
                     salesChannelSwitchable
                     inherit
                     @config-changed="onConfigChange"
                     domain="PayonePayment.settings">
-                <template #card-element="{ element, config }">
-                    <sw-form-field-renderer
+
+                <template #beforeElements="{card, config}">
+                    <div v-if="isCollapsible(card)" class="payone-config__collapsible-container" v-bind:class="{'collapsed': isCollapsed(card)}" >
+                        <a class="payone-config__collapsible-handle" @click="toggleCollapsible(card)">
+                            <sw-icon small v-if="isCollapsed(card)" name="small-arrow-medium-down" class="payone-config__collapsible-handle-open"></sw-icon>
+                            <sw-icon small v-if="!isCollapsed(card)" name="small-arrow-medium-up" class="payone-config__collapsible-handle-close"></sw-icon>
+                        </a>
+                    </div>
+                </template>
+
+                <template #card-element="{element, config, card}">
+                    <div v-show="displayField(element, config, card)">
+                        <sw-form-field-renderer
                             v-if="element.name.startsWith('PayonePayment.settings.paymentStatus')"
                             :config="{
-                                        componentName: 'sw-single-select',
-                                        label: getInlineSnippet(element.config.label),
-                                        helpText: getInlineSnippet(element.config.helpText),
-                                        options: stateMachineTransitionActions,
-                                    }"
-                            v-model="config[element.name]"/>
-                    <sw-form-field-renderer
+                                componentName: 'sw-single-select',
+                                label: getInlineSnippet(element.config.label),
+                                helpText: getInlineSnippet(element.config.helpText),
+                                options: stateMachineTransitionActions,
+                            }"
+                            v-model="config[element.name]"
+                        />
+
+                        <sw-form-field-renderer
                             v-else
                             v-bind="getBind(element, config)"
-                            v-model="config[element.name]"/>
+                            v-model="config[element.name]"
+                        />
+                    </div>
                 </template>
             </sw-system-config>
         </sw-card-view>
