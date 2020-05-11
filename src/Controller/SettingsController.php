@@ -67,6 +67,7 @@ class SettingsController extends AbstractController
      */
     public function validateApiCredentials(Request $request, Context $context): JsonResponse
     {
+        $testCount = 0;
         $errors = [];
 
         /** @var EntityRepositoryInterface $paymentMethodRepository */
@@ -80,6 +81,8 @@ class SettingsController extends AbstractController
             if (!$paymentMethod || !$paymentMethod->getActive()) {
                 continue;
             }
+
+            $testCount++;
 
             try {
                 $parameters  = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
@@ -98,7 +101,11 @@ class SettingsController extends AbstractController
             'results' => $errors,
         ]);
 
-        return new JsonResponse(['credentialsValid' => empty($errors), 'errors' => $errors]);
+        return new JsonResponse([
+            'testCount' => $testCount,
+            'credentialsValid' => empty($errors),
+            'errors' => $errors,
+        ]);
     }
 
     /**
