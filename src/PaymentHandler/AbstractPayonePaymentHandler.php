@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 
 /**
  * A base class for payment handlers which implements common processing
@@ -16,10 +19,15 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     /** @var ConfigReaderInterface */
     protected $configReader;
 
+    /** @var LineItemDataHandlerInterface */
+    protected $lineItemDataHandler;
+
     public function __construct(
-        ConfigReaderInterface $configReader
+        ConfigReaderInterface $configReader,
+        LineItemDataHandlerInterface $lineItemDataHandler
     ) {
         $this->configReader = $configReader;
+        $this->lineItemDataHandler = $lineItemDataHandler;
     }
 
     /**
@@ -53,5 +61,19 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
             CustomFieldInstaller::SEQUENCE_NUMBER    => -1,
             CustomFieldInstaller::USER_ID            => $response['userid'],
         ], $fields);
+    }
+
+    protected function setLineItemCustomFields(OrderLineItemCollection $lineItem, Context $context, array $fields = []): void
+    {
+        $customFields =  array_merge([
+            CustomFieldInstaller::CAPTURED_QUANTITY => 0,
+            CustomFieldInstaller::REFUNDED_QUANTITY => 0
+        ], $fields);
+
+        foreach ($lineItem->getElements() as $lineItemEntity) {
+            $customFields = array_merge($lineItemEntity->getCustomFields() ?? [], $customFields);
+
+            $this->lineItemDataHandler->saveLineItemData($lineItemEntity, $context, $customFields);
+        }
     }
 }

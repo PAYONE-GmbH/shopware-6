@@ -7,8 +7,9 @@ namespace PayonePayment\PaymentHandler;
 use DateTime;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
@@ -56,10 +57,11 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
+        LineItemDataHandlerInterface $lineItemDataHandler,
         PaymentStateHandlerInterface $stateHandler,
         CardRepositoryInterface $cardRepository
     ) {
-        parent::__construct($configReader);
+        parent::__construct($configReader, $lineItemDataHandler);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;
@@ -117,6 +119,8 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
+        $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());
+
 
         $truncatedCardPan   = $dataBag->get('truncatedCardPan');
         $cardExpireDate     = $dataBag->get('cardExpireDate');

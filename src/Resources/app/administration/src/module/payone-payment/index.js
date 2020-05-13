@@ -9,6 +9,8 @@ import './page/payone-settings';
 import './extension/sw-order';
 import './extension/sw-settings-index';
 
+import './filter/payone_currency.filter';
+
 import deDE from './snippet/de_DE.json';
 import enGB from './snippet/en_GB.json';
 

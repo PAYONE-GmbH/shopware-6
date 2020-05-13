@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\TransactionDataHandler;
+namespace PayonePayment\Components\DataHandler\Transaction;
 
 use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
