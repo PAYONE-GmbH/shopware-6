@@ -23,6 +23,7 @@
             "titleSuccess": "Success",
             "titleError": "Error",
             "messageTestSuccess": "The API credentials were verified successfully.",
+            "messageTestNoTestedPayments": "No payment methods were tested during the check because none of the PAYONE payment methods are activated. Please activate at least one PAYONE payment method under Settings --> Shop --> Payment.",
             "messageTestError": {
                 "general": "The API credentials could not be verified successfully.",
                 "creditCard": "The API credentials for Credit Card are not valid.",
