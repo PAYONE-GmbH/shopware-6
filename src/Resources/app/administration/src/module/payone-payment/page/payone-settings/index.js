@@ -182,13 +182,16 @@ Component.register('payone-settings', {
             });
 
             this.PayonePaymentSettingsService.validateApiCredentials(credentials).then((response) => {
+                const testCount = response.testCount;
                 const credentialsValid = response.credentialsValid;
                 const errors = response.errors;
 
                 if (credentialsValid) {
                     this.createNotificationSuccess({
                         title: this.$tc('payone-payment.settingsForm.titleSuccess'),
-                        message: this.$tc('payone-payment.settingsForm.messageTestSuccess')
+                        message: testCount > 0
+                            ? this.$tc('payone-payment.settingsForm.messageTestSuccess')
+                            : this.$tc('payone-payment.settingsForm.messageTestNoTestedPayments'),
                     });
                     this.isTestSuccessful = true;
                 } else {
