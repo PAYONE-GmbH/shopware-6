@@ -1,4 +1,5 @@
 import template from './refund.html.twig';
+import './style.scss';
 
 const { Component, Mixin } = Shopware;
 
@@ -13,10 +14,6 @@ Component.register('payone-refund-button', {
 
     props: {
         order: {
-            type: Object,
-            required: true
-        },
-        transaction: {
             type: Object,
             required: true
         }
@@ -34,21 +31,26 @@ Component.register('payone-refund-button', {
     },
 
     computed: {
+        transaction() {
+            return this.order.transactions[0];
+        },
+
         remainingAmount() {
-            if (!this.transaction.customFields) {
-                return this.transaction.amount.totalPrice;
+            if (undefined === this.transaction.customFields ||
+                undefined === this.transaction.customFields.payone_captured_amount) {
+                return 0;
             }
 
             return this.transaction.customFields.payone_captured_amount - this.refundedAmount;
         },
 
         refundedAmount() {
-            window.console.log(this.transaction);
-            if (!this.transaction.customFields) {
+            if (undefined === this.transaction.customFields ||
+                undefined === this.transaction.customFields.payone_refunded_amount) {
                 return 0;
             }
 
-            return this.transaction.customFields.payone_refunded_amount === undefined ? 0 : this.transaction.customFields.payone_refunded_amount;
+            return this.transaction.customFields.payone_refunded_amount;
         },
 
         buttonEnabled() {
@@ -60,11 +62,13 @@ Component.register('payone-refund-button', {
         },
 
         maxRefundAmount() {
-            return this.remainingAmount / (10 ** this.order.decimal_precision);
+            console.log(this.remainingAmount);
+            console.log(this.remainingAmount / (10 ** this.order.currency.decimalPrecision));
+            return this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
         },
 
         minRefundValue() {
-            return 1 / (10 ** this.order.decimal_precision);
+            return 1 / (10 ** this.order.currency.decimalPrecision);
         }
     },
 
@@ -82,7 +86,7 @@ Component.register('payone-refund-button', {
                 amount = this.remainingAmount;
             }
 
-            amount /= (10 ** this.order.decimal_precision);
+            amount /= (10 ** this.order.currency.decimalPrecision);
 
             this.refundAmount = amount;
         },
@@ -91,7 +95,7 @@ Component.register('payone-refund-button', {
             this.showRefundModal = true;
             this.isRefundSuccessful = false;
 
-            this.refundAmount = this.remainingAmount / (10 ** this.order.currency.decimal_precision);
+            this.refundAmount = this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
             this.selection = [];
         },
 
@@ -115,10 +119,10 @@ Component.register('payone-refund-button', {
             this.isLoading = true;
 
             this.selection.forEach((selection) => {
-                this.order.order_lines.forEach((order_item) => {
-                    if (order_item.reference === selection.reference && selection.selected && selection.quantity > 0) {
+                this.order.lineItems.forEach((order_item) => {
+                    if (order_item.reference === selection.reference && selection.selected && 0 < selection.quantity) {
                         const copy = { ...order_item },
-                            taxRate = copy.tax_rate / (10 ** this.order.decimal_precision);
+                            taxRate = copy.tax_rate / (10 ** this.order.currency.decimalPrecision);
 
                         copy.quantity = selection.quantity;
                         copy.total_amount = copy.unit_price * copy.quantity;
@@ -145,10 +149,12 @@ Component.register('payone-refund-button', {
 
                 this.isRefundSuccessful = false;
             }).finally(() => {
-                this.$emit('reload');
-
                 this.isLoading = false;
-                this.showRefundModal = false;
+                this.closeCaptureModal();
+
+                this.$nextTick().then(() => {
+                    this.$emit('reload')
+                });
             });
         },
 
@@ -191,7 +197,7 @@ Component.register('payone-refund-button', {
         },
 
         _populateSelectionProperty() {
-            this.order.order_lines.forEach((order_item) => {
+            this.order.lineItems.forEach((order_item) => {
                 let quantity = order_item.quantity;
 
                 if (order_item.captured_quantity > 0) {

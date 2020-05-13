@@ -5,8 +5,9 @@ declare(strict_types = 1);
 namespace PayonePayment\Components\PaymentHandler\Capture;
 
 use Exception;
+use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler;
 use PayonePayment\Components\PaymentHandler\AbstractPaymentHandler;
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
@@ -37,14 +38,14 @@ class CapturePaymentHandler extends AbstractPaymentHandler implements CapturePay
         TransactionDataHandlerInterface $dataHandler,
         TransactionStatusServiceInterface $transactionStatusService,
         EntityRepositoryInterface $transactionRepository,
-        EntityRepositoryInterface $orderLineItemRepository
+        LineItemDataHandler $lineItemDataHandler
     ) {
         $this->requestFactory           = $requestFactory;
         $this->client                   = $client;
         $this->dataHandler              = $dataHandler;
-        $this->transactionRepository    = $transactionRepository;
-        $this->orderLineItemRepository  = $orderLineItemRepository;
         $this->transactionStatusService = $transactionStatusService;
+        $this->transactionRepository    = $transactionRepository;
+        $this->lineItemDataHandler  = $lineItemDataHandler;
     }
 
     /**
@@ -90,5 +91,15 @@ class CapturePaymentHandler extends AbstractPaymentHandler implements CapturePay
         );
 
         return $requestResponse;
+    }
+
+    protected function getAmountCustomField(): string
+    {
+        return self::AMOUNT_CUSTOM_FIELD;
+    }
+
+    protected function getQuantityCustomField(): string
+    {
+        return self::QUANTITY_CUSTOM_FIELD;
     }
 }

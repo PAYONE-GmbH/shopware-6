@@ -28,8 +28,8 @@
                             </sw-container>
 
                             <sw-container gap="30px">
-                                <payone-capture-button :order="order" :transaction="transaction" v-on:reload="reloadEntityData"></payone-capture-button>
-                                <payone-refund-button :order="order" :transaction="transaction" v-on:reload="reloadEntityData"></payone-refund-button>
+                                <payone-capture-button :order="order" v-on:reload="reloadEntityData"></payone-capture-button>
+                                <payone-refund-button :order="order" v-on:reload="reloadEntityData"></payone-refund-button>
                             </sw-container>
                         </sw-container>
                     </template>

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Handler;
 
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Struct\PaymentTransaction;
 use Psr\Log\LoggerInterface;

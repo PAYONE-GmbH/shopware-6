@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\Components\PaymentHandler;
 
 use Exception;
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
 use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
@@ -22,11 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractPaymentHandler
 {
-    protected const AMOUNT_CUSTOM_FIELD = '';
-    protected const QUANTITY_CUSTOM_FIELD = '';
-
-    /** @var EntityRepositoryInterface */
-    protected $orderLineItemRepository;
+    /** @var LineItemDataHandler */
+    protected $lineItemDataHandler;
 
     /** @var CaptureRequestFactory|RefundRequestFactory */
     protected $requestFactory;
@@ -48,6 +45,10 @@ abstract class AbstractPaymentHandler
 
     /** @var PaymentTransaction */
     protected $paymentTransaction;
+
+    abstract protected function getAmountCustomField(): string;
+
+    abstract protected function getQuantityCustomField(): string;
 
     public function fullRequest(ParameterBag $parameterBag, Context $context): JsonResponse
     {
@@ -132,7 +133,7 @@ abstract class AbstractPaymentHandler
             $captureAmount = (float)number_format($captureAmount, $currency->getDecimalPrecision(), '.', '');
 
             if ($captureAmount) {
-                $transactionData[self::AMOUNT_CUSTOM_FIELD] = (int)($captureAmount * (10 ** $currency->getDecimalPrecision()));
+                $transactionData[$this->getAmountCustomField()] = $this->paymentTransaction->getCustomFields()[$this->getAmountCustomField()] + (int)($captureAmount * (10 ** $currency->getDecimalPrecision()));
             }
         }
 
@@ -147,14 +148,9 @@ abstract class AbstractPaymentHandler
         }
 
         foreach ($orderLines as $orderLine) {
-            $customFieldData = [
-                'id'           => $orderLine['id'],
-                'customFields' => [
-                    self::QUANTITY_CUSTOM_FIELD => $orderLine['quantity'],
-                ],
-            ];
-
-            $this->orderLineItemRepository->update([$customFieldData], $this->context);
+            $this->lineItemDataHandler->saveLineItemDataById($orderLine['id'], $this->context, [
+                $this->getQuantityCustomField() => $orderLine['quantity'],
+            ]);
         }
     }
 

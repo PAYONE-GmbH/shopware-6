@@ -1,6 +1,7 @@
 import template from './capture.html.twig';
+import './style.scss';
 
-const { Component, Mixin } = Shopware;
+const { Component, Mixin, Context } = Shopware;
 
 Component.register('payone-capture-button', {
     template,
@@ -9,43 +10,56 @@ Component.register('payone-capture-button', {
         Mixin.getByName('notification')
     ],
 
-    inject: ['PayonePaymentService'],
+    inject: ['PayonePaymentService', 'repositoryFactory'],
 
     props: {
         order: {
             type: Object,
             required: true
-        },
-        transaction: {
-            type: Object,
-            required: true
         }
     },
 
-    data() {
-        return {
-            isLoading: false,
-            hasError: false,
-            showCaptureModal: false,
-            isCaptureSuccessful: false,
-            selection: [],
-            captureAmount: 0.0,
-            description: ''
-        };
-    },
-
     computed: {
+        transaction() {
+            return this.order.transactions[0];
+        },
+
+        lineItems() {
+            const orderLineItemRepository = this.repositoryFactory.create('order_line_item');
+
+            this.order.lineItems.forEach((order_item) => {
+                if (order_item.id) {
+                    orderLineItemRepository.get(order_item.id, Context.api).then((fullOrderItem) => {
+                        window.console.log(fullOrderItem);
+                    });
+                }
+            });
+
+            return this.order.lineItems;
+        },
+
+        totalTransactionAmount() {
+            return this.transaction.amount.totalPrice * (10 ** this.order.currency.decimalPrecision);
+        },
+
         remainingAmount() {
-            return this.transaction.amount.totalPrice - this.capturedAmount;
+            return this.totalTransactionAmount - this.capturedAmount;
         },
 
         capturedAmount() {
-            window.console.log(this.transaction);
-            if (!this.transaction.customFields) {
+            if (!this.transaction.customFields || this.transaction.customFields.payone_captured_amount === undefined) {
                 return 0;
             }
 
-            return this.transaction.customFields.payone_captured_amount === undefined ? 0 : this.transaction.customFields.payone_captured_amount;
+            return this.transaction.customFields.payone_captured_amount;
+        },
+
+        maxCaptureAmount() {
+            return this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
+        },
+
+        minCaptureAmount() {
+            return 1 / (10 ** this.order.currency.decimalPrecision);
         },
 
         buttonEnabled() {
@@ -55,14 +69,17 @@ Component.register('payone-capture-button', {
 
             return this.remainingAmount > 0;
         },
+    },
 
-        maxCaptureAmount() {
-            return this.remainingAmount;
-        },
-
-        minCaptureAmount() {
-            return 1 / (10 ** this.order.currency.decimalPrecision);
-        }
+    data() {
+        return {
+            isLoading: false,
+            hasError: false,
+            showCaptureModal: false,
+            isCaptureSuccessful: false,
+            selection: [],
+            captureAmount: 0.0
+        };
     },
 
     methods: {
@@ -86,8 +103,11 @@ Component.register('payone-capture-button', {
             this.showCaptureModal = true;
             this.isCaptureSuccessful = false;
 
-            this.captureAmount = this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
+            this.calculateCaptureAmount();
             this.selection = [];
+
+            window.console.log(this.order.lineItems);
+            window.console.log(this.lineItems);
         },
 
         closeCaptureModal() {
@@ -105,12 +125,12 @@ Component.register('payone-capture-button', {
                 salesChannel: this.order.salesChannel,
                 amount: this.captureAmount,
                 orderLines: [],
-                complete: this.captureAmount === this.maxCaptureAmount
+                complete: this.captureAmount === this.remainingAmount
             };
             this.isLoading = true;
 
             this.selection.forEach((selection) => {
-                this.order.lineItems.forEach((order_item) => {
+                this.lineItems.forEach((order_item) => {
                     if (order_item.id === selection.id && selection.selected && 0 < selection.quantity) {
                         const copy = { ...order_item };
                         const taxRate = copy.tax_rate / (10 ** request.decimalPrecision);
@@ -140,10 +160,12 @@ Component.register('payone-capture-button', {
 
                 this.isCaptureSuccessful = false;
             }).finally(() => {
-                this.$emit('reload');
-
                 this.isLoading = false;
-                this.showCaptureModal = false;
+                this.closeCaptureModal();
+
+                this.$nextTick().then(() => {
+                    this.$emit('reload')
+                });
             });
         },
 

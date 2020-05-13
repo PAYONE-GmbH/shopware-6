@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Payone\Webhook\Handler;
 
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Struct\PaymentTransaction;
