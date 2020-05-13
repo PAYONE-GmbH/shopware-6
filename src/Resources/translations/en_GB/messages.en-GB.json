@@ -51,7 +51,9 @@
       "confirm": "Submit"
     },
     "paypalExpress": {
-      "buttonTitle": "PayPal Express"
+      "buttonTitle": "PayPal Express",
+      "buttonImage": "checkout-logo-medium-en.png",
+      "buttonImage2x": "checkout-logo-medium-en-2x.png"
     },
     "payolution": {
       "cardTitleInvoicing": "Paysafe Pay Later Invoice",
