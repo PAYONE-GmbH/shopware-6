@@ -16,9 +16,9 @@ class Migration1580996279AddRedirectTableCreatedDate extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->exec('            
+        $connection->exec('
             ALTER TABLE `payone_payment_redirect`
-            ADD `created_at` datetime(3) NOT NULL;
+            ADD `created_at` datetime(3) NULL;
         ');
     }
 
