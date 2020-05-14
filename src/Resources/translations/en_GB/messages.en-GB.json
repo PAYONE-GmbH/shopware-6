@@ -78,6 +78,7 @@
         "checkAvailabilityButton": "Check Installment availability",
         "downloadButton": "Download Installment Draft",
         "select": "%amount% per month - %duration% installments",
+        "selectInstallmentsLabel": "Please select number of installments",
         "info": "%index%. installment: %amount% (due %date%)",
         "numberOfInstallments": "No. of installments:",
         "financingAmount": "Financingamount:",

@@ -1,6 +1,6 @@
 {% block payone_payolution_installment_selection %}
     <div class="form-group">
-        <label class="form-label" for="payolutionInstallmentDuration">Please select number of installments{{ "general.required" | trans }}</label>
+        <label class="form-label" for="payolutionInstallmentDuration">{{ "PayonePayment.payolution.installment.selectInstallmentsLabel" | trans }}{{ "general.required" | trans }}</label>
 
         <select class="form-control" id="payolutionInstallmentDuration" name="payolutionInstallmentDuration" form="confirmOrderForm">
             {% for element in addpaydata  %}
