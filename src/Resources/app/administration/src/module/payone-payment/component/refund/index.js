@@ -62,8 +62,6 @@ Component.register('payone-refund-button', {
         },
 
         maxRefundAmount() {
-            console.log(this.remainingAmount);
-            console.log(this.remainingAmount / (10 ** this.order.currency.decimalPrecision));
             return this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
         },
 
@@ -124,9 +122,8 @@ Component.register('payone-refund-button', {
                         const copy = { ...order_item },
                             taxRate = copy.tax_rate / (10 ** this.order.currency.decimalPrecision);
 
-                        copy.quantity = selection.quantity;
-                        copy.total_amount = copy.unit_price * copy.quantity;
-
+                        copy.quantity         = selection.quantity;
+                        copy.total_amount     = copy.unit_price * copy.quantity;
                         copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
 
                         request.orderLines.push(copy);
@@ -158,13 +155,13 @@ Component.register('payone-refund-button', {
             });
         },
 
-        onSelectItem(reference, selected) {
+        onSelectItem(id, selected) {
             if (this.selection.length === 0) {
                 this._populateSelectionProperty();
             }
 
             this.selection.forEach((selection) => {
-                if (selection.reference === reference) {
+                if (selection.id === id) {
                     selection.selected = selected;
                 }
             });
@@ -172,13 +169,13 @@ Component.register('payone-refund-button', {
             this.calculateRefundAmount();
         },
 
-        onChangeQuantity(reference, quantity) {
+        onChangeQuantity(id, quantity) {
             if (this.selection.length === 0) {
                 this._populateSelectionProperty();
             }
 
             this.selection.forEach((selection) => {
-                if (selection.reference === reference) {
+                if (selection.id === id) {
                     selection.quantity = quantity;
                 }
             });
@@ -186,27 +183,21 @@ Component.register('payone-refund-button', {
             this.calculateRefundAmount();
         },
 
-        onChangeDescription(description) {
-            const max_chars = 255;
-
-            if (description.length >= max_chars) {
-                description = description.substr(0, max_chars);
-            }
-
-            this.description = description;
-        },
-
         _populateSelectionProperty() {
             this.order.lineItems.forEach((order_item) => {
                 let quantity = order_item.quantity;
 
-                if (order_item.captured_quantity > 0) {
-                    quantity = order_item.captured_quantity;
+                if (order_item.customFields && order_item.customFields.payone_captured_quantity
+                    && 0 < order_item.customFields.payone_captured_quantity) {
+                    quantity -= order_item.customFields.payone_captured_quantity;
                 }
 
+                console.log(order_item.customFields);
+                
                 this.selection.push({
-                    quantity: quantity - order_item.refunded_quantity,
-                    reference: order_item.reference,
+                    id: order_item.id,
+                    reference: order_item.referencedId,
+                    quantity: quantity - order_item.customFields.payone_captured_quantity,
                     unit_price: order_item.unit_price,
                     selected: false
                 });

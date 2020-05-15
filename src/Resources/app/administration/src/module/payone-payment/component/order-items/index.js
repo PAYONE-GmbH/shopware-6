@@ -42,7 +42,7 @@ Component.register('payone-order-items', {
                 if (1 > quantity) {
                     disabled = true;
                 }
-
+                
                 data.push({
                     id: order_item.id,
                     reference: order_item.referencedId,

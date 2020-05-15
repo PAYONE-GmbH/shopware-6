@@ -51,49 +51,61 @@
 
         <input-field type="single-select">
             <name>paymentStatusAppointed</name>
-            <label>Transition for Appointed</label>
+            <label>Transition for APPOINTED</label>
             <label lang="de-DE">Statuswechsel für APPOINTED</label>
         </input-field>
 
         <input-field type="single-select">
             <name>paymentStatusCapture</name>
-            <label>Transition for Capture</label>
+            <label>Transition for CAPTURE</label>
             <label lang="de-DE">Statuswechsel für CAPTURE</label>
         </input-field>
 
         <input-field type="single-select">
+            <name>paymentStatusPartialCapture</name>
+            <label>Transition for PARTIAL_CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
             <name>paymentStatusPaid</name>
-            <label>Transition for Paid</label>
+            <label>Transition for PAID</label>
             <label lang="de-DE">Statuswechsel für PAID</label>
         </input-field>
 
         <input-field type="single-select">
             <name>paymentStatusUnderpaid</name>
-            <label>Transition for Underpaid</label>
+            <label>Transition for UNDERPAID</label>
             <label lang="de-DE">Statuswechsel für UNDERPAID</label>
         </input-field>
 
         <input-field type="single-select">
             <name>paymentStatusCancelation</name>
-            <label>Transition for Cancelation</label>
+            <label>Transition for CANCELLATION</label>
             <label lang="de-DE">Statuswechsel für CANCELLATION</label>
         </input-field>
 
         <input-field type="single-select">
             <name>paymentStatusRefund</name>
-            <label>Transition for Refund</label>
+            <label>Transition for REFUND</label>
             <label lang="de-DE">Statuswechsel für REFUND</label>
         </input-field>
 
         <input-field type="single-select">
+            <name>paymentStatusPartialRefund</name>
+            <label>Transition for PARTIAL_REFUND</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_REFUND</label>
+        </input-field>
+        
+        <input-field type="single-select">
             <name>paymentStatusDebit</name>
-            <label>Transition for Debit</label>
+            <label>Transition for DEBIT</label>
             <label lang="de-DE">Statuswechsel für DEBIT</label>
         </input-field>
 
         <input-field type="single-select">
             <name>paymentStatusReminder</name>
-            <label>Transition for Reminder</label>
+            <label>Transition for REMINDER</label>
             <label lang="de-DE">Statuswechsel für REMINDER</label>
         </input-field>
 
@@ -111,19 +123,19 @@
 
         <input-field type="single-select">
             <name>paymentStatusTransfer</name>
-            <label>Transition for Transfer</label>
+            <label>Transition for TRANSFER</label>
             <label lang="de-DE">Statuswechsel für TRANSFER</label>
         </input-field>
 
         <input-field type="single-select">
             <name>paymentStatusInvoice</name>
-            <label>Transition for Invoice</label>
+            <label>Transition for INVOICE</label>
             <label lang="de-DE">Statuswechsel für INVOICE</label>
         </input-field>
 
         <input-field type="single-select">
             <name>paymentStatusFailed</name>
-            <label>Transition for Failed</label>
+            <label>Transition for FAILED</label>
             <label lang="de-DE">Statuswechsel für FAILED</label>
         </input-field>
     </card>
