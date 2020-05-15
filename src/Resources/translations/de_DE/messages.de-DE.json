@@ -78,6 +78,7 @@
         "checkAvailabilityButton": "Verfügbarkeit prüfen",
         "downloadButton": "Kreditinformationen herunterladen",
         "select": "%amount% pro Monat - %duration% Raten",
+        "selectInstallmentsLabel": "Bitte wählen Sie die Anzahl der Raten",
         "info": "%index%. Rate: %amount% (fällig am %date%)",
         "numberOfInstallments": "Anzahl der Raten:",
         "financingAmount": "Finanzierungsbetrag:",
