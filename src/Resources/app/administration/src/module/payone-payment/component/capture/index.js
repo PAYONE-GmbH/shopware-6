@@ -24,20 +24,6 @@ Component.register('payone-capture-button', {
             return this.order.transactions[0];
         },
 
-        lineItems() {
-            const orderLineItemRepository = this.repositoryFactory.create('order_line_item');
-
-            this.order.lineItems.forEach((order_item) => {
-                if (order_item.id) {
-                    orderLineItemRepository.get(order_item.id, Context.api).then((fullOrderItem) => {
-                        window.console.log(fullOrderItem);
-                    });
-                }
-            });
-
-            return this.order.lineItems;
-        },
-
         totalTransactionAmount() {
             return this.transaction.amount.totalPrice * (10 ** this.order.currency.decimalPrecision);
         },
@@ -105,9 +91,6 @@ Component.register('payone-capture-button', {
 
             this.calculateCaptureAmount();
             this.selection = [];
-
-            window.console.log(this.order.lineItems);
-            window.console.log(this.lineItems);
         },
 
         closeCaptureModal() {
@@ -130,14 +113,13 @@ Component.register('payone-capture-button', {
             this.isLoading = true;
 
             this.selection.forEach((selection) => {
-                this.lineItems.forEach((order_item) => {
+                this.order.lineItems.forEach((order_item) => {
                     if (order_item.id === selection.id && selection.selected && 0 < selection.quantity) {
-                        const copy = { ...order_item };
-                        const taxRate = copy.tax_rate / (10 ** request.decimalPrecision);
-
-                        copy.quantity = selection.quantity;
-                        copy.total_amount = copy.unit_price * copy.quantity;
-
+                        const copy = { ...order_item },
+                            taxRate = copy.tax_rate / (10 ** request.decimalPrecision);
+                        
+                        copy.quantity         = selection.quantity;
+                        copy.total_amount     = copy.unit_price * copy.quantity;
                         copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
 
                         request.orderLines.push(copy);
@@ -183,13 +165,13 @@ Component.register('payone-capture-button', {
             this.calculateCaptureAmount();
         },
 
-        onChangeQuantity(reference, quantity) {
+        onChangeQuantity(id, quantity) {
             if (this.selection.length === 0) {
                 this._populateSelectionProperty();
             }
 
             this.selection.forEach((selection) => {
-                if (selection.reference === reference) {
+                if (selection.id === id) {
                     selection.quantity = quantity;
                 }
             });
@@ -197,25 +179,17 @@ Component.register('payone-capture-button', {
             this.calculateCaptureAmount();
         },
 
-        onChangeDescription(description) {
-            const max_chars = 255;
-
-            if (description.length >= max_chars) {
-                description = description.substr(0, max_chars);
-            }
-
-            this.description = description;
-        },
-
         _populateSelectionProperty() {
             this.order.lineItems.forEach((order_item) => {
                 let quantity = order_item.quantity;
 
-                if (order_item.customFields && order_item.customFields.captured_quantity
-                    && order_item.customFields.captured_quantity > 0) {
-                    quantity -= order_item.customFields.captured_quantity;
+                if (order_item.customFields && order_item.customFields.payone_captured_quantity
+                    && 0 < order_item.customFields.payone_captured_quantity) {
+                    quantity -= order_item.customFields.payone_captured_quantity;
                 }
 
+                console.log(order_item.customFields);
+                
                 this.selection.push({
                     id: order_item.id,
                     reference: order_item.referencedId,

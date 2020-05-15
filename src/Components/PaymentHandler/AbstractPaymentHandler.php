@@ -148,6 +148,15 @@ abstract class AbstractPaymentHandler
         }
 
         foreach ($orderLines as $orderLine) {
+            if(array_key_exists('customFields', $orderLine) && array_key_exists($this->getQuantityCustomField(), $orderLine['customFields'])) {
+
+                $this->lineItemDataHandler->saveLineItemDataById($orderLine['id'], $this->context, [
+                    $this->getQuantityCustomField() => $orderLine['quantity'] + $orderLine['customFields'][$this->getQuantityCustomField()],
+                ]);
+                
+                continue;
+            }
+            
             $this->lineItemDataHandler->saveLineItemDataById($orderLine['id'], $this->context, [
                 $this->getQuantityCustomField() => $orderLine['quantity'],
             ]);

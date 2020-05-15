@@ -34,7 +34,7 @@
         </service>
 
         <service id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler">
-            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="order_line_item.repository" />
         </service>
 
         <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler">
@@ -102,6 +102,7 @@
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler" />
 
             <tag name="shopware.payment.method.sync" />
         </service>
@@ -126,6 +127,7 @@
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler" />
 
             <tag name="shopware.payment.method.sync" />
         </service>
