@@ -47,7 +47,7 @@ class CapturePaymentHandler extends AbstractPaymentHandler implements CapturePay
         $this->dataHandler              = $dataHandler;
         $this->transactionStatusService = $transactionStatusService;
         $this->transactionRepository    = $transactionRepository;
-        $this->lineItemDataHandler  = $lineItemDataHandler;
+        $this->lineItemDataHandler      = $lineItemDataHandler;
     }
 
     /**
@@ -68,7 +68,7 @@ class CapturePaymentHandler extends AbstractPaymentHandler implements CapturePay
             $this->paymentTransaction->getOrderTransaction()->getId(),
             StateMachineTransitionActions::ACTION_PAY
         );
-        
+
         return $requestResponse;
     }
 
@@ -104,7 +104,7 @@ class CapturePaymentHandler extends AbstractPaymentHandler implements CapturePay
     {
         return self::QUANTITY_CUSTOM_FIELD;
     }
-    
+
     protected function getAllowCustomField(): string
     {
         return self::ALLOW_CUSTOM_FIELD;

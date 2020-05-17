@@ -47,7 +47,7 @@ class RefundPaymentHandler extends AbstractPaymentHandler implements RefundPayme
         $this->dataHandler              = $dataHandler;
         $this->transactionStatusService = $transactionStatusService;
         $this->transactionRepository    = $transactionRepository;
-        $this->lineItemDataHandler  = $lineItemDataHandler;
+        $this->lineItemDataHandler      = $lineItemDataHandler;
     }
 
     /**
@@ -83,7 +83,7 @@ class RefundPaymentHandler extends AbstractPaymentHandler implements RefundPayme
             return $requestResponse;
         }
 
-        $this->postRequestHandling($parameterBag, (float)$parameterBag->get('captureAmount'));
+        $this->postRequestHandling($parameterBag, (float)$parameterBag->get('amount'));
         $this->orderLineHandling($parameterBag->get('orderLines'));
         $this->transactionStatusService->transitionByName(
             $context,

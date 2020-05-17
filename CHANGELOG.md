@@ -10,9 +10,9 @@ Bugfixes
 
 Maintenance
 
-* incorporated best practices for Shopware Code Review
+* Incorporated best practices for Shopware Code Review
 
 # 1.0.2
 Enhancement
 
-* Add possibility for partial capture and refund
+* Add new possibility for partial capture and refund

@@ -10,6 +10,7 @@
             "successTitle": "PAYONE",
             "successMessage": "Capture erfolgreich durchgeführt.",
             "errorTitle": "PAYONE",
+            "errorMessage": "Capture konnte nicht durchgeführt werden.",
             "tooltips": {
                 "impossible": "Einzug unmöglich"
             }
@@ -19,6 +20,7 @@
             "successTitle": "PAYONE",
             "successMessage": "Refund erfolgreich durchgeführt.",
             "errorTitle": "PAYONE",
+            "errorMessage": "Refund konnte nicht durchgeführt werden.",
             "tooltips": {
                 "impossible": "Erstattung unmöglich"
             }

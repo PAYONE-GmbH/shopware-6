@@ -10,6 +10,7 @@
             "successTitle": "PAYONE",
             "successMessage": "Capture processed successfully.",
             "errorTitle": "PAYONE",
+            "errorMessage": "Capture could not be processed.",
             "tooltips": {
                 "impossible": "Capture impossible"
             }
@@ -19,6 +20,7 @@
             "successTitle": "PAYONE",
             "successMessage": "Refund processed successfully.",
             "errorTitle": "PAYONE",
+            "errorMessage": "Refund could not be processed.",
             "tooltips": {
                 "impossible": "Refund impossible"
             }

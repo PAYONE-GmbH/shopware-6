@@ -15,4 +15,4 @@ Wartung
 # 1.0.2
 Erweiterung
 
-* Möglichkeit zur teilweisen Erfassung und Rückerstattung hinzufügen
+* Möglichkeit zum Teil-Einzug und Teil-Rückerstattung integriert

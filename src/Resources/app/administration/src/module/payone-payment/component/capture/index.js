@@ -117,7 +117,7 @@ Component.register('payone-capture-button', {
                     if (order_item.id === selection.id && selection.selected && 0 < selection.quantity) {
                         const copy = { ...order_item },
                             taxRate = copy.tax_rate / (10 ** request.decimalPrecision);
-                        
+
                         copy.quantity         = selection.quantity;
                         copy.total_amount     = copy.unit_price * copy.quantity;
                         copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
@@ -129,15 +129,15 @@ Component.register('payone-capture-button', {
 
             this.PayonePaymentService.capturePayment(request).then(() => {
                 this.createNotificationSuccess({
-                    title: this.$tc('payone-payment-order-management.messages.captureSuccessTitle'),
-                    message: this.$tc('payone-payment-order-management.messages.captureSuccessMessage')
+                    title: this.$tc('payone-payment.messages.captureSuccessTitle'),
+                    message: this.$tc('payone-payment.messages.captureSuccessMessage')
                 });
 
                 this.isCaptureSuccessful = true;
             }).catch(() => {
                 this.createNotificationError({
-                    title: this.$tc('payone-payment-order-management.messages.captureErrorTitle'),
-                    message: this.$tc('payone-payment-order-management.messages.captureErrorMessage')
+                    title: this.$tc('payone-payment.messages.captureErrorTitle'),
+                    message: this.$tc('payone-payment.messages.captureErrorMessage')
                 });
 
                 this.isCaptureSuccessful = false;
@@ -161,11 +161,12 @@ Component.register('payone-capture-button', {
                 complete: true
             };
             this.isLoading = true;
-            
-            this.order.lineItems.forEach((order_item) => {
-                    if (order_item.id === selection.id && selection.selected && 0 < selection.quantity) {
+
+            this.selection.forEach((selection) => {
+                this.order.lineItems.forEach((order_item) => {
+                    if (order_item.reference === selection.reference && selection.selected && 0 < selection.quantity) {
                         const copy = { ...order_item },
-                            taxRate = copy.tax_rate / (10 ** request.decimalPrecision);
+                            taxRate = copy.tax_rate / (10 ** this.order.currency.decimalPrecision);
 
                         copy.quantity         = selection.quantity;
                         copy.total_amount     = copy.unit_price * copy.quantity;
@@ -174,18 +175,19 @@ Component.register('payone-capture-button', {
                         request.orderLines.push(copy);
                     }
                 });
+            });
 
             this.PayonePaymentService.capturePayment(request).then(() => {
                 this.createNotificationSuccess({
-                    title: this.$tc('payone-payment-order-management.messages.captureSuccessTitle'),
-                    message: this.$tc('payone-payment-order-management.messages.captureSuccessMessage')
+                    title: this.$tc('payone-payment.capture.successTitle'),
+                    message: this.$tc('payone-payment.capture.successMessage')
                 });
 
                 this.isCaptureSuccessful = true;
             }).catch(() => {
                 this.createNotificationError({
-                    title: this.$tc('payone-payment-order-management.messages.captureErrorTitle'),
-                    message: this.$tc('payone-payment-order-management.messages.captureErrorMessage')
+                    title: this.$tc('payone-payment.capture.errorTitle'),
+                    message: this.$tc('payone-payment.messages.errorMessage')
                 });
 
                 this.isCaptureSuccessful = false;
@@ -237,7 +239,7 @@ Component.register('payone-capture-button', {
                 }
 
                 console.log(order_item.customFields);
-                
+
                 this.selection.push({
                     id: order_item.id,
                     reference: order_item.referencedId,

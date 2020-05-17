@@ -26,7 +26,7 @@ Component.register('payone-refund-button', {
             showRefundModal: false,
             isRefundSuccessful: false,
             selection: [],
-            description: ''
+            refundAmount: 0.0
         };
     },
 
@@ -53,20 +53,20 @@ Component.register('payone-refund-button', {
             return this.transaction.customFields.payone_refunded_amount;
         },
 
+        maxRefundAmount() {
+            return this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
+        },
+
+        minRefundAmount() {
+            return 1 / (10 ** this.order.currency.decimalPrecision);
+        },
+
         buttonEnabled() {
             if (!this.transaction.customFields) {
                 return false;
             }
 
             return this.remainingAmount > 0;
-        },
-
-        maxRefundAmount() {
-            return this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
-        },
-
-        minRefundValue() {
-            return 1 / (10 ** this.order.currency.decimalPrecision);
         }
     },
 
@@ -84,8 +84,6 @@ Component.register('payone-refund-button', {
                 amount = this.remainingAmount;
             }
 
-            amount /= (10 ** this.order.currency.decimalPrecision);
-
             this.refundAmount = amount;
         },
 
@@ -93,7 +91,7 @@ Component.register('payone-refund-button', {
             this.showRefundModal = true;
             this.isRefundSuccessful = false;
 
-            this.refundAmount = this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
+            this.calculateRefundAmount();
             this.selection = [];
         },
 
@@ -118,7 +116,7 @@ Component.register('payone-refund-button', {
 
             this.selection.forEach((selection) => {
                 this.order.lineItems.forEach((order_item) => {
-                    if (order_item.reference === selection.reference && selection.selected && 0 < selection.quantity) {
+                    if (order_item.id === selection.id && selection.selected && 0 < selection.quantity) {
                         const copy = { ...order_item },
                             taxRate = copy.tax_rate / (10 ** this.order.currency.decimalPrecision);
 
@@ -133,21 +131,21 @@ Component.register('payone-refund-button', {
 
             this.PayonePaymentService.refundPayment(request).then(() => {
                 this.createNotificationSuccess({
-                    title: this.$tc('payone-payment-order-management.messages.refundSuccessTitle'),
-                    message: this.$tc('payone-payment-order-management.messages.refundSuccessMessage')
+                    title: this.$tc('payone-payment.refund.successTitle'),
+                    message: this.$tc('payone-payment.refund.successMessage')
                 });
 
                 this.isRefundSuccessful = true;
             }).catch(() => {
                 this.createNotificationError({
-                    title: this.$tc('payone-payment-order-management.messages.refundErrorTitle'),
-                    message: this.$tc('payone-payment-order-management.messages.refundErrorMessage')
+                    title: this.$tc('payone-payment.refund.errorTitle'),
+                    message: this.$tc('payone-payment.refund.errorMessage')
                 });
 
                 this.isRefundSuccessful = false;
             }).finally(() => {
                 this.isLoading = false;
-                this.closeCaptureModal();
+                this.closeRefundModal();
 
                 this.$nextTick().then(() => {
                     this.$emit('reload')
@@ -187,18 +185,16 @@ Component.register('payone-refund-button', {
             this.order.lineItems.forEach((order_item) => {
                 let quantity = order_item.quantity;
 
-                if (order_item.customFields && order_item.customFields.payone_captured_quantity
-                    && 0 < order_item.customFields.payone_captured_quantity) {
-                    quantity -= order_item.customFields.payone_captured_quantity;
+                if (order_item.customFields && order_item.customFields.payone_refunded_quantity
+                    && 0 < order_item.customFields.payone_refunded_quantity) {
+                    quantity -= order_item.customFields.payone_refunded_quantity;
                 }
 
-                console.log(order_item.customFields);
-                
                 this.selection.push({
                     id: order_item.id,
                     reference: order_item.referencedId,
-                    quantity: quantity - order_item.customFields.payone_captured_quantity,
-                    unit_price: order_item.unit_price,
+                    quantity: quantity,
+                    unit_price: order_item.unitPrice,
                     selected: false
                 });
             });

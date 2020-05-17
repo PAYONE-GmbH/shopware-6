@@ -33,8 +33,13 @@ Component.register('payone-order-items', {
 
                 if(order_item.customFields) {
                     if ('refund' === this.mode && 0 < order_item.customFields.payone_captured_quantity) {
-                        quantity = order_item.customFields.payone_captured_quantity - order_item.customFields.payone_refunded_quantity;
-                    } else if ('capture' === this.mode && 0 < order_item.customFields.payone_captured_quantity) {
+                        quantity = order_item.customFields.payone_captured_quantity;
+
+                        if(order_item.customFields.payone_refunded_quantity) {
+                            quantity -= order_item.customFields.payone_refunded_quantity;
+                        }
+                    } else if ('capture' === this.mode && order_item.customFields.payone_captured_quantity &&
+                        0 < order_item.customFields.payone_captured_quantity) {
                         quantity -= order_item.customFields.payone_captured_quantity;
                     }
                 }
@@ -42,7 +47,7 @@ Component.register('payone-order-items', {
                 if (1 > quantity) {
                     disabled = true;
                 }
-                
+
                 data.push({
                     id: order_item.id,
                     reference: order_item.referencedId,
