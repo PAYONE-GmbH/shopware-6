@@ -17,15 +17,15 @@ use Shopware\Core\System\StateMachine\Transition;
 
 class TransactionStatusService implements TransactionStatusServiceInterface
 {
-    public const ACTION_APPOINTED   = 'appointed';
-    public const ACTION_PAID        = 'paid';
-    public const ACTION_CAPTURE     = 'capture';
-    public const ACTION_PARTIAL_CAPTURE     = 'partial_capture';
-    public const ACTION_COMPLETED   = 'completed';
-    public const ACTION_DEBIT       = 'debit';
-    public const ACTION_PARTIAL_DEBIT       = 'partial_debit';
-    public const ACTION_CANCELATION = 'cancelation';
-    public const ACTION_FAILED      = 'failed';
+    public const ACTION_APPOINTED       = 'appointed';
+    public const ACTION_PAID            = 'paid';
+    public const ACTION_CAPTURE         = 'capture';
+    public const ACTION_PARTIAL_CAPTURE = 'partial_capture';
+    public const ACTION_COMPLETED       = 'completed';
+    public const ACTION_DEBIT           = 'debit';
+    public const ACTION_PARTIAL_DEBIT   = 'partial_debit';
+    public const ACTION_CANCELATION     = 'cancelation';
+    public const ACTION_FAILED          = 'failed';
 
     public const STATUS_PREFIX    = 'paymentStatus';
     public const STATUS_COMPLETED = 'completed';
@@ -51,14 +51,12 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower($transactionData['txaction']));
 
-        if ($this->isZeroCapture($transactionData)) {
-            $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower(self::ACTION_CANCELATION));
-        } elseif ($this->isTransactionPartialPaid($transactionData)) {
+        if ($this->isTransactionPartialPaid($transactionData)) {
             $configurationKey = self::ACTION_PARTIAL_CAPTURE;
         } elseif ($this->isTransactionPartialRefund($transactionData)) {
             $configurationKey = self::ACTION_PARTIAL_DEBIT;
         }
-        
+
         $transitionName = $configuration->get($configurationKey);
 
         if (empty($transitionName)) {
@@ -111,9 +109,12 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPaid(array $transactionData): bool
     {
-        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
+        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE &&
+            array_key_exists('receivable', $transactionData) &&
+            $this->getReciveableInt((string)$transactionData['receivable']) === 0) {
             return true;
         }
+
 
         return in_array(
             strtolower($transactionData['txaction']),
@@ -128,15 +129,9 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPartialPaid(array $transactionData): bool
     {
-        $reciveable = strrchr((string)$transactionData['receivable'], '.');
-        
-        if($reciveable) {
-            /** @var string $reciveable */
-            $reciveable *= (10 ** strlen(substr($reciveable, 1)));
-        }
-        
-        if ($reciveable !== 0 && 
-            in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE])) {
+        if (in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE]) &&
+            array_key_exists('receivable', $transactionData) &&
+            $this->getReciveableInt((string)$transactionData['receivable']) !== 0) {
             return true;
         }
 
@@ -145,14 +140,9 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPartialRefund(array $transactionData): bool
     {
-        $reciveable = strrchr((string)$transactionData['receivable'], '.');
-
-        if($reciveable) {
-            /** @var string $reciveable */
-            $reciveable *= (10 ** strlen(substr($reciveable, 1)));
-        }
-
-        if ($reciveable !== 0 && strtolower($transactionData['txaction']) === self::ACTION_DEBIT) {
+        if (strtolower($transactionData['txaction']) === self::ACTION_DEBIT &&
+            array_key_exists('receivable', $transactionData) &&
+            $this->getReciveableInt((string)$transactionData['receivable']) !== 0) {
             return true;
         }
 
@@ -161,13 +151,9 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionRefund(array $transactionData): bool
     {
-        $reciveable = $transactionData['receivable'];
-
-        if(strrchr((string)$reciveable, '.')) {
-            $reciveable = ($reciveable * (10 ** strlen(substr(strrchr($reciveable, '.'), 1))));
-        }
-
-        if ($reciveable !== 0 && in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE])) {
+        if (in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE]) &&
+            array_key_exists('receivable', $transactionData) &&
+            $this->getReciveableInt((string)$transactionData['receivable']) !== 0) {
             return true;
         }
 
@@ -177,16 +163,17 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     private function isTransactionCancelled(array $transactionData): bool
     {
         return strtolower($transactionData['txaction']) === self::ACTION_CANCELATION
-            || strtolower($transactionData['txaction']) === self::ACTION_FAILED
-            || $this->isZeroCapture($transactionData);
+            || strtolower($transactionData['txaction']) === self::ACTION_FAILED;
     }
 
-    /**
-     * This is a special case of a capture of 0, which means a cancellation
-     */
-    private function isZeroCapture(array $transactionData): bool
-    {//TODO: check why recievable
-        return strtolower($transactionData['txaction']) === self::ACTION_CAPTURE
-            && (float) $transactionData['receivable'] === 0.0;
+    protected function getReciveableInt(string $receivable): int
+    {
+        $reciveableStrChr = strrchr($receivable, '.');
+
+        if($reciveableStrChr) {
+            return (int) ((float)$receivable * (10 ** strlen(substr($reciveableStrChr, 1))));
+        }
+
+        return (int) $receivable;
     }
 }
