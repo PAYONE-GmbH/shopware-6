@@ -87,7 +87,7 @@ abstract class AbstractPaymentHandler
         }
 
         $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($this->transaction);
-        
+
         return $this->executeRequest(
             $this->requestFactory->getPartialRequest(
                 $this->paymentTransaction,
@@ -100,11 +100,14 @@ abstract class AbstractPaymentHandler
     protected function executeRequest(array $request): JsonResponse
     {
         $requestResult = new JsonResponse(['status' => true]);
-        
+
         try {
             $response = $this->client->request($request);
 
-            $this->dataHandler->logResponse($this->paymentTransaction, $this->context, compact('request', 'response'));
+            $this->dataHandler->logResponse($this->paymentTransaction, $this->context, [
+                'request' => $request,
+                'response' => $response
+            ]);
         } catch (PayoneRequestException $exception) {
             $requestResult = new JsonResponse(
                 [
@@ -136,7 +139,7 @@ abstract class AbstractPaymentHandler
         if ($parameterBag->has('complete') && $parameterBag->get('complete')) {
             $transactionData[$this->getAllowCustomField()] = false;
         }
-        
+
         if ($currency !== null) {
             $captureAmount = (float)number_format($captureAmount, $currency->getDecimalPrecision(), '.', '');
 
@@ -162,10 +165,10 @@ abstract class AbstractPaymentHandler
                 $this->lineItemDataHandler->saveLineItemDataById($orderLine['id'], $this->context, [
                     $this->getQuantityCustomField() => $orderLine['quantity'] + $orderLine['customFields'][$this->getQuantityCustomField()],
                 ]);
-                
+
                 continue;
             }
-            
+
             $this->lineItemDataHandler->saveLineItemDataById($orderLine['id'], $this->context, [
                 $this->getQuantityCustomField() => $orderLine['quantity'],
             ]);
