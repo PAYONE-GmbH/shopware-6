@@ -12,6 +12,7 @@ use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory;
@@ -20,8 +21,10 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -71,6 +74,16 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
         $this->cardRepository        = $cardRepository;
     }
 
+    public function supports(string $paymentMethodId): bool
+    {
+        return $paymentMethodId === PayoneCreditCard::UUID;
+    }
+
+    public function getAdditionalRequestParameters(PaymentTransaction $transaction, Context $context, ParameterBag $parameterBag = null): array
+    {
+        return [];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -110,14 +123,7 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             );
         }
 
-        // Prepare custom fields for the transaction
-        $data = $this->prepareTransactionCustomFields($request, $response, [
-            CustomFieldInstaller::TRANSACTION_STATE  => $response['status'],
-            CustomFieldInstaller::ALLOW_CAPTURE      => false,
-            CustomFieldInstaller::CAPTURED_AMOUNT    => 0,
-            CustomFieldInstaller::ALLOW_REFUND       => false,
-            CustomFieldInstaller::REFUNDED_AMOUNT    => 0,
-        ]);
+        $data = $this->prepareTransactionCustomFields($request, $response, $this->getBaseCustomFields($response['status']));
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);

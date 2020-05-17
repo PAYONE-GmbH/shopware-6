@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Refund;
 
+use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
+use PayonePayment\Components\Exception\NoPaymentHandlerFoundException;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class RefundRequestFactory extends AbstractRequestFactory
 {
@@ -18,13 +21,21 @@ class RefundRequestFactory extends AbstractRequestFactory
     /** @var RefundRequest */
     private $refundRequest;
 
-    public function __construct(SystemRequest $systemRequest, RefundRequest $refundRequest)
-    {
+    /** @var PaymentHandlerFactory */
+    private $paymentHandlerFactory;
+
+    public function __construct(
+        SystemRequest $systemRequest,
+        RefundRequest $refundRequest,
+        PaymentHandlerFactory $paymentHandlerFactory
+    ) {
         $this->systemRequest = $systemRequest;
         $this->refundRequest = $refundRequest;
+        $this->paymentHandlerFactory = $paymentHandlerFactory;
     }
 
-    public function getFullRequest(PaymentTransaction $transaction, Context $context): array
+
+    public function getFullRequest(PaymentTransaction $transaction, ParameterBag $parameterBag, Context $context): array
     {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
@@ -38,10 +49,18 @@ class RefundRequestFactory extends AbstractRequestFactory
             $transaction->getCustomFields()
         );
 
+        try {
+            $this->requests[] = $this->paymentHandlerFactory->getPaymentHandler(
+                $transaction->getPaymentMethodId(),
+                $transaction->getOrder()->getOrderNumber()
+            )->getAdditionalRequestParameters($transaction, $context, $parameterBag);
+        } catch (NoPaymentHandlerFoundException $e) {
+        }
+
         return $this->createRequest();
     }
 
-    public function getPartialRequest(float $totalAmount, PaymentTransaction $transaction, Context $context): array
+    public function getPartialRequest(PaymentTransaction $transaction, ParameterBag $parameterBag, Context $context): array
     {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
@@ -53,8 +72,16 @@ class RefundRequestFactory extends AbstractRequestFactory
             $transaction->getOrder(),
             $context,
             $transaction->getCustomFields(),
-            $totalAmount
+            (float)$parameterBag->get('amount')
         );
+
+        try {
+            $this->requests[] = $this->paymentHandlerFactory->getPaymentHandler(
+                $transaction->getPaymentMethodId(),
+                $transaction->getOrder()->getOrderNumber()
+            )->getAdditionalRequestParameters($transaction, $context, $parameterBag);
+        } catch (NoPaymentHandlerFoundException $e) {
+        }
 
         return $this->createRequest();
     }

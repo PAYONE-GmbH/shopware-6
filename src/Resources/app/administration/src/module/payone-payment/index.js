@@ -3,6 +3,7 @@ const { Module } = Shopware;
 import './component/capture';
 import './component/refund';
 import './component/order-items';
+import './component/payone-data-grid';
 
 import './page/payone-settings';
 

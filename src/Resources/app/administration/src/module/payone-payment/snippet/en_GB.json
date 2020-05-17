@@ -27,6 +27,7 @@
             "capture": {
                 "title": "Capture",
                 "submit": "Capture",
+                "fullSubmit": "Full capture",
                 "amount": "Capture amount",
                 "captured": "Captured amount"
             },

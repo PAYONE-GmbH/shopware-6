@@ -7,6 +7,7 @@ namespace PayonePayment\Components\PaymentHandler;
 use Exception;
 use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
+use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
@@ -68,6 +69,7 @@ abstract class AbstractPaymentHandler
         return $this->executeRequest(
             $this->requestFactory->getFullRequest(
                 $this->paymentTransaction,
+                $parameterBag,
                 $this->context
             )
         );
@@ -85,11 +87,11 @@ abstract class AbstractPaymentHandler
         }
 
         $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($this->transaction);
-
+        
         return $this->executeRequest(
             $this->requestFactory->getPartialRequest(
-                (float)$parameterBag->get('amount'),
                 $this->paymentTransaction,
+                $parameterBag,
                 $this->context
             )
         );
@@ -98,7 +100,7 @@ abstract class AbstractPaymentHandler
     protected function executeRequest(array $request): JsonResponse
     {
         $requestResult = new JsonResponse(['status' => true]);
-
+        
         try {
             $response = $this->client->request($request);
 
@@ -154,7 +156,8 @@ abstract class AbstractPaymentHandler
         }
 
         foreach ($orderLines as $orderLine) {
-            if(array_key_exists('customFields', $orderLine) && array_key_exists($this->getQuantityCustomField(), $orderLine['customFields'])) {
+            if(array_key_exists('customFields', $orderLine) && !empty($orderLine['customFields']) &&
+                array_key_exists($this->getQuantityCustomField(), $orderLine['customFields'])) {
 
                 $this->lineItemDataHandler->saveLineItemDataById($orderLine['id'], $this->context, [
                     $this->getQuantityCustomField() => $orderLine['quantity'] + $orderLine['customFields'][$this->getQuantityCustomField()],
@@ -199,7 +202,7 @@ abstract class AbstractPaymentHandler
         $criteria = new Criteria([$transactionId]);
         $criteria->addAssociation('order');
         $criteria->addAssociation('order.currency');
-        $criteria->addAssociation('order.line_item');
+        $criteria->addAssociation('order.lineItems');
         $criteria->addAssociation('paymentMethod');
 
         /** @var null|OrderTransactionEntity $orderTransaction */

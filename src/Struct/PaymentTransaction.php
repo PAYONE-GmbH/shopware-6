@@ -48,6 +48,11 @@ class PaymentTransaction extends Struct
     {
         return $this->orderTransaction;
     }
+    
+    public function getPaymentMethodId(): string
+    {
+        return $this->getOrderTransaction()->getPaymentMethodId();
+    }
 
     public static function fromOrderTransaction(OrderTransactionEntity $transaction): self
     {
