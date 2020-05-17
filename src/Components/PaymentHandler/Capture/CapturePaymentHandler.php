@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CapturePaymentHandler extends AbstractPaymentHandler implements CapturePaymentHandlerInterface
 {
+    protected const ALLOW_CUSTOM_FIELD = CustomFieldInstaller::ALLOW_CAPTURE;
     protected const AMOUNT_CUSTOM_FIELD = CustomFieldInstaller::CAPTURED_AMOUNT;
     protected const QUANTITY_CUSTOM_FIELD = CustomFieldInstaller::CAPTURED_QUANTITY;
 
@@ -101,5 +102,10 @@ class CapturePaymentHandler extends AbstractPaymentHandler implements CapturePay
     protected function getQuantityCustomField(): string
     {
         return self::QUANTITY_CUSTOM_FIELD;
+    }
+    
+    protected function getAllowCustomField(): string
+    {
+        return self::ALLOW_CUSTOM_FIELD;
     }
 }

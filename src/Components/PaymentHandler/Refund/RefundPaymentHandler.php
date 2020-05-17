@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RefundPaymentHandler extends AbstractPaymentHandler implements RefundPaymentHandlerInterface
 {
+    protected const ALLOW_CUSTOM_FIELD = CustomFieldInstaller::ALLOW_REFUND;
     protected const AMOUNT_CUSTOM_FIELD = CustomFieldInstaller::REFUNDED_AMOUNT;
     protected const QUANTITY_CUSTOM_FIELD = CustomFieldInstaller::REFUNDED_QUANTITY;
 
@@ -59,7 +60,7 @@ class RefundPaymentHandler extends AbstractPaymentHandler implements RefundPayme
             return $requestResponse;
         }
 
-        $this->postRequestHandling($this->paymentTransaction->getOrderTransaction()->getAmount()->getTotalPrice());
+        $this->postRequestHandling($parameterBag,$this->paymentTransaction->getOrderTransaction()->getAmount()->getTotalPrice());
 
         $this->transactionStatusService->transitionByName(
             $context,
@@ -100,5 +101,10 @@ class RefundPaymentHandler extends AbstractPaymentHandler implements RefundPayme
     protected function getQuantityCustomField(): string
     {
         return self::QUANTITY_CUSTOM_FIELD;
+    }
+
+    protected function getAllowCustomField(): string
+    {
+        return self::ALLOW_CUSTOM_FIELD;
     }
 }

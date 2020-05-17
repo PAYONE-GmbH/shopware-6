@@ -26,7 +26,18 @@ Component.register('payone-settings', {
             portalKeyFilled: false,
             showValidationErrors: false,
             isSupportModalOpen: false,
-            stateMachineTransitionActions: []
+            stateMachineTransitionActions: [],
+            collapsibleState: {
+                'status_mapping': true,
+                'payment_credit_card': true,
+                'payment_paypal': true,
+                'payment_paypal_express': true,
+                'payment_debit': true,
+                'payment_sofort': true,
+                'payment_payolution_installment': true,
+                'payment_payolution_invoicing': true,
+                'payment_payolution_debit': true,
+            },
         };
     },
 
@@ -48,7 +59,7 @@ Component.register('payone-settings', {
 
     methods: {
         createdComponent() {
-            var me = this;
+            let me = this;
 
             this.PayonePaymentSettingsService.getStateMachineTransitionActions()
                 .then((result) => {
@@ -73,6 +84,30 @@ Component.register('payone-settings', {
                 'payolutionDebit',
                 'sofort'
             ];
+        },
+
+        isCollapsible(card) {
+            return card.name in this.collapsibleState;
+        },
+
+        displayField(element, config, card) {
+            if (!(card.name in this.collapsibleState)) {
+                return true;
+            }
+
+            return !this.collapsibleState[card.name];
+        },
+
+        isCollapsed(card) {
+            return this.collapsibleState[card.name];
+        },
+
+        toggleCollapsible(card) {
+            if (!(card.name in this.collapsibleState)) {
+                return;
+            }
+
+            this.collapsibleState[card.name] = !this.collapsibleState[card.name];
         },
 
         saveFinish() {
@@ -147,13 +182,16 @@ Component.register('payone-settings', {
             });
 
             this.PayonePaymentSettingsService.validateApiCredentials(credentials).then((response) => {
+                const testCount = response.testCount;
                 const credentialsValid = response.credentialsValid;
                 const errors = response.errors;
 
                 if (credentialsValid) {
                     this.createNotificationSuccess({
                         title: this.$tc('payone-payment.settingsForm.titleSuccess'),
-                        message: this.$tc('payone-payment.settingsForm.messageTestSuccess')
+                        message: testCount > 0
+                            ? this.$tc('payone-payment.settingsForm.messageTestSuccess')
+                            : this.$tc('payone-payment.settingsForm.messageTestNoTestedPayments'),
                     });
                     this.isTestSuccessful = true;
                 } else {
@@ -180,6 +218,7 @@ Component.register('payone-settings', {
             if (config !== this.config) {
                 this.onConfigChange(config);
             }
+
             if (this.showValidationErrors) {
                 if (element.name === 'PayonePayment.settings.merchantId' && !this.merchantIdFilled) {
                     element.config.error = {
@@ -208,6 +247,6 @@ Component.register('payone-settings', {
             }
 
             return element;
-        }
+        },
     }
 });

@@ -26,13 +26,13 @@ class CustomFieldInstaller implements InstallerInterface
     public const AUTHORIZATION_TYPE     = 'payone_authorization_type';
     public const CLEARING_REFERENCE     = 'payone_clearing_reference';
     public const TRANSACTION_STATE      = 'payone_transaction_state';
-    public const ALLOW_REFUND           = 'payone_allow_refund';
-    public const ALLOW_CAPTURE          = 'payone_allow_capture';
     public const TEMPLATE               = 'payone_template';
     public const IS_PAYONE              = 'payone_payment';
     public const CAPTURE_MODE           = 'payone_capture_mode';
     public const CLEARING_TYPE          = 'payone_clearing_type';
     public const FINANCING_TYPE         = 'payone_financing_type';
+    public const ALLOW_REFUND           = 'payone_allow_refund';
+    public const ALLOW_CAPTURE          = 'payone_allow_capture';
     public const CAPTURED_AMOUNT        = 'payone_captured_amount';
     public const REFUNDED_AMOUNT        = 'payone_refunded_amount';
     public const CAPTURED_QUANTITY      = 'payone_captured_quantity';

@@ -110,12 +110,7 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
             );
         }
 
-        // Prepare custom fields for the transaction
-        $data = $this->prepareTransactionCustomFields($request, $response, [
-            CustomFieldInstaller::TRANSACTION_STATE  => $response['status'],
-            CustomFieldInstaller::CAPTURED_AMOUNT    => 0,
-            CustomFieldInstaller::REFUNDED_AMOUNT    => 0,
-        ]);
+        $data = $this->prepareTransactionCustomFields($request, $response, $this->getBaseCustomFields($response['status']));
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
