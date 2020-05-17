@@ -71,7 +71,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
             $orderLines = $parameterBag->get('orderLines');
         }
 
-        return $this->mapPayoneOrderLines($currency, $transaction->getOrder()->getLineItems(), $orderLines);
+        return $this->mapPayoneOrderLines($currency, $transaction->getOrder()->getLineItems(), $orderLines ?? []);
     }
 
     /**

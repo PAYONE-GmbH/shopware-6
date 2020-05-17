@@ -41,8 +41,8 @@
         </service>
 
         <service id="PayonePayment\Payone\Request\Capture\CaptureRequestFactory">
-            <argument type="service" id="PayonePayment\Payone\Request\Capture\CaptureRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Capture\CaptureRequest" />
             <argument type="service" id="PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory" />
         </service>
 

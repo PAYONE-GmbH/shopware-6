@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Payone\Request\Refund;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
+use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
+use PayonePayment\PaymentMethod\PayoneCreditCard;
+use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
 use PayonePayment\Payone\Request\Refund\RefundRequest;
 use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
@@ -23,6 +26,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class RefundRequestFactoryTest extends TestCase
 {
@@ -30,9 +34,9 @@ class RefundRequestFactoryTest extends TestCase
 
     public function testCorrectFullRequestParameters()
     {
-        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest());
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new PaymentHandlerFactory());
 
-        $request = $factory->getFullRequest($this->getPaymentTransaction(), Context::createDefaultContext());
+        $request = $factory->getFullRequest($this->getPaymentTransaction(), new ParameterBag(), Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
@@ -60,9 +64,11 @@ class RefundRequestFactoryTest extends TestCase
 
     public function testCorrectPartialRequestParameters()
     {
-        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest());
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new PaymentHandlerFactory());
 
-        $request = $factory->getPartialRequest(100.00, $this->getPaymentTransaction(), Context::createDefaultContext());
+        $request = $factory->getFullRequest($this->getPaymentTransaction(), new ParameterBag([
+            'amount' =>  100
+        ]), Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
@@ -92,9 +98,11 @@ class RefundRequestFactoryTest extends TestCase
     {
         $orderTransactionEntity = new OrderTransactionEntity();
         $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
+        $orderTransactionEntity->setPaymentMethodId(PayoneCreditCard::UUID);
 
         $orderEntity = new OrderEntity();
         $orderEntity->setId(Constants::ORDER_ID);
+        $orderEntity->setOrderNumber(Constants::ORDER_NUMBER);
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);

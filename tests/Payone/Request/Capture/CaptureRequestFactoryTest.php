@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Payone\Request\Capture;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
+use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
+use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\Payone\Request\Capture\CaptureRequest;
 use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
@@ -23,6 +25,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class CaptureRequestFactoryTest extends TestCase
 {
@@ -30,9 +33,9 @@ class CaptureRequestFactoryTest extends TestCase
 
     public function testCorrectFullCaptureRequestParameters(): void
     {
-        $factory = new CaptureRequestFactory($this->getCaptureRequest(), $this->getSystemRequest());
+        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new PaymentHandlerFactory());
 
-        $request = $factory->getFullRequest($this->getPaymentTransaction(), Context::createDefaultContext());
+        $request = $factory->getFullRequest($this->getPaymentTransaction(), new ParameterBag(), Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
@@ -60,9 +63,11 @@ class CaptureRequestFactoryTest extends TestCase
 
     public function testCorrectPartialCaptureRequestParameters(): void
     {
-        $factory = new CaptureRequestFactory($this->getCaptureRequest(), $this->getSystemRequest());
+        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new PaymentHandlerFactory());
 
-        $request = $factory->getPartialRequest(100.00, $this->getPaymentTransaction(), Context::createDefaultContext());
+        $request = $factory->getPartialRequest($this->getPaymentTransaction(), new ParameterBag([
+            'amount' =>  100
+        ]), Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
@@ -92,18 +97,19 @@ class CaptureRequestFactoryTest extends TestCase
     {
         $orderTransactionEntity = new OrderTransactionEntity();
         $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
+$orderTransactionEntity->setPaymentMethodId(PayoneCreditCard::UUID);
 
         $orderEntity = new OrderEntity();
         $orderEntity->setId(Constants::ORDER_ID);
+        $orderEntity->setOrderNumber(Constants::ORDER_NUMBER);
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+        $orderTransactionEntity->setOrder($orderEntity);
 
         $paymentMethodEntity = new PaymentMethodEntity();
         $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);
         $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
-
-        $orderTransactionEntity->setOrder($orderEntity);
 
         $customFields = [
             CustomFieldInstaller::TRANSACTION_ID  => Constants::PAYONE_TRANSACTION_ID,

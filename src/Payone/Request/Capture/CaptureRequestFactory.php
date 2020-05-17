@@ -21,17 +21,17 @@ class CaptureRequestFactory extends AbstractRequestFactory
 
     /** @var SystemRequest */
     private $systemRequest;
-    
+
     /** @var PaymentHandlerFactory */
     private $paymentHandlerFactory;
 
     public function __construct(
-        CaptureRequest $captureRequest,
         SystemRequest $systemRequest,
+        CaptureRequest $captureRequest,
         PaymentHandlerFactory $paymentHandlerFactory
     ) {
-        $this->captureRequest = $captureRequest;
         $this->systemRequest = $systemRequest;
+        $this->captureRequest = $captureRequest;
         $this->paymentHandlerFactory = $paymentHandlerFactory;
     }
 

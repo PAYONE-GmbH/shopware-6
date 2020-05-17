@@ -23,6 +23,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +42,7 @@ class WebhookControllerTest extends TestCase
         $request->request->set('txaction', 'appointed');
         $request->request->set('sequencenumber', '0');
 
-        $response = $this->createWebhookController('reopen', $request->request->all())->execute(
+        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_REOPEN, $request->request->all())->execute(
             $request,
             $salesChannelContext
         );
@@ -49,7 +50,7 @@ class WebhookControllerTest extends TestCase
         $this->assertEquals(WebhookHandlerInterface::RESPONSE_TSOK, $response->getContent());
     }
 
-    public function testCreditcardCapture(): void
+    public function testCreditcardPartialCapture(): void
     {
         $context             = Context::createDefaultContext();
         $salesChannelContext = Generator::createSalesChannelContext($context);
@@ -62,7 +63,28 @@ class WebhookControllerTest extends TestCase
         $request->request->set('receivable', '1');
         $request->request->set('sequencenumber', '0');
 
-        $response = $this->createWebhookController('pay', $request->request->all())->execute(
+        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAY_PARTIALLY, $request->request->all())->execute(
+            $request,
+            $salesChannelContext
+        );
+
+        $this->assertEquals(WebhookHandlerInterface::RESPONSE_TSOK, $response->getContent());
+    }
+
+    public function testCreditcardFullCapture(): void
+    {
+        $context             = Context::createDefaultContext();
+        $salesChannelContext = Generator::createSalesChannelContext($context);
+        $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
+
+        $request = new Request();
+        $request->request->set('key', md5(''));
+        $request->request->set('txid', Constants::PAYONE_TRANSACTION_ID);
+        $request->request->set('txaction', 'capture');
+        $request->request->set('receivable', '0');
+        $request->request->set('sequencenumber', '0');
+
+        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAY, $request->request->all())->execute(
             $request,
             $salesChannelContext
         );
@@ -82,7 +104,7 @@ class WebhookControllerTest extends TestCase
         $request->request->set('txaction', 'paid');
         $request->request->set('sequencenumber', '0');
 
-        $response = $this->createWebhookController('pay', $request->request->all())->execute(
+        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAY, $request->request->all())->execute(
             $request,
             $salesChannelContext
         );
