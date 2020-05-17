@@ -102,17 +102,16 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandl
             );
         }
 
-        // Prepare custom fields for the transaction
-        $data = $this->prepareTransactionCustomFields($request, $response, [
-            CustomFieldInstaller::TRANSACTION_STATE  => $response['status'],
-            CustomFieldInstaller::CAPTURED_AMOUNT    => 0,
-            CustomFieldInstaller::REFUNDED_AMOUNT    => 0,
-            CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
-            CustomFieldInstaller::CLEARING_REFERENCE => $response['addpaydata']['clearing_reference'],
-            CustomFieldInstaller::CAPTURE_MODE       => 'completed',
-            CustomFieldInstaller::CLEARING_TYPE      => 'fnc',
-            CustomFieldInstaller::FINANCING_TYPE     => 'PYV',
-        ]);
+        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
+            $this->getBaseCustomFields($response['status']),
+            [
+                CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
+                CustomFieldInstaller::CLEARING_REFERENCE => $response['addpaydata']['clearing_reference'],
+                CustomFieldInstaller::CAPTURE_MODE       => 'completed',
+                CustomFieldInstaller::CLEARING_TYPE      => 'fnc',
+                CustomFieldInstaller::FINANCING_TYPE     => 'PYV',
+            ]
+        ));
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);

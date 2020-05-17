@@ -6,6 +6,8 @@
         <title>Basic configuration</title>
         <title lang="de-DE">Grundeinstellungen</title>
 
+        <name>basic_configuration</name>
+
         <input-field>
             <name>merchantId</name>
             <label>Merchant ID</label>
@@ -48,6 +50,8 @@
     <card>
         <title>Status Mapping</title>
         <title lang="de-DE">Statusmapping</title>
+
+        <name>status_mapping</name>
 
         <input-field type="single-select">
             <name>paymentStatusAppointed</name>
@@ -144,6 +148,8 @@
         <title>Credit Card</title>
         <title lang="de-DE">Kreditkarte</title>
 
+        <name>payment_credit_card</name>
+
         <input-field>
             <name>creditCardMerchantId</name>
             <label>Merchant ID</label>
@@ -196,6 +202,8 @@
     <card>
         <title>PayPal</title>
 
+        <name>payment_paypal</name>
+
         <input-field>
             <name>paypalMerchantId</name>
             <label>Merchant ID</label>
@@ -247,6 +255,8 @@
 
     <card>
         <title>PayPal Express</title>
+
+        <name>payment_paypal_express</name>
 
         <input-field>
             <name>paypalExpressMerchantId</name>
@@ -301,6 +311,8 @@
         <title>Debit</title>
         <title lang="de-DE">Lastschrift</title>
 
+        <name>payment_debit</name>
+
         <input-field>
             <name>debitMerchantId</name>
             <label>Merchant ID</label>
@@ -353,6 +365,8 @@
     <card>
         <title>SOFORT</title>
 
+        <name>payment_sofort</name>
+
         <input-field>
             <name>sofortMerchantId</name>
             <label>Merchant ID</label>
@@ -404,6 +418,8 @@
 
     <card>
         <title>Payolution Installment</title>
+
+        <name>payment_payolution_installment</name>
 
         <input-field>
             <name>payolutionInstallmentMerchantId</name>
@@ -480,6 +496,8 @@
 
     <card>
         <title>Payolution Invoicing</title>
+
+        <name>payment_payolution_invoicing</name>
 
         <input-field>
             <name>payolutionInvoicingMerchantId</name>
@@ -562,6 +580,8 @@
 
     <card>
         <title>Payolution Debit</title>
+
+        <name>payment_payolution_debit</name>
 
         <input-field>
             <name>payolutionDebitCompanyName</name>

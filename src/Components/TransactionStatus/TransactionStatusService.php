@@ -128,14 +128,15 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPartialPaid(array $transactionData): bool
     {
-        $reciveable = $transactionData['receivable'];
+        $reciveable = strrchr((string)$transactionData['receivable'], '.');
         
-        if(strrchr((string)$reciveable, '.')) {
-            $reciveable *= (10 ** strlen(substr(strrchr($reciveable, '.'), 1)));
+        if($reciveable) {
+            /** @var string $reciveable */
+            $reciveable *= (10 ** strlen(substr($reciveable, 1)));
         }
         
-        if (in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE]) && 
-            $reciveable !== 0) {
+        if ($reciveable !== 0 && 
+            in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE])) {
             return true;
         }
 
@@ -144,10 +145,11 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPartialRefund(array $transactionData): bool
     {
-        $reciveable = $transactionData['receivable'];
+        $reciveable = strrchr((string)$transactionData['receivable'], '.');
 
-        if(strrchr((string)$reciveable, '.')) {
-            $reciveable *= (10 ** strlen(substr(strrchr($reciveable, '.'), 1)));
+        if($reciveable) {
+            /** @var string $reciveable */
+            $reciveable *= (10 ** strlen(substr($reciveable, 1)));
         }
 
         if ($reciveable !== 0 && strtolower($transactionData['txaction']) === self::ACTION_DEBIT) {

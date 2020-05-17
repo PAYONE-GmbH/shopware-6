@@ -1,3 +1,5 @@
+@import "~scss/variables";
+
 .payone-feedback {
     &__col {
         padding: 0 10px;
@@ -22,5 +24,35 @@
         font-size: 1.1em;
         letter-spacing: .75px;
         margin-bottom: 25px;
+    }
+}
+
+.payone-config__wrapper {
+    .sw-card {
+        .payone-config__collapsible-container {
+            text-align: right;
+
+            &:not(.collapsed) {
+                margin-bottom: 22px;
+            }
+        }
+
+        .payone-config__collapsible-handle {
+            cursor: pointer;
+            color: $color-darkgray-200;
+
+            border: 1px solid $color-gray-300;
+            border-radius: $border-radius-default;
+
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            line-height: 0;
+            padding: 5px;
+
+            &:hover {
+                background-color: $color-shopware-brand-50;
+            }
+        }
     }
 }

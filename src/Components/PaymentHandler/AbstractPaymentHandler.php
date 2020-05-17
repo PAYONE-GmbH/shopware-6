@@ -50,6 +50,8 @@ abstract class AbstractPaymentHandler
 
     abstract protected function getQuantityCustomField(): string;
 
+    abstract protected function getAllowCustomField(): string;
+
     public function fullRequest(ParameterBag $parameterBag, Context $context): JsonResponse
     {
         $this->context     = $context;
@@ -124,11 +126,15 @@ abstract class AbstractPaymentHandler
         return $requestResult;
     }
 
-    protected function postRequestHandling(float $captureAmount): void
+    protected function postRequestHandling(ParameterBag $parameterBag, float $captureAmount): void
     {
         $transactionData = [];
         $currency = $this->paymentTransaction->getOrder()->getCurrency();
 
+        if ($parameterBag->has('complete') && $parameterBag->get('complete')) {
+            $transactionData[$this->getAllowCustomField()] = false;
+        }
+        
         if ($currency !== null) {
             $captureAmount = (float)number_format($captureAmount, $currency->getDecimalPrecision(), '.', '');
 

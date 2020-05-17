@@ -76,4 +76,15 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
             $this->lineItemDataHandler->saveLineItemData($lineItemEntity, $context, $customFields);
         }
     }
+    
+    protected function getBaseCustomFields(string $status): array
+    {
+        return [
+            CustomFieldInstaller::TRANSACTION_STATE  => $status,
+            CustomFieldInstaller::ALLOW_CAPTURE      => false,
+            CustomFieldInstaller::CAPTURED_AMOUNT    => 0,
+            CustomFieldInstaller::ALLOW_REFUND       => false,
+            CustomFieldInstaller::REFUNDED_AMOUNT    => 0,
+        ];
+    }
 }
