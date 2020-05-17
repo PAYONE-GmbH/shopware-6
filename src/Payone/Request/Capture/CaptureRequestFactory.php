@@ -4,12 +4,15 @@ declare(strict_types = 1);
 
 namespace PayonePayment\Payone\Request\Capture;
 
+use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
+use PayonePayment\Components\Exception\NoPaymentHandlerFoundException;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class CaptureRequestFactory extends AbstractRequestFactory
 {
@@ -18,14 +21,22 @@ class CaptureRequestFactory extends AbstractRequestFactory
 
     /** @var SystemRequest */
     private $systemRequest;
+    
+    /** @var PaymentHandlerFactory */
+    private $paymentHandlerFactory;
 
-    public function __construct(CaptureRequest $captureRequest, SystemRequest $systemRequest)
-    {
+    public function __construct(
+        CaptureRequest $captureRequest,
+        SystemRequest $systemRequest,
+        PaymentHandlerFactory $paymentHandlerFactory
+    ) {
         $this->captureRequest = $captureRequest;
-        $this->systemRequest  = $systemRequest;
+        $this->systemRequest = $systemRequest;
+        $this->paymentHandlerFactory = $paymentHandlerFactory;
     }
 
-    public function getFullRequest(PaymentTransaction $transaction, Context $context): array
+
+    public function getFullRequest(PaymentTransaction $transaction, ParameterBag $parameterBag, Context $context): array
     {
         $this->requests[] = $this->getBaseCaptureParameters(
             $transaction->getOrder()->getSalesChannelId(),
@@ -39,10 +50,18 @@ class CaptureRequestFactory extends AbstractRequestFactory
             $transaction->getCustomFields()
         );
 
+        try {
+            $this->requests[] = $this->paymentHandlerFactory->getPaymentHandler(
+                $transaction->getPaymentMethodId(),
+                $transaction->getOrder()->getOrderNumber()
+            )->getAdditionalRequestParameters($transaction, $context, $parameterBag);
+        } catch (NoPaymentHandlerFoundException $e) {
+        }
+
         return $this->createRequest();
     }
 
-    public function getPartialRequest(float $totalAmount, PaymentTransaction $transaction, Context $context): array
+    public function getPartialRequest(PaymentTransaction $transaction, ParameterBag $parameterBag, Context $context): array
     {
         $this->requests[] = $this->getBaseCaptureParameters(
             $transaction->getOrder()->getSalesChannelId(),
@@ -54,8 +73,16 @@ class CaptureRequestFactory extends AbstractRequestFactory
             $transaction->getOrder(),
             $context,
             $transaction->getCustomFields(),
-            $totalAmount
+            (float)$parameterBag->get('amount')
         );
+
+        try {
+            $this->requests[] = $this->paymentHandlerFactory->getPaymentHandler(
+                $transaction->getPaymentMethodId(),
+                $transaction->getOrder()->getOrderNumber()
+            )->getAdditionalRequestParameters($transaction, $context, $parameterBag);
+        } catch (NoPaymentHandlerFoundException $e) {
+        }
 
         return $this->createRequest();
     }

@@ -9,6 +9,7 @@ use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingAuthorizeRequestFactory;
@@ -17,8 +18,10 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -54,6 +57,21 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandl
         $this->client                = $client;
         $this->translator            = $translator;
         $this->dataHandler           = $dataHandler;
+    }
+
+    public function supports(string $paymentMethodId): bool
+    {
+        return $paymentMethodId === PayonePayolutionInvoicing::UUID;
+    }
+
+    public function getAdditionalRequestParameters(PaymentTransaction $transaction, Context $context, ParameterBag $parameterBag = null): array
+    {
+        $currency = $transaction->getOrder()->getCurrency();
+        if($parameterBag) {
+            $orderLines = $parameterBag->get('orderLines');
+        }
+
+        return $this->mapPayoneOrderLines($currency, $transaction->getOrder()->getLineItems(), $orderLines);
     }
 
     /**

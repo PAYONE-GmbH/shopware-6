@@ -1,6 +1,6 @@
 {% block payone_payment_details %}
     <div class="payone-order-items">
-        <sw-data-grid
+        <payone-data-grid
                 :dataSource="orderItems"
                 :columns="orderItemColumns"
                 :showActions="false"
@@ -34,6 +34,6 @@
                         v-on:change="onChangeQuantity($event, item.id)">
                 </sw-field>
             </template>
-        </sw-data-grid>
+        </payone-data-grid>
     </div>
 {% endblock %}

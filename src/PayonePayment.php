@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment;
 
 use Doctrine\DBAL\Connection;
+use PayonePayment\Components\DependencyInjection\CompilerPass\PaymentHandlerCompilerPass;
 use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Installer\PaymentMethodInstaller;
@@ -24,6 +25,8 @@ class PayonePayment extends Plugin
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/DependencyInjection'));
         $loader->load('services.xml');
+        
+        $container->addCompilerPass(new PaymentHandlerCompilerPass());
 
         parent::build($container);
     }

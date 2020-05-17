@@ -9,6 +9,7 @@ use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
+use Shopware\Core\System\Currency\CurrencyEntity;
 
 /**
  * A base class for payment handlers which implements common processing
@@ -76,7 +77,7 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
             $this->lineItemDataHandler->saveLineItemData($lineItemEntity, $context, $customFields);
         }
     }
-    
+
     protected function getBaseCustomFields(string $status): array
     {
         return [
@@ -86,5 +87,66 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
             CustomFieldInstaller::ALLOW_REFUND       => false,
             CustomFieldInstaller::REFUNDED_AMOUNT    => 0,
         ];
+    }
+
+    protected function mapPayoneOrderLines(CurrencyEntity $currency, OrderLineItemCollection $orderLineItems, array $requestLines = null): array
+    {
+        $requestLineItems = [];
+        $counter = 0;
+
+        if (empty($requestLines)) {
+            foreach ($orderLineItems as $lineItem) {
+                $taxes = $lineItem->getPrice() ? $lineItem->getPrice()->getCalculatedTaxes() : null;
+
+                if(null === $taxes || null === $taxes->first()) {
+                    continue;
+                }
+
+                $requestLineItems['it['.$counter.']'] = $this->mapItemType($lineItem->getType());
+                $requestLineItems['id['.$counter.']'] = $lineItem->getIdentifier();
+                $requestLineItems['pr['.$counter.']'] = (int) ($lineItem->getUnitPrice() * (10 ** $currency->getDecimalPrecision()));
+                $requestLineItems['no['.$counter.']'] = $lineItem->getQuantity();
+                $requestLineItems['de['.$counter.']'] = $lineItem->getLabel();
+                $requestLineItems['va['.$counter.']'] = (int) ($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision()));
+                $counter++;
+            }
+        } else {
+            foreach ($requestLines as $orderLine) {
+                foreach ($orderLineItems as $lineItem) {
+                    $taxes = $lineItem->getPrice() ? $lineItem->getPrice()->getCalculatedTaxes() : null;
+                    if(null === $taxes || null === $taxes->first()) {
+                        continue;
+                    }
+
+                    if($lineItem->getId() !== $orderLine['id']) {
+                        continue;
+                    }
+
+                    $requestLineItems['it['.$counter.']'] = $this->mapItemType($lineItem->getType());
+                    $requestLineItems['id['.$counter.']'] = $lineItem->getIdentifier();
+                    $requestLineItems['pr['.$counter.']'] = (int) ($lineItem->getUnitPrice() * (10 ** $currency->getDecimalPrecision()));
+                    $requestLineItems['no['.$counter.']'] = $orderLine['quantity'];
+                    $requestLineItems['de['.$counter.']'] = $lineItem->getLabel();
+                    $requestLineItems['va['.$counter.']'] = (int) ($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision()));
+                    $counter++;
+                }
+            }
+        }
+
+        return $requestLineItems;
+    }
+
+    protected function mapItemType(?string $itemType): string
+    {
+        switch ($itemType) {
+            case 'shipment':
+                return 'shipment';
+            case 'handling':
+                return 'handling';
+            case 'voucher':
+                return 'voucher';
+            default:
+                return 'goods';
+        }
     }
 }

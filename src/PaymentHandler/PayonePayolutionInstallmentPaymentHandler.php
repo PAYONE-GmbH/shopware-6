@@ -10,6 +10,7 @@ use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuthorizeRequestFactory;
@@ -18,8 +19,10 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -60,6 +63,21 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
         $this->translator            = $translator;
         $this->dataHandler           = $dataHandler;
         $this->cartHasher            = $cartHasher;
+    }
+
+    public function supports(string $paymentMethodId): bool
+    {
+        return $paymentMethodId === PayonePayolutionInstallment::UUID;
+    }
+
+    public function getAdditionalRequestParameters(PaymentTransaction $transaction, Context $context, ParameterBag $parameterBag = null): array
+    {
+        $currency = $transaction->getOrder()->getCurrency();
+        if($parameterBag) {
+            $orderLines = $parameterBag->get('orderLines');
+        }
+
+        return $this->mapPayoneOrderLines($currency, $transaction->getOrder()->getLineItems(), $orderLines);
     }
 
     /**

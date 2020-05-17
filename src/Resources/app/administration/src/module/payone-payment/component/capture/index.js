@@ -151,6 +151,54 @@ Component.register('payone-capture-button', {
             });
         },
 
+        captureFullOrder() {
+            const request = {
+                orderTransactionId: this.transaction.id,
+                payone_order_id: this.transaction.customFields.payone_transaction_id,
+                salesChannel: this.order.salesChannel,
+                amount: this.remainingAmount,
+                orderLines: [],
+                complete: true
+            };
+            this.isLoading = true;
+            
+            this.order.lineItems.forEach((order_item) => {
+                    if (order_item.id === selection.id && selection.selected && 0 < selection.quantity) {
+                        const copy = { ...order_item },
+                            taxRate = copy.tax_rate / (10 ** request.decimalPrecision);
+
+                        copy.quantity         = selection.quantity;
+                        copy.total_amount     = copy.unit_price * copy.quantity;
+                        copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
+
+                        request.orderLines.push(copy);
+                    }
+                });
+
+            this.PayonePaymentService.capturePayment(request).then(() => {
+                this.createNotificationSuccess({
+                    title: this.$tc('payone-payment-order-management.messages.captureSuccessTitle'),
+                    message: this.$tc('payone-payment-order-management.messages.captureSuccessMessage')
+                });
+
+                this.isCaptureSuccessful = true;
+            }).catch(() => {
+                this.createNotificationError({
+                    title: this.$tc('payone-payment-order-management.messages.captureErrorTitle'),
+                    message: this.$tc('payone-payment-order-management.messages.captureErrorMessage')
+                });
+
+                this.isCaptureSuccessful = false;
+            }).finally(() => {
+                this.isLoading = false;
+                this.closeCaptureModal();
+
+                this.$nextTick().then(() => {
+                    this.$emit('reload')
+                });
+            });
+        },
+
         onSelectItem(id, selected) {
             if (this.selection.length === 0) {
                 this._populateSelectionProperty();

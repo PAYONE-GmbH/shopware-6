@@ -6,6 +6,7 @@ namespace PayonePayment\Components\PaymentHandler\Refund;
 
 use Exception;
 use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler;
+use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
 use PayonePayment\Components\PaymentHandler\AbstractPaymentHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
@@ -44,9 +45,9 @@ class RefundPaymentHandler extends AbstractPaymentHandler implements RefundPayme
         $this->requestFactory           = $requestFactory;
         $this->client                   = $client;
         $this->dataHandler              = $dataHandler;
+        $this->transactionStatusService = $transactionStatusService;
         $this->transactionRepository    = $transactionRepository;
         $this->lineItemDataHandler  = $lineItemDataHandler;
-        $this->transactionStatusService = $transactionStatusService;
     }
 
     /**
@@ -60,7 +61,7 @@ class RefundPaymentHandler extends AbstractPaymentHandler implements RefundPayme
             return $requestResponse;
         }
 
-        $this->postRequestHandling($parameterBag,$this->paymentTransaction->getOrderTransaction()->getAmount()->getTotalPrice());
+        $this->postRequestHandling($parameterBag, $this->paymentTransaction->getOrderTransaction()->getAmount()->getTotalPrice());
 
         $this->transactionStatusService->transitionByName(
             $context,
@@ -82,7 +83,7 @@ class RefundPaymentHandler extends AbstractPaymentHandler implements RefundPayme
             return $requestResponse;
         }
 
-        $this->postRequestHandling((float)$parameterBag->get('captureAmount'));
+        $this->postRequestHandling($parameterBag, (float)$parameterBag->get('captureAmount'));
         $this->orderLineHandling($parameterBag->get('orderLines'));
         $this->transactionStatusService->transitionByName(
             $context,

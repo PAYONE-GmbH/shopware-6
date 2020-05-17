@@ -27,6 +27,7 @@
             "capture": {
                 "title": "Einzug",
                 "submit": "Einziehen",
+                "fullSubmit": "Alles Einziehen",
                 "amount": "Einzugswert",
                 "captured": "Eingezogener Wert"
             },

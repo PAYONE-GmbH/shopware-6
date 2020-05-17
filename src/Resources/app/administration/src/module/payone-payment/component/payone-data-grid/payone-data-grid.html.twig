@@ -1,0 +1,12 @@
+{% block sw_data_grid_select_item_checkbox %}
+    <sw-checkbox-field v-if="item.disabled" 
+                       :value="isSelected(item.id)" 
+                       @change="selectItem($event, item)" 
+                       disabled="disabled" aria-disabled="disabled">
+    </sw-checkbox-field>
+
+    <sw-checkbox-field v-else
+                       :value="isSelected(item.id)"
+                       @change="selectItem($event, item)">
+    </sw-checkbox-field>
+{% endblock %}

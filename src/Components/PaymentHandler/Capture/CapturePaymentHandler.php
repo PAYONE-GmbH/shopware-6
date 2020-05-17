@@ -6,6 +6,7 @@ namespace PayonePayment\Components\PaymentHandler\Capture;
 
 use Exception;
 use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler;
+use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
 use PayonePayment\Components\PaymentHandler\AbstractPaymentHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
@@ -60,14 +61,14 @@ class CapturePaymentHandler extends AbstractPaymentHandler implements CapturePay
             return $requestResponse;
         }
 
-        $this->postRequestHandling($this->transaction->getAmount()->getTotalPrice());
+        $this->postRequestHandling($parameterBag, $this->transaction->getAmount()->getTotalPrice());
 
         $this->transactionStatusService->transitionByName(
             $context,
             $this->paymentTransaction->getOrderTransaction()->getId(),
             StateMachineTransitionActions::ACTION_PAY
         );
-
+        
         return $requestResponse;
     }
 
@@ -82,7 +83,7 @@ class CapturePaymentHandler extends AbstractPaymentHandler implements CapturePay
             return $requestResponse;
         }
 
-        $this->postRequestHandling((float)$parameterBag->get('amount'));
+        $this->postRequestHandling($parameterBag, (float)$parameterBag->get('amount'));
         $this->orderLineHandling($parameterBag->get('orderLines'));
 
         $this->transactionStatusService->transitionByName(
