@@ -4,15 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
-use Exception;
-use PayonePayment\Components\PaymentHandler\Capture\CapturePaymentHandlerInterface;
-use PayonePayment\Components\TransactionHandler\Capture\CaptureTransactionHandler;
 use PayonePayment\Components\TransactionHandler\Capture\CaptureTransactionHandlerInterface;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,7 +18,10 @@ class CaptureController extends AbstractController
     /** @var CaptureTransactionHandlerInterface */
     private $captureHandler;
 
-    public function __construct(CaptureTransactionHandlerInterface $captureHandler) {$this->captureHandler = $captureHandler;}
+    public function __construct(CaptureTransactionHandlerInterface $captureHandler)
+    {
+        $this->captureHandler = $captureHandler;
+    }
 
     /**
      * @RouteScope(scopes={"api"})
@@ -37,7 +33,7 @@ class CaptureController extends AbstractController
             return new JsonResponse(['status' => false, 'message' => 'missing order transaction id'], Response::HTTP_NOT_FOUND);
         }
 
-        if((bool) $request->get('complete', false)) {
+        if ((bool) $request->get('complete', false)) {
             return $this->captureHandler->fullCapture($request->request, $context);
         }
 

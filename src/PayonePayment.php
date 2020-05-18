@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment;
 
 use Doctrine\DBAL\Connection;
-use PayonePayment\Components\DependencyInjection\CompilerPass\PaymentHandlerCompilerPass;
 use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Installer\PaymentMethodInstaller;

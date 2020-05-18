@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Payone\Request\Refund;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
-use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
 use PayonePayment\Components\DependencyInjection\Factory\RequestHandlerFactory;
 use PayonePayment\Components\RequestHandler\AbstractRequestHandler;
 use PayonePayment\Components\RequestHandler\CreditCardRequestHandler;
@@ -14,13 +13,13 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
-use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Refund\RefundRequest;
 use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
@@ -46,7 +45,7 @@ class RefundRequestFactoryTest extends TestCase
 
     public function testCorrectFullRequestParameters()
     {
-        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([]));
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([]), new NullLogger());
 
         $request = $factory->getFullRequest($this->getPaymentTransaction(), new ParameterBag(), Context::createDefaultContext());
 
@@ -76,10 +75,10 @@ class RefundRequestFactoryTest extends TestCase
 
     public function testCorrectPartialRequestParameters()
     {
-        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([]));
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([]), new NullLogger());
 
         $request = $factory->getFullRequest($this->getPaymentTransaction(), new ParameterBag([
-            'amount' =>  100
+            'amount' => 100,
         ]), Context::createDefaultContext());
 
         Assert::assertArraySubset(
@@ -113,25 +112,25 @@ class RefundRequestFactoryTest extends TestCase
         $paramterBag->add([
             'orderLines' => [
                 [
-                    'id' => Constants::LINE_ITEM_ID. '0',
-                    'quantity' => Constants::LINE_ITEM_QUANTITY
+                    'id'       => Constants::LINE_ITEM_ID . '0',
+                    'quantity' => Constants::LINE_ITEM_QUANTITY,
                 ],
                 [
-                    'id' => Constants::LINE_ITEM_ID. '1',
-                    'quantity' => Constants::LINE_ITEM_QUANTITY
-                ]
-            ]
+                    'id'       => Constants::LINE_ITEM_ID . '1',
+                    'quantity' => Constants::LINE_ITEM_QUANTITY,
+                ],
+            ],
         ]);
 
         $paymentTransaction = $this->getPaymentTransaction(2);
-        $orderTransaction = $paymentTransaction->getOrderTransaction();
+        $orderTransaction   = $paymentTransaction->getOrderTransaction();
         $orderTransaction->setPaymentMethodId(PayonePayolutionInstallment::UUID);
         $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
 
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([
-            PayoneCreditCard::UUID => new CreditCardRequestHandler(),
-            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler()
-        ]));
+            PayoneCreditCard::UUID            => new CreditCardRequestHandler(),
+            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler(),
+        ]), new NullLogger());
 
         $request = $factory->getFullRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
 
@@ -153,7 +152,7 @@ class RefundRequestFactoryTest extends TestCase
                 'solution_name'   => 'kellerkinder',
                 'it[0]'           => AbstractRequestHandler::TYPE_GOODS,
                 'id[0]'           => Constants::LINE_ITEM_IDENTIFIER,
-                'pr[0]'           => (int)(Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'pr[0]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
                 'no[0]'           => Constants::LINE_ITEM_QUANTITY,
                 'de[0]'           => Constants::LINE_ITEM_LABEL,
                 'va[0]'           => (int) (Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
@@ -172,21 +171,21 @@ class RefundRequestFactoryTest extends TestCase
         $paramterBag->add([
             'orderLines' => [
                 [
-                    'id' => Constants::LINE_ITEM_ID . '0',
-                    'quantity' => Constants::LINE_ITEM_QUANTITY
-                ]
-            ]
+                    'id'       => Constants::LINE_ITEM_ID . '0',
+                    'quantity' => Constants::LINE_ITEM_QUANTITY,
+                ],
+            ],
         ]);
 
         $paymentTransaction = $this->getPaymentTransaction();
-        $orderTransaction = $paymentTransaction->getOrderTransaction();
+        $orderTransaction   = $paymentTransaction->getOrderTransaction();
         $orderTransaction->setPaymentMethodId(PayonePayolutionInstallment::UUID);
         $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
 
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([
-            PayoneCreditCard::UUID => new CreditCardRequestHandler(),
-            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler()
-        ]));
+            PayoneCreditCard::UUID            => new CreditCardRequestHandler(),
+            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler(),
+        ]), new NullLogger());
 
         $request = $factory->getFullRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
 
@@ -253,26 +252,6 @@ class RefundRequestFactoryTest extends TestCase
         return PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
     }
 
-    private function getRefundRequest(): RefundRequest
-    {
-        $currencyRepository = $this->createMock(EntityRepository::class);
-        $currencyEntity     = new CurrencyEntity();
-        $currencyEntity->setId(Constants::CURRENCY_ID);
-        $currencyEntity->setIsoCode('EUR');
-        $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
-        $currencyRepository->method('search')->willReturn(
-            new EntitySearchResult(
-                1,
-                new EntityCollection([$currencyEntity]),
-                null,
-                new Criteria(),
-                Context::createDefaultContext()
-            )
-        );
-
-        return new RefundRequest($currencyRepository);
-    }
-
     protected function getLineItem(int $amount): OrderLineItemCollection
     {
         $lineItemTaxRules = new TaxRule(Constants::CURRENCY_TAX_RATE);
@@ -291,7 +270,7 @@ class RefundRequestFactoryTest extends TestCase
 
         $lineItemPrice = new CalculatedPrice(
             Constants::LINE_ITEM_UNIT_PRICE,
-            Constants::LINE_ITEM_UNIT_PRICE *  Constants::LINE_ITEM_QUANTITY,
+            Constants::LINE_ITEM_UNIT_PRICE * Constants::LINE_ITEM_QUANTITY,
             $calculatedTaxCollection,
             $taxRuleCollection,
             Constants::LINE_ITEM_QUANTITY
@@ -299,7 +278,7 @@ class RefundRequestFactoryTest extends TestCase
 
         $lineItemCollection = new OrderLineItemCollection();
 
-        for ($i = 0; $i < $amount; $i++) {
+        for ($i = 0; $i < $amount; ++$i) {
             $lineItem = new OrderLineItemEntity();
             $lineItem->setId(Constants::LINE_ITEM_ID . $i);
             $lineItem->setType(Constants::LINE_ITEM_TYPE);
@@ -313,5 +292,25 @@ class RefundRequestFactoryTest extends TestCase
         }
 
         return $lineItemCollection;
+    }
+
+    private function getRefundRequest(): RefundRequest
+    {
+        $currencyRepository = $this->createMock(EntityRepository::class);
+        $currencyEntity     = new CurrencyEntity();
+        $currencyEntity->setId(Constants::CURRENCY_ID);
+        $currencyEntity->setIsoCode('EUR');
+        $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
+        $currencyRepository->method('search')->willReturn(
+            new EntitySearchResult(
+                1,
+                new EntityCollection([$currencyEntity]),
+                null,
+                new Criteria(),
+                Context::createDefaultContext()
+            )
+        );
+
+        return new RefundRequest($currencyRepository);
     }
 }

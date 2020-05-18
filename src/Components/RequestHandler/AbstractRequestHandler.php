@@ -12,10 +12,10 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 abstract class AbstractRequestHandler
 {
-    public const TYPE_GOODS = 'goods';
+    public const TYPE_GOODS    = 'goods';
     public const TYPE_SHIPMENT = 'shipment';
     public const TYPE_HANDLING = 'handling';
-    public const TYPE_VOUCHER = 'voucher';
+    public const TYPE_VOUCHER  = 'voucher';
 
     abstract public function supports(string $paymentMethodId): bool;
 
@@ -24,43 +24,44 @@ abstract class AbstractRequestHandler
     protected function mapPayoneOrderLines(CurrencyEntity $currency, OrderLineItemCollection $orderLineItems, array $requestLines = null): array
     {
         $requestLineItems = [];
-        $counter = 0;
+        $counter          = 0;
 
         if (empty($requestLines)) {
             foreach ($orderLineItems as $lineItem) {
                 $taxes = $lineItem->getPrice() ? $lineItem->getPrice()->getCalculatedTaxes() : null;
 
-                if(null === $taxes || null === $taxes->first()) {
+                if (null === $taxes || null === $taxes->first()) {
                     continue;
                 }
 
-                $requestLineItems['it['.$counter.']'] = $this->mapItemType($lineItem->getType());
-                $requestLineItems['id['.$counter.']'] = $lineItem->getIdentifier();
-                $requestLineItems['pr['.$counter.']'] = (int) ($lineItem->getUnitPrice() * (10 ** $currency->getDecimalPrecision()));
-                $requestLineItems['no['.$counter.']'] = $lineItem->getQuantity();
-                $requestLineItems['de['.$counter.']'] = $lineItem->getLabel();
-                $requestLineItems['va['.$counter.']'] = (int) ($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision()));
-                $counter++;
+                $requestLineItems['it[' . $counter . ']'] = $this->mapItemType($lineItem->getType());
+                $requestLineItems['id[' . $counter . ']'] = $lineItem->getIdentifier();
+                $requestLineItems['pr[' . $counter . ']'] = (int) ($lineItem->getUnitPrice() * (10 ** $currency->getDecimalPrecision()));
+                $requestLineItems['no[' . $counter . ']'] = $lineItem->getQuantity();
+                $requestLineItems['de[' . $counter . ']'] = $lineItem->getLabel();
+                $requestLineItems['va[' . $counter . ']'] = (int) ($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision()));
+                ++$counter;
             }
         } else {
             foreach ($requestLines as $orderLine) {
                 foreach ($orderLineItems as $lineItem) {
                     $taxes = $lineItem->getPrice() ? $lineItem->getPrice()->getCalculatedTaxes() : null;
-                    if(null === $taxes || null === $taxes->first()) {
+
+                    if (null === $taxes || null === $taxes->first()) {
                         continue;
                     }
 
-                    if($lineItem->getId() !== $orderLine['id']) {
+                    if ($lineItem->getId() !== $orderLine['id']) {
                         continue;
                     }
 
-                    $requestLineItems['it['.$counter.']'] = $this->mapItemType($lineItem->getType());
-                    $requestLineItems['id['.$counter.']'] = $lineItem->getIdentifier();
-                    $requestLineItems['pr['.$counter.']'] = (int) ($lineItem->getUnitPrice() * (10 ** $currency->getDecimalPrecision()));
-                    $requestLineItems['no['.$counter.']'] = $orderLine['quantity'];
-                    $requestLineItems['de['.$counter.']'] = $lineItem->getLabel();
-                    $requestLineItems['va['.$counter.']'] = (int) ($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision()));
-                    $counter++;
+                    $requestLineItems['it[' . $counter . ']'] = $this->mapItemType($lineItem->getType());
+                    $requestLineItems['id[' . $counter . ']'] = $lineItem->getIdentifier();
+                    $requestLineItems['pr[' . $counter . ']'] = (int) ($lineItem->getUnitPrice() * (10 ** $currency->getDecimalPrecision()));
+                    $requestLineItems['no[' . $counter . ']'] = $orderLine['quantity'];
+                    $requestLineItems['de[' . $counter . ']'] = $lineItem->getLabel();
+                    $requestLineItems['va[' . $counter . ']'] = (int) ($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision()));
+                    ++$counter;
                 }
             }
         }

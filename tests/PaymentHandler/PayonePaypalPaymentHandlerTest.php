@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\PaymentHandler;
 
-use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler;
-use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
+use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -58,7 +57,7 @@ class PayonePaypalPaymentHandlerTest extends TestCase
             $client,
             $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
-            new LineItemDataHandler($this->createMock(EntityRepositoryInterface::class)),
+            $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator)
         );
 

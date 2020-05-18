@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionHandler\Refund;
 
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;

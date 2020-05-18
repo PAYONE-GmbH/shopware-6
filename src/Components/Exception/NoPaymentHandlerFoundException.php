@@ -12,5 +12,4 @@ class NoPaymentHandlerFoundException extends Exception
     {
         parent::__construct(sprintf('No payment handler was found for order: %s', $orderNumber));
     }
-
 }
