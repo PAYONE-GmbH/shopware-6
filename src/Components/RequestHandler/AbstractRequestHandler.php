@@ -12,6 +12,11 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 abstract class AbstractRequestHandler
 {
+    public const TYPE_GOODS = 'goods';
+    public const TYPE_SHIPMENT = 'shipment';
+    public const TYPE_HANDLING = 'handling';
+    public const TYPE_VOUCHER = 'voucher';
+
     abstract public function supports(string $paymentMethodId): bool;
 
     abstract public function getAdditionalRequestParameters(PaymentTransaction $transaction, Context $context, ParameterBag $parameterBag = null): array;
@@ -67,13 +72,13 @@ abstract class AbstractRequestHandler
     {
         switch ($itemType) {
             case 'shipment':
-                return 'shipment';
+                return self::TYPE_SHIPMENT;
             case 'handling':
-                return 'handling';
+                return self::TYPE_HANDLING;
             case 'voucher':
-                return 'voucher';
+                return self::TYPE_VOUCHER;
             default:
-                return 'goods';
+                return self::TYPE_GOODS;
         }
     }
 }

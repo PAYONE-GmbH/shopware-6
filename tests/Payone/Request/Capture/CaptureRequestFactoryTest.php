@@ -6,15 +6,28 @@ namespace PayonePayment\Test\Payone\Request\Capture;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
+use PayonePayment\Components\DependencyInjection\Factory\RequestHandlerFactory;
+use PayonePayment\Components\RequestHandler\AbstractRequestHandler;
+use PayonePayment\Components\RequestHandler\CreditCardRequestHandler;
+use PayonePayment\Components\RequestHandler\PayolutionInstallmentRequestHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
+use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\Payone\Request\Capture\CaptureRequest;
 use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
+use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
+use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
+use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
+use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
+use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -33,7 +46,7 @@ class CaptureRequestFactoryTest extends TestCase
 
     public function testCorrectFullCaptureRequestParameters(): void
     {
-        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new PaymentHandlerFactory());
+        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestHandlerFactory([]));
 
         $request = $factory->getFullRequest($this->getPaymentTransaction(), new ParameterBag(), Context::createDefaultContext());
 
@@ -63,7 +76,7 @@ class CaptureRequestFactoryTest extends TestCase
 
     public function testCorrectPartialCaptureRequestParameters(): void
     {
-        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new PaymentHandlerFactory());
+        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestHandlerFactory([]));
 
         $request = $factory->getPartialRequest($this->getPaymentTransaction(), new ParameterBag([
             'amount' =>  100
@@ -93,11 +106,120 @@ class CaptureRequestFactoryTest extends TestCase
         $this->assertArrayHasKey('solution_version', $request);
     }
 
+    public function testCorrectFullCaptureLineItemRequestParameters(): void
+    {
+        $paramterBag = new ParameterBag();
+
+        $paramterBag->add([
+            'orderLines' => [
+                [
+                    'id' => Constants::LINE_ITEM_ID,
+                    'quantity' => Constants::LINE_ITEM_QUANTITY
+                ]
+            ]
+        ]);
+
+        $paymentTransaction = $this->getPaymentTransaction();
+        $orderTransaction = $paymentTransaction->getOrderTransaction();
+        $orderTransaction->setPaymentMethodId(PayonePayolutionInstallment::UUID);
+        $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
+
+        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestHandlerFactory([
+            PayoneCreditCard::UUID => new CreditCardRequestHandler(),
+            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler()
+        ]));
+
+        $request = $factory->getFullRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
+
+        Assert::assertArraySubset(
+            [
+                'aid'             => '',
+                'amount'          => 10000,
+                'api_version'     => '3.10',
+                'currency'        => 'EUR',
+                'encoding'        => 'UTF-8',
+                'integrator_name' => 'shopware6',
+                'key'             => '',
+                'mid'             => '',
+                'mode'            => '',
+                'portalid'        => '',
+                'request'         => 'capture',
+                'sequencenumber'  => 1,
+                'solution_name'   => 'kellerkinder',
+                'txid'            => 'test-transaction-id',
+                'it[0]'           => AbstractRequestHandler::TYPE_GOODS,
+                'id[0]'           => Constants::LINE_ITEM_IDENTIFIER,
+                'pr[0]'           => (int)(Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'no[0]'           => Constants::LINE_ITEM_QUANTITY,
+                'de[0]'           => Constants::LINE_ITEM_LABEL,
+                'va[0]'           => (int)(Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+            ],
+            $request
+        );
+
+        $this->assertArrayHasKey('integrator_version', $request);
+        $this->assertArrayHasKey('solution_version', $request);
+    }
+
+    public function testCorrectPartialCaptureLineItemRequestParameters(): void
+    {
+        $paramterBag = new ParameterBag();
+
+        $paramterBag->add([
+            'orderLines' => [
+                [
+                    'id' => Constants::LINE_ITEM_ID,
+                    'quantity' => Constants::LINE_ITEM_QUANTITY
+                ]
+            ]
+        ]);
+
+        $paymentTransaction = $this->getPaymentTransaction();
+        $orderTransaction = $paymentTransaction->getOrderTransaction();
+        $orderTransaction->setPaymentMethodId(PayonePayolutionInstallment::UUID);
+        $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
+
+        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestHandlerFactory([
+            PayoneCreditCard::UUID => new CreditCardRequestHandler(),
+            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler()
+        ]));
+
+        $request = $factory->getFullRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
+
+        Assert::assertArraySubset(
+            [
+                'aid'             => '',
+                'amount'          => 10000,
+                'api_version'     => '3.10',
+                'currency'        => 'EUR',
+                'encoding'        => 'UTF-8',
+                'integrator_name' => 'shopware6',
+                'key'             => '',
+                'mid'             => '',
+                'mode'            => '',
+                'portalid'        => '',
+                'request'         => 'capture',
+                'sequencenumber'  => 1,
+                'solution_name'   => 'kellerkinder',
+                'txid'            => 'test-transaction-id',
+                'it[0]'           => AbstractRequestHandler::TYPE_GOODS,
+                'id[0]'           => Constants::LINE_ITEM_IDENTIFIER,
+                'pr[0]'           => (int)(Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'no[0]'           => Constants::LINE_ITEM_QUANTITY,
+                'de[0]'           => Constants::LINE_ITEM_LABEL,
+                'va[0]'           => (int)(Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+            ],
+            $request
+        );
+
+        $this->assertArrayHasKey('integrator_version', $request);
+        $this->assertArrayHasKey('solution_version', $request);
+    }
+
     protected function getPaymentTransaction(): PaymentTransaction
     {
-        $orderTransactionEntity = new OrderTransactionEntity();
-        $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
-$orderTransactionEntity->setPaymentMethodId(PayoneCreditCard::UUID);
+        $currency = new CurrencyEntity();
+        $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
 
         $orderEntity = new OrderEntity();
         $orderEntity->setId(Constants::ORDER_ID);
@@ -105,6 +227,12 @@ $orderTransactionEntity->setPaymentMethodId(PayoneCreditCard::UUID);
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+        $orderEntity->setLineItems($this->getLineItem());
+        $orderEntity->setCurrency($currency);
+
+        $orderTransactionEntity = new OrderTransactionEntity();
+        $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
+        $orderTransactionEntity->setPaymentMethodId(PayoneCreditCard::UUID);
         $orderTransactionEntity->setOrder($orderEntity);
 
         $paymentMethodEntity = new PaymentMethodEntity();
@@ -138,5 +266,44 @@ $orderTransactionEntity->setPaymentMethodId(PayoneCreditCard::UUID);
         );
 
         return new CaptureRequest($currencyRepository);
+    }
+
+    protected function getLineItem(): OrderLineItemCollection
+    {
+        $lineItemTaxRules = new TaxRule(Constants::CURRENCY_TAX_RATE);
+
+        $taxRuleCollection = new TaxRuleCollection();
+        $taxRuleCollection->add($lineItemTaxRules);
+
+        $lineItemtax = new CalculatedTax(
+            Constants::LINE_ITEM_UNIT_PRICE + (Constants::LINE_ITEM_UNIT_PRICE / 100 * Constants::CURRENCY_TAX_RATE),
+            Constants::CURRENCY_TAX_RATE,
+            Constants::LINE_ITEM_UNIT_PRICE
+        );
+
+        $calculatedTaxCollection = new CalculatedTaxCollection();
+        $calculatedTaxCollection->add($lineItemtax);
+
+        $lineItemPrice = new CalculatedPrice(
+            Constants::LINE_ITEM_UNIT_PRICE,
+            Constants::LINE_ITEM_UNIT_PRICE *  Constants::LINE_ITEM_QUANTITY,
+            $calculatedTaxCollection,
+            $taxRuleCollection,
+            Constants::LINE_ITEM_QUANTITY
+        );
+
+        $lineItem = new OrderLineItemEntity();
+        $lineItem->setId(Constants::LINE_ITEM_ID);
+        $lineItem->setType(Constants::LINE_ITEM_TYPE);
+        $lineItem->setIdentifier(Constants::LINE_ITEM_IDENTIFIER);
+        $lineItem->setUnitPrice(Constants::LINE_ITEM_UNIT_PRICE);
+        $lineItem->setPrice($lineItemPrice);
+        $lineItem->setLabel(Constants::LINE_ITEM_LABEL);
+        $lineItem->setQuantity(Constants::LINE_ITEM_QUANTITY);
+
+        $lineItemCollection = new OrderLineItemCollection();
+        $lineItemCollection->add($lineItem);
+
+        return $lineItemCollection;
     }
 }

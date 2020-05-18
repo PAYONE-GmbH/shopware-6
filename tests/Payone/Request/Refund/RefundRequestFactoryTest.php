@@ -6,16 +6,28 @@ namespace PayonePayment\Test\Payone\Request\Refund;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
+use PayonePayment\Components\DependencyInjection\Factory\RequestHandlerFactory;
+use PayonePayment\Components\RequestHandler\AbstractRequestHandler;
+use PayonePayment\Components\RequestHandler\CreditCardRequestHandler;
+use PayonePayment\Components\RequestHandler\PayolutionInstallmentRequestHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
-use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
+use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
+use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Refund\RefundRequest;
 use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
+use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
+use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
+use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
+use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -34,7 +46,7 @@ class RefundRequestFactoryTest extends TestCase
 
     public function testCorrectFullRequestParameters()
     {
-        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new PaymentHandlerFactory());
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([]));
 
         $request = $factory->getFullRequest($this->getPaymentTransaction(), new ParameterBag(), Context::createDefaultContext());
 
@@ -64,7 +76,7 @@ class RefundRequestFactoryTest extends TestCase
 
     public function testCorrectPartialRequestParameters()
     {
-        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new PaymentHandlerFactory());
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([]));
 
         $request = $factory->getFullRequest($this->getPaymentTransaction(), new ParameterBag([
             'amount' =>  100
@@ -94,18 +106,133 @@ class RefundRequestFactoryTest extends TestCase
         $this->assertArrayHasKey('solution_version', $request);
     }
 
+    public function testCorrectFullRefundLineItemRequestParameters(): void
+    {
+        $paramterBag = new ParameterBag();
+
+        $paramterBag->add([
+            'orderLines' => [
+                [
+                    'id' => Constants::LINE_ITEM_ID,
+                    'quantity' => Constants::LINE_ITEM_QUANTITY
+                ]
+            ]
+        ]);
+
+        $paymentTransaction = $this->getPaymentTransaction();
+        $orderTransaction = $paymentTransaction->getOrderTransaction();
+        $orderTransaction->setPaymentMethodId(PayonePayolutionInstallment::UUID);
+        $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
+
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([
+            PayoneCreditCard::UUID => new CreditCardRequestHandler(),
+            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler()
+        ]));
+
+        $request = $factory->getFullRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
+
+        Assert::assertArraySubset(
+            [
+                'aid'             => '',
+                'amount'          => -10000,
+                'api_version'     => '3.10',
+                'currency'        => 'EUR',
+                'encoding'        => 'UTF-8',
+                'key'             => '',
+                'mid'             => '',
+                'mode'            => '',
+                'portalid'        => '',
+                'request'         => 'debit',
+                'sequencenumber'  => 2,
+                'txid'            => 'test-transaction-id',
+                'integrator_name' => 'shopware6',
+                'solution_name'   => 'kellerkinder',
+                'it[0]'           => AbstractRequestHandler::TYPE_GOODS,
+                'id[0]'           => Constants::LINE_ITEM_IDENTIFIER,
+                'pr[0]'           => (int)(Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'no[0]'           => Constants::LINE_ITEM_QUANTITY,
+                'de[0]'           => Constants::LINE_ITEM_LABEL,
+                'va[0]'           => (int) (Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+            ],
+            $request
+        );
+
+        $this->assertArrayHasKey('integrator_version', $request);
+        $this->assertArrayHasKey('solution_version', $request);
+    }
+
+    public function testCorrectPartialRefundLineItemRequestParameters(): void
+    {
+        $paramterBag = new ParameterBag();
+
+        $paramterBag->add([
+            'orderLines' => [
+                [
+                    'id' => Constants::LINE_ITEM_ID,
+                    'quantity' => Constants::LINE_ITEM_QUANTITY
+                ]
+            ]
+        ]);
+
+        $paymentTransaction = $this->getPaymentTransaction();
+        $orderTransaction = $paymentTransaction->getOrderTransaction();
+        $orderTransaction->setPaymentMethodId(PayonePayolutionInstallment::UUID);
+        $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
+
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([
+            PayoneCreditCard::UUID => new CreditCardRequestHandler(),
+            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler()
+        ]));
+
+        $request = $factory->getFullRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
+
+        Assert::assertArraySubset(
+            [
+                'aid'             => '',
+                'amount'          => -10000,
+                'api_version'     => '3.10',
+                'currency'        => 'EUR',
+                'encoding'        => 'UTF-8',
+                'key'             => '',
+                'mid'             => '',
+                'mode'            => '',
+                'portalid'        => '',
+                'request'         => 'debit',
+                'sequencenumber'  => 2,
+                'txid'            => 'test-transaction-id',
+                'integrator_name' => 'shopware6',
+                'solution_name'   => 'kellerkinder',
+                'it[0]'           => AbstractRequestHandler::TYPE_GOODS,
+                'id[0]'           => Constants::LINE_ITEM_IDENTIFIER,
+                'pr[0]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'no[0]'           => Constants::LINE_ITEM_QUANTITY,
+                'de[0]'           => Constants::LINE_ITEM_LABEL,
+                'va[0]'           => (int) (Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+            ],
+            $request
+        );
+
+        $this->assertArrayHasKey('integrator_version', $request);
+        $this->assertArrayHasKey('solution_version', $request);
+    }
+
     protected function getPaymentTransaction(): PaymentTransaction
     {
         $orderTransactionEntity = new OrderTransactionEntity();
         $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
         $orderTransactionEntity->setPaymentMethodId(PayoneCreditCard::UUID);
 
+        $currency = new CurrencyEntity();
+        $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
+
         $orderEntity = new OrderEntity();
         $orderEntity->setId(Constants::ORDER_ID);
         $orderEntity->setOrderNumber(Constants::ORDER_NUMBER);
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
+        $orderEntity->setLineItems($this->getLineItem());
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+        $orderEntity->setCurrency($currency);
 
         $paymentMethodEntity = new PaymentMethodEntity();
         $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);
@@ -128,7 +255,7 @@ class RefundRequestFactoryTest extends TestCase
         $currencyEntity     = new CurrencyEntity();
         $currencyEntity->setId(Constants::CURRENCY_ID);
         $currencyEntity->setIsoCode('EUR');
-        $currencyEntity->setDecimalPrecision(2);
+        $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
         $currencyRepository->method('search')->willReturn(
             new EntitySearchResult(
                 1,
@@ -140,5 +267,44 @@ class RefundRequestFactoryTest extends TestCase
         );
 
         return new RefundRequest($currencyRepository);
+    }
+
+    protected function getLineItem(): OrderLineItemCollection
+    {
+        $lineItemTaxRules = new TaxRule(Constants::CURRENCY_TAX_RATE);
+
+        $taxRuleCollection = new TaxRuleCollection();
+        $taxRuleCollection->add($lineItemTaxRules);
+
+        $lineItemtax = new CalculatedTax(
+            Constants::LINE_ITEM_UNIT_PRICE + (Constants::LINE_ITEM_UNIT_PRICE / 100 * Constants::CURRENCY_TAX_RATE),
+            Constants::CURRENCY_TAX_RATE,
+            Constants::LINE_ITEM_UNIT_PRICE
+        );
+
+        $calculatedTaxCollection = new CalculatedTaxCollection();
+        $calculatedTaxCollection->add($lineItemtax);
+
+        $lineItemPrice = new CalculatedPrice(
+            Constants::LINE_ITEM_UNIT_PRICE,
+            Constants::LINE_ITEM_UNIT_PRICE *  Constants::LINE_ITEM_QUANTITY,
+            $calculatedTaxCollection,
+            $taxRuleCollection,
+            Constants::LINE_ITEM_QUANTITY
+        );
+
+        $lineItem = new OrderLineItemEntity();
+        $lineItem->setId(Constants::LINE_ITEM_ID);
+        $lineItem->setType(Constants::LINE_ITEM_TYPE);
+        $lineItem->setIdentifier(Constants::LINE_ITEM_IDENTIFIER);
+        $lineItem->setUnitPrice(Constants::LINE_ITEM_UNIT_PRICE);
+        $lineItem->setPrice($lineItemPrice);
+        $lineItem->setLabel(Constants::LINE_ITEM_LABEL);
+        $lineItem->setQuantity(Constants::LINE_ITEM_QUANTITY);
+
+        $lineItemCollection = new OrderLineItemCollection();
+        $lineItemCollection->add($lineItem);
+
+        return $lineItemCollection;
     }
 }
