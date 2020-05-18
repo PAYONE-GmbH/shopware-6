@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionHandler\Refund;
 
-use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
+use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -45,7 +45,7 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
 //        TODO simplify methods and fill with amount parameter
         $requestResponse = $this->fullRequest($parameterBag, $context);
 
-        if(!$this->isSuccessResponse($requestResponse)) {
+        if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
         }
 
@@ -68,11 +68,11 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
     {
         $requestResponse = $this->partialRequest($parameterBag, $context);
 
-        if(!$this->isSuccessResponse($requestResponse)) {
+        if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
         }
 
-        $this->updateTransactionData($parameterBag, (float)$parameterBag->get('amount'));
+        $this->updateTransactionData($parameterBag, (float) $parameterBag->get('amount'));
         $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
 
         $this->transactionStatusService->transitionByName(

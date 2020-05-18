@@ -7,12 +7,10 @@ namespace PayonePayment\PaymentHandler;
 use DateTime;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandlerInterface;
-use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
+use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory;
@@ -21,11 +19,9 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -33,17 +29,16 @@ use Throwable;
 
 class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var CreditCardPreAuthorizeRequestFactory */
-    private $preAuthRequestFactory;
-
-    /** @var CreditCardAuthorizeRequestFactory */
-    private $authRequestFactory;
-
     /** @var PayoneClientInterface */
     protected $client;
 
     /** @var TranslatorInterface */
     protected $translator;
+    /** @var CreditCardPreAuthorizeRequestFactory */
+    private $preAuthRequestFactory;
+
+    /** @var CreditCardAuthorizeRequestFactory */
+    private $authRequestFactory;
 
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
@@ -119,7 +114,6 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
         $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());
-
 
         $truncatedCardPan   = $dataBag->get('truncatedCardPan');
         $cardExpireDate     = $dataBag->get('cardExpireDate');

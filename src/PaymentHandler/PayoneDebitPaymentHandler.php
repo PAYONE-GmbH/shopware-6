@@ -7,12 +7,10 @@ namespace PayonePayment\PaymentHandler;
 use DateTime;
 use LogicException;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandlerInterface;
-use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
+use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\PaymentMethod\PayoneDebit;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory;
@@ -21,27 +19,24 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var DebitPreAuthorizeRequestFactory */
-    private $preAuthRequestFactory;
-
-    /** @var DebitAuthorizeRequestFactory */
-    private $authRequestFactory;
-
     /** @var PayoneClientInterface */
     protected $client;
 
     /** @var TranslatorInterface */
     protected $translator;
+    /** @var DebitPreAuthorizeRequestFactory */
+    private $preAuthRequestFactory;
+
+    /** @var DebitAuthorizeRequestFactory */
+    private $authRequestFactory;
 
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;

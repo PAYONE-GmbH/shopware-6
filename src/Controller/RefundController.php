@@ -4,14 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
-use Exception;
-use PayonePayment\Components\PaymentHandler\Refund\RefundPaymentHandlerInterface;
 use PayonePayment\Components\TransactionHandler\Refund\RefundTransactionHandlerInterface;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,7 +18,10 @@ class RefundController extends AbstractController
     /** @var RefundTransactionHandlerInterface */
     private $refundHandler;
 
-    public function __construct(RefundTransactionHandlerInterface $refundHandler) {$this->refundHandler = $refundHandler;}
+    public function __construct(RefundTransactionHandlerInterface $refundHandler)
+    {
+        $this->refundHandler = $refundHandler;
+    }
 
     /**
      * @RouteScope(scopes={"api"})
@@ -36,7 +33,7 @@ class RefundController extends AbstractController
             return new JsonResponse(['status' => false, 'message' => 'missing order transaction id'], Response::HTTP_NOT_FOUND);
         }
 
-        if((bool) $request->get('complete', false)) {
+        if ((bool) $request->get('complete', false)) {
             return $this->refundHandler->fullRefund($request->request, $context);
         }
 

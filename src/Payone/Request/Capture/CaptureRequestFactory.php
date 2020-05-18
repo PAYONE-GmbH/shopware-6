@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Capture;
 
@@ -34,12 +34,11 @@ class CaptureRequestFactory extends AbstractRequestFactory
         RequestHandlerFactory $requestHandlerFactory,
         LoggerInterface $logger
     ) {
-        $this->systemRequest = $systemRequest;
-        $this->captureRequest = $captureRequest;
+        $this->systemRequest         = $systemRequest;
+        $this->captureRequest        = $captureRequest;
         $this->requestHandlerFactory = $requestHandlerFactory;
-        $this->logger = $logger;
+        $this->logger                = $logger;
     }
-
 
     public function getFullRequest(PaymentTransaction $transaction, ParameterBag $parameterBag, Context $context): array
     {
@@ -81,7 +80,7 @@ class CaptureRequestFactory extends AbstractRequestFactory
             $transaction->getOrder(),
             $context,
             $transaction->getCustomFields(),
-            (float)$parameterBag->get('amount')
+            (float) $parameterBag->get('amount')
         );
 
         try {

@@ -6,7 +6,6 @@ namespace PayonePayment\Components\DependencyInjection\Factory;
 
 use PayonePayment\Components\Exception\NoPaymentHandlerFoundException;
 use PayonePayment\Components\RequestHandler\AbstractRequestHandler;
-use PayonePayment\PaymentHandler\PayonePaymentHandlerInterface;
 
 class RequestHandlerFactory
 {

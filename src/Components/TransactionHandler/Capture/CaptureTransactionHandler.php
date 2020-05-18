@@ -1,11 +1,11 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionHandler\Capture;
 
-use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
+use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -71,7 +71,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
             return $requestResponse;
         }
 
-        $this->updateTransactionData($parameterBag, (float)$parameterBag->get('amount'));
+        $this->updateTransactionData($parameterBag, (float) $parameterBag->get('amount'));
         $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
 
         $this->transactionStatusService->transitionByName(

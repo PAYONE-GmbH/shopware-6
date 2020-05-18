@@ -7,10 +7,8 @@ namespace PayonePayment\Test\PaymentHandler;
 use DateInterval;
 use DateTimeImmutable;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
-use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler;
-use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
+use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -65,7 +63,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             $client,
             $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
-            new LineItemDataHandler($this->createMock(EntityRepositoryInterface::class)),
+            $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
             $cardRepository
         );
@@ -125,7 +123,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             $client,
             $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
-            new LineItemDataHandler($this->createMock(EntityRepositoryInterface::class)),
+            $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
             $cardRepository
         );
@@ -186,7 +184,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             $client,
             $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
-            new LineItemDataHandler($this->createMock(EntityRepositoryInterface::class)),
+            $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
             $cardRepository
         );
@@ -229,7 +227,6 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
 
     protected function getPaymentTransaction(): PaymentTransaction
     {
-
         $orderLineItem = new OrderLineItemEntity();
         $orderLineItem->setId(Constants::LINE_ITEM_ID);
 

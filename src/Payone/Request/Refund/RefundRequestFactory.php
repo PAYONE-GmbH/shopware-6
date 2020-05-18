@@ -34,10 +34,10 @@ class RefundRequestFactory extends AbstractRequestFactory
         RequestHandlerFactory $requestHandlerFactory,
         LoggerInterface $logger
     ) {
-        $this->systemRequest = $systemRequest;
-        $this->refundRequest = $refundRequest;
+        $this->systemRequest         = $systemRequest;
+        $this->refundRequest         = $refundRequest;
         $this->requestHandlerFactory = $requestHandlerFactory;
-        $this->logger = $logger;
+        $this->logger                = $logger;
     }
 
     public function getFullRequest(PaymentTransaction $transaction, ParameterBag $parameterBag, Context $context): array
@@ -80,7 +80,7 @@ class RefundRequestFactory extends AbstractRequestFactory
             $transaction->getOrder(),
             $context,
             $transaction->getCustomFields(),
-            (float)$parameterBag->get('amount')
+            (float) $parameterBag->get('amount')
         );
 
         try {
