@@ -113,13 +113,17 @@ class RefundRequestFactoryTest extends TestCase
         $paramterBag->add([
             'orderLines' => [
                 [
-                    'id' => Constants::LINE_ITEM_ID,
+                    'id' => Constants::LINE_ITEM_ID. '0',
+                    'quantity' => Constants::LINE_ITEM_QUANTITY
+                ],
+                [
+                    'id' => Constants::LINE_ITEM_ID. '1',
                     'quantity' => Constants::LINE_ITEM_QUANTITY
                 ]
             ]
         ]);
 
-        $paymentTransaction = $this->getPaymentTransaction();
+        $paymentTransaction = $this->getPaymentTransaction(2);
         $orderTransaction = $paymentTransaction->getOrderTransaction();
         $orderTransaction->setPaymentMethodId(PayonePayolutionInstallment::UUID);
         $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
@@ -168,7 +172,7 @@ class RefundRequestFactoryTest extends TestCase
         $paramterBag->add([
             'orderLines' => [
                 [
-                    'id' => Constants::LINE_ITEM_ID,
+                    'id' => Constants::LINE_ITEM_ID . '0',
                     'quantity' => Constants::LINE_ITEM_QUANTITY
                 ]
             ]
@@ -216,7 +220,7 @@ class RefundRequestFactoryTest extends TestCase
         $this->assertArrayHasKey('solution_version', $request);
     }
 
-    protected function getPaymentTransaction(): PaymentTransaction
+    protected function getPaymentTransaction(int $lineItemAmount = 1): PaymentTransaction
     {
         $orderTransactionEntity = new OrderTransactionEntity();
         $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
@@ -230,7 +234,7 @@ class RefundRequestFactoryTest extends TestCase
         $orderEntity->setOrderNumber(Constants::ORDER_NUMBER);
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
-        $orderEntity->setLineItems($this->getLineItem());
+        $orderEntity->setLineItems($this->getLineItem($lineItemAmount));
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
         $orderEntity->setCurrency($currency);
 
@@ -269,7 +273,7 @@ class RefundRequestFactoryTest extends TestCase
         return new RefundRequest($currencyRepository);
     }
 
-    protected function getLineItem(): OrderLineItemCollection
+    protected function getLineItem(int $amount): OrderLineItemCollection
     {
         $lineItemTaxRules = new TaxRule(Constants::CURRENCY_TAX_RATE);
 
@@ -293,17 +297,20 @@ class RefundRequestFactoryTest extends TestCase
             Constants::LINE_ITEM_QUANTITY
         );
 
-        $lineItem = new OrderLineItemEntity();
-        $lineItem->setId(Constants::LINE_ITEM_ID);
-        $lineItem->setType(Constants::LINE_ITEM_TYPE);
-        $lineItem->setIdentifier(Constants::LINE_ITEM_IDENTIFIER);
-        $lineItem->setUnitPrice(Constants::LINE_ITEM_UNIT_PRICE);
-        $lineItem->setPrice($lineItemPrice);
-        $lineItem->setLabel(Constants::LINE_ITEM_LABEL);
-        $lineItem->setQuantity(Constants::LINE_ITEM_QUANTITY);
-
         $lineItemCollection = new OrderLineItemCollection();
-        $lineItemCollection->add($lineItem);
+
+        for ($i = 0; $i < $amount; $i++) {
+            $lineItem = new OrderLineItemEntity();
+            $lineItem->setId(Constants::LINE_ITEM_ID . $i);
+            $lineItem->setType(Constants::LINE_ITEM_TYPE);
+            $lineItem->setIdentifier(Constants::LINE_ITEM_IDENTIFIER);
+            $lineItem->setUnitPrice(Constants::LINE_ITEM_UNIT_PRICE);
+            $lineItem->setPrice($lineItemPrice);
+            $lineItem->setLabel(Constants::LINE_ITEM_LABEL);
+            $lineItem->setQuantity(Constants::LINE_ITEM_QUANTITY);
+
+            $lineItemCollection->add($lineItem);
+        }
 
         return $lineItemCollection;
     }
