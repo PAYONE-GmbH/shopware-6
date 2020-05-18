@@ -110,9 +110,9 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandl
             [
                 CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
                 CustomFieldInstaller::CLEARING_REFERENCE => $response['addpaydata']['clearing_reference'],
-                CustomFieldInstaller::CAPTURE_MODE       => 'completed',
-                CustomFieldInstaller::CLEARING_TYPE      => 'fnc',
-                CustomFieldInstaller::FINANCING_TYPE     => 'PYV',
+                CustomFieldInstaller::CAPTURE_MODE       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+                CustomFieldInstaller::CLEARING_TYPE      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+                CustomFieldInstaller::FINANCING_TYPE     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYV,
             ]
         ));
 
