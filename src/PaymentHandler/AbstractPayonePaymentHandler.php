@@ -9,6 +9,7 @@ use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
 /**
@@ -29,15 +30,15 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     /** @var ConfigReaderInterface */
     protected $configReader;
 
-    /** @var LineItemDataHandlerInterface */
-    protected $lineItemDataHandler;
+    /** @var EntityRepositoryInterface */
+    protected $lineItemRepository;
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        LineItemDataHandlerInterface $lineItemDataHandler
+        EntityRepositoryInterface $lineItemRepository
     ) {
         $this->configReader = $configReader;
-        $this->lineItemDataHandler = $lineItemDataHandler;
+        $this->lineItemRepository = $lineItemRepository;
     }
 
     /**
@@ -80,11 +81,15 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
             CustomFieldInstaller::REFUNDED_QUANTITY => 0
         ], $fields);
 
+        $saveData = [];
+
         foreach ($lineItem->getElements() as $lineItemEntity) {
             $customFields = array_merge($lineItemEntity->getCustomFields() ?? [], $customFields);
 
-            $this->lineItemDataHandler->saveLineItemData($lineItemEntity, $context, $customFields);
+            $saveData[$lineItemEntity->getId()] = $customFields;
         }
+
+        $this->lineItemRepository->update([$saveData], $context);
     }
 
     protected function getBaseCustomFields(string $status): array

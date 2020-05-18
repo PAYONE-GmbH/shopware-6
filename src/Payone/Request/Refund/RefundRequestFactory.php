@@ -10,6 +10,7 @@ use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Struct\PaymentTransaction;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -24,16 +25,20 @@ class RefundRequestFactory extends AbstractRequestFactory
     /** @var RequestHandlerFactory */
     private $requestHandlerFactory;
 
+    /** @var LoggerInterface */
+    private $logger;
+
     public function __construct(
         SystemRequest $systemRequest,
         RefundRequest $refundRequest,
-        RequestHandlerFactory $requestHandlerFactory
+        RequestHandlerFactory $requestHandlerFactory,
+        LoggerInterface $logger
     ) {
         $this->systemRequest = $systemRequest;
         $this->refundRequest = $refundRequest;
         $this->requestHandlerFactory = $requestHandlerFactory;
+        $this->logger = $logger;
     }
-
 
     public function getFullRequest(PaymentTransaction $transaction, ParameterBag $parameterBag, Context $context): array
     {
@@ -50,11 +55,14 @@ class RefundRequestFactory extends AbstractRequestFactory
         );
 
         try {
-            $this->requests[] = $this->requestHandlerFactory->getPaymentHandler(
+            $requestHandler = $this->requestHandlerFactory->getRequestHandler(
                 $transaction->getOrderTransaction()->getPaymentMethodId(),
                 $transaction->getOrder()->getOrderNumber()
-            )->getAdditionalRequestParameters($transaction, $context, $parameterBag);
-        } catch (NoPaymentHandlerFoundException $e) {
+            );
+
+            $requestHandler->getAdditionalRequestParameters($transaction, $context, $parameterBag);
+        } catch (NoPaymentHandlerFoundException $exception) {
+            $this->logger->error($exception->getMessage(), $exception->getTrace());
         }
 
         return $this->createRequest();
@@ -76,11 +84,14 @@ class RefundRequestFactory extends AbstractRequestFactory
         );
 
         try {
-            $this->requests[] = $this->requestHandlerFactory->getPaymentHandler(
+            $requestHandler = $this->requestHandlerFactory->getRequestHandler(
                 $transaction->getOrderTransaction()->getPaymentMethodId(),
                 $transaction->getOrder()->getOrderNumber()
-            )->getAdditionalRequestParameters($transaction, $context, $parameterBag);
-        } catch (NoPaymentHandlerFoundException $e) {
+            );
+
+            $requestHandler->getAdditionalRequestParameters($transaction, $context, $parameterBag);
+        } catch (NoPaymentHandlerFoundException $exception) {
+            $this->logger->error($exception->getMessage(), $exception->getTrace());
         }
 
         return $this->createRequest();

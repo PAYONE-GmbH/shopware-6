@@ -19,6 +19,7 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandler
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -49,9 +50,9 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
-        LineItemDataHandlerInterface $lineItemDataHandler
+        EntityRepositoryInterface $lineItemRepository
     ) {
-        parent::__construct($configReader, $lineItemDataHandler);
+        parent::__construct($configReader, $lineItemRepository);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;
