@@ -32,8 +32,11 @@ Component.register('payone-order-items', {
                 let quantity = order_item.quantity;
 
                 if(order_item.customFields) {
-                    if ('refund' === this.mode && 0 < order_item.customFields.payone_captured_quantity) {
-                        quantity = order_item.customFields.payone_captured_quantity;
+                    if ('refund' === this.mode) {
+                        if(order_item.customFields.payone_captured_quantity &&
+                            0 > order_item.customFields.payone_captured_quantity) {
+                            quantity = order_item.customFields.payone_captured_quantity;
+                        }
 
                         if(order_item.customFields.payone_refunded_quantity) {
                             quantity -= order_item.customFields.payone_refunded_quantity;

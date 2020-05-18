@@ -7,8 +7,8 @@ namespace PayonePayment\Components\TransactionStatus;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\StateMachine\Exception\IllegalTransitionException;
@@ -38,6 +38,9 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     /** @var ConfigReaderInterface */
     private $configReader;
 
+    /** @var CurrencyEntity */
+    protected $currency;
+
     public function __construct(
         StateMachineRegistry $stateMachineRegistry,
         ConfigReaderInterface $configReader
@@ -48,6 +51,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, PaymentTransaction $paymentTransaction, array $transactionData): void
     {
+        $this->currency = $paymentTransaction->getOrder()->getCurrency();
+
         $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower($transactionData['txaction']));
 
@@ -107,11 +112,22 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
     }
 
+    private function isTransactionPartialPaid(array $transactionData): bool
+    {
+        if (in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE]) &&
+            array_key_exists('receivable', $transactionData) &&
+            $this->getIntFromFloat((string)$transactionData['receivable']) !== 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     private function isTransactionPaid(array $transactionData): bool
     {
         if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE &&
             array_key_exists('receivable', $transactionData) &&
-            $this->getReciveableInt((string)$transactionData['receivable']) === 0) {
+            $this->getIntFromFloat((string)$transactionData['receivable']) === $this->getIntFromFloat((string)$transactionData['price'])) {
             return true;
         }
 
@@ -127,22 +143,11 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         );
     }
 
-    private function isTransactionPartialPaid(array $transactionData): bool
-    {
-        if (in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE]) &&
-            array_key_exists('receivable', $transactionData) &&
-            $this->getReciveableInt((string)$transactionData['receivable']) !== 0) {
-            return true;
-        }
-
-        return false;
-    }
-
     private function isTransactionPartialRefund(array $transactionData): bool
     {
         if (strtolower($transactionData['txaction']) === self::ACTION_DEBIT &&
             array_key_exists('receivable', $transactionData) &&
-            $this->getReciveableInt((string)$transactionData['receivable']) !== 0) {
+            $this->getIntFromFloat((string)$transactionData['receivable']) !== 0) {
             return true;
         }
 
@@ -153,7 +158,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     {
         if (in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE]) &&
             array_key_exists('receivable', $transactionData) &&
-            $this->getReciveableInt((string)$transactionData['receivable']) !== 0) {
+            $this->getIntFromFloat((string)$transactionData['receivable']) !== 0) {
             return true;
         }
 
@@ -166,14 +171,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             || strtolower($transactionData['txaction']) === self::ACTION_FAILED;
     }
 
-    protected function getReciveableInt(string $receivable): int
+    protected function getIntFromFloat(string $receivable): int
     {
-        $reciveableStrChr = strrchr($receivable, '.');
-
-        if($reciveableStrChr) {
-            return (int) ((float)$receivable * (10 ** strlen(substr($reciveableStrChr, 1))));
-        }
-
-        return (int) $receivable;
+        return (int) ((float)$receivable * (10 ** $this->currency->getDecimalPrecision()));
     }
 }

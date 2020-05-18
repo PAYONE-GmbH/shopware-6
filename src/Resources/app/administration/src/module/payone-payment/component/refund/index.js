@@ -66,7 +66,7 @@ Component.register('payone-refund-button', {
                 return false;
             }
 
-            return this.remainingAmount > 0;
+            return this.remainingAmount > 0 && this.transaction.customFields.payone_allow_refund;
         }
     },
 

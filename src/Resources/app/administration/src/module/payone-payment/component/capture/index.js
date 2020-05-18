@@ -53,7 +53,7 @@ Component.register('payone-capture-button', {
                 return false;
             }
 
-            return this.remainingAmount > 0;
+            return this.remainingAmount > 0 && this.transaction.customFields.payone_allow_capture;
         },
     },
 
@@ -129,15 +129,15 @@ Component.register('payone-capture-button', {
 
             this.PayonePaymentService.capturePayment(request).then(() => {
                 this.createNotificationSuccess({
-                    title: this.$tc('payone-payment.messages.captureSuccessTitle'),
-                    message: this.$tc('payone-payment.messages.captureSuccessMessage')
+                    title: this.$tc('payone-payment.capture.successTitle'),
+                    message: this.$tc('payone-payment.capture.successMessage')
                 });
 
                 this.isCaptureSuccessful = true;
             }).catch(() => {
                 this.createNotificationError({
-                    title: this.$tc('payone-payment.messages.captureErrorTitle'),
-                    message: this.$tc('payone-payment.messages.captureErrorMessage')
+                    title: this.$tc('payone-payment.capture.errorTitle'),
+                    message: this.$tc('payone-payment.capture.errorMessage')
                 });
 
                 this.isCaptureSuccessful = false;
@@ -162,9 +162,11 @@ Component.register('payone-capture-button', {
             };
             this.isLoading = true;
 
+            this._populateSelectionProperty();
+
             this.selection.forEach((selection) => {
                 this.order.lineItems.forEach((order_item) => {
-                    if (order_item.reference === selection.reference && selection.selected && 0 < selection.quantity) {
+                    if (order_item.id === selection.id && 0 < selection.quantity) {
                         const copy = { ...order_item },
                             taxRate = copy.tax_rate / (10 ** this.order.currency.decimalPrecision);
 
@@ -237,8 +239,6 @@ Component.register('payone-capture-button', {
                     && 0 < order_item.customFields.payone_captured_quantity) {
                     quantity -= order_item.customFields.payone_captured_quantity;
                 }
-
-                console.log(order_item.customFields);
 
                 this.selection.push({
                     id: order_item.id,
