@@ -74,16 +74,6 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
         $this->cardRepository        = $cardRepository;
     }
 
-    public function supports(string $paymentMethodId): bool
-    {
-        return $paymentMethodId === PayoneCreditCard::UUID;
-    }
-
-    public function getAdditionalRequestParameters(PaymentTransaction $transaction, Context $context, ParameterBag $parameterBag = null): array
-    {
-        return [];
-    }
-
     /**
      * {@inheritdoc}
      */

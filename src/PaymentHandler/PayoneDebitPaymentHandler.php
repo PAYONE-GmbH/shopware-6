@@ -67,16 +67,6 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
         $this->mandateService        = $mandateService;
     }
 
-    public function supports(string $paymentMethodId): bool
-    {
-        return $paymentMethodId === PayoneDebit::UUID;
-    }
-
-    public function getAdditionalRequestParameters(PaymentTransaction $transaction, Context $context, ParameterBag $parameterBag = null): array
-    {
-        return [];
-    }
-    
     /**
      * {@inheritdoc}
      */

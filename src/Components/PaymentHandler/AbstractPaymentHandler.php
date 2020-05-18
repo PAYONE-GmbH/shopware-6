@@ -7,7 +7,6 @@ namespace PayonePayment\Components\PaymentHandler;
 use Exception;
 use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
-use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
@@ -58,10 +57,10 @@ abstract class AbstractPaymentHandler
         $this->context     = $context;
         $this->transaction = $this->getTransaction($parameterBag->get('orderTransactionId'));
 
-        $isValidTransaction = $this->validateTransaction();
+        $transactionError = $this->validateTransaction();
 
-        if(!empty($isValidTransaction)) {
-            return new JsonResponse(['status' => false, 'message' => $isValidTransaction], Response::HTTP_NOT_FOUND);
+        if(!empty($transactionError)) {
+            return new JsonResponse(['status' => false, 'message' => $transactionError], Response::HTTP_NOT_FOUND);
         }
 
         $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($this->transaction);
@@ -131,7 +130,7 @@ abstract class AbstractPaymentHandler
         return $requestResult;
     }
 
-    protected function postRequestHandling(ParameterBag $parameterBag, float $captureAmount): void
+    protected function updateTransactionData(ParameterBag $parameterBag, float $captureAmount): void
     {
         $transactionData = [];
         $currency = $this->paymentTransaction->getOrder()->getCurrency();
@@ -152,25 +151,22 @@ abstract class AbstractPaymentHandler
         $this->dataHandler->saveTransactionData($this->paymentTransaction, $this->context, $transactionData);
     }
 
-    protected function orderLineHandling(array $orderLines): void
+    protected function saveOrderLineItemData(array $orderLines): void
     {
         if (empty($orderLines)) {
             return;
         }
 
         foreach ($orderLines as $orderLine) {
+            $quantity = $orderLine['quantity'];
+
             if(array_key_exists('customFields', $orderLine) && !empty($orderLine['customFields']) &&
                 array_key_exists($this->getQuantityCustomField(), $orderLine['customFields'])) {
-
-                $this->lineItemDataHandler->saveLineItemDataById($orderLine['id'], $this->context, [
-                    $this->getQuantityCustomField() => $orderLine['quantity'] + $orderLine['customFields'][$this->getQuantityCustomField()],
-                ]);
-
-                continue;
+                $quantity = $orderLine['quantity'] + $orderLine['customFields'][$this->getQuantityCustomField()];
             }
 
             $this->lineItemDataHandler->saveLineItemDataById($orderLine['id'], $this->context, [
-                $this->getQuantityCustomField() => $orderLine['quantity'],
+                $this->getQuantityCustomField() => $quantity,
             ]);
         }
     }
@@ -188,7 +184,7 @@ abstract class AbstractPaymentHandler
         return '';
     }
 
-    protected function isValidRequestResponse(JsonResponse $requestResponse): bool
+    protected function isSuccessResponse(JsonResponse $requestResponse): bool
     {
         /** @var false|string $requestContent */
         $requestContent = $requestResponse->getContent();

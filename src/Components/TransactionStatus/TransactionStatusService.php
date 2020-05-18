@@ -51,14 +51,13 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, PaymentTransaction $paymentTransaction, array $transactionData): void
     {
-        $this->currency = $paymentTransaction->getOrder()->getCurrency();
-
         $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower($transactionData['txaction']));
+        $currency = $paymentTransaction->getOrder()->getCurrency();
 
-        if ($this->isTransactionPartialPaid($transactionData)) {
+        if ($this->isTransactionPartialPaid($transactionData, $currency)) {
             $configurationKey = self::ACTION_PARTIAL_CAPTURE;
-        } elseif ($this->isTransactionPartialRefund($transactionData)) {
+        } elseif ($this->isTransactionPartialRefund($transactionData, $currency)) {
             $configurationKey = self::ACTION_PARTIAL_DEBIT;
         }
 
@@ -67,13 +66,13 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         if (empty($transitionName)) {
             if ($this->isTransactionOpen($transactionData)) {
                 $transitionName = StateMachineTransitionActions::ACTION_REOPEN;
-            } elseif ($this->isTransactionPartialPaid($transactionData)) {
+            } elseif ($this->isTransactionPartialPaid($transactionData, $currency)) {
                 $transitionName = StateMachineTransitionActions::ACTION_PAY_PARTIALLY;
-            }elseif ($this->isTransactionPaid($transactionData)) {
+            }elseif ($this->isTransactionPaid($transactionData, $currency)) {
                $transitionName = StateMachineTransitionActions::ACTION_PAY;
-            } elseif ($this->isTransactionPartialRefund($transactionData)) {
+            } elseif ($this->isTransactionPartialRefund($transactionData, $currency)) {
                 $transitionName = StateMachineTransitionActions::ACTION_REFUND_PARTIALLY;
-            } elseif ($this->isTransactionRefund($transactionData)) {
+            } elseif ($this->isTransactionRefund($transactionData, $currency)) {
                 $transitionName = StateMachineTransitionActions::ACTION_REFUND;
             } elseif ($this->isTransactionCancelled($transactionData)) {
                 $transitionName = StateMachineTransitionActions::ACTION_CANCEL;
@@ -112,30 +111,51 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
     }
 
-    private function isTransactionPartialPaid(array $transactionData): bool
+    private function isTransactionPartialPaid(array $transactionData, ?CurrencyEntity $currency): bool
     {
-        if (in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE]) &&
-            array_key_exists('receivable', $transactionData) &&
-            $this->getIntFromFloat((string)$transactionData['receivable']) !== 0) {
-            return true;
+        if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE])){
+            return false;
         }
 
-        return false;
+        if (!array_key_exists('receivable', $transactionData)) {
+            return false;
+        }
+
+        if(!$currency) {
+            return false;
+        }
+
+        if((int) ((float)$transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())) === 0) {
+            return false;
+        }
+
+        return true;
     }
 
-    private function isTransactionPaid(array $transactionData): bool
+    private function isTransactionPaid(array $transactionData, ?CurrencyEntity $currency): bool
     {
-        if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE &&
-            array_key_exists('receivable', $transactionData) &&
-            ( (array_key_exists('price', $transactionData) && $this->getIntFromFloat((string)$transactionData['receivable']) === $this->getIntFromFloat((string)$transactionData['price'])) ||
-                $this->getIntFromFloat((string)$transactionData['receivable']) === 0
-            )) {
+        if(strtolower($transactionData['txaction']) !== self::ACTION_CAPTURE) {
+            return false;
+        }
+
+        if(!array_key_exists('receivable', $transactionData)) {
+            return false;
+        }
+
+        if(!$currency) {
+            return false;
+        }
+
+        if(array_key_exists('price', $transactionData) &&
+            (int) ((float)$transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())) === (int) ((float)$transactionData['price'] * (10 ** $currency->getDecimalPrecision()))) {
             return true;
         }
 
+        if((int) ((float)$transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())) !== 0) {
+            return true;
+        }
 
-        return in_array(
-            strtolower($transactionData['txaction']),
+        return in_array(strtolower($transactionData['txaction']),
             [
                 self::ACTION_PAID,
                 self::ACTION_COMPLETED,
@@ -145,36 +165,50 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         );
     }
 
-    private function isTransactionPartialRefund(array $transactionData): bool
+    private function isTransactionPartialRefund(array $transactionData, ?CurrencyEntity $currency): bool
     {
-        if (strtolower($transactionData['txaction']) === self::ACTION_DEBIT &&
-            array_key_exists('receivable', $transactionData) &&
-            $this->getIntFromFloat((string)$transactionData['receivable']) !== 0) {
-            return true;
+        if (strtolower($transactionData['txaction']) !== self::ACTION_DEBIT) {
+            return false;
         }
 
-        return false;
+        if(!array_key_exists('receivable', $transactionData)) {
+            return false;
+        }
+
+        if(!$currency) {
+            return false;
+        }
+
+        if((int) ((float)$transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())) === 0) {
+            return false;
+        }
+
+        return true;
     }
 
-    private function isTransactionRefund(array $transactionData): bool
+    private function isTransactionRefund(array $transactionData, ?CurrencyEntity $currency): bool
     {
-        if (in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE]) &&
-            array_key_exists('receivable', $transactionData) &&
-            $this->getIntFromFloat((string)$transactionData['receivable']) !== 0) {
-            return true;
+        if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE])){
+            return false;
         }
 
-        return false;
+        if(array_key_exists('receivable', $transactionData)) {
+            return false;
+        }
+
+        if(!$currency) {
+            return false;
+        }
+
+        if((int) ((float)$transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())) === 0) {
+            return false;
+        }
+
+        return true;
     }
 
     private function isTransactionCancelled(array $transactionData): bool
     {
-        return strtolower($transactionData['txaction']) === self::ACTION_CANCELATION
-            || strtolower($transactionData['txaction']) === self::ACTION_FAILED;
-    }
-
-    protected function getIntFromFloat(string $receivable): int
-    {
-        return (int) ((float)$receivable * (10 ** $this->currency->getDecimalPrecision()));
+        return in_array(strtolower($transactionData['txaction']), [self::ACTION_CANCELATION, self::ACTION_FAILED], true);
     }
 }

@@ -43,7 +43,7 @@
         <service id="PayonePayment\Payone\Request\Capture\CaptureRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Capture\CaptureRequest" />
-            <argument type="service" id="PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory" />
+            <argument type="service" id="PayonePayment\Components\DependencyInjection\Factory\RequestHandlerFactory" />
         </service>
 
         <!-- Refund -->
@@ -54,7 +54,7 @@
         <service id="PayonePayment\Payone\Request\Refund\RefundRequestFactory">
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\Refund\RefundRequest" />
-            <argument type="service" id="PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory" />
+            <argument type="service" id="PayonePayment\Components\DependencyInjection\Factory\RequestHandlerFactory" />
         </service>
 
         <!-- Paypal -->

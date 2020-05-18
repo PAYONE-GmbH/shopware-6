@@ -4,33 +4,21 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentHandler\Refund;
 
-use Exception;
 use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler;
-use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
 use PayonePayment\Components\PaymentHandler\AbstractPaymentHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
-use PayonePayment\Struct\PaymentTransaction;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Response;
 
 class RefundPaymentHandler extends AbstractPaymentHandler implements RefundPaymentHandlerInterface
 {
-    protected const ALLOW_CUSTOM_FIELD = CustomFieldInstaller::ALLOW_REFUND;
-    protected const AMOUNT_CUSTOM_FIELD = CustomFieldInstaller::REFUNDED_AMOUNT;
-    protected const QUANTITY_CUSTOM_FIELD = CustomFieldInstaller::REFUNDED_QUANTITY;
-
     /** @var TransactionStatusServiceInterface */
     private $transactionStatusService;
 
@@ -57,11 +45,12 @@ class RefundPaymentHandler extends AbstractPaymentHandler implements RefundPayme
     {
         $requestResponse = $this->fullRequest($parameterBag, $context);
 
-        if(!$this->isValidRequestResponse($requestResponse)) {
+        if(!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
         }
 
-        $this->postRequestHandling($parameterBag, $this->paymentTransaction->getOrderTransaction()->getAmount()->getTotalPrice());
+        $this->updateTransactionData($parameterBag, $this->paymentTransaction->getOrderTransaction()->getAmount()->getTotalPrice());
+        $this->saveOrderLineItemData($parameterBag->get('orderLines', []));
 
         $this->transactionStatusService->transitionByName(
             $context,
@@ -79,12 +68,13 @@ class RefundPaymentHandler extends AbstractPaymentHandler implements RefundPayme
     {
         $requestResponse = $this->partialRequest($parameterBag, $context);
 
-        if(!$this->isValidRequestResponse($requestResponse)) {
+        if(!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
         }
 
-        $this->postRequestHandling($parameterBag, (float)$parameterBag->get('amount'));
-        $this->orderLineHandling($parameterBag->get('orderLines'));
+        $this->updateTransactionData($parameterBag, (float)$parameterBag->get('amount'));
+        $this->saveOrderLineItemData($parameterBag->get('orderLines', []));
+
         $this->transactionStatusService->transitionByName(
             $context,
             $this->paymentTransaction->getOrderTransaction()->getId(),
@@ -96,16 +86,16 @@ class RefundPaymentHandler extends AbstractPaymentHandler implements RefundPayme
 
     protected function getAmountCustomField(): string
     {
-        return self::AMOUNT_CUSTOM_FIELD;
+        return CustomFieldInstaller::REFUNDED_AMOUNT;
     }
 
     protected function getQuantityCustomField(): string
     {
-        return self::QUANTITY_CUSTOM_FIELD;
+        return CustomFieldInstaller::REFUNDED_QUANTITY;
     }
 
     protected function getAllowCustomField(): string
     {
-        return self::ALLOW_CUSTOM_FIELD;
+        return CustomFieldInstaller::ALLOW_REFUND;
     }
 }
