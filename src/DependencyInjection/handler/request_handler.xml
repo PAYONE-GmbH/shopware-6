@@ -4,7 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service id="PayonePayment\Components\DependencyInjection\Factory\RequestHandlerFactory">
-            <argument type="tagged" id="payone_payment.request_handler" />
+            <argument type="tagged" tag="payone_payment.request_handler" />
         </service>
 
         <service id="PayonePayment\Components\RequestHandler\CreditCardRequestHandler">

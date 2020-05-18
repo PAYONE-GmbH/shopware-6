@@ -35,11 +35,13 @@ class PayolutionDebitRequestHandler extends AbstractRequestHandler
 
     public function getAdditionalRequestParameters(PaymentTransaction $transaction, Context $context, ParameterBag $parameterBag = null): array
     {
-        $currency = $transaction->getOrder()->getCurrency();
+        $currency   = $transaction->getOrder()->getCurrency();
+        $orderLines = [];
+
         if($parameterBag) {
-            $orderLines = $parameterBag->get('orderLines');
+            $orderLines = $parameterBag->get('orderLines', []);
         }
 
-        return $this->mapPayoneOrderLines($currency, $transaction->getOrder()->getLineItems(), $orderLines ?? []);
+        return $this->mapPayoneOrderLines($currency, $transaction->getOrder()->getLineItems(), $orderLines);
     }
 }
