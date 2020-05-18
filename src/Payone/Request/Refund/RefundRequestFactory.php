@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Refund;
 
-use PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory;
+use PayonePayment\Components\DependencyInjection\Factory\RequestHandlerFactory;
 use PayonePayment\Components\Exception\NoPaymentHandlerFoundException;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
@@ -21,17 +21,17 @@ class RefundRequestFactory extends AbstractRequestFactory
     /** @var RefundRequest */
     private $refundRequest;
 
-    /** @var PaymentHandlerFactory */
-    private $paymentHandlerFactory;
+    /** @var RequestHandlerFactory */
+    private $requestHandlerFactory;
 
     public function __construct(
         SystemRequest $systemRequest,
         RefundRequest $refundRequest,
-        PaymentHandlerFactory $paymentHandlerFactory
+        RequestHandlerFactory $requestHandlerFactory
     ) {
         $this->systemRequest = $systemRequest;
         $this->refundRequest = $refundRequest;
-        $this->paymentHandlerFactory = $paymentHandlerFactory;
+        $this->requestHandlerFactory = $requestHandlerFactory;
     }
 
 
@@ -50,8 +50,8 @@ class RefundRequestFactory extends AbstractRequestFactory
         );
 
         try {
-            $this->requests[] = $this->paymentHandlerFactory->getPaymentHandler(
-                $transaction->getPaymentMethodId(),
+            $this->requests[] = $this->requestHandlerFactory->getPaymentHandler(
+                $transaction->getOrderTransaction()->getPaymentMethodId(),
                 $transaction->getOrder()->getOrderNumber()
             )->getAdditionalRequestParameters($transaction, $context, $parameterBag);
         } catch (NoPaymentHandlerFoundException $e) {
@@ -76,8 +76,8 @@ class RefundRequestFactory extends AbstractRequestFactory
         );
 
         try {
-            $this->requests[] = $this->paymentHandlerFactory->getPaymentHandler(
-                $transaction->getPaymentMethodId(),
+            $this->requests[] = $this->requestHandlerFactory->getPaymentHandler(
+                $transaction->getOrderTransaction()->getPaymentMethodId(),
                 $transaction->getOrder()->getOrderNumber()
             )->getAdditionalRequestParameters($transaction, $context, $parameterBag);
         } catch (NoPaymentHandlerFoundException $e) {

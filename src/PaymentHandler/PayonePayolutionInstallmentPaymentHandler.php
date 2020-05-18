@@ -65,21 +65,6 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
         $this->cartHasher            = $cartHasher;
     }
 
-    public function supports(string $paymentMethodId): bool
-    {
-        return $paymentMethodId === PayonePayolutionInstallment::UUID;
-    }
-
-    public function getAdditionalRequestParameters(PaymentTransaction $transaction, Context $context, ParameterBag $parameterBag = null): array
-    {
-        $currency = $transaction->getOrder()->getCurrency();
-        if($parameterBag) {
-            $orderLines = $parameterBag->get('orderLines');
-        }
-
-        return $this->mapPayoneOrderLines($currency, $transaction->getOrder()->getLineItems(), $orderLines ?? []);
-    }
-
     /**
      * {@inheritdoc}
      */

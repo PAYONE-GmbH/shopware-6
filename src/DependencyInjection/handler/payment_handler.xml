@@ -2,10 +2,7 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-
     <services>
-        <service id="PayonePayment\Components\DependencyInjection\Factory\PaymentHandlerFactory" />
-        
         <service id="PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory" />
@@ -18,7 +15,6 @@
             <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
 
             <tag name="shopware.payment.method.async" />
-            <tag name="payone_payment.payment_handler" />
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayoneDebitPaymentHandler">
@@ -32,7 +28,6 @@
             <argument type="service" id="PayonePayment\Components\MandateService\MandateService" />
 
             <tag name="shopware.payment.method.sync" />
-            <tag name="payone_payment.payment_handler" />
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePaypalPaymentHandler">
@@ -46,7 +41,6 @@
             <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
 
             <tag name="shopware.payment.method.async" />
-            <tag name="payone_payment.payment_handler" />
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler">
@@ -60,7 +54,6 @@
             <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
 
             <tag name="shopware.payment.method.async" />
-            <tag name="payone_payment.payment_handler" />
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler">
@@ -73,7 +66,6 @@
             <argument type="service" id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler" />
 
             <tag name="shopware.payment.method.sync" />
-            <tag name="payone_payment.payment_handler" />
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler">
@@ -87,7 +79,6 @@
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
 
             <tag name="shopware.payment.method.sync" />
-            <tag name="payone_payment.payment_handler" />
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler">
@@ -100,7 +91,6 @@
             <argument type="service" id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler" />
 
             <tag name="shopware.payment.method.sync" />
-            <tag name="payone_payment.payment_handler" />
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler">
@@ -114,7 +104,6 @@
             <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
 
             <tag name="shopware.payment.method.async" />
-            <tag name="payone_payment.payment_handler" />
         </service>
     </services>
 </container>

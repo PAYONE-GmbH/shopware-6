@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="PayonePayment\Components\DependencyInjection\Factory\RequestHandlerFactory">
+            <argument type="tagged" id="payone_payment.request_handler" />
+        </service>
+
+        <service id="PayonePayment\Components\RequestHandler\CreditCardRequestHandler">
+            <tag name="payone_payment.request_handler" />
+        </service>
+
+        <service id="PayonePayment\Components\RequestHandler\DebitRequestHandler">
+            <tag name="payone_payment.request_handler" />
+        </service>
+
+        <service id="PayonePayment\Components\RequestHandler\PayolutionDebitRequestHandler">
+            <tag name="payone_payment.request_handler" />
+        </service>
+
+        <service id="PayonePayment\Components\RequestHandler\PayolutionInstallmentRequestHandler">
+            <tag name="payone_payment.request_handler" />
+        </service>
+
+        <service id="PayonePayment\Components\RequestHandler\PayolutionInvoicingRequestHandler">
+            <tag name="payone_payment.request_handler" />
+        </service>
+
+        <service id="PayonePayment\Components\RequestHandler\PaypalExpressRequestHandler">
+            <tag name="payone_payment.request_handler" />
+        </service>
+
+        <service id="PayonePayment\Components\RequestHandler\PaypalRequestHandler">
+            <tag name="payone_payment.request_handler" />
+        </service>
+
+        <service id="PayonePayment\Components\RequestHandler\SofortBankingRequestHandler">
+            <tag name="payone_payment.request_handler" />
+        </service>
+    </services>
+</container>

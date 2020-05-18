@@ -25,12 +25,8 @@ class CaptureRequest
 
     public function getRequestParameters(OrderEntity $order, Context $context, array $customFields, float $totalAmount = null): array
     {
-        $currency = $this->getOrderCurrency($order, $context);
-
         if ($totalAmount === null) {
             $totalAmount = $order->getAmountTotal();
-        } else {
-            $totalAmount = (float)number_format($totalAmount, $currency->getDecimalPrecision());
         }
 
         if (empty($customFields[CustomFieldInstaller::TRANSACTION_ID])) {

@@ -67,16 +67,6 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
         $this->stateHandler          = $stateHandler;
     }
 
-    public function supports(string $paymentMethodId): bool
-    {
-        return $paymentMethodId === PayonePaypal::UUID;
-    }
-
-    public function getAdditionalRequestParameters(PaymentTransaction $transaction, Context $context, ParameterBag $parameterBag = null): array
-    {
-        return [];
-    }
-
     /**
      * {@inheritdoc}
      */

@@ -25,8 +25,6 @@ class PayonePayment extends Plugin
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/DependencyInjection'));
         $loader->load('services.xml');
-        
-        $container->addCompilerPass(new PaymentHandlerCompilerPass());
 
         parent::build($container);
     }

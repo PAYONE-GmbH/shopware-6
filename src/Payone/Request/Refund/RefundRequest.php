@@ -41,8 +41,6 @@ class RefundRequest
 
         if ($totalAmount === null) {
             $totalAmount = $order->getAmountTotal();
-        } else {
-            $totalAmount = (float)number_format($totalAmount, $currency->getDecimalPrecision());
         }
 
         return [
