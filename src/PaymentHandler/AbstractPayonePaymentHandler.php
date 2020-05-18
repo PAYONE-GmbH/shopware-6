@@ -17,6 +17,15 @@ use Shopware\Core\System\Currency\CurrencyEntity;
  */
 abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInterface
 {
+    public const PAYONE_STATE_COMPLETED = 'completed';
+    public const PAYONE_STATE_PENDING = 'pending';
+
+    public const PAYONE_CLEARING_FNC = 'fnc';
+
+    public const PAYONE_FINANCING_PYV = 'PYV';
+    public const PAYONE_FINANCING_PYS = 'PYS';
+    public const PAYONE_FINANCING_PYD = 'PYD';
+
     /** @var ConfigReaderInterface */
     protected $configReader;
 
