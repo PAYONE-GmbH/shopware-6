@@ -40,35 +40,7 @@ class CaptureRequestFactory extends AbstractRequestFactory
         $this->logger                = $logger;
     }
 
-    public function getFullRequest(PaymentTransaction $transaction, ParameterBag $parameterBag, Context $context): array
-    {
-        $this->requests[] = $this->getBaseCaptureParameters(
-            $transaction->getOrder()->getSalesChannelId(),
-            $transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier(),
-            $context
-        );
-
-        $this->requests[] = $this->captureRequest->getRequestParameters(
-            $transaction->getOrder(),
-            $context,
-            $transaction->getCustomFields()
-        );
-
-        try {
-            $requestHandler = $this->requestHandlerFactory->getRequestHandler(
-                $transaction->getOrderTransaction()->getPaymentMethodId(),
-                $transaction->getOrder()->getOrderNumber()
-            );
-
-            $requestHandler->getAdditionalRequestParameters($transaction, $context, $parameterBag);
-        } catch (NoPaymentHandlerFoundException $exception) {
-            $this->logger->error($exception->getMessage(), $exception->getTrace());
-        }
-
-        return $this->createRequest();
-    }
-
-    public function getPartialRequest(PaymentTransaction $transaction, ParameterBag $parameterBag, Context $context): array
+    public function getRequest(PaymentTransaction $transaction, ParameterBag $parameterBag, Context $context): array
     {
         $this->requests[] = $this->getBaseCaptureParameters(
             $transaction->getOrder()->getSalesChannelId(),

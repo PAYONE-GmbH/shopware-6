@@ -40,32 +40,9 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
     /**
      * {@inheritdoc}
      */
-    public function fullCapture(ParameterBag $parameterBag, Context $context): JsonResponse
+    public function capture(ParameterBag $parameterBag, Context $context): JsonResponse
     {
-        $requestResponse = $this->fullRequest($parameterBag, $context);
-
-        if (!$this->isSuccessResponse($requestResponse)) {
-            return $requestResponse;
-        }
-
-        $this->updateTransactionData($parameterBag, $this->transaction->getAmount()->getTotalPrice());
-        $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
-
-        $this->transactionStatusService->transitionByName(
-            $context,
-            $this->paymentTransaction->getOrderTransaction()->getId(),
-            StateMachineTransitionActions::ACTION_PAY
-        );
-
-        return $requestResponse;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function partialCapture(ParameterBag $parameterBag, Context $context): JsonResponse
-    {
-        $requestResponse = $this->partialRequest($parameterBag, $context);
+        $requestResponse = $this->handleRequest($parameterBag, $context);
 
         if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
@@ -74,11 +51,19 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $this->updateTransactionData($parameterBag, (float) $parameterBag->get('amount'));
         $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
 
-        $this->transactionStatusService->transitionByName(
-            $context,
-            $this->paymentTransaction->getOrderTransaction()->getId(),
-            StateMachineTransitionActions::ACTION_PAY_PARTIALLY
-        );
+        if ($parameterBag->get('complete')) {
+            $this->transactionStatusService->transitionByName(
+                $context,
+                $this->paymentTransaction->getOrderTransaction()->getId(),
+                StateMachineTransitionActions::ACTION_PAY
+            );
+        } else {
+            $this->transactionStatusService->transitionByName(
+                $context,
+                $this->paymentTransaction->getOrderTransaction()->getId(),
+                StateMachineTransitionActions::ACTION_PAY_PARTIALLY
+            );
+        }
 
         return $requestResponse;
     }

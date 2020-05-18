@@ -107,6 +107,12 @@
             "label": "Sequence Number",
             "empty": "none"
         },
-        "transactionState": "State"
+        "transactionState": "State",
+        "error": {
+            "transaction": {
+                "notFound": "No matching transaction could be found",
+                "orderNotFound": "No matching order could be found"
+            }
+        }
     }
 }

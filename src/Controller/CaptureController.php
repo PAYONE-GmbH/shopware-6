@@ -33,10 +33,6 @@ class CaptureController extends AbstractController
             return new JsonResponse(['status' => false, 'message' => 'missing order transaction id'], Response::HTTP_NOT_FOUND);
         }
 
-        if ((bool) $request->get('complete', false)) {
-            return $this->captureHandler->fullCapture($request->request, $context);
-        }
-
-        return $this->captureHandler->partialCapture($request->request, $context);
+        return $this->captureHandler->capture($request->request, $context);
     }
 }

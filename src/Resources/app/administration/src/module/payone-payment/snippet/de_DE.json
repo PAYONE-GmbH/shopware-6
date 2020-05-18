@@ -107,6 +107,12 @@
             "label": "Sequenznummer",
             "empty": "keine"
         },
-        "transactionState": "Status"
+        "transactionState": "Status",
+        "error": {
+            "transaction": {
+                "notFound": "Es wurde keine passende Transaktion gefundend",
+                "orderNotFound": "Es wurde keine passende Bestellung gefundend"
+            }
+        }
     }
 }

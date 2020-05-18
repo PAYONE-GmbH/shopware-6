@@ -85,12 +85,13 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         $saveData = [];
 
         foreach ($lineItem->getElements() as $lineItemEntity) {
-            $customFields = array_merge($lineItemEntity->getCustomFields() ?? [], $customFields);
-
-            $saveData[$lineItemEntity->getId()] = $customFields;
+            $saveData[] = [
+                'id'           => $lineItemEntity->getId(),
+                'customFields' => array_merge($lineItemEntity->getCustomFields() ?? [], $customFields),
+            ];
         }
 
-        $this->lineItemRepository->update([$saveData], $context);
+        $this->lineItemRepository->update($saveData, $context);
     }
 
     protected function getBaseCustomFields(string $status): array

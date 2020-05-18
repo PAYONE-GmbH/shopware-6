@@ -47,7 +47,7 @@ class RefundRequestFactoryTest extends TestCase
     {
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([]), new NullLogger());
 
-        $request = $factory->getFullRequest($this->getPaymentTransaction(), new ParameterBag(), Context::createDefaultContext());
+        $request = $factory->getRequest($this->getPaymentTransaction(), new ParameterBag(), Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
@@ -77,7 +77,7 @@ class RefundRequestFactoryTest extends TestCase
     {
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([]), new NullLogger());
 
-        $request = $factory->getFullRequest($this->getPaymentTransaction(), new ParameterBag([
+        $request = $factory->getRequest($this->getPaymentTransaction(), new ParameterBag([
             'amount' => 100,
         ]), Context::createDefaultContext());
 
@@ -132,7 +132,7 @@ class RefundRequestFactoryTest extends TestCase
             PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler(),
         ]), new NullLogger());
 
-        $request = $factory->getFullRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
+        $request = $factory->getRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
@@ -187,7 +187,7 @@ class RefundRequestFactoryTest extends TestCase
             PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler(),
         ]), new NullLogger());
 
-        $request = $factory->getFullRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
+        $request = $factory->getRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
