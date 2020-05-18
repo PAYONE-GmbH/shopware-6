@@ -45,7 +45,7 @@ abstract class AbstractTransactionHandler
     /** @var PaymentTransaction */
     protected $paymentTransaction;
 
-    public function fullRequest(ParameterBag $parameterBag, Context $context): JsonResponse
+    public function handleRequest(ParameterBag $parameterBag, Context $context): JsonResponse
     {
         $this->context     = $context;
         $this->transaction = $this->getTransaction($parameterBag->get('orderTransactionId'));
@@ -59,29 +59,7 @@ abstract class AbstractTransactionHandler
         $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($this->transaction);
 
         return $this->executeRequest(
-            $this->requestFactory->getFullRequest(
-                $this->paymentTransaction,
-                $parameterBag,
-                $this->context
-            )
-        );
-    }
-
-    public function partialRequest(ParameterBag $parameterBag, Context $context): JsonResponse
-    {
-        $this->context     = $context;
-        $this->transaction = $this->getTransaction($parameterBag->get('orderTransactionId'));
-
-        $isValidTransaction = $this->validateTransaction();
-
-        if (!empty($isValidTransaction)) {
-            return new JsonResponse(['status' => false, 'message' => $isValidTransaction], Response::HTTP_NOT_FOUND);
-        }
-
-        $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($this->transaction);
-
-        return $this->executeRequest(
-            $this->requestFactory->getPartialRequest(
+            $this->requestFactory->getRequest(
                 $this->paymentTransaction,
                 $parameterBag,
                 $this->context
@@ -175,11 +153,11 @@ abstract class AbstractTransactionHandler
     protected function validateTransaction(): string
     {
         if (empty($this->transaction)) {
-            return 'no order transaction found';
+            return 'payone-payment.error.transaction.notFound';
         }
 
         if (empty($this->transaction->getOrder())) {
-            return 'no order found';
+            return 'payone-payment.error.transaction.orderNotFound';
         }
 
         return '';

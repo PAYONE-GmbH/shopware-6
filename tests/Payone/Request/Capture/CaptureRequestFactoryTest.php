@@ -47,7 +47,7 @@ class CaptureRequestFactoryTest extends TestCase
     {
         $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestHandlerFactory([]), new NullLogger());
 
-        $request = $factory->getFullRequest($this->getPaymentTransaction(), new ParameterBag(), Context::createDefaultContext());
+        $request = $factory->getRequest($this->getPaymentTransaction(), new ParameterBag(), Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
@@ -132,7 +132,7 @@ class CaptureRequestFactoryTest extends TestCase
             PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler(),
         ]), new NullLogger());
 
-        $request = $factory->getFullRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
+        $request = $factory->getRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
@@ -193,7 +193,7 @@ class CaptureRequestFactoryTest extends TestCase
             PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler(),
         ]), new NullLogger());
 
-        $request = $factory->getFullRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
+        $request = $factory->getRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [

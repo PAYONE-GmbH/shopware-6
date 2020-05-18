@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace PayonePayment\Components\RequestHandler;
 
 use PayonePayment\Struct\PaymentTransaction;
+use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
+use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -71,15 +73,18 @@ abstract class AbstractRequestHandler
 
     protected function mapItemType(?string $itemType): string
     {
-        switch ($itemType) {
-            case 'shipment':
-                return self::TYPE_SHIPMENT;
-            case 'handling':
-                return self::TYPE_HANDLING;
-            case 'voucher':
-                return self::TYPE_VOUCHER;
-            default:
-                return self::TYPE_GOODS;
+        if ($itemType === LineItem::PRODUCT_LINE_ITEM_TYPE) {
+            return self::TYPE_GOODS;
         }
+
+        if ($itemType === LineItem::CREDIT_LINE_ITEM_TYPE) {
+            return self::TYPE_VOUCHER;
+        }
+
+        if ($itemType === PromotionProcessor::LINE_ITEM_TYPE) {
+            return self::TYPE_VOUCHER;
+        }
+
+        return self::TYPE_GOODS;
     }
 }

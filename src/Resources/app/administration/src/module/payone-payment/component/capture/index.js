@@ -134,10 +134,10 @@ Component.register('payone-capture-button', {
                 });
 
                 this.isCaptureSuccessful = true;
-            }).catch(() => {
+            }).catch((error) => {
                 this.createNotificationError({
                     title: this.$tc('payone-payment.capture.errorTitle'),
-                    message: this.$tc('payone-payment.capture.errorMessage')
+                    message: this.$tc(error.message)
                 });
 
                 this.isCaptureSuccessful = false;

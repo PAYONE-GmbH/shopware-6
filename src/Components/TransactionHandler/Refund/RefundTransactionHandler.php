@@ -40,33 +40,9 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
     /**
      * {@inheritdoc}
      */
-    public function fullRefund(ParameterBag $parameterBag, Context $context): JsonResponse
+    public function refund(ParameterBag $parameterBag, Context $context): JsonResponse
     {
-//        TODO simplify methods and fill with amount parameter
-        $requestResponse = $this->fullRequest($parameterBag, $context);
-
-        if (!$this->isSuccessResponse($requestResponse)) {
-            return $requestResponse;
-        }
-
-        $this->updateTransactionData($parameterBag, $this->paymentTransaction->getOrderTransaction()->getAmount()->getTotalPrice());
-        $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
-
-        $this->transactionStatusService->transitionByName(
-            $context,
-            $this->paymentTransaction->getOrderTransaction()->getId(),
-            StateMachineTransitionActions::ACTION_REFUND
-        );
-
-        return $requestResponse;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function partialRefund(ParameterBag $parameterBag, Context $context): JsonResponse
-    {
-        $requestResponse = $this->partialRequest($parameterBag, $context);
+        $requestResponse = $this->handleRequest($parameterBag, $context);
 
         if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
@@ -75,10 +51,24 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         $this->updateTransactionData($parameterBag, (float) $parameterBag->get('amount'));
         $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
 
+        if ($parameterBag->get('complete')) {
+            $this->transactionStatusService->transitionByName(
+                $context,
+                $this->paymentTransaction->getOrderTransaction()->getId(),
+                StateMachineTransitionActions::ACTION_REFUND
+            );
+        } else {
+            $this->transactionStatusService->transitionByName(
+                $context,
+                $this->paymentTransaction->getOrderTransaction()->getId(),
+                StateMachineTransitionActions::ACTION_PAY_PARTIALLY
+            );
+        }
+
         $this->transactionStatusService->transitionByName(
             $context,
             $this->paymentTransaction->getOrderTransaction()->getId(),
-        StateMachineTransitionActions::ACTION_REFUND_PARTIALLY
+            StateMachineTransitionActions::ACTION_REFUND_PARTIALLY
         );
 
         return $requestResponse;

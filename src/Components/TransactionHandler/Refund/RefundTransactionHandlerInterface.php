@@ -10,7 +10,5 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 interface RefundTransactionHandlerInterface
 {
-    public function fullRefund(ParameterBag $parameterBag, Context $context): JsonResponse;
-
-    public function partialRefund(ParameterBag $parameterBag, Context $context): JsonResponse;
+    public function refund(ParameterBag $parameterBag, Context $context): JsonResponse;
 }

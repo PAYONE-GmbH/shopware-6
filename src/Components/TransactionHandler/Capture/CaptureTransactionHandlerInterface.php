@@ -10,7 +10,5 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 interface CaptureTransactionHandlerInterface
 {
-    public function fullCapture(ParameterBag $parameterBag, Context $context): JsonResponse;
-
-    public function partialCapture(ParameterBag $parameterBag, Context $context): JsonResponse;
+    public function capture(ParameterBag $parameterBag, Context $context): JsonResponse;
 }

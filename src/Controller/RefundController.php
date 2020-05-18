@@ -33,10 +33,6 @@ class RefundController extends AbstractController
             return new JsonResponse(['status' => false, 'message' => 'missing order transaction id'], Response::HTTP_NOT_FOUND);
         }
 
-        if ((bool) $request->get('complete', false)) {
-            return $this->refundHandler->fullRefund($request->request, $context);
-        }
-
-        return $this->refundHandler->partialRefund($request->request, $context);
+        return $this->refundHandler->refund($request->request, $context);
     }
 }
