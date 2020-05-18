@@ -188,7 +188,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionRefund(array $transactionData, ?CurrencyEntity $currency): bool
     {
-        if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE])){
+        if (strtolower($transactionData['txaction']) !== self::ACTION_DEBIT){
             return false;
         }
 

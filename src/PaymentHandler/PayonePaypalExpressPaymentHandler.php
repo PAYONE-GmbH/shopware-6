@@ -20,6 +20,7 @@ use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -55,10 +56,10 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
-        LineItemDataHandlerInterface $lineItemDataHandler,
+        EntityRepositoryInterface $lineItemRepository,
         PaymentStateHandlerInterface $stateHandler
     ) {
-        parent::__construct($configReader, $lineItemDataHandler);
+        parent::__construct($configReader, $lineItemRepository);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;

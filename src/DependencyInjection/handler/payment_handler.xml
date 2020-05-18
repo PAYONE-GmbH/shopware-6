@@ -10,7 +10,7 @@
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
-            <argument type="service" id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
             <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
 
@@ -24,7 +24,7 @@
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
-            <argument type="service" id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="PayonePayment\Components\MandateService\MandateService" />
 
             <tag name="shopware.payment.method.sync" />
@@ -37,7 +37,7 @@
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
-            <argument type="service" id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
 
             <tag name="shopware.payment.method.async" />
@@ -50,7 +50,7 @@
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
-            <argument type="service" id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
 
             <tag name="shopware.payment.method.async" />
@@ -63,7 +63,7 @@
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
-            <argument type="service" id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
 
             <tag name="shopware.payment.method.sync" />
         </service>
@@ -75,7 +75,7 @@
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
-            <argument type="service" id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
 
             <tag name="shopware.payment.method.sync" />
@@ -88,7 +88,7 @@
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
-            <argument type="service" id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
 
             <tag name="shopware.payment.method.sync" />
         </service>
@@ -100,7 +100,7 @@
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
-            <argument type="service" id="PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
 
             <tag name="shopware.payment.method.async" />

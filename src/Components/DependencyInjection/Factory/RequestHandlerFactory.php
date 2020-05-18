@@ -18,7 +18,7 @@ class RequestHandlerFactory
         $this->requestHandlerCollection = $requestHandlerCollection;
     }
 
-    public function getPaymentHandler(string $paymentMethodId, string $orderNumber): AbstractRequestHandler
+    public function getRequestHandler(string $paymentMethodId, string $orderNumber): AbstractRequestHandler
     {
         foreach ($this->requestHandlerCollection as $requestHandler) {
             if (!empty($paymentMethodId) && $requestHandler->supports($paymentMethodId)) {

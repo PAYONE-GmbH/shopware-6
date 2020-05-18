@@ -6,6 +6,7 @@ namespace PayonePayment\Controller;
 
 use Exception;
 use PayonePayment\Components\PaymentHandler\Refund\RefundPaymentHandlerInterface;
+use PayonePayment\Components\TransactionHandler\Refund\RefundTransactionHandlerInterface;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
@@ -20,10 +21,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RefundController extends AbstractController
 {
-    /** @var RefundPaymentHandlerInterface */
+    /** @var RefundTransactionHandlerInterface */
     private $refundHandler;
 
-    public function __construct(RefundPaymentHandlerInterface $captureHandler) {$this->refundHandler = $captureHandler;}
+    public function __construct(RefundTransactionHandlerInterface $refundHandler) {$this->refundHandler = $refundHandler;}
 
     /**
      * @RouteScope(scopes={"api"})

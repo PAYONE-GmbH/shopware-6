@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\PaymentHandler;
+namespace PayonePayment\Components\TransactionHandler;
 
 use Exception;
 use PayonePayment\Components\DataHandler\LineItem\LineItemDataHandler;
@@ -20,10 +20,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class AbstractPaymentHandler
+abstract class AbstractTransactionHandler
 {
-    /** @var LineItemDataHandler */
-    protected $lineItemDataHandler;
+    /** @var EntityRepositoryInterface */
+    protected $lineItemRepository;
 
     /** @var CaptureRequestFactory|RefundRequestFactory */
     protected $requestFactory;
@@ -151,11 +151,13 @@ abstract class AbstractPaymentHandler
         $this->dataHandler->saveTransactionData($this->paymentTransaction, $this->context, $transactionData);
     }
 
-    protected function saveOrderLineItemData(array $orderLines): void
+    protected function saveOrderLineItemData(array $orderLines, Context $context): void
     {
         if (empty($orderLines)) {
             return;
         }
+
+        $saveData = [];
 
         foreach ($orderLines as $orderLine) {
             $quantity = $orderLine['quantity'];
@@ -165,10 +167,11 @@ abstract class AbstractPaymentHandler
                 $quantity = $orderLine['quantity'] + $orderLine['customFields'][$this->getQuantityCustomField()];
             }
 
-            $this->lineItemDataHandler->saveLineItemDataById($orderLine['id'], $this->context, [
-                $this->getQuantityCustomField() => $quantity,
-            ]);
+            $saveData[$orderLine['id']] = [$this->getQuantityCustomField() => $quantity];
         }
+
+
+        $this->lineItemRepository->update([$saveData], $context);
     }
 
     protected function validateTransaction(): string
