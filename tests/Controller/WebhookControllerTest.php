@@ -23,6 +23,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
@@ -82,6 +83,7 @@ class WebhookControllerTest extends TestCase
         $request->request->set('txid', Constants::PAYONE_TRANSACTION_ID);
         $request->request->set('txaction', 'capture');
         $request->request->set('receivable', '0');
+        $request->request->set('price', '123.00');
         $request->request->set('sequencenumber', '0');
 
         $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAY, $request->request->all())->execute(
@@ -134,6 +136,10 @@ class WebhookControllerTest extends TestCase
             []
         );
 
+        $currency = new CurrencyEntity();
+        $currency->setId(Constants::CURRENCY_ID);
+        $currency->setDecimalPrecision(2);
+
         $orderTransactionEntity = new OrderTransactionEntity();
         $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
 
@@ -142,6 +148,7 @@ class WebhookControllerTest extends TestCase
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+        $orderEntity->setCurrency($currency);
 
         $paymentMethodEntity = new PaymentMethodEntity();
         $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);

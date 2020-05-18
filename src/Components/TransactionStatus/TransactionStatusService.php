@@ -127,7 +127,9 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     {
         if (strtolower($transactionData['txaction']) === self::ACTION_CAPTURE &&
             array_key_exists('receivable', $transactionData) &&
-            $this->getIntFromFloat((string)$transactionData['receivable']) === $this->getIntFromFloat((string)$transactionData['price'])) {
+            ( (array_key_exists('price', $transactionData) && $this->getIntFromFloat((string)$transactionData['receivable']) === $this->getIntFromFloat((string)$transactionData['price'])) ||
+                $this->getIntFromFloat((string)$transactionData['receivable']) === 0
+            )) {
             return true;
         }
 
