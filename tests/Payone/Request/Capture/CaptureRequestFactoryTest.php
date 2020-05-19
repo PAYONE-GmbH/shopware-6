@@ -77,7 +77,7 @@ class CaptureRequestFactoryTest extends TestCase
     {
         $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestHandlerFactory([]), new NullLogger());
 
-        $request = $factory->getPartialRequest($this->getPaymentTransaction(), new ParameterBag([
+        $request = $factory->getRequest($this->getPaymentTransaction(), new ParameterBag([
             'amount' => 100,
         ]), Context::createDefaultContext());
 
