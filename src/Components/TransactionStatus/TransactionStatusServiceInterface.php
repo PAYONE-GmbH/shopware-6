@@ -10,7 +10,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 interface TransactionStatusServiceInterface
 {
-    public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, PaymentTransaction $orderTransactionEntity, array $transactionData): void;
+    public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, PaymentTransaction $paymentTransaction, array $transactionData): void;
 
     public function transitionByName(Context $context, string $transactionId, string $transitionName): void;
 }

@@ -51,24 +51,17 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         $this->updateTransactionData($parameterBag, (float) $parameterBag->get('amount'));
         $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
 
+
+        $transitionName = StateMachineTransitionActions::ACTION_PAY_PARTIALLY;
+
         if ($parameterBag->get('complete')) {
-            $this->transactionStatusService->transitionByName(
-                $context,
-                $this->paymentTransaction->getOrderTransaction()->getId(),
-                StateMachineTransitionActions::ACTION_REFUND
-            );
-        } else {
-            $this->transactionStatusService->transitionByName(
-                $context,
-                $this->paymentTransaction->getOrderTransaction()->getId(),
-                StateMachineTransitionActions::ACTION_PAY_PARTIALLY
-            );
+            $transitionName = StateMachineTransitionActions::ACTION_REFUND;
         }
 
         $this->transactionStatusService->transitionByName(
             $context,
             $this->paymentTransaction->getOrderTransaction()->getId(),
-            StateMachineTransitionActions::ACTION_REFUND_PARTIALLY
+            $transitionName
         );
 
         return $requestResponse;

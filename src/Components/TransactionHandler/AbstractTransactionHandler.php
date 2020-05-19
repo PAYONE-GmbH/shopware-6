@@ -144,10 +144,13 @@ abstract class AbstractTransactionHandler
                 $quantity = $orderLine['quantity'] + $orderLine['customFields'][$this->getQuantityCustomField()];
             }
 
-            $saveData[$orderLine['id']] = [$this->getQuantityCustomField() => $quantity];
+            $saveData[] = [
+                'id'                            => $orderLine['id'],
+                $this->getQuantityCustomField() => $quantity,
+            ];
         }
 
-        $this->lineItemRepository->update([$saveData], $context);
+        $this->lineItemRepository->update($saveData, $context);
     }
 
     protected function validateTransaction(): string
