@@ -67,7 +67,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
      */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
-        $cartHash = $dataBag->get('carthash');
+        $cartHash = (string) $dataBag->get('carthash');
 
         if (!$this->cartHasher->validate($transaction->getOrder(), $cartHash, $salesChannelContext)) {
             throw new SyncPaymentProcessException(
