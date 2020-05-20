@@ -39,7 +39,6 @@ class CartHasher implements CartHasherInterface
         if (!in_array(get_class($entity), self::VALID_TYPES, true)) {
             throw new LogicException('unsupported struct type during hash creation or validation');
         }
-
         $hashData = $this->getHashData($entity, $context);
         $expected = $this->generateHash($hashData);
 
@@ -60,7 +59,7 @@ class CartHasher implements CartHasherInterface
         if (null !== $entity->getLineItems()) {
             foreach ($entity->getLineItems() as $item) {
                 $detail = [
-                    'id'       => $item->getReferencedId(),
+                    'id'       => $item->getReferencedId() ?? '',
                     'type'     => $item->getType(),
                     'quantity' => $item->getQuantity(),
                 ];
