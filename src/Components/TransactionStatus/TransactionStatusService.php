@@ -115,7 +115,11 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPaid(array $transactionData, ?CurrencyEntity $currency): bool
     {
-        if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE])) {
+        if (in_array(strtolower($transactionData['txaction']), [self::ACTION_PAID, self::ACTION_COMPLETED], true)) {
+            return true;
+        }
+
+        if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE], true)) {
             return false;
         }
 
@@ -140,19 +144,12 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return true;
         }
 
-        return in_array(strtolower($transactionData['txaction']),
-            [
-                self::ACTION_PAID,
-                self::ACTION_COMPLETED,
-                self::ACTION_DEBIT,
-            ],
-            true
-        );
+        return false;
     }
 
     private function isTransactionPartialPaid(array $transactionData, ?CurrencyEntity $currency): bool
     {
-        if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE])) {
+        if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE], true)) {
             return false;
         }
 

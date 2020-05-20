@@ -61,7 +61,7 @@ class CaptureRequestFactory extends AbstractRequestFactory
                 $transaction->getOrder()->getOrderNumber()
             );
 
-            $requestHandler->getAdditionalRequestParameters($transaction, $context, $parameterBag);
+            $this->requests[] = $requestHandler->getAdditionalRequestParameters($transaction, $context, $parameterBag);
         } catch (NoPaymentHandlerFoundException $exception) {
             $this->logger->error($exception->getMessage(), $exception->getTrace());
         }

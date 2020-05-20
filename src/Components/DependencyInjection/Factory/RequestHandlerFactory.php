@@ -9,7 +9,7 @@ use PayonePayment\Components\RequestHandler\AbstractRequestHandler;
 
 class RequestHandlerFactory
 {
-    /** @var AbstractRequestHandler[] */
+    /** @var AbstractRequestHandler[]|iterable */
     protected $requestHandlerCollection = [];
 
     public function __construct(iterable $requestHandlerCollection)
