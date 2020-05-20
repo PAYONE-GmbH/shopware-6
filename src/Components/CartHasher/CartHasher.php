@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\CartHasher;
 
+use Exception;
 use LogicException;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 
 class CartHasher implements CartHasherInterface
 {
@@ -57,15 +59,26 @@ class CartHasher implements CartHasherInterface
         }
 
         if (null !== $entity->getLineItems()) {
-            foreach ($entity->getLineItems() as $item) {
+            foreach ($entity->getLineItems() as $lineItem) {
+                try {
+                    /** @phpstan-ignore-next-line */
+                    if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector') &&
+                        CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItem->getType() &&
+                        null === $lineItem->getParentId()) {
+                        continue;
+                    }
+                } catch (Exception $exception) {
+                    // Catch class not found if SwagCustomizedProducts plugin is not installed
+                }
+
                 $detail = [
-                    'id'       => $item->getReferencedId() ?? '',
-                    'type'     => $item->getType(),
-                    'quantity' => $item->getQuantity(),
+                    'id'       => $lineItem->getReferencedId() ?? '',
+                    'type'     => $lineItem->getType(),
+                    'quantity' => $lineItem->getQuantity(),
                 ];
 
-                if (null !== $item->getPrice()) {
-                    $detail['price'] = $item->getPrice()->getTotalPrice();
+                if (null !== $lineItem->getPrice()) {
+                    $detail['price'] = $lineItem->getPrice()->getTotalPrice();
                 }
 
                 $hashData[] = $detail;
