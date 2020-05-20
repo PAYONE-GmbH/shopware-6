@@ -1,4 +1,5 @@
 import template from './order-items.html.twig';
+import './order-items.scss';
 
 const { Component } = Shopware;
 
@@ -20,14 +21,12 @@ Component.register('payone-order-items', {
     computed: {
         orderItems() {
             const data = [];
-
             this.order.lineItems.forEach((order_item) => {
                 const price = this.$options.filters.currency(
                     order_item.totalPrice,
                     this.order.currency.shortName,
                     this.order.decimal_precision
                 );
-
                 let disabled = false;
                 let quantity = order_item.quantity;
 
@@ -53,7 +52,6 @@ Component.register('payone-order-items', {
 
                 data.push({
                     id: order_item.id,
-                    reference: order_item.referencedId,
                     product: order_item.label,
                     quantity: quantity,
                     disabled: disabled,
@@ -67,11 +65,6 @@ Component.register('payone-order-items', {
 
         orderItemColumns() {
             return [
-                {
-                    property: 'reference',
-                    label: this.$tc('payone-payment.modal.columns.reference'),
-                    rawData: true
-                },
                 {
                     property: 'product',
                     label: this.$tc('payone-payment.modal.columns.product'),
@@ -96,8 +89,8 @@ Component.register('payone-order-items', {
             this.$emit('select-item', item.id, selected);
         },
 
-        onChangeQuantity(value, reference) {
-            this.$emit('change-quantity', reference, value);
+        onChangeQuantity(value, id) {
+            this.$emit('change-quantity', id, value);
         }
     }
 });

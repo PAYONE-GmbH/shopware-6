@@ -42,12 +42,14 @@ class AccountCardPageLoader
             $this->genericLoader->load($request, $context)
         );
 
-        $page->setCards(
-            $this->cardRepository->getCards(
-                $context->getCustomer(),
-                $context->getContext()
-            )
-        );
+        if (null !== $context->getCustomer()) {
+            $page->setCards(
+                $this->cardRepository->getCards(
+                    $context->getCustomer(),
+                    $context->getContext()
+                )
+            );
+        }
 
         $this->eventDispatcher->dispatch(
             new AccountCardPageLoadedEvent($page, $context, $request)

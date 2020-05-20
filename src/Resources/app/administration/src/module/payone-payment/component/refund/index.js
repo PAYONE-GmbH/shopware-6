@@ -192,7 +192,6 @@ Component.register('payone-refund-button', {
 
                 this.selection.push({
                     id: order_item.id,
-                    reference: order_item.referencedId,
                     quantity: quantity,
                     unit_price: order_item.unitPrice,
                     selected: false

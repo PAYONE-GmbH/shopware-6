@@ -68,7 +68,7 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandl
             'preauthorization'
         );
 
-        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         // Select request factory based on configured authorization method
         $factory = $authorizationMethod === 'preauthorization'

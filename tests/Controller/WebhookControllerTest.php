@@ -164,7 +164,7 @@ class WebhookControllerTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
         $transactionDataHandler->expects($this->once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);

@@ -92,6 +92,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
 
         $cardRepository->expects($this->once())->method('saveCard');
 
+        $this->assertNotNull($paymentTransaction->getOrder());
         $response = $paymentHandler->pay(
             new AsyncPaymentTransactionStruct(
                 $paymentTransaction->getOrderTransaction(),
@@ -153,6 +154,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
 
         $cardRepository->expects($this->once())->method('saveCard');
 
+        $this->assertNotNull($paymentTransaction->getOrder());
         $response = $paymentHandler->pay(
             new AsyncPaymentTransactionStruct(
                 $paymentTransaction->getOrderTransaction(),
@@ -255,6 +257,6 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
     }
 }

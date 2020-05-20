@@ -8,6 +8,7 @@ use DateTime;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -33,13 +34,14 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             ->addAssociation('order')
             ->addAssociation('order.currency');
 
+        /** @var null|OrderTransactionEntity $transaction */
         $transaction = $this->transactionRepository->search($criteria, $context)->first();
 
-        if (null === $transaction) {
+        if (null === $transaction || null === $transaction->getOrder()) {
             return null;
         }
 
-        return PaymentTransaction::fromOrderTransaction($transaction);
+        return PaymentTransaction::fromOrderTransaction($transaction, $transaction->getOrder());
     }
 
     public function enhanceStatusWebhookData(PaymentTransaction $paymentTransaction, array $transactionData): array

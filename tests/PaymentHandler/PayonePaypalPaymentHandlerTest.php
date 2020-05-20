@@ -115,6 +115,6 @@ class PayonePaypalPaymentHandlerTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
     }
 }

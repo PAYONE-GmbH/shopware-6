@@ -76,7 +76,7 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
             'preauthorization'
         );
 
-        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         // Select request factory based on configured authorization method
         $factory = $authorizationMethod === 'preauthorization'

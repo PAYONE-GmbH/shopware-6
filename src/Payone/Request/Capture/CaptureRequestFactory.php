@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Capture;
 
-use PayonePayment\Components\DependencyInjection\Factory\RequestHandlerFactory;
-use PayonePayment\Components\Exception\NoPaymentHandlerFoundException;
+use PayonePayment\Components\DependencyInjection\Factory\RequestBuilderFactory;
+use PayonePayment\Components\Exception\NoRequestBuilderFoundException;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\System\SystemRequest;
@@ -22,8 +22,8 @@ class CaptureRequestFactory extends AbstractRequestFactory
     /** @var SystemRequest */
     private $systemRequest;
 
-    /** @var RequestHandlerFactory */
-    private $requestHandlerFactory;
+    /** @var RequestBuilderFactory */
+    private $requestBuilderFactory;
 
     /** @var LoggerInterface */
     private $logger;
@@ -31,38 +31,41 @@ class CaptureRequestFactory extends AbstractRequestFactory
     public function __construct(
         SystemRequest $systemRequest,
         CaptureRequest $captureRequest,
-        RequestHandlerFactory $requestHandlerFactory,
+        RequestBuilderFactory $requestBuilderFactory,
         LoggerInterface $logger
     ) {
         $this->systemRequest         = $systemRequest;
         $this->captureRequest        = $captureRequest;
-        $this->requestHandlerFactory = $requestHandlerFactory;
+        $this->requestBuilderFactory = $requestBuilderFactory;
         $this->logger                = $logger;
     }
 
     public function getRequest(PaymentTransaction $transaction, ParameterBag $parameterBag, Context $context): array
     {
-        $this->requests[] = $this->getBaseCaptureParameters(
-            $transaction->getOrder()->getSalesChannelId(),
-            $transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier(),
-            $context
-        );
+        if (null !== $transaction->getOrderTransaction()->getPaymentMethod()) {
+            $this->requests[] = $this->systemRequest->getRequestParameters(
+                $transaction->getOrder()->getSalesChannelId(),
+                ConfigurationPrefixes::CONFIGURATION_PREFIXES[$transaction->getOrderTransaction()->getPaymentMethod()->getHandlerIdentifier()],
+                $context
+            );
+        }
 
         $this->requests[] = $this->captureRequest->getRequestParameters(
             $transaction->getOrder(),
             $context,
             $transaction->getCustomFields(),
-            (float) $parameterBag->get('amount')
+            (float) $parameterBag->get('amount'),
+            (bool) $parameterBag->get('completed')
         );
 
         try {
-            $requestHandler = $this->requestHandlerFactory->getRequestHandler(
+            $requestHandler = $this->requestBuilderFactory->getRequestBuilder(
                 $transaction->getOrderTransaction()->getPaymentMethodId(),
                 $transaction->getOrder()->getOrderNumber()
             );
 
             $this->requests[] = $requestHandler->getAdditionalRequestParameters($transaction, $context, $parameterBag);
-        } catch (NoPaymentHandlerFoundException $exception) {
+        } catch (NoRequestBuilderFoundException $exception) {
             $this->logger->error($exception->getMessage(), $exception->getTrace());
         }
 

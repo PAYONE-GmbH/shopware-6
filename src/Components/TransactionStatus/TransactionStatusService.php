@@ -136,11 +136,11 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         }
 
         if (array_key_exists('price', $transactionData) &&
-            (int) ((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())) === (int) ((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision()))) {
+            (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())), 0)) {
             return true;
         }
 
-        if ((int) ((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())) === 0) {
+        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === 0) {
             return true;
         }
 
@@ -165,12 +165,12 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if ((int) ((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())) === 0) {
+        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === 0) {
             return false;
         }
 
         if (array_key_exists('price', $transactionData) &&
-            (int) ((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())) === (int) ((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision()))) {
+            (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())), 0)) {
             return false;
         }
 
@@ -195,7 +195,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if ((int) ((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())) !== 0) {
+        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) !== 0) {
             return false;
         }
 
@@ -220,7 +220,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if ((int) ((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())) === 0) {
+        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === 0) {
             return false;
         }
 

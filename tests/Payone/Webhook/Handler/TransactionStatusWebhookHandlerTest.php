@@ -81,7 +81,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
         $transactionData = [
             'txid'           => Constants::PAYONE_TRANSACTION_ID,
@@ -151,7 +151,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
         $transactionData = [
             'txid'           => Constants::PAYONE_TRANSACTION_ID,

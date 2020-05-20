@@ -75,7 +75,7 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
             'authorization'
         );
 
-        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         // Select request factory based on configured authorization method
         $factory = $authorizationMethod === 'preauthorization'
@@ -119,12 +119,14 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
             throw new LogicException('could not parse sepa mandate signature date');
         }
 
-        $this->mandateService->saveMandate(
-            $salesChannelContext->getCustomer(),
-            $response['mandate']['Identification'],
-            $date,
-            $salesChannelContext
-        );
+        if (null !== $salesChannelContext->getCustomer()) {
+            $this->mandateService->saveMandate(
+                $salesChannelContext->getCustomer(),
+                $response['mandate']['Identification'],
+                $date,
+                $salesChannelContext
+            );
+        }
     }
 
     /**

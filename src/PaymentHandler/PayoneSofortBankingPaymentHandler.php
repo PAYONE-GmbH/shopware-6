@@ -76,7 +76,7 @@ class PayoneSofortBankingPaymentHandler extends AbstractPayonePaymentHandler imp
             'authorization'
         );
 
-        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         // Select request factory based on configured authorization method
         $factory = $authorizationMethod === 'preauthorization'

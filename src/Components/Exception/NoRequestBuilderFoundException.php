@@ -6,7 +6,7 @@ namespace PayonePayment\Components\Exception;
 
 use Exception;
 
-class NoPaymentHandlerFoundException extends Exception
+class NoRequestBuilderFoundException extends Exception
 {
     public function __construct(string $orderNumber)
     {

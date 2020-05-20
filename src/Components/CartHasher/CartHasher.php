@@ -57,18 +57,20 @@ class CartHasher implements CartHasherInterface
             return $hashData;
         }
 
-        foreach ($entity->getLineItems() as $item) {
-            $detail = [
-                'id'       => $item->getReferencedId(),
-                'type'     => $item->getType(),
-                'quantity' => $item->getQuantity(),
-            ];
+        if (null !== $entity->getLineItems()) {
+            foreach ($entity->getLineItems() as $item) {
+                $detail = [
+                    'id'       => $item->getReferencedId(),
+                    'type'     => $item->getType(),
+                    'quantity' => $item->getQuantity(),
+                ];
 
-            if (null !== $item->getPrice()) {
-                $detail['price'] = $item->getPrice()->getTotalPrice();
+                if (null !== $item->getPrice()) {
+                    $detail['price'] = $item->getPrice()->getTotalPrice();
+                }
+
+                $hashData[] = $detail;
             }
-
-            $hashData[] = $detail;
         }
 
         $hashData['currency']       = $context->getCurrency()->getId();

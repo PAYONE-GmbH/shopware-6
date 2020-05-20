@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Payone\Request\Capture;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
-use PayonePayment\Components\DependencyInjection\Factory\RequestHandlerFactory;
-use PayonePayment\Components\RequestHandler\AbstractRequestHandler;
-use PayonePayment\Components\RequestHandler\CreditCardRequestHandler;
-use PayonePayment\Components\RequestHandler\PayolutionInstallmentRequestHandler;
+use PayonePayment\Components\DependencyInjection\Factory\RequestBuilderFactory;
+use PayonePayment\Components\RequestBuilder\AbstractRequestBuilder;
+use PayonePayment\Components\RequestBuilder\CreditCardRequestBuilder;
+use PayonePayment\Components\RequestBuilder\PayolutionInstallmentRequestBuilder;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
@@ -45,7 +45,7 @@ class CaptureRequestFactoryTest extends TestCase
 
     public function testCorrectFullCaptureRequestParameters(): void
     {
-        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestHandlerFactory([]), new NullLogger());
+        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestBuilderFactory([]), new NullLogger());
 
         $request = $factory->getRequest($this->getPaymentTransaction(), new ParameterBag(['amount' => 100]), Context::createDefaultContext());
 
@@ -75,7 +75,7 @@ class CaptureRequestFactoryTest extends TestCase
 
     public function testCorrectPartialCaptureRequestParameters(): void
     {
-        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestHandlerFactory([]), new NullLogger());
+        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestBuilderFactory([]), new NullLogger());
 
         $request = $factory->getRequest($this->getPaymentTransaction(), new ParameterBag(['amount' => 100]), Context::createDefaultContext());
 
@@ -126,9 +126,9 @@ class CaptureRequestFactoryTest extends TestCase
         $orderTransaction->setPaymentMethodId(PayonePayolutionInstallment::UUID);
         $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
 
-        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestHandlerFactory([
-            PayoneCreditCard::UUID            => new CreditCardRequestHandler(),
-            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler(),
+        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestBuilderFactory([
+            PayoneCreditCard::UUID            => new CreditCardRequestBuilder(),
+            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestBuilder(),
         ]), new NullLogger());
 
         $request = $factory->getRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
@@ -149,18 +149,18 @@ class CaptureRequestFactoryTest extends TestCase
                 'sequencenumber'  => 1,
                 'solution_name'   => 'kellerkinder',
                 'txid'            => 'test-transaction-id',
-                'it[0]'           => AbstractRequestHandler::TYPE_GOODS,
-                'id[0]'           => Constants::LINE_ITEM_IDENTIFIER,
-                'pr[0]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
-                'no[0]'           => Constants::LINE_ITEM_QUANTITY,
-                'de[0]'           => Constants::LINE_ITEM_LABEL,
-                'va[0]'           => (int) (Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
-                'it[1]'           => AbstractRequestHandler::TYPE_GOODS,
+                'it[1]'           => AbstractRequestBuilder::TYPE_GOODS,
                 'id[1]'           => Constants::LINE_ITEM_IDENTIFIER,
                 'pr[1]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
                 'no[1]'           => Constants::LINE_ITEM_QUANTITY,
                 'de[1]'           => Constants::LINE_ITEM_LABEL,
                 'va[1]'           => (int) (Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'it[2]'           => AbstractRequestBuilder::TYPE_GOODS,
+                'id[2]'           => Constants::LINE_ITEM_IDENTIFIER,
+                'pr[2]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'no[2]'           => Constants::LINE_ITEM_QUANTITY,
+                'de[2]'           => Constants::LINE_ITEM_LABEL,
+                'va[2]'           => (int) (Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
             ],
             $request
         );
@@ -188,9 +188,9 @@ class CaptureRequestFactoryTest extends TestCase
         $orderTransaction->setPaymentMethodId(PayonePayolutionInstallment::UUID);
         $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
 
-        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestHandlerFactory([
-            PayoneCreditCard::UUID            => new CreditCardRequestHandler(),
-            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler(),
+        $factory = new CaptureRequestFactory($this->getSystemRequest(), $this->getCaptureRequest(), new RequestBuilderFactory([
+            PayoneCreditCard::UUID            => new CreditCardRequestBuilder(),
+            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestBuilder(),
         ]), new NullLogger());
 
         $request = $factory->getRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
@@ -211,12 +211,12 @@ class CaptureRequestFactoryTest extends TestCase
                 'sequencenumber'  => 1,
                 'solution_name'   => 'kellerkinder',
                 'txid'            => 'test-transaction-id',
-                'it[0]'           => AbstractRequestHandler::TYPE_GOODS,
-                'id[0]'           => Constants::LINE_ITEM_IDENTIFIER,
-                'pr[0]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
-                'no[0]'           => Constants::LINE_ITEM_QUANTITY,
-                'de[0]'           => Constants::LINE_ITEM_LABEL,
-                'va[0]'           => (int) (Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'it[1]'           => AbstractRequestBuilder::TYPE_GOODS,
+                'id[1]'           => Constants::LINE_ITEM_IDENTIFIER,
+                'pr[1]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'no[1]'           => Constants::LINE_ITEM_QUANTITY,
+                'de[1]'           => Constants::LINE_ITEM_LABEL,
+                'va[1]'           => (int) (Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
             ],
             $request
         );
@@ -254,7 +254,7 @@ class CaptureRequestFactoryTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
     }
 
     protected function getLineItem(int $amount): OrderLineItemCollection
