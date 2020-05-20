@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Payone\Request\Refund;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
-use PayonePayment\Components\DependencyInjection\Factory\RequestHandlerFactory;
-use PayonePayment\Components\RequestHandler\AbstractRequestHandler;
-use PayonePayment\Components\RequestHandler\CreditCardRequestHandler;
-use PayonePayment\Components\RequestHandler\PayolutionInstallmentRequestHandler;
+use PayonePayment\Components\DependencyInjection\Factory\RequestBuilderFactory;
+use PayonePayment\Components\RequestBuilder\AbstractRequestBuilder;
+use PayonePayment\Components\RequestBuilder\CreditCardRequestBuilder;
+use PayonePayment\Components\RequestBuilder\PayolutionInstallmentRequestBuilder;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
@@ -45,7 +45,7 @@ class RefundRequestFactoryTest extends TestCase
 
     public function testCorrectFullRequestParameters()
     {
-        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([]), new NullLogger());
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestBuilderFactory([]), new NullLogger());
 
         $request = $factory->getRequest($this->getPaymentTransaction(), new ParameterBag(['amount' => 100]), Context::createDefaultContext());
 
@@ -75,7 +75,7 @@ class RefundRequestFactoryTest extends TestCase
 
     public function testCorrectPartialRequestParameters()
     {
-        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([]), new NullLogger());
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestBuilderFactory([]), new NullLogger());
 
         $request = $factory->getRequest($this->getPaymentTransaction(), new ParameterBag(['amount' => 100]), Context::createDefaultContext());
 
@@ -126,9 +126,9 @@ class RefundRequestFactoryTest extends TestCase
         $orderTransaction->setPaymentMethodId(PayonePayolutionInstallment::UUID);
         $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
 
-        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([
-            PayoneCreditCard::UUID            => new CreditCardRequestHandler(),
-            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler(),
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestBuilderFactory([
+            PayoneCreditCard::UUID            => new CreditCardRequestBuilder(),
+            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestBuilder(),
         ]), new NullLogger());
 
         $request = $factory->getRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
@@ -149,12 +149,12 @@ class RefundRequestFactoryTest extends TestCase
                 'txid'            => 'test-transaction-id',
                 'integrator_name' => 'shopware6',
                 'solution_name'   => 'kellerkinder',
-                'it[0]'           => AbstractRequestHandler::TYPE_GOODS,
-                'id[0]'           => Constants::LINE_ITEM_IDENTIFIER,
-                'pr[0]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
-                'no[0]'           => Constants::LINE_ITEM_QUANTITY,
-                'de[0]'           => Constants::LINE_ITEM_LABEL,
-                'va[0]'           => (int) (Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'it[1]'           => AbstractRequestBuilder::TYPE_GOODS,
+                'id[1]'           => Constants::LINE_ITEM_IDENTIFIER,
+                'pr[1]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'no[1]'           => Constants::LINE_ITEM_QUANTITY,
+                'de[1]'           => Constants::LINE_ITEM_LABEL,
+                'va[1]'           => (int) (Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
             ],
             $request
         );
@@ -182,9 +182,9 @@ class RefundRequestFactoryTest extends TestCase
         $orderTransaction->setPaymentMethodId(PayonePayolutionInstallment::UUID);
         $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
 
-        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([
-            PayoneCreditCard::UUID            => new CreditCardRequestHandler(),
-            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestHandler(),
+        $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestBuilderFactory([
+            PayoneCreditCard::UUID            => new CreditCardRequestBuilder(),
+            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestBuilder(),
         ]), new NullLogger());
 
         $request = $factory->getRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
@@ -205,12 +205,12 @@ class RefundRequestFactoryTest extends TestCase
                 'txid'            => 'test-transaction-id',
                 'integrator_name' => 'shopware6',
                 'solution_name'   => 'kellerkinder',
-                'it[0]'           => AbstractRequestHandler::TYPE_GOODS,
-                'id[0]'           => Constants::LINE_ITEM_IDENTIFIER,
-                'pr[0]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
-                'no[0]'           => Constants::LINE_ITEM_QUANTITY,
-                'de[0]'           => Constants::LINE_ITEM_LABEL,
-                'va[0]'           => (int) (Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'it[1]'           => AbstractRequestBuilder::TYPE_GOODS,
+                'id[1]'           => Constants::LINE_ITEM_IDENTIFIER,
+                'pr[1]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
+                'no[1]'           => Constants::LINE_ITEM_QUANTITY,
+                'de[1]'           => Constants::LINE_ITEM_LABEL,
+                'va[1]'           => (int) (Constants::CURRENCY_TAX_RATE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
             ],
             $request
         );
@@ -249,7 +249,7 @@ class RefundRequestFactoryTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
     }
 
     protected function getLineItem(int $amount): OrderLineItemCollection

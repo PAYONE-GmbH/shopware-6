@@ -100,7 +100,7 @@ class DebitAuthorizeRequestFactoryTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
     }
 
     private function getDebitAuthorizeRequest(): DebitAuthorizeRequest

@@ -39,24 +39,23 @@ abstract class AbstractTransactionHandler
     /** @var Context */
     protected $context;
 
-    /** @var OrderTransactionEntity */
-    protected $transaction;
-
     /** @var PaymentTransaction */
     protected $paymentTransaction;
 
     public function handleRequest(ParameterBag $parameterBag, Context $context): JsonResponse
     {
-        $this->context     = $context;
-        $this->transaction = $this->getTransaction($parameterBag->get('orderTransactionId'));
+        $this->context = $context;
+        $transaction   = $this->getTransaction($parameterBag->get('orderTransactionId', ''));
 
-        $transactionError = $this->validateTransaction();
-
-        if (!empty($transactionError)) {
-            return new JsonResponse(['status' => false, 'message' => $transactionError], Response::HTTP_NOT_FOUND);
+        if (null === $transaction) {
+            return new JsonResponse(['status' => false, 'message' => 'payone-payment.error.transaction.notFound'], Response::HTTP_BAD_REQUEST);
         }
 
-        $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($this->transaction);
+        if (null === $transaction->getOrder()) {
+            return new JsonResponse(['status' => false, 'message' => 'payone-payment.error.transaction.orderNotFound'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($transaction, $transaction->getOrder());
 
         return $this->executeRequest(
             $this->requestFactory->getRequest(
@@ -153,16 +152,8 @@ abstract class AbstractTransactionHandler
         $this->lineItemRepository->update($saveData, $context);
     }
 
-    protected function validateTransaction(): string
+    protected function validateTransaction(OrderTransactionEntity $transaction): string
     {
-        if (empty($this->transaction)) {
-            return 'payone-payment.error.transaction.notFound';
-        }
-
-        if (empty($this->transaction->getOrder())) {
-            return 'payone-payment.error.transaction.orderNotFound';
-        }
-
         return '';
     }
 

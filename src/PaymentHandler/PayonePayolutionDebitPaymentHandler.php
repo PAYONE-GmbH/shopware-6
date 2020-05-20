@@ -92,7 +92,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
             'preauthorization'
         );
 
-        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         try {
             $this->validate($dataBag);

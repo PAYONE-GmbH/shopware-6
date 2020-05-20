@@ -82,7 +82,7 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             'preauthorization'
         );
 
-        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         // Select request factory based on configured authorization method
         $factory = $authorizationMethod === 'preauthorization'
@@ -113,7 +113,10 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
-        $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());
+
+        if (null !== $paymentTransaction->getOrder()->getLineItems()) {
+            $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());
+        }
 
         $truncatedCardPan   = $dataBag->get('truncatedCardPan');
         $cardExpireDate     = $dataBag->get('cardExpireDate');
@@ -123,7 +126,7 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
         if (empty($savedPseudoCardPan)) {
             $expiresAt = DateTime::createFromFormat('ym', $cardExpireDate);
 
-            if (!empty($expiresAt)) {
+            if (!empty($expiresAt) && null !== $salesChannelContext->getCustomer()) {
                 $this->cardRepository->saveCard(
                     $salesChannelContext->getCustomer(),
                     $truncatedCardPan,

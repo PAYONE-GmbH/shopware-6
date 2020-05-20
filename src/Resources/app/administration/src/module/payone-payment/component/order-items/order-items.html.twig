@@ -7,12 +7,6 @@
                 :showSelection="true"
                 v-on:select-item="onSelectItem">
 
-            <template slot="column-reference" slot-scope="{ item, isInlineEdit}">
-                <div v-tooltip="{ message: item.reference, disabled: item.reference.length <= 15 }">
-                    {{ item.reference | truncate(15, true, '...') }}
-                </div>
-            </template>
-
             <template slot="column-product" slot-scope="{ item, isInlineEdit}">
                 {{ item.product }}
             </template>

@@ -24,7 +24,7 @@ class PayolutionInstallmentPreCheckRequest
             'add_paydata[payment_type]' => 'Payolution-Installment',
             'clearingtype'              => 'fnc',
             'financingtype'             => 'PYS',
-            'amount'                    => (int) ($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision())),
+            'amount'                    => (int) round(($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision())), 0),
             'currency'                  => $currency->getIsoCode(),
         ];
 
