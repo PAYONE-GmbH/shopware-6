@@ -32,7 +32,8 @@ abstract class AbstractRequestBuilder
             foreach ($orderLineItems as $lineItem) {
                 try {
                     /** @phpstan-ignore-next-line */
-                    if (CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItem->getType() &&
+                    if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector') &&
+                        CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItem->getType() &&
                         null === $lineItem->getParentId()) {
                         continue;
                     }
