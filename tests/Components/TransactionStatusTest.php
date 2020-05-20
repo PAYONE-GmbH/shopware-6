@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Test\Payone\Webhook\Handler;
+namespace PayonePayment\Test\Components;
 
 use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;

@@ -47,7 +47,7 @@ class RefundRequestFactoryTest extends TestCase
     {
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([]), new NullLogger());
 
-        $request = $factory->getRequest($this->getPaymentTransaction(), new ParameterBag(), Context::createDefaultContext());
+        $request = $factory->getRequest($this->getPaymentTransaction(), new ParameterBag(['amount' => 100]), Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
@@ -77,9 +77,7 @@ class RefundRequestFactoryTest extends TestCase
     {
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestHandlerFactory([]), new NullLogger());
 
-        $request = $factory->getRequest($this->getPaymentTransaction(), new ParameterBag([
-            'amount' => 100,
-        ]), Context::createDefaultContext());
+        $request = $factory->getRequest($this->getPaymentTransaction(), new ParameterBag(['amount' => 100]), Context::createDefaultContext());
 
         Assert::assertArraySubset(
             [
@@ -110,6 +108,7 @@ class RefundRequestFactoryTest extends TestCase
         $paramterBag = new ParameterBag();
 
         $paramterBag->add([
+            'amount'     => 100,
             'orderLines' => [
                 [
                     'id'       => Constants::LINE_ITEM_ID . '0',
@@ -169,6 +168,7 @@ class RefundRequestFactoryTest extends TestCase
         $paramterBag = new ParameterBag();
 
         $paramterBag->add([
+            'amount'     => 100,
             'orderLines' => [
                 [
                     'id'       => Constants::LINE_ITEM_ID . '0',
