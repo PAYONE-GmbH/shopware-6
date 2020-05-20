@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "scripts": {
+    "cypress:open": "./node_modules/.bin/cypress open",
+    "cypress:run": "./node_modules/.bin/cypress run"
+  },
+  "devDependencies": {
+    "cypress": "^4.6.0",
+    "cypress-pipe": "^1.7.0"
+  }
+}

@@ -1,4 +1,15 @@
-.php_cs.cache
-vendor
-.phpunit.result.cache
-src/Resources/public/static/
+# dependencies
+/vendor
+
+# shopware
+/src/Resources/public/static/
+
+# unit/style/etc.
+/.php_cs.cache
+/.phpunit.result.cache
+
+# e2e
+/cypress
+/cypress.json
+/package-lock.json
+/node_modules
