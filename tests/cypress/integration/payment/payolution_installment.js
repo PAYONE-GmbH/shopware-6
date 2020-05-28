@@ -1,4 +1,4 @@
-describe('Payolution installment Test - Success', function () {
+describe('Payolution installment Test', function () {
     it('Buy with Pay Later Installment', function () {
         cy.server();
         cy.route({

@@ -1,4 +1,4 @@
-describe('SEPA Lastschrift Test - Success', function () {
+describe('SEPA Lastschrift Test', function () {
     it('Buy with SEPA Lastschrift', function () {
         cy.server();
         cy.route({

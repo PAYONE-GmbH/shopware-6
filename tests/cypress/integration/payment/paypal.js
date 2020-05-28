@@ -1,4 +1,4 @@
-describe('PayPal Test - Success', function () {
+describe('PayPal Test', function () {
     it('Buy with PayPal', function () {
         cy.buyDemoArticle();
         cy.register();
@@ -8,8 +8,5 @@ describe('PayPal Test - Success', function () {
         cy.get('#confirmFormSubmit').click({force: true});
 
         cy.url().should('include', 'paypal.com');
-
-        cy.get('#email').type(''); // please type yourself
-        cy.get('#password').type(''); // please type yourself
     })
 })

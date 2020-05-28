@@ -1,4 +1,4 @@
-describe('Pay Later Debit Test - Success', function () {
+describe('Pay Later Debit Test', function () {
     it('Buy with Pay Later Debit', function () {
         cy.buyDemoArticle();
         cy.register();
