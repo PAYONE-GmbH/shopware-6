@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "cypress:open": "./node_modules/.bin/cypress open",
-    "cypress:run": "./node_modules/.bin/cypress run"
+    "cypress:run": "./node_modules/.bin/cypress run --record false --config video=false"
   },
   "devDependencies": {
     "cypress": "^4.6.0",

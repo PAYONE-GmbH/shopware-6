@@ -26,6 +26,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     public const ACTION_PARTIAL_DEBIT   = 'partialDebit';
     public const ACTION_CANCELATION     = 'cancelation';
     public const ACTION_FAILED          = 'failed';
+    public const ACTION_INVOICE         = 'invoice';
 
     public const STATUS_PREFIX    = 'paymentStatus';
     public const STATUS_COMPLETED = 'completed';
@@ -119,11 +120,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return true;
         }
 
-        if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE], true)) {
-            return false;
-        }
-
-        if (!array_key_exists('receivable', $transactionData)) {
+        if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE, self::ACTION_INVOICE], true)) {
             return false;
         }
 
@@ -135,8 +132,13 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if (array_key_exists('price', $transactionData) &&
+        if (array_key_exists('price', $transactionData) && array_key_exists('receivable', $transactionData) &&
             (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())), 0)) {
+            return true;
+        }
+
+        if (array_key_exists('price', $transactionData) && array_key_exists('invoice_grossamount', $transactionData) &&
+            (int) round(((float) $transactionData['invoice_grossamount'] * (10 ** $currency->getDecimalPrecision())), 0) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())), 0)) {
             return true;
         }
 
@@ -149,11 +151,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPartialPaid(array $transactionData, ?CurrencyEntity $currency): bool
     {
-        if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE], true)) {
-            return false;
-        }
-
-        if (!array_key_exists('receivable', $transactionData)) {
+        if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE, self::ACTION_INVOICE], true)) {
             return false;
         }
 
@@ -165,12 +163,17 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === 0) {
+        if (array_key_exists('receivable', $transactionData) && (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === 0) {
             return false;
         }
 
-        if (array_key_exists('price', $transactionData) &&
+        if (array_key_exists('price', $transactionData) && array_key_exists('receivable', $transactionData) &&
             (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())), 0)) {
+            return false;
+        }
+
+        if (array_key_exists('price', $transactionData) && array_key_exists('invoice_grossamount', $transactionData) &&
+            (int) round(((float) $transactionData['invoice_grossamount'] * (10 ** $currency->getDecimalPrecision())), 0) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())), 0)) {
             return false;
         }
 

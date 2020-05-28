@@ -1,4 +1,4 @@
-describe('CreditCard Test - Success', function () {
+describe('CreditCard Test', function () {
     it('Buy with CreditCard', function () {
         const findInIframe = (selector) => ($iframe) => $iframe.contents().find(selector)
 

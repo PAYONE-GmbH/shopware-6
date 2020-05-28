@@ -78,7 +78,7 @@ class CartHasher implements CartHasherInterface
                 ];
 
                 if (null !== $lineItem->getPrice()) {
-                    $detail['price'] = $lineItem->getPrice()->getTotalPrice();
+                    $detail['price'] = round($lineItem->getPrice()->getTotalPrice() * (10 ** $context->getCurrency()->getDecimalPrecision()));
                 }
 
                 $hashData[] = $detail;

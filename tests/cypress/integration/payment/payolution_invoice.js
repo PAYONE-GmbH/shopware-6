@@ -1,5 +1,10 @@
-describe('Pay Later Invoice Test - Success', function () {
+describe('Pay Later Invoice Test', function () {
     it('Buy with Pay Later Invoice', function () {
+        cy.server();
+        cy.route({
+            method: 'POST',
+            url: '*payone/debit/manage-mandate*'
+        }).as('calculateInvoice');
         cy.buyDemoArticle();
         cy.register();
         cy.selectPaymentMethod('Pay Later Invoice');

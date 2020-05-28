@@ -25,7 +25,7 @@ Component.register('payone-capture-button', {
         },
 
         totalTransactionAmount() {
-            return this.transaction.amount.totalPrice * (10 ** this.order.currency.decimalPrecision);
+            return Math.round(this.transaction.amount.totalPrice * (10 ** this.order.currency.decimalPrecision), 0);
         },
 
         remainingAmount() {
@@ -53,7 +53,7 @@ Component.register('payone-capture-button', {
                 return false;
             }
 
-            return this.remainingAmount > 0 && this.transaction.customFields.payone_allow_capture;
+            return (this.remainingAmount > 0 && this.capturedAmount > 0) || this.transaction.customFields.payone_allow_capture;
         },
     },
 
