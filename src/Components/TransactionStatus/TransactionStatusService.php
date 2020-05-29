@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\TransactionStatus;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Framework\Context;
@@ -26,6 +27,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     public const ACTION_PARTIAL_DEBIT   = 'partialDebit';
     public const ACTION_CANCELATION     = 'cancelation';
     public const ACTION_FAILED          = 'failed';
+    public const ACTION_REDIRECT        = 'redirect';
     public const ACTION_INVOICE         = 'invoice';
 
     public const STATUS_PREFIX    = 'paymentStatus';
@@ -51,6 +53,10 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, PaymentTransaction $paymentTransaction, array $transactionData): void
     {
+        if ($this->isAsyncCancelled($paymentTransaction, $transactionData)) {
+            return;
+        }
+
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $currency      = $paymentTransaction->getOrder()->getCurrency();
 
@@ -233,5 +239,25 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     private function isTransactionCancelled(array $transactionData): bool
     {
         return in_array(strtolower($transactionData['txaction']), [self::ACTION_CANCELATION, self::ACTION_FAILED], true);
+    }
+
+    private function isAsyncCancelled(PaymentTransaction $paymentTransaction, array $transactionData): bool
+    {
+        $customFields = $paymentTransaction->getCustomFields();
+
+        if (!array_key_exists(CustomFieldInstaller::TRANSACTION_DATA, $customFields)) {
+            return false;
+        }
+
+        $fullTransactionData = $customFields[CustomFieldInstaller::TRANSACTION_DATA];
+        $firstTransaction    = $fullTransactionData[array_key_first($fullTransactionData)];
+
+        if (array_key_exists('response', $firstTransaction) &&
+            $fullTransactionData['response']['status'] === strtoupper(self::ACTION_REDIRECT) &&
+            strtolower($transactionData['txaction']) === self::ACTION_FAILED) {
+            return true;
+        }
+
+        return false;
     }
 }
