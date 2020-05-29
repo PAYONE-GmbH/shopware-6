@@ -252,8 +252,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $fullTransactionData = $customFields[CustomFieldInstaller::TRANSACTION_DATA];
         $firstTransaction    = $fullTransactionData[array_key_first($fullTransactionData)];
 
-        if (array_key_exists('response', $firstTransaction) &&
-            $fullTransactionData['response']['status'] === strtoupper(self::ACTION_REDIRECT) &&
+        if (array_key_exists('response', $firstTransaction) && array_key_exists('status', $firstTransaction['response']) &&
+            $firstTransaction['response']['status'] === strtoupper(self::ACTION_REDIRECT) &&
             strtolower($transactionData['txaction']) === self::ACTION_FAILED) {
             return true;
         }
