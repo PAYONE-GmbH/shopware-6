@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\DataHandler\Transaction;
 
 use DateTime;
+use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
@@ -52,6 +53,10 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $data[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
         $data[CustomFieldInstaller::ALLOW_CAPTURE]     = $this->shouldAllowCapture($paymentTransaction, $transactionData);
         $data[CustomFieldInstaller::ALLOW_REFUND]      = $this->shouldAllowRefund($paymentTransaction, $transactionData);
+
+        if (in_array($data[CustomFieldInstaller::TRANSACTION_STATE], [TransactionStatusService::ACTION_PAID, TransactionStatusService::ACTION_COMPLETED])) {
+            $data[CustomFieldInstaller::CAPTURED_AMOUNT] = $this->getCapturedAmount($paymentTransaction, $transactionData);
+        }
 
         return $data;
     }
@@ -129,6 +134,27 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         }
 
         return $handlerClass::isRefundable($transactionData, $paymentTransaction->getCustomFields());
+    }
+
+    private function getCapturedAmount(PaymentTransaction $paymentTransaction, array $transactionData): int
+    {
+        $currency     = $paymentTransaction->getOrder()->getCurrency();
+        $customFields = $paymentTransaction->getOrderTransaction()->getCustomFields() ?? [];
+
+        if (!$currency) {
+            return 0;
+        }
+
+        if (array_key_exists(CustomFieldInstaller::CAPTURED_AMOUNT, $customFields) &&
+            $customFields[CustomFieldInstaller::CAPTURED_AMOUNT] !== 0) {
+            return $customFields[CustomFieldInstaller::CAPTURED_AMOUNT];
+        }
+
+        if (array_key_exists('receivable', $transactionData)) {
+            return (int) round($transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()));
+        }
+
+        return 0;
     }
 
     private function getHandlerIdentifier(PaymentTransaction $paymentTransaction): string

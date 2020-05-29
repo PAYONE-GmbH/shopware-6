@@ -127,7 +127,7 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
      */
     public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
     {
-        $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
+        $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state', ''));
     }
 
     /**
