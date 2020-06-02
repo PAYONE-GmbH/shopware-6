@@ -139,7 +139,7 @@ Component.register('payone-refund-button', {
             }).catch((error) => {
                 this.createNotificationError({
                     title: this.$tc('payone-payment.refund.errorTitle'),
-                    message: this.$tc(error.message)
+                    message: error.message
                 });
 
                 this.isRefundSuccessful = false;

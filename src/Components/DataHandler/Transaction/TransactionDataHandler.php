@@ -47,7 +47,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     public function enhanceStatusWebhookData(PaymentTransaction $paymentTransaction, array $transactionData): array
     {
-        $data = array_map('utf8_encode', $transactionData);
+        $data = $this->utf8EncodeRecursive($transactionData);
 
         $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = (int) $transactionData['sequencenumber'];
         $data[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
@@ -172,5 +172,21 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         }
 
         return $handlerClass;
+    }
+
+    private function utf8EncodeRecursive(array $transactionData): array
+    {
+        foreach ($transactionData as &$transactionValue) {
+            if (is_array($transactionValue)) {
+                $transactionValue = $this->utf8EncodeRecursive($transactionValue);
+
+                continue;
+            }
+
+            $transactionValue = utf8_encode($transactionValue);
+        }
+        unset($transactionValue);
+
+        return $transactionData;
     }
 }

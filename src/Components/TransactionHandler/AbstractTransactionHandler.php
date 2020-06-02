@@ -109,6 +109,7 @@ abstract class AbstractTransactionHandler
     protected function updateTransactionData(ParameterBag $parameterBag, float $captureAmount): void
     {
         $transactionData = [];
+        $customFields    = $this->paymentTransaction->getCustomFields();
         $currency        = $this->paymentTransaction->getOrder()->getCurrency();
 
         if ($parameterBag->has('complete') && $parameterBag->get('complete')) {
@@ -116,10 +117,11 @@ abstract class AbstractTransactionHandler
         }
 
         if ($currency !== null) {
-            $captureAmount = (float) number_format($captureAmount, $currency->getDecimalPrecision(), '.', '');
+            $currentCaptureAmount  = (int) round($captureAmount * (10 ** $currency->getDecimalPrecision()));
+            $alreadyCapturedAmount = $customFields[$this->getAmountCustomField()] ?? 0;
 
             if ($captureAmount) {
-                $transactionData[$this->getAmountCustomField()] = $this->paymentTransaction->getCustomFields()[$this->getAmountCustomField()] + (int) ($captureAmount * (10 ** $currency->getDecimalPrecision()));
+                $transactionData[$this->getAmountCustomField()] = $alreadyCapturedAmount + $currentCaptureAmount;
             }
         }
 
