@@ -28,16 +28,16 @@ Component.register('payone-capture-button', {
             return Math.round(this.transaction.amount.totalPrice * (10 ** this.order.currency.decimalPrecision), 0);
         },
 
-        remainingAmount() {
-            return this.totalTransactionAmount - this.capturedAmount;
-        },
-
         capturedAmount() {
             if (!this.transaction.customFields || this.transaction.customFields.payone_captured_amount === undefined) {
                 return 0;
             }
 
             return this.transaction.customFields.payone_captured_amount;
+        },
+
+        remainingAmount() {
+            return this.totalTransactionAmount - this.capturedAmount;
         },
 
         maxCaptureAmount() {
@@ -127,28 +127,11 @@ Component.register('payone-capture-button', {
                 });
             });
 
-            this.PayonePaymentService.capturePayment(request).then(() => {
-                this.createNotificationSuccess({
-                    title: this.$tc('payone-payment.capture.successTitle'),
-                    message: this.$tc('payone-payment.capture.successMessage')
-                });
+            if (this.remainingAmount < (request.amount * (10 ** this.order.currency.decimalPrecision))) {
+                request.amount = this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
+            }
 
-                this.isCaptureSuccessful = true;
-            }).catch((error) => {
-                this.createNotificationError({
-                    title: this.$tc('payone-payment.capture.errorTitle'),
-                    message: this.$tc(error.message)
-                });
-
-                this.isCaptureSuccessful = false;
-            }).finally(() => {
-                this.isLoading = false;
-                this.closeCaptureModal();
-
-                this.$nextTick().then(() => {
-                    this.$emit('reload')
-                });
-            });
+            this.executeCapture(request)
         },
 
         captureFullOrder() {
@@ -156,7 +139,7 @@ Component.register('payone-capture-button', {
                 orderTransactionId: this.transaction.id,
                 payone_order_id: this.transaction.customFields.payone_transaction_id,
                 salesChannel: this.order.salesChannel,
-                amount: this.remainingAmount,
+                amount: this.remainingAmount / (10 ** this.order.currency.decimalPrecision),
                 orderLines: [],
                 complete: true
             };
@@ -179,6 +162,10 @@ Component.register('payone-capture-button', {
                 });
             });
 
+            this.executeCapture(request);
+        },
+
+        executeCapture(request) {
             this.PayonePaymentService.capturePayment(request).then(() => {
                 this.createNotificationSuccess({
                     title: this.$tc('payone-payment.capture.successTitle'),
@@ -186,10 +173,10 @@ Component.register('payone-capture-button', {
                 });
 
                 this.isCaptureSuccessful = true;
-            }).catch(() => {
+            }).catch((error) => {
                 this.createNotificationError({
                     title: this.$tc('payone-payment.capture.errorTitle'),
-                    message: this.$tc('payone-payment.messages.errorMessage')
+                    message: error.message
                 });
 
                 this.isCaptureSuccessful = false;
