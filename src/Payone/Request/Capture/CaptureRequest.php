@@ -50,7 +50,7 @@ class CaptureRequest
             'request'        => 'capture',
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => (int) round($totalAmount * (10 ** $currency->getDecimalPrecision()), 0),
+            'amount'         => (int) round($totalAmount * (10 ** $currency->getDecimalPrecision())),
             'currency'       => $currency->getIsoCode(),
             'capturemode'    => $completed ? self::CAPTUREMODE_COMPLETED : self::CAPTUREMODE_INCOMPLETE,
         ];

@@ -48,7 +48,7 @@ abstract class AbstractPayolutionInvoicingAuthorizeRequest
         $parameters = [
             'clearingtype'  => 'fnc',
             'financingtype' => 'PYV',
-            'amount'        => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())), 0),
+            'amount'        => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision()))),
             'currency'      => $currency->getIsoCode(),
             'reference'     => $transaction->getOrder()->getOrderNumber(),
         ];

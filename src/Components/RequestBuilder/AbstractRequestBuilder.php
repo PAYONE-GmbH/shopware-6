@@ -53,10 +53,10 @@ abstract class AbstractRequestBuilder
 
                 $requestLineItems['it[' . $counter . ']'] = $this->mapItemType($lineItem->getType());
                 $requestLineItems['id[' . $counter . ']'] = $lineItem->getIdentifier();
-                $requestLineItems['pr[' . $counter . ']'] = (int) round(($lineItem->getUnitPrice() * (10 ** $currency->getDecimalPrecision())), 0);
+                $requestLineItems['pr[' . $counter . ']'] = (int) round(($lineItem->getUnitPrice() * (10 ** $currency->getDecimalPrecision())));
                 $requestLineItems['no[' . $counter . ']'] = $orderLine['quantity'];
                 $requestLineItems['de[' . $counter . ']'] = $lineItem->getLabel();
-                $requestLineItems['va[' . $counter . ']'] = (int) round(($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision())), 0);
+                $requestLineItems['va[' . $counter . ']'] = (int) round(($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision())));
                 ++$counter;
             }
         }

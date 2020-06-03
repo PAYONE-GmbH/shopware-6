@@ -139,16 +139,16 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         }
 
         if (array_key_exists('price', $transactionData) && array_key_exists('receivable', $transactionData) &&
-            (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())), 0)) {
+            (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()))) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())))) {
             return true;
         }
 
         if (array_key_exists('price', $transactionData) && array_key_exists('invoice_grossamount', $transactionData) &&
-            (int) round(((float) $transactionData['invoice_grossamount'] * (10 ** $currency->getDecimalPrecision())), 0) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())), 0)) {
+            (int) round(((float) $transactionData['invoice_grossamount'] * (10 ** $currency->getDecimalPrecision()))) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())))) {
             return true;
         }
 
-        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === 0) {
+        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()))) === 0) {
             return true;
         }
 
@@ -169,17 +169,17 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if (array_key_exists('receivable', $transactionData) && (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === 0) {
+        if (array_key_exists('receivable', $transactionData) && (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()))) === 0) {
             return false;
         }
 
         if (array_key_exists('price', $transactionData) && array_key_exists('receivable', $transactionData) &&
-            (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())), 0)) {
+            (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()))) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())))) {
             return false;
         }
 
         if (array_key_exists('price', $transactionData) && array_key_exists('invoice_grossamount', $transactionData) &&
-            (int) round(((float) $transactionData['invoice_grossamount'] * (10 ** $currency->getDecimalPrecision())), 0) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())), 0)) {
+            (int) round(((float) $transactionData['invoice_grossamount'] * (10 ** $currency->getDecimalPrecision()))) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())))) {
             return false;
         }
 
@@ -204,7 +204,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) !== 0) {
+        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()))) !== 0) {
             return false;
         }
 
@@ -229,7 +229,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision())), 0) === 0) {
+        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()))) === 0) {
             return false;
         }
 
