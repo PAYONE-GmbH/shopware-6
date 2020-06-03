@@ -42,7 +42,7 @@ abstract class AbstractSofortBankingAuthorizeRequest
             'clearingtype'           => 'sb',
             'onlinebanktransfertype' => 'PNT',
             'bankcountry'            => 'DE', // TODO: possible values DE, AT, CH, NL
-            'amount'                 => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())), 0),
+            'amount'                 => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision()))),
             'currency'               => $currency->getIsoCode(),
             'reference'              => $transaction->getOrder()->getOrderNumber(),
             'successurl'             => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
