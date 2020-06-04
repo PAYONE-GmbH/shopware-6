@@ -49,7 +49,9 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
     {
         $data = $this->utf8EncodeRecursive($transactionData);
 
-        $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = (int) $transactionData['sequencenumber'];
+        $customFields                                  = $paymentTransaction->getCustomFields() ?? [];
+        $currentSequenceNumber                         = array_key_exists(CustomFieldInstaller::SEQUENCE_NUMBER, $customFields) ? $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] : 0;
+        $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = max((int) $transactionData['sequencenumber'], $currentSequenceNumber);
         $data[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
         $data[CustomFieldInstaller::ALLOW_CAPTURE]     = $this->shouldAllowCapture($paymentTransaction, $transactionData);
         $data[CustomFieldInstaller::ALLOW_REFUND]      = $this->shouldAllowRefund($paymentTransaction, $transactionData);
@@ -138,8 +140,10 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     private function getCapturedAmount(PaymentTransaction $paymentTransaction, array $transactionData): int
     {
-        $currency     = $paymentTransaction->getOrder()->getCurrency();
-        $customFields = $paymentTransaction->getOrderTransaction()->getCustomFields() ?? [];
+        $currency              = $paymentTransaction->getOrder()->getCurrency();
+        $customFields          = $paymentTransaction->getOrderTransaction()->getCustomFields() ?? [];
+        $currentCapturedAmount = 0;
+        $receivable            = 0;
 
         if (!$currency) {
             return 0;
@@ -147,14 +151,14 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
         if (array_key_exists(CustomFieldInstaller::CAPTURED_AMOUNT, $customFields) &&
             $customFields[CustomFieldInstaller::CAPTURED_AMOUNT] !== 0) {
-            return $customFields[CustomFieldInstaller::CAPTURED_AMOUNT];
+            $currentCapturedAmount = $customFields[CustomFieldInstaller::CAPTURED_AMOUNT];
         }
 
         if (array_key_exists('receivable', $transactionData)) {
-            return (int) round($transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()));
+            $receivable = (int) round($transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()));
         }
 
-        return 0;
+        return max($currentCapturedAmount, $receivable);
     }
 
     private function getHandlerIdentifier(PaymentTransaction $paymentTransaction): string
