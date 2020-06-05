@@ -49,7 +49,6 @@ class RefundRequest
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
             'amount'         => -1 * (int) round(($totalAmount * (10 ** $currency->getDecimalPrecision()))),
             'currency'       => $currency->getIsoCode(),
-            'settleaccount'  => 'auto',
         ];
     }
 

@@ -80,8 +80,9 @@ Component.register('payone-refund-button', {
                 }
             });
 
-            if (amount === 0 || amount > this.remainingAmount) {
-                amount = this.remainingAmount;
+            if (amount === 0 ||
+                Math.round(amount * (10 ** this.order.currency.decimalPrecision) > this.remainingAmount)) {
+                amount = this.remainingAmount / (10 ** this.order.currency.decimalPrecision)
             }
 
             this.refundAmount = amount;
