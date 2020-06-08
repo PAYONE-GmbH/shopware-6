@@ -7,6 +7,7 @@ namespace PayonePayment\EventListener;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -18,6 +19,7 @@ class CheckoutConfirmPaypalExpressEventListener implements EventSubscriberInterf
         return [
             CheckoutConfirmPageLoadedEvent::class      => 'hideInternalPaymentMethods',
             AccountPaymentMethodPageLoadedEvent::class => 'hideInternalPaymentMethods',
+            AccountEditOrderPageLoadedEvent::class => 'hideInternalPaymentMethods',
         ];
     }
 
