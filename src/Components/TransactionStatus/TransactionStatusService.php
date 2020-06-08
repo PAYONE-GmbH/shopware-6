@@ -60,6 +60,10 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $currency      = $paymentTransaction->getOrder()->getCurrency();
 
+        if (null === $currency) {
+            return;
+        }
+
         if ($this->isTransactionPartialPaid($transactionData, $currency)) {
             $configurationKey = self::STATUS_PREFIX . ucfirst(self::ACTION_PARTIAL_CAPTURE);
         } elseif ($this->isTransactionPartialRefund($transactionData, $currency)) {
@@ -120,17 +124,13 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return strtolower($transactionData['txaction']) === self::ACTION_APPOINTED;
     }
 
-    private function isTransactionPaid(array $transactionData, ?CurrencyEntity $currency): bool
+    private function isTransactionPaid(array $transactionData, CurrencyEntity $currency): bool
     {
         if (in_array(strtolower($transactionData['txaction']), [self::ACTION_PAID, self::ACTION_COMPLETED], true)) {
             return true;
         }
 
         if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE, self::ACTION_INVOICE], true)) {
-            return false;
-        }
-
-        if (!$currency) {
             return false;
         }
 
@@ -155,13 +155,9 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return false;
     }
 
-    private function isTransactionPartialPaid(array $transactionData, ?CurrencyEntity $currency): bool
+    private function isTransactionPartialPaid(array $transactionData, CurrencyEntity $currency): bool
     {
         if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE, self::ACTION_INVOICE], true)) {
-            return false;
-        }
-
-        if (!$currency) {
             return false;
         }
 
@@ -186,17 +182,13 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return true;
     }
 
-    private function isTransactionRefund(array $transactionData, ?CurrencyEntity $currency): bool
+    private function isTransactionRefund(array $transactionData, CurrencyEntity $currency): bool
     {
         if (strtolower($transactionData['txaction']) !== self::ACTION_DEBIT) {
             return false;
         }
 
         if (!array_key_exists('receivable', $transactionData)) {
-            return false;
-        }
-
-        if (!$currency) {
             return false;
         }
 
@@ -211,17 +203,13 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return true;
     }
 
-    private function isTransactionPartialRefund(array $transactionData, ?CurrencyEntity $currency): bool
+    private function isTransactionPartialRefund(array $transactionData, CurrencyEntity $currency): bool
     {
         if (strtolower($transactionData['txaction']) !== self::ACTION_DEBIT) {
             return false;
         }
 
         if (!array_key_exists('receivable', $transactionData)) {
-            return false;
-        }
-
-        if (!$currency) {
             return false;
         }
 
@@ -251,6 +239,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
         $fullTransactionData = $customFields[CustomFieldInstaller::TRANSACTION_DATA];
         $firstTransaction    = $fullTransactionData[array_key_first($fullTransactionData)];
+
+        // TODO: GUARDS!!!!!!!!!!!!!!!!!!!!!!!1elf
 
         if (array_key_exists('response', $firstTransaction) && array_key_exists('status', $firstTransaction['response']) &&
             $firstTransaction['response']['status'] === strtoupper(self::ACTION_REDIRECT) &&

@@ -6,6 +6,7 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -15,6 +16,7 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
     {
         return [
             CheckoutConfirmPageLoadedEvent::class => 'addCartData',
+            AccountEditOrderPageLoadedEvent::class => 'addCartData',
         ];
     }
 

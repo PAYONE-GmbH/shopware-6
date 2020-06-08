@@ -10,8 +10,10 @@ use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
+use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
@@ -29,11 +31,11 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
         return [
             CheckoutConfirmPageLoadedEvent::class      => 'hidePaymentMethodsForCompanies',
             AccountPaymentMethodPageLoadedEvent::class => 'hidePaymentMethodsForCompanies',
+            AccountEditOrderPageLoadedEvent::class => 'hidePaymentMethodsForCompanies',
         ];
     }
 
-    /** @param AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event */
-    public function hidePaymentMethodsForCompanies($event): void
+    public function hidePaymentMethodsForCompanies(PageLoadedEvent $event): void
     {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
