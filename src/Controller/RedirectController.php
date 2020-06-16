@@ -25,7 +25,7 @@ class RedirectController
 
     /**
      * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/redirect", name="payone_redirect")
+     * @Route("/payone/redirect", name="payone_redirect", defaults={"csrf_protected"=false})
      */
     public function execute(Request $request): Response
     {
