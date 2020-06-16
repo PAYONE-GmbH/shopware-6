@@ -103,6 +103,10 @@
       "mandateCheckbox": {
         "textWithLink": "Hiermit erteile ich das <a href=\"%link%\" target=\"_blank\" title=\"Paysafe Pay Later SEPA-Mandat\">SEPA-Lastschriftmandat</a>."
       }
+    },
+    "eps": {
+      "cardTitle": "EPS Online Bank",
+      "bankGroupFieldLabel": "Bankengruppe Ihrer Hausbank"
     }
   },
   "error": {

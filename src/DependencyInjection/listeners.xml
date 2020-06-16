@@ -51,5 +51,9 @@
 
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmEpsEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>

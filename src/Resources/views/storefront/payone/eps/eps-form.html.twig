@@ -1,0 +1,72 @@
+<div class="payone-payment payone-payment--eps">
+    {% block page_checkout_confirm_payone_card_title_eps %}
+        <div class="card-title">
+            {{ "PayonePayment.eps.cardTitle" | trans }}
+        </div>
+    {% endblock %}
+
+    <div id="epsErrorContainer" hidden="hidden">
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            type: "danger",
+            content: "PayonePayment.errorMessages.genericError" | trans
+        } %}
+    </div>
+
+    {% block page_checkout_confirm_payone_card_content_eps %}
+        <div class="form-row">
+            <div class="col-12">
+                <label class="form-label" for="epsBankGroup">
+                    {{ "PayonePayment.eps.bankGroupFieldLabel" | trans }}{{ "general.required" | trans }}
+                </label>
+            </div>
+            <div class="form-group {% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
+                <select
+                    id="epsBankGroup"
+                    name="epsBankGroup"
+                    class="form-control{% if formViolations.getViolations('/epsBankGroup') is not empty %} is-invalid{% endif %}"
+                    form="confirmOrderForm"
+                    required="required"
+                >
+                    <option value="ARZ_OAB">Apothekerbank</option>
+                    <option value="ARZ_BAF">Ärztebank</option>
+                    <option value="BA_AUS">Bank Austria</option>
+                    <option value="ARZ_BCS">Bankhaus Carl Spängler & Co.AG</option>
+                    <option value="EPS_SCHEL">Bankhaus Schelhammer & Schattera AG</option>
+                    <option value="BAWAG_PSK">BAWAG P.S.K. AG</option>
+                    <option value="BAWAG_ESY">Easybank AG</option>
+                    <option value="SPARDAT_EBS">Erste Bank und Sparkassen</option>
+                    <option value="ARZ_HAA">Hypo Alpe-Adria-Bank International AG</option>
+                    <option value="ARZ_VLH">Hypo Landesbank Vorarlberg</option>
+                    <option value="HRAC_OOS">HYPO Oberösterreich,Salzburg,Steiermark</option>
+                    <option value="ARZ_HTB">Hypo Tirol Bank AG</option>
+                    <option value="EPS_OBAG">Oberbank AG</option>
+                    <option value="RAC_RAC">Raiffeisen Bankengruppe Österreich</option>
+                    <option value="EPS_SCHOELLER">Schoellerbank AG</option>
+                    <option value="ARZ_OVB">Volksbank Gruppe</option>
+                    <option value="EPS_VRBB">VR-Bank Braunau</option>
+                    <option value="EPS_AAB">Austrian Anadi Bank AG</option>
+                    <option value="EPS_BKS">BKS Bank AG</option>
+                    <option value="EPS_BKB">Brüll Kallmus Bank AG</option>
+                    <option value="EPS_VLB">BTV VIER LÄNDER BANK</option>
+                    <option value="EPS_CBGG">Capital Bank Grawe Gruppe AG</option>
+                    <option value="EPS_DB">Dolomitenbank</option>
+                    <option value="EPS_NOELB">HYPO NOE Landesbank AG</option>
+                    <option value="EPS_HBL">HYPO-BANK BURGENLAND Aktiengesellschaft</option>
+                    <option value="EPS_MFB">Marchfelder Bank</option>
+                    <option value="EPS_SPDBW">Sparda Bank Wien</option>
+                    <option value="EPS_SPDBA">SPARDA-BANK AUSTRIA</option>
+                    <option value="EPS_VKB">Volkskreditbank AG</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="payone-configuration" data-is-payone-eps="true"></div>
+    {% endblock %}
+</div>
+<script>
+    import Select
+        from "../../../../../../vendor/shopware/administration/Resources/app/administration/src/app/component/form/sw-field";
+    export default {
+        components: {Select}
+    }
+</script>

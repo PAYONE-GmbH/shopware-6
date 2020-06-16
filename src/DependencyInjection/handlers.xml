@@ -126,5 +126,17 @@
 
             <tag name="shopware.payment.method.async" />
         </service>
+
+        <service id="PayonePayment\PaymentHandler\PayoneEpsPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Payone\Request\Eps\EpsPreAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\Eps\EpsAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Components\TransactionDataHandler\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
+
+            <tag name="shopware.payment.method.async" />
+        </service>
     </services>
 </container>
