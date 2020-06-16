@@ -33,12 +33,26 @@ class CheckoutConfirmIDealEventListener implements EventSubscriberInterface
     {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
-        if ($this->isNlCustomer($event->getSalesChannelContext())) {
+        if (
+            $this->isEuroCurrency($event->getSalesChannelContext()) &&
+            $this->isNlCustomer($event->getSalesChannelContext())
+        ) {
             return;
         }
 
         $paymentMethods = $this->removePaymentMethod($paymentMethods, PayoneIDeal::UUID);
         $event->getPage()->setPaymentMethods($paymentMethods);
+    }
+
+    /**
+     * Returns whether or not the currency is EUR.
+     *
+     * @param SalesChannelContext $context
+     * @return bool
+     */
+    private function isEuroCurrency(SalesChannelContext $context): bool
+    {
+        return $context->getCurrency()->getIsoCode() === 'EUR';
     }
 
     /**
