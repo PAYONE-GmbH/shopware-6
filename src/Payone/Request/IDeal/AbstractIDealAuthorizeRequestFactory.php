@@ -9,6 +9,7 @@ use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
 use PayonePayment\Payone\Request\System\SystemRequest;
 use PayonePayment\Struct\PaymentTransaction;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 abstract class AbstractIDealAuthorizeRequestFactory extends AbstractRequestFactory
@@ -34,6 +35,7 @@ abstract class AbstractIDealAuthorizeRequestFactory extends AbstractRequestFacto
 
     public function getRequestParameters(
         PaymentTransaction $transaction,
+        RequestDataBag $dataBag,
         SalesChannelContext $context
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
@@ -48,6 +50,7 @@ abstract class AbstractIDealAuthorizeRequestFactory extends AbstractRequestFacto
 
         $this->requests[] = $this->iDealRequest->getRequestParameters(
             $transaction,
+            $dataBag,
             $context->getContext()
         );
 

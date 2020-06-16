@@ -26,6 +26,24 @@ use Throwable;
 
 class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
+    /**
+     * Valid iDEAL bank groups according to:
+     * https://docs.payone.com/pages/releaseview.action?pageId=1213906
+     */
+    protected const VALID_IDEAL_BANK_GROUPS = [
+        'ABN_AMRO_BANK',
+        'BUNQ_BANK',
+        'RABOBANK',
+        'ASN_BANK',
+        'SNS_BANK',
+        'TRIODOS_BANK',
+        'SNS_REGIO_BANK',
+        'ING_BANK',
+        'KNAB_BANK',
+        'VAN_LANSCHOT_BANKIERS',
+        'MONEYOU',
+    ];
+
     /** @var IDealPreAuthorizeRequestFactory */
     private $preAuthRequestFactory;
 
@@ -76,6 +94,15 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
 
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
 
+        try {
+            $this->validate($dataBag);
+        } catch (PayoneRequestException $e) {
+            throw new AsyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
+
         // Select request factory based on configured authorization method
         $factory = $authorizationMethod === 'preauthorization'
             ? $this->preAuthRequestFactory
@@ -83,6 +110,7 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
 
         $request = $factory->getRequestParameters(
             $paymentTransaction,
+            $dataBag,
             $salesChannelContext
         );
 
@@ -118,6 +146,18 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
 
         return new RedirectResponse($response['redirecturl']);
+    }
+
+    /**
+     * @throws PayoneRequestException
+     */
+    private function validate(RequestDataBag $dataBag)
+    {
+        $bankGroup = $dataBag->get('idealBankGroup');
+
+        if (!in_array($bankGroup, static::VALID_IDEAL_BANK_GROUPS, true)) {
+            throw new PayoneRequestException('No valid iDEAL bank group');
+        }
     }
 
     /**

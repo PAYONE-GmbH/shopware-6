@@ -12,6 +12,7 @@ use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
 abstract class AbstractIDealAuthorizeRequest
@@ -30,8 +31,11 @@ abstract class AbstractIDealAuthorizeRequest
         $this->currencyRepository = $currencyRepository;
     }
 
-    public function getRequestParameters(PaymentTransaction $transaction, Context $context): array
-    {
+    public function getRequestParameters(
+        PaymentTransaction $transaction,
+        RequestDataBag $dataBag,
+        Context $context
+    ): array {
         if (empty($transaction->getReturnUrl())) {
             throw new InvalidOrderException($transaction->getOrder()->getId());
         }
@@ -42,6 +46,7 @@ abstract class AbstractIDealAuthorizeRequest
             'clearingtype'           => 'sb',
             'onlinebanktransfertype' => 'IDL',
             'bankcountry'            => 'NL',
+            'bankgrouptype'          => $dataBag->get('idealBankGroup'),
             'amount'                 => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
             'currency'               => $currency->getIsoCode(),
             'reference'              => $transaction->getOrder()->getOrderNumber(),
