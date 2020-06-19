@@ -36,6 +36,7 @@
             "refund": {
                 "title": "Erstattung",
                 "submit": "Erstatten",
+                "fullSubmit": "Alles Erstatten",
                 "amount": "Erstattungswert",
                 "refunded": "Erstatteter Wert"
             },

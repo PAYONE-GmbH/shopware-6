@@ -21,7 +21,7 @@
                 <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.remainingAmount')" :value="remainingAmount | payone_currency(order.currency.shortName, order.currency.decimalPrecision)"></sw-text-field>
                 <sw-number-field required="required" numberType="float" :digits="order.decimal_precision" :label="$tc('payone-payment.modal.capture.amount')"
                                  v-model="captureAmount"
-                                 :min="minCaptureAmount"
+                                 :min="0"
                                  :max="maxCaptureAmount"></sw-number-field>
             </sw-container>
         </div>
@@ -31,7 +31,7 @@
                 {{ $tc('payone-payment.modal.close') }}
             </sw-button>
 
-            <sw-button-process :isLoading="isLoading" :processSuccess="isCaptureSuccessful" @process-finish="onCaptureFinished()" :disabled="isLoading" variant="primary" @click="captureOrder">
+            <sw-button-process :isLoading="isLoading" :processSuccess="isCaptureSuccessful" @process-finish="onCaptureFinished()" :disabled="isLoading || captureAmount == 0" variant="primary" @click="captureOrder">
                 {{ $tc('payone-payment.modal.capture.submit') }}
             </sw-button-process>
 
