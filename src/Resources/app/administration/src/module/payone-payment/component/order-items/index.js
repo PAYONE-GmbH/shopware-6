@@ -21,12 +21,14 @@ Component.register('payone-order-items', {
     computed: {
         orderItems() {
             const data = [];
+
             this.order.lineItems.forEach((order_item) => {
                 const price = this.$options.filters.currency(
                     order_item.totalPrice,
                     this.order.currency.shortName,
                     this.order.decimal_precision
                 );
+
                 let disabled = false;
                 let quantity = order_item.quantity;
 
@@ -55,6 +57,7 @@ Component.register('payone-order-items', {
                     product: order_item.label,
                     quantity: quantity,
                     disabled: disabled,
+                    selected: false,
                     price: price,
                     orderItem: order_item
                 });

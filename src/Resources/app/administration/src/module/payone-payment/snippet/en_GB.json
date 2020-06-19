@@ -36,6 +36,7 @@
             "refund": {
                 "title": "Refund",
                 "submit": "Refund",
+                "fullSubmit": "Full Refund",
                 "amount": "Refund amount",
                 "refunded": "Refunded amount"
             },
