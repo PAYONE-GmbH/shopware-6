@@ -33,7 +33,8 @@
                 "payolutionInstallment": "The API credentials for Paysafe Pay Later Installment are not valid.",
                 "payolutionInvoicing": "The API credentials for Paysafe Pay Later Invoicing are not valid.",
                 "payolutionDebit": "The API credentials for Paysafe Pay Later Debit are not valid.",
-                "sofort": "The API credentials for SOFORT are not valid."
+                "sofort": "The API credentials for SOFORT are not valid.",
+                "eps": "The API credentials for EPS are not valid."
             }
         },
         "supportModal": {
