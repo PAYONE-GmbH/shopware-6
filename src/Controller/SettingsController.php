@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
@@ -201,6 +202,22 @@ class SettingsController extends AbstractController
                     'firstname'              => 'Test',
                     'lastname'               => 'Test',
                     'country'                => 'DE',
+                    'successurl'             => 'https://www.payone.com',
+                ];
+
+            case PayoneEpsPaymentHandler::class:
+                return [
+                    'request'                => 'preauthorization',
+                    'clearingtype'           => 'sb',
+                    'onlinebanktransfertype' => 'EPS',
+                    'bankcountry'            => 'AT',
+                    'bankgrouptype'          => 'ARZ_HTB',
+                    'amount'                 => 100,
+                    'currency'               => 'EUR',
+                    'reference'              => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'firstname'              => 'Test',
+                    'lastname'               => 'Test',
+                    'country'                => 'AT',
                     'successurl'             => 'https://www.payone.com',
                 ];
 
