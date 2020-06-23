@@ -82,7 +82,8 @@ Component.register('payone-settings', {
                 'payolutionInvoicing',
                 'payolutionInstallment',
                 'payolutionDebit',
-                'sofort'
+                'sofort',
+                'eps',
             ];
         },
 
