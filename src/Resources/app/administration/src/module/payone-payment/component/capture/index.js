@@ -74,7 +74,7 @@ Component.register('payone-capture-button', {
                 }
             });
 
-            if (0 === amount || amount > this.remainingAmount) {
+            if (amount > this.remainingAmount) {
                 amount = this.remainingAmount;
             }
 
