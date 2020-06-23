@@ -31,7 +31,7 @@
                 {{ $tc('payone-payment.modal.close') }}
             </sw-button>
 
-            <sw-button-process :isLoading="isLoading" :processSuccess="isRefundSuccessful" @process-finish="onRefundFinished()" :disabled="isLoading || refundAmount == 0" variant="primary" @click="refundOrder">
+            <sw-button-process :isLoading="isLoading" :processSuccess="isRefundSuccessful" @process-finish="onRefundFinished()" :disabled="isLoading || refundAmount <= 0" variant="primary" @click="refundOrder">
                 {{ $tc('payone-payment.modal.refund.submit') }}
             </sw-button-process>
 
