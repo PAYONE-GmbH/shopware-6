@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Controller;
 
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Controller\WebhookController;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
@@ -23,6 +23,8 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +43,7 @@ class WebhookControllerTest extends TestCase
         $request->request->set('txaction', 'appointed');
         $request->request->set('sequencenumber', '0');
 
-        $response = $this->createWebhookController('reopen', $request->request->all())->execute(
+        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_REOPEN, $request->request->all())->execute(
             $request,
             $salesChannelContext
         );
@@ -49,7 +51,7 @@ class WebhookControllerTest extends TestCase
         $this->assertEquals(WebhookHandlerInterface::RESPONSE_TSOK, $response->getContent());
     }
 
-    public function testCreditcardCapture(): void
+    public function testCreditcardPartialCapture(): void
     {
         $context             = Context::createDefaultContext();
         $salesChannelContext = Generator::createSalesChannelContext($context);
@@ -62,7 +64,29 @@ class WebhookControllerTest extends TestCase
         $request->request->set('receivable', '1');
         $request->request->set('sequencenumber', '0');
 
-        $response = $this->createWebhookController('pay', $request->request->all())->execute(
+        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAY_PARTIALLY, $request->request->all())->execute(
+            $request,
+            $salesChannelContext
+        );
+
+        $this->assertEquals(WebhookHandlerInterface::RESPONSE_TSOK, $response->getContent());
+    }
+
+    public function testCreditcardFullCapture(): void
+    {
+        $context             = Context::createDefaultContext();
+        $salesChannelContext = Generator::createSalesChannelContext($context);
+        $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
+
+        $request = new Request();
+        $request->request->set('key', md5(''));
+        $request->request->set('txid', Constants::PAYONE_TRANSACTION_ID);
+        $request->request->set('txaction', 'capture');
+        $request->request->set('receivable', '0');
+        $request->request->set('price', '123.00');
+        $request->request->set('sequencenumber', '0');
+
+        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAY, $request->request->all())->execute(
             $request,
             $salesChannelContext
         );
@@ -82,7 +106,7 @@ class WebhookControllerTest extends TestCase
         $request->request->set('txaction', 'paid');
         $request->request->set('sequencenumber', '0');
 
-        $response = $this->createWebhookController('pay', $request->request->all())->execute(
+        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAY, $request->request->all())->execute(
             $request,
             $salesChannelContext
         );
@@ -112,6 +136,10 @@ class WebhookControllerTest extends TestCase
             []
         );
 
+        $currency = new CurrencyEntity();
+        $currency->setId(Constants::CURRENCY_ID);
+        $currency->setDecimalPrecision(2);
+
         $orderTransactionEntity = new OrderTransactionEntity();
         $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
 
@@ -120,6 +148,7 @@ class WebhookControllerTest extends TestCase
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+        $orderEntity->setCurrency($currency);
 
         $paymentMethodEntity = new PaymentMethodEntity();
         $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);
@@ -135,7 +164,7 @@ class WebhookControllerTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
         $transactionDataHandler->expects($this->once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);

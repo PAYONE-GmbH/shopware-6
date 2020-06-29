@@ -1,8 +1,16 @@
 const { Module } = Shopware;
+
+import './component/capture';
+import './component/refund';
+import './component/order-items';
+import './component/payone-data-grid';
+
 import './page/payone-settings';
 
 import './extension/sw-order';
 import './extension/sw-settings-index';
+
+import './filter/payone_currency.filter';
 
 import deDE from './snippet/de_DE.json';
 import enGB from './snippet/en_GB.json';

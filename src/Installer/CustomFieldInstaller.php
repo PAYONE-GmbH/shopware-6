@@ -26,15 +26,20 @@ class CustomFieldInstaller implements InstallerInterface
     public const AUTHORIZATION_TYPE     = 'payone_authorization_type';
     public const CLEARING_REFERENCE     = 'payone_clearing_reference';
     public const TRANSACTION_STATE      = 'payone_transaction_state';
-    public const ALLOW_REFUND           = 'payone_allow_refund';
-    public const ALLOW_CAPTURE          = 'payone_allow_capture';
     public const TEMPLATE               = 'payone_template';
     public const IS_PAYONE              = 'payone_payment';
     public const CAPTURE_MODE           = 'payone_capture_mode';
     public const CLEARING_TYPE          = 'payone_clearing_type';
     public const FINANCING_TYPE         = 'payone_financing_type';
+    public const ALLOW_REFUND           = 'payone_allow_refund';
+    public const ALLOW_CAPTURE          = 'payone_allow_capture';
+    public const CAPTURED_AMOUNT        = 'payone_captured_amount';
+    public const REFUNDED_AMOUNT        = 'payone_refunded_amount';
+    public const CAPTURED_QUANTITY      = 'payone_captured_quantity';
+    public const REFUNDED_QUANTITY      = 'payone_refunded_quantity';
 
     public const FIELDSET_ID_ORDER_TRANSACTION = 'aacbcf9bedfb4827853b75c5fd278d3f';
+    public const FIELDSET_ID_ORDER_LINE_ITEM   = '12f3f06c895e11eabc550242ac130003';
     public const FIELDSET_ID_PAYMENT_METHOD    = 'ed39626e94fd4dfe9d81976fdbcdb06c';
 
     /** @var EntityRepositoryInterface */
@@ -83,6 +88,20 @@ class CustomFieldInstaller implements InstallerInterface
                     'entityName' => 'payment_method',
                 ],
             ],
+            [
+                'id'     => self::FIELDSET_ID_ORDER_LINE_ITEM,
+                'name'   => 'order_line_item_payone_payment',
+                'config' => [
+                    'label' => [
+                        'en-GB' => 'PAYONE',
+                        'de-DE' => 'PAYONE',
+                    ],
+                ],
+                'relation' => [
+                    'id'         => '0f2e6036750a4eb98ffe7155be89a5a6',
+                    'entityName' => 'order_line_item',
+                ],
+            ],
         ];
 
         $this->customFields = [
@@ -129,9 +148,21 @@ class CustomFieldInstaller implements InstallerInterface
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
             ],
             [
+                'id'               => 'fc634488895d11eabc550242ac130003',
+                'name'             => self::CAPTURED_AMOUNT,
+                'type'             => CustomFieldTypes::INT,
+                'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
+            ],
+            [
                 'id'               => '9bafb69059bf467bb3445c445d395c7e',
                 'name'             => self::ALLOW_REFUND,
                 'type'             => CustomFieldTypes::BOOL,
+                'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
+            ],
+            [
+                'id'               => '0489a986895e11eabc550242ac130003',
+                'name'             => self::REFUNDED_AMOUNT,
+                'type'             => CustomFieldTypes::INT,
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
             ],
             [
@@ -187,6 +218,18 @@ class CustomFieldInstaller implements InstallerInterface
                 'name'             => self::CAPTURE_MODE,
                 'type'             => CustomFieldTypes::TEXT,
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
+            ],
+            [
+                'id'               => 'e3583a4c893611eabc550242ac130003',
+                'name'             => self::CAPTURED_QUANTITY,
+                'type'             => CustomFieldTypes::INT,
+                'customFieldSetId' => self::FIELDSET_ID_ORDER_LINE_ITEM,
+            ],
+            [
+                'id'               => 'dd44a406893611eabc550242ac130003',
+                'name'             => self::REFUNDED_QUANTITY,
+                'type'             => CustomFieldTypes::INT,
+                'customFieldSetId' => self::FIELDSET_ID_ORDER_LINE_ITEM,
             ],
         ];
     }

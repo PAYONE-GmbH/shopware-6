@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\TransactionDataHandler;
+namespace PayonePayment\Components\DataHandler\Transaction;
 
 use DateTime;
+use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -29,25 +31,34 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
         $criteria = (new Criteria())
             ->addFilter(new EqualsFilter($field, $payoneTransactionId))
-            ->addAssociation('paymentMethod');
+            ->addAssociation('paymentMethod')
+            ->addAssociation('order')
+            ->addAssociation('order.currency');
 
+        /** @var null|OrderTransactionEntity $transaction */
         $transaction = $this->transactionRepository->search($criteria, $context)->first();
 
-        if (null === $transaction) {
+        if (null === $transaction || null === $transaction->getOrder()) {
             return null;
         }
 
-        return PaymentTransaction::fromOrderTransaction($transaction);
+        return PaymentTransaction::fromOrderTransaction($transaction, $transaction->getOrder());
     }
 
     public function enhanceStatusWebhookData(PaymentTransaction $paymentTransaction, array $transactionData): array
     {
-        $data = array_map('utf8_encode', $transactionData);
+        $data = $this->utf8EncodeRecursive($transactionData);
 
-        $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = (int) $transactionData['sequencenumber'];
+        $customFields                                  = $paymentTransaction->getCustomFields() ?? [];
+        $currentSequenceNumber                         = array_key_exists(CustomFieldInstaller::SEQUENCE_NUMBER, $customFields) ? $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] : 0;
+        $data[CustomFieldInstaller::SEQUENCE_NUMBER]   = max((int) $transactionData['sequencenumber'], $currentSequenceNumber);
         $data[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
         $data[CustomFieldInstaller::ALLOW_CAPTURE]     = $this->shouldAllowCapture($paymentTransaction, $transactionData);
         $data[CustomFieldInstaller::ALLOW_REFUND]      = $this->shouldAllowRefund($paymentTransaction, $transactionData);
+
+        if (in_array($data[CustomFieldInstaller::TRANSACTION_STATE], [TransactionStatusService::ACTION_PAID, TransactionStatusService::ACTION_COMPLETED])) {
+            $data[CustomFieldInstaller::CAPTURED_AMOUNT] = $this->getCapturedAmount($paymentTransaction, $transactionData);
+        }
 
         return $data;
     }
@@ -127,6 +138,29 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         return $handlerClass::isRefundable($transactionData, $paymentTransaction->getCustomFields());
     }
 
+    private function getCapturedAmount(PaymentTransaction $paymentTransaction, array $transactionData): int
+    {
+        $currency              = $paymentTransaction->getOrder()->getCurrency();
+        $customFields          = $paymentTransaction->getOrderTransaction()->getCustomFields() ?? [];
+        $currentCapturedAmount = 0;
+        $receivable            = 0;
+
+        if (!$currency) {
+            return 0;
+        }
+
+        if (array_key_exists(CustomFieldInstaller::CAPTURED_AMOUNT, $customFields) &&
+            $customFields[CustomFieldInstaller::CAPTURED_AMOUNT] !== 0) {
+            $currentCapturedAmount = $customFields[CustomFieldInstaller::CAPTURED_AMOUNT];
+        }
+
+        if (array_key_exists('receivable', $transactionData)) {
+            $receivable = (int) round($transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()));
+        }
+
+        return max($currentCapturedAmount, $receivable);
+    }
+
     private function getHandlerIdentifier(PaymentTransaction $paymentTransaction): string
     {
         $paymentMethodEntity = $paymentTransaction->getOrderTransaction()->getPaymentMethod();
@@ -142,5 +176,21 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         }
 
         return $handlerClass;
+    }
+
+    private function utf8EncodeRecursive(array $transactionData): array
+    {
+        foreach ($transactionData as &$transactionValue) {
+            if (is_array($transactionValue)) {
+                $transactionValue = $this->utf8EncodeRecursive($transactionValue);
+
+                continue;
+            }
+
+            $transactionValue = utf8_encode($transactionValue);
+        }
+        unset($transactionValue);
+
+        return $transactionData;
     }
 }

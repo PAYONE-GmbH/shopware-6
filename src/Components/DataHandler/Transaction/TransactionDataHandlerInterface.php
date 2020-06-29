@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\TransactionDataHandler;
+namespace PayonePayment\Components\DataHandler\Transaction;
 
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
