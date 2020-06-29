@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
@@ -17,6 +17,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -51,9 +52,10 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
+        EntityRepositoryInterface $lineItemRepository,
         PaymentStateHandlerInterface $stateHandler
     ) {
-        parent::__construct($configReader);
+        parent::__construct($configReader, $lineItemRepository);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;
@@ -74,7 +76,7 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
             'preauthorization'
         );
 
-        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         // Select request factory based on configured authorization method
         $factory = $authorizationMethod === 'preauthorization'
@@ -108,13 +110,12 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
             );
         }
 
-        // Prepare custom fields for the transaction
-        $data = $this->prepareTransactionCustomFields($request, $response, [
-            CustomFieldInstaller::TRANSACTION_STATE  => $response['status'],
-            CustomFieldInstaller::ALLOW_CAPTURE      => false,
-            CustomFieldInstaller::ALLOW_REFUND       => false,
-            CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
-        ]);
+        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
+            $this->getBaseCustomFields($response['status']),
+            [
+                CustomFieldInstaller::WORK_ORDER_ID => $dataBag->get('workorder'),
+            ]
+        ));
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);

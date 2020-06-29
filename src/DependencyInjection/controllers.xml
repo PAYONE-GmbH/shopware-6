@@ -7,8 +7,7 @@
         <defaults public="true"/>
 
         <service id="PayonePayment\Controller\CaptureController">
-            <argument type="service" id="PayonePayment\Components\CapturePaymentHandler\CapturePaymentHandler" />
-            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="PayonePayment\Components\TransactionHandler\Capture\CaptureTransactionHandler" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -20,8 +19,7 @@
         </service>
 
         <service id="PayonePayment\Controller\RefundController">
-            <argument type="service" id="PayonePayment\Components\RefundPaymentHandler\RefundPaymentHandler" />
-            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="PayonePayment\Components\TransactionHandler\Refund\RefundTransactionHandler" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

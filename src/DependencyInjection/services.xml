@@ -7,7 +7,9 @@
         <import resource="controllers.xml" />
         <import resource="decorations.xml"/>
         <import resource="entities.xml" />
-        <import resource="handlers.xml" />
+        <import resource="handler/global_handlers.xml" />
+        <import resource="handler/payment_handler.xml" />
+        <import resource="handler/request_handler.xml" />
         <import resource="listeners.xml" />
         <import resource="requests.xml" />
         <import resource="pages.xml" />
@@ -16,21 +18,14 @@
     </imports>
 
     <services>
-        <service id="PayonePayment\Components\ConfigReader\ConfigReader">
-            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
-        </service>
-
-        <service id="PayonePayment\Payone\Client\PayoneClient">
-            <argument type="service" id="PayonePayment\Util\Logger" />
-        </service>
-
-        <service id="PayonePayment\Components\TransactionStatus\TransactionStatusService">
-            <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
-        </service>
-
         <service id="PayonePayment\Components\CardRepository\CardRepository">
             <argument type="service" id="payone_payment_card.repository" />
+        </service>
+
+        <service id="PayonePayment\Components\CartHasher\CartHasher" />
+
+        <service id="PayonePayment\Components\ConfigReader\ConfigReader">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
         </service>
 
         <service id="PayonePayment\Components\MandateService\MandateService">
@@ -39,12 +34,19 @@
             <argument type="service" id="PayonePayment\Payone\Request\GetFile\GetFileRequestFactory" />
         </service>
 
+        <service id="PayonePayment\Components\TransactionStatus\TransactionStatusService">
+            <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+        </service>
+
+        <service id="PayonePayment\Payone\Client\PayoneClient">
+            <argument type="service" id="PayonePayment\Util\Logger" />
+        </service>
+
         <service id="PayonePayment\Util\Logger" class="Monolog\Logger">
             <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
 
             <argument type="string">payone_payment</argument>
         </service>
-
-        <service id="PayonePayment\Components\CartHasher\CartHasher" />
     </services>
 </container>

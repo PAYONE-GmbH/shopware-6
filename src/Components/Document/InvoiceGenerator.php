@@ -60,9 +60,11 @@ class InvoiceGenerator implements DocumentGeneratorInterface
 
     private function isPayoneInstallmentPaymentMethod(OrderEntity $order): bool
     {
-        foreach ($order->getTransactions() as $transaction) {
-            if ($transaction->getPaymentMethodId() === PayonePayolutionInvoicing::UUID) {
-                return true;
+        if (null !== $order->getTransactions()) {
+            foreach ($order->getTransactions() as $transaction) {
+                if ($transaction->getPaymentMethodId() === PayonePayolutionInvoicing::UUID) {
+                    return true;
+                }
             }
         }
 

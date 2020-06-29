@@ -28,9 +28,9 @@ abstract class AbstractDebitAuthorizeRequestFactory extends AbstractRequestFacto
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
-        $this->debitRequest     = $debitRequest;
-        $this->customerRequest  = $customerRequest;
-        $this->systemRequest    = $systemRequest;
+        $this->debitRequest    = $debitRequest;
+        $this->customerRequest = $customerRequest;
+        $this->systemRequest   = $systemRequest;
     }
 
     public function getRequestParameters(
