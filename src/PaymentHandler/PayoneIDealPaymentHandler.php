@@ -137,27 +137,15 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
 
         // Prepare custom fields for the transaction
         $data = $this->prepareTransactionCustomFields($request, $response, [
-            CustomFieldInstaller::TRANSACTION_STATE  => $response['status'],
-            CustomFieldInstaller::ALLOW_CAPTURE      => false,
-            CustomFieldInstaller::ALLOW_REFUND       => false,
+            CustomFieldInstaller::TRANSACTION_STATE => $response['status'],
+            CustomFieldInstaller::ALLOW_CAPTURE     => false,
+            CustomFieldInstaller::ALLOW_REFUND      => false,
         ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
 
         return new RedirectResponse($response['redirecturl']);
-    }
-
-    /**
-     * @throws PayoneRequestException
-     */
-    private function validate(RequestDataBag $dataBag)
-    {
-        $bankGroup = $dataBag->get('idealBankGroup');
-
-        if (!in_array($bankGroup, static::VALID_IDEAL_BANK_GROUPS, true)) {
-            throw new PayoneRequestException('No valid iDEAL bank group');
-        }
     }
 
     /**
@@ -190,5 +178,17 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
         }
 
         return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+    }
+
+    /**
+     * @throws PayoneRequestException
+     */
+    private function validate(RequestDataBag $dataBag)
+    {
+        $bankGroup = $dataBag->get('idealBankGroup');
+
+        if (!in_array($bankGroup, static::VALID_IDEAL_BANK_GROUPS, true)) {
+            throw new PayoneRequestException('No valid iDEAL bank group');
+        }
     }
 }
