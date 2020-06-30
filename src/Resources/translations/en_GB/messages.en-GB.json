@@ -103,6 +103,10 @@
       "mandateCheckbox": {
         "textWithLink": "I hereby issue the <a href=\"%link%\" target=\"_blank\" title=\"Paysafe Pay Later SEPA mandate\">SEPA direct debit mandate</a>."
       }
+    },
+    "ideal": {
+      "cardTitle": "iDeal Online Bank",
+      "bankGroupFieldLabel": "Banking group of you bank"
     }
   },
   "error": {

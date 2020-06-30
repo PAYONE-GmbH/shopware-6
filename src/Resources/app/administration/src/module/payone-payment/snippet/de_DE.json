@@ -68,7 +68,8 @@
                 "payolutionInstallment": "Die API-Zugangsdaten für Paysafe Pay Later Ratenzahlung sind nicht korrekt.",
                 "payolutionInvoicing": "Die API-Zugangsdaten für Paysafe Pay Later Rechnungskauf sind nicht korrekt.",
                 "payolutionDebit": "Die API-Zugangsdaten für Paysafe Pay Later Lastschrift sind nicht korrekt.",
-                "sofort": "Die API-Zugangsdaten für SOFORT sind nicht korrekt."
+                "sofort": "Die API-Zugangsdaten für SOFORT sind nicht korrekt.",
+                "iDeal": "Die API-Zugangsdaten für iDEAL sind nicht korrekt."
             }
         },
         "supportModal": {
