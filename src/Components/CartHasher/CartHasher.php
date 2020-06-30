@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\CartHasher;
 
+use Exception;
 use LogicException;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 
 class CartHasher implements CartHasherInterface
 {
@@ -39,7 +41,6 @@ class CartHasher implements CartHasherInterface
         if (!in_array(get_class($entity), self::VALID_TYPES, true)) {
             throw new LogicException('unsupported struct type during hash creation or validation');
         }
-
         $hashData = $this->getHashData($entity, $context);
         $expected = $this->generateHash($hashData);
 
@@ -57,18 +58,31 @@ class CartHasher implements CartHasherInterface
             return $hashData;
         }
 
-        foreach ($entity->getLineItems() as $item) {
-            $detail = [
-                'id'       => $item->getReferencedId(),
-                'type'     => $item->getType(),
-                'quantity' => $item->getQuantity(),
-            ];
+        if (null !== $entity->getLineItems()) {
+            foreach ($entity->getLineItems() as $lineItem) {
+                try {
+                    /** @phpstan-ignore-next-line */
+                    if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector') &&
+                        CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItem->getType() &&
+                        null === $lineItem->getParentId()) {
+                        continue;
+                    }
+                } catch (Exception $exception) {
+                    // Catch class not found if SwagCustomizedProducts plugin is not installed
+                }
 
-            if (null !== $item->getPrice()) {
-                $detail['price'] = $item->getPrice()->getTotalPrice();
+                $detail = [
+                    'id'       => $lineItem->getReferencedId() ?? '',
+                    'type'     => $lineItem->getType(),
+                    'quantity' => $lineItem->getQuantity(),
+                ];
+
+                if (null !== $lineItem->getPrice()) {
+                    $detail['price'] = (int) round($lineItem->getPrice()->getTotalPrice() * (10 ** $context->getCurrency()->getDecimalPrecision()));
+                }
+
+                $hashData[] = $detail;
             }
-
-            $hashData[] = $detail;
         }
 
         $hashData['currency']       = $context->getCurrency()->getId();

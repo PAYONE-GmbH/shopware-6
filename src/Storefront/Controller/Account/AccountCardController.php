@@ -51,11 +51,13 @@ class AccountCardController extends StorefrontController
         $this->denyAccessUnlessLoggedIn();
 
         try {
-            $this->cardRepository->removeCard(
-                $context->getCustomer(),
-                $request->get('pseudoCardPan'),
-                $context->getContext()
-            );
+            if (null !== $context->getCustomer()) {
+                $this->cardRepository->removeCard(
+                    $context->getCustomer(),
+                    $request->get('pseudoCardPan'),
+                    $context->getContext()
+                );
+            }
         } catch (Throwable $exception) {
             $this->addFlash('danger', $this->trans('PayonePayment.cardPage.error'));
 

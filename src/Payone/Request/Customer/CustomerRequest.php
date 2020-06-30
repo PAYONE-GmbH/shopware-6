@@ -72,7 +72,7 @@ class CustomerRequest
             'country'         => $this->getCustomerCountry($billingAddress, $context->getContext())->getIso(),
             'email'           => $context->getCustomer()->getEmail(),
             'language'        => substr($language->getLocale()->getCode(), 0, 2),
-            'ip'              => $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
+            'ip'              => null !== $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
         ];
 
         $birthday = $context->getCustomer()->getBirthday();

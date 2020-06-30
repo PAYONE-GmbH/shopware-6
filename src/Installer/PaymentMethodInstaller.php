@@ -116,6 +116,8 @@ class PaymentMethodInstaller implements InstallerInterface
 
         $data = [
             'id'                => $paymentMethod->getId(),
+            'name'              => $paymentMethod->getName(),
+            'description'       => $paymentMethod->getDescription(),
             'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
             'position'          => $paymentMethod->getPosition(),
             'pluginId'          => $pluginId,

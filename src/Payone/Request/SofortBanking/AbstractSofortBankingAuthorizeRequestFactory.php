@@ -36,11 +36,13 @@ abstract class AbstractSofortBankingAuthorizeRequestFactory extends AbstractRequ
         PaymentTransaction $transaction,
         SalesChannelContext $context
     ): array {
-        $this->requests[] = $this->systemRequest->getRequestParameters(
-            $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_SOFORT,
-            $context->getContext()
-        );
+        if (null !== $transaction->getOrder()) {
+            $this->requests[] = $this->systemRequest->getRequestParameters(
+                $transaction->getOrder()->getSalesChannelId(),
+                ConfigurationPrefixes::CONFIGURATION_PREFIX_SOFORT,
+                $context->getContext()
+            );
+        }
 
         $this->requests[] = $this->customerRequest->getRequestParameters(
             $context

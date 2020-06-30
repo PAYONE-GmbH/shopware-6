@@ -1,0 +1,34 @@
+{% block payone_payment_details %}
+    <div class="payone-order-items">
+        <payone-data-grid
+                :dataSource="orderItems"
+                :columns="orderItemColumns"
+                :showActions="false"
+                :showSelection="true"
+                v-on:select-item="onSelectItem">
+
+            <template slot="column-product" slot-scope="{ item, isInlineEdit}">
+                {{ item.product }}
+            </template>
+
+            <template slot="column-price" slot-scope="{ item, isInlineEdit}">
+                {{ item.price }}
+            </template>
+
+            <template slot="column-quantity" slot-scope="{ item, isInlineEdit }">
+                <sw-field
+                        :value="item.quantity"
+                        type="number"
+                        :min="0"
+                        :disabled="item.disabled"
+                        :max="item.quantity"
+                        slot="inline-edit"
+                        size="small"
+                        placeholder=0
+                        v-on:change="selectItem($event, item)"
+                        v-on:change="onChangeQuantity($event, item.id)">
+                </sw-field>
+            </template>
+        </payone-data-grid>
+    </div>
+{% endblock %}

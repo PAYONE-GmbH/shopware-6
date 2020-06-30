@@ -4,10 +4,15 @@
 # 1.0.1
 Bugfixes
 
-* corrected encoding of response parameters during PayPal ECS
+* Corrected encoding of response parameters during PayPal ECS
 * Added missing CVC length configs for less used card types
 * Fixed a bug where custom fields weren't shown in checkout when using non-default shop languages. We currently support DE and EN and plan to improve this further
 
 Maintenance
 
-* incorporated best practices for Shopware Code Review
+* Incorporated best practices for Shopware Code Review
+
+# 1.0.2
+Enhancement
+
+* Add new possibility for partial capture and refund

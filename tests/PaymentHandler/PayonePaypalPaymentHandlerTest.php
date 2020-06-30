@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\PaymentHandler;
 
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -57,6 +57,7 @@ class PayonePaypalPaymentHandlerTest extends TestCase
             $client,
             $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
+            $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator)
         );
 
@@ -114,6 +115,6 @@ class PayonePaypalPaymentHandlerTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
     }
 }

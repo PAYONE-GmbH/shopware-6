@@ -100,7 +100,7 @@ class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
 
         $paymentTransactionStruct = new AsyncPaymentTransactionStruct($orderTransactionEntity, $orderEntity, 'test-url');
 
-        return PaymentTransaction::fromAsyncPaymentTransactionStruct($paymentTransactionStruct);
+        return PaymentTransaction::fromAsyncPaymentTransactionStruct($paymentTransactionStruct, $orderEntity);
     }
 
     private function getPreAuthorizeRequest(): CreditCardPreAuthorizeRequest
