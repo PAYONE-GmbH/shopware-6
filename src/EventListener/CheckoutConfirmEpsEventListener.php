@@ -46,9 +46,6 @@ class CheckoutConfirmEpsEventListener implements EventSubscriberInterface
 
     /**
      * Returns whether or not the currency is EUR.
-     *
-     * @param SalesChannelContext $context
-     * @return bool
      */
     private function isEuroCurrency(SalesChannelContext $context): bool
     {
@@ -59,9 +56,6 @@ class CheckoutConfirmEpsEventListener implements EventSubscriberInterface
      * Returns whether or not the customer's billing address
      * is inside AT or not. Or false if no customer or billing
      * address is given.
-     *
-     * @param SalesChannelContext $context
-     * @return bool
      */
     private function isAtCustomer(SalesChannelContext $context): bool
     {
