@@ -33,10 +33,10 @@ abstract class AbstractPaypalAuthorizeRequestFactory extends AbstractRequestFact
         SystemRequest $systemRequest,
         CartHasherInterface $cartHasher
     ) {
-        $this->paypalRequest    = $paypalRequest;
-        $this->customerRequest  = $customerRequest;
-        $this->systemRequest    = $systemRequest;
-        $this->cartHasher       = $cartHasher;
+        $this->paypalRequest   = $paypalRequest;
+        $this->customerRequest = $customerRequest;
+        $this->systemRequest   = $systemRequest;
+        $this->cartHasher      = $cartHasher;
     }
 
     public function getRequestParameters(

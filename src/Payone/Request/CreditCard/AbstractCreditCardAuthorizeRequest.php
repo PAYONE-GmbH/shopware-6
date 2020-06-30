@@ -40,7 +40,7 @@ abstract class AbstractCreditCardAuthorizeRequest
 
         return [
             'clearingtype'  => 'cc',
-            'amount'        => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'amount'        => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision()))),
             'currency'      => $currency->getIsoCode(),
             'reference'     => $transaction->getOrder()->getOrderNumber(),
             'pseudocardpan' => $pseudoPan,

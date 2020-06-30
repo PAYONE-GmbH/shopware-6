@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Payone\Webhook\Handler;
 
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Struct\PaymentTransaction;
@@ -81,7 +81,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
         $transactionData = [
             'txid'           => Constants::PAYONE_TRANSACTION_ID,
@@ -151,7 +151,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
-        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity);
+        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
         $transactionData = [
             'txid'           => Constants::PAYONE_TRANSACTION_ID,

@@ -26,7 +26,8 @@ class RefundRequest
     public function getRequestParameters(
         OrderEntity $order,
         Context $context,
-        array $customFields
+        array $customFields,
+        float $totalAmount = null
     ): array {
         if (empty($customFields[CustomFieldInstaller::TRANSACTION_ID])) {
             throw new InvalidOrderException($order->getId());
@@ -38,13 +39,16 @@ class RefundRequest
 
         $currency = $this->getOrderCurrency($order, $context);
 
+        if ($totalAmount === null) {
+            $totalAmount = $order->getAmountTotal();
+        }
+
         return [
             'request'        => 'debit',
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => -1 * (int) ($order->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'amount'         => -1 * (int) round(($totalAmount * (10 ** $currency->getDecimalPrecision()))),
             'currency'       => $currency->getIsoCode(),
-            'settleaccount'  => 'auto',
         ];
     }
 

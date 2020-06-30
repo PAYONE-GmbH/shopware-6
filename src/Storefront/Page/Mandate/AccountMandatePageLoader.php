@@ -42,12 +42,14 @@ class AccountMandatePageLoader
             $this->genericLoader->load($request, $context)
         );
 
-        $page->setMandates(
-            $this->mandateService->getMandates(
-                $context->getCustomer(),
-                $context
-            )
-        );
+        if (null !== $context->getCustomer()) {
+            $page->setMandates(
+                $this->mandateService->getMandates(
+                    $context->getCustomer(),
+                    $context
+                )
+            );
+        }
 
         $this->eventDispatcher->dispatch(
             new AccountMandatePageLoadedEvent($page, $context, $request)

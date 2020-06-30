@@ -17,7 +17,7 @@ class CheckoutConfirmPaymentData extends Struct
     /** @var null|string */
     protected $language;
 
-    /** @var EntitySearchResult */
+    /** @var null|EntitySearchResult */
     protected $savedCards;
 
     /** @var null|string */
@@ -39,7 +39,7 @@ class CheckoutConfirmPaymentData extends Struct
         return $this->language;
     }
 
-    public function getSavedCards(): EntitySearchResult
+    public function getSavedCards(): ?EntitySearchResult
     {
         return $this->savedCards;
     }

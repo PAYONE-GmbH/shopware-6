@@ -37,9 +37,11 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
             $payoneData = new CheckoutConfirmPaymentData();
         }
 
-        $payoneData->assign([
-            'template' => $template,
-        ]);
+        if (null !== $payoneData) {
+            $payoneData->assign([
+                'template' => $template,
+            ]);
+        }
 
         $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
     }

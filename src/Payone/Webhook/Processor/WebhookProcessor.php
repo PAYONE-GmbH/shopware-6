@@ -37,9 +37,7 @@ class WebhookProcessor implements WebhookProcessorInterface
     public function process(SalesChannelContext $salesChannelContext, array $data): Response
     {
         $config     = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $storedKeys = [
-            hash('md5', $config->get('portalKey')),
-        ];
+        $storedKeys = [hash('md5', $config->get('portalKey'))];
 
         foreach (ConfigurationPrefixes::CONFIGURATION_PREFIXES as $prefix) {
             $key = $config->get(sprintf('%sPortalKey', $prefix));
