@@ -28,9 +28,9 @@ abstract class AbstractCreditCardAuthorizeRequestFactory extends AbstractRequest
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
-        $this->creditCardRequest   = $authorizeRequest;
-        $this->customerRequest     = $customerRequest;
-        $this->systemRequest       = $systemRequest;
+        $this->creditCardRequest = $authorizeRequest;
+        $this->customerRequest   = $customerRequest;
+        $this->systemRequest     = $systemRequest;
     }
 
     public function getRequestParameters(

@@ -30,7 +30,7 @@ class PaypalSetExpressCheckoutRequest
             'clearingtype'        => 'wlt',
             'wallettype'          => 'PPE',
             'add_paydata[action]' => 'setexpresscheckout',
-            'amount'              => (int) ($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision())),
+            'amount'              => (int) round(($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision()))),
             'currency'            => $currency->getIsoCode(),
             'successurl'          => $returnUrl . '?state=success',
             'errorurl'            => $returnUrl . '?state=error',

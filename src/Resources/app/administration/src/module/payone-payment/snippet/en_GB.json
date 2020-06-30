@@ -9,13 +9,48 @@
             "buttonTitle": "Capture",
             "successTitle": "PAYONE",
             "successMessage": "Capture processed successfully.",
-            "errorTitle": "PAYONE"
+            "errorTitle": "PAYONE",
+            "errorMessage": "Capture could not be processed.",
+            "tooltips": {
+                "impossible": "Capture impossible"
+            }
         },
         "refund": {
             "buttonTitle": "Refund",
             "successTitle": "PAYONE",
             "successMessage": "Refund processed successfully.",
-            "errorTitle": "PAYONE"
+            "errorTitle": "PAYONE",
+            "errorMessage": "Refund could not be processed.",
+            "tooltips": {
+                "impossible": "Refund impossible"
+            }
+        },
+        "modal": {
+            "capture": {
+                "title": "Capture",
+                "submit": "Capture",
+                "fullSubmit": "Full capture",
+                "amount": "Capture amount",
+                "captured": "Captured amount"
+            },
+            "refund": {
+                "title": "Refund",
+                "submit": "Refund",
+                "fullSubmit": "Full Refund",
+                "amount": "Refund amount",
+                "refunded": "Refunded amount"
+            },
+            "orderAmount": "Order amount",
+            "remainingAmount": "Remaining amount",
+            "descriptionHelpText": "Description help text",
+            "close": "Close",
+            "labelComment": "Label comment",
+            "columns": {
+                "reference": "Reference",
+                "product": "Product",
+                "quantity": "Quantity",
+                "price": "Price"
+            }
         },
         "settingsForm": {
             "save": "Save",
@@ -34,7 +69,8 @@
                 "payolutionInvoicing": "The API credentials for Paysafe Pay Later Invoicing are not valid.",
                 "payolutionDebit": "The API credentials for Paysafe Pay Later Debit are not valid.",
                 "sofort": "The API credentials for SOFORT are not valid.",
-                "eps": "The API credentials for EPS are not valid."
+                "eps": "The API credentials for EPS are not valid.",
+                "iDeal": "The API credentials for iDEAL are not valid."
             }
         },
         "supportModal": {
@@ -74,6 +110,12 @@
             "label": "Sequence Number",
             "empty": "none"
         },
-        "transactionState": "State"
+        "transactionState": "State",
+        "error": {
+            "transaction": {
+                "notFound": "No matching transaction could be found",
+                "orderNotFound": "No matching order could be found"
+            }
+        }
     }
 }

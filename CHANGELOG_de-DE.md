@@ -2,12 +2,17 @@
 - Erste Version der PAYONE Payment Integration für Shopware 6.1
 
 # 1.0.1
-Bugfixes
+Fehlerbehebung
 
-* corrected encoding of response parameters during PayPal ECS
-* Added missing CVC length configs for less used card types
-* Fixed a bug where custom fields weren't shown in checkout when using non-default shop languages. We currently support DE and EN and plan to improve this further
+* Korrigierte Kodierung der Antwortparameter während PayPal ECS
+* Fehlende CVC-Längenkonfigurationen für weniger verwendete Kartentypen hinzugefügt
+* Ein Fehler wurde behoben, durch den benutzerdefinierte Felder in dem Bestellabschluss nicht angezeigt wurden, wenn nicht die standardmäßige Shop-Sprachen verwendet wurde. Wir unterstützen derzeit DE und EN und planen, dies zu erweitern.
 
-Maintenance
+Wartung
 
-* incorporated best practices for Shopware Code Review
+* Best Practices für die Überprüfung des Shopware-Codes eingebaut
+
+# 1.0.2
+Erweiterung
+
+* Möglichkeit zum Teil-Einzug und Teil-Rückerstattung integriert

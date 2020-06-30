@@ -7,8 +7,8 @@ namespace PayonePayment\PaymentHandler;
 use DateTime;
 use LogicException;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\MandateService\MandateServiceInterface;
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
@@ -19,6 +19,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -26,17 +27,16 @@ use Throwable;
 
 class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var DebitPreAuthorizeRequestFactory */
-    private $preAuthRequestFactory;
-
-    /** @var DebitAuthorizeRequestFactory */
-    private $authRequestFactory;
-
     /** @var PayoneClientInterface */
     protected $client;
 
     /** @var TranslatorInterface */
     protected $translator;
+    /** @var DebitPreAuthorizeRequestFactory */
+    private $preAuthRequestFactory;
+
+    /** @var DebitAuthorizeRequestFactory */
+    private $authRequestFactory;
 
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
@@ -51,9 +51,10 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
+        EntityRepositoryInterface $lineItemRepository,
         MandateServiceInterface $mandateService
     ) {
-        parent::__construct($configReader);
+        parent::__construct($configReader, $lineItemRepository);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;
@@ -74,7 +75,7 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
             'authorization'
         );
 
-        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         // Select request factory based on configured authorization method
         $factory = $authorizationMethod === 'preauthorization'
@@ -101,13 +102,13 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
             );
         }
 
-        // Prepare custom fields for the transaction
-        $data = $this->prepareTransactionCustomFields($request, $response, [
-            CustomFieldInstaller::ALLOW_CAPTURE          => false,
-            CustomFieldInstaller::ALLOW_REFUND           => false,
-            CustomFieldInstaller::TRANSACTION_STATE      => 'pending',
-            CustomFieldInstaller::MANDATE_IDENTIFICATION => $response['mandate']['Identification'],
-        ]);
+        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
+            $this->getBaseCustomFields($response['status']),
+            [
+                CustomFieldInstaller::TRANSACTION_STATE      => AbstractPayonePaymentHandler::PAYONE_STATE_PENDING,
+                CustomFieldInstaller::MANDATE_IDENTIFICATION => $response['mandate']['Identification'],
+            ]
+        ));
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
@@ -118,12 +119,14 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
             throw new LogicException('could not parse sepa mandate signature date');
         }
 
-        $this->mandateService->saveMandate(
-            $salesChannelContext->getCustomer(),
-            $response['mandate']['Identification'],
-            $date,
-            $salesChannelContext
-        );
+        if (null !== $salesChannelContext->getCustomer()) {
+            $this->mandateService->saveMandate(
+                $salesChannelContext->getCustomer(),
+                $response['mandate']['Identification'],
+                $date,
+                $salesChannelContext
+            );
+        }
     }
 
     /**

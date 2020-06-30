@@ -1,0 +1,54 @@
+<div class="payone-payment payone-payment--ideal">
+    {% block page_checkout_confirm_payone_card_title_ideal %}
+        <div class="card-title">
+            {{ "PayonePayment.ideal.cardTitle" | trans }}
+        </div>
+    {% endblock %}
+
+    <div id="idealErrorContainer" hidden="hidden">
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            type: "danger",
+            content: "PayonePayment.errorMessages.genericError" | trans
+        } %}
+    </div>
+
+    {% block page_checkout_confirm_payone_card_content_ideal %}
+        <div class="form-row">
+            <div class="col-12">
+                <label class="form-label" for="idealBankGroup">
+                    {{ "PayonePayment.ideal.bankGroupFieldLabel" | trans }}{{ "general.required" | trans }}
+                </label>
+            </div>
+            <div class="form-group {% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
+                <select
+                    id="idealBankGroup"
+                    name="idealBankGroup"
+                    class="form-control{% if formViolations.getViolations('/idealBankGroup') is not empty %} is-invalid{% endif %}"
+                    form="confirmOrderForm"
+                    required="required"
+                >
+                    <option value="ABN_AMRO_BANK">ABN Amro</option>
+                    <option value="BUNQ_BANK">Bunq</option>
+                    <option value="RABOBANK">Rabobank</option>
+                    <option value="ASN_BANK">ASN Bank</option>
+                    <option value="SNS_BANK">SNS Bank</option>
+                    <option value="TRIODOS_BANK">Triodos Bank</option>
+                    <option value="SNS_REGIO_BANK">Regio Bank</option>
+                    <option value="ING_BANK">ING Bank</option>
+                    <option value="KNAB_BANK">Knab</option>
+                    <option value="VAN_LANSCHOT_BANKIERS">van Lanschot</option>
+                    <option value="MONEYOU">Moneyou</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="payone-configuration" data-is-payone-ideal="true"></div>
+    {% endblock %}
+</div>
+<script>
+    import Select
+        from "../../../../../../vendor/shopware/administration/Resources/app/administration/src/app/component/form/sw-field";
+    export default {
+        components: {Select}
+    }
+</script>

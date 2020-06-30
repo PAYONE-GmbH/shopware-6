@@ -10,6 +10,7 @@ use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneIDealPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
@@ -69,7 +70,7 @@ class SettingsController extends AbstractController
     public function validateApiCredentials(Request $request, Context $context): JsonResponse
     {
         $testCount = 0;
-        $errors = [];
+        $errors    = [];
 
         /** @var EntityRepositoryInterface $paymentMethodRepository */
         $paymentMethodRepository = $this->get('payment_method.repository');
@@ -83,7 +84,7 @@ class SettingsController extends AbstractController
                 continue;
             }
 
-            $testCount++;
+            ++$testCount;
 
             try {
                 $parameters  = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
@@ -103,9 +104,9 @@ class SettingsController extends AbstractController
         ]);
 
         return new JsonResponse([
-            'testCount' => $testCount,
+            'testCount'        => $testCount,
             'credentialsValid' => empty($errors),
-            'errors' => $errors,
+            'errors'           => $errors,
         ]);
     }
 
@@ -218,6 +219,22 @@ class SettingsController extends AbstractController
                     'firstname'              => 'Test',
                     'lastname'               => 'Test',
                     'country'                => 'AT',
+                    'successurl'             => 'https://www.payone.com',
+                ];
+
+            case PayoneIDealPaymentHandler::class:
+                return [
+                    'request'                => 'preauthorization',
+                    'clearingtype'           => 'sb',
+                    'onlinebanktransfertype' => 'IDL',
+                    'bankcountry'            => 'NL',
+                    'bankgrouptype'          => 'ING_BANK',
+                    'amount'                 => 100,
+                    'currency'               => 'EUR',
+                    'reference'              => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'firstname'              => 'Test',
+                    'lastname'               => 'Test',
+                    'country'                => 'NL',
                     'successurl'             => 'https://www.payone.com',
                 ];
 

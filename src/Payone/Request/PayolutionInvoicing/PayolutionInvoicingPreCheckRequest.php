@@ -24,7 +24,7 @@ class PayolutionInvoicingPreCheckRequest
             'add_paydata[payment_type]' => 'Payolution-Invoicing',
             'clearingtype'              => 'fnc',
             'financingtype'             => 'PYV',
-            'amount'                    => (int) ($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision())),
+            'amount'                    => (int) round(($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision()))),
             'currency'                  => $currency->getIsoCode(),
         ];
 

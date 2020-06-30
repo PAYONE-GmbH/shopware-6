@@ -7,6 +7,7 @@ namespace PayonePayment\Configuration;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneIDealPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
@@ -25,6 +26,7 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_PAYOLUTION_DEBIT       = 'payolutionDebit';
     public const CONFIGURATION_PREFIX_SOFORT                 = 'sofort';
     public const CONFIGURATION_PREFIX_EPS                    = 'eps';
+    public const CONFIGURATION_PREFIX_IDEAL                  = 'iDeal';
 
     public const CONFIGURATION_PREFIXES = [
         PayoneCreditCardPaymentHandler::class            => self::CONFIGURATION_PREFIX_CREDITCARD,
@@ -36,5 +38,6 @@ interface ConfigurationPrefixes
         PayonePayolutionDebitPaymentHandler::class       => self::CONFIGURATION_PREFIX_PAYOLUTION_DEBIT,
         PayoneSofortBankingPaymentHandler::class         => self::CONFIGURATION_PREFIX_SOFORT,
         PayoneEpsPaymentHandler::class                   => self::CONFIGURATION_PREFIX_EPS,
+        PayoneIDealPaymentHandler::class                 => self::CONFIGURATION_PREFIX_IDEAL,
     ];
 }

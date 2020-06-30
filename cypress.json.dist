@@ -1,0 +1,12 @@
+{
+  "baseUrl": "http://payone.local",
+  "integrationFolder": "tests/cypress/integration",
+  "fixturesFolder": "tests/cypress/fixtures",
+  "componentFolder": "tests/cypress/component",
+  "pluginsFile": "tests/cypress/plugins",
+  "supportFile": "tests/cypress/support",
+  "videosFolder": "cypress/videos",
+  "screenshotsFolder": "cypress/screenshots",
+  "chromeWebSecurity": false,
+  "watchForFileChanges": false
+}

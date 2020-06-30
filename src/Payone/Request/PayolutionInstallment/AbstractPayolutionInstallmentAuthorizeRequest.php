@@ -36,7 +36,7 @@ abstract class AbstractPayolutionInstallmentAuthorizeRequest
             'clearingtype'                      => 'fnc',
             'financingtype'                     => 'PYS',
             'add_paydata[installment_duration]' => (int) $dataBag->get('payolutionInstallmentDuration'),
-            'amount'                            => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'amount'                            => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision()))),
             'currency'                          => $currency->getIsoCode(),
             'reference'                         => $transaction->getOrder()->getOrderNumber(),
             'iban'                              => $dataBag->get('payolutionIban'),

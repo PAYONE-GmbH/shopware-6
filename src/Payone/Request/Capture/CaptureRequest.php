@@ -15,6 +15,9 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 
 class CaptureRequest
 {
+    private const CAPTUREMODE_COMPLETED  = 'completed';
+    private const CAPTUREMODE_INCOMPLETE = 'notcompleted';
+
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
 
@@ -23,8 +26,12 @@ class CaptureRequest
         $this->currencyRepository = $currencyRepository;
     }
 
-    public function getRequestParameters(OrderEntity $order, Context $context, array $customFields): array
+    public function getRequestParameters(OrderEntity $order, Context $context, array $customFields, float $totalAmount = null, bool $completed = false): array
     {
+        if ($totalAmount === null) {
+            $totalAmount = $order->getAmountTotal();
+        }
+
         if (empty($customFields[CustomFieldInstaller::TRANSACTION_ID])) {
             throw new InvalidOrderException($order->getId());
         }
@@ -43,8 +50,9 @@ class CaptureRequest
             'request'        => 'capture',
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => (int) ($order->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
+            'amount'         => (int) round($totalAmount * (10 ** $currency->getDecimalPrecision())),
             'currency'       => $currency->getIsoCode(),
+            'capturemode'    => $completed ? self::CAPTUREMODE_COMPLETED : self::CAPTUREMODE_INCOMPLETE,
         ];
 
         if (!empty($customFields[CustomFieldInstaller::WORK_ORDER_ID])) {
