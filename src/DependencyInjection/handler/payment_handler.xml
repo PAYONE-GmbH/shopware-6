@@ -108,6 +108,7 @@
 
         <service id="PayonePayment\PaymentHandler\PayoneIDealPaymentHandler">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="PayonePayment\Payone\Request\IDeal\IDealPreAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Request\IDeal\IDealAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
@@ -120,6 +121,7 @@
 
         <service id="PayonePayment\PaymentHandler\PayoneEpsPaymentHandler">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="PayonePayment\Payone\Request\Eps\EpsPreAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Request\Eps\EpsAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />

@@ -17,6 +17,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -82,6 +83,7 @@ class PayoneEpsPaymentHandler extends AbstractPayonePaymentHandler implements As
 
     public function __construct(
         ConfigReaderInterface $configReader,
+        EntityRepositoryInterface $lineItemRepository,
         EpsPreAuthorizeRequestFactory $preAuthRequestFactory,
         EpsAuthorizeRequestFactory $authRequestFactory,
         PayoneClientInterface $client,
@@ -89,7 +91,7 @@ class PayoneEpsPaymentHandler extends AbstractPayonePaymentHandler implements As
         TransactionDataHandlerInterface $dataHandler,
         PaymentStateHandlerInterface $stateHandler
     ) {
-        parent::__construct($configReader);
+        parent::__construct($configReader, $lineItemRepository);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;
@@ -110,7 +112,7 @@ class PayoneEpsPaymentHandler extends AbstractPayonePaymentHandler implements As
             'authorization'
         );
 
-        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction);
+        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         try {
             $this->validate($dataBag);
