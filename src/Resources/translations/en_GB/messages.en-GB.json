@@ -107,6 +107,10 @@
     "eps": {
       "cardTitle": "EPS Online Bank",
       "bankGroupFieldLabel": "Banking group of you bank"
+    },
+    "ideal": {
+      "cardTitle": "iDeal Online Bank",
+      "bankGroupFieldLabel": "Banking group of you bank"
     }
   },
   "error": {

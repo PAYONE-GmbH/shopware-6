@@ -54,7 +54,10 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
         }
 
         $cardRequest = $this->requestFactory->getRequestParameters($context);
-        $savedCards  = $this->cardRepository->getCards($context->getCustomer(), $context->getContext());
+
+        if (null !== $context->getCustomer()) {
+            $savedCards = $this->cardRepository->getCards($context->getCustomer(), $context->getContext());
+        }
 
         $language = $this->getCustomerLanguage($context->getContext());
 
@@ -64,11 +67,13 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
             $payoneData = new CheckoutConfirmPaymentData();
         }
 
-        $payoneData->assign([
-            'cardRequest' => $cardRequest,
-            'language'    => $language,
-            'savedCards'  => $savedCards,
-        ]);
+        if (null !== $payoneData) {
+            $payoneData->assign([
+                'cardRequest' => $cardRequest,
+                'language'    => $language,
+                'savedCards'  => !empty($savedCards) ? $savedCards : null,
+            ]);
+        }
 
         $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
     }

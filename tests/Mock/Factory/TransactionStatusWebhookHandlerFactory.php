@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Mock\Factory;
 
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler;

@@ -51,18 +51,20 @@ class AccountMandateController extends StorefrontController
         $this->denyAccessUnlessLoggedIn();
 
         try {
-            $file = $this->mandateService->downloadMandate(
-                $context->getCustomer(),
-                $request->get('mandate'),
-                $context
-            );
+            if (null !== $context->getCustomer()) {
+                $file = $this->mandateService->downloadMandate(
+                    $context->getCustomer(),
+                    $request->get('mandate'),
+                    $context
+                );
+            }
         } catch (Throwable $exception) {
             $this->addFlash('danger', $this->trans('PayonePayment.mandatePage.error'));
 
             return $this->forwardToRoute('frontend.account.payone.mandate.page');
         }
 
-        $response = new Response($file);
+        $response = new Response($file ?? '');
 
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,

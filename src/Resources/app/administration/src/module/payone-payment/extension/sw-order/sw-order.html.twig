@@ -28,13 +28,8 @@
                             </sw-container>
 
                             <sw-container gap="30px">
-                                <sw-button @click="captureOrder(transaction)" :disabled="!isCapturePossible(transaction)">
-                                    {{ $tc('payone-payment.capture.buttonTitle') }}
-                                </sw-button>
-
-                                <sw-button @click="refundOrder(transaction)" :disabled="!isRefundPossible(transaction)">
-                                    {{ $tc('payone-payment.refund.buttonTitle') }}
-                                </sw-button>
+                                <payone-capture-button :order="order" v-on:reload="reloadEntityData"></payone-capture-button>
+                                <payone-refund-button :order="order" v-on:reload="reloadEntityData"></payone-refund-button>
                             </sw-container>
                         </sw-container>
                     </template>

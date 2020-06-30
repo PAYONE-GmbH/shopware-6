@@ -1,0 +1,15 @@
+@import "~scss/variables";
+
+.payone-payment-detail--refund-modal {
+  .sw-modal__body {
+    padding: 0;
+  }
+
+  .sw-modal__footer {
+    border-top: 1px solid $color-gray-300;
+  }
+
+  .payone-payment-detail--capture-modal--content, .payone-payment-detail--refund-modal--content {
+    padding: 20px 30px;
+  }
+}
