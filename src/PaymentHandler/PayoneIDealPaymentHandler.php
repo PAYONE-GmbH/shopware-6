@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
-use PayonePayment\Components\TransactionDataHandler\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
