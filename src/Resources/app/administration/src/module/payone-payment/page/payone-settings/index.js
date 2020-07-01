@@ -83,6 +83,7 @@ Component.register('payone-settings', {
                 'payolutionInstallment',
                 'payolutionDebit',
                 'sofort',
+                'eps',
                 'iDeal',
             ];
         },
