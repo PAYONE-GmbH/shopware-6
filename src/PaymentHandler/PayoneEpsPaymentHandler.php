@@ -11,8 +11,8 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\IDeal\IDealAuthorizeRequestFactory;
-use PayonePayment\Payone\Request\IDeal\IDealPreAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\Eps\EpsAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\Eps\EpsPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -25,30 +25,48 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
+class PayoneEpsPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
     /**
      * Valid iDEAL bank groups according to:
-     * https://docs.payone.com/pages/releaseview.action?pageId=1213906
+     * https://docs.payone.com/pages/releaseview.action?pageId=1213908
      */
-    protected const VALID_IDEAL_BANK_GROUPS = [
-        'ABN_AMRO_BANK',
-        'BUNQ_BANK',
-        'RABOBANK',
-        'ASN_BANK',
-        'SNS_BANK',
-        'TRIODOS_BANK',
-        'SNS_REGIO_BANK',
-        'ING_BANK',
-        'KNAB_BANK',
-        'VAN_LANSCHOT_BANKIERS',
-        'MONEYOU',
+    protected const VALID_EPS_BANK_GROUPS = [
+        'ARZ_OAB',
+        'ARZ_BAF',
+        'BA_AUS',
+        'ARZ_BCS',
+        'EPS_SCHEL',
+        'BAWAG_PSK',
+        'BAWAG_ESY',
+        'SPARDAT_EBS',
+        'ARZ_HAA',
+        'ARZ_VLH',
+        'HRAC_OOS',
+        'ARZ_HTB',
+        'EPS_OBAG',
+        'RAC_RAC',
+        'EPS_SCHOELLER',
+        'ARZ_OVB',
+        'EPS_VRBB',
+        'EPS_AAB',
+        'EPS_BKS',
+        'EPS_BKB',
+        'EPS_VLB',
+        'EPS_CBGG',
+        'EPS_DB',
+        'EPS_NOELB',
+        'EPS_HBL',
+        'EPS_MFB',
+        'EPS_SPDBW',
+        'EPS_SPDBA',
+        'EPS_VKB',
     ];
 
-    /** @var IDealPreAuthorizeRequestFactory */
+    /** @var EpsPreAuthorizeRequestFactory */
     private $preAuthRequestFactory;
 
-    /** @var IDealAuthorizeRequestFactory */
+    /** @var EpsAuthorizeRequestFactory */
     private $authRequestFactory;
 
     /** @var PayoneClientInterface */
@@ -66,8 +84,8 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
     public function __construct(
         ConfigReaderInterface $configReader,
         EntityRepositoryInterface $lineItemRepository,
-        IDealPreAuthorizeRequestFactory $preAuthRequestFactory,
-        IDealAuthorizeRequestFactory $authRequestFactory,
+        EpsPreAuthorizeRequestFactory $preAuthRequestFactory,
+        EpsAuthorizeRequestFactory $authRequestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
@@ -90,7 +108,7 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
-            'iDealAuthorizationMethod',
+            'epsAuthorizationMethod',
             'authorization'
         );
 
@@ -187,10 +205,10 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
      */
     private function validate(RequestDataBag $dataBag)
     {
-        $bankGroup = $dataBag->get('idealBankGroup');
+        $bankGroup = $dataBag->get('epsBankGroup');
 
-        if (!in_array($bankGroup, static::VALID_IDEAL_BANK_GROUPS, true)) {
-            throw new PayoneRequestException('No valid iDEAL bank group');
+        if (!in_array($bankGroup, static::VALID_EPS_BANK_GROUPS, true)) {
+            throw new PayoneRequestException('No valid EPS bank group');
         }
     }
 }
