@@ -13,7 +13,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Language\LanguageEntity;
-use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -41,8 +40,7 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'addPayonePageData',
-            AccountEditOrderPageLoadedEvent::class => 'addPayonePageData',
+            PageLoadedEvent::class => 'addPayonePageData',
         ];
     }
 
@@ -63,8 +61,8 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
 
         $language = $this->getCustomerLanguage($context->getContext());
 
-        if ($event->getPage()->hasExtension(CheckoutCartPaymentData::EXTENSION_NAME)) {
-            $payoneData = $event->getPage()->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
+        if ($page->hasExtension(CheckoutCartPaymentData::EXTENSION_NAME)) {
+            $payoneData = $page->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
         } else {
             $payoneData = new CheckoutConfirmPaymentData();
         }

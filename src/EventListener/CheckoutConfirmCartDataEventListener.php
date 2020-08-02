@@ -6,8 +6,7 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
-use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
-use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
+use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
@@ -15,12 +14,11 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'addCartData',
-            AccountEditOrderPageLoadedEvent::class => 'addCartData',
+            PageLoadedEvent::class => 'addCartData',
         ];
     }
 
-    public function addCartData(CheckoutConfirmPageLoadedEvent $event): void
+    public function addCartData(PageLoadedEvent $event): void
     {
         $page = $event->getPage();
 
@@ -31,7 +29,7 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
         }
 
         /** @var null|CheckoutCartPaymentData $extension */
-        $extension = $event->getPage()->getCart()->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
+        $extension = $page->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
 
         if (null !== $extension && null !== $payoneData) {
             $payoneData->assign([
