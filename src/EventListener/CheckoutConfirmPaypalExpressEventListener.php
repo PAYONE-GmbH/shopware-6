@@ -19,7 +19,7 @@ class CheckoutConfirmPaypalExpressEventListener implements EventSubscriberInterf
         return [
             CheckoutConfirmPageLoadedEvent::class      => 'hideInternalPaymentMethods',
             AccountPaymentMethodPageLoadedEvent::class => 'hideInternalPaymentMethods',
-            AccountEditOrderPageLoadedEvent::class => 'hideInternalPaymentMethods',
+            AccountEditOrderPageLoadedEvent::class     => 'hideInternalPaymentMethods',
         ];
     }
 
