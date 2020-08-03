@@ -122,7 +122,7 @@ class SystemRequest
     /**
      * Create a new suffix by analyzing lastReferenceNumber
      */
-    private function getReferenceSuffix(string $lastReferenceNumber): string
+    private function getReferenceSuffix(?string $lastReferenceNumber): string
     {
         if ($lastReferenceNumber === null) {
             return '_0';
