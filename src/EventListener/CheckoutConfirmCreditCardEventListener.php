@@ -13,7 +13,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Language\LanguageEntity;
-use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
@@ -44,7 +43,7 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function addPayonePageData(CheckoutConfirmPageLoadedEvent $event): void
+    public function addPayonePageData(PageLoadedEvent $event): void
     {
         $page    = $event->getPage();
         $context = $event->getSalesChannelContext();
