@@ -28,6 +28,11 @@
             <label>Key</label>
         </input-field>
 
+        <input-field>
+            <name>referencePrefix</name>
+            <label>Reference Prefix (optional)</label>
+        </input-field>
+
         <input-field type="single-select">
             <name>transactionMode</name>
             <label>Live or Testmode</label>
@@ -100,7 +105,7 @@
             <label>Transition for PARTIAL_REFUND</label>
             <label lang="de-DE">Statuswechsel für PARTIAL_REFUND</label>
         </input-field>
-        
+
         <input-field type="single-select">
             <name>paymentStatusDebit</name>
             <label>Transition for DEBIT</label>
