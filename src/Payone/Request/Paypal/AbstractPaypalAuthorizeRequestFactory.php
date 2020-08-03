@@ -56,9 +56,11 @@ abstract class AbstractPaypalAuthorizeRequestFactory extends AbstractRequestFact
 
         $workOrderId = $this->getWorkOrderId($transaction, $dataBag, $context);
 
+        $referenceNumber  = $this->systemRequest->getReferenceNumber($transaction, true);
         $this->requests[] = $this->paypalRequest->getRequestParameters(
             $transaction,
             $context->getContext(),
+            $referenceNumber,
             $workOrderId
         );
 

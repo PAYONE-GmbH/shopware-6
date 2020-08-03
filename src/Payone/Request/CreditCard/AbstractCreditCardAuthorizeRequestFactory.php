@@ -55,10 +55,12 @@ abstract class AbstractCreditCardAuthorizeRequestFactory extends AbstractRequest
             $context
         );
 
+        $referenceNumber  = $this->systemRequest->getReferenceNumber($transaction, true);
         $this->requests[] = $this->creditCardRequest->getRequestParameters(
             $transaction,
             $context->getContext(),
-            $pseudoCardPan
+            $pseudoCardPan,
+            $referenceNumber
         );
 
         return $this->createRequest();

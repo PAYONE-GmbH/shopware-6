@@ -28,7 +28,8 @@ abstract class AbstractDebitAuthorizeRequest
         Context $context,
         string $iban,
         string $bic,
-        string $accountOwner
+        string $accountOwner,
+        string $referenceNumber
     ): array {
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
@@ -39,7 +40,7 @@ abstract class AbstractDebitAuthorizeRequest
             'bankaccountholder' => $accountOwner,
             'amount'            => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision()))),
             'currency'          => $currency->getIsoCode(),
-            'reference'         => $transaction->getOrder()->getOrderNumber(),
+            'reference'         => $referenceNumber,
         ];
     }
 
