@@ -5,6 +5,9 @@
 
     <services>
         <service id="PayonePayment\EventListener\CheckoutConfirmCartDataEventListener">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Order\OrderConverter" />
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher" />
+
             <tag name="kernel.event_subscriber"/>
         </service>
 

@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/page/account/order/index.html.twig' %}
+
+{% block page_checkout_confirm_payment %}
+    {{ parent() }}
+
+    {% sw_include '@Storefront/storefront/page/checkout/confirm/field/work_order.html.twig' %}
+    {% sw_include '@Storefront/storefront/page/checkout/confirm/field/cart_hash.html.twig' %}
+    {% sw_include '@Storefront/storefront/page/checkout/confirm/field/payment_method.html.twig' %}
+{% endblock %}

@@ -40,7 +40,6 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         PageLoadingIndicatorUtil.create();
 
         const data = JSON.stringify(this._getRequestData());
-
         this._client.abort();
         this._client.post(this._getCalculationUrl(), data, response => this._handleCalculationCallback(response));
     }
@@ -185,7 +184,7 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
 
         checkbox.scrollIntoView({
             block: 'start',
-            behavior: 'smooth',
+            behavior: 'smooth'
         });
 
         checkbox.classList.add('is-invalid');
@@ -204,7 +203,7 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
 
         input.scrollIntoView({
             block: 'start',
-            behavior: 'smooth',
+            behavior: 'smooth'
         });
 
         input.classList.add('is-invalid');
@@ -222,7 +221,7 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
             '_csrf_token': csrfToken.value,
             'payolutionBirthday': birthday.value,
             'workorder': workorder.value,
-            'carthash': carthash.value,
+            'carthash': carthash.value
         };
     }
 }

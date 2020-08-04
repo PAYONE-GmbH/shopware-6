@@ -39,6 +39,10 @@
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
+        <service id="PayonePayment\Components\Helper\OrderFetcher">
+            <argument type="service" id="order.repository" />
+        </service>
+
         <service id="PayonePayment\Payone\Client\PayoneClient">
             <argument type="service" id="PayonePayment\Util\Logger" />
         </service>

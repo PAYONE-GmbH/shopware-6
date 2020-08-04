@@ -40,7 +40,8 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            PageLoadedEvent::class => 'addPayonePageData',
+            CheckoutConfirmPageLoadedEvent::class  => 'addPayonePageData',
+            AccountEditOrderPageLoadedEvent::class => 'addPayonePageData',
         ];
     }
 

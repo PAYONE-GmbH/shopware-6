@@ -10,6 +10,9 @@ use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
+use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
+use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -26,13 +29,21 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            PageLoadedEvent::class => 'hidePaymentMethodsForCompanies',
+            CheckoutConfirmPageLoadedEvent::class      => 'hidePaymentMethodsForCompanies',
+            AccountPaymentMethodPageLoadedEvent::class => 'hidePaymentMethodsForCompanies',
+            AccountEditOrderPageLoadedEvent::class     => 'hidePaymentMethodsForCompanies',
         ];
     }
 
     public function hidePaymentMethodsForCompanies(PageLoadedEvent $event): void
     {
-        $paymentMethods = $event->getPage()->getPaymentMethods();
+        $page = $event->getPage();
+
+        if (!method_exists($page, 'getPaymentMethods')) {
+            return;
+        }
+
+        $paymentMethods = $page->getPaymentMethods();
 
         if (!$this->customerHasCompanyAddress($event->getSalesChannelContext())) {
             return;
@@ -44,7 +55,7 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
             $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionInvoicing::UUID);
         }
 
-        $event->getPage()->setPaymentMethods($paymentMethods);
+        $page->setPaymentMethods($paymentMethods);
     }
 
     private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection
