@@ -37,11 +37,15 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
 
     public function hidePaymentMethodsForCompanies(PageLoadedEvent $event): void
     {
-        if (!$this->paymentsCanBeChanged($event)) {
+        $page = $event->getPage();
+
+        if (
+            !method_exists($page, 'getPaymentMethods') ||
+            !method_exists($page, 'setPaymentMethods')
+        ) {
             return;
         }
 
-        $page           = $event->getPage();
         $paymentMethods = $page->getPaymentMethods();
 
         if (!$this->customerHasCompanyAddress($event->getSalesChannelContext())) {
@@ -55,15 +59,6 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
         }
 
         $page->setPaymentMethods($paymentMethods);
-    }
-
-    private function paymentsCanBeChanged(PageLoadedEvent $event): bool
-    {
-        $page = $event->getPage();
-
-        return
-            method_exists($page, 'getPaymentMethods') &&
-            method_exists($page, 'setPaymentMethods');
     }
 
     private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection
