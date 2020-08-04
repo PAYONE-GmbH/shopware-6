@@ -7,7 +7,7 @@ import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading
 
 export default class PayonePaymentDebitCard extends Plugin {
     static options = {
-        editorModalClass: 'payone-debit-modal',
+        editorModalClass: 'payone-debit-modal'
     };
 
     init() {
@@ -97,7 +97,7 @@ export default class PayonePaymentDebitCard extends Plugin {
         return {
             '_csrf_token': csrfToken.value,
             'iban': iban.value,
-            'bic': bic.value,
+            'bic': bic.value
         };
     }
 

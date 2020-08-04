@@ -92,6 +92,11 @@ class SystemRequest
     private function getLastReferenceNumber(PaymentTransaction $transaction): ?string
     {
         $transactions = $transaction->getOrder()->getTransactions();
+
+        if ($transactions === null) {
+            return null;
+        }
+
         $transactions = $transactions->filter(static function ($transaction) {
             if ($transaction->getCustomFields() === null) {
                 return false;

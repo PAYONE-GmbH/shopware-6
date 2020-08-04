@@ -51,7 +51,7 @@ export default class PayonePaymentPayolutionInvoicing extends Plugin {
 
         checkbox.scrollIntoView({
             block: 'start',
-            behavior: 'smooth',
+            behavior: 'smooth'
         });
 
         checkbox.classList.add('is-invalid');
@@ -70,7 +70,7 @@ export default class PayonePaymentPayolutionInvoicing extends Plugin {
 
         input.scrollIntoView({
             block: 'start',
-            behavior: 'smooth',
+            behavior: 'smooth'
         });
 
         input.classList.add('is-invalid');
@@ -141,7 +141,7 @@ export default class PayonePaymentPayolutionInvoicing extends Plugin {
 
         return {
             '_csrf_token': csrfToken.value,
-            'payolutionBirthday': birthday.value,
+            'payolutionBirthday': birthday.value
         };
     }
 }
