@@ -33,7 +33,7 @@ abstract class AbstractPaypalAuthorizeRequest
     public function getRequestParameters(
         PaymentTransaction $transaction,
         Context $context,
-        string $referenceNumber,
+        ?string $referenceNumber = null,
         ?string $workOrderId = null
     ): array {
         if (empty($transaction->getReturnUrl())) {
