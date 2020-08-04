@@ -58,15 +58,14 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
         $page->setPaymentMethods($paymentMethods);
     }
 
-    private function paymentsCanBeChanged(PageLoadedEvent $event):bool
+    private function paymentsCanBeChanged(PageLoadedEvent $event): bool
     {
         $page = $event->getPage();
 
-        return (
+        return
             method_exists($page, 'getPaymentMethods') &&
             method_exists($page, 'removePaymentMethod') &&
-            method_exists($page, 'setPaymentMethods')
-        );
+            method_exists($page, 'setPaymentMethods');
     }
 
     private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection
