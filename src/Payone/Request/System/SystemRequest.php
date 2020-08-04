@@ -77,16 +77,11 @@ class SystemRequest
             return $lastReferenceNumber;
         }
 
-        $prefix = $this->configuration
-            ->get(
-                sprintf('%sReferencePrefix', $this->configurationPrefix),
-                $this->configuration->get('referencePrefix')
-            );
         $order       = $transaction->getOrder();
         $orderNumber = $order->getOrderNumber();
         $suffix      = $this->getReferenceSuffix($lastReferenceNumber);
 
-        return $prefix . $orderNumber . $suffix;
+        return $orderNumber . $suffix;
     }
 
     /**

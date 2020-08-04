@@ -28,11 +28,6 @@
             <label>Key</label>
         </input-field>
 
-        <input-field>
-            <name>referencePrefix</name>
-            <label>Reference Prefix (optional)</label>
-        </input-field>
-
         <input-field type="single-select">
             <name>transactionMode</name>
             <label>Live or Testmode</label>
