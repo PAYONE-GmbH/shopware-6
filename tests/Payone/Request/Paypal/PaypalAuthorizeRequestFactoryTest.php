@@ -65,12 +65,12 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
                 'mid'             => '',
                 'mode'            => '',
                 'portalid'        => '',
-                'reference'       => '1_0',
                 'request'         => 'authorization',
                 'solution_name'   => 'kellerkinder',
                 'street'          => 'Some Street 1',
                 'wallettype'      => 'PPE',
                 'zip'             => '12345',
+                'reference'       => '1_0',
             ],
             $request
         );
