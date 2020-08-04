@@ -102,7 +102,11 @@
             "retour": "Retour",
             "retour_partially": "Retour partially",
             "ship": "Ship",
-            "ship_partially": "Ship partially"
+            "ship_partially": "Ship partially",
+            "fail": "Fail",
+            "paid_partially": "Paid partially",
+            "do_pay": "Do pay",
+            "paid": "Paid"
         },
         "messageNotBlank": "This field must not be empty.",
         "txid": "TXID",
