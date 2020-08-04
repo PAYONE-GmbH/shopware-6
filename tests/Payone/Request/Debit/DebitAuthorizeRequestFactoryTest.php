@@ -63,7 +63,7 @@ class DebitAuthorizeRequestFactoryTest extends TestCase
                 'mid'               => '',
                 'mode'              => '',
                 'portalid'          => '',
-                'reference'         => '1',
+                'reference'         => '1_0',
                 'request'           => 'authorization',
                 'solution_name'     => 'kellerkinder',
                 'street'            => 'Some Street 1',

@@ -60,7 +60,7 @@ class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
                 'mode'            => '',
                 'portalid'        => '',
                 'pseudocardpan'   => 'my-pan',
-                'reference'       => '1',
+                'reference'       => '1_0',
                 'request'         => 'preauthorization',
                 'solution_name'   => 'kellerkinder',
                 'street'          => 'Some Street 1',
