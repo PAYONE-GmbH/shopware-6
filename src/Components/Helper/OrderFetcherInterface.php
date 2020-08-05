@@ -13,7 +13,7 @@ interface OrderFetcherInterface
 
     public function getOrderFromOrderLineItem(string $lineItemId, Context $context): ?OrderEntity;
 
-    public function getOrderFromOrder(string $orderId, Context $context): ?OrderEntity;
+    public function getOrderById(string $orderId, Context $context): ?OrderEntity;
 
     public function getOrderFromOrderTransaction(string $transactionId, Context $context): ?OrderEntity;
 

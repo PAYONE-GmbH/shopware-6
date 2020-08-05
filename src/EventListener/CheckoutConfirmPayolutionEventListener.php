@@ -46,11 +46,11 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
             return;
         }
 
-        $paymentMethods = $page->getPaymentMethods();
-
         if (!$this->customerHasCompanyAddress($event->getSalesChannelContext())) {
             return;
         }
+
+        $paymentMethods = $page->getPaymentMethods();
 
         $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionInstallment::UUID);
 

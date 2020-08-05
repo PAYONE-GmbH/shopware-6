@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\Helper;
 
-use function mb_strlen;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -47,7 +46,7 @@ class OrderFetcher implements OrderFetcherInterface
         return $this->orderRepository->search($criteria, $context)->first();
     }
 
-    public function getOrderFromOrder(string $orderId, Context $context): ?OrderEntity
+    public function getOrderById(string $orderId, Context $context): ?OrderEntity
     {
         if (mb_strlen($orderId, '8bit') === 16) {
             $orderId = Uuid::fromBytesToHex($orderId);

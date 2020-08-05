@@ -48,7 +48,8 @@ abstract class AbstractPayolutionInstallmentAuthorizeRequestFactory extends Abst
             $context
         );
 
-        $referenceNumber  = $this->systemRequest->getReferenceNumber($transaction, true);
+        $referenceNumber = $this->systemRequest->getReferenceNumber($transaction, true);
+
         $this->requests[] = $this->payolutionInstallmentRequest->getRequestParameters(
             $transaction,
             $dataBag,

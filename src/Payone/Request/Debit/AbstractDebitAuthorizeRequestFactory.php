@@ -52,7 +52,8 @@ abstract class AbstractDebitAuthorizeRequestFactory extends AbstractRequestFacto
             $context
         );
 
-        $referenceNumber  = $this->systemRequest->getReferenceNumber($transaction, true);
+        $referenceNumber = $this->systemRequest->getReferenceNumber($transaction, true);
+
         $this->requests[] = $this->debitRequest->getRequestParameters(
             $transaction,
             $context->getContext(),
