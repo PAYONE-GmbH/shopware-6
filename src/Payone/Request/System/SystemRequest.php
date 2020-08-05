@@ -112,11 +112,11 @@ class SystemRequest
             return true;
         });
 
-        $elements = $transactions->getElements();
-
-        if (count($elements) === 0) {
+        if ($transactions->count() === 0) {
             return null;
         }
+
+        $elements = $transactions->getElements();
 
         $orderTransaction = array_pop($elements);
         $customFields     = $orderTransaction->getCustomFields();
