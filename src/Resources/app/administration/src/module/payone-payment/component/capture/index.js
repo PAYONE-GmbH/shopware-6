@@ -44,10 +44,6 @@ Component.register('payone-capture-button', {
             return this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
         },
 
-        minCaptureAmount() {
-            return 1 / (10 ** this.order.currency.decimalPrecision);
-        },
-
         buttonEnabled() {
             if (!this.transaction.customFields) {
                 return false;
@@ -78,7 +74,7 @@ Component.register('payone-capture-button', {
                 }
             });
 
-            if (0 === amount || amount > this.remainingAmount) {
+            if (amount > this.remainingAmount) {
                 amount = this.remainingAmount;
             }
 
@@ -88,8 +84,6 @@ Component.register('payone-capture-button', {
         openCaptureModal() {
             this.showCaptureModal = true;
             this.isCaptureSuccessful = false;
-
-            this.calculateCaptureAmount();
             this.selection = [];
         },
 
@@ -110,6 +104,7 @@ Component.register('payone-capture-button', {
                 orderLines: [],
                 complete: this.captureAmount === this.remainingAmount
             };
+
             this.isLoading = true;
 
             this.selection.forEach((selection) => {
@@ -143,6 +138,7 @@ Component.register('payone-capture-button', {
                 orderLines: [],
                 complete: true
             };
+
             this.isLoading = true;
 
             this._populateSelectionProperty();

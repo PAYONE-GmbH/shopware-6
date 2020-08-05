@@ -57,10 +57,6 @@ Component.register('payone-refund-button', {
             return this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
         },
 
-        minRefundAmount() {
-            return 1 / (10 ** this.order.currency.decimalPrecision);
-        },
-
         buttonEnabled() {
             if (!this.transaction.customFields) {
                 return false;
@@ -80,8 +76,7 @@ Component.register('payone-refund-button', {
                 }
             });
 
-            if (amount === 0 ||
-                Math.round(amount * (10 ** this.order.currency.decimalPrecision) > this.remainingAmount)) {
+            if (Math.round(amount * (10 ** this.order.currency.decimalPrecision) > this.remainingAmount)) {
                 amount = this.remainingAmount / (10 ** this.order.currency.decimalPrecision)
             }
 
@@ -91,8 +86,6 @@ Component.register('payone-refund-button', {
         openRefundModal() {
             this.showRefundModal = true;
             this.isRefundSuccessful = false;
-
-            this.calculateRefundAmount();
             this.selection = [];
         },
 
@@ -118,6 +111,59 @@ Component.register('payone-refund-button', {
             this.selection.forEach((selection) => {
                 this.order.lineItems.forEach((order_item) => {
                     if (order_item.id === selection.id && selection.selected && 0 < selection.quantity) {
+                        const copy = { ...order_item },
+                            taxRate = copy.tax_rate / (10 ** this.order.currency.decimalPrecision);
+
+                        copy.quantity         = selection.quantity;
+                        copy.total_amount     = copy.unit_price * copy.quantity;
+                        copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
+
+                        request.orderLines.push(copy);
+                    }
+                });
+            });
+
+            this.PayonePaymentService.refundPayment(request).then(() => {
+                this.createNotificationSuccess({
+                    title: this.$tc('payone-payment.refund.successTitle'),
+                    message: this.$tc('payone-payment.refund.successMessage')
+                });
+
+                this.isRefundSuccessful = true;
+            }).catch((error) => {
+                this.createNotificationError({
+                    title: this.$tc('payone-payment.refund.errorTitle'),
+                    message: error.message
+                });
+
+                this.isRefundSuccessful = false;
+            }).finally(() => {
+                this.isLoading = false;
+                this.closeRefundModal();
+
+                this.$nextTick().then(() => {
+                    this.$emit('reload')
+                });
+            });
+        },
+
+        refundFullOrder() {
+            const request = {
+                orderTransactionId: this.transaction.id,
+                payone_order_id: this.transaction.customFields.payone_transaction_id,
+                salesChannel: this.order.salesChannel,
+                amount: this.maxRefundAmount,
+                orderLines: [],
+                complete: true,
+            };
+
+            this.isLoading = true;
+
+            this._populateSelectionProperty();
+
+            this.selection.forEach((selection) => {
+                this.order.lineItems.forEach((order_item) => {
+                    if (order_item.id === selection.id && 0 < selection.quantity) {
                         const copy = { ...order_item },
                             taxRate = copy.tax_rate / (10 ** this.order.currency.decimalPrecision);
 

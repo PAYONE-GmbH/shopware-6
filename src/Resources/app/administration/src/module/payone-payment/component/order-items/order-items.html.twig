@@ -25,6 +25,7 @@
                         slot="inline-edit"
                         size="small"
                         placeholder=0
+                        v-on:change="selectItem($event, item)"
                         v-on:change="onChangeQuantity($event, item.id)">
                 </sw-field>
             </template>
