@@ -12,10 +12,10 @@ class PaypalAuthorizeRequest extends AbstractPaypalAuthorizeRequest
     public function getRequestParameters(
         PaymentTransaction $transaction,
         Context $context,
-        ?string $referenceNumber = null,
+        string $referenceNumber,
         ?string $workOrderId = null
     ): array {
-        return array_merge(parent::getRequestParameters($transaction, $context, $workOrderId), [
+        return array_merge(parent::getRequestParameters($transaction, $context, $referenceNumber, $workOrderId), [
             'request' => 'authorization',
         ]);
     }

@@ -66,20 +66,18 @@ class SystemRequest
 
     /**
      * Delivers last saved reference or generate new one
-     *
-     * @param bool $generateNew
      */
-    public function getReferenceNumber(PaymentTransaction $transaction, $generateNew = false): string
+    public function getReferenceNumber(PaymentTransaction $transaction, bool $generateNew = false): string
     {
-        $lastReferenceNumber = $this->getLastReferenceNumber($transaction);
+        $latestReferenceNumber = $this->getLatestReferenceNumber($transaction);
 
-        if ($lastReferenceNumber && $generateNew === false) {
-            return $lastReferenceNumber;
+        if ($latestReferenceNumber && $generateNew === false) {
+            return $latestReferenceNumber;
         }
 
         $order       = $transaction->getOrder();
         $orderNumber = $order->getOrderNumber();
-        $suffix      = $this->getReferenceSuffix($lastReferenceNumber);
+        $suffix      = $this->getReferenceSuffix($latestReferenceNumber);
 
         return $orderNumber . $suffix;
     }
@@ -89,7 +87,7 @@ class SystemRequest
      *
      * @return string
      */
-    private function getLastReferenceNumber(PaymentTransaction $transaction): ?string
+    private function getLatestReferenceNumber(PaymentTransaction $transaction): ?string
     {
         $transactions = $transaction->getOrder()->getTransactions();
 
@@ -122,13 +120,13 @@ class SystemRequest
     /**
      * Create a new suffix by analyzing lastReferenceNumber
      */
-    private function getReferenceSuffix(?string $lastReferenceNumber): string
+    private function getReferenceSuffix(?string $latestReferenceNumber): string
     {
-        if ($lastReferenceNumber === null) {
+        if ($latestReferenceNumber === null) {
             return '_0';
         }
 
-        $referenceParts = explode('_', $lastReferenceNumber);
+        $referenceParts = explode('_', $latestReferenceNumber);
         $suffixNumber   = (int) array_pop($referenceParts);
         ++$suffixNumber;
         $suffixNumber = (string) $suffixNumber;
