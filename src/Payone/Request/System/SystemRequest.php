@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\System;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\Configuration;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
@@ -84,8 +85,6 @@ class SystemRequest
 
     /**
      * Fetch last used reference number if any exist or null if not
-     *
-     * @return string
      */
     private function getLatestReferenceNumber(PaymentTransaction $transaction): ?string
     {
@@ -96,7 +95,17 @@ class SystemRequest
         }
 
         $transactions = $transactions->filter(static function ($transaction) {
-            if ($transaction->getCustomFields() === null) {
+            $customFields = $transaction->getCustomFields();
+
+            if (empty($customFields)) {
+                return false;
+            }
+
+            if (empty($customFields[CustomFieldInstaller::IS_PAYONE])) {
+                return false;
+            }
+
+            if (!$customFields[CustomFieldInstaller::IS_PAYONE]) {
                 return false;
             }
 
@@ -105,14 +114,24 @@ class SystemRequest
 
         $elements = $transactions->getElements();
 
-        if (count($elements) == 0) {
+        if (count($elements) === 0) {
             return null;
         }
 
-        $orderTransaction      = array_pop($elements);
-        $customFields          = $orderTransaction->getCustomFields();
-        $payoneTransactionData = array_pop($customFields['payone_transaction_data']);
-        $request               = $payoneTransactionData['request'];
+        $orderTransaction = array_pop($elements);
+        $customFields     = $orderTransaction->getCustomFields();
+
+        if (empty($customFields[CustomFieldInstaller::TRANSACTION_DATA])) {
+            return null;
+        }
+
+        $payoneTransactionData = array_pop($customFields[CustomFieldInstaller::TRANSACTION_DATA]);
+
+        if (!isset($payoneTransactionData['request'])) {
+            return null;
+        }
+
+        $request = $payoneTransactionData['request'];
 
         return (string) $request['reference'];
     }

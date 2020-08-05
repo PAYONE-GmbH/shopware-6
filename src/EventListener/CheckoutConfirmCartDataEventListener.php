@@ -75,7 +75,7 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
 
     private function convertCartFromOrder(OrderEntity $orderEntity, Context $context): Cart
     {
-        $order = $this->orderFetcher->getOrderFromOrder($orderEntity->getId(), $context);
+        $order = $this->orderFetcher->getOrderById($orderEntity->getId(), $context);
 
         if (null === $order) {
             throw new LogicException('could not find order via id');
