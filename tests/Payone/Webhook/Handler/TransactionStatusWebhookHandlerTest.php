@@ -21,6 +21,7 @@ use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
 
@@ -61,11 +62,16 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         $orderTransactionEntity = new OrderTransactionEntity();
         $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
 
+        $currency = new CurrencyEntity();
+        $currency->setId(Constants::CURRENCY_ID);
+        $currency->setDecimalPrecision(2);
+
         $orderEntity = new OrderEntity();
         $orderEntity->setId(Constants::ORDER_ID);
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+        $orderEntity->setCurrency($currency);
 
         $paymentMethodEntity = new PaymentMethodEntity();
         $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);
@@ -131,11 +137,16 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         $orderTransactionEntity = new OrderTransactionEntity();
         $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
 
+        $currency = new CurrencyEntity();
+        $currency->setId(Constants::CURRENCY_ID);
+        $currency->setDecimalPrecision(2);
+
         $orderEntity = new OrderEntity();
         $orderEntity->setId(Constants::ORDER_ID);
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+        $orderEntity->setCurrency($currency);
 
         $paymentMethodEntity = new PaymentMethodEntity();
         $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);
