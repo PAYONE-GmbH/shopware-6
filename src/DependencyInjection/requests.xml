@@ -177,6 +177,52 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
+        <!-- EPS Banking -->
+        <service id="PayonePayment\Payone\Request\Eps\EpsAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Eps\EpsPreAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Eps\EpsAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Eps\EpsAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Eps\EpsPreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Eps\EpsPreAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <!-- iDeal Banking -->
+        <service id="PayonePayment\Payone\Request\IDeal\IDealAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\IDeal\IDealPreAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\IDeal\IDealAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\IDeal\IDealAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\IDeal\IDealPreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\IDeal\IDealPreAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
         <!-- ManageMandate -->
         <service id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequest">
             <argument type="service" id="currency.repository" />

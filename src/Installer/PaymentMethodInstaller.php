@@ -8,6 +8,8 @@ use Doctrine\DBAL\Connection;
 use PayonePayment\PaymentMethod\PaymentMethodInterface;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
+use PayonePayment\PaymentMethod\PayoneEps;
+use PayonePayment\PaymentMethod\PayoneIDeal;
 use PayonePayment\PaymentMethod\PayonePayolutionDebit;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
@@ -37,6 +39,8 @@ class PaymentMethodInstaller implements InstallerInterface
         PayonePayolutionInvoicing::class,
         PayonePayolutionDebit::class,
         PayoneSofortBanking::class,
+        PayoneEps::class,
+        PayoneIDeal::class,
     ];
 
     /** @var PluginIdProvider */
