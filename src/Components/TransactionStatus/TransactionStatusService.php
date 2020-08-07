@@ -121,7 +121,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     {
         $transactionCriteria = (new Criteria([$transactionId]))
             ->addAssociation('stateMachineState');
-        /** @var OrderTransactionEntity $transaction */
+        /** @var null|OrderTransactionEntity $transaction */
         $transaction = $this->transactionRepository->search($transactionCriteria, $context)->first();
 
         if ($transitionName === StateMachineTransitionActions::ACTION_PAID && $transaction->getStateMachineState()->getTechnicalName() === OrderTransactionStates::STATE_PARTIALLY_PAID) {

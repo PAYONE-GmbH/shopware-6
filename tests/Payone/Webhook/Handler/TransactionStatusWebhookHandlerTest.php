@@ -22,6 +22,7 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
 
@@ -54,11 +55,6 @@ class TransactionStatusWebhookHandlerTest extends TestCase
             $context
         );
 
-        $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
-            $stateMachineRegistry,
-            []
-        );
-
         $orderTransactionEntity = new OrderTransactionEntity();
         $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
 
@@ -86,6 +82,16 @@ class TransactionStatusWebhookHandlerTest extends TestCase
             CustomFieldInstaller::AUTHORIZATION_TYPE => 'authorization',
         ];
         $orderTransactionEntity->setCustomFields($customFields);
+
+        $stateMachineState = new StateMachineStateEntity();
+        $stateMachineState->setTechnicalName('');
+        $orderTransactionEntity->setStateMachineState($stateMachineState);
+
+        $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
+            $stateMachineRegistry,
+            [],
+            $orderTransactionEntity
+        );
 
         $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
@@ -127,13 +133,6 @@ class TransactionStatusWebhookHandlerTest extends TestCase
             $context
         );
 
-        $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
-            $stateMachineRegistry,
-            [
-                'paymentStatusAppointed' => 'paid',
-            ]
-        );
-
         $orderTransactionEntity = new OrderTransactionEntity();
         $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
 
@@ -161,6 +160,18 @@ class TransactionStatusWebhookHandlerTest extends TestCase
             CustomFieldInstaller::AUTHORIZATION_TYPE => 'authorization',
         ];
         $orderTransactionEntity->setCustomFields($customFields);
+
+        $stateMachineState = new StateMachineStateEntity();
+        $stateMachineState->setTechnicalName('');
+        $orderTransactionEntity->setStateMachineState($stateMachineState);
+
+        $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
+            $stateMachineRegistry,
+            [
+                'paymentStatusAppointed' => 'paid',
+            ],
+            $orderTransactionEntity
+        );
 
         $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
