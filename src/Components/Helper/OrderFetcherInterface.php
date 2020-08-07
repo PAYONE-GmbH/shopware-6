@@ -9,13 +9,5 @@ use Shopware\Core\Framework\Context;
 
 interface OrderFetcherInterface
 {
-    public function getOrderFromOrderAddress(string $orderAddressId, Context $context): ?OrderEntity;
-
-    public function getOrderFromOrderLineItem(string $lineItemId, Context $context): ?OrderEntity;
-
     public function getOrderById(string $orderId, Context $context): ?OrderEntity;
-
-    public function getOrderFromOrderTransaction(string $transactionId, Context $context): ?OrderEntity;
-
-    public function getOrderFromOrderDelivery(string $deliveryId, Context $context): ?OrderEntity;
 }

@@ -22,30 +22,6 @@ class OrderFetcher implements OrderFetcherInterface
         $this->orderRepository = $orderRepository;
     }
 
-    public function getOrderFromOrderAddress(string $orderAddressId, Context $context): ?OrderEntity
-    {
-        if (mb_strlen($orderAddressId, '8bit') === 16) {
-            $orderAddressId = Uuid::fromBytesToHex($orderAddressId);
-        }
-
-        $criteria = $this->getOrderCriteria();
-        $criteria->addFilter(new EqualsFilter('addresses.id', $orderAddressId));
-
-        return $this->orderRepository->search($criteria, $context)->first();
-    }
-
-    public function getOrderFromOrderLineItem(string $lineItemId, Context $context): ?OrderEntity
-    {
-        if (mb_strlen($lineItemId, '8bit') === 16) {
-            $lineItemId = Uuid::fromBytesToHex($lineItemId);
-        }
-
-        $criteria = $this->getOrderCriteria();
-        $criteria->addFilter(new EqualsFilter('lineItems.id', $lineItemId));
-
-        return $this->orderRepository->search($criteria, $context)->first();
-    }
-
     public function getOrderById(string $orderId, Context $context): ?OrderEntity
     {
         if (mb_strlen($orderId, '8bit') === 16) {
@@ -54,30 +30,6 @@ class OrderFetcher implements OrderFetcherInterface
 
         $criteria = $this->getOrderCriteria();
         $criteria->addFilter(new EqualsFilter('id', $orderId));
-
-        return $this->orderRepository->search($criteria, $context)->first();
-    }
-
-    public function getOrderFromOrderTransaction(string $transactionId, Context $context): ?OrderEntity
-    {
-        if (mb_strlen($transactionId, '8bit') === 16) {
-            $transactionId = Uuid::fromBytesToHex($transactionId);
-        }
-
-        $criteria = $this->getOrderCriteria();
-        $criteria->addFilter(new EqualsFilter('transactions.id', $transactionId));
-
-        return $this->orderRepository->search($criteria, $context)->first();
-    }
-
-    public function getOrderFromOrderDelivery(string $deliveryId, Context $context): ?OrderEntity
-    {
-        if (mb_strlen($deliveryId, '8bit') === 16) {
-            $deliveryId = Uuid::fromBytesToHex($deliveryId);
-        }
-
-        $criteria = $this->getOrderCriteria();
-        $criteria->addFilter(new EqualsFilter('deliveries.id', $deliveryId));
 
         return $this->orderRepository->search($criteria, $context)->first();
     }
