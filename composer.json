@@ -2,7 +2,7 @@
   "name": "payone-gmbh/shopware-6",
   "type": "shopware-platform-plugin",
   "description": "PAYONE Payment Plugin",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "license": "MIT",
   "authors": [
     {
@@ -17,15 +17,15 @@
       "role": "Contributor"
     }
   ],
-  "minimum-stability": "RC",
+  "minimum-stability": "stable",
   "prefer-stable": true,
   "require": {
     "php": "^7.2",
     "ext-curl": "*",
     "ext-json": "*",
-    "shopware/core": "*",
-    "shopware/administration": "*",
-    "shopware/storefront": "*"
+    "shopware/core": "^6.2.0",
+    "shopware/administration": "^6.2.0",
+    "shopware/storefront": "^6.2.0"
   },
   "require-dev": {
     "dms/phpunit-arraysubset-asserts": "^0.1.0",
