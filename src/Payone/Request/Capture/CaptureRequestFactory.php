@@ -55,7 +55,7 @@ class CaptureRequestFactory extends AbstractRequestFactory
             $context,
             $transaction->getCustomFields(),
             (float) $parameterBag->get('amount'),
-            (bool) $parameterBag->get('completed')
+            (bool) $parameterBag->get('complete')
         );
 
         try {
