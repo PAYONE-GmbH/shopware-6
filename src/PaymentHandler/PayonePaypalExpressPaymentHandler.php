@@ -22,6 +22,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -53,9 +54,10 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         EntityRepositoryInterface $lineItemRepository,
-        PaymentStateHandlerInterface $stateHandler
+        PaymentStateHandlerInterface $stateHandler,
+        RequestStack $requestStack
     ) {
-        parent::__construct($configReader, $lineItemRepository);
+        parent::__construct($configReader, $lineItemRepository, $requestStack);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;
@@ -69,6 +71,8 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
      */
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
     {
+        $requestData = $this->fetchRequestData();
+
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
@@ -85,7 +89,7 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
 
         $request = $factory->getRequestParameters(
             $paymentTransaction,
-            $dataBag,
+            $requestData,
             $salesChannelContext
         );
 
@@ -113,7 +117,7 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
         $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
             $this->getBaseCustomFields($response['status']),
             [
-                CustomFieldInstaller::WORK_ORDER_ID => $dataBag->get('workorder'),
+                CustomFieldInstaller::WORK_ORDER_ID => $requestData->get('workorder'),
             ]
         ));
 
