@@ -35,20 +35,29 @@ class ConfigInstaller implements InstallerInterface
 
         // Default payment status mapping
         'paymentStatusAppointed'      => StateMachineTransitionActions::ACTION_REOPEN,
-        'paymentStatusCapture'        => StateMachineTransitionActions::ACTION_PAY,
-        'paymentStatusPartialCapture' => StateMachineTransitionActions::ACTION_PAY_PARTIALLY,
-        'paymentStatusPaid'           => StateMachineTransitionActions::ACTION_PAY,
-        'paymentStatusUnderpaid'      => StateMachineTransitionActions::ACTION_PAY_PARTIALLY,
+        'paymentStatusCapture'        => StateMachineTransitionActions::ACTION_PAID,
+        'paymentStatusPartialCapture' => StateMachineTransitionActions::ACTION_PAID_PARTIALLY,
+        'paymentStatusPaid'           => StateMachineTransitionActions::ACTION_PAID,
+        'paymentStatusUnderpaid'      => StateMachineTransitionActions::ACTION_PAID_PARTIALLY,
         'paymentStatusCancelation'    => StateMachineTransitionActions::ACTION_CANCEL,
         'paymentStatusRefund'         => StateMachineTransitionActions::ACTION_REFUND,
         'paymentStatusPartialRefund'  => StateMachineTransitionActions::ACTION_REFUND_PARTIALLY,
-        'paymentStatusDebit'          => StateMachineTransitionActions::ACTION_PAY,
+        'paymentStatusDebit'          => StateMachineTransitionActions::ACTION_PAID,
         'paymentStatusReminder'       => StateMachineTransitionActions::ACTION_REMIND,
         'paymentStatusVauthorization' => '',
         'paymentStatusVsettlement'    => '',
         'paymentStatusTransfer'       => StateMachineTransitionActions::ACTION_CANCEL,
-        'paymentStatusInvoice'        => StateMachineTransitionActions::ACTION_PAY,
+        'paymentStatusInvoice'        => StateMachineTransitionActions::ACTION_PAID,
         'paymentStatusFailed'         => StateMachineTransitionActions::ACTION_CANCEL,
+    ];
+
+    private const UPDATE_VALUES = [ // Updated for 6.2
+        'paymentStatusCapture'        => [StateMachineTransitionActions::ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
+        'paymentStatusPartialCapture' => [StateMachineTransitionActions::ACTION_PAY_PARTIALLY => StateMachineTransitionActions::ACTION_PAID_PARTIALLY],
+        'paymentStatusPaid'           => [StateMachineTransitionActions::ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
+        'paymentStatusUnderpaid'      => [StateMachineTransitionActions::ACTION_PAY_PARTIALLY => StateMachineTransitionActions::ACTION_PAID_PARTIALLY],
+        'paymentStatusDebit'          => [StateMachineTransitionActions::ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
+        'paymentStatusInvoice'        => [StateMachineTransitionActions::ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
     ];
 
     /** @var SystemConfigService */
@@ -124,7 +133,7 @@ class ConfigInstaller implements InstallerInterface
                 continue;
             }
 
-            if (strpos($key, 'paymentStatus')) {
+            if (strpos($key, 'paymentStatus') !== false) {
                 $transitionCriteria = new Criteria();
                 $transitionCriteria->addAssociation('state_machine');
                 $transitionCriteria->addFilter(new EqualsFilter('actionName', $value));
@@ -136,6 +145,31 @@ class ConfigInstaller implements InstallerInterface
             }
 
             $this->systemConfigService->set($configKey, $value);
+        }
+
+        foreach (self::UPDATE_VALUES as $key => $values) {
+            foreach ($values as $from => $to) {
+                $configKey = $domain . $key;
+
+                $currentValue = $this->systemConfigService->get($configKey);
+
+                if ($currentValue !== $from) {
+                    continue;
+                }
+
+                if (strpos($key, 'paymentStatus')) {
+                    $transitionCriteria = new Criteria();
+                    $transitionCriteria->addAssociation('state_machine');
+                    $transitionCriteria->addFilter(new EqualsFilter('actionName', $to));
+                    $transitionCriteria->addFilter(new EqualsFilter('technicalName', 'order_transaction.state'));
+
+                    /** @var StateMachineTransitionEntity $searchResult */
+                    $searchResult = $this->transitionRepository->search($transitionCriteria, $context)->first();
+                    $to           = $searchResult->getId();
+                }
+
+                $this->systemConfigService->set($configKey, $to);
+            }
         }
     }
 }
