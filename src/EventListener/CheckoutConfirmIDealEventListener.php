@@ -8,6 +8,7 @@ use PayonePayment\PaymentMethod\PayoneIDeal;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -23,11 +24,12 @@ class CheckoutConfirmIDealEventListener implements EventSubscriberInterface
         return [
             CheckoutConfirmPageLoadedEvent::class      => 'hideIDealForNonNlCustomers',
             AccountPaymentMethodPageLoadedEvent::class => 'hideIDealForNonNlCustomers',
+            AccountEditOrderPageLoadedEvent::class     => 'hideIDealForNonNlCustomers',
         ];
     }
 
     /**
-     * @param AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
+     * @param AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
      */
     public function hideIDealForNonNlCustomers($event): void
     {
