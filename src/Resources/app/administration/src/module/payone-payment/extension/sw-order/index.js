@@ -53,7 +53,7 @@ Component.override('sw-order-detail-base', {
             }
 
             order.transactions.map(function(transaction) {
-                if (me.isPayoneTransaction(transaction)) {
+                if (me.isPayoneTransaction(transaction) && me.isActiveTransaction(transaction)) {
                     isPayone = true;
                 }
             });
