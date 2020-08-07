@@ -4,8 +4,9 @@
     <template v-if="!isLoading" :isLoading="isLoading">
         <template v-if="hasPayonePayment(order)">
             <sw-card class="sw-order-payone-card" :title="$tc('payone-payment.title')">
-                <template v-for="transaction in order.transactions">
+                <template v-for="(transaction, index) in order.transactions">
                     <template v-if="isPayonePayment(transaction)">
+                        <hr v-if="index === 0">
                         <sw-container columns="1fr 1fr">
                             <sw-container>
                                 <sw-description-list>
@@ -28,8 +29,8 @@
                             </sw-container>
 
                             <sw-container gap="30px">
-                                <payone-capture-button :order="order" v-on:reload="reloadEntityData"></payone-capture-button>
-                                <payone-refund-button :order="order" v-on:reload="reloadEntityData"></payone-refund-button>
+                                <payone-capture-button :order="order" :transaction="transaction" v-on:reload="reloadEntityData"></payone-capture-button>
+                                <payone-refund-button :order="order" :transaction="transaction" v-on:reload="reloadEntityData"></payone-refund-button>
                             </sw-container>
                         </sw-container>
                     </template>
