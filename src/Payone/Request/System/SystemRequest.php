@@ -139,6 +139,10 @@ class SystemRequest
 
     private function getReferenceSuffix(OrderEntity $order): string
     {
+        if ($order->getTransactions()->count() <= 1) {
+            return '';
+        }
+
         return sprintf('_%d', $order->getTransactions()->count());
     }
 }
