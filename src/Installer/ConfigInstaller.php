@@ -135,9 +135,9 @@ class ConfigInstaller implements InstallerInterface
 
             if (strpos($key, 'paymentStatus') !== false) {
                 $transitionCriteria = new Criteria();
-                $transitionCriteria->addAssociation('state_machine');
+                $transitionCriteria->addAssociation('stateMachine');
                 $transitionCriteria->addFilter(new EqualsFilter('actionName', $value));
-                $transitionCriteria->addFilter(new EqualsFilter('technicalName', 'order_transaction.state'));
+                $transitionCriteria->addFilter(new EqualsFilter('stateMachine.technicalName', 'order_transaction.state'));
 
                 /** @var StateMachineTransitionEntity $searchResult */
                 $searchResult = $this->transitionRepository->search($transitionCriteria, $context)->first();
@@ -159,9 +159,9 @@ class ConfigInstaller implements InstallerInterface
 
                 if (strpos($key, 'paymentStatus')) {
                     $transitionCriteria = new Criteria();
-                    $transitionCriteria->addAssociation('state_machine');
+                    $transitionCriteria->addAssociation('stateMachine');
                     $transitionCriteria->addFilter(new EqualsFilter('actionName', $to));
-                    $transitionCriteria->addFilter(new EqualsFilter('technicalName', 'order_transaction.state'));
+                    $transitionCriteria->addFilter(new EqualsFilter('stateMachine.technicalName', 'order_transaction.state'));
 
                     /** @var StateMachineTransitionEntity $searchResult */
                     $searchResult = $this->transitionRepository->search($transitionCriteria, $context)->first();
