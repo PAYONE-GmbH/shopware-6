@@ -37,6 +37,8 @@
         <service id="PayonePayment\Components\TransactionStatus\TransactionStatusService">
             <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="PayonePayment\Util\Logger" />
         </service>
 
         <service id="PayonePayment\Components\Helper\OrderFetcher">

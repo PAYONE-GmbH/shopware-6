@@ -7,8 +7,13 @@ namespace PayonePayment\Components\TransactionStatus;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
@@ -43,12 +48,22 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     /** @var ConfigReaderInterface */
     private $configReader;
 
+    /** @var EntityRepositoryInterface */
+    private $transactionRepository;
+
+    /** @var LoggerInterface */
+    private $logger;
+
     public function __construct(
         StateMachineRegistry $stateMachineRegistry,
-        ConfigReaderInterface $configReader
+        ConfigReaderInterface $configReader,
+        EntityRepositoryInterface $transactionRepository,
+        LoggerInterface $logger
     ) {
-        $this->stateMachineRegistry = $stateMachineRegistry;
-        $this->configReader         = $configReader;
+        $this->stateMachineRegistry  = $stateMachineRegistry;
+        $this->configReader          = $configReader;
+        $this->transactionRepository = $transactionRepository;
+        $this->logger                = $logger;
     }
 
     public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, PaymentTransaction $paymentTransaction, array $transactionData): void
@@ -78,9 +93,9 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             if ($this->isTransactionOpen($transactionData)) {
                 $transitionName = StateMachineTransitionActions::ACTION_REOPEN;
             } elseif ($this->isTransactionPartialPaid($transactionData, $currency)) {
-                $transitionName = StateMachineTransitionActions::ACTION_PAY_PARTIALLY;
+                $transitionName = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
             } elseif ($this->isTransactionPaid($transactionData, $currency)) {
-                $transitionName = StateMachineTransitionActions::ACTION_PAY;
+                $transitionName = StateMachineTransitionActions::ACTION_PAID;
             } elseif ($this->isTransactionPartialRefund($transactionData, $currency)) {
                 $transitionName = StateMachineTransitionActions::ACTION_REFUND_PARTIALLY;
             } elseif ($this->isTransactionRefund($transactionData, $currency)) {
@@ -104,6 +119,16 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function executeTransition(Context $context, string $transactionId, string $transitionName): void
     {
+        $transactionCriteria = (new Criteria([$transactionId]))
+            ->addAssociation('stateMachineState');
+        /** @var OrderTransactionEntity $transaction */
+        $transaction = $this->transactionRepository->search($transactionCriteria, $context)->first();
+
+        if ($transitionName === StateMachineTransitionActions::ACTION_PAID && $transaction->getStateMachineState()->getTechnicalName() === OrderTransactionStates::STATE_PARTIALLY_PAID) {
+            // If the previous state is "paid_partially", "paid" is currently not allowed as direct transition, see https://github.com/shopwareLabs/SwagPayPal/blob/b63efb9/src/Util/PaymentStatusUtil.php#L79
+            $this->executeTransition($context, $transactionId, StateMachineTransitionActions::ACTION_PROCESS);
+        }
+
         try {
             $this->stateMachineRegistry->transition(
                 new Transition(
@@ -116,6 +141,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             );
         } catch (IllegalTransitionException $exception) {
             /** false-positiv handling (paid -> paid, open -> open) */
+            $this->logger->notice(sprintf('Transition %s not possible from state %s for transaction ID %s', $transitionName, $transaction->getStateMachineState()->getTechnicalName(), $transactionId));
         }
     }
 
