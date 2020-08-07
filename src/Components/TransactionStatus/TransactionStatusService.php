@@ -126,7 +126,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
         if ($transitionName === StateMachineTransitionActions::ACTION_PAID && $transaction->getStateMachineState()->getTechnicalName() === OrderTransactionStates::STATE_PARTIALLY_PAID) {
             // If the previous state is "paid_partially", "paid" is currently not allowed as direct transition, see https://github.com/shopwareLabs/SwagPayPal/blob/b63efb9/src/Util/PaymentStatusUtil.php#L79
-            $this->executeTransition($context, $transactionId, StateMachineTransitionActions::ACTION_PROCESS);
+            $this->executeTransition($context, $transactionId, StateMachineTransitionActions::ACTION_DO_PAY);
         }
 
         try {
