@@ -5,16 +5,12 @@ declare(strict_types=1);
 namespace PayonePayment\Installer;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
-use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -63,13 +59,9 @@ class ConfigInstaller implements InstallerInterface
     /** @var SystemConfigService */
     private $systemConfigService;
 
-    /** @var EntityRepositoryInterface */
-    private $transitionRepository;
-
     public function __construct(ContainerInterface $container)
     {
-        $this->systemConfigService  = $container->get(SystemConfigService::class);
-        $this->transitionRepository = $container->get('state_machine_transition.repository');
+        $this->systemConfigService = $container->get(SystemConfigService::class);
     }
 
     /**
@@ -133,17 +125,6 @@ class ConfigInstaller implements InstallerInterface
                 continue;
             }
 
-            if (strpos($key, 'paymentStatus') !== false) {
-                $transitionCriteria = new Criteria();
-                $transitionCriteria->addAssociation('stateMachine');
-                $transitionCriteria->addFilter(new EqualsFilter('actionName', $value));
-                $transitionCriteria->addFilter(new EqualsFilter('stateMachine.technicalName', 'order_transaction.state'));
-
-                /** @var StateMachineTransitionEntity $searchResult */
-                $searchResult = $this->transitionRepository->search($transitionCriteria, $context)->first();
-                $value        = $searchResult->getId();
-            }
-
             $this->systemConfigService->set($configKey, $value);
         }
 
@@ -153,19 +134,8 @@ class ConfigInstaller implements InstallerInterface
 
                 $currentValue = $this->systemConfigService->get($configKey);
 
-                if ($currentValue !== $from) {
+                if ($currentValue !== null && $currentValue !== $from) {
                     continue;
-                }
-
-                if (strpos($key, 'paymentStatus') !== false) {
-                    $transitionCriteria = new Criteria();
-                    $transitionCriteria->addAssociation('stateMachine');
-                    $transitionCriteria->addFilter(new EqualsFilter('actionName', $to));
-                    $transitionCriteria->addFilter(new EqualsFilter('stateMachine.technicalName', 'order_transaction.state'));
-
-                    /** @var StateMachineTransitionEntity $searchResult */
-                    $searchResult = $this->transitionRepository->search($transitionCriteria, $context)->first();
-                    $to           = $searchResult->getId();
                 }
 
                 $this->systemConfigService->set($configKey, $to);
