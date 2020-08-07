@@ -266,16 +266,14 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         $fullTransactionData = $customFields[CustomFieldInstaller::TRANSACTION_DATA];
         $firstTransaction    = $fullTransactionData[array_key_first($fullTransactionData)];
 
-        $isFailedRedirect = $this->checkIsFailedRedirect($firstTransaction, $transactionData);
-
-        if ($isFailedRedirect) {
+        if ($this->isFailedRedirect($firstTransaction, $transactionData)) {
             return true;
         }
 
         return false;
     }
 
-    private function checkIsFailedRedirect(array $firstTransaction, array $transactionData)
+    private function isFailedRedirect(array $firstTransaction, array $transactionData)
     {
         return
             array_key_exists('response', $firstTransaction) &&
