@@ -47,18 +47,21 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     public function getCustomFieldsFromWebhook(PaymentTransaction $paymentTransaction, array $transactionData): array
     {
-        $customFields                                          = $paymentTransaction->getCustomFields() ?? [];
-        $currentSequenceNumber                                 = array_key_exists(CustomFieldInstaller::SEQUENCE_NUMBER, $customFields) ? $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] : 0;
-        $customFields[CustomFieldInstaller::SEQUENCE_NUMBER]   = max((int) $transactionData['sequencenumber'], $currentSequenceNumber);
-        $customFields[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
-        $customFields[CustomFieldInstaller::ALLOW_CAPTURE]     = $this->shouldAllowCapture($paymentTransaction, $transactionData);
-        $customFields[CustomFieldInstaller::ALLOW_REFUND]      = $this->shouldAllowRefund($paymentTransaction, $transactionData);
+        $newCustomFields      = [];
+        $existingCustomFields = $paymentTransaction->getCustomFields() ?? [];
 
-        if (in_array($customFields[CustomFieldInstaller::TRANSACTION_STATE], [TransactionStatusService::ACTION_PAID, TransactionStatusService::ACTION_COMPLETED])) {
-            $customFields[CustomFieldInstaller::CAPTURED_AMOUNT] = $this->getCapturedAmount($paymentTransaction, $transactionData);
+        $currentSequenceNumber                                  = array_key_exists(CustomFieldInstaller::SEQUENCE_NUMBER, $existingCustomFields) ? $existingCustomFields[CustomFieldInstaller::SEQUENCE_NUMBER] : 0;
+        $newCustomFields[CustomFieldInstaller::SEQUENCE_NUMBER] = max((int) $transactionData['sequencenumber'], $currentSequenceNumber);
+
+        $newCustomFields[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
+        $newCustomFields[CustomFieldInstaller::ALLOW_CAPTURE]     = $this->shouldAllowCapture($paymentTransaction, $transactionData);
+        $newCustomFields[CustomFieldInstaller::ALLOW_REFUND]      = $this->shouldAllowRefund($paymentTransaction, $transactionData);
+
+        if (in_array($newCustomFields[CustomFieldInstaller::TRANSACTION_STATE], [TransactionStatusService::ACTION_PAID, TransactionStatusService::ACTION_COMPLETED])) {
+            $newCustomFields[CustomFieldInstaller::CAPTURED_AMOUNT] = $this->getCapturedAmount($paymentTransaction, $transactionData);
         }
 
-        return $customFields;
+        return $newCustomFields;
     }
 
     public function saveTransactionData(PaymentTransaction $transaction, Context $context, array $data): void
