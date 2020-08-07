@@ -64,8 +64,15 @@ Component.register('payone-settings', {
             this.PayonePaymentSettingsService.getStateMachineTransitionActions()
                 .then((result) => {
                     result.data.forEach((element) => {
+                        let translationKey = 'payone-payment.transitionActionNames.' + element.label;
+                        let translationValue = me.$t(translationKey);
+
+                        if (translationValue === translationKey) {
+                            translationValue = element.label;
+                        }
+
                         me.stateMachineTransitionActions.push({
-                            "label": me.$tc('payone-payment.transitionActionNames.'+ element.label ),
+                            "label": translationValue,
                             "value": element.value,
                         })
                     });
