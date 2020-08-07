@@ -14,6 +14,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -60,7 +61,7 @@ class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
                 'mode'            => '',
                 'portalid'        => '',
                 'pseudocardpan'   => 'my-pan',
-                'reference'       => '1_0',
+                'reference'       => '1',
                 'request'         => 'preauthorization',
                 'solution_name'   => 'kellerkinder',
                 'street'          => 'Some Street 1',
@@ -85,6 +86,7 @@ class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+        $orderEntity->setTransactions(new OrderTransactionCollection([]));
 
         $paymentMethodEntity = new PaymentMethodEntity();
         $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);
