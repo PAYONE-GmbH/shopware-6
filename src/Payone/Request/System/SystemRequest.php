@@ -8,6 +8,8 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\Configuration;
 use PayonePayment\Struct\PaymentTransaction;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Plugin\PluginService;
@@ -66,10 +68,7 @@ class SystemRequest
         ];
     }
 
-    /**
-     * Delivers last saved reference or generate new one
-     */
-    public function getReferenceNumber(PaymentTransaction $transaction, bool $generateNew = false): string
+    public function getReferenceNumber(PaymentTransaction $transaction, bool $generateNew = false): ?string
     {
         $latestReferenceNumber = $this->getLatestReferenceNumber($transaction);
 
@@ -84,19 +83,17 @@ class SystemRequest
         return $orderNumber . $suffix;
     }
 
-    /**
-     * Fetch last used reference number if any exist or null if not
-     */
     private function getLatestReferenceNumber(PaymentTransaction $transaction): ?string
     {
+        /** @var null|OrderTransactionCollection $transactions */
         $transactions = $transaction->getOrder()->getTransactions();
 
         if ($transactions === null) {
             return null;
         }
 
-        $transactions = $transactions->filter(static function ($transaction) {
-            $customFields = $transaction->getCustomFields();
+        $transactions = $transactions->filter(static function (OrderTransactionEntity $transaction) {
+            $customFields = $transaction->getPaymentMethod()->getCustomFields();
 
             if (empty($customFields)) {
                 return false;
@@ -117,9 +114,11 @@ class SystemRequest
             return null;
         }
 
-        $elements = $transactions->getElements();
+        $transactions->sort(static function(OrderTransactionEntity $a, OrderTransactionEntity $b) {
+            return $a->getCreatedAt() <=> $b->getCreatedAt();
+        });
+        $orderTransaction = $transactions->last();
 
-        $orderTransaction = array_pop($elements);
         $customFields     = $orderTransaction->getCustomFields();
 
         if (empty($customFields[CustomFieldInstaller::TRANSACTION_DATA])) {

@@ -157,7 +157,7 @@ class ConfigInstaller implements InstallerInterface
                     continue;
                 }
 
-                if (strpos($key, 'paymentStatus')) {
+                if (strpos($key, 'paymentStatus') !== false) {
                     $transitionCriteria = new Criteria();
                     $transitionCriteria->addAssociation('stateMachine');
                     $transitionCriteria->addFilter(new EqualsFilter('actionName', $to));
