@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
 
 import Plugin from 'src/plugin-system/plugin.class';
-import HttpClient from 'src/service/http-client.service';
+import StoreApiClient from 'src/service/store-api-client.service';
 import PseudoModalUtil from 'src/utility/modal-extension/pseudo-modal.util';
 import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
 
@@ -13,7 +13,7 @@ export default class PayonePaymentDebitCard extends Plugin {
     init() {
         this.orderFormDisabled = true;
 
-        this._client = new HttpClient(window.accessKey, window.contextToken);
+        this._client = new StoreApiClient();
 
         document
             .getElementById('confirmOrderForm')
