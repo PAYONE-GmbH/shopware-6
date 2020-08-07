@@ -336,5 +336,28 @@
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
+
+        <!-- Paydirekt -->
+        <service id="PayonePayment\Payone\Request\Paydirekt\PaydirektPreAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Paydirekt\PaydirektAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Paydirekt\PaydirektPreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Paydirekt\PaydirektPreAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Paydirekt\PaydirektAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Paydirekt\PaydirektAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
     </services>
 </container>
