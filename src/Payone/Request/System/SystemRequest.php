@@ -8,6 +8,7 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\Configuration;
 use PayonePayment\Struct\PaymentTransaction;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Plugin\PluginService;
 
@@ -78,7 +79,7 @@ class SystemRequest
 
         $order       = $transaction->getOrder();
         $orderNumber = $order->getOrderNumber();
-        $suffix      = $this->getReferenceSuffix($latestReferenceNumber);
+        $suffix      = $this->getReferenceSuffix($transaction->getOrder());
 
         return $orderNumber . $suffix;
     }
@@ -136,20 +137,8 @@ class SystemRequest
         return (string) $request['reference'];
     }
 
-    /**
-     * Create a new suffix by analyzing lastReferenceNumber
-     */
-    private function getReferenceSuffix(?string $latestReferenceNumber): string
+    private function getReferenceSuffix(OrderEntity $order): string
     {
-        if ($latestReferenceNumber === null) {
-            return '_0';
-        }
-
-        $referenceParts = explode('_', $latestReferenceNumber);
-        $suffixNumber   = (int) array_pop($referenceParts);
-        ++$suffixNumber;
-        $suffixNumber = (string) $suffixNumber;
-
-        return '_' . $suffixNumber;
+        return sprintf('_%d', $order->getTransactions()->count());
     }
 }
