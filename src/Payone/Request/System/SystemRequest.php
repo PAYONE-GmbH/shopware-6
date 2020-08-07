@@ -114,12 +114,12 @@ class SystemRequest
             return null;
         }
 
-        $transactions->sort(static function(OrderTransactionEntity $a, OrderTransactionEntity $b) {
+        $transactions->sort(static function (OrderTransactionEntity $a, OrderTransactionEntity $b) {
             return $a->getCreatedAt() <=> $b->getCreatedAt();
         });
         $orderTransaction = $transactions->last();
 
-        $customFields     = $orderTransaction->getCustomFields();
+        $customFields = $orderTransaction->getCustomFields();
 
         if (empty($customFields[CustomFieldInstaller::TRANSACTION_DATA])) {
             return null;

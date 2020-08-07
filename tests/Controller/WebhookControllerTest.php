@@ -174,7 +174,7 @@ class WebhookControllerTest extends TestCase
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
         $transactionDataHandler->expects($this->once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
-        $transactionDataHandler->expects($this->once())->method('enhanceStatusWebhookData')->willReturn($transactionData);
+        $transactionDataHandler->expects($this->once())->method('getCustomFieldsFromWebhook')->willReturn($transactionData);
 
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
             $transactionStatusService,
