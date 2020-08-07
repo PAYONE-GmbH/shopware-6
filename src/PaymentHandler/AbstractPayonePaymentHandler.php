@@ -44,7 +44,7 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     ) {
         $this->configReader       = $configReader;
         $this->lineItemRepository = $lineItemRepository;
-        $this->requestStack = $requestStack;
+        $this->requestStack       = $requestStack;
     }
 
     /**
