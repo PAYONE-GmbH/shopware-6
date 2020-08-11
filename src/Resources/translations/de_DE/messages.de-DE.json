@@ -104,6 +104,17 @@
         "textWithLink": "Hiermit erteile ich das <a href=\"%link%\" target=\"_blank\" title=\"Paysafe Pay Later SEPA-Mandat\">SEPA-Lastschriftmandat</a>."
       }
     },
+    "prepayment": {
+      "document": {
+        "clearingReference": "Referenz: %reference%",
+        "invoicingDescription": "Bitte überweisen Sie den ausstehenden Betrag auf das folgende Konto:",
+        "iban": "IBAN: %iban%",
+        "bic": "BIC: %bic%",
+        "reference": "Verwendungszweck: %reference%",
+        "holder": "Kontoinhaber: %holder%",
+        "accountNotice": "Damit wir Ihre Zahlung schnell zuordnen können, überweisen Sie den ausstehenden Betrag bitte ausschließlich auf das obige Konto."
+      }
+    },
     "eps": {
       "cardTitle": "EPS Online Bank",
       "bankGroupFieldLabel": "Bankengruppe Ihrer Hausbank"
