@@ -16,14 +16,14 @@ Component.register('payone-capture-button', {
         order: {
             type: Object,
             required: true
+        },
+        transaction: {
+            type: Object,
+            required: true
         }
     },
 
     computed: {
-        transaction() {
-            return this.order.transactions[0];
-        },
-
         totalTransactionAmount() {
             return Math.round(this.transaction.amount.totalPrice * (10 ** this.order.currency.decimalPrecision), 0);
         },

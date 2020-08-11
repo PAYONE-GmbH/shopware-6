@@ -9,7 +9,9 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler;
 use PayonePayment\Test\Mock\Components\ConfigReaderMock;
+use PayonePayment\Test\Mock\Repository\EntityRepositoryMock;
 use Psr\Log\NullLogger;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 
 class TransactionStatusWebhookHandlerFactory
@@ -27,11 +29,14 @@ class TransactionStatusWebhookHandlerFactory
 
     public static function createTransactionStatusService(
         StateMachineRegistry $stateMachineRegistry,
-        array $configuration = []
+        array $configuration = [],
+        ?OrderTransactionEntity $transaction = null
     ): TransactionStatusServiceInterface {
         return new TransactionStatusService(
             $stateMachineRegistry,
-            new ConfigReaderMock($configuration)
+            new ConfigReaderMock($configuration),
+            new EntityRepositoryMock($transaction),
+            new NullLogger()
         );
     }
 }

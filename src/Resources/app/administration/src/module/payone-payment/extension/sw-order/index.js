@@ -17,8 +17,22 @@ Component.override('sw-order-detail-base', {
         };
     },
 
+    computed: {
+        payoneTransactions: function() {
+            return this.order.transactions.filter(transaction => this.isPayoneTransaction(transaction)).sort((a, b) => { // newest transaction first
+                if(a.createdAt < b.createdAt) {
+                    return 1;
+                } else if(a.createdAt > b.createdAt) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            });
+        }
+    },
+
     methods: {
-        isPayonePayment(transaction) {
+        isPayoneTransaction(transaction) {
             if (!transaction.customFields) {
                 return false;
             }
@@ -26,7 +40,11 @@ Component.override('sw-order-detail-base', {
             return transaction.customFields.payone_transaction_id;
         },
 
-        hasPayonePayment(order) {
+        isActiveTransaction(transaction) {
+            return transaction.stateMachineState.technicalName !== 'cancelled';
+        },
+
+        hasPayoneTransaction(order) {
             let me = this;
             let isPayone = false;
 
@@ -35,7 +53,7 @@ Component.override('sw-order-detail-base', {
             }
 
             order.transactions.map(function(transaction) {
-                if (me.isPayonePayment(transaction)) {
+                if (me.isPayoneTransaction(transaction) && me.isActiveTransaction(transaction)) {
                     isPayone = true;
                 }
             });

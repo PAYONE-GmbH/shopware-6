@@ -57,10 +57,29 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
             return;
         }
 
-        $data = $this->transactionDataHandler->enhanceStatusWebhookData($paymentTransaction, $data);
+        // Sanitize incoming data
+        $data = $this->utf8EncodeRecursive($data);
 
-        $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->transactionDataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['transaction' => $data]);
+        $customFields = $this->transactionDataHandler->getCustomFieldsFromWebhook($paymentTransaction, $data);
+
+        $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $customFields);
+        $this->transactionDataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['transaction' => array_merge($data, $customFields)]);
         $this->transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction, $data);
+    }
+
+    private function utf8EncodeRecursive(array $transactionData): array
+    {
+        foreach ($transactionData as &$transactionValue) {
+            if (is_array($transactionValue)) {
+                $transactionValue = $this->utf8EncodeRecursive($transactionValue);
+
+                continue;
+            }
+
+            $transactionValue = utf8_encode($transactionValue);
+        }
+        unset($transactionValue);
+
+        return $transactionData;
     }
 }

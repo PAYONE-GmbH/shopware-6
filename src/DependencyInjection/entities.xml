@@ -5,10 +5,12 @@
 
     <services>
         <service id="PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardDefinition">
+            <!-- TODO: Remove entity attribute for >= 6.2 before 6.4 -->
             <tag name="shopware.entity.definition" entity="payone_payment_card"/>
         </service>
 
         <service id="PayonePayment\DataAbstractionLayer\Entity\Mandate\PayonePaymentMandateDefinition">
+            <!-- TODO: Remove entity attribute for >= 6.2 before 6.4 -->
             <tag name="shopware.entity.definition" entity="payone_payment_mandate"/>
         </service>
     </services>

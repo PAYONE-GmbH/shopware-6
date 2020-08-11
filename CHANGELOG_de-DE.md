@@ -38,4 +38,15 @@ Bekannte Inkompatibilitäten
 
 * Backurlhandling in Shopware 6.2 ist derzeit fehlerhaft. Wenn ein Kunde zu seiner bevorzugten Zahlungsmethode umgeleitet wird, sich aber entscheidet, zu stornieren und eine andere Zahlungsmethode zu wählen, stehen keine PAYONE-Zahlungsmethoden zur Verfügung. Wir arbeiten an einer Lösung, um eine korrekte Handhabung dieses Anwendungsfalles zu ermöglichen.
 
+# 1.1.1
+
+Neue Funktionen
+
+* Ermöglicht den Wechsel auf PAYONE-Zahlungsarten nach der Bestellung
+* In der Administration können mehrere PAYONE-Transaktionen innerhalb einer Bestellung eingezogen oder erstattet werden
+
+Wartung
+
+* Kompatibilität zu neuen Statusübergängen in Shopware 6.2 hergestellt
+
 Übersetzt mit www.DeepL.com/Translator (kostenlose Version)

@@ -111,6 +111,7 @@
             "empty": "none"
         },
         "transactionState": "State",
+        "transactionCancelled": "Transaction cancelled in Shopware",
         "error": {
             "transaction": {
                 "notFound": "No matching transaction could be found",

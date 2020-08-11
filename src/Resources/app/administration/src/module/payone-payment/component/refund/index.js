@@ -16,6 +16,10 @@ Component.register('payone-refund-button', {
         order: {
             type: Object,
             required: true
+        },
+        transaction: {
+            type: Object,
+            required: true
         }
     },
 
@@ -31,10 +35,6 @@ Component.register('payone-refund-button', {
     },
 
     computed: {
-        transaction() {
-            return this.order.transactions[0];
-        },
-
         remainingAmount() {
             if (undefined === this.transaction.customFields ||
                 undefined === this.transaction.customFields.payone_captured_amount) {

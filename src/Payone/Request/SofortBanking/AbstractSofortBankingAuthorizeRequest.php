@@ -30,7 +30,7 @@ abstract class AbstractSofortBankingAuthorizeRequest
         $this->currencyRepository = $currencyRepository;
     }
 
-    public function getRequestParameters(PaymentTransaction $transaction, Context $context): array
+    public function getRequestParameters(PaymentTransaction $transaction, Context $context, string $referenceNumber): array
     {
         if (empty($transaction->getReturnUrl())) {
             throw new InvalidOrderException($transaction->getOrder()->getId());
@@ -44,7 +44,7 @@ abstract class AbstractSofortBankingAuthorizeRequest
             'bankcountry'            => 'DE', // TODO: possible values DE, AT, CH, NL
             'amount'                 => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision()))),
             'currency'               => $currency->getIsoCode(),
-            'reference'              => $transaction->getOrder()->getOrderNumber(),
+            'reference'              => $referenceNumber,
             'successurl'             => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
             'errorurl'               => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),
             'backurl'                => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),
