@@ -33,7 +33,7 @@ phpstan:
   dependencies:
     - composer
   script:
-    - git clone -b v6.1.0 https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
+    - git clone -b v6.2.0 https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
     - mv ${CI_PROJECT_DIR}/opt /tmp/opt
     - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/${CI_PROJECT_NAME}
     - mv /tmp/opt ${CI_PROJECT_DIR}/opt
@@ -62,7 +62,7 @@ phpunit:
     - composer
   script:
     - sudo apt-get update && sudo apt-get install default-mysql-client -y
-    - git clone -b v6.1.0 https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
+    - git clone -b v6.2.0 https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
     - mv ${CI_PROJECT_DIR}/opt /tmp/opt
     - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/${CI_PROJECT_NAME}
     - mv /tmp/opt ${CI_PROJECT_DIR}/opt

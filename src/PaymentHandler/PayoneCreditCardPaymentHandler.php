@@ -24,6 +24,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -58,9 +59,10 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
         TransactionDataHandlerInterface $dataHandler,
         EntityRepositoryInterface $lineItemRepository,
         PaymentStateHandlerInterface $stateHandler,
-        CardRepositoryInterface $cardRepository
+        CardRepositoryInterface $cardRepository,
+        RequestStack $requestStack
     ) {
-        parent::__construct($configReader, $lineItemRepository);
+        parent::__construct($configReader, $lineItemRepository, $requestStack);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;
@@ -75,6 +77,8 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
      */
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
     {
+        $requestData = $this->fetchRequestData();
+
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
@@ -91,7 +95,7 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
 
         $request = $factory->getRequestParameters(
             $paymentTransaction,
-            $dataBag,
+            $requestData,
             $salesChannelContext
         );
 
@@ -118,10 +122,10 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());
         }
 
-        $truncatedCardPan   = $dataBag->get('truncatedCardPan');
-        $cardExpireDate     = $dataBag->get('cardExpireDate');
-        $savedPseudoCardPan = $dataBag->get('savedPseudoCardPan');
-        $pseudoCardPan      = $dataBag->get('pseudoCardPan');
+        $truncatedCardPan   = $requestData->get('truncatedCardPan');
+        $cardExpireDate     = $requestData->get('cardExpireDate');
+        $savedPseudoCardPan = $requestData->get('savedPseudoCardPan');
+        $pseudoCardPan      = $requestData->get('pseudoCardPan');
 
         if (empty($savedPseudoCardPan)) {
             $expiresAt = DateTime::createFromFormat('ym', $cardExpireDate);

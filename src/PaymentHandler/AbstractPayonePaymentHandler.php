@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use LogicException;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * A base class for payment handlers which implements common processing
@@ -31,12 +34,17 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     /** @var EntityRepositoryInterface */
     protected $lineItemRepository;
 
+    /** @var RequestStack */
+    protected $requestStack;
+
     public function __construct(
         ConfigReaderInterface $configReader,
-        EntityRepositoryInterface $lineItemRepository
+        EntityRepositoryInterface $lineItemRepository,
+        RequestStack $requestStack
     ) {
         $this->configReader       = $configReader;
         $this->lineItemRepository = $lineItemRepository;
+        $this->requestStack       = $requestStack;
     }
 
     /**
@@ -103,5 +111,16 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
             CustomFieldInstaller::ALLOW_REFUND      => false,
             CustomFieldInstaller::REFUNDED_AMOUNT   => 0,
         ];
+    }
+
+    protected function fetchRequestData(): RequestDataBag
+    {
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (null === $request) {
+            throw new LogicException('missing current request');
+        }
+
+        return new RequestDataBag($request->request->all());
     }
 }

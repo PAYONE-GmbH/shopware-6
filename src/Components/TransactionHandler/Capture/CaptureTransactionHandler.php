@@ -51,10 +51,10 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $this->updateTransactionData($parameterBag, (float) $parameterBag->get('amount'));
         $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
 
-        $transitionName = StateMachineTransitionActions::ACTION_PAY_PARTIALLY;
+        $transitionName = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
 
         if ($parameterBag->get('complete')) {
-            $transitionName = StateMachineTransitionActions::ACTION_PAY;
+            $transitionName = StateMachineTransitionActions::ACTION_PAID;
         }
 
         $this->transactionStatusService->transitionByName(

@@ -48,10 +48,13 @@ abstract class AbstractIDealAuthorizeRequestFactory extends AbstractRequestFacto
             $context
         );
 
+        $referenceNumber = $this->systemRequest->getReferenceNumber($transaction, true);
+
         $this->requests[] = $this->iDealRequest->getRequestParameters(
             $transaction,
             $dataBag,
-            $context->getContext()
+            $context->getContext(),
+            $referenceNumber
         );
 
         return $this->createRequest();

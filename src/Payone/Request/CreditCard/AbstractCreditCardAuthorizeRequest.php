@@ -30,8 +30,12 @@ abstract class AbstractCreditCardAuthorizeRequest
         $this->currencyRepository = $currencyRepository;
     }
 
-    public function getRequestParameters(PaymentTransaction $transaction, Context $context, string $pseudoPan): array
-    {
+    public function getRequestParameters(
+        PaymentTransaction $transaction,
+        Context $context,
+        string $pseudoPan,
+        string $referenceNumber
+    ): array {
         if (empty($transaction->getReturnUrl())) {
             throw new InvalidOrderException($transaction->getOrder()->getId());
         }
@@ -42,7 +46,7 @@ abstract class AbstractCreditCardAuthorizeRequest
             'clearingtype'  => 'cc',
             'amount'        => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision()))),
             'currency'      => $currency->getIsoCode(),
-            'reference'     => $transaction->getOrder()->getOrderNumber(),
+            'reference'     => $referenceNumber,
             'pseudocardpan' => $pseudoPan,
             'successurl'    => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
             'errorurl'      => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),

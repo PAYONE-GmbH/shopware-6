@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Components;
 
-use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
-use PayonePayment\Struct\Configuration;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
+use PayonePayment\Test\Mock\Factory\TransactionStatusWebhookHandlerFactory;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -23,6 +22,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
@@ -55,7 +55,7 @@ class TransactionStatusTest extends TestCase
                 'receivable'     => '0',
                 'price'          => Constants::LINE_ITEM_UNIT_PRICE,
             ],
-            'transitionName' => StateMachineTransitionActions::ACTION_PAY,
+            'transitionName' => StateMachineTransitionActions::ACTION_PAID,
         ];
 
         yield [
@@ -66,7 +66,7 @@ class TransactionStatusTest extends TestCase
                 'receivable'     => Constants::LINE_ITEM_UNIT_PRICE,
                 'price'          => Constants::LINE_ITEM_UNIT_PRICE,
             ],
-            'transitionName' => StateMachineTransitionActions::ACTION_PAY,
+            'transitionName' => StateMachineTransitionActions::ACTION_PAID,
         ];
 
         yield [
@@ -77,7 +77,7 @@ class TransactionStatusTest extends TestCase
                 'receivable'     => '1',
                 'price'          => Constants::LINE_ITEM_UNIT_PRICE,
             ],
-            'transitionName' => StateMachineTransitionActions::ACTION_PAY_PARTIALLY,
+            'transitionName' => StateMachineTransitionActions::ACTION_PAID_PARTIALLY,
         ];
 
         yield [
@@ -136,23 +136,19 @@ class TransactionStatusTest extends TestCase
             $salesChannelContext->getContext()
         );
 
-        $configurationMock = $this->createMock(Configuration::class);
-        $configurationMock->expects($this->once())->method('get')->willReturnMap([
-            [TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_APPOINTED), StateMachineTransitionActions::ACTION_REOPEN],
-            [TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_CANCELATION), StateMachineTransitionActions::ACTION_CANCEL],
-            [TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_FAILED), StateMachineTransitionActions::ACTION_CANCEL],
-            [TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_DEBIT), StateMachineTransitionActions::ACTION_REFUND],
-            [TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_PARTIAL_DEBIT), StateMachineTransitionActions::ACTION_REFUND_PARTIALLY],
-            [TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_PARTIAL_CAPTURE), StateMachineTransitionActions::ACTION_PAY_PARTIALLY],
-            [TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_CAPTURE), StateMachineTransitionActions::ACTION_PAY],
-            [TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_PAID), StateMachineTransitionActions::ACTION_PAY],
-            [TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_COMPLETED), StateMachineTransitionActions::ACTION_PAY],
-        ]);
+        $configuration = [
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_APPOINTED)       => StateMachineTransitionActions::ACTION_REOPEN,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_CANCELATION)     => StateMachineTransitionActions::ACTION_CANCEL,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_FAILED)          => StateMachineTransitionActions::ACTION_CANCEL,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_DEBIT)           => StateMachineTransitionActions::ACTION_REFUND,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_PARTIAL_DEBIT)   => StateMachineTransitionActions::ACTION_REFUND_PARTIALLY,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_PARTIAL_CAPTURE) => StateMachineTransitionActions::ACTION_PAID_PARTIALLY,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_CAPTURE)         => StateMachineTransitionActions::ACTION_PAID,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_PAID)            => StateMachineTransitionActions::ACTION_PAID,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_COMPLETED)       => StateMachineTransitionActions::ACTION_PAID,
+        ];
 
-        $configReader = $this->createMock(ConfigReader::class);
-        $configReader->method('read')->willReturn($configurationMock);
-
-        $transactionStatusService = new TransactionStatusService($stateMachineRegistry, $configReader);
+        $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService($stateMachineRegistry, $configuration, $paymentTransaction->getOrderTransaction());
         $transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction, $transactionData);
     }
 
@@ -174,12 +170,7 @@ class TransactionStatusTest extends TestCase
             $salesChannelContext->getContext()
         );
 
-        $configurationMock = $this->createMock(Configuration::class);
-        $configurationMock->method('get')->willReturn('');
-        $configReader = $this->createMock(ConfigReader::class);
-        $configReader->method('read')->willReturn($configurationMock);
-        $transactionStatusService = new TransactionStatusService($stateMachineRegistry, $configReader);
-
+        $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService($stateMachineRegistry, [], $paymentTransaction->getOrderTransaction());
         $transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction, $transactionData);
     }
 
@@ -219,8 +210,11 @@ class TransactionStatusTest extends TestCase
             CustomFieldInstaller::LAST_REQUEST       => 'authorization',
             CustomFieldInstaller::AUTHORIZATION_TYPE => 'authorization',
         ];
-
         $orderTransactionEntity->setCustomFields($customFields);
+
+        $stateMachineState = new StateMachineStateEntity();
+        $stateMachineState->setTechnicalName('');
+        $orderTransactionEntity->setStateMachineState($stateMachineState);
 
         return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
     }

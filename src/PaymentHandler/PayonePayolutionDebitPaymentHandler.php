@@ -19,6 +19,7 @@ use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -45,9 +46,10 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
-        EntityRepositoryInterface $lineItemRepository
+        EntityRepositoryInterface $lineItemRepository,
+        RequestStack $requestStack
     ) {
-        parent::__construct($configReader, $lineItemRepository);
+        parent::__construct($configReader, $lineItemRepository, $requestStack);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;
@@ -85,6 +87,8 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
      */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
+        $requestData = $this->fetchRequestData();
+
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
@@ -95,7 +99,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
         $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         try {
-            $this->validate($dataBag);
+            $this->validate($requestData);
         } catch (PayoneRequestException $e) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
@@ -110,7 +114,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
 
         $request = $factory->getRequestParameters(
             $paymentTransaction,
-            $dataBag,
+            $requestData,
             $salesChannelContext
         );
 
@@ -139,7 +143,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
         $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
             $this->getBaseCustomFields($response['status']),
             [
-                CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
+                CustomFieldInstaller::WORK_ORDER_ID      => $requestData->get('workorder'),
                 CustomFieldInstaller::CLEARING_REFERENCE => $response['addpaydata']['clearing_reference'],
                 CustomFieldInstaller::CAPTURE_MODE       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
                 CustomFieldInstaller::CLEARING_TYPE      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,

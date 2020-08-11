@@ -13,8 +13,8 @@ export default class PayonePaymentCreditCard extends Plugin {
             'J',
             'O',
             'U',
-            'P',
-        ],
+            'P'
+        ]
     };
 
     init() {
@@ -56,7 +56,7 @@ export default class PayonePaymentCreditCard extends Plugin {
             'font-weight: 500',
             'background-color: #fff',
             'border: none',
-            'border-radius: 3px',
+            'border-radius: 3px'
         ];
     }
 
@@ -71,7 +71,7 @@ export default class PayonePaymentCreditCard extends Plugin {
             'font-weight: 500',
             'background-color: #fff',
             'border: none',
-            'border-radius: .1875rem',
+            'border-radius: .1875rem'
         ];
     }
 
@@ -81,7 +81,7 @@ export default class PayonePaymentCreditCard extends Plugin {
                 cardpan: {
                     selector: 'cardpan',
                     type: 'text',
-                    style: this.getFieldStyle().join('; '),
+                    style: this.getFieldStyle().join('; ')
                 },
                 cardcvc2: {
                     selector: 'cardcvc2',
@@ -89,20 +89,20 @@ export default class PayonePaymentCreditCard extends Plugin {
                     size: '4',
                     maxlength: '4',
                     length: { 'V': 3, 'M': 3, 'A': 4, 'D': 3, 'J': 0, 'O': 3, 'P': 3, 'U': 3 },
-                    style: this.getFieldStyle().join('; '),
+                    style: this.getFieldStyle().join('; ')
                 },
                 cardexpiremonth: {
                     selector: 'cardexpiremonth',
                     type: 'select',
                     size: '2',
                     maxlength: '2',
-                    style: this.getSelectStyle().join('; '),
+                    style: this.getSelectStyle().join('; ')
                 },
                 cardexpireyear: {
                     selector: 'cardexpireyear',
                     type: 'select',
-                    style: this.getSelectStyle().join('; '),
-                },
+                    style: this.getSelectStyle().join('; ')
+                }
             },
 
             language: window.Payone.ClientApi.Language[language],
@@ -110,14 +110,14 @@ export default class PayonePaymentCreditCard extends Plugin {
             defaultStyle: {
                 iframe: {
                     height: '100%',
-                    width: '100%',
-                },
+                    width: '100%'
+                }
             },
 
             autoCardtypeDetection: {
                 supportedCardtypes: PayonePaymentCreditCard.options.supportedCardtypes,
-                callback: this._cardDetectionCallback,
-            },
+                callback: this._cardDetectionCallback
+            }
         };
     }
 

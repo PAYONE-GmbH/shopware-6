@@ -13,9 +13,10 @@ class IDealAuthorizeRequest extends AbstractIDealAuthorizeRequest
     public function getRequestParameters(
         PaymentTransaction $transaction,
         RequestDataBag $dataBag,
-        Context $context
+        Context $context,
+        string $referenceNumber
     ): array {
-        return array_merge(parent::getRequestParameters($transaction, $dataBag, $context), [
+        return array_merge(parent::getRequestParameters($transaction, $dataBag, $context, $referenceNumber), [
             'request' => 'authorization',
         ]);
     }

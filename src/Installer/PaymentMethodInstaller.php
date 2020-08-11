@@ -43,6 +43,18 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneIDeal::class,
     ];
 
+    public const AFTER_ORDER_PAYMENT_METHODS = [
+        PayoneCreditCard::class,
+        PayoneDebit::class,
+        PayonePaypal::class,
+        PayonePayolutionInstallment::class,
+        PayonePayolutionInvoicing::class,
+        PayonePayolutionDebit::class,
+        PayoneSofortBanking::class,
+        PayoneEps::class,
+        PayoneIDeal::class,
+    ];
+
     /** @var PluginIdProvider */
     private $pluginIdProvider;
 
@@ -123,6 +135,7 @@ class PaymentMethodInstaller implements InstallerInterface
             'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
             'position'          => $paymentMethod->getPosition(),
             'pluginId'          => $pluginId,
+            'afterOrderEnabled' => in_array(get_class($paymentMethod), self::AFTER_ORDER_PAYMENT_METHODS),
             'customFields'      => $customFields,
             'translations'      => $paymentMethod->getTranslations(),
         ];

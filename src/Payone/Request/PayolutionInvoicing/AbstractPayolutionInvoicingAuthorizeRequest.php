@@ -41,7 +41,8 @@ abstract class AbstractPayolutionInvoicingAuthorizeRequest
     public function getRequestParameters(
         PaymentTransaction $transaction,
         RequestDataBag $dataBag,
-        SalesChannelContext $context
+        SalesChannelContext $context,
+        string $referenceNumber
     ): array {
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context->getContext());
 
@@ -50,7 +51,7 @@ abstract class AbstractPayolutionInvoicingAuthorizeRequest
             'financingtype' => 'PYV',
             'amount'        => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision()))),
             'currency'      => $currency->getIsoCode(),
-            'reference'     => $transaction->getOrder()->getOrderNumber(),
+            'reference'     => $referenceNumber,
         ];
 
         if (!empty($dataBag->get('payolutionBirthday'))) {

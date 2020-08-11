@@ -41,7 +41,8 @@ abstract class AbstractPayolutionDebitAuthorizeRequest
     public function getRequestParameters(
         PaymentTransaction $transaction,
         RequestDataBag $dataBag,
-        SalesChannelContext $context
+        SalesChannelContext $context,
+        string $referenceNumber
     ): array {
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context->getContext());
 
@@ -50,7 +51,7 @@ abstract class AbstractPayolutionDebitAuthorizeRequest
             'financingtype' => 'PYD',
             'amount'        => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision()))),
             'currency'      => $currency->getIsoCode(),
-            'reference'     => $transaction->getOrder()->getOrderNumber(),
+            'reference'     => $referenceNumber,
             'iban'          => $dataBag->get('payolutionIban'),
             'bic'           => $dataBag->get('payolutionBic'),
         ];
