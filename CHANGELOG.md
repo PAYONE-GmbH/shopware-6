@@ -38,7 +38,7 @@ Known Incompatibilities
 
 * Backurlhandling in Shopware 6.2 is currently broken. If a customer gets redirected to their favorite payment method but decides to cancel and choose another one, no PAYONE payment methods are available. We're working on a fix to enable correct handling of this use case.
 
-# 1.1.1
+# 2.0.0
 
 New Features
 
@@ -48,3 +48,5 @@ New Features
 Maintenance
 
 * Added compatibility for new status transitions in Shopware 6.2
+* Shopware 6.2.x support
+* We had to drop support for Shopware <6.2.0
