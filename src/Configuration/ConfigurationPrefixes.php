@@ -13,6 +13,7 @@ use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePrepaymentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 
 interface ConfigurationPrefixes
@@ -27,6 +28,7 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_SOFORT                 = 'sofort';
     public const CONFIGURATION_PREFIX_EPS                    = 'eps';
     public const CONFIGURATION_PREFIX_IDEAL                  = 'iDeal';
+    public const CONFIGURATION_PREFIX_PREPAYMENT             = 'prepayment';
 
     public const CONFIGURATION_PREFIXES = [
         PayoneCreditCardPaymentHandler::class            => self::CONFIGURATION_PREFIX_CREDITCARD,
@@ -39,5 +41,6 @@ interface ConfigurationPrefixes
         PayoneSofortBankingPaymentHandler::class         => self::CONFIGURATION_PREFIX_SOFORT,
         PayoneEpsPaymentHandler::class                   => self::CONFIGURATION_PREFIX_EPS,
         PayoneIDealPaymentHandler::class                 => self::CONFIGURATION_PREFIX_IDEAL,
+        PayonePrepaymentPaymentHandler::class            => self::CONFIGURATION_PREFIX_PREPAYMENT,
     ];
 }
