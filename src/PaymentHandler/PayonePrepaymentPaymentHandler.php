@@ -112,16 +112,16 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
      */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
-        if (!array_key_exists(CustomFieldInstaller::AUTHORIZATION_TYPE, $customFields)) {
-            return false;
-        }
+        // Prepayment is always pre-authorization
 
-        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
-            return false;
-        }
+        $txAction = strtolower($transactionData['txaction'] ?? '');
+        $txStatus = strtolower($transactionData['transaction_status'] ?? '');
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED
-            && strtolower($transactionData['transaction_status']) === TransactionStatusService::STATUS_COMPLETED;
+        $isAppointed = $txAction === TransactionStatusService::ACTION_APPOINTED && $txStatus === TransactionStatusService::STATUS_COMPLETED;
+        $isUnderpaid = $txAction === TransactionStatusService::ACTION_UNDERPAID;
+        $isPaid      = $txAction === TransactionStatusService::ACTION_PAID;
+
+        return $isAppointed || $isUnderpaid || $isPaid;
     }
 
     /**
