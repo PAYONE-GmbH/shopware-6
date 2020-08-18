@@ -91,6 +91,10 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
         $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
             $this->getBaseCustomFields($response['status']),
             [
+                // Set clearing type explicitly
+                // todo: evaluate moving this to parent::getBaseCustomFields()
+                CustomFieldInstaller::CLEARING_TYPE => static::PAYONE_CLEARING_VOR,
+
                 // Store clearing bank account information as custom field of the transaction in order to
                 // use this data for payment instructions of an invoice or similar.
                 // See: https://docs.payone.com/display/public/PLATFORM/How+to+use+JSON-Responses#HowtouseJSON-Responses-JSON,Clearing-Data
