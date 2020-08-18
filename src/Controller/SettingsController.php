@@ -16,6 +16,7 @@ use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePrepaymentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -304,6 +305,25 @@ class SettingsController extends AbstractController
                     'zip'                       => '12345',
                     'city'                      => 'Test',
                     'ip'                        => '127.0.0.1',
+                ];
+
+                break;
+
+            case PayonePrepaymentPaymentHandler::class:
+                return [
+                    'request'      => 'preauthorization',
+                    'clearingtype' => 'vor',
+                    'amount'       => 10000,
+                    'currency'     => 'EUR',
+                    'reference'    => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'firstname'    => 'Test',
+                    'lastname'     => 'Test',
+                    'country'      => 'DE',
+                    'email'        => 'test@example.com',
+                    'street'       => 'teststreet 2',
+                    'zip'          => '12345',
+                    'city'         => 'Test',
+                    'ip'           => '127.0.0.1',
                 ];
 
                 break;
