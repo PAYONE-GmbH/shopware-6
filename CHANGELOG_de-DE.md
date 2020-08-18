@@ -44,6 +44,7 @@ Neue Funktionen
 
 * Ermöglicht den Wechsel auf PAYONE-Zahlungsarten nach der Bestellung
 * In der Administration können mehrere PAYONE-Transaktionen innerhalb einer Bestellung eingezogen oder erstattet werden
+* Neue Zahlungsart: Vorkasse
 
 Wartung
 
