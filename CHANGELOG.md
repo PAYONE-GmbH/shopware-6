@@ -44,6 +44,7 @@ New Features
 
 * Enables the switch to PAYONE payment methods after ordering
 * Multiple PAYONE transactions can now be handled in the administration per order
+* New payment method: Prepayment
 
 Maintenance
 
