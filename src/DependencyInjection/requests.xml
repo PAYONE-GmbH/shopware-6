@@ -336,5 +336,18 @@
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
+
+        <!-- Prepayment -->
+        <service id="PayonePayment\Payone\Request\Prepayment\PrepaymentPreAuthorizeRequest">
+            <argument type="service" id="currency.repository" />
+            <argument type="service" id="order_address.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Prepayment\PrepaymentPreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Prepayment\PrepaymentPreAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
     </services>
 </container>
