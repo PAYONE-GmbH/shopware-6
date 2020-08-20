@@ -2,39 +2,38 @@
     {% parent %}
 
     <template v-if="!isLoading" :isLoading="isLoading">
-        <template v-if="hasPayonePayment(order)">
-            <sw-card class="sw-order-payone-card" :title="$tc('payone-payment.title')">
-                <template v-for="transaction in order.transactions">
-                    <template v-if="isPayonePayment(transaction)">
-                        <sw-container columns="1fr 1fr">
-                            <sw-container>
-                                <sw-description-list>
-                                    <dt>{{ $tc('payone-payment.txid') }}</dt>
-                                    <dd class="sw-order-base__label-sales-channel">{{ transaction.customFields.payone_transaction_id }}</dd>
+        <template v-if="hasPayoneTransaction(order)">
+            <template v-for="(transaction, index) in payoneTransactions">
+                <sw-card class="sw-order-payone-card" :title="index === 0 ? $tc('payone-payment.title') : ''">
+                    <sw-container columns="1fr 1fr">
+                        <sw-container>
+                            <sw-description-list>
+                                <dt>{{ $tc('payone-payment.txid') }}</dt>
+                                <dd class="sw-order-base__label-sales-channel">{{ transaction.customFields.payone_transaction_id }}</dd>
 
-                                    <dt>{{ $tc('payone-payment.sequenceNumber.label') }}</dt>
-                                    <dd class="sw-order-base__label-sales-channel">
-                                        <span v-if="transaction.customFields.payone_sequence_number == -1">
-                                            {{ $tc('payone-payment.sequenceNumber.empty') }}
-                                        </span>
-                                        <span v-else>
-                                            {{ transaction.customFields.payone_sequence_number }}
-                                        </span>
-                                    </dd>
+                                <dt>{{ $tc('payone-payment.sequenceNumber.label') }}</dt>
+                                <dd class="sw-order-base__label-sales-channel">
+                                    <span v-if="transaction.customFields.payone_sequence_number == -1">
+                                        {{ $tc('payone-payment.sequenceNumber.empty') }}
+                                    </span>
+                                    <span v-else>
+                                        {{ transaction.customFields.payone_sequence_number }}
+                                    </span>
+                                </dd>
 
-                                    <dt>{{ $tc('payone-payment.transactionState') }}</dt>
-                                    <dd class="sw-order-base__label-sales-channel">{{ transaction.customFields.payone_transaction_state }}</dd>
-                                </sw-description-list>
-                            </sw-container>
-
-                            <sw-container gap="30px">
-                                <payone-capture-button :order="order" v-on:reload="reloadEntityData"></payone-capture-button>
-                                <payone-refund-button :order="order" v-on:reload="reloadEntityData"></payone-refund-button>
-                            </sw-container>
+                                <dt>{{ $tc('payone-payment.transactionState') }}</dt>
+                                <dd class="sw-order-base__label-sales-channel" v-if="isActiveTransaction(transaction)">{{ transaction.customFields.payone_transaction_state }}</dd>
+                                <dd class="sw-order-base__label-sales-channel" v-else>{{ $tc('payone-payment.transactionCancelled') }}</dd>
+                            </sw-description-list>
                         </sw-container>
-                    </template>
-                </template>
-            </sw-card>
+
+                        <sw-container gap="30px" v-if="isActiveTransaction(transaction)">
+                            <payone-capture-button :order="order" :transaction="transaction" v-on:reload="reloadEntityData"></payone-capture-button>
+                            <payone-refund-button :order="order" :transaction="transaction" v-on:reload="reloadEntityData"></payone-refund-button>
+                        </sw-container>
+                    </sw-container>
+                </sw-card>
+            </template>
         </template>
     </template>
 {% endblock %}

@@ -11,7 +11,7 @@ interface TransactionDataHandlerInterface
 {
     public function getPaymentTransactionByPayoneTransactionId(Context $context, int $payoneTransactionId): ?PaymentTransaction;
 
-    public function enhanceStatusWebhookData(PaymentTransaction $paymentTransaction, array $transactionData): array;
+    public function getCustomFieldsFromWebhook(PaymentTransaction $paymentTransaction, array $transactionData): array;
 
     public function saveTransactionData(PaymentTransaction $transaction, Context $context, array $data): void;
 

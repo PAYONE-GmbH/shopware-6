@@ -19,6 +19,7 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_EPS                    = 'eps';
     public const CONFIGURATION_PREFIX_IDEAL                  = 'iDeal';
     public const CONFIGURATION_PREFIX_PAYDIREKT              = 'paydirekt';
+    public const CONFIGURATION_PREFIX_PREPAYMENT             = 'prepayment';
 
     public const CONFIGURATION_PREFIXES = [
         Handler\PayoneCreditCardPaymentHandler::class            => self::CONFIGURATION_PREFIX_CREDITCARD,
@@ -32,5 +33,6 @@ interface ConfigurationPrefixes
         Handler\PayoneEpsPaymentHandler::class                   => self::CONFIGURATION_PREFIX_EPS,
         Handler\PayoneIDealPaymentHandler::class                 => self::CONFIGURATION_PREFIX_IDEAL,
         Handler\PayonePaydirektPaymentHandler::class             => self::CONFIGURATION_PREFIX_PAYDIREKT,
+        Handler\PayonePrepaymentPaymentHandler::class            => self::CONFIGURATION_PREFIX_PREPAYMENT,
     ];
 }
