@@ -85,6 +85,7 @@ Component.register('payone-settings', {
                 'sofort',
                 'eps',
                 'iDeal',
+                'paydirekt',
             ];
         },
 
