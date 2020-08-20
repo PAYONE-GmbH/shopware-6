@@ -1,14 +1,14 @@
 /* eslint-disable import/no-unresolved */
 
 import Plugin from 'src/plugin-system/plugin.class';
-import HttpClient from 'src/service/http-client.service';
+import StoreApiClient from 'src/service/store-api-client.service';
 import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
 
 export default class PayonePaymentPayolutionInvoicing extends Plugin {
     init() {
         this.orderFormDisabled = true;
 
-        this._client = new HttpClient(window.accessKey, window.contextToken);
+        this._client = new StoreApiClient();
 
         this._registerEventListeners();
     }
@@ -51,7 +51,7 @@ export default class PayonePaymentPayolutionInvoicing extends Plugin {
 
         checkbox.scrollIntoView({
             block: 'start',
-            behavior: 'smooth',
+            behavior: 'smooth'
         });
 
         checkbox.classList.add('is-invalid');
@@ -70,7 +70,7 @@ export default class PayonePaymentPayolutionInvoicing extends Plugin {
 
         input.scrollIntoView({
             block: 'start',
-            behavior: 'smooth',
+            behavior: 'smooth'
         });
 
         input.classList.add('is-invalid');
@@ -141,7 +141,7 @@ export default class PayonePaymentPayolutionInvoicing extends Plugin {
 
         return {
             '_csrf_token': csrfToken.value,
-            'payolutionBirthday': birthday.value,
+            'payolutionBirthday': birthday.value
         };
     }
 }

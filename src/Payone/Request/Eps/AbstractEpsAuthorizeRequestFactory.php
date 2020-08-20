@@ -48,10 +48,13 @@ abstract class AbstractEpsAuthorizeRequestFactory extends AbstractRequestFactory
             $context
         );
 
+        $referenceNumber = $this->systemRequest->getReferenceNumber($transaction, true);
+
         $this->requests[] = $this->epsRequest->getRequestParameters(
             $transaction,
             $dataBag,
-            $context->getContext()
+            $context->getContext(),
+            $referenceNumber
         );
 
         return $this->createRequest();

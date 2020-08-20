@@ -33,6 +33,7 @@ abstract class AbstractPaypalAuthorizeRequest
     public function getRequestParameters(
         PaymentTransaction $transaction,
         Context $context,
+        string $referenceNumber,
         ?string $workOrderId = null
     ): array {
         if (empty($transaction->getReturnUrl())) {
@@ -46,7 +47,7 @@ abstract class AbstractPaypalAuthorizeRequest
             'wallettype'   => 'PPE',
             'amount'       => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision()))),
             'currency'     => $currency->getIsoCode(),
-            'reference'    => $transaction->getOrder()->getOrderNumber(),
+            'reference'    => $referenceNumber,
             'successurl'   => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
             'errorurl'     => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),
             'backurl'      => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),

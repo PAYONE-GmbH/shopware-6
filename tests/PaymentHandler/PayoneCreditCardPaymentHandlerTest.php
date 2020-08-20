@@ -29,6 +29,8 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Translation\Translator;
 
 class PayoneCreditCardPaymentHandlerTest extends TestCase
@@ -56,6 +58,12 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $authRequestFactory    = $this->createMock(CreditCardAuthorizeRequestFactory::class);
         $cardRepository        = $this->createMock(CardRepositoryInterface::class);
 
+        $dataBag = new RequestDataBag();
+        $dataBag->set('truncatedCardPan', '');
+        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set('savedPseudoCardPan', '');
+        $dataBag->set('pseudoCardPan', '');
+
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
             $preAuthRequestFactory,
@@ -65,15 +73,11 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
             $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
-            $cardRepository
+            $cardRepository,
+            $this->getRequestStack($dataBag)
         );
 
         $paymentTransaction = $this->getPaymentTransaction();
-        $dataBag            = new RequestDataBag();
-        $dataBag->set('truncatedCardPan', '');
-        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
-        $dataBag->set('savedPseudoCardPan', '');
-        $dataBag->set('pseudoCardPan', '');
 
         $preAuthRequestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
             [
@@ -117,6 +121,12 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $authRequestFactory    = $this->createMock(CreditCardAuthorizeRequestFactory::class);
         $cardRepository        = $this->createMock(CardRepositoryInterface::class);
 
+        $dataBag = new RequestDataBag();
+        $dataBag->set('truncatedCardPan', '');
+        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set('savedPseudoCardPan', '');
+        $dataBag->set('pseudoCardPan', '');
+
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
             $preAuthRequestFactory,
@@ -126,15 +136,11 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
             $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
-            $cardRepository
+            $cardRepository,
+            $this->getRequestStack($dataBag)
         );
 
         $paymentTransaction = $this->getPaymentTransaction();
-        $dataBag            = new RequestDataBag();
-        $dataBag->set('truncatedCardPan', '');
-        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
-        $dataBag->set('savedPseudoCardPan', '');
-        $dataBag->set('pseudoCardPan', '');
 
         $preAuthRequestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
             [
@@ -179,6 +185,12 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $authRequestFactory    = $this->createMock(CreditCardAuthorizeRequestFactory::class);
         $cardRepository        = $this->createMock(CardRepositoryInterface::class);
 
+        $dataBag = new RequestDataBag();
+        $dataBag->set('truncatedCardPan', '');
+        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set('savedPseudoCardPan', 'saved-pan');
+        $dataBag->set('pseudoCardPan', '');
+
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
             $preAuthRequestFactory,
@@ -188,15 +200,11 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
             $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
-            $cardRepository
+            $cardRepository,
+            $this->getRequestStack($dataBag)
         );
 
         $paymentTransaction = $this->getPaymentTransaction();
-        $dataBag            = new RequestDataBag();
-        $dataBag->set('truncatedCardPan', '');
-        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
-        $dataBag->set('savedPseudoCardPan', 'saved-pan');
-        $dataBag->set('pseudoCardPan', '');
 
         $preAuthRequestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
             [
@@ -258,5 +266,15 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $orderTransactionEntity->setCustomFields($customFields);
 
         return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
+    }
+
+    private function getRequestStack(RequestDataBag $dataBag): RequestStack
+    {
+        $stack = new RequestStack();
+
+        $request = new Request([], $dataBag->all());
+        $stack->push($request);
+
+        return $stack;
     }
 }

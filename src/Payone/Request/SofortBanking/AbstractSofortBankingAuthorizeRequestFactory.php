@@ -48,9 +48,12 @@ abstract class AbstractSofortBankingAuthorizeRequestFactory extends AbstractRequ
             $context
         );
 
+        $referenceNumber = $this->systemRequest->getReferenceNumber($transaction, true);
+
         $this->requests[] = $this->sofortBankingRequest->getRequestParameters(
             $transaction,
-            $context->getContext()
+            $context->getContext(),
+            $referenceNumber
         );
 
         return $this->createRequest();

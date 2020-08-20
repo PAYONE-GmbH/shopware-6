@@ -15,6 +15,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -65,12 +66,12 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
                 'mid'             => '',
                 'mode'            => '',
                 'portalid'        => '',
-                'reference'       => '1',
                 'request'         => 'authorization',
                 'solution_name'   => 'kellerkinder',
                 'street'          => 'Some Street 1',
                 'wallettype'      => 'PPE',
                 'zip'             => '12345',
+                'reference'       => '1',
             ],
             $request
         );
@@ -90,6 +91,7 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+        $orderEntity->setTransactions(new OrderTransactionCollection([]));
 
         $paymentMethodEntity = new PaymentMethodEntity();
         $paymentMethodEntity->setHandlerIdentifier(PayonePaypalPaymentHandler::class);

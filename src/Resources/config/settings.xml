@@ -200,6 +200,40 @@
     </card>
 
     <card>
+        <title>Prepayment</title>
+
+        <name>payment_prepayment</name>
+
+        <input-field>
+            <name>prepaymentMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>prepaymentAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>prepaymentPortalId</name>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>prepaymentPortalKey</name>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+    </card>
+
+    <card>
         <title>PayPal</title>
 
         <name>payment_paypal</name>

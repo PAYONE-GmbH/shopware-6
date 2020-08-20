@@ -20,6 +20,7 @@ use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -51,9 +52,10 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         EntityRepositoryInterface $lineItemRepository,
-        CartHasherInterface $cartHasher
+        CartHasherInterface $cartHasher,
+        RequestStack $requestStack
     ) {
-        parent::__construct($configReader, $lineItemRepository);
+        parent::__construct($configReader, $lineItemRepository, $requestStack);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;
@@ -67,7 +69,9 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
      */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
-        $cartHash = (string) $dataBag->get('carthash');
+        $requestData = $this->fetchRequestData();
+
+        $cartHash = (string) $requestData->get('carthash');
 
         if (!$this->cartHasher->validate($transaction->getOrder(), $cartHash, $salesChannelContext)) {
             throw new SyncPaymentProcessException(
@@ -92,7 +96,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
 
         $request = $factory->getRequestParameters(
             $paymentTransaction,
-            $dataBag,
+            $requestData,
             $salesChannelContext
         );
 
@@ -120,7 +124,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
         $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
             $this->getBaseCustomFields($response['status']),
             [
-                CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
+                CustomFieldInstaller::WORK_ORDER_ID      => $requestData->get('workorder'),
                 CustomFieldInstaller::CLEARING_REFERENCE => $response['clearing']['Reference'],
                 CustomFieldInstaller::CAPTURE_MODE       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
                 CustomFieldInstaller::CLEARING_TYPE      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,

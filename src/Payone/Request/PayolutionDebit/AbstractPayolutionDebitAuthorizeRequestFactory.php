@@ -48,10 +48,13 @@ abstract class AbstractPayolutionDebitAuthorizeRequestFactory extends AbstractRe
             $context
         );
 
+        $referenceNumber = $this->systemRequest->getReferenceNumber($transaction, true);
+
         $this->requests[] = $this->payolutionDebitRequest->getRequestParameters(
             $transaction,
             $dataBag,
-            $context
+            $context,
+            $referenceNumber
         );
 
         return $this->createRequest();

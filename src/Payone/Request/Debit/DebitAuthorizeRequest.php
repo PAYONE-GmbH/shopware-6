@@ -9,9 +9,15 @@ use Shopware\Core\Framework\Context;
 
 class DebitAuthorizeRequest extends AbstractDebitAuthorizeRequest
 {
-    public function getRequestParameters(PaymentTransaction $transaction, Context $context, string $iban, string $bic, string $accountOwner): array
-    {
-        return array_merge(parent::getRequestParameters($transaction, $context, $iban, $bic, $accountOwner), [
+    public function getRequestParameters(
+        PaymentTransaction $transaction,
+        Context $context,
+        string $iban,
+        string $bic,
+        string $accountOwner,
+        string $referenceNumber
+    ): array {
+        return array_merge(parent::getRequestParameters($transaction, $context, $iban, $bic, $accountOwner, $referenceNumber), [
             'request' => 'authorization',
         ]);
     }

@@ -1,19 +1,19 @@
 /* eslint-disable import/no-unresolved */
 
 import Plugin from 'src/plugin-system/plugin.class';
-import HttpClient from 'src/service/http-client.service';
+import StoreApiClient from 'src/service/store-api-client.service';
 import PseudoModalUtil from 'src/utility/modal-extension/pseudo-modal.util';
 import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
 
 export default class PayonePaymentDebitCard extends Plugin {
     static options = {
-        editorModalClass: 'payone-debit-modal',
+        editorModalClass: 'payone-debit-modal'
     };
 
     init() {
         this.orderFormDisabled = true;
 
-        this._client = new HttpClient(window.accessKey, window.contextToken);
+        this._client = new StoreApiClient();
 
         document
             .getElementById('confirmOrderForm')
@@ -97,7 +97,7 @@ export default class PayonePaymentDebitCard extends Plugin {
         return {
             '_csrf_token': csrfToken.value,
             'iban': iban.value,
-            'bic': bic.value,
+            'bic': bic.value
         };
     }
 

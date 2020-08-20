@@ -111,6 +111,7 @@
             "empty": "keine"
         },
         "transactionState": "Status",
+        "transactionCancelled": "Transaktion in Shopware abgebrochen",
         "error": {
             "transaction": {
                 "notFound": "Es wurde keine passende Transaktion gefundend",

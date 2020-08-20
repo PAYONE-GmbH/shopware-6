@@ -10,8 +10,10 @@ use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
+use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
@@ -29,17 +31,26 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
         return [
             CheckoutConfirmPageLoadedEvent::class      => 'hidePaymentMethodsForCompanies',
             AccountPaymentMethodPageLoadedEvent::class => 'hidePaymentMethodsForCompanies',
+            AccountEditOrderPageLoadedEvent::class     => 'hidePaymentMethodsForCompanies',
         ];
     }
 
-    /** @param AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event */
-    public function hidePaymentMethodsForCompanies($event): void
+    public function hidePaymentMethodsForCompanies(PageLoadedEvent $event): void
     {
-        $paymentMethods = $event->getPage()->getPaymentMethods();
+        $page = $event->getPage();
+
+        if (
+            !method_exists($page, 'getPaymentMethods') ||
+            !method_exists($page, 'setPaymentMethods')
+        ) {
+            return;
+        }
 
         if (!$this->customerHasCompanyAddress($event->getSalesChannelContext())) {
             return;
         }
+
+        $paymentMethods = $page->getPaymentMethods();
 
         $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionInstallment::UUID);
 
@@ -47,7 +58,7 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
             $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionInvoicing::UUID);
         }
 
-        $event->getPage()->setPaymentMethods($paymentMethods);
+        $page->setPaymentMethods($paymentMethods);
     }
 
     private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection

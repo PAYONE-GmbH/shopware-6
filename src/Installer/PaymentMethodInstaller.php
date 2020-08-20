@@ -16,6 +16,7 @@ use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
+use PayonePayment\PaymentMethod\PayonePrepayment;
 use PayonePayment\PaymentMethod\PayoneSofortBanking;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Framework\Context;
@@ -36,6 +37,20 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneDebit::class,
         PayonePaypal::class,
         PayonePaypalExpress::class,
+        PayonePayolutionInstallment::class,
+        PayonePayolutionInvoicing::class,
+        PayonePayolutionDebit::class,
+        PayoneSofortBanking::class,
+        PayoneEps::class,
+        PayoneIDeal::class,
+        PayonePaydirekt::class,
+        PayonePrepayment::class,
+    ];
+
+    public const AFTER_ORDER_PAYMENT_METHODS = [
+        PayoneCreditCard::class,
+        PayoneDebit::class,
+        PayonePaypal::class,
         PayonePayolutionInstallment::class,
         PayonePayolutionInvoicing::class,
         PayonePayolutionDebit::class,
@@ -125,6 +140,7 @@ class PaymentMethodInstaller implements InstallerInterface
             'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
             'position'          => $paymentMethod->getPosition(),
             'pluginId'          => $pluginId,
+            'afterOrderEnabled' => in_array(get_class($paymentMethod), self::AFTER_ORDER_PAYMENT_METHODS),
             'customFields'      => $customFields,
             'translations'      => $paymentMethod->getTranslations(),
         ];
