@@ -163,6 +163,7 @@
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
             <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.payment.method.async" />
         </service>
