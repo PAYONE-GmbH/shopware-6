@@ -55,6 +55,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneSofortBanking::class,
         PayoneEps::class,
         PayoneIDeal::class,
+        PayonePrepayment::class,
     ];
 
     /** @var PluginIdProvider */
