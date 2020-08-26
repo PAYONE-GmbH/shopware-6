@@ -95,7 +95,7 @@
             <argument type="service" id="country.repository"/>
             <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher" />
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
-            <argument type="service" id="router.default" />
+            <argument type="service" id="Shopware\Storefront\Framework\Routing\Router"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
