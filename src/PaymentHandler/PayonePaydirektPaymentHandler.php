@@ -141,7 +141,7 @@ class PayonePaydirektPaymentHandler extends AbstractPayonePaymentHandler impleme
             return false;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED;
     }
 
     /**
