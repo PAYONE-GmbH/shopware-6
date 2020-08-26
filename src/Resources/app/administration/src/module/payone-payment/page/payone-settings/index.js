@@ -37,6 +37,10 @@ Component.register('payone-settings', {
                 'payment_payolution_installment': true,
                 'payment_payolution_invoicing': true,
                 'payment_payolution_debit': true,
+                'payment_eps': true,
+                'payment_ideal': true,
+                'payment_paydirekt': true,
+                'payment_prepayment': true,
             },
         };
     },
