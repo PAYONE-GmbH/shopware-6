@@ -372,5 +372,19 @@
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
+
+        <!-- Secure Invoice -->
+        <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoicePreAuthorizeRequest">
+            <argument type="service" id="currency.repository" />
+            <argument type="service" id="order_address.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoiceAuthorizeRequest">
+            <argument type="service" id="currency.repository" />
+            <argument type="service" id="order_address.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+        </service>
+
     </services>
 </container>

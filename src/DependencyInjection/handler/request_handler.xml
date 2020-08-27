@@ -38,5 +38,9 @@
         <service id="PayonePayment\Components\RequestBuilder\SofortBankingRequestBuilder">
             <tag name="payone_payment.request_handler" />
         </service>
+
+        <service id="PayonePayment\Components\RequestBuilder\SecureInvoiceRequestBuilder">
+            <tag name="payone_payment.request_handler" />
+        </service>
     </services>
 </container>
