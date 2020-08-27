@@ -386,5 +386,16 @@
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
+        <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoicePreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoicePreAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoiceAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoiceAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
     </services>
 </container>

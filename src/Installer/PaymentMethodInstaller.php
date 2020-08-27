@@ -17,6 +17,7 @@ use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use PayonePayment\PaymentMethod\PayonePrepayment;
+use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\PaymentMethod\PayoneSofortBanking;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Framework\Context;
@@ -45,6 +46,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneIDeal::class,
         PayonePaydirekt::class,
         PayonePrepayment::class,
+        PayoneSecureInvoice::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [

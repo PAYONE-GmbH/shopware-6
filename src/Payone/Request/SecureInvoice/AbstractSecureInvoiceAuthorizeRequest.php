@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\SecureInvoice;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -15,7 +16,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 
 abstract class AbstractSecureInvoiceAuthorizeRequest
 {
@@ -44,11 +44,10 @@ abstract class AbstractSecureInvoiceAuthorizeRequest
         SalesChannelContext $context,
         string $referenceNumber
     ): array {
-        $order = $transaction->getOrder();
-        $currency = $this->getOrderCurrency($order, $context->getContext());
-        $billingAddress = $this->getBillingAddress($order, $context->getContext());
-        $centAmountTotal =
-            (int) round(($order->getAmountTotal() * (10 ** $currency->getDecimalPrecision())));
+        $order           = $transaction->getOrder();
+        $currency        = $this->getOrderCurrency($order, $context->getContext());
+        $billingAddress  = $this->getBillingAddress($order, $context->getContext());
+        $centAmountTotal = (int) round(($order->getAmountTotal() * (10 ** $currency->getDecimalPrecision())));
 
         $parameters = [
             'clearingtype'  => 'rec',

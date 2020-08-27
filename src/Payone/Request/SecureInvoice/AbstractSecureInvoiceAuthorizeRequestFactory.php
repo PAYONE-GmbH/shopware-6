@@ -12,7 +12,6 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-
 abstract class AbstractSecureInvoiceAuthorizeRequestFactory extends AbstractRequestFactory
 {
     /** @var AbstractSecureInvoiceAuthorizeRequest */
@@ -29,9 +28,9 @@ abstract class AbstractSecureInvoiceAuthorizeRequestFactory extends AbstractRequ
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
-        $this->secureInvoiceRequest       = $secureInvoiceAuthorizeRequest;
-        $this->customerRequest            = $customerRequest;
-        $this->systemRequest              = $systemRequest;
+        $this->secureInvoiceRequest = $secureInvoiceAuthorizeRequest;
+        $this->customerRequest      = $customerRequest;
+        $this->systemRequest        = $systemRequest;
     }
 
     public function getRequestParameters(

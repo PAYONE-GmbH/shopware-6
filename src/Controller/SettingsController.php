@@ -17,6 +17,7 @@ use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePrepaymentPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -327,6 +328,28 @@ class SettingsController extends AbstractController
                 ];
 
                 break;
+            case PayoneSecureInvoicePaymentHandler::class:
+                return [
+                    'request'          => 'preauthorization',
+                    'clearingtype'     => 'rec',
+                    'financingtype'    => 'POV',
+                    'amount'           => 10000,
+                    'currency'         => 'EUR',
+                    'reference'        => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'birthday'         => '19900505',
+                    'firstname'        => 'Test',
+                    'lastname'         => 'Test',
+                    'country'          => 'DE',
+                    'email'            => 'test@example.com',
+                    'street'           => 'teststreet 2',
+                    'zip'              => '12345',
+                    'city'             => 'Test',
+                    'ip'               => '127.0.0.1',
+                    'businessrelation' => 'b2c',
+                ];
+
+                break;
+
             default:
                 $this->logger->error(sprintf('There is no test data defined for payment class %s', $paymentClass));
                 throw new RuntimeException(sprintf('There is no test data defined for payment class %s', $paymentClass));

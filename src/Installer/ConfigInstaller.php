@@ -28,6 +28,7 @@ class ConfigInstaller implements InstallerInterface
         'paypalAuthorizationMethod'                => 'preauthorization',
         'paypalExpressAuthorizationMethod'         => 'preauthorization',
         'sofortAuthorizationMethod'                => 'authorization',
+        'secureInvoiceAuthorizationMethod'         => 'preauthorization',
 
         // Default payment status mapping
         'paymentStatusAppointed'      => StateMachineTransitionActions::ACTION_REOPEN,
