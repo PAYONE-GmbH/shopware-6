@@ -9,7 +9,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class PayolutionInvoicingRequestBuilder extends AbstractRequestBuilder
+class SecureInvoiceRequestBuilder extends AbstractRequestBuilder
 {
     public function supports(string $paymentMethodId): bool
     {
