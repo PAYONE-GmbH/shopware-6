@@ -156,6 +156,10 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
      */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0;
+        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
+            return true;
+        }
+
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 }
