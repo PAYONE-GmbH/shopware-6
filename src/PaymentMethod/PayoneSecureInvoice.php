@@ -38,4 +38,7 @@ class PayoneSecureInvoice extends AbstractPaymentMethod
             'description' => 'Pay by invoice. After reception of goods.',
         ],
     ];
+
+    /** @var int */
+    protected $position = 114;
 }
