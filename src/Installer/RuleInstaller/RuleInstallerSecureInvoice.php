@@ -95,7 +95,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
                     'type'  => (new CurrencyRule())->getName(),
                     'value' => [
                         'operator'    => CurrencyRule::OPERATOR_EQ,
-                        'currencyIds' => array_values(self::CURRENCIES),
+                        'currencyIds' => array_values($this->getCurrencyIds($context)),
                     ],
                 ],
             ],
@@ -128,5 +128,17 @@ class RuleInstallerSecureInvoice implements InstallerInterface
         );
 
         return $this->countryRepository->search($criteria, $context)->getIds();
+    }
+
+    private function getCurrencyIds(Context $context): array
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new EqualsAnyFilter('isoCode', self::CURRENCIES)
+        );
+
+        $currency = $this->currencyRepository->search($criteria, $context);
+
+        return $currency->getIds();
     }
 }
