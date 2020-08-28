@@ -133,10 +133,6 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
      */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
-            return true;
-        }
-
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0;
     }
 }

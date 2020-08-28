@@ -38,5 +38,21 @@
         <service id="PayonePayment\Components\RequestBuilder\SofortBankingRequestBuilder">
             <tag name="payone_payment.request_handler" />
         </service>
+
+        <service id="PayonePayment\Components\RequestBuilder\PrepaymentRequestBuilder">
+            <tag name="payone_payment.request_handler" />
+        </service>
+
+        <service id="PayonePayment\Components\RequestBuilder\PaydirektRequestBuilder">
+            <tag name="payone_payment.request_handler" />
+        </service>
+
+        <service id="PayonePayment\Components\RequestBuilder\IDealRequestBuilder">
+            <tag name="payone_payment.request_handler" />
+        </service>
+
+        <service id="PayonePayment\Components\RequestBuilder\EpsRequestBuilder">
+            <tag name="payone_payment.request_handler" />
+        </service>
     </services>
 </container>
