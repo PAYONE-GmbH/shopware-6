@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment;
 
 use Doctrine\DBAL\Connection;
+use KlarnaPayment\Installer\RuleInstaller\RuleInstallerSecureInvoice;
 use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Installer\PaymentMethodInstaller;
@@ -33,6 +34,7 @@ class PayonePayment extends Plugin
         (new ConfigInstaller($this->container))->install($context);
         (new CustomFieldInstaller($this->container))->install($context);
         (new PaymentMethodInstaller($this->container))->install($context);
+        (new RuleInstallerSecureInvoice($this->container))->install($context);
     }
 
     public function update(UpdateContext $context): void
@@ -61,6 +63,7 @@ class PayonePayment extends Plugin
         (new ConfigInstaller($this->container))->uninstall($context);
         (new CustomFieldInstaller($this->container))->uninstall($context);
         (new PaymentMethodInstaller($this->container))->uninstall($context);
+        (new RuleInstallerSecureInvoice($this->container))->uninstall($context);
 
         if ($context->keepUserData()) {
             return;
