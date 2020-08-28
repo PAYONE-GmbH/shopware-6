@@ -23,6 +23,7 @@ use PayonePayment\PayonePayment;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
@@ -176,6 +177,30 @@ class PaymentMethodInstaller implements InstallerInterface
             'active' => false,
         ];
 
+        $paymentMethodExists = $this->paymentMethodExists($data, $context);
+
+        if ($paymentMethodExists === false) {
+            return;
+        }
+
         $this->paymentMethodRepository->update([$data], $context);
+    }
+
+    private function paymentMethodExists(array $data, Context $context): bool
+    {
+        if (empty($data['id'])) {
+            return false;
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $data['id']));
+
+        $result = $this->paymentMethodRepository->search($criteria, $context);
+
+        if ($result->getTotal() === 0) {
+            return false;
+        }
+
+        return true;
     }
 }
