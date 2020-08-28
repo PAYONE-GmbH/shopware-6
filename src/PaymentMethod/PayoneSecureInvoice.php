@@ -25,7 +25,7 @@ class PayoneSecureInvoice extends AbstractPaymentMethod
     protected $paymentHandler = PayoneSecureInvoicePaymentHandler::class;
 
     /** @var null|string */
-    protected $template = '@Storefront/storefront/payone/secureinovice/secure-invoice-form.html.twig';
+    protected $template;
 
     /** @var array */
     protected $translations = [
