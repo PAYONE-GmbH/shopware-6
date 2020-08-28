@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment;
 
 use Doctrine\DBAL\Connection;
-use KlarnaPayment\Installer\RuleInstaller\RuleInstallerSecureInvoice;
 use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Installer\PaymentMethodInstaller;
+use PayonePayment\Installer\RuleInstaller\RuleInstallerSecureInvoice;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
