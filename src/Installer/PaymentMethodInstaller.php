@@ -143,8 +143,6 @@ class PaymentMethodInstaller implements InstallerInterface
         // Collect some common data which will be used for both update and insert
         $data = [
             'id'                => $paymentMethod->getId(),
-            'name'              => $paymentMethod->getName(),
-            'description'       => $paymentMethod->getDescription(),
             'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
             'pluginId'          => $pluginId,
             'afterOrderEnabled' => in_array(get_class($paymentMethod), self::AFTER_ORDER_PAYMENT_METHODS),
@@ -180,6 +178,8 @@ class PaymentMethodInstaller implements InstallerInterface
     private function installPaymentMethod(array $data, PaymentMethodInterface $paymentMethod, Context $context): void
     {
         $data = array_merge($data, [
+            'name'         => $paymentMethod->getName(),
+            'description'  => $paymentMethod->getDescription(),
             'position'     => $paymentMethod->getPosition(),
             'translations' => $paymentMethod->getTranslations(),
         ]);
