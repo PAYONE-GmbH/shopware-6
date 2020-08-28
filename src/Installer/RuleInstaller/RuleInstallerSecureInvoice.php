@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace KlarnaPayment\Installer\RuleInstaller;
+namespace PayonePayment\Installer\RuleInstaller;
 
 use PayonePayment\Installer\InstallerInterface;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\System\Currency\Rule\CurrencyRule;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class RuleInstallerSecureInvoice implements InstallerInterface
@@ -40,10 +41,14 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     /** @var EntityRepositoryInterface */
     private $countryRepository;
 
+    /** @var EntityRepositoryInterface */
+    private $currencyRepository;
+
     public function __construct(ContainerInterface $container)
     {
-        $this->ruleRepository    = $container->get('rule.repository');
-        $this->countryRepository = $container->get('country.repository');
+        $this->ruleRepository     = $container->get('rule.repository');
+        $this->countryRepository  = $container->get('country.repository');
+        $this->currencyRepository = $container->get('currency.repository');
     }
 
     public function install(InstallContext $context): void
@@ -87,10 +92,10 @@ class RuleInstallerSecureInvoice implements InstallerInterface
                 ],
                 [
                     'id'    => self::CONDITION_ID_CURRENCY,
-                    'type'  => null,
+                    'type'  => (new CurrencyRule())->getName(),
                     'value' => [
-                        'operator' => '=',
-                        'currency' => $this->getCurrency($context),
+                        'operator'    => CurrencyRule::OPERATOR_EQ,
+                        'currencyIds' => array_values(self::CURRENCIES),
                     ],
                 ],
             ],
@@ -123,10 +128,5 @@ class RuleInstallerSecureInvoice implements InstallerInterface
         );
 
         return $this->countryRepository->search($criteria, $context)->getIds();
-    }
-
-    private function getCurrency(Context $context): string
-    {
-        return 'EUR';
     }
 }
