@@ -151,7 +151,7 @@
             <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="request_stack" />
 
-            <tag name="shopware.payment.method.async" />
+            <tag name="shopware.payment.method.sync" />
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePaydirektPaymentHandler">

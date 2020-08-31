@@ -45,6 +45,13 @@ New Features
 * Enables the switch to PAYONE payment methods after ordering
 * Multiple PAYONE transactions can now be handled in the administration per order
 * New payment method: Prepayment
+* New payment method: Paydirekt
+
+Bugfixes
+
+* fixed a bug where existing settings like payment method assignments could get lost after a plugin update (thx @boxblinkracer)
+* fixed wrong sales channel routing of PayPal Express Payments (thx @boxblinkracer)
+* various smaller fixes
 
 Maintenance
 
