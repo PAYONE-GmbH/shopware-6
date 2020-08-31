@@ -41,14 +41,19 @@ Bekannte Inkompatibilitäten
 # 2.0.0
 
 Neue Funktionen
-
-* Ermöglicht den Wechsel auf PAYONE-Zahlungsarten nach der Bestellung
-* In der Administration können mehrere PAYONE-Transaktionen innerhalb einer Bestellung eingezogen oder erstattet werden
-* Neue Zahlungsart: Vorkasse
-
+ 
+* Neue Zahlungsmethode: Vorauszahlung
+* Neue Zahlungsmethode: Paydirekt
+* Unterstützung des Storno-Zahlungsflusses von Shopware 6.2
+ 
+Fehlerbehebung(en)
+ 
+* ein Fehler behoben, durch den bestehende Einstellungen wie die Zuweisung von Zahlungsmethoden nach einem Plugin-Update verloren gehen konnten
+* falsches Vertriebskanal-Routing von PayPal-Express-Zahlungen korrigiert (thx @boxblinkracer)
+* verschiedene kleinere Korrekturen
+ 
 Wartung
 
-* Kompatibilität zu neuen Statusübergängen in Shopware 6.2 hergestellt
-* Kompatibilität zu Shopware 6.2.x
-* Wir mussten die Kompatibilität zu Shopware <6.2.0 entfernen
-
+* Kompatibilität für Shopware 6.2.x+
+* getestet mit Shopware 6.3.0.2
+* Wir mussten die Unterstützung für Shopware <6.2.0 einstellen.
