@@ -847,7 +847,7 @@
     </card>
 
     <card>
-        <title>Secure Invoice (Seperate payment portal needed)</title>
+        <title>Secure invoice (own payment portal is required)</title>
         <title lang="de-DE">Gesicherter Rechnungskauf (Eigenes Zahlungsportal wird benötigt)</title>
 
         <name>payment_secure_invoice</name>
@@ -869,14 +869,14 @@
         <input-field>
             <name>secureInvoicePortalId</name>
             <label>Portal ID</label>
-            <helpText>You will need a seperate payment portal for using secure invoice payment.</helpText>
-            <helpText lang="de-DE">Sie benötigen ein separates Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+            <helpText>You need an ID to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen eine ID zu einem separates Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
         </input-field>
 
         <input-field>
             <name>secureInvoicePortalKey</name>
             <label>Key</label>
-            <helpText>You will need a seperate portal key for using secure invoice payment.</helpText>
+            <helpText>You need a key to a separate payment gateway to use this payment method.</helpText>
             <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
         </input-field>
 
@@ -884,7 +884,7 @@
             <name>secureInvoiceAuthorizationMethod</name>
             <label>Authorization Method</label>
             <label lang="de-DE">Autorisierungsmethode</label>
-            <helpText>Use this option to set the authorization method for this payment type.</helpText>
+            <helpText>Defines the authorization method for this payment method.</helpText>
             <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
             <options>
                 <option>

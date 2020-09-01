@@ -35,7 +35,7 @@ class PayoneSecureInvoice extends AbstractPaymentMethod
         ],
         'en-GB' => [
             'name'        => 'Payone secure invoice',
-            'description' => 'Pay by invoice. After reception of goods.',
+            'description' => 'Secure pay by invoice. After reception of goods.',
         ],
     ];
 

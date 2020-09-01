@@ -71,7 +71,7 @@
                 "sofort": "The API credentials for SOFORT are not valid.",
                 "eps": "The API credentials for EPS are not valid.",
                 "iDeal": "The API credentials for iDEAL are not valid.",
-                "secureInvoice": "API credentials secure invoice payment are not valid."
+                "secureInvoice": "The API credentials for secure invoice payment are not valid."
             }
         },
         "supportModal": {
