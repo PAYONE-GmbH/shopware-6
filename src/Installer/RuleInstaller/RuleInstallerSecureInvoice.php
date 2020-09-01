@@ -7,6 +7,7 @@ namespace PayonePayment\Installer\RuleInstaller;
 use PayonePayment\Installer\InstallerInterface;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use Shopware\Core\Checkout\Customer\Rule\BillingCountryRule;
+use Shopware\Core\Checkout\Customer\Rule\DifferentAddressesRule;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -31,9 +32,10 @@ class RuleInstallerSecureInvoice implements InstallerInterface
         'EUR',
     ];
 
-    private const RULE_ID               = 'bf54529febf323ec7d27256b178207f5';
-    private const CONDITION_ID_COUNTRY  = '23a2158b05a93ddd4a0799074846607c';
-    private const CONDITION_ID_CURRENCY = '6099e1e292f737aa31c126a73339c92e';
+    private const RULE_ID                          = 'bf54529febf323ec7d27256b178207f5';
+    private const CONDITION_ID_COUNTRY             = '23a2158b05a93ddd4a0799074846607c';
+    private const CONDITION_ID_CURRENCY            = '6099e1e292f737aa31c126a73339c92e';
+    private const CONDITION_ID_DIFFERENT_ADDRESSES = 'f1a5251ffcd09b5dc0befc059dfad9c1';
 
     /** @var EntityRepositoryInterface */
     private $ruleRepository;
@@ -96,6 +98,13 @@ class RuleInstallerSecureInvoice implements InstallerInterface
                     'value' => [
                         'operator'    => CurrencyRule::OPERATOR_EQ,
                         'currencyIds' => array_values($this->getCurrencyIds($context)),
+                    ],
+                ],
+                [
+                    'id'    => self::CONDITION_ID_DIFFERENT_ADDRESSES,
+                    'type'  => (new DifferentAddressesRule())->getName(),
+                    'value' => [
+                        'isDifferent' => false,
                     ],
                 ],
             ],
