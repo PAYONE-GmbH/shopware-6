@@ -847,8 +847,8 @@
     </card>
 
     <card>
-        <title>Secure Invoice</title>
-        <title lang="de-DE">Gesicherter Rechnungskauf</title>
+        <title>Secure Invoice (Seperate payment portal needed)</title>
+        <title lang="de-DE">Gesicherter Rechnungskauf (Eigenes Zahlungsportal wird benötigt)</title>
 
         <name>payment_secure_invoice</name>
 
@@ -869,15 +869,15 @@
         <input-field>
             <name>secureInvoicePortalId</name>
             <label>Portal ID</label>
-            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
-            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+            <helpText>You will need a seperate payment portal for using secure invoice payment.</helpText>
+            <helpText lang="de-DE">Sie benötigen ein separates Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
         </input-field>
 
         <input-field>
             <name>secureInvoicePortalKey</name>
             <label>Key</label>
-            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
-            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+            <helpText>You will need a seperate portal key for using secure invoice payment.</helpText>
+            <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
         </input-field>
 
         <input-field type="single-select">
