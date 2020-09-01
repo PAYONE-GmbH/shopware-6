@@ -30,7 +30,7 @@ class PayoneSecureInvoice extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Payone sicherer Rechnungskauf',
+            'name'        => 'Payone gesicherter Rechnungskauf',
             'description' => 'Abgesichert bezahlen per Rechnung.',
         ],
         'en-GB' => [
