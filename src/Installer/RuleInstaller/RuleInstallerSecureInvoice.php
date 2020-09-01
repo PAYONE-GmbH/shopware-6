@@ -146,8 +146,6 @@ class RuleInstallerSecureInvoice implements InstallerInterface
             new EqualsAnyFilter('isoCode', self::CURRENCIES)
         );
 
-        $currency = $this->currencyRepository->search($criteria, $context);
-
-        return $currency->getIds();
+        return $this->currencyRepository->search($criteria, $context)->getIds();
     }
 }

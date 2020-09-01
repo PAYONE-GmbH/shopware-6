@@ -42,6 +42,7 @@ class PayonePayment extends Plugin
         (new ConfigInstaller($this->container))->update($context);
         (new CustomFieldInstaller($this->container))->update($context);
         (new PaymentMethodInstaller($this->container))->update($context);
+        (new RuleInstallerSecureInvoice($this->container))->update($context);
     }
 
     public function activate(ActivateContext $context): void
@@ -49,6 +50,7 @@ class PayonePayment extends Plugin
         (new ConfigInstaller($this->container))->activate($context);
         (new CustomFieldInstaller($this->container))->activate($context);
         (new PaymentMethodInstaller($this->container))->activate($context);
+        (new RuleInstallerSecureInvoice($this->container))->activate($context);
     }
 
     public function deactivate(DeactivateContext $context): void
@@ -56,6 +58,7 @@ class PayonePayment extends Plugin
         (new ConfigInstaller($this->container))->deactivate($context);
         (new CustomFieldInstaller($this->container))->deactivate($context);
         (new PaymentMethodInstaller($this->container))->deactivate($context);
+        (new RuleInstallerSecureInvoice($this->container))->deactivate($context);
     }
 
     public function uninstall(UninstallContext $context): void
