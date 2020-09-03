@@ -17,6 +17,7 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\System\Currency\Rule\CurrencyRule;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -33,6 +34,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     ];
 
     private const RULE_ID                          = 'bf54529febf323ec7d27256b178207f5';
+    private const CONDITION_ID_AND                 = 'f37b1995a4714d0a88249c3e3aa52794';
     private const CONDITION_ID_COUNTRY             = '23a2158b05a93ddd4a0799074846607c';
     private const CONDITION_ID_CURRENCY            = '6099e1e292f737aa31c126a73339c92e';
     private const CONDITION_ID_DIFFERENT_ADDRESSES = 'f1a5251ffcd09b5dc0befc059dfad9c1';
@@ -85,26 +87,32 @@ class RuleInstallerSecureInvoice implements InstallerInterface
             'description' => 'Determines whether or not Payone secure invoice payment is available.',
             'conditions'  => [
                 [
-                    'id'    => self::CONDITION_ID_COUNTRY,
-                    'type'  => (new BillingCountryRule())->getName(),
-                    'value' => [
-                        'operator'   => BillingCountryRule::OPERATOR_EQ,
-                        'countryIds' => array_values($this->getCountries($context)),
-                    ],
-                ],
-                [
-                    'id'    => self::CONDITION_ID_CURRENCY,
-                    'type'  => (new CurrencyRule())->getName(),
-                    'value' => [
-                        'operator'    => CurrencyRule::OPERATOR_EQ,
-                        'currencyIds' => array_values($this->getCurrencyIds($context)),
-                    ],
-                ],
-                [
-                    'id'    => self::CONDITION_ID_DIFFERENT_ADDRESSES,
-                    'type'  => (new DifferentAddressesRule())->getName(),
-                    'value' => [
-                        'isDifferent' => false,
+                    'id'       => self::CONDITION_ID_AND,
+                    'type'     => (new AndRule())->getName(),
+                    'children' => [
+                        [
+                            'id'    => self::CONDITION_ID_COUNTRY,
+                            'type'  => (new BillingCountryRule())->getName(),
+                            'value' => [
+                                'operator'   => BillingCountryRule::OPERATOR_EQ,
+                                'countryIds' => array_values($this->getCountries($context)),
+                            ],
+                        ],
+                        [
+                            'id'    => self::CONDITION_ID_CURRENCY,
+                            'type'  => (new CurrencyRule())->getName(),
+                            'value' => [
+                                'operator'    => CurrencyRule::OPERATOR_EQ,
+                                'currencyIds' => array_values($this->getCurrencyIds($context)),
+                            ],
+                        ],
+                        [
+                            'id'    => self::CONDITION_ID_DIFFERENT_ADDRESSES,
+                            'type'  => (new DifferentAddressesRule())->getName(),
+                            'value' => [
+                                'isDifferent' => false,
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -113,9 +121,12 @@ class RuleInstallerSecureInvoice implements InstallerInterface
             ],
         ];
 
-        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data): void {
-            $this->ruleRepository->upsert([$data], $context);
-        });
+        $context->scope(
+            Context::SYSTEM_SCOPE,
+            function (Context $context) use ($data): void {
+                $this->ruleRepository->upsert([$data], $context);
+            }
+        );
     }
 
     private function removeAvailabilityRule(Context $context): void
@@ -124,9 +135,12 @@ class RuleInstallerSecureInvoice implements InstallerInterface
             'id' => self::RULE_ID,
         ];
 
-        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($deletion): void {
-            $this->ruleRepository->delete([$deletion], $context);
-        });
+        $context->scope(
+            Context::SYSTEM_SCOPE,
+            function (Context $context) use ($deletion): void {
+                $this->ruleRepository->delete([$deletion], $context);
+            }
+        );
     }
 
     private function getCountries(Context $context): array
