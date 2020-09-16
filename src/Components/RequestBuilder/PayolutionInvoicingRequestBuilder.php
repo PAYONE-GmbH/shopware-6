@@ -25,6 +25,6 @@ class PayolutionInvoicingRequestBuilder extends AbstractRequestBuilder
             return [];
         }
 
-        return $this->mapPayoneOrderLines($currency, $transaction->getOrder()->getLineItems(), $orderLines);
+        return $this->lineItemHydrator->mapPayoneOrderLinesByRequest($currency, $transaction->getOrder()->getLineItems(), $orderLines);
     }
 }

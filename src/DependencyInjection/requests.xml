@@ -375,11 +375,13 @@
 
         <!-- Secure Invoice -->
         <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoicePreAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
             <argument type="service" id="currency.repository" />
             <argument type="service" id="order_address.repository" />
         </service>
 
         <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoiceAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
             <argument type="service" id="currency.repository" />
             <argument type="service" id="order_address.repository" />
         </service>
