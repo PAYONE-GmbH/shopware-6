@@ -22,6 +22,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         array $requestLines
     ): array {
         $requestLineItems = [];
+        $counter          = 1;
 
         foreach ($requestLines as $orderLine) {
             if (!array_key_exists('id', $orderLine)) {
@@ -51,9 +52,6 @@ class LineItemHydrator implements LineItemHydratorInterface
             if (null === $taxes || null === $taxes->first()) {
                 continue;
             }
-
-            $counter = count($requestLineItems) + 1;
-
             $requestLineItems['it[' . $counter . ']'] = $this->mapItemType($lineItem->getType());
             $requestLineItems['id[' . $counter . ']'] = $lineItem->getIdentifier();
             $requestLineItems['pr[' . $counter . ']'] = (int) round(
@@ -64,6 +62,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             $requestLineItems['va[' . $counter . ']'] = (int) round(
                 ($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision()))
             );
+            ++$counter;
         }
 
         return $requestLineItems;

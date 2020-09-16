@@ -93,7 +93,13 @@ class SystemRequest
         }
 
         $transactions = $transactions->filter(static function (OrderTransactionEntity $transaction) {
-            $customFields = $transaction->getPaymentMethod()->getCustomFields();
+            $paymentMethod = $transaction->getPaymentMethod();
+
+            if ($paymentMethod === null) {
+                return false;
+            }
+
+            $customFields = $paymentMethod->getCustomFields();
 
             if (empty($customFields)) {
                 return false;
@@ -119,6 +125,10 @@ class SystemRequest
         });
         $orderTransaction = $transactions->last();
 
+        if ($orderTransaction === null) {
+            return null;
+        }
+
         $customFields = $orderTransaction->getCustomFields();
 
         if (empty($customFields[CustomFieldInstaller::TRANSACTION_DATA])) {
@@ -138,10 +148,12 @@ class SystemRequest
 
     private function getReferenceSuffix(OrderEntity $order): string
     {
-        if ($order->getTransactions()->count() <= 1) {
+        $transactions = $order->getTransactions();
+
+        if ($transactions === null || $transactions->count() <= 1) {
             return '';
         }
 
-        return sprintf('_%d', $order->getTransactions()->count());
+        return sprintf('_%d', $transactions->count());
     }
 }
