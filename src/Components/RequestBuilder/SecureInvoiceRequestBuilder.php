@@ -21,7 +21,7 @@ class SecureInvoiceRequestBuilder extends AbstractRequestBuilder
         $currency   = $transaction->getOrder()->getCurrency();
         $orderLines = $parameterBag->get('orderLines', []);
 
-        if (empty($orderLines) || empty($currency) || empty($transaction->getOrder()->getLineItems())) {
+        if ($currency === null || empty($orderLines) || empty($transaction->getOrder()->getLineItems())) {
             return [];
         }
 

@@ -21,44 +21,59 @@ abstract class AbstractRequestBuilder
 
     abstract public function supports(string $paymentMethodId): bool;
 
-    abstract public function getAdditionalRequestParameters(PaymentTransaction $transaction, Context $context, ParameterBag $parameterBag): array;
+    abstract public function getAdditionalRequestParameters(
+        PaymentTransaction $transaction,
+        Context $context,
+        ParameterBag $parameterBag
+    ): array;
 
-    protected function mapPayoneOrderLines(CurrencyEntity $currency, OrderLineItemCollection $orderLineItems, array $requestLines): array
-    {
+    protected function mapPayoneOrderLines(
+        CurrencyEntity $currency,
+        OrderLineItemCollection $orderLineItems,
+        array $requestLines
+    ): array {
         $requestLineItems = [];
-        $counter          = 1;
 
         foreach ($requestLines as $orderLine) {
-            foreach ($orderLineItems as $lineItem) {
-                try {
-                    /** @phpstan-ignore-next-line */
-                    if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector') &&
-                        CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItem->getType() &&
-                        null === $lineItem->getParentId()) {
-                        continue;
-                    }
-                } catch (Exception $exception) {
-                    // Catch class not found if SwagCustomizedProducts plugin is not installed
-                }
-
-                $taxes = $lineItem->getPrice() ? $lineItem->getPrice()->getCalculatedTaxes() : null;
-
-                if (null === $taxes || null === $taxes->first()) {
-                    continue;
-                }
-
-                if ($lineItem->getId() !== $orderLine['id']) {
-                    continue;
-                }
-
-                $requestLineItems['it[' . $counter . ']'] = $this->mapItemType($lineItem->getType());
-                $requestLineItems['id[' . $counter . ']'] = $lineItem->getIdentifier();
-                $requestLineItems['pr[' . $counter . ']'] = (int) round(($lineItem->getUnitPrice() * (10 ** $currency->getDecimalPrecision())));
-                $requestLineItems['no[' . $counter . ']'] = $orderLine['quantity'];
-                $requestLineItems['de[' . $counter . ']'] = $lineItem->getLabel();
-                $requestLineItems['va[' . $counter . ']'] = (int) round(($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision())));
-                ++$counter;
+            if (!array_key_exists('id', $orderLine)) {
+                continue;
             }
+
+            $lineItem = $orderLineItems->get($orderLine['id']);
+
+            if ($lineItem === null) {
+                continue;
+            }
+
+            try {
+                /** @phpstan-ignore-next-line */
+                if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector') &&
+                    CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItem->getType(
+                    ) &&
+                    null === $lineItem->getParentId()) {
+                    continue;
+                }
+            } catch (Exception $exception) {
+                // Catch class not found if SwagCustomizedProducts plugin is not installed
+            }
+
+            $taxes = $lineItem->getPrice() ? $lineItem->getPrice()->getCalculatedTaxes() : null;
+
+            if (null === $taxes || null === $taxes->first()) {
+                continue;
+            }
+
+            $counter                                  = count($requestLineItems) + 1;
+            $requestLineItems['it[' . $counter . ']'] = $this->mapItemType($lineItem->getType());
+            $requestLineItems['id[' . $counter . ']'] = $lineItem->getIdentifier();
+            $requestLineItems['pr[' . $counter . ']'] = (int) round(
+                ($lineItem->getUnitPrice() * (10 ** $currency->getDecimalPrecision()))
+            );
+            $requestLineItems['no[' . $counter . ']'] = $orderLine['quantity'];
+            $requestLineItems['de[' . $counter . ']'] = $lineItem->getLabel();
+            $requestLineItems['va[' . $counter . ']'] = (int) round(
+                ($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision()))
+            );
         }
 
         return $requestLineItems;
