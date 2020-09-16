@@ -1,0 +1,18 @@
+<div class="form-row">
+    <div class="col-12">
+        <label class="form-label" for="payolutionBirthday">
+            {{ "PayonePayment.secureInvoice.birthday.label" | trans }}{{ "general.required" | trans }}
+        </label>
+    </div>
+
+    <div class="form-group {% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
+        <input
+            type="date"
+            id="secureInvoiceBirthday"
+            name="secureInvoiceBirthday"
+            class="form-control{% if formViolations.getViolations('/secureInvoiceBirthday') is not empty %} is-invalid{% endif %}"
+            form="confirmOrderForm"
+            required="required"
+        />
+    </div>
+</div>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\SecureInvoice;
 
+use PayonePayment\Components\RequestBuilder\SecureInvoiceRequestBuilder;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
 use PayonePayment\Payone\Request\Customer\CustomerRequest;
@@ -17,6 +18,9 @@ abstract class AbstractSecureInvoiceAuthorizeRequestFactory extends AbstractRequ
     /** @var AbstractSecureInvoiceAuthorizeRequest */
     private $secureInvoiceRequest;
 
+    /** @var SecureInvoiceRequestBuilder */
+    private $secureInvoiceRequestBuilder;
+
     /** @var CustomerRequest */
     private $customerRequest;
 
@@ -24,13 +28,15 @@ abstract class AbstractSecureInvoiceAuthorizeRequestFactory extends AbstractRequ
     private $systemRequest;
 
     public function __construct(
-        AbstractSecureInvoiceAuthorizeRequest $secureInvoiceAuthorizeRequest,
+        AbstractSecureInvoiceAuthorizeRequest $secureInvoiceRequest,
+        SecureInvoiceRequestBuilder $secureInvoiceRequestBuilder,
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
-        $this->secureInvoiceRequest = $secureInvoiceAuthorizeRequest;
-        $this->customerRequest      = $customerRequest;
-        $this->systemRequest        = $systemRequest;
+        $this->secureInvoiceRequest        = $secureInvoiceRequest;
+        $this->secureInvoiceRequestBuilder = $secureInvoiceRequestBuilder;
+        $this->customerRequest             = $customerRequest;
+        $this->systemRequest               = $systemRequest;
     }
 
     public function getRequestParameters(
@@ -40,7 +46,7 @@ abstract class AbstractSecureInvoiceAuthorizeRequestFactory extends AbstractRequ
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $transaction->getOrder()->getSalesChannelId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYOLUTION_INVOICING,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_SECURE_INVOICE,
             $context->getContext()
         );
 
@@ -48,13 +54,17 @@ abstract class AbstractSecureInvoiceAuthorizeRequestFactory extends AbstractRequ
             $context
         );
 
-        $referenceNumber = $this->systemRequest->getReferenceNumber($transaction, true);
-
         $this->requests[] = $this->secureInvoiceRequest->getRequestParameters(
             $transaction,
             $dataBag,
             $context,
-            $referenceNumber
+            $this->systemRequest->getReferenceNumber($transaction, true)
+        );
+
+        $this->requests[] = $this->secureInvoiceRequestBuilder->getAdditionalRequestParameters(
+            $transaction,
+            $context->getContext(),
+            $dataBag
         );
 
         return $this->createRequest();

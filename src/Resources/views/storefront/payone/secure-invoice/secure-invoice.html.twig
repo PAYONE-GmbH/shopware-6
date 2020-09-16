@@ -1,0 +1,18 @@
+{% if context.customer.activeBillingAddress and context.customer.activeBillingAddress.company is empty %}
+    <div class="payone-payment secure-invoice">
+        <input type="hidden" id="payoneCsrfTokenSecureInvoiceValidation"
+               value="{{ sw_csrf('frontend.payone.secureInvoice.validate', {'mode': 'token'}) }}">
+
+        {% block page_checkout_confirm_payone_card_title_secure_invoice %}
+            <div class="card-title">
+                {{ "PayonePayment.secureInvoice.cardTitle" | trans }}
+            </div>
+        {% endblock %}
+
+        {% block page_checkout_confirm_payone_card_content_secure_invoice %}
+            {% sw_include '@Storefront/storefront/payone/secure-invoice/birthDay.html.twig' with {
+                style: 'wide'
+            } %}
+        {% endblock %}
+    </div>
+{% endif %}
