@@ -71,6 +71,7 @@ class LineItemHydrator implements LineItemHydratorInterface
     public function mapOrderLines(CurrencyEntity $currency, OrderLineItemCollection $lineItemCollection): array
     {
         $requestLineItems = [];
+        $counter          = 1;
 
         /** @var OrderLineItemEntity $lineItem */
         foreach ($lineItemCollection as $lineItem) {
@@ -92,7 +93,6 @@ class LineItemHydrator implements LineItemHydratorInterface
                 continue;
             }
 
-            $counter                                  = count($requestLineItems) + 1;
             $requestLineItems['it[' . $counter . ']'] = $this->mapItemType($lineItem->getType());
             $requestLineItems['id[' . $counter . ']'] = $lineItem->getIdentifier();
             $requestLineItems['pr[' . $counter . ']'] = (int) round(
@@ -103,6 +103,8 @@ class LineItemHydrator implements LineItemHydratorInterface
             $requestLineItems['va[' . $counter . ']'] = (int) round(
                 ($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision()))
             );
+
+            ++$counter;
         }
 
         return $requestLineItems;

@@ -67,10 +67,6 @@ class CaptureRequest
             $parameters['clearingtype'] = $customFields[CustomFieldInstaller::CLEARING_TYPE];
         }
 
-        if (!empty($customFields[CustomFieldInstaller::FINANCING_TYPE])) {
-            $parameters['financingtype'] = $customFields[CustomFieldInstaller::FINANCING_TYPE];
-        }
-
         return $parameters;
     }
 
