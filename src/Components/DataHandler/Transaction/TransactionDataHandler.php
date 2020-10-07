@@ -8,6 +8,7 @@ use DateTime;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
@@ -17,11 +18,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class TransactionDataHandler implements TransactionDataHandlerInterface
 {
+    /** @var LoggerInterface */
+    private $logger;
+
     /** @var EntityRepositoryInterface */
     private $transactionRepository;
 
-    public function __construct(EntityRepositoryInterface $transactionRepository)
+    public function __construct(LoggerInterface $logger, EntityRepositoryInterface $transactionRepository)
     {
+        $this->logger                = $logger;
         $this->transactionRepository = $transactionRepository;
     }
 
@@ -130,9 +135,15 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     private function shouldAllowRefund(PaymentTransaction $paymentTransaction, array $transactionData): bool
     {
+        $this->logger->debug('Checking if payment is refundable.', [
+            'incomingTransactionData' => $transactionData,
+            'transactionCustomFields' => $paymentTransaction->getCustomFields(),
+        ]);
+
         $handlerClass = $this->getHandlerIdentifier($paymentTransaction);
 
         if (!$handlerClass) {
+            $this->logger->error('Found no handler for transaction.');
             return false;
         }
 
