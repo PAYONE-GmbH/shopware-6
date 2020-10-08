@@ -29,9 +29,9 @@ abstract class AbstractTrustlyAuthorizeRequestFactory extends AbstractRequestFac
         CustomerRequest $customerRequest,
         SystemRequest $systemRequest
     ) {
-        $this->trustlyRequest       = $trustlyRequest;
-        $this->customerRequest      = $customerRequest;
-        $this->systemRequest        = $systemRequest;
+        $this->trustlyRequest  = $trustlyRequest;
+        $this->customerRequest = $customerRequest;
+        $this->systemRequest   = $systemRequest;
     }
 
     public function getRequestParameters(
