@@ -122,6 +122,10 @@
     "ideal": {
       "cardTitle": "iDeal Online Bank",
       "bankGroupFieldLabel": "Banking group of you bank"
+    },
+    "trustly": {
+      "cardTitle": "Trustly",
+      "iban": "IBAN"
     }
   },
   "error": {

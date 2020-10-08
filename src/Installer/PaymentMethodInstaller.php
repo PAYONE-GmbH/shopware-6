@@ -18,6 +18,7 @@ use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use PayonePayment\PaymentMethod\PayonePrepayment;
 use PayonePayment\PaymentMethod\PayoneSofortBanking;
+use PayonePayment\PaymentMethod\PayoneTrustly;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
@@ -46,6 +47,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneIDeal::class,
         PayonePaydirekt::class,
         PayonePrepayment::class,
+        PayoneTrustly::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [
@@ -60,6 +62,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneIDeal::class,
         PayonePaydirekt::class,
         PayonePrepayment::class,
+        PayoneTrustly::class,
     ];
 
     /** @var PluginIdProvider */

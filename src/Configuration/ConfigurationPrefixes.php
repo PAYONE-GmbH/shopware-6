@@ -20,6 +20,7 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_IDEAL                  = 'iDeal';
     public const CONFIGURATION_PREFIX_PAYDIREKT              = 'paydirekt';
     public const CONFIGURATION_PREFIX_PREPAYMENT             = 'prepayment';
+    public const CONFIGURATION_PREFIX_TRUSTLY                = 'trustly';
 
     public const CONFIGURATION_PREFIXES = [
         Handler\PayoneCreditCardPaymentHandler::class            => self::CONFIGURATION_PREFIX_CREDITCARD,
@@ -34,5 +35,6 @@ interface ConfigurationPrefixes
         Handler\PayoneIDealPaymentHandler::class                 => self::CONFIGURATION_PREFIX_IDEAL,
         Handler\PayonePaydirektPaymentHandler::class             => self::CONFIGURATION_PREFIX_PAYDIREKT,
         Handler\PayonePrepaymentPaymentHandler::class            => self::CONFIGURATION_PREFIX_PREPAYMENT,
+        Handler\PayoneTrustlyPaymentHandler::class               => self::CONFIGURATION_PREFIX_TRUSTLY,
     ];
 }
