@@ -23,7 +23,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         array $requestLines
     ): array {
         $requestLineItems = [];
-        $counter          = 1;
+        $counter          = 0;
 
         foreach ($requestLines as $orderLine) {
             if (!array_key_exists('id', $orderLine)) {
@@ -64,7 +64,7 @@ class LineItemHydrator implements LineItemHydratorInterface
     public function mapOrderLines(CurrencyEntity $currency, OrderLineItemCollection $lineItemCollection): array
     {
         $requestLineItems = [];
-        $counter          = 1;
+        $counter          = 0;
 
         /** @var OrderLineItemEntity $lineItem */
         foreach ($lineItemCollection as $lineItem) {
