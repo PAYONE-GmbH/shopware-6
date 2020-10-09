@@ -6,6 +6,7 @@ namespace PayonePayment\Components\Hydrator\LineItemHydrator;
 
 use Exception;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
@@ -35,16 +36,8 @@ class LineItemHydrator implements LineItemHydratorInterface
                 continue;
             }
 
-            try {
-                /** @phpstan-ignore-next-line */
-                if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector') &&
-                    CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItem->getType(
-                    ) &&
-                    null === $lineItem->getParentId()) {
-                    continue;
-                }
-            } catch (Exception $exception) {
-                // Catch class not found if SwagCustomizedProducts plugin is not installed
+            if ($this->isCustomizedProduct($lineItem)) {
+                continue;
             }
 
             $taxes = $lineItem->getPrice() ? $lineItem->getPrice()->getCalculatedTaxes() : null;
@@ -52,17 +45,17 @@ class LineItemHydrator implements LineItemHydratorInterface
             if (null === $taxes || null === $taxes->first()) {
                 continue;
             }
-            $requestLineItems['it[' . $counter . ']'] = $this->mapItemType($lineItem->getType());
-            $requestLineItems['id[' . $counter . ']'] = $lineItem->getIdentifier();
-            $requestLineItems['pr[' . $counter . ']'] = (int) round(
-                ($lineItem->getUnitPrice() * (10 ** $currency->getDecimalPrecision()))
+
+            $requestLineItems = array_merge(
+                $requestLineItems,
+                $this->getLineItemRequest(
+                    ++$counter,
+                    $lineItem,
+                    $currency,
+                    $taxes,
+                    $orderLine['quantity']
+                )
             );
-            $requestLineItems['no[' . $counter . ']'] = $orderLine['quantity'];
-            $requestLineItems['de[' . $counter . ']'] = $lineItem->getLabel();
-            $requestLineItems['va[' . $counter . ']'] = (int) round(
-                ($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision()))
-            );
-            ++$counter;
         }
 
         return $requestLineItems;
@@ -75,16 +68,8 @@ class LineItemHydrator implements LineItemHydratorInterface
 
         /** @var OrderLineItemEntity $lineItem */
         foreach ($lineItemCollection as $lineItem) {
-            try {
-                /** @phpstan-ignore-next-line */
-                if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector') &&
-                    CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItem->getType(
-                    ) &&
-                    null === $lineItem->getParentId()) {
-                    continue;
-                }
-            } catch (Exception $exception) {
-                // Catch class not found if SwagCustomizedProducts plugin is not installed
+            if ($this->isCustomizedProduct($lineItem)) {
+                continue;
             }
 
             $taxes = $lineItem->getPrice() ? $lineItem->getPrice()->getCalculatedTaxes() : null;
@@ -93,18 +78,16 @@ class LineItemHydrator implements LineItemHydratorInterface
                 continue;
             }
 
-            $requestLineItems['it[' . $counter . ']'] = $this->mapItemType($lineItem->getType());
-            $requestLineItems['id[' . $counter . ']'] = $lineItem->getIdentifier();
-            $requestLineItems['pr[' . $counter . ']'] = (int) round(
-                ($lineItem->getUnitPrice() * (10 ** $currency->getDecimalPrecision()))
+            $requestLineItems = array_merge(
+                $requestLineItems,
+                $this->getLineItemRequest(
+                    ++$counter,
+                    $lineItem,
+                    $currency,
+                    $taxes,
+                    $lineItem->getQuantity()
+                )
             );
-            $requestLineItems['no[' . $counter . ']'] = $lineItem->getQuantity();
-            $requestLineItems['de[' . $counter . ']'] = $lineItem->getLabel();
-            $requestLineItems['va[' . $counter . ']'] = (int) round(
-                ($taxes->first()->getTaxRate() * (10 ** $currency->getDecimalPrecision()))
-            );
-
-            ++$counter;
         }
 
         return $requestLineItems;
@@ -121,5 +104,38 @@ class LineItemHydrator implements LineItemHydratorInterface
         }
 
         return self::TYPE_GOODS;
+    }
+
+    private function isCustomizedProduct(OrderLineItemEntity $lineItemEntity): bool
+    {
+        try {
+            /** @phpstan-ignore-next-line */
+            if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector') &&
+                CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItemEntity->getType(
+                ) &&
+                null === $lineItemEntity->getParentId()) {
+                return true;
+            }
+        } catch (Exception $exception) {
+            // Catch class not found if SwagCustomizedProducts plugin is not installed
+        }
+
+        return false;
+    }
+
+    private function getLineItemRequest(int $index, OrderLineItemEntity $lineItemEntity, CurrencyEntity $currencyEntity, CalculatedTaxCollection $taxCollection, int $quantity): array
+    {
+        $productNumber = is_array($lineItemEntity->getPayload()) && array_key_exists('productNumber', $lineItemEntity->getPayload())
+            ? $lineItemEntity->getPayload()['productNumber']
+            : $lineItemEntity->getIdentifier();
+
+        return [
+            'it[' . $index . ']' => $this->mapItemType($lineItemEntity->getType()),
+            'id[' . $index . ']' => $productNumber,
+            'pr[' . $index . ']' => (int) round($lineItemEntity->getUnitPrice() * (10 ** $currencyEntity->getDecimalPrecision())),
+            'no[' . $index . ']' => $quantity,
+            'de[' . $index . ']' => $lineItemEntity->getLabel(),
+            'va[' . $index . ']' => (int) round($taxCollection->first()->getTaxRate() * (10 ** $currencyEntity->getDecimalPrecision())),
+        ];
     }
 }
