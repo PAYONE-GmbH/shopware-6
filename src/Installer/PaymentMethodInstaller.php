@@ -17,12 +17,14 @@ use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use PayonePayment\PaymentMethod\PayonePrepayment;
+use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\PaymentMethod\PayoneSofortBanking;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
@@ -46,6 +48,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneIDeal::class,
         PayonePaydirekt::class,
         PayonePrepayment::class,
+        PayoneSecureInvoice::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [
@@ -214,7 +217,31 @@ class PaymentMethodInstaller implements InstallerInterface
             'active' => false,
         ];
 
+        $paymentMethodExists = $this->paymentMethodExists($data, $context);
+
+        if ($paymentMethodExists === false) {
+            return;
+        }
+
         $this->paymentMethodRepository->update([$data], $context);
+    }
+
+    private function paymentMethodExists(array $data, Context $context): bool
+    {
+        if (empty($data['id'])) {
+            return false;
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $data['id']));
+
+        $result = $this->paymentMethodRepository->search($criteria, $context);
+
+        if ($result->getTotal() === 0) {
+            return false;
+        }
+
+        return true;
     }
 
     private function fixMissingCustomFieldsForTranslations(PaymentMethodInterface $paymentMethod, PaymentMethodEntity $paymentMethodEntity): void
