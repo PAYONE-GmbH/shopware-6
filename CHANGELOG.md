@@ -58,3 +58,9 @@ Maintenance
 * Added compatibility for new status transitions in Shopware 6.2
 * Shopware 6.2.x support
 * We had to drop support for Shopware <6.2.0
+
+# 2.1.0
+
+New Features
+
+* New payment method: PAYONE safe invoice
