@@ -70,7 +70,8 @@
                 "payolutionDebit": "Die API-Zugangsdaten für Paysafe Pay Later Lastschrift sind nicht korrekt.",
                 "sofort": "Die API-Zugangsdaten für SOFORT sind nicht korrekt.",
                 "eps": "Die API-Zugangsdaten für EPS sind nicht korrekt.",
-                "iDeal": "Die API-Zugangsdaten für iDEAL sind nicht korrekt."
+                "iDeal": "Die API-Zugangsdaten für iDEAL sind nicht korrekt.",
+                "secureInvoice": "Die API-Zugangsdaten für den gesicherten Rechnungskauf sind nicht korrekt."
             }
         },
         "supportModal": {

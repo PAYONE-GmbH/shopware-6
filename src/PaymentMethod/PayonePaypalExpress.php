@@ -6,24 +6,27 @@ namespace PayonePayment\PaymentMethod;
 
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 
-class PayonePaypalExpress implements PaymentMethodInterface
+class PayonePaypalExpress extends AbstractPaymentMethod
 {
     public const UUID = '5ddf648859a84396a98c97a1a92c107f';
 
     /** @var string */
-    private $name = 'Payone Paypal Express';
+    protected $id = self::UUID;
 
     /** @var string */
-    private $description = 'Pay easily and secure with PayPal Express.';
+    protected $name = 'Payone Paypal Express';
 
     /** @var string */
-    private $paymentHandler = PayonePaypalExpressPaymentHandler::class;
+    protected $description = 'Pay easily and secure with PayPal Express.';
+
+    /** @var string */
+    protected $paymentHandler = PayonePaypalExpressPaymentHandler::class;
 
     /** @var null|string */
-    private $template;
+    protected $template;
 
     /** @var array */
-    private $translations = [
+    protected $translations = [
         'de-DE' => [
             'name'        => 'Payone PayPal Express',
             'description' => 'Zahlen Sie sicher und bequem mit PayPal Express.',
@@ -35,40 +38,5 @@ class PayonePaypalExpress implements PaymentMethodInterface
     ];
 
     /** @var int */
-    private $position = 103;
-
-    public function getId(): string
-    {
-        return self::UUID;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getPaymentHandler(): string
-    {
-        return $this->paymentHandler;
-    }
-
-    public function getTemplate(): ?string
-    {
-        return $this->template;
-    }
-
-    public function getTranslations(): array
-    {
-        return $this->translations;
-    }
-
-    public function getPosition(): int
-    {
-        return $this->position;
-    }
+    protected $position = 103;
 }
