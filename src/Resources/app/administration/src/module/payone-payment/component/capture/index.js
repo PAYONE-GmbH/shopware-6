@@ -51,6 +51,18 @@ Component.register('payone-capture-button', {
 
             return (this.remainingAmount > 0 && this.capturedAmount > 0) || this.transaction.customFields.payone_allow_capture;
         },
+
+        isItemSelected() {
+            let returnValue = false;
+
+            this.selection.forEach((selection) => {
+                if (selection.selected) {
+                    returnValue = true;
+                }
+            });
+
+            return returnValue;
+        },
     },
 
     data() {
