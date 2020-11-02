@@ -18,6 +18,10 @@ class BirthdayValidator extends AbstractComparisonValidator
      */
     protected function compareValues($value1, $value2)
     {
+        if (empty($value1)) {
+            return false;
+        }
+
         $birthday = DateTime::createFromFormat('Y-m-d', $value1);
 
         return $birthday < $value2;

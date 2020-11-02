@@ -8,50 +8,80 @@
         </service>
 
         <service id="PayonePayment\Components\RequestBuilder\CreditCardRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
             <tag name="payone_payment.request_handler" />
         </service>
 
         <service id="PayonePayment\Components\RequestBuilder\DebitRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
             <tag name="payone_payment.request_handler" />
         </service>
 
         <service id="PayonePayment\Components\RequestBuilder\PayolutionDebitRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
             <tag name="payone_payment.request_handler" />
         </service>
 
         <service id="PayonePayment\Components\RequestBuilder\PayolutionInstallmentRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
             <tag name="payone_payment.request_handler" />
         </service>
 
         <service id="PayonePayment\Components\RequestBuilder\PayolutionInvoicingRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
             <tag name="payone_payment.request_handler" />
         </service>
 
         <service id="PayonePayment\Components\RequestBuilder\PaypalExpressRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
             <tag name="payone_payment.request_handler" />
         </service>
 
         <service id="PayonePayment\Components\RequestBuilder\PaypalRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
             <tag name="payone_payment.request_handler" />
         </service>
 
         <service id="PayonePayment\Components\RequestBuilder\SofortBankingRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
+            <tag name="payone_payment.request_handler" />
+        </service>
+
+        <service id="PayonePayment\Components\RequestBuilder\SecureInvoiceRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
             <tag name="payone_payment.request_handler" />
         </service>
 
         <service id="PayonePayment\Components\RequestBuilder\PrepaymentRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
             <tag name="payone_payment.request_handler" />
         </service>
 
         <service id="PayonePayment\Components\RequestBuilder\PaydirektRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
             <tag name="payone_payment.request_handler" />
         </service>
 
         <service id="PayonePayment\Components\RequestBuilder\IDealRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
             <tag name="payone_payment.request_handler" />
         </service>
 
         <service id="PayonePayment\Components\RequestBuilder\EpsRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
             <tag name="payone_payment.request_handler" />
         </service>
     </services>

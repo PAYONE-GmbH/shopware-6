@@ -395,5 +395,32 @@
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
+
+        <!-- Secure Invoice -->
+        <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoicePreAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+            <argument type="service" id="currency.repository" />
+            <argument type="service" id="order_address.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoiceAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+            <argument type="service" id="currency.repository" />
+            <argument type="service" id="order_address.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoicePreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoicePreAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Components\RequestBuilder\SecureInvoiceRequestBuilder" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoiceAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoiceAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Components\RequestBuilder\SecureInvoiceRequestBuilder" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
     </services>
 </container>

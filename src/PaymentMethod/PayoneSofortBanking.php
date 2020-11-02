@@ -9,24 +9,27 @@ use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 /**
  * TODO: only valid in DE, AT, CH, NL. Use ruleEngine to enforce this during the checkout
  */
-class PayoneSofortBanking implements PaymentMethodInterface
+class PayoneSofortBanking extends AbstractPaymentMethod
 {
     public const UUID = '9022c4733d14411e84a78707088487aa';
 
     /** @var string */
-    private $name = 'Payone Sofort';
+    protected $id = self::UUID;
 
     /** @var string */
-    private $description = 'Wire the amount instantly with your online banking credentials.';
+    protected $name = 'Payone Sofort';
 
     /** @var string */
-    private $paymentHandler = PayoneSofortBankingPaymentHandler::class;
+    protected $description = 'Wire the amount instantly with your online banking credentials.';
+
+    /** @var string */
+    protected $paymentHandler = PayoneSofortBankingPaymentHandler::class;
 
     /** @var null|string */
-    private $template;
+    protected $template;
 
     /** @var array */
-    private $translations = [
+    protected $translations = [
         'de-DE' => [
             'name'        => 'Payone Sofort',
             'description' => 'Überweisen Sie schnell und sicher mit Ihren Online Banking Zugangsdaten.',
@@ -38,40 +41,5 @@ class PayoneSofortBanking implements PaymentMethodInterface
     ];
 
     /** @var int */
-    private $position = 106;
-
-    public function getId(): string
-    {
-        return self::UUID;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getPaymentHandler(): string
-    {
-        return $this->paymentHandler;
-    }
-
-    public function getTemplate(): ?string
-    {
-        return $this->template;
-    }
-
-    public function getTranslations(): array
-    {
-        return $this->translations;
-    }
-
-    public function getPosition(): int
-    {
-        return $this->position;
-    }
+    protected $position = 106;
 }
