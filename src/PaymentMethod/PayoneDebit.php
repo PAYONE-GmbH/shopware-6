@@ -6,24 +6,27 @@ namespace PayonePayment\PaymentMethod;
 
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 
-class PayoneDebit implements PaymentMethodInterface
+class PayoneDebit extends AbstractPaymentMethod
 {
     public const UUID = '1b017bef157b4222b734659361d996fd';
 
     /** @var string */
-    private $name = 'Payone SEPA Lastschrift';
+    protected $id = self::UUID;
 
     /** @var string */
-    private $description = 'We\'ll automatically debit the amount from your bank account.';
+    protected $name = 'Payone SEPA Lastschrift';
 
     /** @var string */
-    private $paymentHandler = PayoneDebitPaymentHandler::class;
+    protected $description = 'We\'ll automatically debit the amount from your bank account.';
+
+    /** @var string */
+    protected $paymentHandler = PayoneDebitPaymentHandler::class;
 
     /** @var null|string */
-    private $template = '@Storefront/storefront/payone/debit/debit-form.html.twig';
+    protected $template = '@Storefront/storefront/payone/debit/debit-form.html.twig';
 
     /** @var array */
-    private $translations = [
+    protected $translations = [
         'de-DE' => [
             'name'        => 'Payone SEPA Lastschrift',
             'description' => 'Wir ziehen den Betrag bequem und automatisch von Ihrem Bankkonto ein.',
@@ -35,40 +38,5 @@ class PayoneDebit implements PaymentMethodInterface
     ];
 
     /** @var int */
-    private $position = 101;
-
-    public function getId(): string
-    {
-        return self::UUID;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getPaymentHandler(): string
-    {
-        return $this->paymentHandler;
-    }
-
-    public function getTemplate(): ?string
-    {
-        return $this->template;
-    }
-
-    public function getTranslations(): array
-    {
-        return $this->translations;
-    }
-
-    public function getPosition(): int
-    {
-        return $this->position;
-    }
+    protected $position = 101;
 }

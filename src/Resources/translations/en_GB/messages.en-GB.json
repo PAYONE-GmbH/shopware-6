@@ -1,135 +1,141 @@
 {
-  "PayonePayment": {
-    "errorMessages": {
-      "genericError": "An error has occurred. Please try another payment method."
+    "PayonePayment": {
+        "errorMessages": {
+            "genericError": "An error has occurred. Please try another payment method."
+        },
+        "creditCard": {
+            "newCard": "Use a new credit card",
+            "cardNumber": "Card number",
+            "securityCode": "Security code",
+            "expiryDate": "Expiry date",
+            "savedCards": "Saved card",
+            "iframeError": "Please verify the fields and make sure no field is empty."
+        },
+        "debit": {
+            "accountOwner": "Account owner",
+            "iban": "IBAN",
+            "bic": "BIC"
+        },
+        "cardPage": {
+            "menuName": "Credit Cards",
+            "success": "The saved credit card was removed successfully.",
+            "error": "An error has occurred while removing the saved credit card.",
+            "pageTitle": "Saved Cards",
+            "pageSubTitle": "Here you can manage your saved credit cards.",
+            "tableHeader": "Card Numbers",
+            "deleteButton": "Delete Card",
+            "noEntries": "No cards saved.",
+            "expired": "expired",
+            "expiresAt": "expires on %expiresAt%"
+        },
+        "mandatePage": {
+            "menuName": "Direct Debit Mandates",
+            "pageTitle": "Direct Debit Mandates",
+            "pageSubTitle": "Here you can manage your saved direct debit mandates.",
+            "success": "The saved Direct Debit Mandate was removed successfully.",
+            "error": "An error has occurred.",
+            "tableIdentification": "Nummer",
+            "tableSignatureDate": "Date",
+            "downloadButton": "Download Mandate",
+            "noEntries": "No mandates saved."
+        },
+        "checkoutConfirmPage": {
+            "defaultCardTitle": "Payment Information"
+        },
+        "checkoutFinishPage": {
+            "mandateIdentification": "Direct Debit Mandate"
+        },
+        "mandateModal": {
+            "question": "I accept the direct debit mandate",
+            "cancel": "Cancel",
+            "confirm": "Submit"
+        },
+        "paypalExpress": {
+            "buttonTitle": "PayPal Express",
+            "buttonImage": "checkout-logo-medium-en.png",
+            "buttonImage2x": "checkout-logo-medium-en-2x.png"
+        },
+        "payolution": {
+            "cardTitleInvoicing": "Paysafe Pay Later Invoice",
+            "cardTitleInstallment": "Paysafe Pay Later Installment",
+            "cardTitleDebit": "Paysafe Pay Later Debit",
+            "birthday": {
+                "label": "Date of birth"
+            },
+            "accountHolder": {
+                "label": "Account Holder"
+            },
+            "iban": {
+                "label": "IBAN"
+            },
+            "bic": {
+                "label": "BIC"
+            },
+            "installment": {
+                "step1": "1. Check Installment availability",
+                "step2": "2. Installment selection",
+                "step3": "3. Overview and Account Information",
+                "checkAvailabilityButton": "Check Installment availability",
+                "downloadButton": "Download Installment Draft",
+                "select": "%amount% per month - %duration% installments",
+                "selectInstallmentsLabel": "Please select number of installments",
+                "info": "%index%. installment: %amount% (due %date%)",
+                "numberOfInstallments": "No. of installments:",
+                "financingAmount": "Financingamount:",
+                "total": "Total:",
+                "interestRate": "Nominal interest:",
+                "effectiveInterestRate": "Effective interest:",
+                "monthlyInstallment": "Monthly rate:",
+                "accountOwner": "Account owner",
+                "iban": "IBAN",
+                "bic": "BIC"
+            },
+            "document": {
+                "clearingReference": "Reference: %reference%",
+                "invoicingDescription": "Please transfer the outstanding amount to the following bank account:",
+                "iban": "IBAN: %iban%",
+                "bic": "BIC: %bic%"
+            },
+            "consentCheckbox": {
+                "introduction": "With the transmission of the data necessary for the completion of the invoice purchase, an identity check and credit check to payolution GmbH, Am Euro Platz 2, 1120 Wien I agree.",
+                "textWithLink": "I can revoke my <a href=\"%link%\" data-url=\"%link%\" data-modal-class=\"payolution\" data-toggle=\"modal\" title=\"Einwilligung\">consent</a>  at any time with effect for the future."
+            },
+            "mandateCheckbox": {
+                "textWithLink": "I hereby issue the <a href=\"%link%\" target=\"_blank\" title=\"Paysafe Pay Later SEPA mandate\">SEPA direct debit mandate</a>."
+            }
+        },
+        "prepayment": {
+            "document": {
+                "clearingReference": "Reference: %reference%",
+                "invoicingDescription": "Please transfer the outstanding amount to the following bank account:",
+                "iban": "IBAN: %iban%",
+                "bic": "BIC: %bic%",
+                "reference": "Reference: %reference%",
+                "holder": "Account Holder: %holder%",
+                "accountNotice": "In order for us to quickly allocate your payment, please transfer the outstanding amount exclusively to the account above."
+            }
+        },
+        "eps": {
+            "cardTitle": "EPS Online Bank",
+            "bankGroupFieldLabel": "Banking group of you bank"
+        },
+        "ideal": {
+            "cardTitle": "iDeal Online Bank",
+            "bankGroupFieldLabel": "Banking group of you bank"
+        },
+        "trustly": {
+            "cardTitle": "Trustly",
+            "iban": "IBAN"
+        },
+        "secureInvoice": {
+            "cardTitle": "Payone secure invoice",
+            "birthday": {
+                "label": "Date of birth"
+            }
+        }
     },
-    "creditCard": {
-      "newCard": "Use a new credit card",
-      "cardNumber": "Card number",
-      "securityCode": "Security code",
-      "expiryDate": "Expiry date",
-      "savedCards": "Saved card",
-      "iframeError": "Please verify the fields and make sure no field is empty."
-    },
-    "debit": {
-      "accountOwner": "Account owner",
-      "iban": "IBAN",
-      "bic": "BIC"
-    },
-    "cardPage": {
-      "menuName": "Credit Cards",
-      "success": "The saved credit card was removed successfully.",
-      "error": "An error has occurred while removing the saved credit card.",
-      "pageTitle": "Saved Cards",
-      "pageSubTitle": "Here you can manage your saved credit cards.",
-      "tableHeader": "Card Numbers",
-      "deleteButton": "Delete Card",
-      "noEntries": "No cards saved.",
-      "expired": "expired",
-      "expiresAt": "expires on %expiresAt%"
-    },
-    "mandatePage": {
-      "menuName": "Direct Debit Mandates",
-      "pageTitle": "Direct Debit Mandates",
-      "pageSubTitle": "Here you can manage your saved direct debit mandates.",
-      "success": "The saved Direct Debit Mandate was removed successfully.",
-      "error": "An error has occurred.",
-      "tableIdentification": "Nummer",
-      "tableSignatureDate": "Date",
-      "downloadButton": "Download Mandate",
-      "noEntries": "No mandates saved."
-    },
-    "checkoutConfirmPage": {
-      "defaultCardTitle": "Payment Information"
-    },
-    "checkoutFinishPage": {
-      "mandateIdentification": "Direct Debit Mandate"
-    },
-    "mandateModal": {
-      "question": "I accept the direct debit mandate",
-      "cancel": "Cancel",
-      "confirm": "Submit"
-    },
-    "paypalExpress": {
-      "buttonTitle": "PayPal Express",
-      "buttonImage": "checkout-logo-medium-en.png",
-      "buttonImage2x": "checkout-logo-medium-en-2x.png"
-    },
-    "payolution": {
-      "cardTitleInvoicing": "Paysafe Pay Later Invoice",
-      "cardTitleInstallment": "Paysafe Pay Later Installment",
-      "cardTitleDebit": "Paysafe Pay Later Debit",
-      "birthday": {
-        "label": "Date of birth"
-      },
-      "accountHolder": {
-        "label": "Account Holder"
-      },
-      "iban": {
-        "label": "IBAN"
-      },
-      "bic": {
-        "label": "BIC"
-      },
-      "installment": {
-        "step1": "1. Check Installment availability",
-        "step2": "2. Installment selection",
-        "step3": "3. Overview and Account Information",
-        "checkAvailabilityButton": "Check Installment availability",
-        "downloadButton": "Download Installment Draft",
-        "select": "%amount% per month - %duration% installments",
-        "selectInstallmentsLabel": "Please select number of installments",
-        "info": "%index%. installment: %amount% (due %date%)",
-        "numberOfInstallments": "No. of installments:",
-        "financingAmount": "Financingamount:",
-        "total": "Total:",
-        "interestRate": "Nominal interest:",
-        "effectiveInterestRate": "Effective interest:",
-        "monthlyInstallment": "Monthly rate:",
-        "accountOwner": "Account owner",
-        "iban": "IBAN",
-        "bic": "BIC"
-      },
-      "document": {
-        "clearingReference": "Reference: %reference%",
-        "invoicingDescription": "Please transfer the outstanding amount to the following bank account:",
-        "iban": "IBAN: %iban%",
-        "bic": "BIC: %bic%"
-      },
-      "consentCheckbox": {
-        "introduction": "With the transmission of the data necessary for the completion of the invoice purchase, an identity check and credit check to payolution GmbH, Am Euro Platz 2, 1120 Wien I agree.",
-        "textWithLink": "I can revoke my <a href=\"%link%\" data-url=\"%link%\" data-modal-class=\"payolution\" data-toggle=\"modal\" title=\"Einwilligung\">consent</a>  at any time with effect for the future."
-      },
-      "mandateCheckbox": {
-        "textWithLink": "I hereby issue the <a href=\"%link%\" target=\"_blank\" title=\"Paysafe Pay Later SEPA mandate\">SEPA direct debit mandate</a>."
-      }
-    },
-      "prepayment": {
-        "document": {
-        "clearingReference": "Reference: %reference%",
-        "invoicingDescription": "Please transfer the outstanding amount to the following bank account:",
-        "iban": "IBAN: %iban%",
-        "bic": "BIC: %bic%",
-        "reference": "Reference: %reference%",
-        "holder": "Account Holder: %holder%",
-        "accountNotice": "In order for us to quickly allocate your payment, please transfer the outstanding amount exclusively to the account above."
-      }
-    },
-    "eps": {
-      "cardTitle": "EPS Online Bank",
-      "bankGroupFieldLabel": "Banking group of you bank"
-    },
-    "ideal": {
-      "cardTitle": "iDeal Online Bank",
-      "bankGroupFieldLabel": "Banking group of you bank"
-    },
-    "trustly": {
-      "cardTitle": "Trustly",
-      "iban": "IBAN"
+    "error": {
+        "VIOLATION::PAYONE_BIRTHDAY_NOT_VALID": "For this payment you must be over 18 years old.",
+        "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "The selected payment method is not available."
     }
-  },
-  "error": {
-    "VIOLATION::PAYONE_BIRTHDAY_NOT_VALID": "For this payment you must be over 18 years old.",
-    "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "The selected payment method is not available."
-  }
 }

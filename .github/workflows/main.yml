@@ -11,7 +11,7 @@ jobs:
       matrix:
         operating-system: [ubuntu-latest]
         php-versions: ['7.3', '7.4']
-        shopware-versions: ['v6.2.0', 'v6.2.1', 'v6.2.2', 'v6.2.3', 'v6.3.0.0', 'v6.3.0.1', 'v6.3.0.2']
+        shopware-versions: ['v6.2.0', 'v6.2.1', 'v6.2.2', 'v6.2.3', 'v6.3.0.0', 'v6.3.0.1', 'v6.3.0.2', 'v6.3.1.0', 'v6.3.1.1', 'v6.3.2.0']
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
       mysql:
@@ -28,6 +28,7 @@ jobs:
       with:
         php-version: ${{ matrix.php-versions }}
         extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip
+        tools: composer:v1
     - name: Check PHP Version
       run: php -v
     - name: Check Composer Version

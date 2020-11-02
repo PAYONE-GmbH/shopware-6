@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\RequestBuilder;
 
-use PayonePayment\PaymentMethod\PayonePayolutionDebit;
+use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class PayolutionDebitRequestBuilder extends AbstractRequestBuilder
+class SecureInvoiceRequestBuilder extends AbstractRequestBuilder
 {
     public function supports(string $paymentMethodId): bool
     {
-        return $paymentMethodId === PayonePayolutionDebit::UUID;
+        return $paymentMethodId === PayoneSecureInvoice::UUID;
     }
 
     public function getAdditionalRequestParameters(PaymentTransaction $transaction, Context $context, ParameterBag $parameterBag): array
@@ -21,7 +21,7 @@ class PayolutionDebitRequestBuilder extends AbstractRequestBuilder
         $currency   = $transaction->getOrder()->getCurrency();
         $orderLines = $parameterBag->get('orderLines', []);
 
-        if (empty($orderLines) || empty($currency) || empty($transaction->getOrder()->getLineItems())) {
+        if ($currency === null || empty($orderLines) || empty($transaction->getOrder()->getLineItems())) {
             return [];
         }
 
