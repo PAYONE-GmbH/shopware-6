@@ -137,11 +137,17 @@ class PayonePaydirektPaymentHandler extends AbstractPayonePaymentHandler impleme
      */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
-        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
+        if (static::isNeverCapturable($transactionData, $customFields)) {
             return false;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED;
+        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+
+        if ($txAction === TransactionStatusService::ACTION_APPOINTED) {
+            return true;
+        }
+
+        return static::matchesIsCapturableDefaults($transactionData, $customFields);
     }
 
     /**
@@ -149,10 +155,10 @@ class PayonePaydirektPaymentHandler extends AbstractPayonePaymentHandler impleme
      */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
-            return true;
+        if (static::isNeverRefundable($transactionData, $customFields)) {
+            return false;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+        return static::matchesIsRefundableDefaults($transactionData, $customFields);
     }
 }
