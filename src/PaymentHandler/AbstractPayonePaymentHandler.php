@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use LogicException;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Framework\Context;
@@ -37,6 +38,89 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
 
     /** @var RequestStack */
     protected $requestStack;
+
+    /**
+     * Returns true if a capture is generally not possible (or never in this context)
+     * based on the current TX status notification. Use this method early in
+     * isCapturable() to match common rules shared by all payment methods.
+     *
+     * @param array $transactionData Parameters of the TX status notification.
+     * @param array $customFields Custom fields of the affected transaction.
+     * @return bool True if the transaction cannot be captured.
+     */
+    protected static final function isNeverCapturable(array $transactionData, array $customFields): bool
+    {
+        $authorizationType = $customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] ?? null;
+
+        // Transaction types of authorization are never capturable
+        if ($authorizationType === TransactionStatusService::AUTHORIZATION_TYPE_AUTHORIZATION) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns true if a capture is possible because the TX status notification parameters
+     * indicate that common defaults apply that all payment methods share. Use this method
+     * as last return option in isCapturable() to match default rules shared by all
+     * payment methods.
+     *
+     * @param array $transactionData Parameters of the TX status notification.
+     * @param array $customFields Custom fields of the affected transaction.
+     * @return bool True if the transaction can be captured based on matching default rules.
+     */
+    protected static final function matchesIsCapturableDefaults(array $transactionData, array $customFields): bool
+    {
+        return false;
+    }
+
+    /**
+     * Returns true if a refund / debit is generally not possible (or never in this context)
+     * based on the current TX status notification. Use this method early in
+     * isRefundable() to match common rules shared by all payment methods.
+     *
+     * @param array $transactionData Parameters of the TX status notification.
+     * @param array $customFields Custom fields of the affected transaction.
+     * @return bool True if the transaction cannot be captured.
+     */
+    protected static final function isNeverRefundable(array $transactionData, array $customFields): bool
+    {
+        return false;
+    }
+
+    /**
+     * Returns true if a refund is possible because the TX status notification parameters
+     * indicate that common defaults apply that all payment methods share. Use this method
+     * as last return option in isRefundable() to match default rules shared by all
+     * payment methods.
+     *
+     * @param array $transactionData Parameters of the TX status notification.
+     * @param array $customFields Custom fields of the affected transaction.
+     * @return bool True if the transaction can be refunded based on matching default rules.
+     */
+    protected static final function matchesIsRefundableDefaults(array $transactionData, array $customFields): bool
+    {
+        $txAction   = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $receivable = isset($transactionData['receivable']) ? ((float) $transactionData['receivable']) : null;
+
+        // Allow refund if capture TX status and receivable indicate we have outstanding funds
+        if ($txAction === TransactionStatusService::ACTION_CAPTURE && $receivable > 0.0) {
+            return true;
+        }
+
+        // If an incoming debit TX status indicates a partial refund we allow further refunds
+        if ($txAction === TransactionStatusService::ACTION_DEBIT && $receivable > 0.0) {
+            return true;
+        }
+
+        // We got paid and that means we can refund
+        if ($txAction === TransactionStatusService::ACTION_PAID) {
+            return true;
+        }
+
+        return false;
+    }
 
     public function __construct(
         ConfigReaderInterface $configReader,

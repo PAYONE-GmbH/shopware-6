@@ -39,6 +39,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     public const STATUS_PREFIX    = 'paymentStatus';
     public const STATUS_COMPLETED = 'completed';
 
+    public const AUTHORIZATION_TYPE_AUTHORIZATION    = 'authorization';
     public const AUTHORIZATION_TYPE_PREAUTHORIZATION = 'preauthorization';
 
     public const TRANSACTION_TYPE_GT = 'GT';
