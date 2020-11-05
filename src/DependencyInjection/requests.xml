@@ -373,6 +373,29 @@
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
 
+        <!-- Trustly -->
+        <service id="PayonePayment\Payone\Request\Trustly\TrustlyAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Trustly\TrustlyPreAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Trustly\TrustlyAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Trustly\TrustlyAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Trustly\TrustlyPreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Trustly\TrustlyPreAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
         <!-- Secure Invoice -->
         <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoicePreAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
