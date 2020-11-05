@@ -72,6 +72,19 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      */
     protected static final function matchesIsCapturableDefaults(array $transactionData, array $customFields): bool
     {
+        $txAction   = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $price      = isset($transactionData['price']) ? ((float) $transactionData['price']) : null;
+        $receivable = isset($transactionData['receivable']) ? ((float) $transactionData['receivable']) : null;
+
+        // Allow further captures for TX status that indicates a partial capture
+        if (
+            $txAction === TransactionStatusService::ACTION_CAPTURE &&
+            is_float($price) && is_float($receivable) &&
+            $receivable > 0.0 && $receivable < $price
+        ) {
+            return true;
+        }
+
         return false;
     }
 
