@@ -118,14 +118,22 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
     {
         // Prepayment is always pre-authorization
 
-        $txAction = strtolower($transactionData['txaction'] ?? '');
-        $txStatus = strtolower($transactionData['transaction_status'] ?? '');
+        if (static::isNeverCapturable($transactionData, $customFields)) {
+            return false;
+        }
+
+        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txStatus = isset($transactionData['transaction_status']) ? strtolower($transactionData['transaction_status']) : null;
 
         $isAppointed = $txAction === TransactionStatusService::ACTION_APPOINTED && $txStatus === TransactionStatusService::STATUS_COMPLETED;
         $isUnderpaid = $txAction === TransactionStatusService::ACTION_UNDERPAID;
         $isPaid      = $txAction === TransactionStatusService::ACTION_PAID;
 
-        return $isAppointed || $isUnderpaid || $isPaid;
+        if ($isAppointed || $isUnderpaid || $isPaid) {
+            return true;
+        }
+
+        return static::matchesIsCapturableDefaults($transactionData, $customFields);
     }
 
     /**
@@ -133,6 +141,10 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
      */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0;
+        if (static::isNeverRefundable($transactionData, $customFields)) {
+            return false;
+        }
+
+        return static::matchesIsRefundableDefaults($transactionData, $customFields);
     }
 }
