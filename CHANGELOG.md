@@ -64,3 +64,7 @@ Maintenance
 New Features
 
 * New payment method: PAYONE safe invoice
+
+Bugfixes
+
+* rework of txstatus logic so that custom fields are in line with backend options
