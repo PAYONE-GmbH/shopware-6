@@ -54,8 +54,14 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $newCustomFields[CustomFieldInstaller::SEQUENCE_NUMBER] = max((int) $transactionData['sequencenumber'], $currentSequenceNumber);
 
         $newCustomFields[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
-        $newCustomFields[CustomFieldInstaller::ALLOW_CAPTURE]     = $this->shouldAllowCapture($paymentTransaction, $transactionData);
-        $newCustomFields[CustomFieldInstaller::ALLOW_REFUND]      = $this->shouldAllowRefund($paymentTransaction, $transactionData);
+
+        if ($this->canChangeCapturableState($transactionData)) {
+            $newCustomFields[CustomFieldInstaller::ALLOW_CAPTURE] = $this->shouldAllowCapture($paymentTransaction, $transactionData);
+        }
+
+        if ($this->canChangeRefundableState($transactionData)) {
+            $newCustomFields[CustomFieldInstaller::ALLOW_REFUND] = $this->shouldAllowRefund($paymentTransaction, $transactionData);
+        }
 
         if (in_array($newCustomFields[CustomFieldInstaller::TRANSACTION_STATE], [TransactionStatusService::ACTION_PAID, TransactionStatusService::ACTION_COMPLETED])) {
             $newCustomFields[CustomFieldInstaller::CAPTURED_AMOUNT] = $this->getCapturedAmount($paymentTransaction, $transactionData);
@@ -117,6 +123,44 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $this->transactionRepository->update([$update], $context);
     }
 
+    /**
+     * Checks if the TX status notification never changes the capturable
+     * or the refundable state of a transaction.
+     *
+     * @param array $transactionData Data of the TX status notification
+     *
+     * @return bool True if the TX status notification never changes the capturable or refundable state of a transaction
+     */
+    private function neverChangesCapturableOrRefundableState(array $transactionData): bool
+    {
+        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+
+        // The following TX actions do not affect any capturable or refundable state
+        return in_array($txAction, [
+            TransactionStatusService::ACTION_TRANSFER,
+            TransactionStatusService::ACTION_REMINDER,
+            TransactionStatusService::ACTION_INVOICE,
+            TransactionStatusService::ACTION_VAUTHORIZATION,
+            TransactionStatusService::ACTION_VSETTLEMENT,
+        ]);
+    }
+
+    /**
+     * Checks if the TX status notification can change the capturable state.
+     *
+     * @param array $transactionData Data of the TX status notification
+     *
+     * @return bool True if the TX status notification can change the capturable state
+     */
+    private function canChangeCapturableState(array $transactionData): bool
+    {
+        if ($this->neverChangesCapturableOrRefundableState($transactionData)) {
+            return false;
+        }
+
+        return true;
+    }
+
     private function shouldAllowCapture(PaymentTransaction $paymentTransaction, array $transactionData): bool
     {
         $handlerClass = $this->getHandlerIdentifier($paymentTransaction);
@@ -126,6 +170,22 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         }
 
         return $handlerClass::isCapturable($transactionData, $paymentTransaction->getCustomFields());
+    }
+
+    /**
+     * Checks if the TX status notification can change the refundable state.
+     *
+     * @param array $transactionData Data of the TX status notification
+     *
+     * @return bool True if the TX status notification can change the refundable state
+     */
+    private function canChangeRefundableState(array $transactionData): bool
+    {
+        if ($this->neverChangesCapturableOrRefundableState($transactionData)) {
+            return false;
+        }
+
+        return true;
     }
 
     private function shouldAllowRefund(PaymentTransaction $paymentTransaction, array $transactionData): bool
