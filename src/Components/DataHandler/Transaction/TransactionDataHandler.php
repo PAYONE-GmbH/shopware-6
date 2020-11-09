@@ -127,8 +127,9 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
      * Checks if the TX status notification never changes the capturable
      * or the refundable state of a transaction.
      *
-     * @param array $transactionData Data of the TX status notification.
-     * @return bool True if the TX status notification never changes the capturable or refundable state of a transaction.
+     * @param array $transactionData Data of the TX status notification
+     *
+     * @return bool True if the TX status notification never changes the capturable or refundable state of a transaction
      */
     private function neverChangesCapturableOrRefundableState(array $transactionData): bool
     {
@@ -147,8 +148,9 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
     /**
      * Checks if the TX status notification can change the capturable state.
      *
-     * @param array $transactionData Data of the TX status notification.
-     * @return bool True if the TX status notification can change the capturable state.
+     * @param array $transactionData Data of the TX status notification
+     *
+     * @return bool True if the TX status notification can change the capturable state
      */
     private function canChangeCapturableState(array $transactionData): bool
     {
@@ -173,8 +175,9 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
     /**
      * Checks if the TX status notification can change the refundable state.
      *
-     * @param array $transactionData Data of the TX status notification.
-     * @return bool True if the TX status notification can change the refundable state.
+     * @param array $transactionData Data of the TX status notification
+     *
+     * @return bool True if the TX status notification can change the refundable state
      */
     private function canChangeRefundableState(array $transactionData): bool
     {

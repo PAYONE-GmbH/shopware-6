@@ -39,16 +39,27 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     /** @var RequestStack */
     protected $requestStack;
 
+    public function __construct(
+        ConfigReaderInterface $configReader,
+        EntityRepositoryInterface $lineItemRepository,
+        RequestStack $requestStack
+    ) {
+        $this->configReader       = $configReader;
+        $this->lineItemRepository = $lineItemRepository;
+        $this->requestStack       = $requestStack;
+    }
+
     /**
      * Returns true if a capture is generally not possible (or never in this context)
      * based on the current TX status notification. Use this method early in
      * isCapturable() to match common rules shared by all payment methods.
      *
-     * @param array $transactionData Parameters of the TX status notification.
-     * @param array $customFields Custom fields of the affected transaction.
-     * @return bool True if the transaction cannot be captured.
+     * @param array $transactionData Parameters of the TX status notification
+     * @param array $customFields    Custom fields of the affected transaction
+     *
+     * @return bool True if the transaction cannot be captured
      */
-    protected static final function isNeverCapturable(array $transactionData, array $customFields): bool
+    final protected static function isNeverCapturable(array $transactionData, array $customFields): bool
     {
         $authorizationType = $customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] ?? null;
 
@@ -66,11 +77,12 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      * as last return option in isCapturable() to match default rules shared by all
      * payment methods.
      *
-     * @param array $transactionData Parameters of the TX status notification.
-     * @param array $customFields Custom fields of the affected transaction.
-     * @return bool True if the transaction can be captured based on matching default rules.
+     * @param array $transactionData Parameters of the TX status notification
+     * @param array $customFields    Custom fields of the affected transaction
+     *
+     * @return bool True if the transaction can be captured based on matching default rules
      */
-    protected static final function matchesIsCapturableDefaults(array $transactionData, array $customFields): bool
+    final protected static function matchesIsCapturableDefaults(array $transactionData, array $customFields): bool
     {
         $txAction   = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
         $price      = isset($transactionData['price']) ? ((float) $transactionData['price']) : null;
@@ -93,11 +105,12 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      * based on the current TX status notification. Use this method early in
      * isRefundable() to match common rules shared by all payment methods.
      *
-     * @param array $transactionData Parameters of the TX status notification.
-     * @param array $customFields Custom fields of the affected transaction.
-     * @return bool True if the transaction cannot be captured.
+     * @param array $transactionData Parameters of the TX status notification
+     * @param array $customFields    Custom fields of the affected transaction
+     *
+     * @return bool True if the transaction cannot be captured
      */
-    protected static final function isNeverRefundable(array $transactionData, array $customFields): bool
+    final protected static function isNeverRefundable(array $transactionData, array $customFields): bool
     {
         return false;
     }
@@ -108,11 +121,12 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      * as last return option in isRefundable() to match default rules shared by all
      * payment methods.
      *
-     * @param array $transactionData Parameters of the TX status notification.
-     * @param array $customFields Custom fields of the affected transaction.
-     * @return bool True if the transaction can be refunded based on matching default rules.
+     * @param array $transactionData Parameters of the TX status notification
+     * @param array $customFields    Custom fields of the affected transaction
+     *
+     * @return bool True if the transaction can be refunded based on matching default rules
      */
-    protected static final function matchesIsRefundableDefaults(array $transactionData, array $customFields): bool
+    final protected static function matchesIsRefundableDefaults(array $transactionData, array $customFields): bool
     {
         $txAction   = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
         $receivable = isset($transactionData['receivable']) ? ((float) $transactionData['receivable']) : null;
@@ -133,16 +147,6 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         }
 
         return false;
-    }
-
-    public function __construct(
-        ConfigReaderInterface $configReader,
-        EntityRepositoryInterface $lineItemRepository,
-        RequestStack $requestStack
-    ) {
-        $this->configReader       = $configReader;
-        $this->lineItemRepository = $lineItemRepository;
-        $this->requestStack       = $requestStack;
     }
 
     /**
