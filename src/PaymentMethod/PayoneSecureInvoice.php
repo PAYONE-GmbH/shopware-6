@@ -8,7 +8,7 @@ use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 
 class PayoneSecureInvoice extends AbstractPaymentMethod
 {
-    public const UUID                 = '0b532088e2da3092f9f7054ec4009d18';
+    public const UUID                 = '4e8a9d3d3c6e428887573856b38c9003';
     public const BUSINESSRELATION_B2B = 'b2b';
     public const BUSINESSRELATION_B2C = 'b2c';
 
