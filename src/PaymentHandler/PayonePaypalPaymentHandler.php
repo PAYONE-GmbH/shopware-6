@@ -139,16 +139,22 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
      */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
+        if (static::isNeverCapturable($transactionData, $customFields)) {
+            return false;
+        }
+
         if (!array_key_exists(CustomFieldInstaller::AUTHORIZATION_TYPE, $customFields)) {
             return false;
         }
 
-        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
-            return false;
+        $txAction          = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $transactionStatus = isset($transactionData['transaction_status']) ? strtolower($transactionData['transaction_status']) : null;
+
+        if ($txAction === TransactionStatusService::ACTION_APPOINTED && $transactionStatus === TransactionStatusService::STATUS_COMPLETED) {
+            return true;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED
-            && strtolower($transactionData['transaction_status']) === TransactionStatusService::STATUS_COMPLETED;
+        return static::matchesIsCapturableDefaults($transactionData, $customFields);
     }
 
     /**
@@ -156,10 +162,10 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
      */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
-            return true;
+        if (static::isNeverRefundable($transactionData, $customFields)) {
+            return false;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+        return static::matchesIsRefundableDefaults($transactionData, $customFields);
     }
 }
