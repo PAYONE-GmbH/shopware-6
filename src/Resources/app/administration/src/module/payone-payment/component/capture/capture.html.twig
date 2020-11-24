@@ -31,7 +31,7 @@
                 {{ $tc('payone-payment.modal.close') }}
             </sw-button>
 
-            <sw-button-process :isLoading="isLoading" :processSuccess="isCaptureSuccessful" @process-finish="onCaptureFinished()" :disabled="isLoading || captureAmount <= 0" variant="primary" @click="captureOrder">
+            <sw-button-process :isLoading="isLoading" :processSuccess="isCaptureSuccessful" @process-finish="onCaptureFinished()" :disabled="isLoading || captureAmount <= 0 || !isItemSelected" variant="primary" @click="captureOrder">
                 {{ $tc('payone-payment.modal.capture.submit') }}
             </sw-button-process>
 
