@@ -19,6 +19,7 @@ use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use PayonePayment\PaymentMethod\PayonePrepayment;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\PaymentMethod\PayoneSofortBanking;
+use PayonePayment\PaymentMethod\PayoneTrustly;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
@@ -48,6 +49,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneIDeal::class,
         PayonePaydirekt::class,
         PayonePrepayment::class,
+        PayoneTrustly::class,
         PayoneSecureInvoice::class,
     ];
 
@@ -63,6 +65,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneIDeal::class,
         PayonePaydirekt::class,
         PayonePrepayment::class,
+        PayoneTrustly::class,
     ];
 
     /** @var PluginIdProvider */
@@ -102,6 +105,16 @@ class PaymentMethodInstaller implements InstallerInterface
 
     public function update(UpdateContext $context): void
     {
+        // Fix for usage of bad UUIDv4 value in https://github.com/PAYONE-GmbH/shopware-6/pull/65.
+        // Todo: Remove this after some time has passed.
+        // If we find a payment method entity with the concrete invalid UUIDv4 value we update the key
+        // before any update procedures take place otherwise we would have a duplicate payment method.
+        // This is also the reason why a migration is not a viable way here.
+        if ($this->findPaymentMethodEntity('0b532088e2da3092f9f7054ec4009d18', $context->getContext())) {
+            $this->connection->exec("UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');");
+            $this->connection->exec("UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');");
+        }
+
         foreach ($this->getPaymentMethods() as $paymentMethod) {
             $this->upsertPaymentMethod($paymentMethod, $context->getContext());
         }

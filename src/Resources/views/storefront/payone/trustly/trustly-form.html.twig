@@ -1,0 +1,25 @@
+<div class="payone-payment payone-payment--trustly">
+    {% block page_checkout_confirm_payone_card_title_trustly %}
+        <div class="card-title">
+            {{ "PayonePayment.trustly.cardTitle" | trans }}
+        </div>
+    {% endblock %}
+
+    <div id="trustlyErrorContainer" hidden="hidden">
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            type: "danger",
+            content: "PayonePayment.errorMessages.genericError" | trans
+        } %}
+    </div>
+
+    {% block page_checkout_confirm_payone_card_content_trustly %}
+        <div class="form-row">
+            <div class="form-group {% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
+                <label class="form-label" for="iban">{{ "PayonePayment.trustly.iban" | trans }}</label>
+                <input class="form-control payone-input" id="iban" name="iban" form="confirmOrderForm" />
+            </div>
+        </div>
+
+        <div id="payone-configuration" data-is-payone-trustly="true"></div>
+    {% endblock %}
+</div>

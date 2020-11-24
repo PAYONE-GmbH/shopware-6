@@ -847,6 +847,60 @@
     </card>
 
     <card>
+        <title>Trustly</title>
+
+        <name>payment_trustly</name>
+
+        <input-field>
+            <name>trustlyMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>trustlyAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>trustlyPortalId</name>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>trustlyPortalKey</name>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>trustlyAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Use this option to set the authorization method for this payment type.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+    </card>
+
+    <card>
         <title>Secure invoice (own payment portal is required)</title>
         <title lang="de-DE">Gesicherter Rechnungskauf (Eigenes Zahlungsportal wird benötigt)</title>
 

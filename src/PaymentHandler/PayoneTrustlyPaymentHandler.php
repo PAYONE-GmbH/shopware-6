@@ -11,8 +11,8 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\IDeal\IDealAuthorizeRequestFactory;
-use PayonePayment\Payone\Request\IDeal\IDealPreAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\Trustly\TrustlyAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\Trustly\TrustlyPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -26,30 +26,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
+class PayoneTrustlyPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /**
-     * Valid iDEAL bank groups according to:
-     * https://docs.payone.com/pages/releaseview.action?pageId=1213906
-     */
-    protected const VALID_IDEAL_BANK_GROUPS = [
-        'ABN_AMRO_BANK',
-        'BUNQ_BANK',
-        'RABOBANK',
-        'ASN_BANK',
-        'SNS_BANK',
-        'TRIODOS_BANK',
-        'SNS_REGIO_BANK',
-        'ING_BANK',
-        'KNAB_BANK',
-        'VAN_LANSCHOT_BANKIERS',
-        'MONEYOU',
-    ];
-
-    /** @var IDealPreAuthorizeRequestFactory */
+    /** @var TrustlyPreAuthorizeRequestFactory */
     private $preAuthRequestFactory;
 
-    /** @var IDealAuthorizeRequestFactory */
+    /** @var TrustlyAuthorizeRequestFactory */
     private $authRequestFactory;
 
     /** @var PayoneClientInterface */
@@ -66,12 +48,12 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        EntityRepositoryInterface $lineItemRepository,
-        IDealPreAuthorizeRequestFactory $preAuthRequestFactory,
-        IDealAuthorizeRequestFactory $authRequestFactory,
+        TrustlyPreAuthorizeRequestFactory $preAuthRequestFactory,
+        TrustlyAuthorizeRequestFactory $authRequestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
+        EntityRepositoryInterface $lineItemRepository,
         PaymentStateHandlerInterface $stateHandler,
         RequestStack $requestStack
     ) {
@@ -94,20 +76,11 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
-            'iDealAuthorizationMethod',
-            'authorization'
+            'trustlyAuthorizationMethod',
+            'preauthorization'
         );
 
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
-
-        try {
-            $this->validate($requestData);
-        } catch (PayoneRequestException $e) {
-            throw new AsyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
 
         // Select request factory based on configured authorization method
         $factory = $authorizationMethod === 'preauthorization'
@@ -116,7 +89,7 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
 
         $request = $factory->getRequestParameters(
             $paymentTransaction,
-            $requestData,
+            $dataBag,
             $salesChannelContext
         );
 
@@ -141,12 +114,7 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
             );
         }
 
-        // Prepare custom fields for the transaction
-        $data = $this->prepareTransactionCustomFields($request, $response, [
-            CustomFieldInstaller::TRANSACTION_STATE => $response['status'],
-            CustomFieldInstaller::ALLOW_CAPTURE     => false,
-            CustomFieldInstaller::ALLOW_REFUND      => false,
-        ]);
+        $data = $this->prepareTransactionCustomFields($request, $response, $this->getBaseCustomFields($response['status']));
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
@@ -167,17 +135,11 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
      */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
-        if (static::isNeverCapturable($transactionData, $customFields)) {
+        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
             return false;
         }
 
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
-
-        if ($txAction === TransactionStatusService::ACTION_PAID) {
-            return true;
-        }
-
-        return static::matchesIsCapturableDefaults($transactionData, $customFields);
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 
     /**
@@ -185,22 +147,10 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
      */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        if (static::isNeverRefundable($transactionData, $customFields)) {
-            return false;
+        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
+            return true;
         }
 
-        return static::matchesIsRefundableDefaults($transactionData, $customFields);
-    }
-
-    /**
-     * @throws PayoneRequestException
-     */
-    private function validate(RequestDataBag $dataBag)
-    {
-        $bankGroup = $dataBag->get('idealBankGroup');
-
-        if (!in_array($bankGroup, static::VALID_IDEAL_BANK_GROUPS, true)) {
-            throw new PayoneRequestException('No valid iDEAL bank group');
-        }
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 }

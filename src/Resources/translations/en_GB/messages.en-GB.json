@@ -123,6 +123,10 @@
             "cardTitle": "iDeal Online Bank",
             "bankGroupFieldLabel": "Banking group of you bank"
         },
+        "trustly": {
+            "cardTitle": "Trustly",
+            "iban": "IBAN"
+        },
         "secureInvoice": {
             "cardTitle": "Payone secure invoice",
             "birthday": {

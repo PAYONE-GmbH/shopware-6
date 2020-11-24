@@ -7,18 +7,7 @@ namespace PayonePayment\Controller;
 use DateInterval;
 use DateTimeImmutable;
 use PayonePayment\Configuration\ConfigurationPrefixes;
-use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
-use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
-use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
-use PayonePayment\PaymentHandler\PayoneIDealPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
-use PayonePayment\PaymentHandler\PayonePrepaymentPaymentHandler;
-use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
-use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
+use PayonePayment\PaymentHandler as Handler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Test\TestRequestFactory;
@@ -141,7 +130,7 @@ class SettingsController extends AbstractController
     private function getPaymentParameters(string $paymentClass): array
     {
         switch ($paymentClass) {
-            case PayoneCreditCardPaymentHandler::class:
+            case Handler\PayoneCreditCardPaymentHandler::class:
                 return [
                     'request'        => 'preauthorization',
                     'clearingtype'   => 'cc',
@@ -160,7 +149,7 @@ class SettingsController extends AbstractController
                 ];
 
                 break;
-            case PayoneDebitPaymentHandler::class:
+            case Handler\PayoneDebitPaymentHandler::class:
                 return [
                     'request'           => 'preauthorization',
                     'clearingtype'      => 'elv',
@@ -177,8 +166,8 @@ class SettingsController extends AbstractController
                 ];
 
                 break;
-            case PayonePaypalExpressPaymentHandler::class:
-            case PayonePaypalPaymentHandler::class:
+            case Handler\PayonePaypalExpressPaymentHandler::class:
+            case Handler\PayonePaypalPaymentHandler::class:
                 return [
                     'request'      => 'preauthorization',
                     'clearingtype' => 'wlt',
@@ -193,7 +182,7 @@ class SettingsController extends AbstractController
                 ];
 
                 break;
-            case PayoneSofortBankingPaymentHandler::class:
+            case Handler\PayoneSofortBankingPaymentHandler::class:
                 return [
                     'request'                => 'preauthorization',
                     'clearingtype'           => 'sb',
@@ -208,7 +197,7 @@ class SettingsController extends AbstractController
                     'successurl'             => 'https://www.payone.com',
                 ];
 
-            case PayoneEpsPaymentHandler::class:
+            case Handler\PayoneEpsPaymentHandler::class:
                 return [
                     'request'                => 'preauthorization',
                     'clearingtype'           => 'sb',
@@ -224,7 +213,7 @@ class SettingsController extends AbstractController
                     'successurl'             => 'https://www.payone.com',
                 ];
 
-            case PayoneIDealPaymentHandler::class:
+            case Handler\PayoneIDealPaymentHandler::class:
                 return [
                     'request'                => 'preauthorization',
                     'clearingtype'           => 'sb',
@@ -241,7 +230,7 @@ class SettingsController extends AbstractController
                 ];
 
                 break;
-            case PayonePayolutionInvoicingPaymentHandler::class:
+            case Handler\PayonePayolutionInvoicingPaymentHandler::class:
                 return [
                     'request'                   => 'genericpayment',
                     'clearingtype'              => 'fnc',
@@ -264,7 +253,7 @@ class SettingsController extends AbstractController
 
                 break;
 
-            case PayonePayolutionDebitPaymentHandler::class:
+            case Handler\PayonePayolutionDebitPaymentHandler::class:
                 return [
                     'request'                   => 'genericpayment',
                     'clearingtype'              => 'fnc',
@@ -287,7 +276,7 @@ class SettingsController extends AbstractController
                     'bic'                       => 'TESTTEST',
                 ];
 
-            case PayonePayolutionInstallmentPaymentHandler::class:
+            case Handler\PayonePayolutionInstallmentPaymentHandler::class:
                 return [
                     'request'                   => 'genericpayment',
                     'clearingtype'              => 'fnc',
@@ -310,7 +299,7 @@ class SettingsController extends AbstractController
 
                 break;
 
-            case PayonePrepaymentPaymentHandler::class:
+            case Handler\PayonePrepaymentPaymentHandler::class:
                 return [
                     'request'      => 'preauthorization',
                     'clearingtype' => 'vor',
@@ -328,7 +317,25 @@ class SettingsController extends AbstractController
                 ];
 
                 break;
-            case PayoneSecureInvoicePaymentHandler::class:
+
+            case Handler\PayoneTrustlyPaymentHandler::class:
+                return [
+                    'request'                => 'preauthorization',
+                    'clearingtype'           => 'sb',
+                    'onlinebanktransfertype' => 'TRL',
+                    'iban'                   => 'DE00123456782599100004',
+                    'amount'                 => 100,
+                    'currency'               => 'EUR',
+                    'reference'              => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'firstname'              => 'Test',
+                    'lastname'               => 'Test',
+                    'country'                => 'DE',
+                    'successurl'             => 'https://www.payone.com',
+                ];
+
+                break;
+
+            case Handler\PayoneSecureInvoicePaymentHandler::class:
                 return [
                     'request'          => 'preauthorization',
                     'clearingtype'     => 'rec',
