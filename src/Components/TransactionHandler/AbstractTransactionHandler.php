@@ -42,17 +42,29 @@ abstract class AbstractTransactionHandler
     /** @var PaymentTransaction */
     protected $paymentTransaction;
 
-    public function handleRequest(ParameterBag $parameterBag, Context $context): JsonResponse
+    public function handleRequest(ParameterBag $parameterBag, Context $context)
     {
         $this->context = $context;
         $transaction   = $this->getTransaction($parameterBag->get('orderTransactionId', ''));
 
         if (null === $transaction) {
-            return new JsonResponse(['status' => false, 'message' => 'payone-payment.error.transaction.notFound'], Response::HTTP_BAD_REQUEST);
+            return [
+                new JsonResponse([
+                    'status'  => false,
+                    'message' => 'payone-payment.error.transaction.notFound',
+                ], Response::HTTP_BAD_REQUEST),
+                null,
+            ];
         }
 
         if (null === $transaction->getOrder()) {
-            return new JsonResponse(['status' => false, 'message' => 'payone-payment.error.transaction.orderNotFound'], Response::HTTP_BAD_REQUEST);
+            return [
+                new JsonResponse([
+                    'status'  => false,
+                    'message' => 'payone-payment.error.transaction.orderNotFound',
+                ], Response::HTTP_BAD_REQUEST),
+                null,
+            ];
         }
 
         $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($transaction, $transaction->getOrder());
@@ -72,10 +84,8 @@ abstract class AbstractTransactionHandler
 
     abstract protected function getAllowCustomField(): string;
 
-    protected function executeRequest(array $request): JsonResponse
+    protected function executeRequest(array $request)
     {
-        $requestResult = new JsonResponse(['status' => true]);
-
         try {
             $response = $this->client->request($request);
 
@@ -83,27 +93,30 @@ abstract class AbstractTransactionHandler
                 'request'  => $request,
                 'response' => $response,
             ]);
+
+            return [
+                new JsonResponse(['status' => true]),
+                $response,
+            ];
         } catch (PayoneRequestException $exception) {
-            $requestResult = new JsonResponse(
-                [
+            return [
+                new JsonResponse([
                     'status'  => false,
                     'message' => $exception->getResponse()['error']['ErrorMessage'],
                     'code'    => $exception->getResponse()['error']['ErrorCode'],
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+                ], Response::HTTP_BAD_REQUEST),
+                null,
+            ];
         } catch (Exception $exception) {
-            $requestResult = new JsonResponse(
-                [
+            return [
+                new JsonResponse([
                     'status'  => false,
                     'message' => $exception->getMessage(),
                     'code'    => 0,
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
+                ], Response::HTTP_BAD_REQUEST),
+                null,
+            ];
         }
-
-        return $requestResult;
     }
 
     protected function updateTransactionData(ParameterBag $parameterBag, float $captureAmount): void
