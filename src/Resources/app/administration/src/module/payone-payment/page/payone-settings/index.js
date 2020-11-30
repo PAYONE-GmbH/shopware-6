@@ -43,6 +43,7 @@ Component.register('payone-settings', {
                 'payment_prepayment': true,
                 'payment_trustly': true,
                 'payment_secure_invoice': true,
+                'payment_invoice': true,
             },
         };
     },
@@ -102,6 +103,7 @@ Component.register('payone-settings', {
                 'prepayment',
                 'trustly',
                 'secureInvoice',
+                'invoice',
             ];
         },
 

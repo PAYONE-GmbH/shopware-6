@@ -195,5 +195,18 @@
             <tag name="shopware.payment.method.sync" />
         </service>
 
+        <service id="PayonePayment\PaymentHandler\PayoneInvoicePaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Payone\Request\Invoice\InvoicePreAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\Invoice\InvoiceAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="request_stack" />
+
+            <tag name="shopware.payment.method.sync" />
+        </service>
+
     </services>
 </container>

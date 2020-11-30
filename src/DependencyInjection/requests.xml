@@ -422,5 +422,32 @@
             <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
+
+        <!-- Invoice -->
+        <service id="PayonePayment\Payone\Request\Invoice\InvoicePreAuthorizeRequest">
+            <argument type="service" id="currency.repository" />
+            <argument type="service" id="order_address.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Invoice\InvoiceAuthorizeRequest">
+            <argument type="service" id="currency.repository" />
+            <argument type="service" id="order_address.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Invoice\InvoicePreAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Invoice\InvoicePreAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Components\RequestBuilder\InvoiceRequestBuilder" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Invoice\InvoiceAuthorizeRequestFactory">
+            <argument type="service" id="PayonePayment\Payone\Request\Invoice\InvoiceAuthorizeRequest" />
+            <argument type="service" id="PayonePayment\Components\RequestBuilder\InvoiceRequestBuilder" />
+            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
+            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
+        </service>
     </services>
 </container>
