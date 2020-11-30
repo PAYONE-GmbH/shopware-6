@@ -42,7 +42,7 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
      */
     public function refund(ParameterBag $parameterBag, Context $context): JsonResponse
     {
-        $requestResponse = $this->handleRequest($parameterBag, $context);
+        [$requestResponse,] = $this->handleRequest($parameterBag, $context);
 
         if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;

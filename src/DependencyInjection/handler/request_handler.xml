@@ -84,5 +84,11 @@
 
             <tag name="payone_payment.request_handler" />
         </service>
+
+        <service id="PayonePayment\Components\RequestBuilder\InvoiceRequestBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+
+            <tag name="payone_payment.request_handler" />
+        </service>
     </services>
 </container>

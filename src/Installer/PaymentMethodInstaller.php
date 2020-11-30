@@ -10,6 +10,7 @@ use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
 use PayonePayment\PaymentMethod\PayoneEps;
 use PayonePayment\PaymentMethod\PayoneIDeal;
+use PayonePayment\PaymentMethod\PayoneInvoice;
 use PayonePayment\PaymentMethod\PayonePaydirekt;
 use PayonePayment\PaymentMethod\PayonePayolutionDebit;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
@@ -51,6 +52,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayonePrepayment::class,
         PayoneTrustly::class,
         PayoneSecureInvoice::class,
+        PayoneInvoice::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [
@@ -66,6 +68,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayonePaydirekt::class,
         PayonePrepayment::class,
         PayoneTrustly::class,
+        PayoneInvoice::class,
     ];
 
     /** @var PluginIdProvider */

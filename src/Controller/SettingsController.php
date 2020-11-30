@@ -357,6 +357,25 @@ class SettingsController extends AbstractController
 
                 break;
 
+            case Handler\PayoneInvoicePaymentHandler::class:
+                return [
+                    'request'          => 'preauthorization',
+                    'clearingtype'     => 'rec',
+                    'amount'           => 10000,
+                    'currency'         => 'EUR',
+                    'reference'        => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'birthday'         => '19900505',
+                    'firstname'        => 'Test',
+                    'lastname'         => 'Test',
+                    'country'          => 'DE',
+                    'email'            => 'test@example.com',
+                    'street'           => 'teststreet 2',
+                    'zip'              => '12345',
+                    'city'             => 'Test',
+                    'ip'               => '127.0.0.1',
+                    'businessrelation' => 'b2c',
+                ];
+
             default:
                 $this->logger->error(sprintf('There is no test data defined for payment class %s', $paymentClass));
                 throw new RuntimeException(sprintf('There is no test data defined for payment class %s', $paymentClass));

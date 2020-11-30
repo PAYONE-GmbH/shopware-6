@@ -42,13 +42,14 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
      */
     public function capture(ParameterBag $parameterBag, Context $context): JsonResponse
     {
-        $requestResponse = $this->handleRequest($parameterBag, $context);
+        [$requestResponse, $payoneResponse] = $this->handleRequest($parameterBag, $context);
 
         if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
         }
 
         $this->updateTransactionData($parameterBag, (float) $parameterBag->get('amount'));
+        $this->updateClearingBankAccountData($payoneResponse);
         $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
 
         $customFields = $this->paymentTransaction->getCustomFields();
@@ -96,5 +97,27 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
     protected function getClearingTypeCustomField(): string
     {
         return CustomFieldInstaller::CLEARING_TYPE;
+    }
+
+    /**
+     * Updates transaction custom fields that contain clearing bank account data.
+     * Payment methods like invoice or secure invoice get these data through the response of a capture request.
+     * These clearing data is used during invoice generation.
+     *
+     * @param array $payoneResponse Response of the PAYONE capture request
+     */
+    private function updateClearingBankAccountData(array $payoneResponse): void
+    {
+        $currentClearingBankAccountData = $this->paymentTransaction->getCustomFields()[CustomFieldInstaller::CLEARING_BANK_ACCOUNT];
+        $newClearingBankAccountData     = $payoneResponse['clearing']['BankAccount'] ?? null;
+
+        if (!empty($newClearingBankAccountData)) {
+            $this->dataHandler->saveTransactionData($this->paymentTransaction, $this->context, [
+                CustomFieldInstaller::CLEARING_BANK_ACCOUNT => array_merge(
+                    $currentClearingBankAccountData,
+                    $newClearingBankAccountData
+                ),
+            ]);
+        }
     }
 }
