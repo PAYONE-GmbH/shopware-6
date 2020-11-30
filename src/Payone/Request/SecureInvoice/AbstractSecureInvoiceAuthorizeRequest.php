@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\SecureInvoice;
 
 use DateTime;
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
@@ -21,22 +23,27 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 abstract class AbstractSecureInvoiceAuthorizeRequest
 {
     /** @var LineItemHydratorInterface */
-    private $lineItemHydrator;
+    protected $lineItemHydrator;
 
     /** @var EntityRepositoryInterface */
-    private $currencyRepository;
+    protected $currencyRepository;
 
     /** @var EntityRepositoryInterface */
-    private $orderAddressRepository;
+    protected $orderAddressRepository;
+
+    /** @var ConfigReaderInterface */
+    protected $configReader;
 
     public function __construct(
         LineItemHydratorInterface $lineItemHydrator,
         EntityRepositoryInterface $currencyRepository,
-        EntityRepositoryInterface $orderAddressRepository
+        EntityRepositoryInterface $orderAddressRepository,
+        ConfigReaderInterface $configReader
     ) {
         $this->lineItemHydrator       = $lineItemHydrator;
         $this->currencyRepository     = $currencyRepository;
         $this->orderAddressRepository = $orderAddressRepository;
+        $this->configReader           = $configReader;
     }
 
     public function getRequestParameters(
@@ -73,7 +80,9 @@ abstract class AbstractSecureInvoiceAuthorizeRequest
             $parameters['company'] = $billingAddress->getCompany();
         }
 
-        $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order->getLineItems()));
+        if ($order->getLineItems() !== null) {
+            $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order->getLineItems()));
+        }
 
         if (!$company && !empty($dataBag->get('secureInvoiceBirthday'))) {
             $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('secureInvoiceBirthday'));
@@ -83,7 +92,18 @@ abstract class AbstractSecureInvoiceAuthorizeRequest
             }
         }
 
+        if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId())) {
+            $parameters['narrative_text'] = mb_substr($referenceNumber, 0, 81);
+        }
+
         return array_filter($parameters);
+    }
+
+    protected function isNarrativeTextAllowed(string $salesChannelId): bool
+    {
+        $config = $this->configReader->read($salesChannelId);
+
+        return $config->get(sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_SECURE_INVOICE), false);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity

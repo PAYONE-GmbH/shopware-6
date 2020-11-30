@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\PayolutionInstallment;
 
 use DateTime;
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -18,11 +20,15 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 abstract class AbstractPayolutionInstallmentAuthorizeRequest
 {
     /** @var EntityRepositoryInterface */
-    private $currencyRepository;
+    protected $currencyRepository;
 
-    public function __construct(EntityRepositoryInterface $currencyRepository)
+    /** @var ConfigReaderInterface */
+    protected $configReader;
+
+    public function __construct(EntityRepositoryInterface $currencyRepository, ConfigReaderInterface $configReader)
     {
         $this->currencyRepository = $currencyRepository;
+        $this->configReader       = $configReader;
     }
 
     public function getRequestParameters(
@@ -57,7 +63,18 @@ abstract class AbstractPayolutionInstallmentAuthorizeRequest
             $parameters['workorderid'] = $dataBag->get('workorder');
         }
 
+        if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId())) {
+            $parameters['narrative_text'] = mb_substr($referenceNumber, 0, 81);
+        }
+
         return array_filter($parameters);
+    }
+
+    protected function isNarrativeTextAllowed(string $salesChannelId): bool
+    {
+        $config = $this->configReader->read($salesChannelId);
+
+        return $config->get(sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYOLUTION_INSTALLMENT), false);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity
