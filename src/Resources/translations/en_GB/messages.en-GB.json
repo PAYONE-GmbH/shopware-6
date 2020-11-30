@@ -131,6 +131,15 @@
             "cardTitle": "Payone secure invoice",
             "birthday": {
                 "label": "Date of birth"
+            },
+            "document": {
+                "clearingReference": "Reference: %reference%",
+                "invoicingDescription": "Please transfer the outstanding amount to the following bank account:",
+                "iban": "IBAN: %iban%",
+                "bic": "BIC: %bic%",
+                "reference": "Reference: %reference%",
+                "holder": "Account Holder: %holder%",
+                "accountNotice": "In order for us to quickly allocate your payment, please transfer the outstanding amount exclusively to the account above."
             }
         }
     },
