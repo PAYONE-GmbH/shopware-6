@@ -57,3 +57,14 @@ Wartung
 * Kompatibilität für Shopware 6.2.x+
 * getestet mit Shopware 6.3.0.2
 * Wir mussten die Unterstützung für Shopware <6.2.0 einstellen.
+
+# 2.1.0
+
+Neue Funktionen
+
+* Neue Zahlungsmethode: PAYONE sichere Rechnung
+* In dem Feld `narrative_text` wird nun die Bestellnummer bei (pre-)authorization-Requests übertragen
+
+Fehlerbehebung(en)
+
+* Überarbeitung der txstatus-Logik, so dass benutzerdefinierte Felder mit den Backend-Optionen übereinstimmen
