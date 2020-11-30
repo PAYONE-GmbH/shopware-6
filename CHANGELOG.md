@@ -64,7 +64,10 @@ Maintenance
 New Features
 
 * New payment method: PAYONE safe invoice
+* In the field `narrative_text` the order number is now transferred for (pre-)authorization requests
 
 Bugfixes
 
 * rework of txstatus logic so that custom fields are in line with backend options
+
+
