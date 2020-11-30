@@ -71,5 +71,9 @@
       "de-DE": "https://www.payone.com",
       "en-GB": "https://www.payone.com"
     }
-  }
+  },
+    "scripts": {
+        "phpcs": "./vendor/bin/php-cs-fixer fix",
+        "phpstan": "./vendor/bin/phpstan analyse src -a ../../../vendor/autoload.php"
+    }
 }

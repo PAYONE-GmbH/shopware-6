@@ -46,13 +46,15 @@ abstract class AbstractPaydirektAuthorizeRequestFactory extends AbstractRequestF
             $context
         );
 
-        // todo: do we need logic here to select the billing address alternatively?
-        $shippingAddress = $context->getCustomer()->getActiveShippingAddress();
+        $shippingAddress = $context->getCustomer() !== null ? $context->getCustomer()->getActiveShippingAddress() : null;
+
+        $referenceNumber = $this->systemRequest->getReferenceNumber($transaction, true);
 
         $this->requests[] = $this->paydirektRequest->getRequestParameters(
             $transaction,
             $context->getContext(),
-            $shippingAddress
+            $shippingAddress,
+            $referenceNumber
         );
 
         return $this->createRequest();

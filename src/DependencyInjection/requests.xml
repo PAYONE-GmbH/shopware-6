@@ -63,11 +63,13 @@
         <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory">
@@ -114,6 +116,7 @@
         <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory">
@@ -125,6 +128,7 @@
         <service id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory">
@@ -136,10 +140,12 @@
         <!-- Debit -->
         <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest">
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Debit\DebitPreAuthorizeRequest">
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory">
@@ -158,11 +164,13 @@
         <service id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\SofortBanking\SofortBankingPreAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory">
@@ -181,11 +189,13 @@
         <service id="PayonePayment\Payone\Request\Eps\EpsAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Eps\EpsPreAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Eps\EpsAuthorizeRequestFactory">
@@ -204,11 +214,13 @@
         <service id="PayonePayment\Payone\Request\IDeal\IDealAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\IDeal\IDealPreAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\IDeal\IDealAuthorizeRequestFactory">
@@ -243,13 +255,13 @@
         </service>
 
         <!-- PayolutionInvoicing -->
-        <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequest">
+        <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingAuthorizeRequest">
             <argument type="service" id="currency.repository" />
             <argument type="service" id="order_address.repository" />
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingAuthorizeRequest">
+        <service id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreAuthorizeRequest">
             <argument type="service" id="currency.repository" />
             <argument type="service" id="order_address.repository" />
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
@@ -294,10 +306,12 @@
 
         <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuthorizeRequest">
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreAuthorizeRequest">
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuthorizeRequestFactory">
@@ -313,13 +327,13 @@
         </service>
 
         <!-- PayolutionDebit -->
-        <service id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitPreAuthorizeRequest">
+        <service id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitAuthorizeRequest">
             <argument type="service" id="currency.repository" />
             <argument type="service" id="order_address.repository" />
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
-        <service id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitAuthorizeRequest">
+        <service id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitPreAuthorizeRequest">
             <argument type="service" id="currency.repository" />
             <argument type="service" id="order_address.repository" />
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
@@ -338,14 +352,16 @@
         </service>
 
         <!-- Paydirekt -->
-        <service id="PayonePayment\Payone\Request\Paydirekt\PaydirektPreAuthorizeRequest">
-            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
-            <argument type="service" id="currency.repository" />
-        </service>
-
         <service id="PayonePayment\Payone\Request\Paydirekt\PaydirektAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\Paydirekt\PaydirektPreAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Paydirekt\PaydirektPreAuthorizeRequestFactory">
@@ -377,11 +393,13 @@
         <service id="PayonePayment\Payone\Request\Trustly\TrustlyAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Trustly\TrustlyPreAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
             <argument type="service" id="currency.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Trustly\TrustlyAuthorizeRequestFactory">
@@ -397,16 +415,18 @@
         </service>
 
         <!-- Secure Invoice -->
-        <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoicePreAuthorizeRequest">
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
-            <argument type="service" id="currency.repository" />
-            <argument type="service" id="order_address.repository" />
-        </service>
-
         <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoiceAuthorizeRequest">
             <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
             <argument type="service" id="currency.repository" />
             <argument type="service" id="order_address.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+        </service>
+
+        <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoicePreAuthorizeRequest">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
+            <argument type="service" id="currency.repository" />
+            <argument type="service" id="order_address.repository" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
         </service>
 
         <service id="PayonePayment\Payone\Request\SecureInvoice\SecureInvoicePreAuthorizeRequestFactory">
