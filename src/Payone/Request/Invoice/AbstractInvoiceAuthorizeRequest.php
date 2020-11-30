@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\Invoice;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -27,14 +28,19 @@ abstract class AbstractInvoiceAuthorizeRequest
     /** @var ConfigReaderInterface */
     private $configReader;
 
+    /** @var LineItemHydratorInterface */
+    private $lineItemHydrator;
+
     public function __construct(
         EntityRepositoryInterface $currencyRepository,
         EntityRepositoryInterface $orderAddressRepository,
-        ConfigReaderInterface $configReader
+        ConfigReaderInterface $configReader,
+        LineItemHydratorInterface $lineItemHydrator
     ) {
         $this->currencyRepository     = $currencyRepository;
         $this->orderAddressRepository = $orderAddressRepository;
         $this->configReader           = $configReader;
+        $this->lineItemHydrator       = $lineItemHydrator;
     }
 
     public function getRequestParameters(
@@ -66,6 +72,8 @@ abstract class AbstractInvoiceAuthorizeRequest
             $parameters['company']          = $company;
             $parameters['businessrelation'] = 'b2c';
         }
+
+        $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order->getLineItems()));
 
         return array_filter($parameters);
     }

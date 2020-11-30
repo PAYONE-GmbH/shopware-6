@@ -428,12 +428,14 @@
             <argument type="service" id="currency.repository" />
             <argument type="service" id="order_address.repository" />
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Invoice\InvoiceAuthorizeRequest">
             <argument type="service" id="currency.repository" />
             <argument type="service" id="order_address.repository" />
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
         </service>
 
         <service id="PayonePayment\Payone\Request\Invoice\InvoicePreAuthorizeRequestFactory">
