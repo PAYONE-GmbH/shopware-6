@@ -74,6 +74,7 @@
   },
   "scripts": {
     "phpcs": "./vendor/bin/php-cs-fixer fix",
-    "phpstan": "./vendor/bin/phpstan analyse src -a ../../../vendor/autoload.php"
+    "phpstan": "./vendor/bin/phpstan analyse src tests -a ../../../vendor/autoload.php",
+    "phpunit": "./../../../vendor/bin/phpunit"
   }
 }
