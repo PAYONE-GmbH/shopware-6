@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Payone\Request\SofortBanking;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
+use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequest;
 use PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory;
+use PayonePayment\Struct\Configuration;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
@@ -44,14 +47,12 @@ class SofortBankingAuthorizeRequestFactoryTest extends TestCase
                 'aid'                    => '',
                 'amount'                 => 10000,
                 'api_version'            => '3.10',
-                'backurl'                => '',
                 'bankcountry'            => 'DE',
                 'city'                   => 'Some City',
                 'clearingtype'           => 'sb',
                 'currency'               => 'EUR',
                 'email'                  => 'first.last@example.com',
                 'encoding'               => 'UTF-8',
-                'errorurl'               => '',
                 'firstname'              => 'First',
                 'integrator_name'        => 'shopware6',
                 'key'                    => '',
@@ -65,7 +66,6 @@ class SofortBankingAuthorizeRequestFactoryTest extends TestCase
                 'request'                => 'authorization',
                 'solution_name'          => 'kellerkinder',
                 'street'                 => 'Some Street 1',
-                'successurl'             => '',
                 'zip'                    => '12345',
             ],
             $request
@@ -122,6 +122,13 @@ class SofortBankingAuthorizeRequestFactoryTest extends TestCase
             )
         );
 
-        return new SofortBankingAuthorizeRequest($this->createMock(RedirectHandler::class), $currencyRepository);
+        $configReader = $this->createMock(ConfigReader::class);
+        $configReader->method('read')->willReturn(
+            new Configuration([
+                sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD) => false,
+            ])
+        );
+
+        return new SofortBankingAuthorizeRequest($this->createMock(RedirectHandler::class), $currencyRepository, $configReader);
     }
 }

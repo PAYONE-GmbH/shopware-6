@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Payone\Request\Debit;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
+use PayonePayment\Components\ConfigReader\ConfigReader;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest;
 use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory;
+use PayonePayment\Struct\Configuration;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
@@ -122,6 +125,13 @@ class DebitAuthorizeRequestFactoryTest extends TestCase
             )
         );
 
-        return new DebitAuthorizeRequest($currencyRepository);
+        $configReader = $this->createMock(ConfigReader::class);
+        $configReader->method('read')->willReturn(
+            new Configuration([
+                sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD) => false,
+            ])
+        );
+
+        return new DebitAuthorizeRequest($currencyRepository, $configReader);
     }
 }
