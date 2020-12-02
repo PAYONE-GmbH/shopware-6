@@ -64,7 +64,7 @@ Maintenance
 New Features
 
 * New payment method: PAYONE safe invoice
-* In the field `narrative_text` the order number is now transferred for (pre-)authorization requests
+* New payment specific setting to provide the shopware order number in the field `narrative_text` for (pre-)authorization requests
 
 Bugfixes
 
