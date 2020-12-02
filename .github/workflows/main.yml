@@ -11,7 +11,7 @@ jobs:
       matrix:
         operating-system: [ubuntu-latest]
         php-versions: ['7.3', '7.4']
-        shopware-versions: ['v6.2.0', 'v6.2.1', 'v6.2.2', 'v6.2.3', 'v6.3.0.0', 'v6.3.0.1', 'v6.3.0.2', 'v6.3.1.0', 'v6.3.1.1', 'v6.3.2.1', 'v6.3.3.0']
+        shopware-versions: ['v6.2.0', 'v6.2.1', 'v6.2.2', 'v6.2.3', 'v6.3.0.0', 'v6.3.0.1', 'v6.3.0.2', 'v6.3.1.0', 'v6.3.1.1', 'v6.3.2.0', 'v6.3.3.0']
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
       mysql:
@@ -51,6 +51,7 @@ jobs:
         cd /tmp/shopware
         git checkout tags/${{ matrix.shopware-versions }}
         php psh.phar init
+        composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-scripts
         php /tmp/shopware/bin/console plugin:refresh
         php /tmp/shopware/bin/console plugin:install --activate PayonePayment
-        /tmp/shopware/vendor/bin/phpunit --configuration custom/plugins/PayonePayment/phpunit.xml.dist
+        /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit --configuration custom/plugins/PayonePayment/phpunit.xml.dist
