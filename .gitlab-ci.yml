@@ -91,10 +91,10 @@ phpunit-620:
     variables:
         SW_VERSION: "v6.2.0"
 
-phpunit-6320:
+phpunit-6321:
     <<: *phpunit_stage
     variables:
-        SW_VERSION: "v6.3.2.0"
+        SW_VERSION: "v6.3.2.1"
 
 phpunit-6330:
     <<: *phpunit_stage
