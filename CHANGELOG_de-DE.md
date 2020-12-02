@@ -63,7 +63,7 @@ Wartung
 Neue Funktionen
 
 * Neue Zahlungsmethode: PAYONE sichere Rechnung
-* In dem Feld `narrative_text` wird nun die Bestellnummer bei (pre-)authorization-Requests übertragen
+* Neue zahlungsspezifische Einstellung zur Übergabe der Shopware-Bestellnummer im Feld `narrative_text` für (Vor-)Autorisierungsanfragen
 
 Fehlerbehebung(en)
 
