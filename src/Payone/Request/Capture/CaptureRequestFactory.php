@@ -58,6 +58,10 @@ class CaptureRequestFactory extends AbstractRequestFactory
             (bool) $parameterBag->get('complete')
         );
 
+        if (empty($transaction->getOrder()->getOrderNumber())) {
+            return $this->createRequest();
+        }
+
         try {
             $requestHandler = $this->requestBuilderFactory->getRequestBuilder(
                 $transaction->getOrderTransaction()->getPaymentMethodId(),
