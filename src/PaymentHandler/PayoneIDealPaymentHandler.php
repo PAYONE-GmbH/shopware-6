@@ -195,7 +195,7 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
     /**
      * @throws PayoneRequestException
      */
-    private function validate(RequestDataBag $dataBag)
+    private function validate(RequestDataBag $dataBag): void
     {
         $bankGroup = $dataBag->get('idealBankGroup');
 

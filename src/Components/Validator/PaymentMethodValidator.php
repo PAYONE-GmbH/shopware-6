@@ -11,7 +11,7 @@ class PaymentMethodValidator extends AbstractComparisonValidator
     /**
      * @return bool always fails as the check is done inside a subscriber
      */
-    protected function compareValues($value1, $value2)
+    protected function compareValues($value1, $value2): bool
     {
         return false;
     }
