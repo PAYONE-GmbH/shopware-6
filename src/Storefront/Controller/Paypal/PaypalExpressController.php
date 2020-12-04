@@ -239,9 +239,8 @@ class PaypalExpressController extends StorefrontController
                 'countryId'              => $countryId,
                 'phone'                  => $response['addpaydata']['telephonenumber'],
                 'city'                   => $response['addpaydata']['shipping_city'],
-                'additionalAddressLine1' => isset($response['addpaydata']['shipping_addressaddition'])
-                    ? $response['addpaydata']['shipping_addressaddition']
-                    : null,
+                'additionalAddressLine1' => $response['addpaydata']['shipping_addressaddition']
+                    ?? null,
             ]),
         ]);
     }

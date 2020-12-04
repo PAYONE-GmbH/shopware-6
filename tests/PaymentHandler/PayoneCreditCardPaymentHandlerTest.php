@@ -47,7 +47,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $this->translator = $this->getContainer()->get('translator');
     }
 
-    public function testRequestOnPay()
+    public function testRequestOnPay(): void
     {
         $configReader = new ConfigReaderMock([
             'creditCardAuthorizationMethod' => 'preauthorization',
@@ -110,7 +110,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $this->assertEquals($response->getTargetUrl(), 'test-url');
     }
 
-    public function testRequestOnPayWithRedirect()
+    public function testRequestOnPayWithRedirect(): void
     {
         $configReader = new ConfigReaderMock([
             'creditCardAuthorizationMethod' => 'preauthorization',
@@ -174,7 +174,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $this->assertEquals($response->getTargetUrl(), 'redirect-url');
     }
 
-    public function testRequestOnPaySavedCard()
+    public function testRequestOnPaySavedCard(): void
     {
         $configReader = new ConfigReaderMock([
             'creditCardAuthorizationMethod' => 'preauthorization',

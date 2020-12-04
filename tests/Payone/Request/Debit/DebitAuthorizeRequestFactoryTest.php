@@ -33,7 +33,7 @@ class DebitAuthorizeRequestFactoryTest extends TestCase
 {
     use RequestFactoryTestTrait;
 
-    public function testCorrectRequestParameters()
+    public function testCorrectRequestParameters(): void
     {
         $factory = new DebitAuthorizeRequestFactory($this->getDebitAuthorizeRequest(), $this->getCustomerRequest(), $this->getSystemRequest());
 

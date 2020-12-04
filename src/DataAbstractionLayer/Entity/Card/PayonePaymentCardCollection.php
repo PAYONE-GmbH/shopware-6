@@ -7,8 +7,8 @@ namespace PayonePayment\DataAbstractionLayer\Entity\Card;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void             add(PayonePaymentCardEntity $entity)
- * @method void             set(string $key, PayonePaymentCardEntity $entity)
+ * @method void                         add(PayonePaymentCardEntity $entity)
+ * @method void                         set(string $key, PayonePaymentCardEntity $entity)
  * @method PayonePaymentCardEntity[]    getIterator()
  * @method PayonePaymentCardEntity[]    getElements()
  * @method null|PayonePaymentCardEntity get(string $key)
