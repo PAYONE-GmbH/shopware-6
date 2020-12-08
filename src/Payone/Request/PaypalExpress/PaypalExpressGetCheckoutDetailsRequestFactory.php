@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\Paypal;
+namespace PayonePayment\Payone\Request\PaypalExpress;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Request\AbstractRequestFactory;
@@ -10,16 +10,16 @@ use PayonePayment\Payone\Request\System\SystemRequest;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaypalGetExpressCheckoutDetailsRequestFactory extends AbstractRequestFactory
+class PaypalExpressGetCheckoutDetailsRequestFactory extends AbstractRequestFactory
 {
-    /** @var PaypalGetExpressCheckoutDetailsRequest */
+    /** @var PaypalExpressGetCheckoutDetailsRequest */
     private $expressCheckoutRequest;
 
     /** @var SystemRequest */
     private $systemRequest;
 
     public function __construct(
-        PaypalGetExpressCheckoutDetailsRequest $expressCheckoutRequest,
+        PaypalExpressGetCheckoutDetailsRequest $expressCheckoutRequest,
         SystemRequest $systemRequest
     ) {
         $this->expressCheckoutRequest = $expressCheckoutRequest;
@@ -33,7 +33,7 @@ class PaypalGetExpressCheckoutDetailsRequestFactory extends AbstractRequestFacto
     ): array {
         $this->requests[] = $this->systemRequest->getRequestParameters(
             $context->getSalesChannel()->getId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYPAL,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYPAL_EXPRESS,
             $context->getContext()
         );
 

@@ -11,8 +11,8 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
-use PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\PaypalExpress\PaypalExpressAuthorizeRequestFactory;
+use PayonePayment\Payone\Request\PaypalExpress\PaypalExpressPreAuthorizeRequestFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -28,10 +28,10 @@ use Throwable;
 
 class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var PaypalPreAuthorizeRequestFactory */
+    /** @var PaypalExpressPreAuthorizeRequestFactory */
     private $preAuthRequestFactory;
 
-    /** @var PaypalAuthorizeRequestFactory */
+    /** @var PaypalExpressAuthorizeRequestFactory */
     private $authRequestFactory;
 
     /** @var PayoneClientInterface */
@@ -48,8 +48,8 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        PaypalPreAuthorizeRequestFactory $preAuthRequestFactory,
-        PaypalAuthorizeRequestFactory $authRequestFactory,
+        PaypalExpressPreAuthorizeRequestFactory $preAuthRequestFactory,
+        PaypalExpressAuthorizeRequestFactory $authRequestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
