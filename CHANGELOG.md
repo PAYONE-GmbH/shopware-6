@@ -64,7 +64,10 @@ Maintenance
 New Features
 
 * New payment method: PAYONE safe invoice
+* New payment specific setting to provide the shopware order number in the field `narrative_text` for (pre-)authorization requests
 
 Bugfixes
 
 * rework of txstatus logic so that custom fields are in line with backend options
+
+

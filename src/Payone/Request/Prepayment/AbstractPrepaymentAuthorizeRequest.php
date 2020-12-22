@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Request\Prepayment;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
-use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -19,13 +19,13 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 abstract class AbstractPrepaymentAuthorizeRequest
 {
     /** @var EntityRepositoryInterface */
-    private $currencyRepository;
+    protected $currencyRepository;
 
     /** @var EntityRepositoryInterface */
-    private $orderAddressRepository;
+    protected $orderAddressRepository;
 
     /** @var ConfigReaderInterface */
-    private $configReader;
+    protected $configReader;
 
     public function __construct(
         EntityRepositoryInterface $currencyRepository,
@@ -52,7 +52,18 @@ abstract class AbstractPrepaymentAuthorizeRequest
             'reference'    => $referenceNumber,
         ];
 
+        if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId())) {
+            $parameters['narrative_text'] = mb_substr($transaction->getOrder()->getOrderNumber(), 0, 81);
+        }
+
         return array_filter($parameters);
+    }
+
+    protected function isNarrativeTextAllowed(string $salesChannelId): bool
+    {
+        $config = $this->configReader->read($salesChannelId);
+
+        return $config->get(sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_PREPAYMENT), false);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity
@@ -67,19 +78,5 @@ abstract class AbstractPrepaymentAuthorizeRequest
         }
 
         return $currency;
-    }
-
-    private function getBillingAddress(OrderEntity $order, Context $context): OrderAddressEntity
-    {
-        $criteria = new Criteria([$order->getBillingAddressId()]);
-
-        /** @var null|OrderAddressEntity $address */
-        $address = $this->orderAddressRepository->search($criteria, $context)->first();
-
-        if (null === $address) {
-            throw new RuntimeException('missing order customer billing address');
-        }
-
-        return $address;
     }
 }

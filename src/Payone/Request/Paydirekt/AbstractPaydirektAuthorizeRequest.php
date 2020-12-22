@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Paydirekt;
 
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
@@ -18,23 +20,29 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 abstract class AbstractPaydirektAuthorizeRequest
 {
     /** @var RedirectHandler */
-    private $redirectHandler;
+    protected $redirectHandler;
 
     /** @var EntityRepositoryInterface */
-    private $currencyRepository;
+    protected $currencyRepository;
+
+    /** @var ConfigReaderInterface */
+    protected $configReader;
 
     public function __construct(
         RedirectHandler $redirectHandler,
-        EntityRepositoryInterface $currencyRepository
+        EntityRepositoryInterface $currencyRepository,
+        ConfigReaderInterface $configReader
     ) {
         $this->redirectHandler    = $redirectHandler;
         $this->currencyRepository = $currencyRepository;
+        $this->configReader       = $configReader;
     }
 
     public function getRequestParameters(
         PaymentTransaction $transaction,
         Context $context,
-        CustomerAddressEntity $shippingAddress
+        ?CustomerAddressEntity $shippingAddress,
+        string $referenceNumber
     ): array {
         if (empty($transaction->getReturnUrl())) {
             throw new InvalidOrderException($transaction->getOrder()->getId());
@@ -53,7 +61,22 @@ abstract class AbstractPaydirektAuthorizeRequest
             'backurl'      => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),
         ];
 
-        return $this->applyShippingParameters($parameters, $shippingAddress);
+        if ($shippingAddress !== null) {
+            $parameters = $this->applyShippingParameters($parameters, $shippingAddress);
+        }
+
+        if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId())) {
+            $parameters['narrative_text'] = mb_substr($transaction->getOrder()->getOrderNumber(), 0, 81);
+        }
+
+        return array_filter($parameters);
+    }
+
+    protected function isNarrativeTextAllowed(string $salesChannelId): bool
+    {
+        $config = $this->configReader->read($salesChannelId);
+
+        return $config->get(sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYDIREKT), false);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity
@@ -79,7 +102,7 @@ abstract class AbstractPaydirektAuthorizeRequest
             'shipping_street'    => $shippingAddress->getStreet(),
             'shipping_zip'       => $shippingAddress->getZipcode(),
             'shipping_city'      => $shippingAddress->getCity(),
-            'shipping_country'   => $shippingAddress->getCountry() ? $shippingAddress->getCountry()->getIso() : null,
+            'shipping_country'   => $shippingAddress->getCountry() !== null ? $shippingAddress->getCountry()->getIso() : null,
         ]);
 
         return array_merge($parameters, $shippingParameters);

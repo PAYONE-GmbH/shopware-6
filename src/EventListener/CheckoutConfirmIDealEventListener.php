@@ -69,7 +69,7 @@ class CheckoutConfirmIDealEventListener implements EventSubscriberInterface
 
         $billingAddress = $customer->getActiveBillingAddress();
 
-        if (null === $billingAddress) {
+        if (null === $billingAddress || null === $billingAddress->getCountry()) {
             return false;
         }
 

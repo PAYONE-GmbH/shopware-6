@@ -68,11 +68,11 @@ class SystemRequest
         ];
     }
 
-    public function getReferenceNumber(PaymentTransaction $transaction, bool $generateNew = false): ?string
+    public function getReferenceNumber(PaymentTransaction $transaction, bool $generateNew = false): string
     {
         $latestReferenceNumber = $this->getLatestReferenceNumber($transaction);
 
-        if ($latestReferenceNumber && $generateNew === false) {
+        if (!empty($latestReferenceNumber) && $generateNew === false) {
             return $latestReferenceNumber;
         }
 

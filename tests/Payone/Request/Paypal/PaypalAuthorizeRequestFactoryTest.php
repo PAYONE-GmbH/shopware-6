@@ -6,11 +6,14 @@ namespace PayonePayment\Test\Payone\Request\Paypal;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\CartHasher\CartHasher;
+use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
+use PayonePayment\Struct\Configuration;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
@@ -127,6 +130,13 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
             )
         );
 
-        return new PaypalAuthorizeRequest($this->createMock(RedirectHandler::class), $currencyRepository);
+        $configReader = $this->createMock(ConfigReader::class);
+        $configReader->method('read')->willReturn(
+            new Configuration([
+                sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD) => false,
+            ])
+        );
+
+        return new PaypalAuthorizeRequest($this->createMock(RedirectHandler::class), $currencyRepository, $configReader);
     }
 }

@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\Request\PayolutionInvoicing;
 
 use DateTime;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -20,13 +21,13 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 abstract class AbstractPayolutionInvoicingAuthorizeRequest
 {
     /** @var EntityRepositoryInterface */
-    private $currencyRepository;
+    protected $currencyRepository;
 
     /** @var EntityRepositoryInterface */
-    private $orderAddressRepository;
+    protected $orderAddressRepository;
 
     /** @var ConfigReaderInterface */
-    private $configReader;
+    protected $configReader;
 
     public function __construct(
         EntityRepositoryInterface $currencyRepository,
@@ -75,7 +76,18 @@ abstract class AbstractPayolutionInvoicingAuthorizeRequest
             }
         }
 
+        if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId())) {
+            $parameters['narrative_text'] = mb_substr($transaction->getOrder()->getOrderNumber(), 0, 81);
+        }
+
         return array_filter($parameters);
+    }
+
+    protected function isNarrativeTextAllowed(string $salesChannelId): bool
+    {
+        $config = $this->configReader->read($salesChannelId);
+
+        return $config->get(sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYOLUTION_INVOICING), false);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity

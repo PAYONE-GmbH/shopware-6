@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Paypal;
 
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -17,17 +19,22 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 abstract class AbstractPaypalAuthorizeRequest
 {
     /** @var RedirectHandler */
-    private $redirectHandler;
+    protected $redirectHandler;
 
     /** @var EntityRepositoryInterface */
-    private $currencyRepository;
+    protected $currencyRepository;
+
+    /** @var ConfigReaderInterface */
+    protected $configReader;
 
     public function __construct(
         RedirectHandler $redirectHandler,
-        EntityRepositoryInterface $currencyRepository
+        EntityRepositoryInterface $currencyRepository,
+        ConfigReaderInterface $configReader
     ) {
         $this->redirectHandler    = $redirectHandler;
         $this->currencyRepository = $currencyRepository;
+        $this->configReader       = $configReader;
     }
 
     public function getRequestParameters(
@@ -42,7 +49,7 @@ abstract class AbstractPaypalAuthorizeRequest
 
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
-        return array_filter([
+        $parameters = [
             'clearingtype' => 'wlt',
             'wallettype'   => 'PPE',
             'amount'       => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision()))),
@@ -52,7 +59,20 @@ abstract class AbstractPaypalAuthorizeRequest
             'errorurl'     => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),
             'backurl'      => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),
             'workorderid'  => $workOrderId,
-        ]);
+        ];
+
+        if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId())) {
+            $parameters['narrative_text'] = mb_substr($transaction->getOrder()->getOrderNumber(), 0, 81);
+        }
+
+        return array_filter($parameters);
+    }
+
+    protected function isNarrativeTextAllowed(string $salesChannelId): bool
+    {
+        $config = $this->configReader->read($salesChannelId);
+
+        return $config->get(sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_PAYPAL), false);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity

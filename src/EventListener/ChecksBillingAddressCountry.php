@@ -22,7 +22,7 @@ trait ChecksBillingAddressCountry
 
         $billingAddress = $customer->getActiveBillingAddress();
 
-        if (null === $billingAddress) {
+        if (null === $billingAddress || $billingAddress->getCountry() === null) {
             return false;
         }
 

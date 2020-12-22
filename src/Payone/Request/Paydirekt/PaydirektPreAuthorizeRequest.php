@@ -13,9 +13,10 @@ class PaydirektPreAuthorizeRequest extends AbstractPaydirektAuthorizeRequest
     public function getRequestParameters(
         PaymentTransaction $transaction,
         Context $context,
-        CustomerAddressEntity $shippingAddress
+        ?CustomerAddressEntity $shippingAddress,
+        string $referenceNumber
     ): array {
-        return array_merge(parent::getRequestParameters($transaction, $context, $shippingAddress), [
+        return array_merge(parent::getRequestParameters($transaction, $context, $shippingAddress, $referenceNumber), [
             'request' => 'preauthorization',
         ]);
     }
