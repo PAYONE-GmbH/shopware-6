@@ -109,7 +109,7 @@ class PayoneSecureInvoicePaymentHandler extends AbstractPayonePaymentHandler imp
         $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
             $this->getBaseCustomFields($response['status']),
             [
-                CustomFieldInstaller::CAPTURE_MODE   => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+                CustomFieldInstaller::CAPTURE_MODE => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
 
                 // Set clearing type explicitly
                 // todo: evaluate moving this to parent::getBaseCustomFields()
