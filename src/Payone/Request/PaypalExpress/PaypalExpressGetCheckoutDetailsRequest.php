@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\Paypal;
+namespace PayonePayment\Payone\Request\PaypalExpress;
 
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\Cart;
@@ -11,7 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
-class PaypalSetExpressCheckoutRequest
+class PaypalExpressGetCheckoutDetailsRequest
 {
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
@@ -21,7 +21,7 @@ class PaypalSetExpressCheckoutRequest
         $this->currencyRepository = $currencyRepository;
     }
 
-    public function getRequestParameters(Cart $cart, Context $context, string $returnUrl): array
+    public function getRequestParameters(Cart $cart, Context $context, string $workOrderId): array
     {
         $currency = $this->getOrderCurrency($context);
 
@@ -29,12 +29,10 @@ class PaypalSetExpressCheckoutRequest
             'request'             => 'genericpayment',
             'clearingtype'        => 'wlt',
             'wallettype'          => 'PPE',
-            'add_paydata[action]' => 'setexpresscheckout',
-            'amount'              => (int) round(($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision()))),
+            'add_paydata[action]' => 'getexpresscheckoutdetails',
+            'amount'              => (int) ($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision())),
             'currency'            => $currency->getIsoCode(),
-            'successurl'          => $returnUrl . '?state=success',
-            'errorurl'            => $returnUrl . '?state=error',
-            'backurl'             => $returnUrl . '?state=cancel',
+            'workorderid'         => $workOrderId,
         ];
     }
 

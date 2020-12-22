@@ -2,7 +2,7 @@
   "name": "payone-gmbh/shopware-6",
   "type": "shopware-platform-plugin",
   "description": "PAYONE Payment Plugin",
-  "version": "2.1.0-beta.2",
+  "version": "2.1.0-beta.3",
   "license": "MIT",
   "authors": [
     {
@@ -71,5 +71,10 @@
       "de-DE": "https://www.payone.com",
       "en-GB": "https://www.payone.com"
     }
+  },
+  "scripts": {
+    "phpcs": "./vendor/bin/php-cs-fixer fix",
+    "phpstan": "./vendor/bin/phpstan analyse src tests -a ../../../vendor/autoload.php",
+    "phpunit": "./../../../vendor/bin/phpunit"
   }
 }

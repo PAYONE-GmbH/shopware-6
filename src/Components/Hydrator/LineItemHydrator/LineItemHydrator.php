@@ -6,7 +6,7 @@ namespace PayonePayment\Components\Hydrator\LineItemHydrator;
 
 use Exception;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
-use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
+use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
@@ -40,7 +40,7 @@ class LineItemHydrator implements LineItemHydratorInterface
                 continue;
             }
 
-            $taxes = $lineItem->getPrice() ? $lineItem->getPrice()->getCalculatedTaxes() : null;
+            $taxes = $lineItem->getPrice() !== null ? $lineItem->getPrice()->getCalculatedTaxes() : null;
 
             if (null === $taxes || null === $taxes->first()) {
                 continue;
@@ -52,7 +52,7 @@ class LineItemHydrator implements LineItemHydratorInterface
                     ++$counter,
                     $lineItem,
                     $currency,
-                    $taxes,
+                    $taxes->first(),
                     $orderLine['quantity']
                 )
             );
@@ -72,7 +72,7 @@ class LineItemHydrator implements LineItemHydratorInterface
                 continue;
             }
 
-            $taxes = $lineItem->getPrice() ? $lineItem->getPrice()->getCalculatedTaxes() : null;
+            $taxes = $lineItem->getPrice() !== null ? $lineItem->getPrice()->getCalculatedTaxes() : null;
 
             if (null === $taxes || null === $taxes->first()) {
                 continue;
@@ -84,7 +84,7 @@ class LineItemHydrator implements LineItemHydratorInterface
                     ++$counter,
                     $lineItem,
                     $currency,
-                    $taxes,
+                    $taxes->first(),
                     $lineItem->getQuantity()
                 )
             );
@@ -123,7 +123,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         return false;
     }
 
-    private function getLineItemRequest(int $index, OrderLineItemEntity $lineItemEntity, CurrencyEntity $currencyEntity, CalculatedTaxCollection $taxCollection, int $quantity): array
+    private function getLineItemRequest(int $index, OrderLineItemEntity $lineItemEntity, CurrencyEntity $currencyEntity, CalculatedTax $calculatedTax, int $quantity): array
     {
         $productNumber = is_array($lineItemEntity->getPayload()) && array_key_exists('productNumber', $lineItemEntity->getPayload())
             ? $lineItemEntity->getPayload()['productNumber']
@@ -135,7 +135,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             'pr[' . $index . ']' => (int) round($lineItemEntity->getUnitPrice() * (10 ** $currencyEntity->getDecimalPrecision())),
             'no[' . $index . ']' => $quantity,
             'de[' . $index . ']' => $lineItemEntity->getLabel(),
-            'va[' . $index . ']' => (int) round($taxCollection->first()->getTaxRate() * (10 ** $currencyEntity->getDecimalPrecision())),
+            'va[' . $index . ']' => (int) round($calculatedTax->getTaxRate() * (10 ** $currencyEntity->getDecimalPrecision())),
         ];
     }
 }
