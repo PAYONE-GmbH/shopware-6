@@ -25,6 +25,7 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
 
     public const PAYONE_CLEARING_FNC = 'fnc';
     public const PAYONE_CLEARING_VOR = 'vor';
+    public const PAYONE_CLEARING_REC = 'rec';
 
     public const PAYONE_FINANCING_PYV = 'PYV';
     public const PAYONE_FINANCING_PYS = 'PYS';

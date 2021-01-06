@@ -81,6 +81,46 @@
             <br><br><strong><em>{{ 'PayonePayment.prepayment.document.accountNotice' | trans }}</em></strong><br>
         {% endif %}
     {% endif %}
+
+    {% if constant('PayonePayment\\PaymentMethod\\PayoneSecureInvoice::UUID') == order.transactions.first.paymentMethod.id %}
+        {% block document_payment_payone_secure_invoice_clearing_reference %}
+            {% if order.transactions.first.customFields.payone_clearing_bank_account.Reference %}
+                <br>
+                {{ 'PayonePayment.secureInvoice.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_bank_account.Reference}) }}<br>
+            {% endif %}
+        {% endblock %}
+
+        {% if order.transactions.first.customFields.payone_clearing_bank_account.Iban %}
+            <br>
+            <strong>{{ 'PayonePayment.secureInvoice.document.invoicingDescription' | trans }}</strong><br>
+            {% if order.transactions.first.customFields.payone_clearing_bank_account.Bic %}
+                {% block document_payment_payone_secure_invoice_holder %}
+                    <br>
+                    {{ 'PayonePayment.secureInvoice.document.holder' | trans({'%holder%': order.transactions.first.customFields.payone_clearing_bank_account.BankAccountHolder}) }}
+                {% endblock %}
+            {% endif %}
+
+            {% block document_payment_payone_secure_invoice_iban %}
+                <br>
+                {{ 'PayonePayment.secureInvoice.document.iban' | trans({'%iban%': order.transactions.first.customFields.payone_clearing_bank_account.Iban}) }}
+            {% endblock %}
+
+            {% if order.transactions.first.customFields.payone_clearing_bank_account.Bic %}
+                {% block document_payment_payone_secure_invoice_bic %}
+                    <br>
+                    {{ 'PayonePayment.secureInvoice.document.bic' | trans({'%bic%': order.transactions.first.customFields.payone_clearing_bank_account.Bic}) }}
+                {% endblock %}
+            {% endif %}
+
+            {% if order.transactions.first.customFields.payone_clearing_bank_account.Reference %}
+                {% block document_payment_payone_secure_invoice_reference %}
+                    <br>
+                    {{ 'PayonePayment.secureInvoice.document.reference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_bank_account.Reference}) }}
+                {% endblock %}
+            {% endif %}
+            <br><br><strong><em>{{ 'PayonePayment.secureInvoice.document.accountNotice' | trans }}</em></strong><br>
+        {% endif %}
+    {% endif %}
 {% endblock %}
 
 {% block document_footer_bank_name %}
