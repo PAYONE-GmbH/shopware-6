@@ -164,7 +164,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
     /**
      * @throws PayoneRequestException
      */
-    private function validate(RequestDataBag $dataBag)
+    private function validate(RequestDataBag $dataBag): void
     {
         if ($dataBag->get('payolutionConsent') !== 'on') {
             throw new PayoneRequestException('No payolutionConsent');

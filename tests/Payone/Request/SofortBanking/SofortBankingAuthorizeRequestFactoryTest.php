@@ -34,7 +34,7 @@ class SofortBankingAuthorizeRequestFactoryTest extends TestCase
 {
     use RequestFactoryTestTrait;
 
-    public function testCorrectRequestParameters()
+    public function testCorrectRequestParameters(): void
     {
         $factory = new SofortBankingAuthorizeRequestFactory($this->getSofortBankingAuthorizeRequest(), $this->getCustomerRequest(), $this->getSystemRequest());
 

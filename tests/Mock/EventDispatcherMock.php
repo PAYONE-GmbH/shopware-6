@@ -8,7 +8,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class EventDispatcherMock implements EventDispatcherInterface
 {
-    public function dispatch($event)
+    public function dispatch($event): void
     {
     }
 }

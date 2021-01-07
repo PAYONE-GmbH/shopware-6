@@ -57,7 +57,7 @@ abstract class AbstractTrustlyAuthorizeRequest
             'backurl'                => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),
         ];
 
-        if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId())) {
+        if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId()) && !empty($transaction->getOrder()->getOrderNumber())) {
             $parameters['narrative_text'] = mb_substr($transaction->getOrder()->getOrderNumber(), 0, 81);
         }
 

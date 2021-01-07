@@ -76,7 +76,7 @@ abstract class AbstractPayolutionInvoicingAuthorizeRequest
             }
         }
 
-        if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId())) {
+        if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId()) && !empty($transaction->getOrder()->getOrderNumber())) {
             $parameters['narrative_text'] = mb_substr($transaction->getOrder()->getOrderNumber(), 0, 81);
         }
 

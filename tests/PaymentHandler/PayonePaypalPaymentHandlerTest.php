@@ -42,7 +42,7 @@ class PayonePaypalPaymentHandlerTest extends TestCase
         $this->translator = $this->getContainer()->get('translator');
     }
 
-    public function testRequestOnPay()
+    public function testRequestOnPay(): void
     {
         $configReader = new ConfigReaderMock([
             'paypalAuthorizationMethod' => 'authorization',

@@ -43,7 +43,7 @@ class RefundRequestFactoryTest extends TestCase
 {
     use RequestFactoryTestTrait;
 
-    public function testCorrectFullRequestParameters()
+    public function testCorrectFullRequestParameters(): void
     {
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestBuilderFactory([]), new NullLogger());
 
@@ -73,7 +73,7 @@ class RefundRequestFactoryTest extends TestCase
         $this->assertArrayHasKey('solution_version', $request);
     }
 
-    public function testCorrectPartialRequestParameters()
+    public function testCorrectPartialRequestParameters(): void
     {
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestBuilderFactory([]), new NullLogger());
 

@@ -35,7 +35,7 @@ class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
 {
     use RequestFactoryTestTrait;
 
-    public function testCorrectRequestParameters()
+    public function testCorrectRequestParameters(): void
     {
         $factory = new CreditCardPreAuthorizeRequestFactory($this->getPreAuthorizeRequest(), $this->getCustomerRequest(), $this->getSystemRequest());
 
