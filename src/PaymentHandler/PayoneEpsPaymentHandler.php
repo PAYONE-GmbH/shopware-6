@@ -213,7 +213,7 @@ class PayoneEpsPaymentHandler extends AbstractPayonePaymentHandler implements As
     /**
      * @throws PayoneRequestException
      */
-    private function validate(RequestDataBag $dataBag)
+    private function validate(RequestDataBag $dataBag): void
     {
         $bankGroup = $dataBag->get('epsBankGroup');
 

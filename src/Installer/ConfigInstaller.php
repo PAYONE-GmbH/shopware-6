@@ -113,7 +113,7 @@ class ConfigInstaller implements InstallerInterface
         // Nothing to do here
     }
 
-    private function setDefaultValues(Context $context)
+    private function setDefaultValues(Context $context): void
     {
         $domain = 'PayonePayment.settings.';
 

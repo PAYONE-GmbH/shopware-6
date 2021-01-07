@@ -36,7 +36,7 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
 {
     use RequestFactoryTestTrait;
 
-    public function testCorrectRequestParameters()
+    public function testCorrectRequestParameters(): void
     {
         $factory = new PaypalAuthorizeRequestFactory(
             $this->getPaypalAuthorizeRequest(),
