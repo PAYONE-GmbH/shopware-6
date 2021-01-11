@@ -63,6 +63,7 @@ Wartung
 Neue Funktionen
 
 * Neue Zahlungsmethode: PAYONE sichere Rechnung
+* Neue Zahlungsmethode: Trustly
 * Neue zahlungsspezifische Einstellung zur Übergabe der Shopware-Bestellnummer im Feld `narrative_text` für (Vor-)Autorisierungsanfragen
 
 Fehlerbehebung(en)

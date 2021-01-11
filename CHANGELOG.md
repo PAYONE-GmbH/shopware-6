@@ -62,12 +62,15 @@ Maintenance
 # 2.1.0
 
 New Features
-
-* New payment method: PAYONE safe invoice
-* New payment specific setting to provide the shopware order number in the field `narrative_text` for (pre-)authorization requests
-
-Bugfixes
-
-* rework of txstatus logic so that custom fields are in line with backend options
-
-
+ 
+* new payment method: PAYONE safe invoice
+* new payment method: Trustly
+* added optional submission of order number in the "narrative_text" parameter. This will show the shopware order number on the customer's bank statement or payment info (depending on payment method). If left out, our internal txid is shown.
+ 
+Bugfix(es)
+ 
+* fixed payone_allow_refund and payone_allow_capture custom fields to better reflect the current status of an order. This can help when issuing captures and debits via third party systems
+ 
+Maintenance
+ 
+* tested with Shopware 6.3.4.1
