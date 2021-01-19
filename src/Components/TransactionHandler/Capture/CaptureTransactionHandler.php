@@ -108,7 +108,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
      */
     private function updateClearingBankAccountData(array $payoneResponse): void
     {
-        $currentClearingBankAccountData = $this->paymentTransaction->getCustomFields()[CustomFieldInstaller::CLEARING_BANK_ACCOUNT];
+        $currentClearingBankAccountData = $this->paymentTransaction->getCustomFields()[CustomFieldInstaller::CLEARING_BANK_ACCOUNT] ?? [];
         $newClearingBankAccountData     = $payoneResponse['clearing']['BankAccount'] ?? null;
 
         if (!empty($newClearingBankAccountData)) {
