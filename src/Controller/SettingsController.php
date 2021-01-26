@@ -357,6 +357,24 @@ class SettingsController extends AbstractController
 
                 break;
 
+            case Handler\PayonePaydirektPaymentHandler::class:
+                return [
+                    'request'                             => 'genericpayment',
+                    'clearingtype'                        => 'wlt',
+                    'wallettype'                          => 'PDT',
+                    'amount'                              => 10000,
+                    'currency'                            => 'EUR',
+                    'reference'                           => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'add_paydata[action]'                 => 'checkout',
+                    'add_paydata[type]'                   => 'order',
+                    'add_paydata[web_url_shipping_terms]' => 'https://www.payone.com',
+                    'successurl'                          => 'https://www.payone.com',
+                    'backurl'                             => 'https://www.payone.com',
+                    'errorurl'                            => 'https://www.payone.com',
+                ];
+
+                break;
+
             default:
                 $this->logger->error(sprintf('There is no test data defined for payment class %s', $paymentClass));
                 throw new RuntimeException(sprintf('There is no test data defined for payment class %s', $paymentClass));
