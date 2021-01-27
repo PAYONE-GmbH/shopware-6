@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\CardRepository;
 
 use DateTime;
+use PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
@@ -13,6 +14,7 @@ interface CardRepositoryInterface
 {
     public function saveCard(
         CustomerEntity $transaction,
+        string $cardholder,
         string $truncatedCardPan,
         string $pseudoCardPan,
         DateTime $expiresAt,
@@ -29,4 +31,10 @@ interface CardRepositoryInterface
         CustomerEntity $customer,
         Context $context
     ): EntitySearchResult;
+
+    public function getExistingCard(
+        CustomerEntity $customer,
+        string $pseudoCardPan,
+        Context $context
+    ): ?PayonePaymentCardEntity;
 }

@@ -34,6 +34,14 @@
 
                 <div class="form-row col-md-12 credit-card-input">
                     <div class="form-group col-md-4">
+                        <label for="cardholderInput" class="form-label">{{ "PayonePayment.creditCard.cardholder" | trans }}</label>
+                        <input id="cardholderInput" name="cardholder" form="confirmOrderForm" class="form-control" type="text" minlength="3" maxlength="50" pattern="^[A-Za-z \-äöüÄÖÜß]{3,50}$" required>
+                        <small class="form-text text-muted">{{ "PayonePayment.creditCard.cardholderHelpText" | trans }}</small>
+                    </div>
+                </div>
+
+                <div class="form-row col-md-12 credit-card-input">
+                    <div class="form-group col-md-4">
                         <label class="form-label" for="cardpanInput">{{ "PayonePayment.creditCard.cardNumber" | trans }}</label>
                         <span class="form-control iframe" id="cardpan"></span>
                     </div>

@@ -41,7 +41,10 @@ class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
 
         $salesChannelContext = $this->getSalesChannelContext();
 
-        $request = $factory->getRequestParameters($this->getPaymentTransaction(), new RequestDataBag(['pseudoCardPan' => 'my-pan']), $salesChannelContext);
+        $request = $factory->getRequestParameters($this->getPaymentTransaction(), new RequestDataBag([
+            'cardholder'    => 'First Last',
+            'pseudoCardPan' => 'my-pan',
+        ]), $salesChannelContext);
 
         Assert::assertArraySubset(
             [
@@ -61,6 +64,7 @@ class CreditCardPreAuthorizeRequestFactoryTest extends TestCase
                 'mid'             => '',
                 'mode'            => '',
                 'portalid'        => '',
+                'cardholder'      => 'First Last',
                 'pseudocardpan'   => 'my-pan',
                 'reference'       => '1',
                 'request'         => 'preauthorization',

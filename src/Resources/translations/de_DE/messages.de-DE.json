@@ -9,7 +9,10 @@
             "securityCode": "CVV",
             "expiryDate": "Gültig bis",
             "savedCards": "Gespeicherte Karte",
-            "iframeError": "Bitte prüfen Sie, ob alle Felder korrekt und vollständig ausgefüllt sind."
+            "iframeError": "Bitte prüfen Sie, ob alle Felder korrekt und vollständig ausgefüllt sind.",
+            "cardholder": "Karteninhaber",
+            "cardholderHelpText": "wie auf der Karte aufgedruckt",
+            "invalidCardholderError": "Die Angabe des Karteninhabers ist nicht korrekt, bitte prüfen Sie die Eingabe. Geben Sie den Karteninhaber wie aufgedruckt ein. Sonderzeichen sollten vermieden werden."
         },
         "debit": {
             "accountOwner": "Kontoinhaber",

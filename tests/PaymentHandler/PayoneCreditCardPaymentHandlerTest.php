@@ -59,6 +59,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository        = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
+        $dataBag->set('cardholder', 'John Doe');
         $dataBag->set('truncatedCardPan', '');
         $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
         $dataBag->set('savedPseudoCardPan', '');
@@ -122,6 +123,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository        = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
+        $dataBag->set('cardholder', 'John Doe');
         $dataBag->set('truncatedCardPan', '');
         $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
         $dataBag->set('savedPseudoCardPan', '');
@@ -186,6 +188,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository        = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
+        $dataBag->set('cardholder', 'John Doe');
         $dataBag->set('truncatedCardPan', '');
         $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
         $dataBag->set('savedPseudoCardPan', 'saved-pan');
