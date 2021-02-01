@@ -22,6 +22,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -71,9 +72,10 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
-        PaymentStateHandlerInterface $stateHandler
+        PaymentStateHandlerInterface $stateHandler,
+        RequestStack $requestStack
     ) {
-        parent::__construct($configReader, $lineItemRepository);
+        parent::__construct($configReader, $lineItemRepository, $requestStack);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;
@@ -87,6 +89,8 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
      */
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
     {
+        $requestData = $this->fetchRequestData();
+
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
@@ -97,7 +101,7 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         try {
-            $this->validate($dataBag);
+            $this->validate($requestData);
         } catch (PayoneRequestException $e) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
@@ -112,7 +116,7 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
 
         $request = $factory->getRequestParameters(
             $paymentTransaction,
-            $dataBag,
+            $requestData,
             $salesChannelContext
         );
 
@@ -163,11 +167,17 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
      */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
-        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
+        if (static::isNeverCapturable($transactionData, $customFields)) {
             return false;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+
+        if ($txAction === TransactionStatusService::ACTION_PAID) {
+            return true;
+        }
+
+        return static::matchesIsCapturableDefaults($transactionData, $customFields);
     }
 
     /**
@@ -175,17 +185,17 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
      */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
-            return true;
+        if (static::isNeverRefundable($transactionData, $customFields)) {
+            return false;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+        return static::matchesIsRefundableDefaults($transactionData, $customFields);
     }
 
     /**
      * @throws PayoneRequestException
      */
-    private function validate(RequestDataBag $dataBag)
+    private function validate(RequestDataBag $dataBag): void
     {
         $bankGroup = $dataBag->get('idealBankGroup');
 

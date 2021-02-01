@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
 
     <card>
-        <title>Basic configuration</title>
+        <title>Basic Configuration</title>
         <title lang="de-DE">Grundeinstellungen</title>
 
         <name>basic_configuration</name>
@@ -100,7 +100,7 @@
             <label>Transition for PARTIAL_REFUND</label>
             <label lang="de-DE">Statuswechsel für PARTIAL_REFUND</label>
         </input-field>
-        
+
         <input-field type="single-select">
             <name>paymentStatusDebit</name>
             <label>Transition for DEBIT</label>
@@ -197,6 +197,57 @@
                 </option>
             </options>
         </input-field>
+
+        <input-field type="bool">
+            <name>creditCardProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Prepayment</title>
+        <title lang="de-DE">Vorkasse</title>
+
+        <name>payment_prepayment</name>
+
+        <input-field>
+            <name>prepaymentMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>prepaymentAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>prepaymentPortalId</name>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>prepaymentPortalKey</name>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>prepaymentProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
     </card>
 
     <card>
@@ -251,6 +302,14 @@
                 </option>
             </options>
         </input-field>
+
+        <input-field type="bool">
+            <name>paypalProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
     </card>
 
     <card>
@@ -304,6 +363,14 @@
                     <name lang="de-DE">Autorisierung</name>
                 </option>
             </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>paypalExpressProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
         </input-field>
     </card>
 
@@ -360,6 +427,14 @@
                 </option>
             </options>
         </input-field>
+
+        <input-field type="bool">
+            <name>debitProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
     </card>
 
     <card>
@@ -413,6 +488,14 @@
                     <name lang="de-DE">Autorisierung</name>
                 </option>
             </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>sofortProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
         </input-field>
     </card>
 
@@ -468,6 +551,14 @@
                 </option>
             </options>
         </input-field>
+
+        <input-field type="bool">
+            <name>epsProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
     </card>
 
     <card>
@@ -522,10 +613,19 @@
                 </option>
             </options>
         </input-field>
+
+        <input-field type="bool">
+            <name>iDealProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
     </card>
 
     <card>
-        <title>Payolution Installment</title>
+        <title>Paysafe Pay Later Installment</title>
+        <title lang="de-DE">Paysafe Pay Later Ratenzahlung</title>
 
         <name>payment_payolution_installment</name>
 
@@ -600,10 +700,19 @@
                 </option>
             </options>
         </input-field>
+
+        <input-field type="bool">
+            <name>payolutionInstallmentProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
     </card>
 
     <card>
-        <title>Payolution Invoicing</title>
+        <title>Paysafe Pay Later Invoicing</title>
+        <title lang="de-DE">Paysafe Pay Later Rechnung</title>
 
         <name>payment_payolution_invoicing</name>
 
@@ -684,10 +793,19 @@
                 </option>
             </options>
         </input-field>
+
+        <input-field type="bool">
+            <name>payolutionInvoicingProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
     </card>
 
     <card>
-        <title>Payolution Debit</title>
+        <title>Paysafe Pay Later Debit</title>
+        <title lang="de-DE">Paysafe Pay Later Lastschrift</title>
 
         <name>payment_payolution_debit</name>
 
@@ -751,6 +869,201 @@
                     <name lang="de-DE">Autorisierung</name>
                 </option>
             </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>payolutionDebitProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Paydirekt</title>
+
+        <name>payment_paydirekt</name>
+
+        <input-field>
+            <name>paydirektMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paydirektAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paydirektPortalId</name>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paydirektPortalKey</name>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>paydirektAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Use this option to set the authorization method for this payment type.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>paydirektProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Trustly</title>
+
+        <name>payment_trustly</name>
+
+        <input-field>
+            <name>trustlyMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>trustlyAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>trustlyPortalId</name>
+            <label>Portal ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>trustlyPortalKey</name>
+            <label>Key</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>trustlyAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Use this option to set the authorization method for this payment type.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>trustlyProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Secure invoice (own payment portal is required)</title>
+        <title lang="de-DE">Gesicherter Rechnungskauf (Eigenes Zahlungsportal wird benötigt)</title>
+
+        <name>payment_secure_invoice</name>
+
+        <input-field>
+            <name>secureInvoiceMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>secureInvoiceAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>secureInvoicePortalId</name>
+            <label>Portal ID</label>
+            <helpText>You need an ID to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen eine ID zu einem separates Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>secureInvoicePortalKey</name>
+            <label>Key</label>
+            <helpText>You need a key to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>secureInvoiceAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Defines the authorization method for this payment method.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>secureInvoiceProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
         </input-field>
     </card>
 </config>

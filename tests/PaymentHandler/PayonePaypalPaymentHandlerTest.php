@@ -24,6 +24,8 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Translation\Translator;
 
 class PayonePaypalPaymentHandlerTest extends TestCase
@@ -40,7 +42,7 @@ class PayonePaypalPaymentHandlerTest extends TestCase
         $this->translator = $this->getContainer()->get('translator');
     }
 
-    public function testRequestOnPay()
+    public function testRequestOnPay(): void
     {
         $configReader = new ConfigReaderMock([
             'paypalAuthorizationMethod' => 'authorization',
@@ -49,6 +51,7 @@ class PayonePaypalPaymentHandlerTest extends TestCase
         $client                = $this->createMock(PayoneClientInterface::class);
         $preAuthRequestFactory = $this->createMock(PaypalPreAuthorizeRequestFactory::class);
         $authRequestFactory    = $this->createMock(PaypalAuthorizeRequestFactory::class);
+        $dataBag               = new RequestDataBag();
 
         $paymentHandler = new PayonePaypalPaymentHandler(
             $configReader,
@@ -58,7 +61,8 @@ class PayonePaypalPaymentHandlerTest extends TestCase
             $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
             $this->createMock(EntityRepositoryInterface::class),
-            new PaymentStateHandler($this->translator)
+            new PaymentStateHandler($this->translator),
+            $this->getRequestStack($dataBag)
         );
 
         $paymentTransaction = $this->getPaymentTransaction();
@@ -116,5 +120,15 @@ class PayonePaypalPaymentHandlerTest extends TestCase
         $orderTransactionEntity->setCustomFields($customFields);
 
         return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
+    }
+
+    private function getRequestStack(RequestDataBag $dataBag): RequestStack
+    {
+        $stack = new RequestStack();
+
+        $request = new Request([], $dataBag->all());
+        $stack->push($request);
+
+        return $stack;
     }
 }

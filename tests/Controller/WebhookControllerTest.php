@@ -24,6 +24,7 @@ use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
@@ -64,7 +65,7 @@ class WebhookControllerTest extends TestCase
         $request->request->set('receivable', '1');
         $request->request->set('sequencenumber', '0');
 
-        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAY_PARTIALLY, $request->request->all())->execute(
+        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAID_PARTIALLY, $request->request->all())->execute(
             $request,
             $salesChannelContext
         );
@@ -86,7 +87,7 @@ class WebhookControllerTest extends TestCase
         $request->request->set('price', '123.00');
         $request->request->set('sequencenumber', '0');
 
-        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAY, $request->request->all())->execute(
+        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAID, $request->request->all())->execute(
             $request,
             $salesChannelContext
         );
@@ -106,7 +107,7 @@ class WebhookControllerTest extends TestCase
         $request->request->set('txaction', 'paid');
         $request->request->set('sequencenumber', '0');
 
-        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAY, $request->request->all())->execute(
+        $response = $this->createWebhookController(StateMachineTransitionActions::ACTION_PAID, $request->request->all())->execute(
             $request,
             $salesChannelContext
         );
@@ -129,11 +130,6 @@ class WebhookControllerTest extends TestCase
                 'stateId'
             ),
             $context
-        );
-
-        $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
-            $stateMachineRegistry,
-            []
         );
 
         $currency = new CurrencyEntity();
@@ -164,11 +160,21 @@ class WebhookControllerTest extends TestCase
         ];
         $orderTransactionEntity->setCustomFields($customFields);
 
+        $stateMachineState = new StateMachineStateEntity();
+        $stateMachineState->setTechnicalName('');
+        $orderTransactionEntity->setStateMachineState($stateMachineState);
+
+        $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
+            $stateMachineRegistry,
+            [],
+            $orderTransactionEntity
+        );
+
         $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
         $transactionDataHandler->expects($this->once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
-        $transactionDataHandler->expects($this->once())->method('enhanceStatusWebhookData')->willReturn($transactionData);
+        $transactionDataHandler->expects($this->once())->method('getCustomFieldsFromWebhook')->willReturn($transactionData);
 
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
             $transactionStatusService,

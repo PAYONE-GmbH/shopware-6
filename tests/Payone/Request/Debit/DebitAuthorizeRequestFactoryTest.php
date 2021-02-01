@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Payone\Request\Debit;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
+use PayonePayment\Components\ConfigReader\ConfigReader;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest;
 use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory;
+use PayonePayment\Struct\Configuration;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -29,7 +33,7 @@ class DebitAuthorizeRequestFactoryTest extends TestCase
 {
     use RequestFactoryTestTrait;
 
-    public function testCorrectRequestParameters()
+    public function testCorrectRequestParameters(): void
     {
         $factory = new DebitAuthorizeRequestFactory($this->getDebitAuthorizeRequest(), $this->getCustomerRequest(), $this->getSystemRequest());
 
@@ -87,6 +91,7 @@ class DebitAuthorizeRequestFactoryTest extends TestCase
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+        $orderEntity->setTransactions(new OrderTransactionCollection([]));
 
         $paymentMethodEntity = new PaymentMethodEntity();
         $paymentMethodEntity->setHandlerIdentifier(PayoneDebitPaymentHandler::class);
@@ -120,6 +125,13 @@ class DebitAuthorizeRequestFactoryTest extends TestCase
             )
         );
 
-        return new DebitAuthorizeRequest($currencyRepository);
+        $configReader = $this->createMock(ConfigReader::class);
+        $configReader->method('read')->willReturn(
+            new Configuration([
+                sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD) => false,
+            ])
+        );
+
+        return new DebitAuthorizeRequest($currencyRepository, $configReader);
     }
 }

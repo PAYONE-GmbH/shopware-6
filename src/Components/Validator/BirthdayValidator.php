@@ -16,8 +16,12 @@ class BirthdayValidator extends AbstractComparisonValidator
      *
      * @return bool true if value1 is lower than value2, false otherwise
      */
-    protected function compareValues($value1, $value2)
+    protected function compareValues($value1, $value2): bool
     {
+        if (empty($value1)) {
+            return false;
+        }
+
         $birthday = DateTime::createFromFormat('Y-m-d', $value1);
 
         return $birthday < $value2;

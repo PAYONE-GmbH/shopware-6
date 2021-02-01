@@ -20,6 +20,7 @@ use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -51,9 +52,10 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         EntityRepositoryInterface $lineItemRepository,
-        CartHasherInterface $cartHasher
+        CartHasherInterface $cartHasher,
+        RequestStack $requestStack
     ) {
-        parent::__construct($configReader, $lineItemRepository);
+        parent::__construct($configReader, $lineItemRepository, $requestStack);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;
@@ -67,7 +69,9 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
      */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
-        $cartHash = (string) $dataBag->get('carthash');
+        $requestData = $this->fetchRequestData();
+
+        $cartHash = (string) $requestData->get('carthash');
 
         if (!$this->cartHasher->validate($transaction->getOrder(), $cartHash, $salesChannelContext)) {
             throw new SyncPaymentProcessException(
@@ -92,7 +96,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
 
         $request = $factory->getRequestParameters(
             $paymentTransaction,
-            $dataBag,
+            $requestData,
             $salesChannelContext
         );
 
@@ -120,7 +124,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
         $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
             $this->getBaseCustomFields($response['status']),
             [
-                CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
+                CustomFieldInstaller::WORK_ORDER_ID      => $requestData->get('workorder'),
                 CustomFieldInstaller::CLEARING_REFERENCE => $response['clearing']['Reference'],
                 CustomFieldInstaller::CAPTURE_MODE       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
                 CustomFieldInstaller::CLEARING_TYPE      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
@@ -137,12 +141,18 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
      */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
-        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
+        if (static::isNeverCapturable($transactionData, $customFields)) {
             return false;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED
-            && strtolower($transactionData['transaction_status']) === TransactionStatusService::STATUS_COMPLETED;
+        $txAction          = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $transactionStatus = isset($transactionData['transaction_status']) ? strtolower($transactionData['transaction_status']) : null;
+
+        if ($txAction === TransactionStatusService::ACTION_APPOINTED && $transactionStatus === TransactionStatusService::STATUS_COMPLETED) {
+            return true;
+        }
+
+        return static::matchesIsCapturableDefaults($transactionData, $customFields);
     }
 
     /**
@@ -150,10 +160,10 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
      */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
-            return true;
+        if (static::isNeverRefundable($transactionData, $customFields)) {
+            return false;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+        return static::matchesIsRefundableDefaults($transactionData, $customFields);
     }
 }

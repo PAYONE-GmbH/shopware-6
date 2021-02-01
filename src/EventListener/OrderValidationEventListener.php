@@ -11,6 +11,7 @@ use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Components\Validator\PaymentMethod;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
+use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -50,6 +51,19 @@ class OrderValidationEventListener implements EventSubscriberInterface
 
         // TODO: can be removed when https://github.com/shopware/platform/pull/226 is merged
         $context = $this->getContextFromRequest($request);
+
+        $customer = $context->getCustomer();
+
+        if ($this->isSecureInvoicePayment($context) && $customer !== null) {
+            $activeBilling = $customer->getActiveBillingAddress();
+
+            if ($activeBilling !== null && empty($activeBilling->getCompany())) {
+                $event->getDefinition()->add(
+                    'secureInvoiceBirthday',
+                    new Birthday(['value' => $this->getMinimumDate()])
+                );
+            }
+        }
 
         if ($this->isPayonePayolutionInstallment($context) || $this->isPayonePayolutionInvoicing($context)) {
             $event->getDefinition()->add(
@@ -100,6 +114,11 @@ class OrderValidationEventListener implements EventSubscriberInterface
     private function isPayonePayolutionInvoicing(SalesChannelContext $context): bool
     {
         return $context->getPaymentMethod()->getId() === PayonePayolutionInvoicing::UUID;
+    }
+
+    private function isSecureInvoicePayment(SalesChannelContext $context): bool
+    {
+        return $context->getPaymentMethod()->getId() === PayoneSecureInvoice::UUID;
     }
 
     private function customerHasCompanyAddress(SalesChannelContext $context): bool

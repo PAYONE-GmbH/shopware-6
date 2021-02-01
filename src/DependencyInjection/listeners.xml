@@ -5,6 +5,9 @@
 
     <services>
         <service id="PayonePayment\EventListener\CheckoutConfirmCartDataEventListener">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Order\OrderConverter" />
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher" />
+
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -57,6 +60,14 @@
         </service>
 
         <service id="PayonePayment\EventListener\CheckoutConfirmIDealEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmPaydirektEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmTrustlyEventListener">
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

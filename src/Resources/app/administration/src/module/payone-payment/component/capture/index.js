@@ -16,14 +16,14 @@ Component.register('payone-capture-button', {
         order: {
             type: Object,
             required: true
+        },
+        transaction: {
+            type: Object,
+            required: true
         }
     },
 
     computed: {
-        transaction() {
-            return this.order.transactions[0];
-        },
-
         totalTransactionAmount() {
             return Math.round(this.transaction.amount.totalPrice * (10 ** this.order.currency.decimalPrecision), 0);
         },
@@ -50,6 +50,18 @@ Component.register('payone-capture-button', {
             }
 
             return (this.remainingAmount > 0 && this.capturedAmount > 0) || this.transaction.customFields.payone_allow_capture;
+        },
+
+        isItemSelected() {
+            let returnValue = false;
+
+            this.selection.forEach((selection) => {
+                if (selection.selected) {
+                    returnValue = true;
+                }
+            });
+
+            return returnValue;
         },
     },
 

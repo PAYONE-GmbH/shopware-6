@@ -37,6 +37,12 @@ Component.register('payone-settings', {
                 'payment_payolution_installment': true,
                 'payment_payolution_invoicing': true,
                 'payment_payolution_debit': true,
+                'payment_eps': true,
+                'payment_ideal': true,
+                'payment_paydirekt': true,
+                'payment_prepayment': true,
+                'payment_trustly': true,
+                'payment_secure_invoice': true,
             },
         };
     },
@@ -64,8 +70,15 @@ Component.register('payone-settings', {
             this.PayonePaymentSettingsService.getStateMachineTransitionActions()
                 .then((result) => {
                     result.data.forEach((element) => {
+                        let translationKey = 'payone-payment.transitionActionNames.' + element.label;
+                        let translationValue = me.$t(translationKey);
+
+                        if (translationValue === translationKey) {
+                            translationValue = element.label;
+                        }
+
                         me.stateMachineTransitionActions.push({
-                            "label": me.$tc('payone-payment.transitionActionNames.'+ element.label ),
+                            "label": translationValue,
                             "value": element.value,
                         })
                     });
@@ -85,6 +98,10 @@ Component.register('payone-settings', {
                 'sofort',
                 'eps',
                 'iDeal',
+                'paydirekt',
+                'prepayment',
+                'trustly',
+                'secureInvoice',
             ];
         },
 

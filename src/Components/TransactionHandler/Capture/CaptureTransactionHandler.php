@@ -42,19 +42,34 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
      */
     public function capture(ParameterBag $parameterBag, Context $context): JsonResponse
     {
-        $requestResponse = $this->handleRequest($parameterBag, $context);
+        [$requestResponse, $payoneResponse] = $this->handleRequest($parameterBag, $context);
 
         if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
         }
 
         $this->updateTransactionData($parameterBag, (float) $parameterBag->get('amount'));
+        $this->updateClearingBankAccountData($payoneResponse);
         $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
 
-        $transitionName = StateMachineTransitionActions::ACTION_PAY_PARTIALLY;
+        $customFields = $this->paymentTransaction->getCustomFields();
+        $clearingType = strtolower($customFields[$this->getClearingTypeCustomField()] ?? '');
+
+        // Filter payment methods that do not allow changing transaction status at this point
+        if (!in_array($clearingType, ['vor'], true)) {
+            // Update the transaction status if PAYONE capture request was approved
+            $this->updateTransactionStatus($parameterBag, $context);
+        }
+
+        return $requestResponse;
+    }
+
+    protected function updateTransactionStatus(ParameterBag $parameterBag, Context $context): void
+    {
+        $transitionName = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
 
         if ($parameterBag->get('complete')) {
-            $transitionName = StateMachineTransitionActions::ACTION_PAY;
+            $transitionName = StateMachineTransitionActions::ACTION_PAID;
         }
 
         $this->transactionStatusService->transitionByName(
@@ -62,8 +77,6 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
             $this->paymentTransaction->getOrderTransaction()->getId(),
             $transitionName
         );
-
-        return $requestResponse;
     }
 
     protected function getAmountCustomField(): string
@@ -79,5 +92,32 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
     protected function getAllowCustomField(): string
     {
         return CustomFieldInstaller::ALLOW_CAPTURE;
+    }
+
+    protected function getClearingTypeCustomField(): string
+    {
+        return CustomFieldInstaller::CLEARING_TYPE;
+    }
+
+    /**
+     * Updates transaction custom fields that contain clearing bank account data.
+     * Payment methods like invoice or secure invoice get these data through the response of a capture request.
+     * These clearing data is used during invoice generation.
+     *
+     * @param array $payoneResponse Response of the PAYONE capture request
+     */
+    private function updateClearingBankAccountData(array $payoneResponse): void
+    {
+        $currentClearingBankAccountData = $this->paymentTransaction->getCustomFields()[CustomFieldInstaller::CLEARING_BANK_ACCOUNT];
+        $newClearingBankAccountData     = $payoneResponse['clearing']['BankAccount'] ?? null;
+
+        if (!empty($newClearingBankAccountData)) {
+            $this->dataHandler->saveTransactionData($this->paymentTransaction, $this->context, [
+                CustomFieldInstaller::CLEARING_BANK_ACCOUNT => array_merge(
+                    $currentClearingBankAccountData,
+                    $newClearingBankAccountData
+                ),
+            ]);
+        }
     }
 }

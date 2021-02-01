@@ -57,6 +57,10 @@ class RefundRequestFactory extends AbstractRequestFactory
             (float) $parameterBag->get('amount')
         );
 
+        if (empty($transaction->getOrder()->getOrderNumber())) {
+            return $this->createRequest();
+        }
+
         try {
             $requestHandler = $this->requestBuilderFactory->getRequestBuilder(
                 $transaction->getOrderTransaction()->getPaymentMethodId(),

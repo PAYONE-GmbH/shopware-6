@@ -8,8 +8,8 @@ use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Paypal\PaypalGetExpressCheckoutDetailsRequestFactory;
-use PayonePayment\Payone\Request\Paypal\PaypalSetExpressCheckoutRequestFactory;
+use PayonePayment\Payone\Request\PaypalExpress\PaypalExpressGetCheckoutDetailsRequestFactory;
+use PayonePayment\Payone\Request\PaypalExpress\PaypalExpressSetCheckoutRequestFactory;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\Cart;
@@ -39,10 +39,10 @@ use Throwable;
 
 class PaypalExpressController extends StorefrontController
 {
-    /** @var PaypalSetExpressCheckoutRequestFactory */
+    /** @var PaypalExpressSetCheckoutRequestFactory */
     private $checkoutRequestFactory;
 
-    /** @var PaypalGetExpressCheckoutDetailsRequestFactory */
+    /** @var PaypalExpressGetCheckoutDetailsRequestFactory */
     private $checkoutDetailsRequestFactory;
 
     /** @var PayoneClientInterface */
@@ -76,8 +76,8 @@ class PaypalExpressController extends StorefrontController
     private $router;
 
     public function __construct(
-        PaypalSetExpressCheckoutRequestFactory $checkoutRequestFactory,
-        PaypalGetExpressCheckoutDetailsRequestFactory $checkoutDetailsRequestFactory,
+        PaypalExpressSetCheckoutRequestFactory $checkoutRequestFactory,
+        PaypalExpressGetCheckoutDetailsRequestFactory $checkoutDetailsRequestFactory,
         PayoneClientInterface $client,
         CartService $cartService,
         AccountRegistrationService $accountRegistrationService,
@@ -239,9 +239,8 @@ class PaypalExpressController extends StorefrontController
                 'countryId'              => $countryId,
                 'phone'                  => $response['addpaydata']['telephonenumber'],
                 'city'                   => $response['addpaydata']['shipping_city'],
-                'additionalAddressLine1' => isset($response['addpaydata']['shipping_addressaddition'])
-                    ? $response['addpaydata']['shipping_addressaddition']
-                    : null,
+                'additionalAddressLine1' => $response['addpaydata']['shipping_addressaddition']
+                    ?? null,
             ]),
         ]);
     }

@@ -6,7 +6,7 @@ namespace PayonePayment\Test\Payone\Request\Refund;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\DependencyInjection\Factory\RequestBuilderFactory;
-use PayonePayment\Components\RequestBuilder\AbstractRequestBuilder;
+use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\Components\RequestBuilder\CreditCardRequestBuilder;
 use PayonePayment\Components\RequestBuilder\PayolutionInstallmentRequestBuilder;
 use PayonePayment\Installer\CustomFieldInstaller;
@@ -43,7 +43,7 @@ class RefundRequestFactoryTest extends TestCase
 {
     use RequestFactoryTestTrait;
 
-    public function testCorrectFullRequestParameters()
+    public function testCorrectFullRequestParameters(): void
     {
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestBuilderFactory([]), new NullLogger());
 
@@ -73,7 +73,7 @@ class RefundRequestFactoryTest extends TestCase
         $this->assertArrayHasKey('solution_version', $request);
     }
 
-    public function testCorrectPartialRequestParameters()
+    public function testCorrectPartialRequestParameters(): void
     {
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestBuilderFactory([]), new NullLogger());
 
@@ -127,8 +127,8 @@ class RefundRequestFactoryTest extends TestCase
         $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
 
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestBuilderFactory([
-            PayoneCreditCard::UUID            => new CreditCardRequestBuilder(),
-            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestBuilder(),
+            PayoneCreditCard::UUID            => new CreditCardRequestBuilder(new LineItemHydrator()),
+            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestBuilder(new LineItemHydrator()),
         ]), new NullLogger());
 
         $request = $factory->getRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
@@ -149,7 +149,7 @@ class RefundRequestFactoryTest extends TestCase
                 'txid'            => 'test-transaction-id',
                 'integrator_name' => 'shopware6',
                 'solution_name'   => 'kellerkinder',
-                'it[1]'           => AbstractRequestBuilder::TYPE_GOODS,
+                'it[1]'           => LineItemHydrator::TYPE_GOODS,
                 'id[1]'           => Constants::LINE_ITEM_IDENTIFIER,
                 'pr[1]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
                 'no[1]'           => Constants::LINE_ITEM_QUANTITY,
@@ -183,8 +183,8 @@ class RefundRequestFactoryTest extends TestCase
         $paymentTransaction->assign(['orderTransation' => $orderTransaction]);
 
         $factory = new RefundRequestFactory($this->getSystemRequest(), $this->getRefundRequest(), new RequestBuilderFactory([
-            PayoneCreditCard::UUID            => new CreditCardRequestBuilder(),
-            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestBuilder(),
+            PayoneCreditCard::UUID            => new CreditCardRequestBuilder(new LineItemHydrator()),
+            PayonePayolutionInstallment::UUID => new PayolutionInstallmentRequestBuilder(new LineItemHydrator()),
         ]), new NullLogger());
 
         $request = $factory->getRequest($paymentTransaction, $paramterBag, Context::createDefaultContext());
@@ -205,7 +205,7 @@ class RefundRequestFactoryTest extends TestCase
                 'txid'            => 'test-transaction-id',
                 'integrator_name' => 'shopware6',
                 'solution_name'   => 'kellerkinder',
-                'it[1]'           => AbstractRequestBuilder::TYPE_GOODS,
+                'it[1]'           => LineItemHydrator::TYPE_GOODS,
                 'id[1]'           => Constants::LINE_ITEM_IDENTIFIER,
                 'pr[1]'           => (int) (Constants::LINE_ITEM_UNIT_PRICE * (10 ** Constants::CURRENCY_DECIMAL_PRECISION)),
                 'no[1]'           => Constants::LINE_ITEM_QUANTITY,

@@ -10,9 +10,13 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PayolutionInstallmentPreAuthorizeRequest extends AbstractPayolutionInstallmentAuthorizeRequest
 {
-    public function getRequestParameters(PaymentTransaction $transaction, RequestDataBag $dataBag, SalesChannelContext $context): array
-    {
-        return array_merge(parent::getRequestParameters($transaction, $dataBag, $context), [
+    public function getRequestParameters(
+        PaymentTransaction $transaction,
+        RequestDataBag $dataBag,
+        SalesChannelContext $context,
+        string $referenceNumber
+    ): array {
+        return array_merge(parent::getRequestParameters($transaction, $dataBag, $context, $referenceNumber), [
             'request' => 'preauthorization',
         ]);
     }

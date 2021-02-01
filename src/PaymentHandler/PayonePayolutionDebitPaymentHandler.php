@@ -19,6 +19,7 @@ use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -45,9 +46,10 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
-        EntityRepositoryInterface $lineItemRepository
+        EntityRepositoryInterface $lineItemRepository,
+        RequestStack $requestStack
     ) {
-        parent::__construct($configReader, $lineItemRepository);
+        parent::__construct($configReader, $lineItemRepository, $requestStack);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
         $this->authRequestFactory    = $authRequestFactory;
         $this->client                = $client;
@@ -60,12 +62,18 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
      */
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
-        if ($customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
+        if (static::isNeverCapturable($transactionData, $customFields)) {
             return false;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_APPOINTED
-            && strtolower($transactionData['transaction_status']) === TransactionStatusService::STATUS_COMPLETED;
+        $txAction          = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $transactionStatus = isset($transactionData['transaction_status']) ? strtolower($transactionData['transaction_status']) : null;
+
+        if ($txAction === TransactionStatusService::ACTION_APPOINTED && $transactionStatus === TransactionStatusService::STATUS_COMPLETED) {
+            return true;
+        }
+
+        return static::matchesIsCapturableDefaults($transactionData, $customFields);
     }
 
     /**
@@ -73,11 +81,11 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
      */
     public static function isRefundable(array $transactionData, array $customFields): bool
     {
-        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
-            return true;
+        if (static::isNeverRefundable($transactionData, $customFields)) {
+            return false;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+        return static::matchesIsRefundableDefaults($transactionData, $customFields);
     }
 
     /**
@@ -85,6 +93,8 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
      */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
+        $requestData = $this->fetchRequestData();
+
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
@@ -95,7 +105,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
         $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         try {
-            $this->validate($dataBag);
+            $this->validate($requestData);
         } catch (PayoneRequestException $e) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
@@ -110,7 +120,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
 
         $request = $factory->getRequestParameters(
             $paymentTransaction,
-            $dataBag,
+            $requestData,
             $salesChannelContext
         );
 
@@ -139,7 +149,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
         $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
             $this->getBaseCustomFields($response['status']),
             [
-                CustomFieldInstaller::WORK_ORDER_ID      => $dataBag->get('workorder'),
+                CustomFieldInstaller::WORK_ORDER_ID      => $requestData->get('workorder'),
                 CustomFieldInstaller::CLEARING_REFERENCE => $response['addpaydata']['clearing_reference'],
                 CustomFieldInstaller::CAPTURE_MODE       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
                 CustomFieldInstaller::CLEARING_TYPE      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
@@ -154,7 +164,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
     /**
      * @throws PayoneRequestException
      */
-    private function validate(RequestDataBag $dataBag)
+    private function validate(RequestDataBag $dataBag): void
     {
         if ($dataBag->get('payolutionConsent') !== 'on') {
             throw new PayoneRequestException('No payolutionConsent');

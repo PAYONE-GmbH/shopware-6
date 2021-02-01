@@ -2,7 +2,6 @@ PAYONE Payment for Shopware 6
 =============================
 
 [![CI Status](https://github.com/PAYONE-GmbH/shopware-6/workflows/CI/badge.svg?branch=master)](https://github.com/PAYONE-GmbH/shopware-6/actions)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/PAYONE-GmbH/shopware-6/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/PAYONE-GmbH/shopware-6/?branch=master)
 [![LICENSE](https://img.shields.io/github/license/PAYONE-GmbH/shopware-6.svg)](LICENSE)
 
 This plugin enables merchants to accept payments in a simple and convenient way.

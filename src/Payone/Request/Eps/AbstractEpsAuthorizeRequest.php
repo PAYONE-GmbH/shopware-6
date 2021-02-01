@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\Eps;
 
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -18,23 +20,29 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 abstract class AbstractEpsAuthorizeRequest
 {
     /** @var RedirectHandler */
-    private $redirectHandler;
+    protected $redirectHandler;
 
     /** @var EntityRepositoryInterface */
-    private $currencyRepository;
+    protected $currencyRepository;
+
+    /** @var ConfigReaderInterface */
+    protected $configReader;
 
     public function __construct(
         RedirectHandler $redirectHandler,
-        EntityRepositoryInterface $currencyRepository
+        EntityRepositoryInterface $currencyRepository,
+        ConfigReaderInterface $configReader
     ) {
         $this->redirectHandler    = $redirectHandler;
         $this->currencyRepository = $currencyRepository;
+        $this->configReader       = $configReader;
     }
 
     public function getRequestParameters(
         PaymentTransaction $transaction,
         RequestDataBag $dataBag,
-        Context $context
+        Context $context,
+        string $referenceNumber
     ): array {
         if (empty($transaction->getReturnUrl())) {
             throw new InvalidOrderException($transaction->getOrder()->getId());
@@ -42,18 +50,31 @@ abstract class AbstractEpsAuthorizeRequest
 
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
 
-        return [
+        $parameters = [
             'clearingtype'           => 'sb',
             'onlinebanktransfertype' => 'EPS',
             'bankcountry'            => 'AT',
             'bankgrouptype'          => $dataBag->get('epsBankGroup'),
             'amount'                 => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
             'currency'               => $currency->getIsoCode(),
-            'reference'              => $transaction->getOrder()->getOrderNumber(),
+            'reference'              => $referenceNumber,
             'successurl'             => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
             'errorurl'               => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),
             'backurl'                => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),
         ];
+
+        if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId()) && !empty($transaction->getOrder()->getOrderNumber())) {
+            $parameters['narrative_text'] = mb_substr($transaction->getOrder()->getOrderNumber(), 0, 81);
+        }
+
+        return $parameters;
+    }
+
+    protected function isNarrativeTextAllowed(string $salesChannelId): bool
+    {
+        $config = $this->configReader->read($salesChannelId);
+
+        return $config->get(sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_EPS), false);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity

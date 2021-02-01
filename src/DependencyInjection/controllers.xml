@@ -84,8 +84,8 @@
         </service>
 
         <service id="PayonePayment\Storefront\Controller\Paypal\PaypalExpressController">
-            <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalSetExpressCheckoutRequestFactory" />
-            <argument type="service" id="PayonePayment\Payone\Request\Paypal\PaypalGetExpressCheckoutDetailsRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\PaypalExpress\PaypalExpressSetCheckoutRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\Request\PaypalExpress\PaypalExpressGetCheckoutDetailsRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
             <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\AccountRegistrationService" />
@@ -95,7 +95,7 @@
             <argument type="service" id="country.repository"/>
             <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher" />
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
-            <argument type="service" id="router.default" />
+            <argument type="service" id="Shopware\Storefront\Framework\Routing\Router"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

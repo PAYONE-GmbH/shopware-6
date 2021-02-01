@@ -6,15 +6,19 @@ namespace PayonePayment\Test\Payone\Request\Paypal;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\CartHasher\CartHasher;
+use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
+use PayonePayment\Struct\Configuration;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -32,7 +36,7 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
 {
     use RequestFactoryTestTrait;
 
-    public function testCorrectRequestParameters()
+    public function testCorrectRequestParameters(): void
     {
         $factory = new PaypalAuthorizeRequestFactory(
             $this->getPaypalAuthorizeRequest(),
@@ -65,12 +69,12 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
                 'mid'             => '',
                 'mode'            => '',
                 'portalid'        => '',
-                'reference'       => '1',
                 'request'         => 'authorization',
                 'solution_name'   => 'kellerkinder',
                 'street'          => 'Some Street 1',
                 'wallettype'      => 'PPE',
                 'zip'             => '12345',
+                'reference'       => '1',
             ],
             $request
         );
@@ -90,6 +94,7 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
         $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
+        $orderEntity->setTransactions(new OrderTransactionCollection([]));
 
         $paymentMethodEntity = new PaymentMethodEntity();
         $paymentMethodEntity->setHandlerIdentifier(PayonePaypalPaymentHandler::class);
@@ -125,6 +130,13 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
             )
         );
 
-        return new PaypalAuthorizeRequest($this->createMock(RedirectHandler::class), $currencyRepository);
+        $configReader = $this->createMock(ConfigReader::class);
+        $configReader->method('read')->willReturn(
+            new Configuration([
+                sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD) => false,
+            ])
+        );
+
+        return new PaypalAuthorizeRequest($this->createMock(RedirectHandler::class), $currencyRepository, $configReader);
     }
 }

@@ -1,120 +1,150 @@
 {
-  "PayonePayment": {
-    "errorMessages": {
-      "genericError": "Es ist ein Fehler aufgetreten. Bitte wählen Sie eine andere Zahlungsweise."
+    "PayonePayment": {
+        "errorMessages": {
+            "genericError": "Es ist ein Fehler aufgetreten. Bitte wählen Sie eine andere Zahlungsweise."
+        },
+        "creditCard": {
+            "newCard": "Eine neue Kreditkarte verwenden",
+            "cardNumber": "Kartennummer",
+            "securityCode": "CVV",
+            "expiryDate": "Gültig bis",
+            "savedCards": "Gespeicherte Karte",
+            "iframeError": "Bitte prüfen Sie, ob alle Felder korrekt und vollständig ausgefüllt sind."
+        },
+        "debit": {
+            "accountOwner": "Kontoinhaber",
+            "iban": "IBAN",
+            "bic": "BIC"
+        },
+        "cardPage": {
+            "menuName": "Kreditkarten",
+            "success": "Die gespeicherte Kreditkarte wurde erfolgreich entfernt.",
+            "error": "Beim entfernen der Kreditkarte ist ein Fehler aufgetreten.",
+            "pageTitle": "Gespeicherte Kreditkarten",
+            "pageSubTitle": "Hier können Sie die gespeicerten Kreditkarten verwalten.",
+            "tableHeader": "Kartennummer",
+            "deleteButton": "Karte löschen",
+            "noEntries": "Keine Kreditkarten vorhanden.",
+            "expired": "abgelaufen",
+            "expiresAt": "läuft am %expiresAt% ab"
+        },
+        "mandatePage": {
+            "menuName": "SEPA-Lastschriftmandate",
+            "pageTitle": "SEPA-Lastschriftmandate",
+            "pageSubTitle": "Hier können Sie die gespeicherten SEPA-Lastschriftmandate verwalten.",
+            "success": "Das SEPA-Lastschriftmandate wurde erfolgreich entfernt.",
+            "error": "Es ist ein Fehler aufgetretetn.",
+            "tableIdentification": "Nummer",
+            "tableSignatureDate": "Datum",
+            "downloadButton": "Mandat herunterladen",
+            "noEntries": "Keine SEPA-Lastschriftmandate vorhanden."
+        },
+        "checkoutConfirmPage": {
+            "defaultCardTitle": "Zahlungsinformationen"
+        },
+        "checkoutFinishPage": {
+            "mandateIdentification": "SEPA-Laschtschriftmandat"
+        },
+        "mandateModal": {
+            "question": "Ich erteile das SEPA-Laschtschriftmandat",
+            "cancel": "Abbruch",
+            "confirm": "Absenden"
+        },
+        "paypalExpress": {
+            "buttonTitle": "PayPal Express",
+            "buttonImage": "checkout-logo-medium-de.png",
+            "buttonImage2x": "checkout-logo-medium-de-2x.png"
+        },
+        "payolution": {
+            "cardTitleInvoicing": "Paysafe Pay Later Rechnung",
+            "cardTitleInstallment": "Paysafe Pay Later Ratenzahlung",
+            "cardTitleDebit": "Paysafe Pay Later Lastschrift",
+            "birthday": {
+                "label": "Geburtsdatum"
+            },
+            "accountHolder": {
+                "label": "Kontoinhaber"
+            },
+            "iban": {
+                "label": "IBAN"
+            },
+            "bic": {
+                "label": "BIC"
+            },
+            "installment": {
+                "step1": "1. Verfügbarkeit prüfen",
+                "step2": "2. Rate auswählen",
+                "step3": "3. Übersicht und Kontoinformationen",
+                "checkAvailabilityButton": "Verfügbarkeit prüfen",
+                "downloadButton": "Kreditinformationen herunterladen",
+                "select": "%amount% pro Monat - %duration% Raten",
+                "selectInstallmentsLabel": "Bitte wählen Sie die Anzahl der Raten",
+                "info": "%index%. Rate: %amount% (fällig am %date%)",
+                "numberOfInstallments": "Anzahl der Raten:",
+                "financingAmount": "Finanzierungsbetrag:",
+                "total": "Total:",
+                "interestRate": "Nominalzins:",
+                "effectiveInterestRate": "Effektivzins:",
+                "monthlyInstallment": "Monatliche Rate:",
+                "accountOwner": "Kontoinhaber",
+                "iban": "IBAN",
+                "bic": "BIC"
+            },
+            "document": {
+                "clearingReference": "Referenz: %reference%",
+                "invoicingDescription": "Bitte überweisen Sie den ausstehenden Betrag auf das folgende Konto:",
+                "iban": "IBAN: %iban%",
+                "bic": "BIC: %bic%"
+            },
+            "consentCheckbox": {
+                "introduction": "Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an die payolution GmbH, Am Euro Platz 2, 1120 Wien bin ich einverstanden.",
+                "textWithLink": "Meine <a href=\"%link%\" data-url=\"%link%\" data-modal-class=\"payolution\" data-toggle=\"modal\" title=\"Einwilligung\">Einwilligung</a> kann ich jederzeit mit Wirkung für die Zukunft wiederrufen."
+            },
+            "mandateCheckbox": {
+                "textWithLink": "Hiermit erteile ich das <a href=\"%link%\" target=\"_blank\" title=\"Paysafe Pay Later SEPA-Mandat\">SEPA-Lastschriftmandat</a>."
+            }
+        },
+        "prepayment": {
+            "document": {
+                "clearingReference": "Referenz: %reference%",
+                "invoicingDescription": "Bitte überweisen Sie den ausstehenden Betrag auf das folgende Konto:",
+                "iban": "IBAN: %iban%",
+                "bic": "BIC: %bic%",
+                "reference": "Verwendungszweck: %reference%",
+                "holder": "Kontoinhaber: %holder%",
+                "accountNotice": "Damit wir Ihre Zahlung schnell zuordnen können, überweisen Sie den ausstehenden Betrag bitte ausschließlich auf das obige Konto."
+            }
+        },
+        "eps": {
+            "cardTitle": "EPS Online Bank",
+            "bankGroupFieldLabel": "Bankengruppe Ihrer Hausbank"
+        },
+        "ideal": {
+            "cardTitle": "iDeal Online Bank",
+            "bankGroupFieldLabel": "Bankengruppe Ihrer Hausbank"
+        },
+        "trustly": {
+            "cardTitle": "Trustly",
+            "iban": "IBAN"
+        },
+        "secureInvoice": {
+            "cardTitle": "Payone gesicherte Rechnung",
+            "birthday": {
+                "label": "Geburtsdatum"
+            },
+            "document": {
+                "clearingReference": "Referenz: %reference%",
+                "invoicingDescription": "Bitte überweisen Sie den ausstehenden Betrag auf das folgende Konto:",
+                "iban": "IBAN: %iban%",
+                "bic": "BIC: %bic%",
+                "reference": "Verwendungszweck: %reference%",
+                "holder": "Kontoinhaber: %holder%",
+                "accountNotice": "Damit wir Ihre Zahlung schnell zuordnen können, überweisen Sie den ausstehenden Betrag bitte ausschließlich auf das obige Konto."
+            }
+        }
     },
-    "creditCard": {
-      "newCard": "Eine neue Kreditkarte verwenden",
-      "cardNumber": "Kartennummer",
-      "securityCode": "CVV",
-      "expiryDate": "Gültig bis",
-      "savedCards": "Gespeicherte Karte",
-      "iframeError": "Bitte prüfen Sie, ob alle Felder korrekt und vollständig ausgefüllt sind."
-    },
-    "debit": {
-      "accountOwner": "Kontoinhaber",
-      "iban": "IBAN",
-      "bic": "BIC"
-    },
-    "cardPage": {
-      "menuName": "Kreditkarten",
-      "success": "Die gespeicherte Kreditkarte wurde erfolgreich entfernt.",
-      "error": "Beim entfernen der Kreditkarte ist ein Fehler aufgetreten.",
-      "pageTitle": "Gespeicherte Kreditkarten",
-      "pageSubTitle": "Hier können Sie die gespeicerten Kreditkarten verwalten.",
-      "tableHeader": "Kartennummer",
-      "deleteButton": "Karte löschen",
-      "noEntries": "Keine Kreditkarten vorhanden.",
-      "expired": "abgelaufen",
-      "expiresAt": "läuft am %expiresAt% ab"
-    },
-    "mandatePage": {
-      "menuName": "SEPA-Lastschriftmandate",
-      "pageTitle": "SEPA-Lastschriftmandate",
-      "pageSubTitle": "Hier können Sie die gespeicherten SEPA-Lastschriftmandate verwalten.",
-      "success": "Das SEPA-Lastschriftmandate wurde erfolgreich entfernt.",
-      "error": "Es ist ein Fehler aufgetretetn.",
-      "tableIdentification": "Nummer",
-      "tableSignatureDate": "Datum",
-      "downloadButton": "Mandat herunterladen",
-      "noEntries": "Keine SEPA-Lastschriftmandate vorhanden."
-    },
-    "checkoutConfirmPage": {
-      "defaultCardTitle": "Zahlungsinformationen"
-    },
-    "checkoutFinishPage": {
-      "mandateIdentification": "SEPA-Laschtschriftmandat"
-    },
-    "mandateModal": {
-      "question": "Ich erteile das SEPA-Laschtschriftmandat",
-      "cancel": "Abbruch",
-      "confirm": "Absenden"
-    },
-    "paypalExpress": {
-      "buttonTitle": "PayPal Express",
-      "buttonImage": "checkout-logo-medium-de.png",
-      "buttonImage2x": "checkout-logo-medium-de-2x.png"
-    },
-    "payolution": {
-      "cardTitleInvoicing": "Paysafe Pay Later Rechnung",
-      "cardTitleInstallment": "Paysafe Pay Later Ratenzahlung",
-      "cardTitleDebit": "Paysafe Pay Later Lastschrift",
-      "birthday": {
-        "label": "Geburtsdatum"
-      },
-      "accountHolder": {
-          "label": "Kontoinhaber"
-      },
-      "iban": {
-          "label": "IBAN"
-      },
-      "bic": {
-          "label": "BIC"
-      },
-      "installment": {
-        "step1": "1. Verfügbarkeit prüfen",
-        "step2": "2. Rate auswählen",
-        "step3": "3. Übersicht und Kontoinformationen",
-        "checkAvailabilityButton": "Verfügbarkeit prüfen",
-        "downloadButton": "Kreditinformationen herunterladen",
-        "select": "%amount% pro Monat - %duration% Raten",
-        "selectInstallmentsLabel": "Bitte wählen Sie die Anzahl der Raten",
-        "info": "%index%. Rate: %amount% (fällig am %date%)",
-        "numberOfInstallments": "Anzahl der Raten:",
-        "financingAmount": "Finanzierungsbetrag:",
-        "total": "Total:",
-        "interestRate": "Nominalzins:",
-        "effectiveInterestRate": "Effektivzins:",
-        "monthlyInstallment": "Monatliche Rate:",
-        "accountOwner": "Kontoinhaber",
-        "iban": "IBAN",
-        "bic": "BIC"
-      },
-      "document": {
-        "clearingReference": "Referenz: %reference%",
-        "invoicingDescription": "Bitte überweisen Sie den ausstehenden Betrag auf das folgende Konto:",
-        "iban": "IBAN: %iban%",
-        "bic": "BIC: %bic%"
-      },
-      "consentCheckbox": {
-        "introduction": "Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an die payolution GmbH, Am Euro Platz 2, 1120 Wien bin ich einverstanden.",
-        "textWithLink": "Meine <a href=\"%link%\" data-url=\"%link%\" data-modal-class=\"payolution\" data-toggle=\"modal\" title=\"Einwilligung\">Einwilligung</a> kann ich jederzeit mit Wirkung für die Zukunft wiederrufen."
-      },
-      "mandateCheckbox": {
-        "textWithLink": "Hiermit erteile ich das <a href=\"%link%\" target=\"_blank\" title=\"Paysafe Pay Later SEPA-Mandat\">SEPA-Lastschriftmandat</a>."
-      }
-    },
-    "eps": {
-      "cardTitle": "EPS Online Bank",
-      "bankGroupFieldLabel": "Bankengruppe Ihrer Hausbank"
-    },
-    "ideal": {
-      "cardTitle": "iDeal Online Bank",
-      "bankGroupFieldLabel": "Bankengruppe Ihrer Hausbank"
+    "error": {
+        "VIOLATION::PAYONE_BIRTHDAY_NOT_VALID": "Für diese Zahlung müssen Sie mindestens 18 Jahre alt sein.",
+        "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "Die ausgewählte Zahlungsweise ist nicht verfügbar."
     }
-  },
-  "error": {
-    "VIOLATION::PAYONE_BIRTHDAY_NOT_VALID": "Für diese Zahlung müssen Sie mindestens 18 Jahre alt sein.",
-    "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "Die ausgewählte Zahlungsweise ist nicht verfügbar."
-  }
 }

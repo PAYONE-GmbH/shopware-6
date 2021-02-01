@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Request\IDeal;
 
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
@@ -17,6 +18,8 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 
 abstract class AbstractIDealAuthorizeRequest
 {
+    /** @var ConfigReaderInterface */
+    protected $configReader;
     /** @var RedirectHandler */
     private $redirectHandler;
 
@@ -25,16 +28,19 @@ abstract class AbstractIDealAuthorizeRequest
 
     public function __construct(
         RedirectHandler $redirectHandler,
-        EntityRepositoryInterface $currencyRepository
+        EntityRepositoryInterface $currencyRepository,
+        ConfigReaderInterface $configReader
     ) {
         $this->redirectHandler    = $redirectHandler;
         $this->currencyRepository = $currencyRepository;
+        $this->configReader       = $configReader;
     }
 
     public function getRequestParameters(
         PaymentTransaction $transaction,
         RequestDataBag $dataBag,
-        Context $context
+        Context $context,
+        string $referenceNumber
     ): array {
         if (empty($transaction->getReturnUrl())) {
             throw new InvalidOrderException($transaction->getOrder()->getId());
@@ -49,7 +55,7 @@ abstract class AbstractIDealAuthorizeRequest
             'bankgrouptype'          => $dataBag->get('idealBankGroup'),
             'amount'                 => (int) ($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision())),
             'currency'               => $currency->getIsoCode(),
-            'reference'              => $transaction->getOrder()->getOrderNumber(),
+            'reference'              => $referenceNumber,
             'successurl'             => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
             'errorurl'               => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),
             'backurl'                => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=cancel'),

@@ -48,10 +48,13 @@ abstract class AbstractPayolutionInvoicingAuthorizeRequestFactory extends Abstra
             $context
         );
 
+        $referenceNumber = $this->systemRequest->getReferenceNumber($transaction, true);
+
         $this->requests[] = $this->payolutionInvoicingRequest->getRequestParameters(
             $transaction,
             $dataBag,
-            $context
+            $context,
+            $referenceNumber
         );
 
         return $this->createRequest();
