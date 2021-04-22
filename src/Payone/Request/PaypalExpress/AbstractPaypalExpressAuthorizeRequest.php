@@ -62,7 +62,7 @@ abstract class AbstractPaypalExpressAuthorizeRequest
         ];
 
         if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId())) {
-            $parameters['narrative_text'] = mb_substr($transaction->getOrder()->getOrderNumber(), 0, 81);
+            $parameters['narrative_text'] = mb_substr((string) $transaction->getOrder()->getOrderNumber(), 0, 81);
         }
 
         return array_filter($parameters);
