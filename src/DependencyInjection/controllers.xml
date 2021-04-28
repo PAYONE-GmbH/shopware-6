@@ -88,7 +88,7 @@
             <argument type="service" id="PayonePayment\Payone\Request\PaypalExpress\PaypalExpressGetCheckoutDetailsRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
-            <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\AccountRegistrationService" />
+            <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\RegisterRoute" />
             <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\AccountService" />
             <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory" />
             <argument type="service" id="salutation.repository"/>
