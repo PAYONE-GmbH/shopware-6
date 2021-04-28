@@ -93,7 +93,7 @@ class PaypalExpressController extends StorefrontController
         $this->checkoutDetailsRequestFactory = $checkoutDetailsRequestFactory;
         $this->client                        = $client;
         $this->cartService                   = $cartService;
-        $this->registerRoute    = $registerRoute;
+        $this->registerRoute                 = $registerRoute;
         $this->accountService                = $accountService;
         $this->salesChannelContextFactory    = $salesChannelContextFactory;
         $this->salutationRepository          = $salutationRepository;
@@ -226,7 +226,7 @@ class PaypalExpressController extends StorefrontController
         $countryId    = $this->getCountryIdByCode($response['addpaydata']['shipping_country'], $context);
 
         return new DataBag([
-            'guest' => true,
+            'guest'          => true,
             'salutationId'   => $salutationId,
             'email'          => $response['addpaydata']['email'],
             'firstName'      => $response['addpaydata']['shipping_firstname'],
