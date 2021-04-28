@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ConfigInstaller implements InstallerInterface
 {
-    private const STATE_MACHINE_TRANSITION_ACTION_PAY = 'pay';
+    private const STATE_MACHINE_TRANSITION_ACTION_PAY           = 'pay';
     private const STATE_MACHINE_TRANSITION_ACTION_PAY_PARTIALLY = 'pay_partially';
 
     private const DEFAULT_VALUES = [
