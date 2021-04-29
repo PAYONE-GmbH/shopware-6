@@ -58,10 +58,13 @@ abstract class AbstractPaypalAuthorizeRequestFactory extends AbstractRequestFact
 
         $referenceNumber = $this->systemRequest->getReferenceNumber($transaction, true);
 
+        $shippingAddress = $context->getCustomer() !== null ? $context->getCustomer()->getActiveShippingAddress() : null;
+
         $this->requests[] = $this->paypalRequest->getRequestParameters(
             $transaction,
             $context->getContext(),
             $referenceNumber,
+            $shippingAddress,
             $workOrderId
         );
 
