@@ -9,6 +9,7 @@ use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Context;
@@ -41,6 +42,7 @@ abstract class AbstractPaypalExpressAuthorizeRequest
         PaymentTransaction $transaction,
         Context $context,
         string $referenceNumber,
+        ?CustomerAddressEntity $shippingAddress = null,
         ?string $workOrderId = null
     ): array {
         if (empty($transaction->getReturnUrl())) {
@@ -61,8 +63,12 @@ abstract class AbstractPaypalExpressAuthorizeRequest
             'workorderid'  => $workOrderId,
         ];
 
+        if ($shippingAddress !== null) {
+            $parameters = $this->applyShippingParameters($parameters, $shippingAddress);
+        }
+
         if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId())) {
-            $parameters['narrative_text'] = mb_substr($transaction->getOrder()->getOrderNumber(), 0, 81);
+            $parameters['narrative_text'] = mb_substr((string) $transaction->getOrder()->getOrderNumber(), 0, 81);
         }
 
         return array_filter($parameters);
@@ -87,5 +93,20 @@ abstract class AbstractPaypalExpressAuthorizeRequest
         }
 
         return $currency;
+    }
+
+    private function applyShippingParameters(array $parameters, CustomerAddressEntity $shippingAddress): array
+    {
+        $shippingParameters = array_filter([
+            'shipping_firstname' => $shippingAddress->getFirstName(),
+            'shipping_lastname'  => $shippingAddress->getLastName(),
+            'shipping_company'   => $shippingAddress->getCompany(),
+            'shipping_street'    => $shippingAddress->getStreet(),
+            'shipping_zip'       => $shippingAddress->getZipcode(),
+            'shipping_city'      => $shippingAddress->getCity(),
+            'shipping_country'   => $shippingAddress->getCountry() !== null ? $shippingAddress->getCountry()->getIso() : null,
+        ]);
+
+        return array_merge($parameters, $shippingParameters);
     }
 }
