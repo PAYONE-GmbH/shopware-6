@@ -2,9 +2,10 @@ includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
 
 parameters:
-    level: max
+    level: 5
     reportUnmatchedIgnoredErrors: true
     inferPrivatePropertyTypeFromConstructor: true
+    checkMissingIterableValueType: false
     ignoreErrors:
         - '#Property(.*)does not accept object(.*)#'
         - '#Access to constant CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE(.*)#'

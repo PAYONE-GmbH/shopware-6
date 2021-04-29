@@ -109,7 +109,6 @@ class LineItemHydrator implements LineItemHydratorInterface
     private function isCustomizedProduct(OrderLineItemEntity $lineItemEntity): bool
     {
         try {
-            /** @phpstan-ignore-next-line */
             if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector') &&
                 CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItemEntity->getType(
                 ) &&

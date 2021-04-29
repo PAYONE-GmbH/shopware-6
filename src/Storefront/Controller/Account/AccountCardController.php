@@ -6,6 +6,7 @@ namespace PayonePayment\Storefront\Controller\Account;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Storefront\Page\Card\AccountCardPageLoader;
+use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
@@ -30,12 +31,15 @@ class AccountCardController extends StorefrontController
     }
 
     /**
+     * @LoginRequired
      * @RouteScope(scopes={"storefront"})
      * @Route("/account/card/overview", name="frontend.account.payone.card.page", options={"seo": "false"}, methods={"GET"})
      */
     public function cardOverview(Request $request, SalesChannelContext $context): Response
     {
-        $this->denyAccessUnlessLoggedIn();
+        if (method_exists($this, 'denyAccessUnlessLoggedIn')) {
+            $this->denyAccessUnlessLoggedIn();
+        }
 
         $page = $this->accountCardPageLoader->load($request, $context);
 
@@ -43,12 +47,15 @@ class AccountCardController extends StorefrontController
     }
 
     /**
+     * @LoginRequired
      * @RouteScope(scopes={"storefront"})
      * @Route("/account/card/delete", name="frontend.account.payone.card.delete", options={"seo": "false"}, methods={"GET"})
      */
     public function deleteCard(Request $request, SalesChannelContext $context): Response
     {
-        $this->denyAccessUnlessLoggedIn();
+        if (method_exists($this, 'denyAccessUnlessLoggedIn')) {
+            $this->denyAccessUnlessLoggedIn();
+        }
 
         try {
             if (null !== $context->getCustomer()) {

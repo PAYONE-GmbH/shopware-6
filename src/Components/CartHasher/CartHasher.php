@@ -61,7 +61,6 @@ class CartHasher implements CartHasherInterface
         if (null !== $entity->getLineItems()) {
             foreach ($entity->getLineItems() as $lineItem) {
                 try {
-                    /** @phpstan-ignore-next-line */
                     if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector') &&
                         CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItem->getType() &&
                         null === $lineItem->getParentId()) {
