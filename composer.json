@@ -31,8 +31,8 @@
         "dms/phpunit-arraysubset-asserts": "^0.1.0",
         "fzaninotto/faker": "1.8.0",
         "k10r/codestyle": "^1.0",
-        "phpstan/phpstan": "^0.11",
-        "phpstan/phpstan-phpunit": "^0.11",
+        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan-phpunit": "^0.12",
         "phpunit/phpunit": "^8.1"
     },
     "autoload": {

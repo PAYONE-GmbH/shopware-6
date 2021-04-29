@@ -22,6 +22,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
@@ -220,12 +221,12 @@ class PaypalExpressController extends StorefrontController
         return $this->router->generate('frontend.account.payone.paypal.express-checkout-handler', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
-    private function getCustomerDataBagFromResponse(array $response, Context $context): DataBag
+    private function getCustomerDataBagFromResponse(array $response, Context $context): RequestDataBag
     {
         $salutationId = $this->getSalutationId($context);
         $countryId    = $this->getCountryIdByCode($response['addpaydata']['shipping_country'], $context);
 
-        return new DataBag([
+        return new RequestDataBag([
             'guest'          => true,
             'salutationId'   => $salutationId,
             'email'          => $response['addpaydata']['email'],

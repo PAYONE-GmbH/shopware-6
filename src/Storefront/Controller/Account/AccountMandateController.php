@@ -6,6 +6,7 @@ namespace PayonePayment\Storefront\Controller\Account;
 
 use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader;
+use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
@@ -30,12 +31,15 @@ class AccountMandateController extends StorefrontController
     }
 
     /**
+     * @LoginRequired
      * @RouteScope(scopes={"storefront"})
      * @Route("/account/mandate/overview", name="frontend.account.payone.mandate.page", options={"seo": "false"}, methods={"GET"})
      */
     public function mandateOverview(Request $request, SalesChannelContext $context): Response
     {
-        $this->denyAccessUnlessLoggedIn();
+        if (method_exists($this, 'denyAccessUnlessLoggedIn')) {
+            $this->denyAccessUnlessLoggedIn();
+        }
 
         $page = $this->accountMandatePageLoader->load($request, $context);
 
@@ -43,12 +47,15 @@ class AccountMandateController extends StorefrontController
     }
 
     /**
+     * @LoginRequired
      * @RouteScope(scopes={"storefront"})
      * @Route("/account/mandate/download", name="frontend.account.payone.mandate.download", options={"seo": "false"}, methods={"GET"})
      */
     public function downloadMandate(Request $request, SalesChannelContext $context): Response
     {
-        $this->denyAccessUnlessLoggedIn();
+        if (method_exists($this, 'denyAccessUnlessLoggedIn')) {
+            $this->denyAccessUnlessLoggedIn();
+        }
 
         try {
             if (null !== $context->getCustomer()) {
