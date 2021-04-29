@@ -24,8 +24,9 @@ class RefundController extends AbstractController
     }
 
     /**
-     * @RouteScope(scopes={"api"})
-     * @Route("/api/v{version}/_action/payone/refund-payment", name="api.action.payone.refund_payment", methods={"POST"})
+     * @RouteScope(scopes={"api"})     *
+     * @Route("/api/_action/payone/refund-payment", name="api.action.payone.refund_payment", methods={"POST"})
+     * @Route("/api/v{version}/_action/payone/refund-payment", name="api.action.payone.refund_payment.legacy", methods={"POST"})
      */
     public function refundAction(Request $request, Context $context): JsonResponse
     {

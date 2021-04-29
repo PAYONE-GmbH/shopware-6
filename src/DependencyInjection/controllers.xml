@@ -39,6 +39,10 @@
             <argument type="service" id="PayonePayment\Payone\Request\Test\TestRequestFactory" />
             <argument type="service" id="state_machine_transition.repository" />
             <argument type="service" id="PayonePayment\Util\Logger"/>
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <service id="PayonePayment\Storefront\Controller\Account\AccountCardController">

@@ -25,7 +25,8 @@ class CaptureController extends AbstractController
 
     /**
      * @RouteScope(scopes={"api"})
-     * @Route("/api/v{version}/_action/payone/capture-payment", name="api.action.payone.capture_payment", methods={"POST"})
+     * @Route("/api/_action/payone/capture-payment", name="api.action.payone.capture_payment", methods={"POST"})
+     * @Route("/api/v{version}/_action/payone/capture-payment", name="api.action.payone.capture_payment.legacy", methods={"POST"})
      */
     public function captureAction(Request $request, Context $context): JsonResponse
     {

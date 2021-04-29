@@ -72,7 +72,8 @@
                 "eps": "Die API-Zugangsdaten für EPS sind nicht korrekt.",
                 "iDeal": "Die API-Zugangsdaten für iDEAL sind nicht korrekt.",
                 "secureInvoice": "Die API-Zugangsdaten für den gesicherten Rechnungskauf sind nicht korrekt.",
-                "paydirekt": "Die API-Zugangsdaten für Paydirekt sind nicht korrekt."
+                "paydirekt": "Die API-Zugangsdaten für Paydirekt sind nicht korrekt.",
+                "trustly": "Die API-Zugangsdaten für Trustly sind nicht korrekt."
             }
         },
         "supportModal": {
