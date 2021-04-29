@@ -1,4 +1,3 @@
-{# TODO: Remove this file before 6.4, deprecated since 6.2 #}
 {% block sw_settings_content_card_slot_plugins %}
     {% parent %}
 
@@ -6,7 +5,6 @@
                       :to="{ name: 'payone.payment.index' }"
                       :backgroundEnabled="false">
         <template #icon>
-            <!-- TODO: Image only works in production mode -->
             <img class="sw-settings-index__payone-icon" :src="'payonepayment/plugin.png' | asset">
         </template>
     </sw-settings-item>
