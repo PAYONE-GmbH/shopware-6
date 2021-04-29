@@ -56,7 +56,8 @@ class SettingsController extends AbstractController
 
     /**
      * @RouteScope(scopes={"api"})
-     * @Route("/api/v{version}/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials", methods={"POST"})
+     * @Route("/api/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials", methods={"POST"})
+     * @Route("/api/v{version}/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials.legacy", methods={"POST"})
      */
     public function validateApiCredentials(Request $request, Context $context): JsonResponse
     {
@@ -103,7 +104,8 @@ class SettingsController extends AbstractController
 
     /**
      * @RouteScope(scopes={"api"})
-     * @Route("/api/v{version}/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions", methods={"GET"})
+     * @Route("/api/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions", methods={"GET"})
+     * @Route("/api/v{version}/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions.legacy", methods={"GET"})
      */
     public function getStateMachineTransitionActions(Request $request, Context $context): JsonResponse
     {

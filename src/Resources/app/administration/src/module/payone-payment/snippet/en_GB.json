@@ -72,7 +72,8 @@
                 "eps": "The API credentials for EPS are not valid.",
                 "iDeal": "The API credentials for iDEAL are not valid.",
                 "secureInvoice": "The API credentials for secure invoice payment are not valid.",
-                "paydirekt": "The API credentials for Paydirekt payment are not valid."
+                "paydirekt": "The API credentials for Paydirekt payment are not valid.",
+                "trustly": "The API credentials for Trustly payment are not valid."
             }
         },
         "supportModal": {
