@@ -4,6 +4,7 @@ import './component/capture';
 import './component/refund';
 import './component/order-items';
 import './component/payone-data-grid';
+import './component/payone-payment-plugin-icon';
 
 import './page/payone-settings';
 

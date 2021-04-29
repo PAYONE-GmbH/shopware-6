@@ -1,3 +1,6 @@
+import template from './sw-settings-index.html.twig';
+import './sw-settings-index.scss';
+
 const { Component } = Shopware;
 
 const version = Shopware.Context.app.config.version;
