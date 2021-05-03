@@ -22,15 +22,18 @@
     "require": {
         "php": "^7.2",
         "ext-curl": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "shopware/core": "^6.2.0",
+        "shopware/administration": "^6.2.0",
+        "shopware/storefront": "^6.2.0"
     },
     "require-dev": {
-        "dms/phpunit-arraysubset-asserts": "^0.2.0",
+        "dms/phpunit-arraysubset-asserts": "*",
         "fzaninotto/faker": "1.8.0",
         "k10r/codestyle": "^1.0",
         "phpstan/phpstan": "^0.12",
-        "phpstan/phpstan-phpunit": "^0.12",
-        "phpunit/phpunit": "9.5.2"
+        "phpstan/phpstan-phpunit": "*",
+        "phpunit/phpunit": "*"
     },
     "autoload": {
         "psr-4": {
@@ -43,10 +46,7 @@
         }
     },
     "config": {
-        "sort-packages": true,
-        "platform": {
-            "php": "7.3.28"
-        }
+        "sort-packages": true
     },
     "extra": {
         "shopware-plugin-class": "PayonePayment\\PayonePayment",

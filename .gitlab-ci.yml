@@ -29,7 +29,7 @@ composer:
 
 phpstan:
     stage: test
-    image: "edbizarro/gitlab-ci-pipeline-php:7.3"
+    image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     dependencies:
         - composer
     parallel:
@@ -57,7 +57,7 @@ codestyle:
             - .php_cs.cache
 
 phpunit:
-    image: shopware/development:7.3
+    image: shopware/development:7.2
     stage: test
     services:
         - mysql:5.7
