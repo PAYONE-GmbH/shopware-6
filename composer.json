@@ -22,10 +22,7 @@
     "require": {
         "php": "^7.2",
         "ext-curl": "*",
-        "ext-json": "*",
-        "shopware/core": "^6.2.0",
-        "shopware/administration": "^6.2.0",
-        "shopware/storefront": "^6.2.0"
+        "ext-json": "*"
     },
     "require-dev": {
         "dms/phpunit-arraysubset-asserts": "*",
@@ -46,7 +43,10 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "php": "7.2.9"
+        }
     },
     "extra": {
         "shopware-plugin-class": "PayonePayment\\PayonePayment",
