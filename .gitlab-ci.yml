@@ -1,4 +1,6 @@
 stages:
+    - setup-legacy
+    - test-legacy
     - setup
     - test
     - package
@@ -14,7 +16,7 @@ variables:
     MYSQL_PASSWORD: shopware
 
 composer-legacy:
-    stage: setup
+    stage: setup-legacy
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     script:
         - rm composer.lock
@@ -29,7 +31,7 @@ composer-legacy:
             - vendor/
 
 phpstan-legacy:
-    stage: test
+    stage: test-legacy
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     dependencies:
         - composer-legacy
@@ -47,7 +49,7 @@ phpstan-legacy:
 
 phpunit-legacy:
     image: shopware/development:7.2
-    stage: test
+    stage: test-legacy
     services:
         - mysql:5.7
     dependencies:
