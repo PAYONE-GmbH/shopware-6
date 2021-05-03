@@ -117,7 +117,7 @@ class DebitAuthorizeRequestFactoryTest extends TestCase
         $currencyEntity->setId(Constants::CURRENCY_ID);
         $currencyEntity->setIsoCode('EUR');
 
-        if(method_exists($currencyEntity, 'setDecimalPrecision')) {
+        if (method_exists($currencyEntity, 'setDecimalPrecision')) {
             $currencyEntity->setDecimalPrecision(2);
         } else {
             $currencyEntity->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
@@ -135,11 +135,10 @@ class DebitAuthorizeRequestFactoryTest extends TestCase
                     Context::createDefaultContext()
                 )
             );
-        }
-        catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $currencyRepository->method('search')->willReturn(
-            /** @phpstan-ignore-next-line */
-                new EntitySearchResult(1, new EntityCollection([$currencyEntity]),null, new Criteria(), Context::createDefaultContext())
+                /** @phpstan-ignore-next-line */
+                new EntitySearchResult(1, new EntityCollection([$currencyEntity]), null, new Criteria(), Context::createDefaultContext())
             );
         }
 

@@ -56,11 +56,10 @@ trait RequestFactoryTestTrait
                     Context::createDefaultContext()
                 )
             );
-        }
-        catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $languageRepository->method('search')->willReturn(
-            /** @phpstan-ignore-next-line */
-                new EntitySearchResult(1, new EntityCollection([$languageEntity]),null, new Criteria(), Context::createDefaultContext())
+                /** @phpstan-ignore-next-line */
+                new EntitySearchResult(1, new EntityCollection([$languageEntity]), null, new Criteria(), Context::createDefaultContext())
             );
         }
 
@@ -79,11 +78,10 @@ trait RequestFactoryTestTrait
                     Context::createDefaultContext()
                 )
             );
-        }
-        catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $languageRepository->method('search')->willReturn(
-            /** @phpstan-ignore-next-line */
-                new EntitySearchResult(1, new EntityCollection([$salutationEntity]),null, new Criteria(), Context::createDefaultContext())
+                /** @phpstan-ignore-next-line */
+                new EntitySearchResult(1, new EntityCollection([$salutationEntity]), null, new Criteria(), Context::createDefaultContext())
             );
         }
 
@@ -102,11 +100,10 @@ trait RequestFactoryTestTrait
                     Context::createDefaultContext()
                 )
             );
-        }
-        catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $languageRepository->method('search')->willReturn(
-            /** @phpstan-ignore-next-line */
-                new EntitySearchResult(1, new EntityCollection([$countryEntity]),null, new Criteria(), Context::createDefaultContext())
+                /** @phpstan-ignore-next-line */
+                new EntitySearchResult(1, new EntityCollection([$countryEntity]), null, new Criteria(), Context::createDefaultContext())
             );
         }
 

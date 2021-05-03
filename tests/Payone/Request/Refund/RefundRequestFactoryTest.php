@@ -228,7 +228,7 @@ class RefundRequestFactoryTest extends TestCase
 
         $currency = new CurrencyEntity();
 
-        if(method_exists($currency, 'setDecimalPrecision')) {
+        if (method_exists($currency, 'setDecimalPrecision')) {
             $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
         } else {
             $currency->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
@@ -307,7 +307,8 @@ class RefundRequestFactoryTest extends TestCase
         $currencyEntity     = new CurrencyEntity();
         $currencyEntity->setId(Constants::CURRENCY_ID);
         $currencyEntity->setIsoCode('EUR');
-        if(method_exists($currencyEntity, 'setDecimalPrecision')) {
+
+        if (method_exists($currencyEntity, 'setDecimalPrecision')) {
             $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
         } else {
             $currencyEntity->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
@@ -325,7 +326,7 @@ class RefundRequestFactoryTest extends TestCase
                     Context::createDefaultContext()
                 )
             );
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $currencyRepository->method('search')->willReturn(
                 /** @phpstan-ignore-next-line */
                 new EntitySearchResult(0, new EntityCollection([$currencyEntity]), null, new Criteria(), Context::createDefaultContext())

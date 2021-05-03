@@ -38,6 +38,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Pricing\CashRoundingConfig;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\Salutation\SalutationEntity;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class CaptureRequestFactoryTest extends TestCase
@@ -228,7 +229,7 @@ class CaptureRequestFactoryTest extends TestCase
     {
         $currency = new CurrencyEntity();
 
-        if(method_exists($currency, 'setDecimalPrecision')) {
+        if (method_exists($currency, 'setDecimalPrecision')) {
             $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
         } else {
             $currency->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
@@ -311,22 +312,30 @@ class CaptureRequestFactoryTest extends TestCase
         $currencyEntity->setId(Constants::CURRENCY_ID);
         $currencyEntity->setIsoCode('EUR');
 
-        if(method_exists($currencyEntity, 'setDecimalPrecision')) {
+        if (method_exists($currencyEntity, 'setDecimalPrecision')) {
             $currencyEntity->setDecimalPrecision(2);
         } else {
             $currencyEntity->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
             $currencyEntity->setTotalRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
         }
 
-        $currencyRepository->method('search')->willReturn(
-            new EntitySearchResult(
-                1,
-                new EntityCollection([$currencyEntity]),
-                null,
-                new Criteria(),
-                Context::createDefaultContext()
-            )
-        );
+        try {
+            $currencyRepository->method('search')->willReturn(
+                new EntitySearchResult(
+                    SalutationEntity::class,
+                    1,
+                    new EntityCollection([$currencyEntity]),
+                    null,
+                    new Criteria(),
+                    Context::createDefaultContext()
+                )
+            );
+        } catch (\Throwable $e) {
+            $currencyRepository->method('search')->willReturn(
+                /** @phpstan-ignore-next-line */
+                new EntitySearchResult(1, new EntityCollection([$currencyEntity]), null, new Criteria(), Context::createDefaultContext())
+            );
+        }
 
         return new CaptureRequest($currencyRepository);
     }
