@@ -1,9 +1,9 @@
 stages:
-    - setup-legacy
-    - test-legacy
     - setup
     - test
     - package
+    - setup-legacy
+    - test-legacy
 
 cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
@@ -71,17 +71,8 @@ phpunit-legacy:
         - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && php -d pcov.enabled=1 -d pcov.directory=${CI_PROJECT_DIR}
             vendor/bin/phpunit
             --configuration phpunit.xml.dist
-            --log-junit ${CI_PROJECT_DIR}/opt/shopware/build/artifacts/phpunit.junit.xml
             --colors=never
-            --coverage-clover ${CI_PROJECT_DIR}/opt/shopware/build/artifacts/phpunit.clover.xml
-            --coverage-html ${CI_PROJECT_DIR}/opt/shopware/build/artifacts/phpunit-coverage-html
             --coverage-text
-    coverage: '/^\s*Lines:\s*(\d+(?:\.\d+)?%)/'
-    artifacts:
-        paths:
-            - opt/shopware/build/artifacts/phpunit.clover.xml
-        reports:
-            junit: opt/shopware/build/artifacts/phpunit.junit.xml
 
 composer:
     stage: setup
@@ -105,6 +96,8 @@ phpstan:
     parallel:
         matrix:
             - SW_VERSION: [ 'v6.4.0.0-RC1' ]
+    before_script:
+        - composer self-update --2
     script:
         - git clone -b ${SW_VERSION} https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
         - mv ${CI_PROJECT_DIR}/opt /tmp/opt
@@ -113,6 +106,42 @@ phpstan:
         - cd ${CI_PROJECT_DIR}/opt/shopware && composer install --no-interaction --optimize-autoloader --no-suggest --no-scripts
         - cd ${CI_PROJECT_DIR}/opt/shopware && composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
         - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -a ${CI_PROJECT_DIR}/opt/shopware/vendor/autoload.php tests src
+
+phpunit:
+    image: shopware/development:7.4
+    stage: test
+    services:
+        - mysql:5.7
+    dependencies:
+        - composer
+    parallel:
+        matrix:
+            -   SW_VERSION: [ 'v6.0.0.0-RC1' ]
+    before_script:
+        - git clone -b ${SW_VERSION} https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
+        - mv ${CI_PROJECT_DIR}/opt /tmp/opt
+        - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/${CI_PROJECT_NAME}
+        - mv /tmp/opt ${CI_PROJECT_DIR}/opt
+        - 'printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"mysql\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"${MYSQL_DATABASE}\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"${MYSQL_ROOT_PASSWORD}\"" > "${CI_PROJECT_DIR}/opt/shopware/.psh.yaml.override"'
+        - cd ${CI_PROJECT_DIR}/opt/shopware && php ${CI_PROJECT_DIR}/opt/shopware/psh.phar init
+        - cd ${CI_PROJECT_DIR}/opt/shopware && composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-scripts
+    script:
+        - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:install --activate ${CI_PROJECT_NAME}
+        - cd ${CI_PROJECT_DIR}/opt/shopware && composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
+        - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && php -d pcov.enabled=1 -d pcov.directory=${CI_PROJECT_DIR}
+            vendor/bin/phpunit
+            --configuration phpunit.xml.dist
+            --log-junit ${CI_PROJECT_DIR}/opt/shopware/build/artifacts/phpunit.junit.xml
+            --colors=never
+            --coverage-clover ${CI_PROJECT_DIR}/opt/shopware/build/artifacts/phpunit.clover.xml
+            --coverage-html ${CI_PROJECT_DIR}/opt/shopware/build/artifacts/phpunit-coverage-html
+            --coverage-text
+    coverage: '/^\s*Lines:\s*(\d+(?:\.\d+)?%)/'
+    artifacts:
+        paths:
+            - opt/shopware/build/artifacts/phpunit.clover.xml
+        reports:
+            junit: opt/shopware/build/artifacts/phpunit.junit.xml
 
 codestyle:
     stage: test
