@@ -8,5 +8,6 @@ parameters:
     checkMissingIterableValueType: false
     ignoreErrors:
         - '#Access to constant CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE(.*)#'
+        - '#RuntimeException (Using class "DMS\PHPUnitExtensions\ArraySubset\ArrayAccess" is only supported in combination with PHPUnit >= 9.0.0)#'
     excludes_analyse:
         - tests/Bootstrap.php
