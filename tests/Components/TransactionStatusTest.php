@@ -11,6 +11,7 @@ use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\TransactionStatusWebhookHandlerFactory;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -19,6 +20,10 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Pricing\CashRoundingConfig;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -187,7 +192,13 @@ class TransactionStatusTest extends TestCase
     {
         $currencyMock = new CurrencyEntity();
         $currencyMock->setId(Constants::CURRENCY_ID);
-        $currencyMock->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
+
+        if(method_exists($currencyMock, 'setDecimalPrecision')) {
+            $currencyMock->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
+        } else {
+            $currencyMock->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
+            $currencyMock->setTotalRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
+        }
 
         $orderEntity = new OrderEntity();
         $orderEntity->setId(Constants::ORDER_ID);

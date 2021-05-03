@@ -10,3 +10,5 @@ parameters:
         - '#Access to constant CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE(.*)#'
     excludes_analyse:
         - tests/Bootstrap.php
+
+# tests are excluded for now from static analysis

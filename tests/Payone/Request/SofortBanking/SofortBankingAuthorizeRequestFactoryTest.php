@@ -26,6 +26,7 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Pricing\CashRoundingConfig;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\System\Currency\CurrencyEntity;
@@ -111,16 +112,28 @@ class SofortBankingAuthorizeRequestFactoryTest extends TestCase
         $currencyEntity     = new CurrencyEntity();
         $currencyEntity->setId(Constants::CURRENCY_ID);
         $currencyEntity->setIsoCode('EUR');
-        $currencyEntity->setDecimalPrecision(2);
-        $currencyRepository->method('search')->willReturn(
-            new EntitySearchResult(
-                1,
-                new EntityCollection([$currencyEntity]),
-                null,
-                new Criteria(),
-                Context::createDefaultContext()
-            )
-        );
+        if(method_exists($currencyEntity, 'setDecimalPrecision')) {
+            $currencyEntity->setDecimalPrecision(2);
+        } else {
+            $currencyEntity->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
+            $currencyEntity->setTotalRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
+        }
+
+        try {
+            $currencyRepository->method('search')->willReturn(
+                new EntitySearchResult(
+                    CurrencyEntity::class,
+                    1,
+                    new EntityCollection([$currencyEntity]),
+                    null,
+                    new Criteria(),
+                    Context::createDefaultContext()
+                )
+            );
+        } catch(\Throwable $e) {
+            /** @phpstan-ignore-next-line */
+            new EntitySearchResult(0, new EntityCollection($currencyEntity), null, new Criteria(), Context::createDefaultContext());
+        }
 
         $configReader = $this->createMock(ConfigReader::class);
         $configReader->method('read')->willReturn(

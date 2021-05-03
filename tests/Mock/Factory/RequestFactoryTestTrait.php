@@ -44,41 +44,71 @@ trait RequestFactoryTestTrait
         $localeEntity = new LocaleEntity();
         $localeEntity->setCode('de_DE');
         $languageEntity->setLocale($localeEntity);
-        $languageRepository->method('search')->willReturn(
-            new EntitySearchResult(
-                1,
-                new EntityCollection([$languageEntity]),
-                null,
-                new Criteria(),
-                Context::createDefaultContext()
-            )
-        );
+
+        try {
+            $languageRepository->method('search')->willReturn(
+                new EntitySearchResult(
+                    LanguageEntity::class,
+                    1,
+                    new EntityCollection([$languageEntity]),
+                    null,
+                    new Criteria(),
+                    Context::createDefaultContext()
+                )
+            );
+        }
+        catch(\Throwable $e) {
+            $languageRepository->method('search')->willReturn(
+            /** @phpstan-ignore-next-line */
+                new EntitySearchResult(1, new EntityCollection([$languageEntity]),null, new Criteria(), Context::createDefaultContext())
+            );
+        }
 
         $salutationRepository = $this->createMock(EntityRepository::class);
         $salutationEntity     = new SalutationEntity();
         $salutationEntity->setId(Constants::SALUTATION_ID);
-        $salutationRepository->method('search')->willReturn(
-            new EntitySearchResult(
-                1,
-                new EntityCollection([$salutationEntity]),
-                null,
-                new Criteria(),
-                Context::createDefaultContext()
-            )
-        );
+
+        try {
+            $languageRepository->method('search')->willReturn(
+                new EntitySearchResult(
+                    SalutationEntity::class,
+                    1,
+                    new EntityCollection([$salutationEntity]),
+                    null,
+                    new Criteria(),
+                    Context::createDefaultContext()
+                )
+            );
+        }
+        catch(\Throwable $e) {
+            $languageRepository->method('search')->willReturn(
+            /** @phpstan-ignore-next-line */
+                new EntitySearchResult(1, new EntityCollection([$salutationEntity]),null, new Criteria(), Context::createDefaultContext())
+            );
+        }
 
         $countryRepository = $this->createMock(EntityRepository::class);
         $countryEntity     = new CountryEntity();
         $countryEntity->setId(Constants::COUNTRY_ID);
-        $countryRepository->method('search')->willReturn(
-            new EntitySearchResult(
-                1,
-                new EntityCollection([$countryEntity]),
-                null,
-                new Criteria(),
-                Context::createDefaultContext()
-            )
-        );
+
+        try {
+            $languageRepository->method('search')->willReturn(
+                new EntitySearchResult(
+                    SalutationEntity::class,
+                    1,
+                    new EntityCollection([$countryEntity]),
+                    null,
+                    new Criteria(),
+                    Context::createDefaultContext()
+                )
+            );
+        }
+        catch(\Throwable $e) {
+            $languageRepository->method('search')->willReturn(
+            /** @phpstan-ignore-next-line */
+                new EntitySearchResult(1, new EntityCollection([$countryEntity]),null, new Criteria(), Context::createDefaultContext())
+            );
+        }
 
         $requestStack = $this->createMock(RequestStack::class);
         $requestStack->method('getCurrentRequest')->willReturn(null);
