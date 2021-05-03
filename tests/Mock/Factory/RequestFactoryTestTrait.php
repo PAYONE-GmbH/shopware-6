@@ -46,22 +46,20 @@ trait RequestFactoryTestTrait
         $languageEntity->setLocale($localeEntity);
 
         try {
-            $languageRepository->method('search')->willReturn(
-                new EntitySearchResult(
-                    LanguageEntity::class,
-                    1,
-                    new EntityCollection([$languageEntity]),
-                    null,
-                    new Criteria(),
-                    Context::createDefaultContext()
-                )
+            $entitySearchResult = new EntitySearchResult(
+                LanguageEntity::class,
+                1,
+                new EntityCollection([$languageEntity]),
+                null,
+                new Criteria(),
+                Context::createDefaultContext()
             );
         } catch (\Throwable $e) {
-            $languageRepository->method('search')->willReturn(
-                /** @phpstan-ignore-next-line */
-                new EntitySearchResult(1, new EntityCollection([$languageEntity]), null, new Criteria(), Context::createDefaultContext())
-            );
+            /** @phpstan-ignore-next-line */
+            $entitySearchResult = new EntitySearchResult(1, new EntityCollection([$languageEntity]), null, new Criteria(), Context::createDefaultContext());
         }
+
+        $languageRepository->method('search')->willReturn($entitySearchResult);
 
         $salutationRepository = $this->createMock(EntityRepository::class);
         $salutationEntity     = new SalutationEntity();
@@ -70,7 +68,7 @@ trait RequestFactoryTestTrait
         try {
             $languageRepository->method('search')->willReturn(
                 new EntitySearchResult(
-                    LanguageEntity::class,
+                    SalutationEntity::class,
                     1,
                     new EntityCollection([$salutationEntity]),
                     null,
