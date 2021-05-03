@@ -97,7 +97,7 @@ phpstan:
         matrix:
             - SW_VERSION: [ 'v6.4.0.0-RC1' ]
     before_script:
-        - composer self-update --2
+        - sudo composer self-update --2
     script:
         - git clone -b ${SW_VERSION} https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
         - mv ${CI_PROJECT_DIR}/opt /tmp/opt
