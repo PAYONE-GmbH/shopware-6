@@ -20,7 +20,6 @@ composer-legacy:
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     script:
         - rm composer.lock
-        - rm -rf ./vendor
         - php -d memory_limit=-1 /usr/bin/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     artifacts:
         paths:
@@ -88,7 +87,6 @@ composer:
     stage: setup
     image: "edbizarro/gitlab-ci-pipeline-php:7.4"
     script:
-        - cat composer.lock | grep php
         - composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     artifacts:
         paths:
@@ -98,6 +96,23 @@ composer:
     cache:
         paths:
             - vendor/
+
+phpstan:
+    stage: test
+    image: "edbizarro/gitlab-ci-pipeline-php:7.4"
+    dependencies:
+        - composer
+    parallel:
+        matrix:
+            - SW_VERSION: [ 'v6.4.0.0-RC1' ]
+    script:
+        - git clone -b ${SW_VERSION} https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
+        - mv ${CI_PROJECT_DIR}/opt /tmp/opt
+        - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/${CI_PROJECT_NAME}
+        - mv /tmp/opt ${CI_PROJECT_DIR}/opt
+        - cd ${CI_PROJECT_DIR}/opt/shopware && composer install --no-interaction --optimize-autoloader --no-suggest --no-scripts
+        - cd ${CI_PROJECT_DIR}/opt/shopware && composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
+        - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -a ${CI_PROJECT_DIR}/opt/shopware/vendor/autoload.php tests src
 
 codestyle:
     stage: test
