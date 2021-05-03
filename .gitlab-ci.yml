@@ -29,7 +29,7 @@ composer:
 
 phpstan:
     stage: test
-    image: "edbizarro/gitlab-ci-pipeline-php:7.2"
+    image: "edbizarro/gitlab-ci-pipeline-php:7.3"
     dependencies:
         - composer
     parallel:
