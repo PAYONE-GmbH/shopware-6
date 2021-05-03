@@ -20,9 +20,12 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": "^7.4",
+        "php": "^7.2",
         "ext-curl": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "shopware/core": "^6.2.0",
+        "shopware/administration": "^6.2.0",
+        "shopware/storefront": "^6.2.0"
     },
     "require-dev": {
         "dms/phpunit-arraysubset-asserts": "^0.3.0",
@@ -45,7 +48,7 @@
     "config": {
         "sort-packages": true,
         "platform": {
-            "php": "7.2.9"
+            "php": "7.4.12"
         }
     },
     "extra": {
