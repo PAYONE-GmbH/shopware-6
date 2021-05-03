@@ -22,13 +22,10 @@
     "require": {
         "php": "^7.2",
         "ext-curl": "*",
-        "ext-json": "*",
-        "shopware/core": "^6.2.0",
-        "shopware/administration": "^6.2.0",
-        "shopware/storefront": "^6.2.0"
+        "ext-json": "*"
     },
     "require-dev": {
-        "dms/phpunit-arraysubset-asserts": "^0.3.0",
+        "dms/phpunit-arraysubset-asserts": "^0.2.0",
         "fzaninotto/faker": "1.8.0",
         "k10r/codestyle": "^1.0",
         "phpstan/phpstan": "^0.12",
@@ -48,7 +45,7 @@
     "config": {
         "sort-packages": true,
         "platform": {
-            "php": "7.4.12"
+            "php": "7.3.28"
         }
     },
     "extra": {
