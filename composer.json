@@ -25,12 +25,12 @@
         "ext-json": "*"
     },
     "require-dev": {
-        "dms/phpunit-arraysubset-asserts": "*",
+        "dms/phpunit-arraysubset-asserts": "^0.1.0",
         "fzaninotto/faker": "1.8.0",
         "k10r/codestyle": "^1.0",
         "phpstan/phpstan": "^0.12",
         "phpstan/phpstan-phpunit": "*",
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "8.5.2"
     },
     "autoload": {
         "psr-4": {
