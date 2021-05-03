@@ -112,7 +112,8 @@ class SofortBankingAuthorizeRequestFactoryTest extends TestCase
         $currencyEntity     = new CurrencyEntity();
         $currencyEntity->setId(Constants::CURRENCY_ID);
         $currencyEntity->setIsoCode('EUR');
-        if(method_exists($currencyEntity, 'setDecimalPrecision')) {
+
+        if (method_exists($currencyEntity, 'setDecimalPrecision')) {
             $currencyEntity->setDecimalPrecision(2);
         } else {
             $currencyEntity->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
@@ -130,7 +131,7 @@ class SofortBankingAuthorizeRequestFactoryTest extends TestCase
                     Context::createDefaultContext()
                 )
             );
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             /** @phpstan-ignore-next-line */
             new EntitySearchResult(0, new EntityCollection($currencyEntity), null, new Criteria(), Context::createDefaultContext());
         }

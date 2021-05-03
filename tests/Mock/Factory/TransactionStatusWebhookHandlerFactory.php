@@ -9,8 +9,8 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler;
 use PayonePayment\Test\Mock\Components\ConfigReaderMock;
-use PayonePayment\Test\Mock\Repository\EntityRepositoryMock;
 use PHPUnit\Framework\MockObject\Generator;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
@@ -40,8 +40,7 @@ class TransactionStatusWebhookHandlerFactory
         array $configuration = [],
         ?OrderTransactionEntity $transaction = null
     ): TransactionStatusServiceInterface {
-
-        /** @var EntityRepositoryInterface $entityRepositoryMock */
+        /** @var MockObject $entityRepositoryMock */
         $entityRepositoryMock = (new Generator())->getMock(EntityRepositoryInterface::class);
 
         try {
@@ -55,7 +54,7 @@ class TransactionStatusWebhookHandlerFactory
                     Context::createDefaultContext()
                 )
             );
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             $entityRepositoryMock->method('search')->willReturn(
                 /** @phpstan-ignore-next-line */
                 new EntitySearchResult(0, new EntityCollection(array_filter([$transaction])), null, new Criteria(), Context::createDefaultContext())
@@ -64,6 +63,7 @@ class TransactionStatusWebhookHandlerFactory
 
         $entityRepositoryMock->method('update')->willReturn(new EntityWrittenContainerEvent(Context::createDefaultContext(), new NestedEventCollection(), []));
 
+        /** @var EntityRepositoryInterface $entityRepositoryMock */
         return new TransactionStatusService(
             $stateMachineRegistry,
             new ConfigReaderMock($configuration),

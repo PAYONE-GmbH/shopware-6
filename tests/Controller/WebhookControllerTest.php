@@ -136,7 +136,7 @@ class WebhookControllerTest extends TestCase
         $currency = new CurrencyEntity();
         $currency->setId(Constants::CURRENCY_ID);
 
-        if(method_exists($currency, 'setDecimalPrecision')) {
+        if (method_exists($currency, 'setDecimalPrecision')) {
             $currency->setDecimalPrecision(2);
         } else {
             $currency->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
