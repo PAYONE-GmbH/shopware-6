@@ -66,22 +66,20 @@ trait RequestFactoryTestTrait
         $salutationEntity->setId(Constants::SALUTATION_ID);
 
         try {
-            $languageRepository->method('search')->willReturn(
-                new EntitySearchResult(
-                    SalutationEntity::class,
-                    1,
-                    new EntityCollection([$salutationEntity]),
-                    null,
-                    new Criteria(),
-                    Context::createDefaultContext()
-                )
+            $entitySearchResult = new EntitySearchResult(
+                SalutationEntity::class,
+                1,
+                new EntityCollection([$salutationEntity]),
+                null,
+                new Criteria(),
+                Context::createDefaultContext()
             );
         } catch (\Throwable $e) {
-            $languageRepository->method('search')->willReturn(
-                /** @phpstan-ignore-next-line */
-                new EntitySearchResult(1, new EntityCollection([$salutationEntity]), null, new Criteria(), Context::createDefaultContext())
-            );
+            /** @phpstan-ignore-next-line */
+            $entitySearchResult = new EntitySearchResult(1, new EntityCollection([$salutationEntity]), null, new Criteria(), Context::createDefaultContext());
         }
+
+        $salutationRepository->method('search')->willReturn($entitySearchResult);
 
         $countryRepository = $this->createMock(EntityRepository::class);
         $countryEntity     = new CountryEntity();
