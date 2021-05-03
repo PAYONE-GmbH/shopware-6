@@ -87,19 +87,19 @@ trait RequestFactoryTestTrait
 
         try {
             $entitySearchResult = new EntitySearchResult(
-                LanguageEntity::class,
+                CountryEntity::class,
                 1,
-                new EntityCollection([$languageEntity]),
+                new EntityCollection([$countryEntity]),
                 null,
                 new Criteria(),
                 Context::createDefaultContext()
             );
         } catch (\Throwable $e) {
             /** @phpstan-ignore-next-line */
-            $entitySearchResult = new EntitySearchResult(1, new EntityCollection([$languageEntity]), null, new Criteria(), Context::createDefaultContext());
+            $entitySearchResult = new EntitySearchResult(1, new EntityCollection([$countryEntity]), null, new Criteria(), Context::createDefaultContext());
         }
 
-        $languageRepository->method('search')->willReturn($entitySearchResult);
+        $countryRepository->method('search')->willReturn($entitySearchResult);
 
         $requestStack = $this->createMock(RequestStack::class);
         $requestStack->method('getCurrentRequest')->willReturn(null);
