@@ -57,7 +57,7 @@ codestyle:
             - .php_cs.cache
 
 phpunit:
-    image: shopware/development:7.2
+    image: shopware/development:7.3
     stage: test
     services:
         - mysql:5.7
