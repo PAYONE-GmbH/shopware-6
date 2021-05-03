@@ -70,7 +70,7 @@ trait RequestFactoryTestTrait
         try {
             $languageRepository->method('search')->willReturn(
                 new EntitySearchResult(
-                    SalutationEntity::class,
+                    LanguageEntity::class,
                     1,
                     new EntityCollection([$salutationEntity]),
                     null,
@@ -90,22 +90,20 @@ trait RequestFactoryTestTrait
         $countryEntity->setId(Constants::COUNTRY_ID);
 
         try {
-            $languageRepository->method('search')->willReturn(
-                new EntitySearchResult(
-                    SalutationEntity::class,
-                    1,
-                    new EntityCollection([$countryEntity]),
-                    null,
-                    new Criteria(),
-                    Context::createDefaultContext()
-                )
+            $entitySearchResult = new EntitySearchResult(
+                LanguageEntity::class,
+                1,
+                new EntityCollection([$languageEntity]),
+                null,
+                new Criteria(),
+                Context::createDefaultContext()
             );
         } catch (\Throwable $e) {
-            $languageRepository->method('search')->willReturn(
-                /** @phpstan-ignore-next-line */
-                new EntitySearchResult(1, new EntityCollection([$countryEntity]), null, new Criteria(), Context::createDefaultContext())
-            );
+            /** @phpstan-ignore-next-line */
+            $entitySearchResult = new EntitySearchResult(1, new EntityCollection([$languageEntity]), null, new Criteria(), Context::createDefaultContext());
         }
+
+        $languageRepository->method('search')->willReturn($entitySearchResult);
 
         $requestStack = $this->createMock(RequestStack::class);
         $requestStack->method('getCurrentRequest')->willReturn(null);

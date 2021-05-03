@@ -121,20 +121,20 @@ class SofortBankingAuthorizeRequestFactoryTest extends TestCase
         }
 
         try {
-            $currencyRepository->method('search')->willReturn(
-                new EntitySearchResult(
-                    CurrencyEntity::class,
-                    1,
-                    new EntityCollection([$currencyEntity]),
-                    null,
-                    new Criteria(),
-                    Context::createDefaultContext()
-                )
+            $entitySearchResult = new EntitySearchResult(
+                CurrencyEntity::class,
+                1,
+                new EntityCollection([$currencyEntity]),
+                null,
+                new Criteria(),
+                Context::createDefaultContext()
             );
         } catch (\Throwable $e) {
             /** @phpstan-ignore-next-line */
-            new EntitySearchResult(0, new EntityCollection($currencyEntity), null, new Criteria(), Context::createDefaultContext());
+            $entitySearchResult = new EntitySearchResult(1, new EntityCollection([$currencyEntity]), null, new Criteria(), Context::createDefaultContext());
         }
+
+        $currencyRepository->method('search')->willReturn($entitySearchResult);
 
         $configReader = $this->createMock(ConfigReader::class);
         $configReader->method('read')->willReturn(
