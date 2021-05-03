@@ -13,10 +13,11 @@ variables:
     MYSQL_USER: shopware
     MYSQL_PASSWORD: shopware
 
-composer:
+composer-legacy:
     stage: setup
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     script:
+        - rm composer.lock
         - composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     artifacts:
         paths:
@@ -27,11 +28,11 @@ composer:
         paths:
             - vendor/
 
-phpstan:
+phpstan-legacy:
     stage: test
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
     dependencies:
-        - composer
+        - composer-legacy
     parallel:
         matrix:
             - SW_VERSION: [ 'v6.2.0', 'v6.3.1.0', 'v6.3.2.0', 'v6.3.3.0' ]
@@ -44,25 +45,13 @@ phpstan:
         - cd ${CI_PROJECT_DIR}/opt/shopware && composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
         - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -a ${CI_PROJECT_DIR}/opt/shopware/vendor/autoload.php tests src
 
-codestyle:
-    stage: test
-    image: "edbizarro/gitlab-ci-pipeline-php:7.2"
-    dependencies:
-        - composer
-    script:
-        - vendor/bin/php-cs-fixer fix -v --dry-run
-    cache:
-        key: global
-        paths:
-            - .php_cs.cache
-
-phpunit:
+phpunit-legacy:
     image: shopware/development:7.2
     stage: test
     services:
         - mysql:5.7
     dependencies:
-        - composer
+        - composer-legacy
     parallel:
         matrix:
             -   SW_VERSION: [ 'v6.2.0', 'v6.3.1.0', 'v6.3.2.0', 'v6.3.3.0' ]
@@ -91,6 +80,33 @@ phpunit:
             - opt/shopware/build/artifacts/phpunit.clover.xml
         reports:
             junit: opt/shopware/build/artifacts/phpunit.junit.xml
+
+composer:
+    stage: setup
+    image: "edbizarro/gitlab-ci-pipeline-php:7.4"
+    script:
+        - cat composer.lock | grep php
+        - composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
+    artifacts:
+        paths:
+            - vendor/
+        expire_in: 1 days
+        when: always
+    cache:
+        paths:
+            - vendor/
+
+codestyle:
+    stage: test
+    image: "edbizarro/gitlab-ci-pipeline-php:7.4"
+    dependencies:
+        - composer
+    script:
+        - vendor/bin/php-cs-fixer fix -v --dry-run
+    cache:
+        key: global
+        paths:
+            - .php_cs.cache
 
 package:
     image: kellerkinder/shopware-package-plugin:latest
