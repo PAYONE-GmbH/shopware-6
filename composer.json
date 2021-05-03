@@ -29,7 +29,7 @@
         "fzaninotto/faker": "1.8.0",
         "k10r/codestyle": "^1.0",
         "phpstan/phpstan": "^0.12",
-        "phpstan/phpstan-phpunit": "*",
+        "phpstan/phpstan-phpunit": "^0.12",
         "phpunit/phpunit": "8.5.2"
     },
     "autoload": {
@@ -43,10 +43,7 @@
         }
     },
     "config": {
-        "sort-packages": true,
-        "platform": {
-            "php": "7.2.9"
-        }
+        "sort-packages": true
     },
     "extra": {
         "shopware-plugin-class": "PayonePayment\\PayonePayment",
