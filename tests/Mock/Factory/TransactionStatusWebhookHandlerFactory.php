@@ -44,23 +44,20 @@ class TransactionStatusWebhookHandlerFactory
         $entityRepositoryMock = (new Generator())->getMock(EntityRepositoryInterface::class);
 
         try {
-            $entityRepositoryMock->method('search')->willReturn(
-                new EntitySearchResult(
-                    OrderTransactionEntity::class,
-                    1,
-                    new EntityCollection(array_filter([$transaction])),
-                    null,
-                    new Criteria(),
-                    Context::createDefaultContext()
-                )
+            $entitySearchResult = new EntitySearchResult(
+                OrderTransactionEntity::class,
+                1,
+                new EntityCollection(array_filter([$transaction])),
+                null,
+                new Criteria(),
+                Context::createDefaultContext()
             );
         } catch (\Throwable $e) {
-            $entityRepositoryMock->method('search')->willReturn(
-                /** @phpstan-ignore-next-line */
-                new EntitySearchResult(0, new EntityCollection(array_filter([$transaction])), null, new Criteria(), Context::createDefaultContext())
-            );
+            /** @phpstan-ignore-next-line */
+            $entitySearchResult = new EntitySearchResult(0, new EntityCollection(array_filter([$transaction])), null, new Criteria(), Context::createDefaultContext());
         }
 
+        $entityRepositoryMock->method('search')->willReturn($entitySearchResult);
         $entityRepositoryMock->method('update')->willReturn(new EntityWrittenContainerEvent(Context::createDefaultContext(), new NestedEventCollection(), []));
 
         /** @var EntityRepositoryInterface $entityRepositoryMock */

@@ -29,7 +29,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
-use Shopware\Core\System\Salutation\SalutationEntity;
 
 class DebitAuthorizeRequestFactoryTest extends TestCase
 {
@@ -125,22 +124,20 @@ class DebitAuthorizeRequestFactoryTest extends TestCase
         }
 
         try {
-            $currencyRepository->method('search')->willReturn(
-                new EntitySearchResult(
-                    SalutationEntity::class,
-                    1,
-                    new EntityCollection([$currencyEntity]),
-                    null,
-                    new Criteria(),
-                    Context::createDefaultContext()
-                )
+            $entitySearchResult = new EntitySearchResult(
+                CurrencyEntity::class,
+                1,
+                new EntityCollection([$currencyEntity]),
+                null,
+                new Criteria(),
+                Context::createDefaultContext()
             );
         } catch (\Throwable $e) {
-            $currencyRepository->method('search')->willReturn(
-                /** @phpstan-ignore-next-line */
-                new EntitySearchResult(1, new EntityCollection([$currencyEntity]), null, new Criteria(), Context::createDefaultContext())
-            );
+            /** @phpstan-ignore-next-line */
+            $entitySearchResult = new EntitySearchResult(1, new EntityCollection([$currencyEntity]), null, new Criteria(), Context::createDefaultContext());
         }
+
+        $currencyRepository->method('search')->willReturn($entitySearchResult);
 
         $configReader = $this->createMock(ConfigReader::class);
         $configReader->method('read')->willReturn(
