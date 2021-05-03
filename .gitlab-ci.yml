@@ -21,7 +21,7 @@ composer-legacy:
     script:
         - rm composer.lock
         - rm -rf ./vendor
-        - php -d memory_limit=-1 /usr/bin/composer install
+        - php -d memory_limit=-1 /usr/bin/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     artifacts:
         paths:
             - vendor/
