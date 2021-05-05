@@ -7,12 +7,14 @@
             <argument type="service" id="currency.repository" />
             <argument type="service" id="order_address.repository" />
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
         </service>
 
         <service id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitPreAuthorizeRequest">
             <argument type="service" id="currency.repository" />
             <argument type="service" id="order_address.repository" />
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
         </service>
 
         <service id="PayonePayment\Payone\Request\PayolutionDebit\PayolutionDebitPreAuthorizeRequestFactory">
