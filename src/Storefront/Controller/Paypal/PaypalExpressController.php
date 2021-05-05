@@ -76,6 +76,9 @@ class PaypalExpressController extends StorefrontController
     /** @var RouterInterface */
     private $router;
 
+    /**
+     * @param SalesChannelContextFactory $salesChannelContextFactory
+     */
     public function __construct(
         PaypalExpressSetCheckoutRequestFactory $checkoutRequestFactory,
         PaypalExpressGetCheckoutDetailsRequestFactory $checkoutDetailsRequestFactory,
@@ -83,7 +86,7 @@ class PaypalExpressController extends StorefrontController
         CartService $cartService,
         RegisterRoute $registerRoute,
         AccountService $accountService,
-        SalesChannelContextFactory $salesChannelContextFactory,
+        $salesChannelContextFactory,
         EntityRepositoryInterface $salutationRepository,
         EntityRepositoryInterface $countryRepository,
         SalesChannelContextSwitcher $salesChannelContextSwitcher,
@@ -175,9 +178,10 @@ class PaypalExpressController extends StorefrontController
             throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
-        $customerDataBag = $this->getCustomerDataBagFromResponse($response, $context->getContext());
-        $customerId      = $this->registerRoute->register($customerDataBag, $context);
-        $newContextToken = $this->accountService->login($response['addpaydata']['email'], $context, true);
+        $customerDataBag  = $this->getCustomerDataBagFromResponse($response, $context->getContext());
+        $customerResponse = $this->registerRoute->register($customerDataBag, $context, false);
+        $customerId       = $customerResponse->getCustomer()->getId();
+        $newContextToken  = $this->accountService->login($response['addpaydata']['email'], $context, true);
 
         $newContext = $this->salesChannelContextFactory->create(
             $newContextToken,
