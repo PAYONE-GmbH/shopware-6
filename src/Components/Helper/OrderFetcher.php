@@ -40,7 +40,6 @@ class OrderFetcher implements OrderFetcherInterface
         $criteria->addAssociation('transactions');
         $criteria->addAssociation('transactions.stateMachineState');
         $criteria->addAssociation('orderCustomer');
-        $criteria->addAssociation('billingAddress');
         $criteria->addAssociation('addresses');
         $criteria->addAssociation('addresses.salutation');
         $criteria->addAssociation('addresses.country');

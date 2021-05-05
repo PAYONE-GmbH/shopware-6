@@ -115,7 +115,7 @@ abstract class AbstractPayolutionInvoicingAuthorizeRequest
         }
 
         /** @var OrderAddressEntity $billingAddress */
-        $billingAddress = $order->getBillingAddress();
+        $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
 
         if ($billingAddress->getCompany() && $billingAddress->getVatId()) {
             $parameters['add_paydata[b2b]']         = 'yes';
