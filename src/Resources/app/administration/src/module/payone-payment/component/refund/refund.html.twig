@@ -17,8 +17,8 @@
         <div class="payone-payment-detail--refund-modal--content">
             <sw-container columns="1fr 1fr" gap="0 32px">
                 <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.orderAmount')" :value="transaction.amount.totalPrice | currency(order.currency.shortName)"></sw-text-field>
-                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.refund.refunded')" :value="refundedAmount | payone_currency(order.currency.shortName, order.currency.decimalPrecision)"></sw-text-field>
-                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.remainingAmount')" :value="remainingAmount | payone_currency(order.currency.shortName, order.currency.decimalPrecision)"></sw-text-field>
+                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.refund.refunded')" :value="refundedAmount | payone_currency(order.currency.shortName, decimalPrecision)"></sw-text-field>
+                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.remainingAmount')" :value="remainingAmount | payone_currency(order.currency.shortName, decimalPrecision)"></sw-text-field>
                 <sw-number-field required="required" numberType="float" :digits="order.decimal_precision" :label="$tc('payone-payment.modal.refund.amount')"
                                  v-model="refundAmount"
                                  :min="0"
