@@ -24,8 +24,20 @@ Component.register('payone-capture-button', {
     },
 
     computed: {
+        decimalPrecision() {
+            if (!this.order || !this.order.currency) {
+                return 2;
+            }
+            if (this.order.currency.decimalPrecision) {
+                return this.order.currency.decimalPrecision;
+            }
+            if (this.order.currency.itemRounding) {
+                return this.order.currency.itemRounding.decimals;
+            }
+        },
+
         totalTransactionAmount() {
-            return Math.round(this.transaction.amount.totalPrice * (10 ** this.order.currency.decimalPrecision), 0);
+            return Math.round(this.transaction.amount.totalPrice * (10 ** this.decimalPrecision), 0);
         },
 
         capturedAmount() {
@@ -41,7 +53,7 @@ Component.register('payone-capture-button', {
         },
 
         maxCaptureAmount() {
-            return this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
+            return this.remainingAmount / (10 ** this.decimalPrecision);
         },
 
         buttonEnabled() {
