@@ -46,9 +46,6 @@ abstract class AbstractPayolutionDebitAuthorizeRequest
         $this->orderFetcher           = $orderFetcher;
     }
 
-    /**
-     * @refactor This is a duplicate code fragment
-     */
     public function getRequestParameters(
         PaymentTransaction $transaction,
         RequestDataBag $dataBag,
@@ -118,6 +115,9 @@ abstract class AbstractPayolutionDebitAuthorizeRequest
         return !empty($configuration->get('payolutionDebitTransferCompanyData'));
     }
 
+    /**
+     * @refactor This is a duplicate code fragment
+     */
     private function provideCompanyParams(string $orderId, array &$parameters, Context $context): void
     {
         $order = $this->orderFetcher->getOrderById($orderId, $context);
