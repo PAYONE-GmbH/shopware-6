@@ -146,8 +146,8 @@ Component.register('payone-capture-button', {
                 });
             });
 
-            if (this.remainingAmount < (request.amount * (10 ** this.order.currency.decimalPrecision))) {
-                request.amount = this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
+            if (this.remainingAmount < (request.amount * (10 ** this.decimalPrecision))) {
+                request.amount = this.remainingAmount / (10 ** this.decimalPrecision);
             }
 
             this.executeCapture(request)
@@ -158,7 +158,7 @@ Component.register('payone-capture-button', {
                 orderTransactionId: this.transaction.id,
                 payone_order_id: this.transaction.customFields.payone_transaction_id,
                 salesChannel: this.order.salesChannel,
-                amount: this.remainingAmount / (10 ** this.order.currency.decimalPrecision),
+                amount: this.remainingAmount / (10 ** this.decimalPrecision),
                 orderLines: [],
                 complete: true
             };
@@ -171,7 +171,7 @@ Component.register('payone-capture-button', {
                 this.order.lineItems.forEach((order_item) => {
                     if (order_item.id === selection.id && 0 < selection.quantity) {
                         const copy = { ...order_item },
-                            taxRate = copy.tax_rate / (10 ** this.order.currency.decimalPrecision);
+                            taxRate = copy.tax_rate / (10 ** this.decimalPrecision);
 
                         copy.quantity         = selection.quantity;
                         copy.total_amount     = copy.unit_price * copy.quantity;
