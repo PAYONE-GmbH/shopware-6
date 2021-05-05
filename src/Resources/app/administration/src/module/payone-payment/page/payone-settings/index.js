@@ -1,4 +1,5 @@
 const { Component, Mixin } = Shopware;
+const { object, types } = Shopware.Utils;
 
 import template from './payone-settings.html.twig';
 import './style.scss';
@@ -13,7 +14,7 @@ Component.register('payone-settings', {
 
     inject: [ 'PayonePaymentSettingsService' ],
 
-    data() {
+       data() {
         return {
             isLoading: false,
             isTesting: false,
@@ -234,8 +235,10 @@ Component.register('payone-settings', {
         },
 
         getBind(element, config) {
+            let originalElement;
+
             if (config !== this.config) {
-                this.onConfigChange(config);
+                this.config = config;
             }
 
             if (this.showValidationErrors) {
@@ -265,7 +268,50 @@ Component.register('payone-settings', {
                 }
             }
 
-            return element;
+            this.$refs.systemConfig.config.forEach((configElement) => {
+                configElement.elements.forEach((child) => {
+                    if (child.name === element.name) {
+                        originalElement = child;
+                        return;
+                    }
+                });
+            });
+
+            return originalElement || element;
+        },
+
+        getElementBind(element) {
+            const bind = object.deepCopyObject(element);
+
+            // Add inherited values
+            if (this.currentSalesChannelId !== null
+                && this.inherit
+                && this.actualConfigData.hasOwnProperty('null')
+                && this.actualConfigData.null[bind.name] !== null) {
+                if (bind.type === 'single-select' || bind.config.componentName === 'sw-entity-single-select') {
+                    // Add inherited placeholder option
+                    bind.placeholder = this.$tc('sw-settings.system-config.inherited');
+                } else if (bind.type === 'bool') {
+                    // Add inheritedValue for checkbox fields to restore the inherited state
+                    bind.config.inheritedValue = this.actualConfigData.null[bind.name] || false;
+                } else if (bind.type === 'password') {
+                    // Add inherited placeholder and mark placeholder as password so the rendering element
+                    // can choose to hide it
+                    bind.placeholderIsPassword = true;
+                    bind.placeholder = `${this.actualConfigData.null[bind.name]}`;
+                } else if (bind.type !== 'multi-select' && !types.isUndefined(this.actualConfigData.null[bind.name])) {
+                    // Add inherited placeholder
+                    bind.placeholder = `${this.actualConfigData.null[bind.name]}`;
+                }
+            }
+
+            // Add select properties
+            if (['single-select', 'multi-select'].includes(bind.type)) {
+                bind.config.labelProperty = 'name';
+                bind.config.valueProperty = 'id';
+            }
+
+            return bind;
         },
     }
 });
