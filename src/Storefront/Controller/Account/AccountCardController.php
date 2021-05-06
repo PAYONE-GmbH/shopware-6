@@ -6,12 +6,15 @@ namespace PayonePayment\Storefront\Controller\Account;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Storefront\Page\Card\AccountCardPageLoader;
+use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
@@ -31,15 +34,12 @@ class AccountCardController extends StorefrontController
     }
 
     /**
-     * @LoginRequired
      * @RouteScope(scopes={"storefront"})
      * @Route("/account/card/overview", name="frontend.account.payone.card.page", options={"seo": "false"}, methods={"GET"})
      */
     public function cardOverview(Request $request, SalesChannelContext $context): Response
     {
-        if (method_exists($this, 'denyAccessUnlessLoggedIn')) {
-            $this->denyAccessUnlessLoggedIn();
-        }
+        $this->denyAccessUnlessLoggedIn();
 
         $page = $this->accountCardPageLoader->load($request, $context);
 
@@ -47,15 +47,12 @@ class AccountCardController extends StorefrontController
     }
 
     /**
-     * @LoginRequired
      * @RouteScope(scopes={"storefront"})
      * @Route("/account/card/delete", name="frontend.account.payone.card.delete", options={"seo": "false"}, methods={"GET"})
      */
     public function deleteCard(Request $request, SalesChannelContext $context): Response
     {
-        if (method_exists($this, 'denyAccessUnlessLoggedIn')) {
-            $this->denyAccessUnlessLoggedIn();
-        }
+        $this->denyAccessUnlessLoggedIn();
 
         try {
             if (null !== $context->getCustomer()) {
@@ -74,5 +71,38 @@ class AccountCardController extends StorefrontController
         $this->addFlash('success', $this->trans('PayonePayment.cardPage.success'));
 
         return new RedirectResponse($this->generateUrl('frontend.account.payone.card.page'));
+    }
+
+    /**
+     * This method has been removed with SW 6.4. It is recommended to use @LoginRequired Annotation instead.
+     * The annotation is not supported by SW 6.2.
+     *
+     * @throws CustomerNotLoggedInException
+     */
+    protected function denyAccessUnlessLoggedIn(bool $allowGuest = false): void
+    {
+        /** @var RequestStack $requestStack */
+        $requestStack = $this->get('request_stack');
+        $request      = $requestStack->getCurrentRequest();
+
+        if (!$request) {
+            throw new CustomerNotLoggedInException();
+        }
+
+        /** @var null|SalesChannelContext $context */
+        $context = $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
+
+        if (
+            $context
+            && $context->getCustomer()
+            && (
+                $allowGuest === true
+                || $context->getCustomer()->getGuest() === false
+            )
+        ) {
+            return;
+        }
+
+        throw new CustomerNotLoggedInException();
     }
 }
