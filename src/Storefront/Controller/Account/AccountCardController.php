@@ -7,7 +7,6 @@ namespace PayonePayment\Storefront\Controller\Account;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Storefront\Page\Card\AccountCardPageLoader;
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
-use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -74,7 +73,7 @@ class AccountCardController extends StorefrontController
     }
 
     /**
-     * This method has been removed with SW 6.4. It is recommended to use @LoginRequired Annotation instead.
+     * This method has been removed with SW 6.4. It is recommended to use LoginRequired annotation instead.
      * The annotation is not supported by SW 6.2.
      *
      * @throws CustomerNotLoggedInException
