@@ -62,6 +62,7 @@
             "messageTestError": {
                 "general": "The API credentials could not be verified successfully.",
                 "creditCard": "The API credentials for Credit Card are not valid.",
+                "prepayment": "The API credentials for Prepayment are not valid.",
                 "debit": "The API credentials for Debit are not valid.",
                 "paypalExpress": "The API credentials for PayPal Express are not valid.",
                 "paypal": "The API credentials for PayPal are not valid.",
