@@ -62,6 +62,7 @@
             "messageTestError": {
                 "general": "Die API-Zugangsdaten konnten nicht validiert werden.",
                 "creditCard": "Die API-Zugangsdaten für Kreditkarte sind nicht korrekt.",
+                "prepayment": "Die API-Zugangsdaten für Vorkasse sind nicht korrekt.",
                 "debit": "Die API-Zugangsdaten für Lastschrift sind nicht korrekt.",
                 "paypalExpress": "Die API-Zugangsdaten für PayPal Express sind nicht korrekt.",
                 "paypal": "Die API-Zugangsdaten für PayPal sind nicht korrekt.",
