@@ -122,10 +122,21 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
         $currencyEntity->setIsoCode('EUR');
 
         if (method_exists($currencyEntity, 'setDecimalPrecision')) {
-            $currencyEntity->setDecimalPrecision(2);
+            $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
         } else {
-            $currencyEntity->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
-            $currencyEntity->setTotalRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
+            $currencyEntity->setItemRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
+
+            $currencyEntity->setTotalRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
         }
 
         try {

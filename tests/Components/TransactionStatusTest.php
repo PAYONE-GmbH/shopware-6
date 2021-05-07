@@ -192,8 +192,19 @@ class TransactionStatusTest extends TestCase
         if (method_exists($currencyMock, 'setDecimalPrecision')) {
             $currencyMock->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
         } else {
-            $currencyMock->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
-            $currencyMock->setTotalRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
+            $currencyMock->setItemRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
+
+            $currencyMock->setTotalRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
         }
 
         $orderEntity = new OrderEntity();

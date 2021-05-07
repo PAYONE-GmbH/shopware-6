@@ -63,10 +63,21 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         $currency->setId(Constants::CURRENCY_ID);
 
         if (method_exists($currency, 'setDecimalPrecision')) {
-            $currency->setDecimalPrecision(2);
+            $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
         } else {
-            $currency->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
-            $currency->setTotalRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
+            $currency->setItemRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
+
+            $currency->setTotalRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
         }
 
         $orderEntity = new OrderEntity();
@@ -147,10 +158,21 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         $currency->setId(Constants::CURRENCY_ID);
 
         if (method_exists($currency, 'setDecimalPrecision')) {
-            $currency->setDecimalPrecision(2);
+            $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
         } else {
-            $currency->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
-            $currency->setTotalRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
+            $currency->setItemRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
+
+            $currency->setTotalRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
         }
 
         $orderEntity = new OrderEntity();
