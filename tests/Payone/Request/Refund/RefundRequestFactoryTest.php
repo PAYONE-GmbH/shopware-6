@@ -231,8 +231,19 @@ class RefundRequestFactoryTest extends TestCase
         if (method_exists($currency, 'setDecimalPrecision')) {
             $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
         } else {
-            $currency->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
-            $currency->setTotalRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
+            $currency->setItemRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
+
+            $currency->setTotalRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
         }
 
         $orderEntity = new OrderEntity();
@@ -311,8 +322,19 @@ class RefundRequestFactoryTest extends TestCase
         if (method_exists($currencyEntity, 'setDecimalPrecision')) {
             $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
         } else {
-            $currencyEntity->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
-            $currencyEntity->setTotalRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, true));
+            $currencyEntity->setItemRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
+
+            $currencyEntity->setTotalRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
         }
 
         try {
