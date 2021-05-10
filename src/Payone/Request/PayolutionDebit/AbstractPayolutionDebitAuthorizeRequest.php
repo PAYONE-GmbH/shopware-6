@@ -116,7 +116,7 @@ abstract class AbstractPayolutionDebitAuthorizeRequest
     }
 
     /**
-     * @refactor This is a duplicate code fragment
+     * refactor: This is a duplicate code fragment
      */
     private function provideCompanyParams(string $orderId, array &$parameters, Context $context): void
     {
