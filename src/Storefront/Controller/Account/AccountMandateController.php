@@ -80,7 +80,7 @@ class AccountMandateController extends StorefrontController
     }
 
     /**
-     * @refactor Implementing core legacy code is imho not the best solution
+     * refactor: Implementing core legacy code is imho not the best solution
      *
      * This method has been removed with SW 6.4. It is recommended to use LoginRequired annotation instead.
      * The annotation is not supported by SW 6.2.
