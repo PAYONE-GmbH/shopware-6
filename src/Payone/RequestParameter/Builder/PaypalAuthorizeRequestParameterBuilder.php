@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
-use PayonePayment\Components\RedirectHandler\RedirectHandler;
-use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\Payone\RequestParameter\Struct\RequestContentStruct;
 use Shopware\Core\Framework\Context;
@@ -15,6 +13,9 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
     public function getRequestParameter(RequestContentStruct $requestContent, Context $context) : array {
         $transaction = $requestContent->getPaymentTransaction();
         $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
+
+        //TODO: handle systemRequest parameters -> priority at first
+        //TODO: handle customerRequest parameters -> priority before this
 
         $parameters = [
             'request' => 'authorization',
@@ -28,6 +29,8 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
             'backurl'      => $this->encodeUrl($transaction->getReturnUrl() . '&state=cancel'),
             'workorderid'  => $requestContent->getWorkOrderId(),
         ];
+
+
 
         //TODO: applyShippingParameter
         //TODO: narrative_text
