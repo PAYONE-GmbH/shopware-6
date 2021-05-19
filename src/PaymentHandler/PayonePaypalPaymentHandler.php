@@ -93,6 +93,8 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
             $salesChannelContext
         );
 
+        dd($request);
+
         try {
             $response = $this->client->request($request);
         } catch (PayoneRequestException $exception) {

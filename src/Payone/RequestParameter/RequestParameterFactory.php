@@ -6,7 +6,9 @@ namespace PayonePayment\Payone\RequestParameter;
 
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\RequestContentStruct;
-use Shopware\Core\Framework\Context;
+use PayonePayment\Struct\PaymentTransaction;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\ErrorHandler\Error\ClassNotFoundError;
 
 class RequestParameterFactory {
@@ -17,20 +19,23 @@ class RequestParameterFactory {
         $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
-    public function getRequestParameter(RequestContentStruct $requestContent, Context $context) : array {
+    public function getRequestParameter(PaymentTransaction $paymentTransaction, RequestDataBag $requestData, SalesChannelContext $salesChannelContext) : array {
         $requestParameterBuilder = $this->getParameterBuilder($requestContent);
 
-        $requestParameterBuilder->validate($requestContent);
+        $parameters = [];
 
-        return $requestParameterBuilder->getRequestParameter($requestContent, $context);
+        foreach($this->requestParameterBuilder as $builder) {
+            if($builder->supports($requestContent) === true) {
+                $builder->validate($requestContent);
+                $parameters[] = $builder->getRequestParameter($requestContent, $context);
+            }
+        }
+
+        return $parameters;
     }
 
     private function getParameterBuilder(RequestContentStruct $requestContent) : AbstractRequestParameterBuilder {
-        foreach($this->requestParameterBuilder as $builder) {
-            if($builder->supports($requestContent) === true) {
-                return $builder;
-            }
-        }
+
 
         throw new ClassNotFoundError('No valid request parameter builder found');
     }
