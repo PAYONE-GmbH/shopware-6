@@ -31,12 +31,10 @@ class RequestParameterFactory {
             }
         }
 
+        if(empty($parameters)) {
+            throw new ClassNotFoundError('No valid request parameter builder found');
+        }
+
         return $parameters;
-    }
-
-    private function getParameterBuilder(RequestContentStruct $requestContent) : AbstractRequestParameterBuilder {
-
-
-        throw new ClassNotFoundError('No valid request parameter builder found');
     }
 }
