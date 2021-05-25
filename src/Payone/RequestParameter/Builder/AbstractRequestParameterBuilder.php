@@ -21,6 +21,7 @@ use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 abstract class AbstractRequestParameterBuilder
 {
     //TODO: add action constants
+    //TODO: add configService in Abstract
 
     protected RedirectHandler $redirectHandler;
     protected EntityRepositoryInterface $currencyRepository;
@@ -84,7 +85,7 @@ abstract class AbstractRequestParameterBuilder
     }
 
     /**
-     * TODO: refactor
+     * TODO: refactor, just taken from old request
      */
     private function getLatestReferenceNumber(PaymentTransaction $transaction): ?string
     {

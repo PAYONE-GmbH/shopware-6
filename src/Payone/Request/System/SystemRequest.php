@@ -101,6 +101,7 @@ class SystemRequest
 
             $customFields = $paymentMethod->getCustomFields();
 
+
             if (!isset($customFields[CustomFieldInstaller::IS_PAYONE])) {
                 return false;
             }

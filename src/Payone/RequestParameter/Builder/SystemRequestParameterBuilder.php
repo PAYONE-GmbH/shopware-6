@@ -69,6 +69,7 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     public function supports(string $paymentMethod, string $action = ''): bool
     {
+        //TODO: may switch case, because system request is almost needed everywhere
         if ($paymentMethod === PayonePaypal::class && $action === 'authorization') {
             return true;
         }
