@@ -21,10 +21,6 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     private string $shopwareVersion;
 
-    private Configuration $configuration;
-
-    private string $configurationPrefix;
-
     public function __construct(
         ConfigReaderInterface $configReader,
         PluginService $pluginService,
@@ -42,14 +38,14 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         string $paymentMethod,
         string $action = ''
     ): array {
-        $this->configuration       = $this->configReader->read($salesChannelContext->getSalesChannelId());
-        $this->configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES_BY_METHOD[$paymentMethod];
+        $configuration       = $this->configReader->read($salesChannelContext->getSalesChannelId());
+        $configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES_BY_METHOD[$paymentMethod];
 
         //TODO: may get config in abstract
-        $accountId  = $this->configuration->get(sprintf('%sAccountId', $this->configurationPrefix), $this->configuration->get('accountId'));
-        $merchantId = $this->configuration->get(sprintf('%sMerchantId', $this->configurationPrefix), $this->configuration->get('merchantId'));
-        $portalId   = $this->configuration->get(sprintf('%sPortalId', $this->configurationPrefix), $this->configuration->get('portalId'));
-        $portalKey  = $this->configuration->get(sprintf('%sPortalKey', $this->configurationPrefix), $this->configuration->get('portalKey'));
+        $accountId  = $configuration->get(sprintf('%sAccountId', $configurationPrefix), $configuration->get('accountId'));
+        $merchantId = $configuration->get(sprintf('%sMerchantId', $configurationPrefix), $configuration->get('merchantId'));
+        $portalId   = $configuration->get(sprintf('%sPortalId', $configurationPrefix), $configuration->get('portalId'));
+        $portalKey  = $configuration->get(sprintf('%sPortalKey', $configurationPrefix), $configuration->get('portalKey'));
 
         $plugin = $this->pluginService->getPluginByName('PayonePayment', $salesChannelContext->getContext());
 
@@ -59,7 +55,7 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
             'portalid'           => $portalId,
             'key'                => $portalKey,
             'api_version'        => '3.10',
-            'mode'               => $this->configuration->get('transactionMode'),
+            'mode'               => $configuration->get('transactionMode'),
             'encoding'           => 'UTF-8',
             'integrator_name'    => 'shopware6',
             'integrator_version' => $this->shopwareVersion,
