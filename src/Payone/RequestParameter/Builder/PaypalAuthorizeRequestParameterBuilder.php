@@ -6,28 +6,38 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\Payone\RequestParameter\Struct\RequestContentStruct;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Routing\Exception\InvalidRequestParameterException;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder {
-    public function getRequestParameter(RequestContentStruct $requestContent, Context $context) : array {
-        $transaction = $requestContent->getPaymentTransaction();
-        $currency = $this->getOrderCurrency($transaction->getOrder(), $context);
+    public function getRequestParameter(
+        PaymentTransaction $paymentTransaction,
+        RequestDataBag $requestData,
+        SalesChannelContext $salesChannelContext,
+        string $paymentMethod,
+        string $action = ''
+    ) : array {
+        $currency = $this->getOrderCurrency($paymentTransaction->getOrder(), $salesChannelContext->getContext());
 
         //TODO: handle systemRequest parameters -> priority at first
         //TODO: handle customerRequest parameters -> priority before this
+
+        //TODO: get reference Number
 
         $parameters = [
             'request' => 'authorization',
             'clearingtype' => 'wlt',
             'wallettype'   => 'PPE',
-            'amount'       => $this->getConvertedAmount($transaction->getOrder()->getAmountTotal()),
+            'amount'       => $this->getConvertedAmount($paymentTransaction->getOrder()->getAmountTotal()),
             'currency'     => $currency->getIsoCode(),
-            'reference'    => $requestContent->getReferenceNumber(),
-            'successurl'   => $this->encodeUrl($transaction->getReturnUrl() . '&state=success'),
-            'errorurl'     => $this->encodeUrl($transaction->getReturnUrl() . '&state=error'),
-            'backurl'      => $this->encodeUrl($transaction->getReturnUrl() . '&state=cancel'),
-            'workorderid'  => $requestContent->getWorkOrderId(),
+            'reference'    => 'TODO: set referencenumber',
+            'successurl'   => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=success'),
+            'errorurl'     => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=error'),
+            'backurl'      => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=cancel'),
+            'workorderid'  => 'TODO: set workorderid',
         ];
 
 
@@ -39,29 +49,7 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
         return $parameters;
     }
 
-    public function supports(RequestContentStruct $requestContent) : bool {
-        return ($requestContent->getPaymentMethod() === PayonePaypal::class && $requestContent->getAction() === 'authorize');
-    }
-
-    public function validate(RequestContentStruct $requestContent) : void {
-        if(null === $requestContent->getPaymentTransaction()) {
-            throw new InvalidRequestParameterException('paymentTransaction');
-        }
-
-        if(null === $requestContent->getWorkOrderId()) {
-            throw new InvalidRequestParameterException('workOrderId');
-        }
-
-        if(null === $requestContent->getPaymentTransaction()->getOrder()) {
-            throw new InvalidRequestParameterException('order');
-        }
-
-        if(null === $requestContent->getAmount()) {
-            throw new InvalidRequestParameterException('amount');
-        }
-
-        if(null === $requestContent->getReferenceNumber()) {
-            throw new InvalidRequestParameterException('referenceNumber');
-        }
+    public function supports(string $paymentMethod, string $action = '') : bool {
+        return ($paymentMethod === PayonePaypal::class && $action === 'authorize');
     }
 }

@@ -16,6 +16,7 @@
         <import resource="pages.xml" />
         <import resource="translations.xml" />
         <import resource="webhooks.xml"/>
+        <import resource="requestParameter/*.xml"/>
     </imports>
 
     <services>
