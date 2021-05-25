@@ -40,10 +40,8 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
             $parameters = $this->applyShippingParameters($parameters, $shippingAddress);
         }
 
-        //TODO: test wrong key compared to old request
-
+        //TODO: set workorderid
         //TODO: narrative_text -> into abstract
-        //TODO: workorderID / carthasher -> into abstract
 
         return $parameters;
     }

@@ -69,6 +69,9 @@ abstract class AbstractRequestParameterBuilder
         return $currency;
     }
 
+    /**
+     * TODO: maybe move into component (referenceNumber)
+     */
     protected function getReferenceNumber(PaymentTransaction $transaction, bool $generateNew = false): string
     {
         $latestReferenceNumber = $this->getLatestReferenceNumber($transaction);
