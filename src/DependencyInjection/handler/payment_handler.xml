@@ -42,6 +42,7 @@
             <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
             <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory"/>
 
             <tag name="shopware.payment.method.async" />
         </service>

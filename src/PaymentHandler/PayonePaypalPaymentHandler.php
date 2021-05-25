@@ -13,6 +13,7 @@ use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
 use PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequestFactory;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -46,6 +47,8 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
     /** @var PaymentStateHandlerInterface */
     private $stateHandler;
 
+    private RequestParameterFactory $requestParameterFactory;
+
     public function __construct(
         ConfigReaderInterface $configReader,
         PaypalPreAuthorizeRequestFactory $preAuthRequestFactory,
@@ -55,7 +58,8 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
         TransactionDataHandlerInterface $dataHandler,
         EntityRepositoryInterface $lineItemRepository,
         PaymentStateHandlerInterface $stateHandler,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
         $this->preAuthRequestFactory = $preAuthRequestFactory;
@@ -64,6 +68,7 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
         $this->translator            = $translator;
         $this->dataHandler           = $dataHandler;
         $this->stateHandler          = $stateHandler;
+        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
@@ -92,6 +97,8 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
             $requestData,
             $salesChannelContext
         );
+
+        $newRequest = $this->requestParameterFactory->getRequestParameter($paymentTransaction, $requestData, $salesChannelContext);
 
         dd($request);
 

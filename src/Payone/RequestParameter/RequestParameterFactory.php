@@ -19,15 +19,18 @@ class RequestParameterFactory {
         $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
-    public function getRequestParameter(PaymentTransaction $paymentTransaction, RequestDataBag $requestData, SalesChannelContext $salesChannelContext) : array {
-        $requestParameterBuilder = $this->getParameterBuilder($requestContent);
-
+    public function getRequestParameter(
+        PaymentTransaction $paymentTransaction,
+        RequestDataBag $requestData,
+        SalesChannelContext $salesChannelContext,
+        string $paymentMethod,
+        string $action = ''
+    ) : array {
         $parameters = [];
 
         foreach($this->requestParameterBuilder as $builder) {
-            if($builder->supports($requestContent) === true) {
-                $builder->validate($requestContent);
-                $parameters[] = $builder->getRequestParameter($requestContent, $context);
+            if($builder->supports($paymentMethod, $action) === true) {
+                $parameters[] = $builder->getRequestParameter($paymentTransaction, $requestData, $salesChannelContext);
             }
         }
 

@@ -6,12 +6,15 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Payone\RequestParameter\Struct\RequestContentStruct;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Exception\InvalidRequestParameterException;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 
 abstract class AbstractRequestParameterBuilder {
@@ -20,19 +23,18 @@ abstract class AbstractRequestParameterBuilder {
     protected RedirectHandler $redirectHandler;
     protected EntityRepositoryInterface $currencyRepository;
 
-    abstract public function getRequestParameter(RequestContentStruct $requestContent, Context $context) : array;
+    abstract public function getRequestParameter(
+        PaymentTransaction $paymentTransaction,
+        RequestDataBag $requestData,
+        SalesChannelContext $salesChannelContext,
+        string $paymentMethod,
+        string $action = ''
+    ) : array;
 
     /**
      * Returns true if builder is meant to build parameters for the given action
      */
-    abstract public function supports(RequestContentStruct $requestContent) : bool;
-
-    /**
-     * Validate if given content does provide all necessary information
-     *
-     * @throws InvalidRequestParameterException
-     */
-    abstract public function validate(RequestContentStruct $requestContent) : void;
+    abstract public function supports(string $paymentMethod, string $action = '') : bool;
 
     protected function getConvertedAmount(float $amount, int $precision) : int {
         return (int) round($amount * (10 ** $precision));
