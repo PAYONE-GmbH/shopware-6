@@ -45,6 +45,7 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         $this->configuration       = $this->configReader->read($salesChannelContext->getSalesChannelId());
         $this->configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES_BY_METHOD[$paymentMethod];
 
+        //TODO: may get config in abstract
         $accountId  = $this->configuration->get(sprintf('%sAccountId', $this->configurationPrefix), $this->configuration->get('accountId'));
         $merchantId = $this->configuration->get(sprintf('%sMerchantId', $this->configurationPrefix), $this->configuration->get('merchantId'));
         $portalId   = $this->configuration->get(sprintf('%sPortalId', $this->configurationPrefix), $this->configuration->get('portalId'));
