@@ -13,7 +13,8 @@ use Shopware\Core\Framework\Plugin\PluginService;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder {
+class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
+{
     private ConfigReaderInterface $configReader;
 
     private PluginService $pluginService;
@@ -40,9 +41,9 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder {
         SalesChannelContext $salesChannelContext,
         string $paymentMethod,
         string $action = ''
-    ) : array {
+    ): array {
         $this->configuration       = $this->configReader->read($salesChannelContext->getSalesChannelId());
-        $this->configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentMethod];
+        $this->configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES_BY_METHOD[$paymentMethod];
 
         $accountId  = $this->configuration->get(sprintf('%sAccountId', $this->configurationPrefix), $this->configuration->get('accountId'));
         $merchantId = $this->configuration->get(sprintf('%sMerchantId', $this->configurationPrefix), $this->configuration->get('merchantId'));
@@ -66,12 +67,13 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder {
         ];
     }
 
-    public function supports(string $paymentMethod, string $action = '') : bool {
-        if($paymentMethod === PayonePaypal::class && $action === 'authorize') {
+    public function supports(string $paymentMethod, string $action = ''): bool
+    {
+        if ($paymentMethod === PayonePaypal::class && $action === 'authorization') {
             return true;
         }
 
-        if($paymentMethod === PayonePaypal::class && $action === 'preauthorize') {
+        if ($paymentMethod === PayonePaypal::class && $action === 'preauthorization') {
             return true;
         }
 

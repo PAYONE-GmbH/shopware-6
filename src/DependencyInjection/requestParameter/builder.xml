@@ -4,18 +4,38 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalAuthorizeRequestParameterBuilder">
+        <service id="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder" abstract="true">
+            <call method="setCommonDependencies">
+                <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler"/>
+                <argument type="service" id="currency.repository"/>
+            </call>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <tag name="payone_request_builder"/>
         </service>
 
-        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalPreAuthorizeRequestParameterBuilder">
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalPreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <tag name="payone_request_builder"/>
         </service>
 
-        <service id="PayonePayment\Payone\RequestParameter\Builder\SystemRequestParameterBuilder">
+        <service id="PayonePayment\Payone\RequestParameter\Builder\SystemRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="Shopware\Core\Framework\Plugin\PluginService"/>
             <argument>%kernel.shopware_version%</argument>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\CustomerRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="language.repository"/>
+            <argument type="service" id="salutation.repository"/>
+            <argument type="service" id="country.repository"/>
+            <argument type="service" id="request_stack"/>
 
             <tag name="payone_request_builder"/>
         </service>

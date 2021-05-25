@@ -101,19 +101,11 @@ class SystemRequest
 
             $customFields = $paymentMethod->getCustomFields();
 
-            if (empty($customFields)) {
+            if (!isset($customFields[CustomFieldInstaller::IS_PAYONE])) {
                 return false;
             }
 
-            if (empty($customFields[CustomFieldInstaller::IS_PAYONE])) {
-                return false;
-            }
-
-            if (!$customFields[CustomFieldInstaller::IS_PAYONE]) {
-                return false;
-            }
-
-            return true;
+            return $customFields[CustomFieldInstaller::IS_PAYONE];
         });
 
         if ($transactions->count() === 0) {

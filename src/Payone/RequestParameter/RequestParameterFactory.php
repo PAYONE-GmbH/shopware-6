@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter;
 
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
-use PayonePayment\Payone\RequestParameter\Struct\RequestContentStruct;
 use PayonePayment\Struct\PaymentTransaction;
+use RuntimeException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\ErrorHandler\Error\ClassNotFoundError;
 
-class RequestParameterFactory {
+class RequestParameterFactory
+{
     /** @var iterable<AbstractRequestParameterBuilder> */
     private $requestParameterBuilder;
 
-    public function __construct(iterable $requestParameterBuilder) {
+    public function __construct(iterable $requestParameterBuilder)
+    {
         $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
@@ -25,17 +26,20 @@ class RequestParameterFactory {
         SalesChannelContext $salesChannelContext,
         string $paymentMethod,
         string $action = ''
-    ) : array {
+    ): array {
         $parameters = [];
 
-        foreach($this->requestParameterBuilder as $builder) {
-            if($builder->supports($paymentMethod, $action) === true) {
-                $parameters[] = $builder->getRequestParameter($paymentTransaction, $requestData, $salesChannelContext);
+        foreach ($this->requestParameterBuilder as $builder) {
+            if ($builder->supports($paymentMethod, $action) === true) {
+                $parameters = array_merge(
+                    $parameters,
+                    $builder->getRequestParameter($paymentTransaction, $requestData, $salesChannelContext, $paymentMethod, $action)
+                );
             }
         }
 
-        if(empty($parameters)) {
-            throw new ClassNotFoundError('No valid request parameter builder found');
+        if (empty($parameters)) {
+            throw new RuntimeException('No valid request parameter builder found');
         }
 
         return $parameters;
