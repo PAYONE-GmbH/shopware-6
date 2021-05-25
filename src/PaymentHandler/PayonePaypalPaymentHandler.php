@@ -9,6 +9,7 @@ use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInter
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
@@ -62,12 +63,12 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
         RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-        $this->preAuthRequestFactory = $preAuthRequestFactory;
-        $this->authRequestFactory    = $authRequestFactory;
-        $this->client                = $client;
-        $this->translator            = $translator;
-        $this->dataHandler           = $dataHandler;
-        $this->stateHandler          = $stateHandler;
+        $this->preAuthRequestFactory   = $preAuthRequestFactory;
+        $this->authRequestFactory      = $authRequestFactory;
+        $this->client                  = $client;
+        $this->translator              = $translator;
+        $this->dataHandler             = $dataHandler;
+        $this->stateHandler            = $stateHandler;
         $this->requestParameterFactory = $requestParameterFactory;
     }
 
@@ -98,9 +99,15 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
             $salesChannelContext
         );
 
-        $newRequest = $this->requestParameterFactory->getRequestParameter($paymentTransaction, $requestData, $salesChannelContext);
+        $newRequest = $this->requestParameterFactory->getRequestParameter(
+            $paymentTransaction,
+            $requestData,
+            $salesChannelContext,
+            PayonePaypal::class,
+            $authorizationMethod
+        );
 
-        dd($request);
+        dd($newRequest);
 
         try {
             $response = $this->client->request($request);
