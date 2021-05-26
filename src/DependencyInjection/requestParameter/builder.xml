@@ -8,6 +8,7 @@
             <call method="setCommonDependencies">
                 <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler"/>
                 <argument type="service" id="currency.repository"/>
+                <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
             </call>
         </service>
 
@@ -23,7 +24,6 @@
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\SystemRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="Shopware\Core\Framework\Plugin\PluginService"/>
             <argument>%kernel.shopware_version%</argument>
 

@@ -42,7 +42,7 @@ abstract class AbstractTransactionHandler
     /** @var PaymentTransaction */
     protected $paymentTransaction;
 
-    public function handleRequest(ParameterBag $parameterBag, Context $context)
+    public function handleRequest(ParameterBag $parameterBag, Context $context): array
     {
         $this->context = $context;
         $transaction   = $this->getTransaction($parameterBag->get('orderTransactionId', ''));
@@ -84,7 +84,7 @@ abstract class AbstractTransactionHandler
 
     abstract protected function getAllowCustomField(): string;
 
-    protected function executeRequest(array $request)
+    protected function executeRequest(array $request): array
     {
         try {
             $response = $this->client->request($request);
