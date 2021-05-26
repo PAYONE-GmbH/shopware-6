@@ -51,12 +51,10 @@ class RequestParameterFactory
             throw new RuntimeException('No valid request parameter builder found');
         }
 
-        $parameters['hash'] = $this->generateParameterHash($parameters);
-
         return $this->createRequest($parameters);
     }
 
-    protected function createRequest(array $parameters) : array
+    protected function createRequest(array $parameters): array
     {
         ksort($parameters, SORT_NATURAL | SORT_FLAG_CASE);
 
@@ -64,14 +62,14 @@ class RequestParameterFactory
             return $parameters;
         }
 
-        $parameters['hash'] = $this->generateParameterHash($parameters);
-        $parameters['key']  = hash('md5', $parameters['key']);
+        $this->generateParameterHash($parameters);
+        $parameters['key'] = hash('md5', $parameters['key']);
 
         return $parameters;
     }
 
     //TODO: carthashing service?
-    protected function generateParameterHash(array $parameters): string
+    protected function generateParameterHash(array &$parameters): void
     {
         $data = $parameters;
 
@@ -79,6 +77,6 @@ class RequestParameterFactory
             unset($data[$field]);
         }
 
-        return strtolower(hash_hmac('sha384', implode('', $data), $parameters['key']));
+        $parameters['hash'] = strtolower(hash_hmac('sha384', implode('', $data), $parameters['key']));
     }
 }

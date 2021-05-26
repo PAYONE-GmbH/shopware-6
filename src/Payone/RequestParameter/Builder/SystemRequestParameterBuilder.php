@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
-use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentMethod\PayonePaypal;
-use PayonePayment\Struct\Configuration;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Plugin\PluginService;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -15,18 +13,14 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    private ConfigReaderInterface $configReader;
-
     private PluginService $pluginService;
 
     private string $shopwareVersion;
 
     public function __construct(
-        ConfigReaderInterface $configReader,
         PluginService $pluginService,
         string $shopwareVersion
     ) {
-        $this->configReader    = $configReader;
         $this->pluginService   = $pluginService;
         $this->shopwareVersion = $shopwareVersion;
     }
@@ -41,7 +35,6 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         $configuration       = $this->configReader->read($salesChannelContext->getSalesChannelId());
         $configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES_BY_METHOD[$paymentMethod];
 
-        //TODO: may get config in abstract
         $accountId  = $configuration->get(sprintf('%sAccountId', $configurationPrefix), $configuration->get('accountId'));
         $merchantId = $configuration->get(sprintf('%sMerchantId', $configurationPrefix), $configuration->get('merchantId'));
         $portalId   = $configuration->get(sprintf('%sPortalId', $configurationPrefix), $configuration->get('portalId'));
@@ -67,11 +60,11 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
     public function supports(string $paymentMethod, string $action = ''): bool
     {
         //TODO: may switch case, because system request is almost needed everywhere
-        if ($paymentMethod === PayonePaypal::class && $action === 'authorization') {
+        if ($paymentMethod === PayonePaypal::class && $action === self::REQUEST_ACTION_AUTHORIZE) {
             return true;
         }
 
-        if ($paymentMethod === PayonePaypal::class && $action === 'preauthorization') {
+        if ($paymentMethod === PayonePaypal::class && $action === self::REQUEST_ACTION_PREAUTHORIZE) {
             return true;
         }
 

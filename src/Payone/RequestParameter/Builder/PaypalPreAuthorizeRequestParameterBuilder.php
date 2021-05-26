@@ -25,6 +25,6 @@ class PaypalPreAuthorizeRequestParameterBuilder extends PaypalAuthorizeRequestPa
 
     public function supports(string $paymentMethod, string $action = ''): bool
     {
-        return $paymentMethod === PayonePaypal::class && $action === 'preauthorization';
+        return $paymentMethod === PayonePaypal::class && $action === self::REQUEST_ACTION_PREAUTHORIZE;
     }
 }

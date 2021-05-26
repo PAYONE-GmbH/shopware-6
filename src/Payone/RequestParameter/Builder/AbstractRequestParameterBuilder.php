@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
@@ -20,16 +21,21 @@ use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 
 abstract class AbstractRequestParameterBuilder
 {
-    //TODO: add action constants
-    //TODO: add configService in Abstract
+    public const REQUEST_ACTION_AUTHORIZE    = 'authorization';
+    public const REQUEST_ACTION_PREAUTHORIZE = 'preauthorization';
 
     protected RedirectHandler $redirectHandler;
     protected EntityRepositoryInterface $currencyRepository;
+    protected ConfigReaderInterface $configReader;
 
-    public function setCommonDependencies(RedirectHandler $redirectHandler, EntityRepositoryInterface $currencyRepository): void
-    {
+    public function setCommonDependencies(
+        RedirectHandler $redirectHandler,
+        EntityRepositoryInterface $currencyRepository,
+        ConfigReaderInterface $configReader
+    ): void {
         $this->redirectHandler    = $redirectHandler;
         $this->currencyRepository = $currencyRepository;
+        $this->configReader       = $configReader;
     }
 
     abstract public function getRequestParameter(
@@ -67,6 +73,21 @@ abstract class AbstractRequestParameterBuilder
         }
 
         return $currency;
+    }
+
+    protected function addNarrativeTextIfAllowed(array &$parameters, string $salesChannelId, string $prefix, string $narrativeText = ''): void
+    {
+        $config = $this->configReader->read($salesChannelId);
+
+        if ($config->get(sprintf('%sProvideNarrativeText', $prefix), false) === false) {
+            return;
+        }
+
+        if (empty($narrativeText)) {
+            return;
+        }
+
+        $parameters['narrative_text'] = mb_substr($narrativeText, 0, 81);
     }
 
     /**

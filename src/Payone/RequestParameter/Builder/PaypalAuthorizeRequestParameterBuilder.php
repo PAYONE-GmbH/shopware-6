@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
@@ -19,8 +20,7 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
         string $paymentMethod,
         string $action = ''
     ): array {
-        $currency = $this->getOrderCurrency($paymentTransaction->getOrder(), $salesChannelContext->getContext());
-
+        $currency        = $this->getOrderCurrency($paymentTransaction->getOrder(), $salesChannelContext->getContext());
         $shippingAddress = $salesChannelContext->getCustomer() !== null ? $salesChannelContext->getCustomer()->getActiveShippingAddress() : null;
 
         $parameters = [
@@ -40,15 +40,21 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
             $parameters = $this->applyShippingParameters($parameters, $shippingAddress);
         }
 
+        $this->addNarrativeTextIfAllowed(
+            $parameters,
+            $salesChannelContext->getSalesChannelId(),
+            ConfigurationPrefixes::CONFIGURATION_PREFIXES_BY_METHOD[$paymentMethod],
+            $paymentTransaction->getOrder()->getOrderNumber()
+        );
+
         //TODO: set workorderid
-        //TODO: narrative_text -> into abstract
 
         return $parameters;
     }
 
     public function supports(string $paymentMethod, string $action = ''): bool
     {
-        return $paymentMethod === PayonePaypal::class && $action === 'authorization';
+        return $paymentMethod === PayonePaypal::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }
 
     private function applyShippingParameters(array $parameters, CustomerAddressEntity $shippingAddress): array

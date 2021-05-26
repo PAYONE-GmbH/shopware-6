@@ -94,11 +94,11 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     public function supports(string $paymentMethod, string $action = ''): bool
     {
-        if ($paymentMethod === PayonePaypal::class && $action === 'authorization') {
+        if ($paymentMethod === PayonePaypal::class && $action === self::REQUEST_ACTION_AUTHORIZE) {
             return true;
         }
 
-        if ($paymentMethod === PayonePaypal::class && $action === 'preauthorization') {
+        if ($paymentMethod === PayonePaypal::class && $action === self::REQUEST_ACTION_PREAUTHORIZE) {
             return true;
         }
 
