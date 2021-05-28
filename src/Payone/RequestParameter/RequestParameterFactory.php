@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter;
 
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
-use PayonePayment\Struct\PaymentTransaction;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use RuntimeException;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\Framework\Struct\Struct;
 
 class RequestParameterFactory
 {
@@ -29,20 +28,19 @@ class RequestParameterFactory
         $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
+    //TODO: add alternative structs for different request types
+
+    /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
-        PaymentTransaction $paymentTransaction,
-        RequestDataBag $requestData,
-        SalesChannelContext $salesChannelContext,
-        string $paymentMethod,
-        string $action = ''
+        Struct $arguments
     ): array {
         $parameters = [];
 
         foreach ($this->requestParameterBuilder as $builder) {
-            if ($builder->supports($paymentMethod, $action) === true) {
+            if ($builder->supports($arguments) === true) {
                 $parameters = array_merge(
                     $parameters,
-                    $builder->getRequestParameter($paymentTransaction, $requestData, $salesChannelContext, $paymentMethod, $action)
+                    $builder->getRequestParameter($arguments)
                 );
             }
         }

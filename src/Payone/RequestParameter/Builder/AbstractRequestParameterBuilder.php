@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -14,9 +15,8 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\Currency\CurrencyEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 
 abstract class AbstractRequestParameterBuilder
@@ -41,18 +41,20 @@ abstract class AbstractRequestParameterBuilder
         $this->configReader       = $configReader;
     }
 
+    //TODO: add alternative structs for different request types
+
+    /** @param PaymentTransactionStruct $arguments */
     abstract public function getRequestParameter(
-        PaymentTransaction $paymentTransaction,
-        RequestDataBag $requestData,
-        SalesChannelContext $salesChannelContext,
-        string $paymentMethod,
-        string $action = ''
+        Struct $arguments
     ): array;
 
     /**
      * Returns true if builder is meant to build parameters for the given action
      */
-    abstract public function supports(string $paymentMethod, string $action = ''): bool;
+    //TODO: add alternative structs for different request types
+
+    /** @param PaymentTransactionStruct $arguments */
+    abstract public function supports(Struct $arguments): bool;
 
     protected function getConvertedAmount(float $amount, int $precision): int
     {

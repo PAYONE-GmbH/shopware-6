@@ -7,8 +7,10 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentMethod\PayonePaypal;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
+use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
@@ -22,15 +24,16 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
         $this->cartHasher = $cartHasher;
     }
 
+    /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
-        PaymentTransaction $paymentTransaction,
-        RequestDataBag $requestData,
-        SalesChannelContext $salesChannelContext,
-        string $paymentMethod,
-        string $action = ''
+        Struct $arguments
     ): array {
-        $currency        = $this->getOrderCurrency($paymentTransaction->getOrder(), $salesChannelContext->getContext());
-        $shippingAddress = $salesChannelContext->getCustomer() !== null ? $salesChannelContext->getCustomer()->getActiveShippingAddress() : null;
+        $paymentTransaction  = $arguments->getPaymentTransaction();
+        $salesChannelContext = $arguments->getSalesChannelContext();
+        $requestData         = $arguments->getRequestData();
+        $paymentMethod       = $arguments->getPaymentMethod();
+        $currency            = $this->getOrderCurrency($paymentTransaction->getOrder(), $salesChannelContext->getContext());
+        $shippingAddress     = $salesChannelContext->getCustomer() !== null ? $salesChannelContext->getCustomer()->getActiveShippingAddress() : null;
 
         //TODO: may move amount and co to different handler
         $parameters = [
@@ -58,13 +61,15 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
             (string) $paymentTransaction->getOrder()->getOrderNumber()
         );
 
-        //TODO: set workorderid
-
         return $parameters;
     }
 
-    public function supports(string $paymentMethod, string $action = ''): bool
+    /** @param PaymentTransactionStruct $arguments */
+    public function supports(Struct $arguments): bool
     {
+        $paymentMethod = $arguments->getPaymentMethod();
+        $action        = $arguments->getAction();
+
         return $paymentMethod === PayonePaypal::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }
 

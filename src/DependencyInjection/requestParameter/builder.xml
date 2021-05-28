@@ -22,7 +22,7 @@
         <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalPreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
-            
+
             <tag name="payone_request_builder"/>
         </service>
 
