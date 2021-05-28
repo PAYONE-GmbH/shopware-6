@@ -93,7 +93,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower($transactionData['txaction']));
         }
 
-        $transitionName = $configuration->get($configurationKey);
+        $transitionName = $configuration->getString($configurationKey);
 
         if (empty($transitionName)) {
             if ($this->isTransactionOpen($transactionData)) {
@@ -283,7 +283,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return false;
     }
 
-    private function isFailedRedirect(array $firstTransaction, array $transactionData)
+    private function isFailedRedirect(array $firstTransaction, array $transactionData) : bool
     {
         return
             array_key_exists('response', $firstTransaction) &&

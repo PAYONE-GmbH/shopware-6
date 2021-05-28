@@ -59,7 +59,7 @@ abstract class AbstractDebitAuthorizeRequest
     {
         $config = $this->configReader->read($salesChannelId);
 
-        return $config->get(sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_DEBIT), false);
+        return $config->getBool(sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_DEBIT), false);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity

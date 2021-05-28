@@ -68,7 +68,7 @@ abstract class AbstractTrustlyAuthorizeRequest
     {
         $config = $this->configReader->read($salesChannelId);
 
-        return $config->get(sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_TRUSTLY), false);
+        return $config->getBool(sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_TRUSTLY), false);
     }
 
     private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity
