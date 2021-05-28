@@ -9,7 +9,6 @@ use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInter
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -83,7 +82,7 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
                 $paymentTransaction,
                 $requestData,
                 $salesChannelContext,
-                PayonePaypal::class,
+                __CLASS__,
                 $authorizationMethod
             )
         );

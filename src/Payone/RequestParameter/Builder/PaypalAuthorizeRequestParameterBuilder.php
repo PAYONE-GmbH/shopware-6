@@ -57,7 +57,7 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
         $this->addNarrativeTextIfAllowed(
             $parameters,
             $salesChannelContext->getSalesChannel()->getId(),
-            ConfigurationPrefixes::CONFIGURATION_PREFIXES_BY_METHOD[$paymentMethod],
+            ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentMethod],
             (string) $paymentTransaction->getOrder()->getOrderNumber()
         );
 
@@ -67,6 +67,10 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
     /** @param PaymentTransactionStruct $arguments */
     public function supports(Struct $arguments): bool
     {
+        if (!($arguments instanceof PaymentTransactionStruct)) {
+            return false;
+        }
+
         $paymentMethod = $arguments->getPaymentMethod();
         $action        = $arguments->getAction();
 

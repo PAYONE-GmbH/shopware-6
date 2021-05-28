@@ -8,6 +8,7 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -23,6 +24,7 @@ abstract class AbstractRequestParameterBuilder
 {
     public const REQUEST_ACTION_AUTHORIZE    = 'authorization';
     public const REQUEST_ACTION_PREAUTHORIZE = 'preauthorization';
+    public const REQUEST_ACTION_TEST         = 'test';
 
     /** @var RedirectHandler */
     protected $redirectHandler;
@@ -41,9 +43,7 @@ abstract class AbstractRequestParameterBuilder
         $this->configReader       = $configReader;
     }
 
-    //TODO: add alternative structs for different request types
-
-    /** @param PaymentTransactionStruct $arguments */
+    /** @param PaymentTransactionStruct|TestCredentialsStruct $arguments */
     abstract public function getRequestParameter(
         Struct $arguments
     ): array;
@@ -51,9 +51,8 @@ abstract class AbstractRequestParameterBuilder
     /**
      * Returns true if builder is meant to build parameters for the given action
      */
-    //TODO: add alternative structs for different request types
 
-    /** @param PaymentTransactionStruct $arguments */
+    /** @param PaymentTransactionStruct|TestCredentialsStruct $arguments */
     abstract public function supports(Struct $arguments): bool;
 
     protected function getConvertedAmount(float $amount, int $precision): int
