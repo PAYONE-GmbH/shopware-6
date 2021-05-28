@@ -16,7 +16,8 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
     /** @var PluginService */
     private $pluginService;
 
-    private string $shopwareVersion;
+    /** @var string */
+    private $shopwareVersion;
 
     public function __construct(
         PluginService $pluginService,
