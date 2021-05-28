@@ -29,13 +29,13 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
             'clearingtype' => 'wlt',
             'wallettype'   => 'PPE',
             //TODO: afterwards default parameter request
-            'amount'       => $this->getConvertedAmount($paymentTransaction->getOrder()->getAmountTotal(), $currency->getDecimalPrecision()),
-            'currency'     => $currency->getIsoCode(),
-            'reference'    => $this->getReferenceNumber($paymentTransaction, true),
-            'successurl'   => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=success'),
-            'errorurl'     => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=error'),
-            'backurl'      => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=cancel'),
-            'workorderid'  => 'TODO: set workorderid',
+            'amount'      => $this->getConvertedAmount($paymentTransaction->getOrder()->getAmountTotal(), $currency->getDecimalPrecision()),
+            'currency'    => $currency->getIsoCode(),
+            'reference'   => $this->getReferenceNumber($paymentTransaction, true),
+            'successurl'  => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=success'),
+            'errorurl'    => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=error'),
+            'backurl'     => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=cancel'),
+            'workorderid' => 'TODO: set workorderid',
         ];
 
         if ($shippingAddress !== null) {
