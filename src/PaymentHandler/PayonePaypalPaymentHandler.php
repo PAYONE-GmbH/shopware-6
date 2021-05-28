@@ -13,6 +13,7 @@ use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -78,11 +79,13 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         $request = $this->requestParameterFactory->getRequestParameter(
-            $paymentTransaction,
-            $requestData,
-            $salesChannelContext,
-            PayonePaypal::class,
-            $authorizationMethod
+            new PaymentTransactionStruct(
+                $paymentTransaction,
+                $requestData,
+                $salesChannelContext,
+                PayonePaypal::class,
+                $authorizationMethod
+            )
         );
 
         try {

@@ -6,10 +6,9 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentMethod\PayonePaypal;
-use PayonePayment\Struct\PaymentTransaction;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Plugin\PluginService;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\Framework\Struct\Struct;
 
 class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -27,13 +26,12 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         $this->shopwareVersion = $shopwareVersion;
     }
 
+    /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
-        PaymentTransaction $paymentTransaction,
-        RequestDataBag $requestData,
-        SalesChannelContext $salesChannelContext,
-        string $paymentMethod,
-        string $action = ''
+        Struct $arguments
     ): array {
+        $salesChannelContext = $arguments->getSalesChannelContext();
+        $paymentMethod       = $arguments->getPaymentMethod();
         $configuration       = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES_BY_METHOD[$paymentMethod];
 
@@ -59,8 +57,12 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         ];
     }
 
-    public function supports(string $paymentMethod, string $action = ''): bool
+    /** @param PaymentTransactionStruct $arguments */
+    public function supports(Struct $arguments): bool
     {
+        $paymentMethod = $arguments->getPaymentMethod();
+        $action        = $arguments->getAction();
+
         //TODO: may switch case, because system request is almost needed everywhere
         if ($paymentMethod === PayonePaypal::class && $action === self::REQUEST_ACTION_AUTHORIZE) {
             return true;

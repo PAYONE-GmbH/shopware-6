@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\PaymentMethod\PayonePaypal;
-use PayonePayment\Struct\PaymentTransaction;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -44,13 +44,12 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
         $this->requestStack         = $requestStack;
     }
 
+    /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
-        PaymentTransaction $paymentTransaction,
-        RequestDataBag $requestData,
-        SalesChannelContext $salesChannelContext,
-        string $paymentMethod,
-        string $action = ''
+        Struct $arguments
     ): array {
+        $salesChannelContext = $arguments->getSalesChannelContext();
+
         if (null === $salesChannelContext->getCustomer()) {
             throw new RuntimeException('missing customer');
         }
@@ -92,8 +91,12 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
         return array_filter($personalData);
     }
 
-    public function supports(string $paymentMethod, string $action = ''): bool
+    /** @param PaymentTransactionStruct $arguments */
+    public function supports(Struct $arguments): bool
     {
+        $paymentMethod = $arguments->getPaymentMethod();
+        $action        = $arguments->getAction();
+
         if ($paymentMethod === PayonePaypal::class && $action === self::REQUEST_ACTION_AUTHORIZE) {
             return true;
         }
