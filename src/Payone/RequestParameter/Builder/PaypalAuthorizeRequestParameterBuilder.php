@@ -44,7 +44,7 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
             $parameters,
             $salesChannelContext->getSalesChannelId(),
             ConfigurationPrefixes::CONFIGURATION_PREFIXES_BY_METHOD[$paymentMethod],
-            $paymentTransaction->getOrder()->getOrderNumber()
+            (string) $paymentTransaction->getOrder()->getOrderNumber()
         );
 
         //TODO: set workorderid
