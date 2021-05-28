@@ -11,6 +11,7 @@ use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
 use PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequestFactory;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Components\ConfigReaderMock;
@@ -39,7 +40,9 @@ class PayonePaypalPaymentHandlerTest extends TestCase
     {
         parent::setUp();
 
-        $this->translator = $this->getContainer()->get('translator');
+        /** @var Translator $translator */
+        $translator = $this->getContainer()->get('translator');
+        $this->translator = $translator;
     }
 
     public function testRequestOnPay(): void
@@ -49,31 +52,22 @@ class PayonePaypalPaymentHandlerTest extends TestCase
         ]);
 
         $client                = $this->createMock(PayoneClientInterface::class);
-        $preAuthRequestFactory = $this->createMock(PaypalPreAuthorizeRequestFactory::class);
-        $authRequestFactory    = $this->createMock(PaypalAuthorizeRequestFactory::class);
+        $requestFactory    = $this->createMock(RequestParameterFactory::class);
         $dataBag               = new RequestDataBag();
 
         $paymentHandler = new PayonePaypalPaymentHandler(
             $configReader,
-            $preAuthRequestFactory,
-            $authRequestFactory,
             $client,
             $this->translator,
             new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
             $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
-            $this->getRequestStack($dataBag)
+            $this->getRequestStack($dataBag),
+            $requestFactory
         );
 
         $paymentTransaction = $this->getPaymentTransaction();
         $dataBag            = new RequestDataBag();
-
-        $authRequestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
-            [
-                'request'    => '',
-                'successurl' => 'test-url',
-            ]
-        );
 
         $client->expects($this->once())->method('request')->willReturn(
             [

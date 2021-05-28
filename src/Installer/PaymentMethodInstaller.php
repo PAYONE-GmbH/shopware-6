@@ -85,11 +85,22 @@ class PaymentMethodInstaller implements InstallerInterface
 
     public function __construct(ContainerInterface $container)
     {
-        $this->pluginIdProvider                    = $container->get(PluginIdProvider::class);
-        $this->paymentMethodRepository             = $container->get('payment_method.repository');
-        $this->salesChannelRepository              = $container->get('sales_channel.repository');
-        $this->paymentMethodSalesChannelRepository = $container->get('sales_channel_payment_method.repository');
-        $this->connection                          = $container->get(Connection::class);
+        /** @var PluginIdProvider $pluginIdProvider */
+        $pluginIdProvider                    = $container->get(PluginIdProvider::class);
+        /** @var EntityRepositoryInterface $paymentMethodRepository */
+        $paymentMethodRepository             = $container->get('payment_method.repository');
+        /** @var EntityRepositoryInterface $salesChannelRepository */
+        $salesChannelRepository              = $container->get('sales_channel.repository');
+        /** @var EntityRepositoryInterface $paymentMethodSalesChannelRepository */
+        $paymentMethodSalesChannelRepository = $container->get('sales_channel_payment_method.repository');
+        /** @var Connection $connection */
+        $connection                          = $container->get(Connection::class);
+
+        $this->pluginIdProvider                    = $pluginIdProvider;
+        $this->paymentMethodRepository             = $paymentMethodRepository;
+        $this->salesChannelRepository              = $salesChannelRepository;
+        $this->paymentMethodSalesChannelRepository = $paymentMethodSalesChannelRepository;
+        $this->connection                          = $connection;
     }
 
     public function install(InstallContext $context): void
