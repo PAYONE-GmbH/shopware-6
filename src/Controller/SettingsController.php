@@ -11,6 +11,8 @@ use PayonePayment\PaymentHandler as Handler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Test\TestRequestFactory;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -49,6 +51,7 @@ class SettingsController extends AbstractController
         LoggerInterface $logger
     ) {
         $this->client                           = $client;
+        //TODO: set correct factory
         $this->requestFactory                   = $requestFactory;
         $this->stateMachineTransitionRepository = $stateMachineTransitionRepository;
         $this->logger                           = $logger;
@@ -80,7 +83,9 @@ class SettingsController extends AbstractController
 
             try {
                 $parameters  = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
-                $testRequest = $this->requestFactory->getRequestParameters($parameters);
+                //TODO: implement, get salesChannelId
+
+                //$testRequest = $this->requestFactory->getRequestParameters(new TestCredentialsStruct($paymentClass, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST));
 
                 $this->client->request($testRequest);
             } catch (PayoneRequestException $exception) {

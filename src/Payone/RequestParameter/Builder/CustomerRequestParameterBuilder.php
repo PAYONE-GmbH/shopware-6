@@ -94,6 +94,10 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
     /** @param PaymentTransactionStruct $arguments */
     public function supports(Struct $arguments): bool
     {
+        if (!($arguments instanceof PaymentTransactionStruct)) {
+            return false;
+        }
+
         $paymentMethod = $arguments->getPaymentMethod();
         $action        = $arguments->getAction();
 

@@ -5,20 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\Configuration;
 
 use PayonePayment\PaymentHandler as Handler;
-use PayonePayment\PaymentMethod\PayoneCreditCard;
-use PayonePayment\PaymentMethod\PayoneDebit;
-use PayonePayment\PaymentMethod\PayoneEps;
-use PayonePayment\PaymentMethod\PayoneIDeal;
-use PayonePayment\PaymentMethod\PayonePaydirekt;
-use PayonePayment\PaymentMethod\PayonePayolutionDebit;
-use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
-use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
-use PayonePayment\PaymentMethod\PayonePaypal;
-use PayonePayment\PaymentMethod\PayonePaypalExpress;
-use PayonePayment\PaymentMethod\PayonePrepayment;
-use PayonePayment\PaymentMethod\PayoneSecureInvoice;
-use PayonePayment\PaymentMethod\PayoneSofortBanking;
-use PayonePayment\PaymentMethod\PayoneTrustly;
 
 interface ConfigurationPrefixes
 {
@@ -52,22 +38,5 @@ interface ConfigurationPrefixes
         Handler\PayonePrepaymentPaymentHandler::class            => self::CONFIGURATION_PREFIX_PREPAYMENT,
         Handler\PayoneTrustlyPaymentHandler::class               => self::CONFIGURATION_PREFIX_TRUSTLY,
         Handler\PayoneSecureInvoicePaymentHandler::class         => self::CONFIGURATION_PREFIX_SECURE_INVOICE,
-    ];
-
-    public const CONFIGURATION_PREFIXES_BY_METHOD = [
-        PayoneCreditCard::class            => self::CONFIGURATION_PREFIX_CREDITCARD,
-        PayoneDebit::class                 => self::CONFIGURATION_PREFIX_DEBIT,
-        PayonePaypal::class                => self::CONFIGURATION_PREFIX_PAYPAL,
-        PayonePaypalExpress::class         => self::CONFIGURATION_PREFIX_PAYPAL_EXPRESS,
-        PayonePayolutionInvoicing::class   => self::CONFIGURATION_PREFIX_PAYOLUTION_INVOICING,
-        PayonePayolutionInstallment::class => self::CONFIGURATION_PREFIX_PAYOLUTION_INSTALLMENT,
-        PayonePayolutionDebit::class       => self::CONFIGURATION_PREFIX_PAYOLUTION_DEBIT,
-        PayoneSofortBanking::class         => self::CONFIGURATION_PREFIX_SOFORT,
-        PayoneEps::class                   => self::CONFIGURATION_PREFIX_EPS,
-        PayoneIDeal::class                 => self::CONFIGURATION_PREFIX_IDEAL,
-        PayonePaydirekt::class             => self::CONFIGURATION_PREFIX_PAYDIREKT,
-        PayonePrepayment::class            => self::CONFIGURATION_PREFIX_PREPAYMENT,
-        PayoneTrustly::class               => self::CONFIGURATION_PREFIX_TRUSTLY,
-        PayoneSecureInvoice::class         => self::CONFIGURATION_PREFIX_SECURE_INVOICE,
     ];
 }
