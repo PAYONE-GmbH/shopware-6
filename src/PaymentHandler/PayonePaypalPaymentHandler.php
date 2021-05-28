@@ -40,7 +40,8 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
     /** @var PaymentStateHandlerInterface */
     private $stateHandler;
 
-    private RequestParameterFactory $requestParameterFactory;
+    /** @var RequestParameterFactory  */
+    private $requestParameterFactory;
 
     public function __construct(
         ConfigReaderInterface $configReader,
