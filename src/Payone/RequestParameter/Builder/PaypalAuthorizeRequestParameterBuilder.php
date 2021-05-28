@@ -23,10 +23,12 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
         $currency        = $this->getOrderCurrency($paymentTransaction->getOrder(), $salesChannelContext->getContext());
         $shippingAddress = $salesChannelContext->getCustomer() !== null ? $salesChannelContext->getCustomer()->getActiveShippingAddress() : null;
 
+        //TODO: may move amount and co to different handler
         $parameters = [
             'request'      => 'authorization',
             'clearingtype' => 'wlt',
             'wallettype'   => 'PPE',
+            //TODO: afterwards default parameter request
             'amount'       => $this->getConvertedAmount($paymentTransaction->getOrder()->getAmountTotal(), $currency->getDecimalPrecision()),
             'currency'     => $currency->getIsoCode(),
             'reference'    => $this->getReferenceNumber($paymentTransaction, true),
@@ -59,6 +61,7 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
 
     private function applyShippingParameters(array $parameters, CustomerAddressEntity $shippingAddress): array
     {
+        //TODO: may separate request builder
         $shippingParameters = array_filter([
             'shipping_firstname' => $shippingAddress->getFirstName(),
             'shipping_lastname'  => $shippingAddress->getLastName(),

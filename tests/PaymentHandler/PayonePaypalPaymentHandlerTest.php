@@ -64,6 +64,13 @@ class PayonePaypalPaymentHandlerTest extends TestCase
             $requestFactory
         );
 
+        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+            [
+                'request'    => '',
+                'successurl' => 'test-url',
+            ]
+        );
+
         $paymentTransaction = $this->getPaymentTransaction();
         $dataBag            = new RequestDataBag();
 
