@@ -44,7 +44,7 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
 
         $this->addNarrativeTextIfAllowed(
             $parameters,
-            $salesChannelContext->getSalesChannelId(),
+            $salesChannelContext->getSalesChannel()->getId(),
             ConfigurationPrefixes::CONFIGURATION_PREFIXES_BY_METHOD[$paymentMethod],
             (string) $paymentTransaction->getOrder()->getOrderNumber()
         );
