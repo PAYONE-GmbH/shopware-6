@@ -34,7 +34,7 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         string $paymentMethod,
         string $action = ''
     ): array {
-        $configuration       = $this->configReader->read($salesChannelContext->getSalesChannelId());
+        $configuration       = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES_BY_METHOD[$paymentMethod];
 
         $accountId  = $configuration->get(sprintf('%sAccountId', $configurationPrefix), $configuration->get('accountId'));
