@@ -9,7 +9,8 @@ use PayonePayment\Struct\Configuration;
 
 class ConfigReaderMock implements ConfigReaderInterface
 {
-    private array $configuration;
+    /** @var array */
+    private $configuration;
 
     public function __construct(array $configuration)
     {
