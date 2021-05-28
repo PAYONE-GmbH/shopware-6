@@ -3,9 +3,9 @@ includes:
 
 parameters:
     level: max
+    reportUnmatchedIgnoredErrors: false
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingIterableValueType: false
-    reportUnmatchedIgnoredErrors: false
     ignoreErrors:
         - '#Access to constant CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE(.*)#'
     excludes_analyse:
