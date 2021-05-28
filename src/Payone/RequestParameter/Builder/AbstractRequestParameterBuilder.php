@@ -24,11 +24,11 @@ abstract class AbstractRequestParameterBuilder
     public const REQUEST_ACTION_AUTHORIZE    = 'authorization';
     public const REQUEST_ACTION_PREAUTHORIZE = 'preauthorization';
 
-    /** @var RedirectHandler  */
+    /** @var RedirectHandler */
     protected $redirectHandler;
     /** @var EntityRepositoryInterface */
     protected $currencyRepository;
-    /** @var ConfigReaderInterface  */
+    /** @var ConfigReaderInterface */
     protected $configReader;
 
     public function setCommonDependencies(
