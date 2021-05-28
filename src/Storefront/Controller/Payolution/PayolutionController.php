@@ -90,17 +90,17 @@ class PayolutionController extends StorefrontController
 
         switch ($context->getPaymentMethod()->getId()) {
             case PayonePayolutionInvoicing::UUID:
-                $companyName = $configuration->get('payolutionInvoicingCompanyName');
+                $companyName = $configuration->getString('payolutionInvoicingCompanyName');
 
                 break;
 
             case PayonePayolutionInstallment::UUID:
-                $companyName = $configuration->get('payolutionInstallmentCompanyName');
+                $companyName = $configuration->getString('payolutionInstallmentCompanyName');
 
                 break;
 
             case PayonePayolutionDebit::UUID:
-                $companyName = $configuration->get('payolutionDebitCompanyName');
+                $companyName = $configuration->getString('payolutionDebitCompanyName');
 
                 break;
 
@@ -232,8 +232,8 @@ class PayolutionController extends StorefrontController
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
 
         $url      = $this->getCreditInformationUrlFromCart($cart, $duration);
-        $channel  = $configuration->get('payolutionInstallmentChannelName');
-        $password = $configuration->get('payolutionInstallmentChannelPassword');
+        $channel  = $configuration->getString('payolutionInstallmentChannelName');
+        $password = $configuration->getString('payolutionInstallmentChannelPassword');
 
         if (empty($url) || empty($channel) || empty($password)) {
             $this->logger->error('Could not fetch standard credit information document for payolution installment, please verify the channel credentials.');
@@ -361,6 +361,10 @@ class PayolutionController extends StorefrontController
         return $this->renderView($view, $calculationResponse);
     }
 
+    /**
+     * This method does return mixed. Therefore we are ignoring errors for now.
+     * @phpstan-ignore-next-line
+     */
     private function convertType(string $key, $value)
     {
         $float = [

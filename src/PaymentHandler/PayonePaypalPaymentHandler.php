@@ -30,12 +30,6 @@ use Throwable;
 
 class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var PaypalPreAuthorizeRequestFactory */
-    private $preAuthRequestFactory;
-
-    /** @var PaypalAuthorizeRequestFactory */
-    private $authRequestFactory;
-
     /** @var PayoneClientInterface */
     private $client;
 
@@ -52,8 +46,6 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        PaypalPreAuthorizeRequestFactory $preAuthRequestFactory,
-        PaypalAuthorizeRequestFactory $authRequestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
@@ -63,8 +55,6 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
         RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-        $this->preAuthRequestFactory   = $preAuthRequestFactory;
-        $this->authRequestFactory      = $authRequestFactory;
         $this->client                  = $client;
         $this->translator              = $translator;
         $this->dataHandler             = $dataHandler;
@@ -88,26 +78,13 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
 
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
-        // Select request factory based on configured authorization method
-        $factory = $authorizationMethod === 'preauthorization'
-            ? $this->preAuthRequestFactory
-            : $this->authRequestFactory;
-
-        $request = $factory->getRequestParameters(
-            $paymentTransaction,
-            $requestData,
-            $salesChannelContext
-        );
-
-        $newRequest = $this->requestParameterFactory->getRequestParameter(
+        $request = $this->requestParameterFactory->getRequestParameter(
             $paymentTransaction,
             $requestData,
             $salesChannelContext,
             PayonePaypal::class,
             $authorizationMethod
         );
-
-        dd($newRequest);
 
         try {
             $response = $this->client->request($request);
