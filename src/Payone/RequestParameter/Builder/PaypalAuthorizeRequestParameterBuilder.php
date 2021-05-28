@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\Struct\PaymentTransaction;
@@ -13,6 +14,14 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
+    /** @var CartHasherInterface */
+    private $cartHasher;
+
+    public function __construct(CartHasherInterface $cartHasher)
+    {
+        $this->cartHasher = $cartHasher;
+    }
+
     public function getRequestParameter(
         PaymentTransaction $paymentTransaction,
         RequestDataBag $requestData,
@@ -35,7 +44,7 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
             'successurl'  => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=success'),
             'errorurl'    => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=error'),
             'backurl'     => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=cancel'),
-            'workorderid' => 'TODO: set workorderid',
+            'workorderid' => $this->getWorkOrderId($paymentTransaction, $requestData, $salesChannelContext),
         ];
 
         if ($shippingAddress !== null) {
@@ -73,5 +82,29 @@ class PaypalAuthorizeRequestParameterBuilder extends AbstractRequestParameterBui
         ]);
 
         return array_merge($parameters, $shippingParameters);
+    }
+
+    private function getWorkOrderId(
+        PaymentTransaction $transaction,
+        RequestDataBag $dataBag,
+        SalesChannelContext $context
+    ): ?string {
+        $workOrderId = $dataBag->get('workorder');
+
+        if (null === $workOrderId) {
+            return null;
+        }
+
+        $cartHash = $dataBag->get('carthash');
+
+        if (null === $cartHash) {
+            return null;
+        }
+
+        if (!$this->cartHasher->validate($transaction->getOrder(), $cartHash, $context)) {
+            return null;
+        }
+
+        return $workOrderId;
     }
 }
