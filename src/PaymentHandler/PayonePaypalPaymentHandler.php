@@ -12,8 +12,6 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
-use PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequestFactory;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;

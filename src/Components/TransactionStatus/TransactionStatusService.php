@@ -283,7 +283,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return false;
     }
 
-    private function isFailedRedirect(array $firstTransaction, array $transactionData) : bool
+    private function isFailedRedirect(array $firstTransaction, array $transactionData): bool
     {
         return
             array_key_exists('response', $firstTransaction) &&

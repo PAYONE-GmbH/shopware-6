@@ -86,15 +86,15 @@ class PaymentMethodInstaller implements InstallerInterface
     public function __construct(ContainerInterface $container)
     {
         /** @var PluginIdProvider $pluginIdProvider */
-        $pluginIdProvider                    = $container->get(PluginIdProvider::class);
+        $pluginIdProvider = $container->get(PluginIdProvider::class);
         /** @var EntityRepositoryInterface $paymentMethodRepository */
-        $paymentMethodRepository             = $container->get('payment_method.repository');
+        $paymentMethodRepository = $container->get('payment_method.repository');
         /** @var EntityRepositoryInterface $salesChannelRepository */
-        $salesChannelRepository              = $container->get('sales_channel.repository');
+        $salesChannelRepository = $container->get('sales_channel.repository');
         /** @var EntityRepositoryInterface $paymentMethodSalesChannelRepository */
         $paymentMethodSalesChannelRepository = $container->get('sales_channel_payment_method.repository');
         /** @var Connection $connection */
-        $connection                          = $container->get(Connection::class);
+        $connection = $container->get(Connection::class);
 
         $this->pluginIdProvider                    = $pluginIdProvider;
         $this->paymentMethodRepository             = $paymentMethodRepository;

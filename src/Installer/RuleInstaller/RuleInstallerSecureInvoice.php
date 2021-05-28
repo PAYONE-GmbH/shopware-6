@@ -51,9 +51,9 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     public function __construct(ContainerInterface $container)
     {
         /** @var EntityRepositoryInterface $ruleRepository */
-        $ruleRepository     = $container->get('rule.repository');
+        $ruleRepository = $container->get('rule.repository');
         /** @var EntityRepositoryInterface $countryRepository */
-        $countryRepository  = $container->get('country.repository');
+        $countryRepository = $container->get('country.repository');
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $container->get('currency.repository');
 

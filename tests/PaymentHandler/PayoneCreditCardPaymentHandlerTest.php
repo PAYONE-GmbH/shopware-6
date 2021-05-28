@@ -45,7 +45,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         parent::setUp();
 
         /** @var Translator $translator */
-        $translator = $this->getContainer()->get('translator');
+        $translator       = $this->getContainer()->get('translator');
         $this->translator = $translator;
     }
 
