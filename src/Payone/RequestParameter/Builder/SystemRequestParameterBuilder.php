@@ -13,7 +13,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var PluginService  */
+    /** @var PluginService */
     private $pluginService;
 
     private string $shopwareVersion;

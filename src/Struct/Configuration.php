@@ -8,7 +8,8 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class Configuration extends Struct
 {
-    protected array $configuration = [];
+    /** @var array */
+    protected $configuration = [];
 
     public function __construct(array $configuration)
     {
