@@ -18,7 +18,7 @@ abstract class AbstractRequestFactory
     /** @var array[] */
     protected $requests;
 
-    protected function createRequest() : array
+    protected function createRequest(): array
     {
         $parameters = [];
 

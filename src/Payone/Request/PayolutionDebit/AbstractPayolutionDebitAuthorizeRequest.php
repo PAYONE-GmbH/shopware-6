@@ -128,7 +128,7 @@ abstract class AbstractPayolutionDebitAuthorizeRequest
 
         $orderAddresses = $order->getAddresses();
 
-        if(null === $orderAddresses) {
+        if (null === $orderAddresses) {
             return;
         }
 

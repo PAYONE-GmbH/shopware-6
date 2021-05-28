@@ -16,8 +16,9 @@ class Configuration extends Struct
     }
 
     /**
-     * @param int|bool|array|string|null $default
-     * @return int|bool|array|string|null
+     * @param null|array|bool|int|string $default
+     *
+     * @return null|array|bool|int|string
      */
     public function get(string $key, $default = '')
     {
@@ -32,20 +33,22 @@ class Configuration extends Struct
         return $this->configuration[$key];
     }
 
-    public function getString(string $key, string $default = '') : string {
+    public function getString(string $key, string $default = ''): string
+    {
         $value = $this->get($key, $default);
 
-        if(is_string($value) === false) {
+        if (is_string($value) === false) {
             return $default;
         }
 
         return $value;
     }
 
-    public function getBool(string $key, bool $default = false) : bool {
+    public function getBool(string $key, bool $default = false): bool
+    {
         $value = $this->get($key, $default);
 
-        if(is_bool($value) === false) {
+        if (is_bool($value) === false) {
             return $default;
         }
 

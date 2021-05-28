@@ -66,7 +66,7 @@ class ConfigInstaller implements InstallerInterface
     public function __construct(ContainerInterface $container)
     {
         /** @var SystemConfigService $systemConfigService */
-        $systemConfigService = $container->get(SystemConfigService::class);
+        $systemConfigService       = $container->get(SystemConfigService::class);
         $this->systemConfigService = $systemConfigService;
     }
 

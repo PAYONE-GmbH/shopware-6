@@ -116,7 +116,7 @@ abstract class AbstractPayolutionInvoicingAuthorizeRequest
 
         $orderAddresses = $order->getAddresses();
 
-        if(null === $orderAddresses) {
+        if (null === $orderAddresses) {
             return;
         }
 

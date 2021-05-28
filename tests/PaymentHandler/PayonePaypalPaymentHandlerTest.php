@@ -9,8 +9,6 @@ use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
-use PayonePayment\Payone\Request\Paypal\PaypalPreAuthorizeRequestFactory;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
@@ -41,7 +39,7 @@ class PayonePaypalPaymentHandlerTest extends TestCase
         parent::setUp();
 
         /** @var Translator $translator */
-        $translator = $this->getContainer()->get('translator');
+        $translator       = $this->getContainer()->get('translator');
         $this->translator = $translator;
     }
 
@@ -51,9 +49,9 @@ class PayonePaypalPaymentHandlerTest extends TestCase
             'paypalAuthorizationMethod' => 'authorization',
         ]);
 
-        $client                = $this->createMock(PayoneClientInterface::class);
-        $requestFactory    = $this->createMock(RequestParameterFactory::class);
-        $dataBag               = new RequestDataBag();
+        $client         = $this->createMock(PayoneClientInterface::class);
+        $requestFactory = $this->createMock(RequestParameterFactory::class);
+        $dataBag        = new RequestDataBag();
 
         $paymentHandler = new PayonePaypalPaymentHandler(
             $configReader,

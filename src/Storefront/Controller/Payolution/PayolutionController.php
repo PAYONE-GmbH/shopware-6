@@ -363,6 +363,7 @@ class PayolutionController extends StorefrontController
 
     /**
      * This method does return mixed. Therefore we are ignoring errors for now.
+     *
      * @phpstan-ignore-next-line
      */
     private function convertType(string $key, $value)

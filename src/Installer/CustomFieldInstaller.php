@@ -60,10 +60,10 @@ class CustomFieldInstaller implements InstallerInterface
         /** @var EntityRepositoryInterface $customFieldSetRepository */
         $customFieldSetRepository = $container->get('custom_field_set.repository');
         /** @var EntityRepositoryInterface $customFieldRepository */
-        $customFieldRepository    = $container->get('custom_field.repository');
+        $customFieldRepository = $container->get('custom_field.repository');
 
         $this->customFieldSetRepository = $customFieldSetRepository;
-        $this->customFieldRepository = $customFieldRepository;
+        $this->customFieldRepository    = $customFieldRepository;
 
         $this->customFieldSets = [
             [
