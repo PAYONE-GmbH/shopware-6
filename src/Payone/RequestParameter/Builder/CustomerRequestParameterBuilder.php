@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
-use PayonePayment\PaymentMethod\PayonePaypal;
+use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
@@ -101,11 +101,11 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
         $paymentMethod = $arguments->getPaymentMethod();
         $action        = $arguments->getAction();
 
-        if ($paymentMethod === PayonePaypal::class && $action === self::REQUEST_ACTION_AUTHORIZE) {
+        if ($paymentMethod === PayonePaypalPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE) {
             return true;
         }
 
-        if ($paymentMethod === PayonePaypal::class && $action === self::REQUEST_ACTION_PREAUTHORIZE) {
+        if ($paymentMethod === PayonePaypalPaymentHandler::class && $action === self::REQUEST_ACTION_PREAUTHORIZE) {
             return true;
         }
 

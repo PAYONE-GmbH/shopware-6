@@ -19,9 +19,21 @@
             <tag name="payone_request_builder"/>
         </service>
 
-        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalPreAuthorizeRequestParameterBuilder"
+        <service id="PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
+
+            <tag name="payone_request_builder" priority="100" />
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalPreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\ShippingInformationRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
 
             <tag name="payone_request_builder"/>
         </service>

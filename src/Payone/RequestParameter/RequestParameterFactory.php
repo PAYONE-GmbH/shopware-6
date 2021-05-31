@@ -63,7 +63,7 @@ class RequestParameterFactory
         $this->generateParameterHash($parameters);
         $parameters['key'] = hash('md5', $parameters['key']);
 
-        return $parameters;
+        return array_filter($parameters);
     }
 
     //TODO: carthashing service?
