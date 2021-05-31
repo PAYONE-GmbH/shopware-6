@@ -36,7 +36,7 @@
 
         <service id="PayonePayment\Controller\SettingsController">
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="PayonePayment\Payone\Request\Test\TestRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="state_machine_transition.repository" />
             <argument type="service" id="PayonePayment\Util\Logger"/>
 

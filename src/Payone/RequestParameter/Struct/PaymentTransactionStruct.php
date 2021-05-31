@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Struct;
 
+use PayonePayment\Payone\RequestParameter\Struct\Traits\DeterminationTrait;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -11,11 +12,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentTransactionStruct extends Struct
 {
-    /** @var string */
-    protected $action = '';
-
-    /** @var string */
-    protected $paymentMethod;
+    use DeterminationTrait;
 
     /** @var RequestDataBag */
     protected $requestData;

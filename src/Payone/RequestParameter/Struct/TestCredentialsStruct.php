@@ -4,56 +4,31 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Struct;
 
+use PayonePayment\Payone\RequestParameter\Struct\Traits\DeterminationTrait;
 use Shopware\Core\Framework\Struct\Struct;
 
 class TestCredentialsStruct extends Struct
 {
-    /** @var string */
-    protected $action = '';
+    use DeterminationTrait;
 
-    /** @var string */
-    protected $paymentMethod;
-
-    /** @var string */
-    protected $salesChannelId;
+    /** @var array */
+    protected $parameters = [];
 
     public function __construct(
-        string $paymentMethod,
-        string $action = '',
-        string $salesChannelId
+        array $parameters,
+        string $action = ''
     ) {
-        $this->paymentMethod  = $paymentMethod;
-        $this->action         = $action;
-        $this->salesChannelId = $salesChannelId;
+        $this->parameters = $parameters;
+        $this->action     = $action;
     }
 
-    public function getAction(): string
+    public function getParameters(): array
     {
-        return $this->action;
+        return $this->parameters;
     }
 
-    public function setAction(string $action): void
+    public function setParameters(array $parameters): void
     {
-        $this->action = $action;
-    }
-
-    public function getPaymentMethod(): string
-    {
-        return $this->paymentMethod;
-    }
-
-    public function setPaymentMethod(string $paymentMethod): void
-    {
-        $this->paymentMethod = $paymentMethod;
-    }
-
-    public function getSalesChannelId(): string
-    {
-        return $this->salesChannelId;
-    }
-
-    public function setSalesChannelId(string $salesChannelId): void
-    {
-        $this->salesChannelId = $salesChannelId;
+        $this->parameters = $parameters;
     }
 }
