@@ -10,8 +10,8 @@ use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler as Handler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Test\TestRequestFactory;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -35,7 +35,7 @@ class SettingsController extends AbstractController
     /** @var PayoneClientInterface */
     private $client;
 
-    /** @var TestRequestFactory */
+    /** @var RequestParameterFactory */
     private $requestFactory;
 
     /** @var EntityRepositoryInterface */
@@ -46,12 +46,11 @@ class SettingsController extends AbstractController
 
     public function __construct(
         PayoneClientInterface $client,
-        TestRequestFactory $requestFactory,
+        RequestParameterFactory $requestFactory,
         EntityRepositoryInterface $stateMachineTransitionRepository,
         LoggerInterface $logger
     ) {
-        $this->client = $client;
-        //TODO: set correct factory
+        $this->client                           = $client;
         $this->requestFactory                   = $requestFactory;
         $this->stateMachineTransitionRepository = $stateMachineTransitionRepository;
         $this->logger                           = $logger;
@@ -82,12 +81,10 @@ class SettingsController extends AbstractController
             ++$testCount;
 
             try {
-                $parameters = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
-                //TODO: implement, get salesChannelId
+                $parameters  = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
+                $testRequest = $this->requestFactory->getRequestParameter(new TestCredentialsStruct($parameters, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST));
 
-                //$testRequest = $this->requestFactory->getRequestParameters(new TestCredentialsStruct($paymentClass, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST));
-
-                $this->client->request($parameters);
+                $this->client->request($testRequest);
             } catch (PayoneRequestException $exception) {
                 $errors[$configurationPrefix] = true;
             } catch (Throwable $exception) {

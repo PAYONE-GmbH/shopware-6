@@ -32,6 +32,12 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <service id="PayonePayment\Payone\RequestParameter\Builder\TestCredentialsRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
         <service id="PayonePayment\Payone\RequestParameter\Builder\ShippingInformationRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
 

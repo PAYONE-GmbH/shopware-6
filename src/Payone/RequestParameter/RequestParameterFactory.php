@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter;
 
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use RuntimeException;
 use Shopware\Core\Framework\Struct\Struct;
 
@@ -30,7 +31,7 @@ class RequestParameterFactory
 
     //TODO: add alternative structs for different request types
 
-    /** @param PaymentTransactionStruct $arguments */
+    /** @param PaymentTransactionStruct|TestCredentialsStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
     ): array {
