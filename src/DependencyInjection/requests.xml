@@ -16,13 +16,11 @@
         <import resource="requests/payolution-installment.xml" />
         <import resource="requests/payolution-invoicing.xml" />
         <import resource="requests/paypal-express.xml" />
-        <import resource="requests/paypal.xml" />
         <import resource="requests/prepayment.xml" />
         <import resource="requests/refund.xml" />
         <import resource="requests/secure-invoice.xml" />
         <import resource="requests/sofort.xml" />
         <import resource="requests/system.xml" />
-        <import resource="requests/test.xml" />
         <import resource="requests/trustly.xml" />
     </imports>
 </container>
