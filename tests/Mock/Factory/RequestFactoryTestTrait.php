@@ -67,7 +67,12 @@ trait RequestFactoryTestTrait
         $currencyEntity = new CurrencyEntity();
         $currencyEntity->setId(Constants::CURRENCY_ID);
         $currencyEntity->setIsoCode(Constants::CURRENCY_ISO);
-        $currencyEntity->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, false));
+
+        if (method_exists($currencyEntity, 'setItemRounding')) {
+            $currencyEntity->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, false));
+        } else {
+            $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
+        }
 
         return $currencyEntity;
     }
