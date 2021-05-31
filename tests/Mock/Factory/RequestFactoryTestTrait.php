@@ -71,6 +71,7 @@ trait RequestFactoryTestTrait
         if (method_exists($currencyEntity, 'setItemRounding')) {
             $currencyEntity->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, false));
         } else {
+            /** @phpstan-ignore-next-line */
             $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
         }
 
