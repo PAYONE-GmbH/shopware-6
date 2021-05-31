@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
-use PayonePayment\PaymentMethod\PayonePaypal;
+use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Struct\Struct;
 
@@ -29,6 +29,6 @@ class PaypalPreAuthorizeRequestParameterBuilder extends PaypalAuthorizeRequestPa
         $paymentMethod = $arguments->getPaymentMethod();
         $action        = $arguments->getAction();
 
-        return $paymentMethod === PayonePaypal::class && $action === self::REQUEST_ACTION_PREAUTHORIZE;
+        return $paymentMethod === PayonePaypalPaymentHandler::class && $action === self::REQUEST_ACTION_PREAUTHORIZE;
     }
 }

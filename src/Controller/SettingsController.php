@@ -50,7 +50,7 @@ class SettingsController extends AbstractController
         EntityRepositoryInterface $stateMachineTransitionRepository,
         LoggerInterface $logger
     ) {
-        $this->client                           = $client;
+        $this->client = $client;
         //TODO: set correct factory
         $this->requestFactory                   = $requestFactory;
         $this->stateMachineTransitionRepository = $stateMachineTransitionRepository;
@@ -82,12 +82,12 @@ class SettingsController extends AbstractController
             ++$testCount;
 
             try {
-                $parameters  = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
+                $parameters = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
                 //TODO: implement, get salesChannelId
 
                 //$testRequest = $this->requestFactory->getRequestParameters(new TestCredentialsStruct($paymentClass, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST));
 
-                $this->client->request($testRequest);
+                $this->client->request($parameters);
             } catch (PayoneRequestException $exception) {
                 $errors[$configurationPrefix] = true;
             } catch (Throwable $exception) {
