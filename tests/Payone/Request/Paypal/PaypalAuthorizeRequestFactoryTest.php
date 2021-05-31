@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Payone\Request\Paypal;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
-use PayonePayment\Components\CartHasher\CartHasher;
-use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
-use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
-use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequest;
-use PayonePayment\Payone\Request\Paypal\PaypalAuthorizeRequestFactory;
-use PayonePayment\Struct\Configuration;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\PaypalAuthorizeRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\ShippingInformationRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
+use PayonePayment\Test\Mock\Components\ConfigReaderMock;
 use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
@@ -24,12 +24,7 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Defaults;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Pricing\CashRoundingConfig;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
@@ -39,18 +34,39 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
 
     public function testCorrectRequestParameters(): void
     {
-        $factory = new PaypalAuthorizeRequestFactory(
-            $this->getPaypalAuthorizeRequest(),
-            $this->getCustomerRequest(),
-            $this->getSystemRequest(),
-            new CartHasher()
+        $salesChannelContext = $this->getSalesChannelContext();
+
+        $currencyRepositoryMock           = $this->createMock(EntityRepositoryInterface::class);
+        $generalTransactionRequestBuilder = $this->getGeneralTransactionRequestBuilder();
+        $generalTransactionRequestBuilder->setCommonDependencies($this->createMock(RedirectHandler::class), $currencyRepositoryMock, new ConfigReaderMock([]));
+
+        $currencyRepositoryMock->method('search')->willReturn(
+            $this->getCurrencySearchResult($salesChannelContext->getContext())
         );
 
-        $salesChannelContext = $this->getSalesChannelContext();
+        //TODO: inject all builders
+        $factory = new RequestParameterFactory(
+            [
+                new ShippingInformationRequestParameterBuilder(),
+                new PaypalAuthorizeRequestParameterBuilder(),
+                $this->getSystemRequestBuilder(),
+                $generalTransactionRequestBuilder,
+                $this->getCustomerRequestBuilder(),
+            ]
+        );
 
         $dataBag = new RequestDataBag([
         ]);
-        $request = $factory->getRequestParameters($this->getPaymentTransaction(), $dataBag, $salesChannelContext);
+
+        $request = $factory->getRequestParameter(
+            new PaymentTransactionStruct(
+                $this->getPaymentTransaction(),
+                $dataBag,
+                $salesChannelContext,
+                PayonePaypalPaymentHandler::class,
+                AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
+            )
+        );
 
         Assert::assertArraySubset(
             [
@@ -97,6 +113,12 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
         $orderEntity->setTransactions(new OrderTransactionCollection([]));
 
+        $orderCurrency = new CurrencyEntity();
+        $orderCurrency->setId(Constants::CURRENCY_ID);
+        $orderCurrency->setIsoCode(Constants::CURRENCY_ISO);
+
+        $orderEntity->setCurrency($orderCurrency);
+
         $paymentMethodEntity = new PaymentMethodEntity();
         $paymentMethodEntity->setHandlerIdentifier(PayonePaypalPaymentHandler::class);
         $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
@@ -112,56 +134,5 @@ class PaypalAuthorizeRequestFactoryTest extends TestCase
         $paymentTransactionStruct = new AsyncPaymentTransactionStruct($orderTransactionEntity, $orderEntity, 'test-url');
 
         return PaymentTransaction::fromAsyncPaymentTransactionStruct($paymentTransactionStruct, $orderEntity);
-    }
-
-    private function getPaypalAuthorizeRequest(): PaypalAuthorizeRequest
-    {
-        $currencyRepository = $this->createMock(EntityRepository::class);
-        $currencyEntity     = new CurrencyEntity();
-        $currencyEntity->setId(Constants::CURRENCY_ID);
-        $currencyEntity->setIsoCode('EUR');
-
-        if (method_exists($currencyEntity, 'setDecimalPrecision')) {
-            $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
-        } else {
-            $currencyEntity->setItemRounding(
-                new CashRoundingConfig(
-                    Constants::CURRENCY_DECIMAL_PRECISION,
-                    Constants::ROUNDING_INTERVAL,
-                    true)
-            );
-
-            $currencyEntity->setTotalRounding(
-                new CashRoundingConfig(
-                    Constants::CURRENCY_DECIMAL_PRECISION,
-                    Constants::ROUNDING_INTERVAL,
-                    true)
-            );
-        }
-
-        try {
-            $entitySearchResult = new EntitySearchResult(
-                CurrencyEntity::class,
-                1,
-                new EntityCollection([$currencyEntity]),
-                null,
-                new Criteria(),
-                Context::createDefaultContext()
-            );
-        } catch (\Throwable $e) {
-            /** @phpstan-ignore-next-line */
-            $entitySearchResult = new EntitySearchResult(1, new EntityCollection([$currencyEntity]), null, new Criteria(), Context::createDefaultContext());
-        }
-
-        $currencyRepository->method('search')->willReturn($entitySearchResult);
-
-        $configReader = $this->createMock(ConfigReader::class);
-        $configReader->method('read')->willReturn(
-            new Configuration([
-                sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD) => false,
-            ])
-        );
-
-        return new PaypalAuthorizeRequest($this->createMock(RedirectHandler::class), $currencyRepository, $configReader);
     }
 }
