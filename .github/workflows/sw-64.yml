@@ -15,7 +15,7 @@ jobs:
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
       mysql:
-        image: mariadb:latest
+        image: mariadb:10.5.9
         env:
           MYSQL_ROOT_PASSWORD: root
         ports:
