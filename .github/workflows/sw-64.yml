@@ -36,7 +36,7 @@ jobs:
     - name: Check PHP Extensions
       run: php -m
     - name: Composer setup
-      run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
+      run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --ignore-platform-req=php
     - name: Codestyle
       run: vendor/bin/php-cs-fixer fix -v --dry-run --diff
     - name: PHPUnit
