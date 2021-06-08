@@ -96,7 +96,6 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('identification', $mandateIdentification));
 
-        /** @var null|PayonePaymentMandateEntity $mandate */
         return $this->mandateRepository->search($criteria, $context)->first();
     }
 

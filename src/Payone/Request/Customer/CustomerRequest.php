@@ -88,7 +88,6 @@ class CustomerRequest
     {
         $criteria = new Criteria([$addressEntity->getSalutationId()]);
 
-        /** @var null|SalutationEntity $language */
         $salutation = $this->salutationRepository->search($criteria, $context)->first();
 
         if (null === $salutation) {

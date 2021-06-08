@@ -6,10 +6,12 @@ namespace PayonePayment\Payone\Request\PayolutionDebit;
 
 use DateTime;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\Helper\OrderFetcherInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -29,14 +31,19 @@ abstract class AbstractPayolutionDebitAuthorizeRequest
     /** @var ConfigReaderInterface */
     protected $configReader;
 
+    /** @var OrderFetcherInterface */
+    protected $orderFetcher;
+
     public function __construct(
         EntityRepositoryInterface $currencyRepository,
         EntityRepositoryInterface $orderAddressRepository,
-        ConfigReaderInterface $configReader
+        ConfigReaderInterface $configReader,
+        OrderFetcherInterface $orderFetcher
     ) {
         $this->currencyRepository     = $currencyRepository;
         $this->orderAddressRepository = $orderAddressRepository;
         $this->configReader           = $configReader;
+        $this->orderFetcher           = $orderFetcher;
     }
 
     public function getRequestParameters(
@@ -70,12 +77,7 @@ abstract class AbstractPayolutionDebitAuthorizeRequest
         }
 
         if ($this->transferCompanyData($context)) {
-            $billingAddress = $this->getBillingAddress($transaction->getOrder(), $context->getContext());
-
-            if ($billingAddress->getCompany()) {
-                $parameters['add_paydata[b2b]']         = 'yes';
-                $parameters['add_paydata[company_uid]'] = $billingAddress->getVatId();
-            }
+            $this->provideCompanyParams($transaction->getOrder()->getId(), $parameters, $context->getContext());
         }
 
         if ($this->isNarrativeTextAllowed($transaction->getOrder()->getSalesChannelId()) && !empty($transaction->getOrder()->getOrderNumber())) {
@@ -113,17 +115,43 @@ abstract class AbstractPayolutionDebitAuthorizeRequest
         return !empty($configuration->get('payolutionDebitTransferCompanyData'));
     }
 
-    private function getBillingAddress(OrderEntity $order, Context $context): OrderAddressEntity
+    /**
+     * refactor: This is a duplicate code fragment
+     */
+    private function provideCompanyParams(string $orderId, array &$parameters, Context $context): void
     {
-        $criteria = new Criteria([$order->getBillingAddressId()]);
+        $order = $this->orderFetcher->getOrderById($orderId, $context);
 
-        /** @var null|OrderAddressEntity $address */
-        $address = $this->orderAddressRepository->search($criteria, $context)->first();
-
-        if (null === $address) {
-            throw new RuntimeException('missing order customer billing address');
+        if (null === $order) {
+            return;
         }
 
-        return $address;
+        /** @var OrderAddressEntity $billingAddress */
+        $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
+
+        if ($billingAddress->getCompany() && $billingAddress->getVatId()) {
+            $parameters['add_paydata[b2b]']         = 'yes';
+            $parameters['add_paydata[company_uid]'] = $billingAddress->getVatId();
+
+            return;
+        }
+
+        /** @var OrderCustomerEntity $orderCustomer */
+        $orderCustomer = $order->getOrderCustomer();
+
+        if (empty($orderCustomer->getCompany()) && empty($billingAddress->getCompany())) {
+            return;
+        }
+
+        if (method_exists($orderCustomer, 'getVatIds') === false) {
+            return;
+        }
+
+        $vatIds = $orderCustomer->getVatIds();
+
+        if (empty($vatIds) === false) {
+            $parameters['add_paydata[b2b]']         = 'yes';
+            $parameters['add_paydata[company_uid]'] = $vatIds[0];
+        }
     }
 }

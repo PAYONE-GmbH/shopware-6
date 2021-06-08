@@ -134,8 +134,8 @@
                             v-if="element.name.startsWith('PayonePayment.settings.paymentStatus')"
                             :config="{
                                 componentName: 'sw-single-select',
-                                label: getInlineSnippet(element.config.label),
-                                helpText: getInlineSnippet(element.config.helpText),
+                                label: getInlineSnippet(getElementBind(getBind(element, config)).config.label),
+                                helpText: getInlineSnippet(getElementBind(getBind(element, config)).config.helpText),
                                 options: stateMachineTransitionActions,
                             }"
                             v-model="config[element.name]"
@@ -143,7 +143,7 @@
 
                         <sw-form-field-renderer
                             v-else
-                            v-bind="getBind(element, config)"
+                            v-bind="getElementBind(getBind(element, config))"
                             v-model="config[element.name]"
                         />
                     </div>
