@@ -42,20 +42,19 @@ jobs:
       run: |
         mkdir -p /tmp/shopware
         git clone --depth 1 --single-branch -b ${{ matrix.shopware-versions }} https://github.com/shopware/development /tmp/shopware
-        mkdir /tmp/shopware/custom/plugins/PayonePayment
-        cp -r * /tmp/shopware/custom/plugins/PayonePayment/
         printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"127.0.0.1\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"shopware\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"root\"" > /tmp/shopware/.psh.yaml.override
         cd /tmp/shopware
         php psh.phar init
         composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-scripts
-        php /tmp/shopware/bin/console plugin:refresh
-        php /tmp/shopware/bin/console plugin:install --activate PayonePayment
-    - name: Composer setup
-      run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-dev
-    - name: SW-Install
+    - name: Install plugin
       run: |
-        cd /tmp/shopware && composer dump-autoload -d custom/plugins/PayonePayment
-        /tmp/shopware/vendor/bin/phpunit --configuration custom/plugins/PayonePayment/phpunit.xml.dist
+        cd /tmp/shopware
+        composer config repositories.payone-local path $(pwd)
+        composer require payone-gmbh/shopware-6:"@dev"
+        php /bin/console plugin:refresh
+        php bin/console plugin:install --activate PayonePayment
+    - name: PHPUnit
+      run: /tmp/shopware/vendor/bin/phpunit --configuration custom/plugins/PayonePayment/phpunit.xml.dist
   ci-64:
     runs-on: ubuntu-latest
     strategy:
@@ -87,23 +86,24 @@ jobs:
         run: composer -V
       - name: Check PHP Extensions
         run: php -m
+      - name: Composer setup
+        run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
       - name: Codestyle
         run: vendor/bin/php-cs-fixer fix -v --dry-run --diff
       - name: SW-Install
         run: |
           mkdir -p /tmp/shopware
           git clone --depth 1 --single-branch -b ${{ matrix.shopware-versions }} https://github.com/shopware/development /tmp/shopware
-          mkdir /tmp/shopware/custom/plugins/PayonePayment
-          cp -r * /tmp/shopware/custom/plugins/PayonePayment/
           printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"127.0.0.1\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"shopware\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"root\"" > /tmp/shopware/.psh.yaml.override
           cd /tmp/shopware
           php psh.phar init
           composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-scripts
-          php /tmp/shopware/bin/console plugin:refresh
-          php /tmp/shopware/bin/console plugin:install --activate PayonePayment
-      - name: Composer setup
-        run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-dev
-      - name: SW-Install
+      - name: Install plugin
         run: |
-          cd /tmp/shopware && composer dump-autoload -d custom/plugins/PayonePayment
-          /tmp/shopware/vendor/bin/phpunit --configuration custom/plugins/PayonePayment/phpunit.xml.dist
+          cd /tmp/shopware
+          composer config repositories.payone-local path $(pwd)
+          composer require payone-gmbh/shopware-6:"@dev"
+          php /bin/console plugin:refresh
+          php bin/console plugin:install --activate PayonePayment
+      - name: PHPUnit
+        run: /tmp/shopware/vendor/bin/phpunit --configuration custom/plugins/PayonePayment/phpunit.xml.dist
