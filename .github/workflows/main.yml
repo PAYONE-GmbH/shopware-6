@@ -47,9 +47,8 @@ jobs:
         printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"127.0.0.1\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"shopware\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"root\"" > /tmp/shopware/.psh.yaml.override
         cd /tmp/shopware
         php psh.phar init
-        composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-scripts
+        composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-scripts --no-dev
         php /tmp/shopware/bin/console plugin:refresh
         php /tmp/shopware/bin/console plugin:install --activate PayonePayment
-        ls -la /tmp/shopware
         cd /tmp/shopware && composer dump-autoload -d custom/plugins/PayonePayment
         /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit --configuration custom/plugins/PayonePayment/phpunit.xml.dist
