@@ -103,12 +103,10 @@ jobs:
         run: |
           PLUGIN_PATH=$(pwd)
           cd /tmp/shopware
-          echo $PLUGIN_PATH
-          echo "composer config repositories.payone-local path $PLUGIN_PATH"
           composer config repositories.payone-local path $PLUGIN_PATH
-          echo "composer require payone-gmbh/shopware-6:\"@dev\""
           composer require payone-gmbh/shopware-6:"@dev"
           php bin/console plugin:refresh
           php bin/console plugin:install --activate PayonePayment
       - name: PHPUnit
-        run: /tmp/shopware/vendor/bin/phpunit --configuration /tmp/shopware/vendor/payone-gmbh/shopware-6/phpunit.xml.dist
+        run: |
+          PROJECT_ROOT="/tmp/shopware" /tmp/shopware/vendor/bin/phpunit --configuration /tmp/shopware/vendor/payone-gmbh/shopware-6/phpunit.xml.dist

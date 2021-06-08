@@ -27,6 +27,7 @@ function getProjectDir(): string
 }
 
 define('TEST_PROJECT_DIR', getProjectDir());
+echo TEST_PROJECT_DIR;
 echo TEST_PROJECT_DIR . '/vendor/autoload.php';
 $loader = require TEST_PROJECT_DIR . '/vendor/autoload.php';
 KernelLifecycleManager::prepare($loader);
