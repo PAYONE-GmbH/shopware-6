@@ -8,15 +8,16 @@ use PayonePayment\PaymentHandler\PayonePrepaymentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Struct\Struct;
 
-class PrepaymentPreAuthorizeRequestParameterBuilder extends PrepaymentAuthorizeRequestParameterBuilder
+class PrepaymentPreAuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
     ): array {
-        return array_merge(parent::getRequestParameter($arguments), [
-            'request' => 'preauthorization',
-        ]);
+        return [
+            'request'      => 'preauthorization',
+            'clearingtype' => 'vor',
+        ];
     }
 
     /** @param PaymentTransactionStruct $arguments */
