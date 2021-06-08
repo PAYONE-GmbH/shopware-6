@@ -23,6 +23,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Pricing\CashRoundingConfig;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
@@ -134,7 +135,24 @@ class WebhookControllerTest extends TestCase
 
         $currency = new CurrencyEntity();
         $currency->setId(Constants::CURRENCY_ID);
-        $currency->setDecimalPrecision(2);
+
+        if (method_exists($currency, 'setDecimalPrecision')) {
+            $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
+        } else {
+            $currency->setItemRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
+
+            $currency->setTotalRounding(
+                new CashRoundingConfig(
+                Constants::CURRENCY_DECIMAL_PRECISION,
+                Constants::ROUNDING_INTERVAL,
+                true)
+            );
+        }
 
         $orderTransactionEntity = new OrderTransactionEntity();
         $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);

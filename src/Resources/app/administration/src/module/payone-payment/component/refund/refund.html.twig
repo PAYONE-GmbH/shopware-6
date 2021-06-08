@@ -1,44 +1,44 @@
 {% block payone_payment_payment_details %}
-<div class="payone-refund-button">
-    <sw-container v-tooltip="{message: $tc('payone-payment.refund.tooltips.impossible'), disabled: buttonEnabled}" :key="buttonEnabled">
-        <sw-button :disabled="!buttonEnabled" @click="openRefundModal">
-            {{ $tc('payone-payment.refund.buttonTitle') }}
-        </sw-button>
-    </sw-container>
-
-    <sw-modal v-if="showRefundModal" @modal-close="closeRefundModal" :title="$tc(`payone-payment.modal.refund.title`)" class="payone-payment-detail--refund-modal">
-        <payone-order-items
-                :order="order"
-                mode="refund"
-                v-on:select-item="onSelectItem"
-                v-on:change-quantity="onChangeQuantity">
-        </payone-order-items>
-
-        <div class="payone-payment-detail--refund-modal--content">
-            <sw-container columns="1fr 1fr" gap="0 32px">
-                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.orderAmount')" :value="transaction.amount.totalPrice | currency(order.currency.shortName)"></sw-text-field>
-                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.refund.refunded')" :value="refundedAmount | payone_currency(order.currency.shortName, order.currency.decimalPrecision)"></sw-text-field>
-                <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.remainingAmount')" :value="remainingAmount | payone_currency(order.currency.shortName, order.currency.decimalPrecision)"></sw-text-field>
-                <sw-number-field required="required" numberType="float" :digits="order.decimal_precision" :label="$tc('payone-payment.modal.refund.amount')"
-                                 v-model="refundAmount"
-                                 :min="0"
-                                 :max="maxRefundAmount"></sw-number-field>
-            </sw-container>
-        </div>
-
-        <template slot="modal-footer">
-            <sw-button :disabled="isLoading" @click="closeRefundModal">
-                {{ $tc('payone-payment.modal.close') }}
+    <div class="payone-refund-button">
+        <sw-container v-tooltip="{message: $tc('payone-payment.refund.tooltips.impossible'), disabled: buttonEnabled}" :key="buttonEnabled">
+            <sw-button :disabled="!buttonEnabled" @click="openRefundModal">
+                {{ $tc('payone-payment.refund.buttonTitle') }}
             </sw-button>
+        </sw-container>
 
-            <sw-button-process :isLoading="isLoading" :processSuccess="isRefundSuccessful" @process-finish="onRefundFinished()" :disabled="isLoading || refundAmount <= 0" variant="primary" @click="refundOrder">
-                {{ $tc('payone-payment.modal.refund.submit') }}
-            </sw-button-process>
+        <sw-modal v-if="showRefundModal" @modal-close="closeRefundModal" :title="$tc(`payone-payment.modal.refund.title`)" class="payone-payment-detail--refund-modal">
+            <payone-order-items
+                    :order="order"
+                    mode="refund"
+                    v-on:select-item="onSelectItem"
+                    v-on:change-quantity="onChangeQuantity">
+            </payone-order-items>
 
-            <sw-button-process :isLoading="isLoading" :processSuccess="isRefundSuccessful" @process-finish="onRefundFinished()" :disabled="isLoading" variant="primary" @click="refundFullOrder">
-                {{ $tc('payone-payment.modal.refund.fullSubmit') }}
-            </sw-button-process>
-        </template>
-    </sw-modal>
-</div>
+            <div class="payone-payment-detail--refund-modal--content">
+                <sw-container columns="1fr 1fr" gap="0 32px">
+                    <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.orderAmount')" :value="transaction.amount.totalPrice | currency(order.currency.shortName)"></sw-text-field>
+                    <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.refund.refunded')" :value="refundedAmount | payone_currency(order.currency.shortName, decimalPrecision)"></sw-text-field>
+                    <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.remainingAmount')" :value="remainingAmount | payone_currency(order.currency.shortName, decimalPrecision)"></sw-text-field>
+                    <sw-number-field required="required" numberType="float" :digits="order.decimal_precision" :label="$tc('payone-payment.modal.refund.amount')"
+                                     v-model="refundAmount"
+                                     :min="0"
+                                     :max="maxRefundAmount"></sw-number-field>
+                </sw-container>
+            </div>
+
+            <template slot="modal-footer">
+                <sw-button :disabled="isLoading" @click="closeRefundModal">
+                    {{ $tc('payone-payment.modal.close') }}
+                </sw-button>
+
+                <sw-button-process :isLoading="isLoading" :processSuccess="isRefundSuccessful" @process-finish="onRefundFinished()" :disabled="isLoading || refundAmount <= 0" variant="primary" @click="refundOrder">
+                    {{ $tc('payone-payment.modal.refund.submit') }}
+                </sw-button-process>
+
+                <sw-button-process :isLoading="isLoading" :processSuccess="isRefundSuccessful" @process-finish="onRefundFinished()" :disabled="isLoading" variant="primary" @click="refundFullOrder">
+                    {{ $tc('payone-payment.modal.refund.fullSubmit') }}
+                </sw-button-process>
+            </template>
+        </sw-modal>
+    </div>
 {% endblock %}

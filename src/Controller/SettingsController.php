@@ -56,7 +56,8 @@ class SettingsController extends AbstractController
 
     /**
      * @RouteScope(scopes={"api"})
-     * @Route("/api/v{version}/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials", methods={"POST"})
+     * @Route("/api/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials", methods={"POST"})
+     * @Route("/api/v{version}/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials.legacy", methods={"POST"})
      */
     public function validateApiCredentials(Request $request, Context $context): JsonResponse
     {
@@ -103,7 +104,8 @@ class SettingsController extends AbstractController
 
     /**
      * @RouteScope(scopes={"api"})
-     * @Route("/api/v{version}/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions", methods={"GET"})
+     * @Route("/api/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions", methods={"GET"})
+     * @Route("/api/v{version}/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions.legacy", methods={"GET"})
      */
     public function getStateMachineTransitionActions(Request $request, Context $context): JsonResponse
     {
@@ -148,7 +150,6 @@ class SettingsController extends AbstractController
                     'successurl'     => 'https://www.payone.com',
                 ];
 
-                break;
             case Handler\PayoneDebitPaymentHandler::class:
                 return [
                     'request'           => 'preauthorization',
@@ -165,7 +166,6 @@ class SettingsController extends AbstractController
                     'successurl'        => 'https://www.payone.com',
                 ];
 
-                break;
             case Handler\PayonePaypalExpressPaymentHandler::class:
             case Handler\PayonePaypalPaymentHandler::class:
                 return [
@@ -181,7 +181,6 @@ class SettingsController extends AbstractController
                     'successurl'   => 'https://www.payone.com',
                 ];
 
-                break;
             case Handler\PayoneSofortBankingPaymentHandler::class:
                 return [
                     'request'                => 'preauthorization',
@@ -229,7 +228,6 @@ class SettingsController extends AbstractController
                     'successurl'             => 'https://www.payone.com',
                 ];
 
-                break;
             case Handler\PayonePayolutionInvoicingPaymentHandler::class:
                 return [
                     'request'                   => 'genericpayment',
@@ -250,8 +248,6 @@ class SettingsController extends AbstractController
                     'city'                      => 'Test',
                     'ip'                        => '127.0.0.1',
                 ];
-
-                break;
 
             case Handler\PayonePayolutionDebitPaymentHandler::class:
                 return [
@@ -297,8 +293,6 @@ class SettingsController extends AbstractController
                     'ip'                        => '127.0.0.1',
                 ];
 
-                break;
-
             case Handler\PayonePrepaymentPaymentHandler::class:
                 return [
                     'request'      => 'preauthorization',
@@ -316,8 +310,6 @@ class SettingsController extends AbstractController
                     'ip'           => '127.0.0.1',
                 ];
 
-                break;
-
             case Handler\PayoneTrustlyPaymentHandler::class:
                 return [
                     'request'                => 'preauthorization',
@@ -332,8 +324,6 @@ class SettingsController extends AbstractController
                     'country'                => 'DE',
                     'successurl'             => 'https://www.payone.com',
                 ];
-
-                break;
 
             case Handler\PayoneSecureInvoicePaymentHandler::class:
                 return [
@@ -355,8 +345,6 @@ class SettingsController extends AbstractController
                     'businessrelation' => 'b2c',
                 ];
 
-                break;
-
             case Handler\PayonePaydirektPaymentHandler::class:
                 return [
                     'request'                             => 'genericpayment',
@@ -373,13 +361,9 @@ class SettingsController extends AbstractController
                     'errorurl'                            => 'https://www.payone.com',
                 ];
 
-                break;
-
             default:
                 $this->logger->error(sprintf('There is no test data defined for payment class %s', $paymentClass));
                 throw new RuntimeException(sprintf('There is no test data defined for payment class %s', $paymentClass));
-
-                break;
         }
     }
 

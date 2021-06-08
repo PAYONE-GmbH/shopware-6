@@ -10,6 +10,8 @@ interface Constants
     public const CURRENCY_DECIMAL_PRECISION = 2;
     public const CURRENCY_TAX_RATE          = 19.00;
 
+    public const ROUNDING_INTERVAL = 1;
+
     public const ORDER_ID     = 'c23b44f2778240c7ad09bee356004503';
     public const ORDER_NUMBER = 'pp_on_1';
 

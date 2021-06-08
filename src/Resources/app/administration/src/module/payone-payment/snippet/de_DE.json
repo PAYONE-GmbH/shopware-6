@@ -62,6 +62,7 @@
             "messageTestError": {
                 "general": "Die API-Zugangsdaten konnten nicht validiert werden.",
                 "creditCard": "Die API-Zugangsdaten für Kreditkarte sind nicht korrekt.",
+                "prepayment": "Die API-Zugangsdaten für Vorkasse sind nicht korrekt.",
                 "debit": "Die API-Zugangsdaten für Lastschrift sind nicht korrekt.",
                 "paypalExpress": "Die API-Zugangsdaten für PayPal Express sind nicht korrekt.",
                 "paypal": "Die API-Zugangsdaten für PayPal sind nicht korrekt.",
@@ -72,7 +73,8 @@
                 "eps": "Die API-Zugangsdaten für EPS sind nicht korrekt.",
                 "iDeal": "Die API-Zugangsdaten für iDEAL sind nicht korrekt.",
                 "secureInvoice": "Die API-Zugangsdaten für den gesicherten Rechnungskauf sind nicht korrekt.",
-                "paydirekt": "Die API-Zugangsdaten für Paydirekt sind nicht korrekt."
+                "paydirekt": "Die API-Zugangsdaten für Paydirekt sind nicht korrekt.",
+                "trustly": "Die API-Zugangsdaten für Trustly sind nicht korrekt."
             }
         },
         "supportModal": {

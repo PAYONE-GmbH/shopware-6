@@ -95,6 +95,9 @@ abstract class AbstractPaypalExpressAuthorizeRequest
         return $currency;
     }
 
+    /**
+     * refactor: This is as duplicate code fragment
+     */
     private function applyShippingParameters(array $parameters, CustomerAddressEntity $shippingAddress): array
     {
         $shippingParameters = array_filter([

@@ -34,6 +34,7 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Pricing\CashRoundingConfig;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\System\Currency\CurrencyEntity;
@@ -226,7 +227,24 @@ class CaptureRequestFactoryTest extends TestCase
     protected function getPaymentTransaction(int $lineItemAmount = 1): PaymentTransaction
     {
         $currency = new CurrencyEntity();
-        $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
+
+        if (method_exists($currency, 'setDecimalPrecision')) {
+            $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
+        } else {
+            $currency->setItemRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
+
+            $currency->setTotalRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
+        }
 
         $orderEntity = new OrderEntity();
         $orderEntity->setId(Constants::ORDER_ID);
@@ -303,16 +321,40 @@ class CaptureRequestFactoryTest extends TestCase
         $currencyEntity     = new CurrencyEntity();
         $currencyEntity->setId(Constants::CURRENCY_ID);
         $currencyEntity->setIsoCode('EUR');
-        $currencyEntity->setDecimalPrecision(2);
-        $currencyRepository->method('search')->willReturn(
-            new EntitySearchResult(
+
+        if (method_exists($currencyEntity, 'setDecimalPrecision')) {
+            $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
+        } else {
+            $currencyEntity->setItemRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
+
+            $currencyEntity->setTotalRounding(
+                new CashRoundingConfig(
+                    Constants::CURRENCY_DECIMAL_PRECISION,
+                    Constants::ROUNDING_INTERVAL,
+                    true)
+            );
+        }
+
+        try {
+            $entitySearchResult = new EntitySearchResult(
+                CurrencyEntity::class,
                 1,
                 new EntityCollection([$currencyEntity]),
                 null,
                 new Criteria(),
                 Context::createDefaultContext()
-            )
-        );
+            );
+        } catch (\Throwable $e) {
+            /** @phpstan-ignore-next-line */
+            $entitySearchResult = new EntitySearchResult(1, new EntityCollection([$currencyEntity]), null, new Criteria(), Context::createDefaultContext());
+        }
+
+        $currencyRepository->method('search')->willReturn($entitySearchResult);
 
         return new CaptureRequest($currencyRepository);
     }

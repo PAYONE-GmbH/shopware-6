@@ -13,9 +13,66 @@ variables:
     MYSQL_USER: shopware
     MYSQL_PASSWORD: shopware
 
-composer:
+composer-legacy:
     stage: setup
     image: "edbizarro/gitlab-ci-pipeline-php:7.2"
+    script:
+        - rm composer.lock
+        - php -d memory_limit=-1 /usr/bin/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
+    artifacts:
+        paths:
+            - vendor/
+        expire_in: 1 days
+        when: always
+    cache:
+        paths:
+            - vendor/
+
+phpstan-legacy:
+    stage: test
+    needs: ["composer-legacy"]
+    image: "edbizarro/gitlab-ci-pipeline-php:7.2"
+    parallel:
+        matrix:
+            - SW_VERSION: [ 'v6.2.0', 'v6.3.1.0', 'v6.3.2.0', 'v6.3.3.0' ]
+    script:
+        - git clone -b ${SW_VERSION} https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
+        - mv ${CI_PROJECT_DIR}/opt /tmp/opt
+        - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/${CI_PROJECT_NAME}
+        - mv /tmp/opt ${CI_PROJECT_DIR}/opt
+        - cd ${CI_PROJECT_DIR}/opt/shopware && composer install --no-interaction --optimize-autoloader --no-suggest --no-scripts
+        - cd ${CI_PROJECT_DIR}/opt/shopware && composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
+        - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan-legacy.neon -a ${CI_PROJECT_DIR}/opt/shopware/vendor/autoload.php tests src
+
+phpunit-legacy:
+    image: shopware/development:7.2
+    stage: test
+    needs: ["composer-legacy"]
+    services:
+        - mysql:5.7
+    parallel:
+        matrix:
+            -   SW_VERSION: [ 'v6.2.0', 'v6.3.1.0', 'v6.3.2.0', 'v6.3.3.0' ]
+    before_script:
+        - git clone -b ${SW_VERSION} https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
+        - mv ${CI_PROJECT_DIR}/opt /tmp/opt
+        - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/${CI_PROJECT_NAME}
+        - mv /tmp/opt ${CI_PROJECT_DIR}/opt
+        - 'printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"mysql\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"${MYSQL_DATABASE}\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"${MYSQL_ROOT_PASSWORD}\"" > "${CI_PROJECT_DIR}/opt/shopware/.psh.yaml.override"'
+        - cd ${CI_PROJECT_DIR}/opt/shopware && php ${CI_PROJECT_DIR}/opt/shopware/psh.phar init
+        - cd ${CI_PROJECT_DIR}/opt/shopware && composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-scripts
+    script:
+        - php ${CI_PROJECT_DIR}/opt/shopware/bin/console plugin:install --activate ${CI_PROJECT_NAME}
+        - cd ${CI_PROJECT_DIR}/opt/shopware && composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
+        - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && php -d pcov.enabled=1 -d pcov.directory=${CI_PROJECT_DIR}
+            vendor/bin/phpunit
+            --configuration phpunit.xml.dist
+            --colors=never
+            --coverage-text
+
+composer:
+    stage: setup
+    image: "edbizarro/gitlab-ci-pipeline-php:7.4"
     script:
         - composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     artifacts:
@@ -29,12 +86,13 @@ composer:
 
 phpstan:
     stage: test
-    image: "edbizarro/gitlab-ci-pipeline-php:7.2"
-    dependencies:
-        - composer
+    image: "edbizarro/gitlab-ci-pipeline-php:7.4"
+    needs: ["composer"]
     parallel:
         matrix:
-            - SW_VERSION: [ 'v6.2.0', 'v6.3.1.0', 'v6.3.2.0', 'v6.3.3.0' ]
+            - SW_VERSION: [ 'v6.4.0.0-RC1' ]
+    before_script:
+        - sudo composer self-update --2
     script:
         - git clone -b ${SW_VERSION} https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
         - mv ${CI_PROJECT_DIR}/opt /tmp/opt
@@ -44,29 +102,17 @@ phpstan:
         - cd ${CI_PROJECT_DIR}/opt/shopware && composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
         - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -a ${CI_PROJECT_DIR}/opt/shopware/vendor/autoload.php tests src
 
-codestyle:
-    stage: test
-    image: "edbizarro/gitlab-ci-pipeline-php:7.2"
-    dependencies:
-        - composer
-    script:
-        - vendor/bin/php-cs-fixer fix -v --dry-run
-    cache:
-        key: global
-        paths:
-            - .php_cs.cache
-
 phpunit:
-    image: shopware/development:7.2
+    image: shopware/development:7.4
     stage: test
     services:
         - mysql:5.7
-    dependencies:
-        - composer
+    needs: ["composer"]
     parallel:
         matrix:
-            -   SW_VERSION: [ 'v6.2.0', 'v6.3.1.0', 'v6.3.2.0', 'v6.3.3.0' ]
+            - SW_VERSION: [ 'v6.4.0.0-RC1' ]
     before_script:
+        - composer self-update --2
         - git clone -b ${SW_VERSION} https://github.com/shopware/development "${CI_PROJECT_DIR}/opt/shopware"
         - mv ${CI_PROJECT_DIR}/opt /tmp/opt
         - cp -r ${CI_PROJECT_DIR} /tmp/opt/shopware/custom/plugins/${CI_PROJECT_NAME}
@@ -92,9 +138,21 @@ phpunit:
         reports:
             junit: opt/shopware/build/artifacts/phpunit.junit.xml
 
+codestyle:
+    stage: test
+    image: "edbizarro/gitlab-ci-pipeline-php:7.4"
+    needs: ["composer"]
+    script:
+        - vendor/bin/php-cs-fixer fix -v --dry-run
+    cache:
+        key: global
+        paths:
+            - .php_cs.cache
+
 package:
     image: kellerkinder/shopware-package-plugin:latest
     stage: package
+    needs: []
     only:
         - tags
         - master

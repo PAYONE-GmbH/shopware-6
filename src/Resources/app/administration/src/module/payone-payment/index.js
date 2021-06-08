@@ -4,6 +4,7 @@ import './component/capture';
 import './component/refund';
 import './component/order-items';
 import './component/payone-data-grid';
+import './component/payone-payment-plugin-icon';
 
 import './page/payone-settings';
 
@@ -15,7 +16,7 @@ import './filter/payone_currency.filter';
 import deDE from './snippet/de_DE.json';
 import enGB from './snippet/en_GB.json';
 
-Module.register('payone-payment', {
+let configuration = {
     type: 'plugin',
     name: 'PayonePayment',
     title: 'payone-payment.general.mainMenuItemGeneral',
@@ -42,4 +43,20 @@ Module.register('payone-payment', {
             }
         }
     }
-});
+};
+
+const version = Shopware.Context.app.config.version;
+const match = version.match(/((\d+)\.?(\d+?)\.?(\d+)?\.?(\d*))-?([A-z]+?\d+)?/i);
+
+if(match && parseInt(match[2]) === 6 && parseInt(match[3]) > 3) {
+    configuration.settingsItem = [{
+        name:   'payone-payment',
+        to:     'payone.payment.index',
+        label:  'payone-payment.general.mainMenuItemGeneral',
+        group:  'plugins',
+        iconComponent: 'payone-payment-plugin-icon',
+        backgroundEnabled: false
+    }];
+}
+
+Module.register('payone-payment', configuration);

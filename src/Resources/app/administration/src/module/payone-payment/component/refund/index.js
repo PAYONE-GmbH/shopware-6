@@ -35,6 +35,18 @@ Component.register('payone-refund-button', {
     },
 
     computed: {
+        decimalPrecision() {
+            if (!this.order || !this.order.currency) {
+                return 2;
+            }
+            if (this.order.currency.decimalPrecision) {
+                return this.order.currency.decimalPrecision;
+            }
+            if (this.order.currency.itemRounding) {
+                return this.order.currency.itemRounding.decimals;
+            }
+        },
+
         remainingAmount() {
             if (undefined === this.transaction.customFields ||
                 undefined === this.transaction.customFields.payone_captured_amount) {
@@ -54,7 +66,7 @@ Component.register('payone-refund-button', {
         },
 
         maxRefundAmount() {
-            return this.remainingAmount / (10 ** this.order.currency.decimalPrecision);
+            return this.remainingAmount / (10 ** this.decimalPrecision);
         },
 
         buttonEnabled() {
@@ -76,8 +88,8 @@ Component.register('payone-refund-button', {
                 }
             });
 
-            if (Math.round(amount * (10 ** this.order.currency.decimalPrecision) > this.remainingAmount)) {
-                amount = this.remainingAmount / (10 ** this.order.currency.decimalPrecision)
+            if (Math.round(amount * (10 ** this.decimalPrecision) > this.remainingAmount)) {
+                amount = this.remainingAmount / (10 ** this.decimalPrecision)
             }
 
             this.refundAmount = amount;
@@ -112,7 +124,7 @@ Component.register('payone-refund-button', {
                 this.order.lineItems.forEach((order_item) => {
                     if (order_item.id === selection.id && selection.selected && 0 < selection.quantity) {
                         const copy = { ...order_item },
-                            taxRate = copy.tax_rate / (10 ** this.order.currency.decimalPrecision);
+                            taxRate = copy.tax_rate / (10 ** this.decimalPrecision);
 
                         copy.quantity         = selection.quantity;
                         copy.total_amount     = copy.unit_price * copy.quantity;
@@ -165,7 +177,7 @@ Component.register('payone-refund-button', {
                 this.order.lineItems.forEach((order_item) => {
                     if (order_item.id === selection.id && 0 < selection.quantity) {
                         const copy = { ...order_item },
-                            taxRate = copy.tax_rate / (10 ** this.order.currency.decimalPrecision);
+                            taxRate = copy.tax_rate / (10 ** this.decimalPrecision);
 
                         copy.quantity         = selection.quantity;
                         copy.total_amount     = copy.unit_price * copy.quantity;
