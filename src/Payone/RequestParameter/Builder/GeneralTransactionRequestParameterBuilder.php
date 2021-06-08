@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
-use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Struct\Struct;
@@ -37,9 +36,6 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
             'amount'      => $this->getConvertedAmount($paymentTransaction->getOrder()->getAmountTotal(), $currency->getDecimalPrecision()),
             'currency'    => $currency->getIsoCode(),
             'reference'   => $this->getReferenceNumber($paymentTransaction, true),
-            'successurl'  => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=success'),
-            'errorurl'    => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=error'),
-            'backurl'     => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=cancel'),
             'workorderid' => $this->getWorkOrderId($paymentTransaction, $requestData, $salesChannelContext),
         ];
 
@@ -60,18 +56,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
             return false;
         }
 
-        $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
-
-        if ($paymentMethod === PayonePaypalPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE) {
-            return true;
-        }
-
-        if ($paymentMethod === PayonePaypalPaymentHandler::class && $action === self::REQUEST_ACTION_PREAUTHORIZE) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     private function getWorkOrderId(
