@@ -142,7 +142,7 @@
 
         <service id="PayonePayment\PaymentHandler\PayonePrepaymentPaymentHandler">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
-            <argument type="service" id="PayonePayment\Payone\Request\Prepayment\PrepaymentPreAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
