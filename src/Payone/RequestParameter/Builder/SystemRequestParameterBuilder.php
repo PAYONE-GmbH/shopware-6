@@ -6,8 +6,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
-use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
-use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Plugin\PluginService;
 use Shopware\Core\Framework\Struct\Struct;
