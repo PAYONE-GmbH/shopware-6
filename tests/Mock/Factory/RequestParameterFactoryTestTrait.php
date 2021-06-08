@@ -156,7 +156,7 @@ trait RequestParameterFactoryTestTrait
     }
 
     /**
-     * @return EntityRepositoryInterface|MockObject
+     * @return EntityRepository|MockObject
      */
     private function getLanguageRepository()
     {
@@ -187,7 +187,7 @@ trait RequestParameterFactoryTestTrait
     }
 
     /**
-     * @return EntityRepositoryInterface|MockObject
+     * @return EntityRepository|MockObject
      */
     private function getSalutationRepository()
     {
@@ -215,7 +215,7 @@ trait RequestParameterFactoryTestTrait
     }
 
     /**
-     * @return EntityRepositoryInterface|MockObject
+     * @return EntityRepository|MockObject
      */
     private function getCountryRepository()
     {
