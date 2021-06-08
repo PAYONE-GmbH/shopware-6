@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
-use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePrepaymentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Struct\Struct;
 
-class SofortBankingPreAuthorizeRequestParameterBuilder extends SofortBankingAuthorizeRequestParameterBuilder
+class PrepaymentPreAuthorizeRequestParameterBuilder extends PrepaymentAuthorizeRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
@@ -29,6 +29,6 @@ class SofortBankingPreAuthorizeRequestParameterBuilder extends SofortBankingAuth
         $paymentMethod = $arguments->getPaymentMethod();
         $action        = $arguments->getAction();
 
-        return $paymentMethod === PayoneSofortBankingPaymentHandler::class && $action === self::REQUEST_ACTION_PREAUTHORIZE;
+        return $paymentMethod === PayonePrepaymentPaymentHandler::class && $action === self::REQUEST_ACTION_PREAUTHORIZE;
     }
 }
