@@ -28,8 +28,7 @@ class PrepaymentPreAuthorizeRequestParameterBuilder extends AbstractRequestParam
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
 
-        return $paymentMethod === PayonePrepaymentPaymentHandler::class && $action === self::REQUEST_ACTION_PREAUTHORIZE;
+        return $paymentMethod === PayonePrepaymentPaymentHandler::class;
     }
 }
