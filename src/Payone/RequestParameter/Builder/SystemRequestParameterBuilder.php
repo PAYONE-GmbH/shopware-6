@@ -67,16 +67,10 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
     /** @param PaymentTransactionStruct $arguments */
     public function supports(Struct $arguments): bool
     {
-        $paymentMethod = $arguments->getPaymentMethod();
-
-        if ($paymentMethod === PayonePaypalPaymentHandler::class) {
-            return true;
+        if (!($arguments instanceof PaymentTransactionStruct)) {
+            return false;
         }
 
-        if ($paymentMethod === PayoneSofortBankingPaymentHandler::class) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 }
