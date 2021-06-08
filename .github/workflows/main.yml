@@ -51,7 +51,7 @@ jobs:
         cd /tmp/shopware
         composer config repositories.payone-local path $(pwd)
         composer require payone-gmbh/shopware-6:"@dev"
-        php /bin/console plugin:refresh
+        php bin/console plugin:refresh
         php bin/console plugin:install --activate PayonePayment
     - name: PHPUnit
       run: /tmp/shopware/vendor/bin/phpunit --configuration custom/plugins/PayonePayment/phpunit.xml.dist
@@ -103,7 +103,7 @@ jobs:
           cd /tmp/shopware
           composer config repositories.payone-local path $(pwd)
           composer require payone-gmbh/shopware-6:"@dev"
-          php /bin/console plugin:refresh
+          php bin/console plugin:refresh
           php bin/console plugin:install --activate PayonePayment
       - name: PHPUnit
         run: /tmp/shopware/vendor/bin/phpunit --configuration custom/plugins/PayonePayment/phpunit.xml.dist
