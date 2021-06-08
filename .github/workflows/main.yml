@@ -1,68 +1,69 @@
 name: Tests
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
-  ci:
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 15
-      fail-fast: false
-      matrix:
-        php-versions: ['7.2', '7.3', '7.4']
-        shopware-versions: ['v6.2.0', 'v6.2.1', 'v6.2.2', 'v6.2.3', 'v6.3.0.0', 'v6.3.0.1', 'v6.3.0.2', 'v6.3.1.0', 'v6.3.1.1', 'v6.3.2.0', 'v6.3.3.0', 'v6.3.4.0', 'v6.3.5.0']
-    name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
-    services:
-      mysql:
-        image: mariadb:10.5.9
-        env:
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-        - 3306:3306
-    steps:
-      - name: Checkout
-        uses: actions/checkout@master
-      - name: Install PHP
-        uses: shivammathur/setup-php@master
-        with:
-          php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip
-          tools: composer:v1
-      - name: Check PHP Version
-        run: php -v
-      - name: Check Composer Version
-        run: composer -V
-      - name: Check PHP Extensions
-        run: php -m
-      - name: Composer setup
-        run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
-      - name: Codestyle
-        run: vendor/bin/php-cs-fixer fix -v --dry-run --diff
-      - name: SW-Install
-        run: |
-          mkdir -p /tmp/shopware
-          git clone --depth 1 --single-branch -b ${{ matrix.shopware-versions }} https://github.com/shopware/development /tmp/shopware
-          printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"127.0.0.1\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"shopware\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"root\"" > /tmp/shopware/.psh.yaml.override
-          cd /tmp/shopware
-          php psh.phar init
-          composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-scripts
-      - name: Install plugin
-        run: |
-          PLUGIN_PATH=$(pwd)
-          cd /tmp/shopware
-          composer config repositories.payone-local path $PLUGIN_PATH
-          php bin/console plugin:refresh
-          php bin/console plugin:install --activate PayonePayment
-      - name: PHPUnit
-        run: /tmp/shopware/vendor/bin/phpunit --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
+#  ci:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      max-parallel: 15
+#      fail-fast: false
+#      matrix:
+#        php-versions: [ '7.2', '7.3', '7.4' ]
+#        shopware-versions: [ 'v6.2.0', 'v6.2.1', 'v6.2.2', 'v6.2.3', 'v6.3.0.0', 'v6.3.0.1', 'v6.3.0.2', 'v6.3.1.0', 'v6.3.1.1', 'v6.3.2.0', 'v6.3.3.0', 'v6.3.4.0', 'v6.3.5.0' ]
+#    name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
+#    services:
+#      mysql:
+#        image: mariadb:10.5.9
+#        env:
+#          MYSQL_ROOT_PASSWORD: root
+#        ports:
+#          - 3306:3306
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@master
+#      - name: Install PHP
+#        uses: shivammathur/setup-php@master
+#        with:
+#          php-version: ${{ matrix.php-versions }}
+#          extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip
+#          tools: composer:v1
+#      - name: Check PHP Version
+#        run: php -v
+#      - name: Check Composer Version
+#        run: composer -V
+#      - name: Check PHP Extensions
+#        run: php -m
+#      - name: Composer setup
+#        run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
+#      - name: Codestyle
+#        run: vendor/bin/php-cs-fixer fix -v --dry-run --diff
+#      - name: SW-Install
+#        run: |
+#          mkdir -p /tmp/shopware
+#          git clone --depth 1 --single-branch -b ${{ matrix.shopware-versions }} https://github.com/shopware/development /tmp/shopware
+#          printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"127.0.0.1\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"shopware\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"root\"" > /tmp/shopware/.psh.yaml.override
+#          cd /tmp/shopware
+#          php psh.phar init
+#          composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-scripts
+#      - name: Install plugin
+#        run: |
+#          PLUGIN_PATH=$(pwd)
+#          cd /tmp/shopware
+#          composer config repositories.payone-local path $PLUGIN_PATH
+#          composer require payone-gmbh/shopware-6:"@dev"
+#          php bin/console plugin:refresh
+#          php bin/console plugin:install --activate PayonePayment
+#      - name: PHPUnit
+#        run: /tmp/shopware/vendor/bin/phpunit --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
   ci-64:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 15
       fail-fast: false
       matrix:
-        php-versions: ['7.4']
-        shopware-versions: ['v6.4.0.0', 'v6.4.1.0']
+        php-versions: [ '7.4' ]
+        shopware-versions: [ 'v6.4.0.0', 'v6.4.1.0' ]
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
       mysql:
@@ -78,8 +79,8 @@ jobs:
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip
-          tools: composer:v1
+          extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium
+          tools: composer:v2
       - name: Check PHP Version
         run: php -v
       - name: Check Composer Version
@@ -102,8 +103,12 @@ jobs:
         run: |
           PLUGIN_PATH=$(pwd)
           cd /tmp/shopware
+          echo $PLUGIN_PATH
+          echo "composer config repositories.payone-local path $PLUGIN_PATH"
           composer config repositories.payone-local path $PLUGIN_PATH
+          echo "composer require payone-gmbh/shopware-6:\"@dev\""
+          composer require payone-gmbh/shopware-6:"@dev"
           php bin/console plugin:refresh
           php bin/console plugin:install --activate PayonePayment
       - name: PHPUnit
-        run: /tmp/shopware/vendor/bin/phpunit --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
+        run: /tmp/shopware/vendor/bin/phpunit --configuration /tmp/shopware/vendor/payone-gmbh/shopware-6/phpunit.xml.dist
