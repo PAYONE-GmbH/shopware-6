@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
@@ -19,12 +20,17 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
     /** @var string */
     private $shopwareVersion;
 
+    /** @var ConfigReaderInterface */
+    private $configReader;
+
     public function __construct(
         PluginService $pluginService,
-        string $shopwareVersion
+        string $shopwareVersion,
+        ConfigReaderInterface $configReader
     ) {
         $this->pluginService   = $pluginService;
         $this->shopwareVersion = $shopwareVersion;
+        $this->configReader    = $configReader;
     }
 
     /** @param PaymentTransactionStruct $arguments */
@@ -63,7 +69,6 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
     {
         $paymentMethod = $arguments->getPaymentMethod();
 
-        //TODO: maybe always, except test
         if ($paymentMethod === PayonePaypalPaymentHandler::class) {
             return true;
         }

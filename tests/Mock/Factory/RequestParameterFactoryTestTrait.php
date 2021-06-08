@@ -66,28 +66,19 @@ trait RequestParameterFactoryTestTrait
         $pluginEntity->setVersion('1');
         $pluginService->method('getPluginByName')->willReturn($pluginEntity);
 
-        $builder = new SystemRequestParameterBuilder($pluginService, '1.0.0-test');
-        $builder->setCommonDependencies($this->createMock(RedirectHandler::class), $this->createMock(EntityRepositoryInterface::class), new ConfigReaderMock([]));
-
-        return $builder;
+        return new SystemRequestParameterBuilder($pluginService, '1.0.0-test', new ConfigReaderMock([]));
     }
 
     protected function getReturnUrlRequestBuilder(): ReturnUrlRequestParameterBuilder
     {
-        $currencyRepositoryMock = $this->createMock(EntityRepositoryInterface::class);
-
-        $builder = new ReturnUrlRequestParameterBuilder();
-        $builder->setCommonDependencies($this->createMock(RedirectHandler::class), $currencyRepositoryMock, new ConfigReaderMock([]));
-
-        return $builder;
+        return new ReturnUrlRequestParameterBuilder($this->createMock(RedirectHandler::class));
     }
 
     protected function getGeneralTransactionRequestBuilder(SalesChannelContext $salesChannelContext): GeneralTransactionRequestParameterBuilder
     {
         $currencyRepositoryMock = $this->createMock(EntityRepositoryInterface::class);
 
-        $builder = new GeneralTransactionRequestParameterBuilder(new CartHasher());
-        $builder->setCommonDependencies($this->createMock(RedirectHandler::class), $currencyRepositoryMock, new ConfigReaderMock([]));
+        $builder = new GeneralTransactionRequestParameterBuilder(new CartHasher(), new ConfigReaderMock([]), $currencyRepositoryMock);
 
         $currencyRepositoryMock->method('search')->willReturn(
             $this->getCurrencySearchResult($salesChannelContext->getContext())
