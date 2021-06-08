@@ -18,6 +18,7 @@ use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Components\ConfigReaderMock;
+use PHPUnit\Framework\MockObject\MockObject;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -153,7 +154,10 @@ trait RequestParameterFactoryTestTrait
         return PaymentTransaction::fromAsyncPaymentTransactionStruct($paymentTransactionStruct, $orderEntity);
     }
 
-    private function getLanguageRepository(): EntityRepositoryInterface
+    /**
+     * @return EntityRepositoryInterface|MockObject
+     */
+    private function getLanguageRepository()
     {
         $languageRepository = $this->createMock(EntityRepositoryInterface::class);
         $languageEntity     = new LanguageEntity();
@@ -181,7 +185,10 @@ trait RequestParameterFactoryTestTrait
         return $languageRepository;
     }
 
-    private function getSalutationRepository(): EntityRepositoryInterface
+    /**
+     * @return EntityRepositoryInterface|MockObject
+     */
+    private function getSalutationRepository()
     {
         $salutationRepository = $this->createMock(EntityRepositoryInterface::class);
         $salutationEntity     = new SalutationEntity();
@@ -206,7 +213,10 @@ trait RequestParameterFactoryTestTrait
         return $salutationRepository;
     }
 
-    private function getCountryRepository(): EntityRepositoryInterface
+    /**
+     * @return EntityRepositoryInterface|MockObject
+     */
+    private function getCountryRepository()
     {
         $countryRepository = $this->createMock(EntityRepositoryInterface::class);
         $countryEntity     = new CountryEntity();
