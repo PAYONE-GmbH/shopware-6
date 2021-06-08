@@ -100,7 +100,6 @@ phpstan:
         - mv /tmp/opt ${CI_PROJECT_DIR}/opt
         - cd ${CI_PROJECT_DIR}/opt/shopware && composer install --no-interaction --optimize-autoloader --no-suggest --no-scripts
         - cd ${CI_PROJECT_DIR}/opt/shopware && composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
-        - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && composer show
         - cd ${CI_PROJECT_DIR}/opt/shopware/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -a ${CI_PROJECT_DIR}/opt/shopware/vendor/autoload.php tests src
 
 phpunit:
