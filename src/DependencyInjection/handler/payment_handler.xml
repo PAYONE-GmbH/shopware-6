@@ -101,8 +101,7 @@
 
         <service id="PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
-            <argument type="service" id="PayonePayment\Payone\Request\SofortBanking\SofortBankingPreAuthorizeRequestFactory" />
-            <argument type="service" id="PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />

@@ -42,8 +42,7 @@ class ShippingInformationRequestParameterBuilder extends AbstractRequestParamete
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
 
-        return $paymentMethod === PayonePaypalPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
+        return $paymentMethod === PayonePaypalPaymentHandler::class;
     }
 }

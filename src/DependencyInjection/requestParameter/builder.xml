@@ -12,24 +12,11 @@
             </call>
         </service>
 
-        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalAuthorizeRequestParameterBuilder"
-                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
-
-            <tag name="payone_request_builder"/>
-        </service>
-
         <service id="PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
 
             <tag name="payone_request_builder" priority="100" />
-        </service>
-
-        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalPreAuthorizeRequestParameterBuilder"
-                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-
-            <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\TestCredentialsRequestParameterBuilder"
@@ -39,6 +26,12 @@
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\ShippingInformationRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\ReturnUrlRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
 
             <tag name="payone_request_builder"/>
@@ -58,6 +51,32 @@
             <argument type="service" id="salutation.repository"/>
             <argument type="service" id="country.repository"/>
             <argument type="service" id="request_stack"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <!-- Paypal -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalPreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <!-- Sofort Banking -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\SofortBankingAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\SofortBankingPreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
 
             <tag name="payone_request_builder"/>
         </service>

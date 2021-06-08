@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Plugin\PluginService;
 use Shopware\Core\Framework\Struct\Struct;
@@ -61,14 +62,13 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
     public function supports(Struct $arguments): bool
     {
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
 
-        //TODO: may switch case, because system request is almost needed everywhere
-        if ($paymentMethod === PayonePaypalPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE) {
+        //TODO: maybe always, except test
+        if ($paymentMethod === PayonePaypalPaymentHandler::class) {
             return true;
         }
 
-        if ($paymentMethod === PayonePaypalPaymentHandler::class && $action === self::REQUEST_ACTION_PREAUTHORIZE) {
+        if ($paymentMethod === PayoneSofortBankingPaymentHandler::class) {
             return true;
         }
 
