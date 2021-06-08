@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
@@ -11,6 +12,15 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
+    /** @var RedirectHandler */
+    protected $redirectHandler;
+
+    public function __construct(
+        RedirectHandler $redirectHandler
+    ) {
+        $this->redirectHandler = $redirectHandler;
+    }
+
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
@@ -42,5 +52,10 @@ class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         return false;
+    }
+
+    protected function encodeUrl(string $url): string
+    {
+        return $this->redirectHandler->encode($url);
     }
 }

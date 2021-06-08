@@ -5,16 +5,13 @@
 
     <services>
         <service id="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder" abstract="true">
-            <call method="setCommonDependencies">
-                <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler"/>
-                <argument type="service" id="currency.repository"/>
-                <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
-            </call>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="currency.repository"/>
 
             <tag name="payone_request_builder" priority="100" />
         </service>
@@ -33,6 +30,7 @@
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\ReturnUrlRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler"/>
 
             <tag name="payone_request_builder"/>
         </service>
@@ -41,6 +39,7 @@
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <argument type="service" id="Shopware\Core\Framework\Plugin\PluginService"/>
             <argument>%kernel.shopware_version%</argument>
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
 
             <tag name="payone_request_builder"/>
         </service>
