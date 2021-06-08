@@ -156,29 +156,6 @@ trait RequestParameterFactoryTestTrait
     /** @phpstan-ignore-next-line */
     private function getLanguageRepository()
     {
-
-
-        return $languageRepository;
-    }
-
-    /** @phpstan-ignore-next-line */
-    private function getSalutationRepository()
-    {
-
-
-        return $salutationRepository;
-    }
-
-    /** @phpstan-ignore-next-line */
-    private function getCountryRepository()
-    {
-
-
-        return $countryRepository;
-    }
-
-    private function getCustomerRequestBuilder(): CustomerRequestParameterBuilder
-    {
         $languageRepository = $this->createMock(EntityRepositoryInterface::class);
         $languageEntity     = new LanguageEntity();
         $languageEntity->setId(Defaults::LANGUAGE_SYSTEM);
@@ -202,6 +179,12 @@ trait RequestParameterFactoryTestTrait
 
         $languageRepository->method('search')->willReturn($entitySearchResult);
 
+        return $languageRepository;
+    }
+
+    /** @phpstan-ignore-next-line */
+    private function getSalutationRepository()
+    {
         $salutationRepository = $this->createMock(EntityRepositoryInterface::class);
         $salutationEntity     = new SalutationEntity();
         $salutationEntity->setId(Constants::SALUTATION_ID);
@@ -222,6 +205,12 @@ trait RequestParameterFactoryTestTrait
 
         $salutationRepository->method('search')->willReturn($entitySearchResult);
 
+        return $salutationRepository;
+    }
+
+    /** @phpstan-ignore-next-line */
+    private function getCountryRepository()
+    {
         $countryRepository = $this->createMock(EntityRepositoryInterface::class);
         $countryEntity     = new CountryEntity();
         $countryEntity->setId(Constants::COUNTRY_ID);
@@ -242,13 +231,18 @@ trait RequestParameterFactoryTestTrait
 
         $countryRepository->method('search')->willReturn($entitySearchResult);
 
+        return $countryRepository;
+    }
+
+    private function getCustomerRequestBuilder(): CustomerRequestParameterBuilder
+    {
         $requestStack = $this->createMock(RequestStack::class);
         $requestStack->method('getCurrentRequest')->willReturn(null);
 
         return new CustomerRequestParameterBuilder(
-            $languageRepository,
-            $salutationRepository,
-            $countryRepository,
+            $this->getLanguageRepository(),
+            $this->getSalutationRepository(),
+            $this->getCountryRepository(),
             $requestStack
         );
     }
