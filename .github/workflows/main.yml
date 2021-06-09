@@ -42,10 +42,10 @@ jobs:
           cd /tmp/shopware
           php psh.phar init
           composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-scripts
-          composer require dms/phpunit-arraysubset-asserts:"^0.3.0"
-          composer require k10r/codestyle:"^1.0"
-          composer require phpstan/phpstan:"^0.12"
-          composer require phpstan/phpstan-phpunit:"^0.12"
+          composer require dms/phpunit-arraysubset-asserts:"^0.3.0" --no-scripts
+          composer require k10r/codestyle:"^1.0" --no-scripts
+          composer require phpstan/phpstan:"^0.12" --no-scripts
+          composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
       - name: Install plugin
         run: |
           mkdir -p /tmp/shopware/custom/plugins/PayonePayment
@@ -56,7 +56,7 @@ jobs:
       - name: Codestyle
         run: |
           cd /tmp/shopware/custom/plugins/PayonePayment
-          /tmp/shopware/vendor/bin/php-cs-fixer fix -v --dry-run --diff
+          /tmp/shopware/vendor/bin/php-cs-fixer fix -v --dry-run --diff --config /tmp/shopware/custom/plugins/PayonePayment/.php_cs.dist
       - name: PHPUnit
         run: |
           /tmp/shopware/vendor/bin/phpunit --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
