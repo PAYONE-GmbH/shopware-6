@@ -9,11 +9,10 @@ cache:
     key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
 
 variables:
-    MYSQL_ROOT_PASSWORD: shopware
-    MYSQL_ROOT_HOST: '%'
-    MYSQL_DATABASE: shopware
-    MYSQL_USER: shopware
-    MYSQL_PASSWORD: shopware
+    DOCKER_DRIVER: overlay2
+    BASE_SW_VERSION: '6.2.0'
+    COMPOSER_COMMAND: "/var/www/html/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader"
+
 
 include: '/.gitlab/ci-legacy.yml'
 
