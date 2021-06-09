@@ -109,7 +109,7 @@ phpunit:
     - cd /var/www/html/ && /var/www/html/composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
     - cd /var/www/html/ && php -d pcov.enabled=1 -d pcov.directory=/var/www/html/
       vendor/bin/phpunit
-      --configuration custom/plugins/${CI_PROJECT_NAME}/phpunit.xml.dist
+      --configuration custom/plugins/${CI_PROJECT_NAME}/phpunit-dockware.xml.dist
   cache:
     key: global
     paths:
