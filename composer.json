@@ -21,10 +21,7 @@
   "prefer-stable": true,
   "require": {
     "ext-curl": "*",
-    "ext-json": "*",
-    "shopware/core": ">= 6.2",
-    "shopware/administration": ">= 6.2",
-    "shopware/storefront": ">= 6.2"
+    "ext-json": "*"
   },
   "require-dev": {
     "dms/phpunit-arraysubset-asserts": "^0.3.0",
