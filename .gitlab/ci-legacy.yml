@@ -14,6 +14,8 @@ k10r-phpstan-legacy:
     - /var/www/html/composer global require hirak/prestissimo
     - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${CI_PROJECT_NAME}
     - cd /var/www/html && /var/www/html/composer require phpstan/phpstan:"^0.12" --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
+      - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && composer dumpautoload
   script:
     - cd /var/www/html && vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan.neon custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
   cache:
@@ -21,7 +23,7 @@ k10r-phpstan-legacy:
     paths:
       - vendor
 
-sw-phpstan:
+sw-phpstan-legacy:
   stage: quality
   image: "dockware/play:${SW_VERSION}"
   parallel:
@@ -47,7 +49,7 @@ sw-phpstan:
     paths:
       - vendor
 
-phpunit:
+phpunit-legacy:
   stage: test
   image: "dockware/play:${SW_VERSION}"
   parallel:
@@ -66,8 +68,6 @@ phpunit:
     - sudo chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
     - sudo service mysql start
     - cd /var/www/html/ && rm -rf vendor && ${COMPOSER_COMMAND} --no-scripts
-    - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan:"^0.12" --no-scripts
-    - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
     - cd /var/www/html/ && /var/www/html/composer require dms/phpunit-arraysubset-asserts:"^0.3.0" --no-scripts
     - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && composer dumpautoload
   script:
