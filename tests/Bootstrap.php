@@ -20,6 +20,7 @@ function getProjectDir(): string
         if ($dir === dirname($dir)) {
             return $rootDir;
         }
+
         $dir = dirname($dir);
     }
 
@@ -27,11 +28,9 @@ function getProjectDir(): string
 }
 
 define('TEST_PROJECT_DIR', getProjectDir());
-echo TEST_PROJECT_DIR;
-echo TEST_PROJECT_DIR . '/vendor/autoload.php';
 $loader = require TEST_PROJECT_DIR . '/vendor/autoload.php';
 KernelLifecycleManager::prepare($loader);
-//require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 if (!class_exists(Dotenv::class)) {
     throw new \RuntimeException('APP_ENV environment variable is not defined. You need to define environment variables for configuration or add "symfony/dotenv" as a Composer dependency to load variables from a .env file.');
