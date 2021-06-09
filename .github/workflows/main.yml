@@ -34,6 +34,8 @@ jobs:
         run: composer -V
       - name: Check PHP Extensions
         run: php -m
+      - name: Composer dump autoload
+        run: composer dumpautoload
       - name: SW-Install
         run: |
           mkdir -p /tmp/shopware
@@ -55,6 +57,8 @@ jobs:
           php bin/console plugin:install --activate PayonePayment
       - name: PHPUnit
         run: |
+          cd /tmp/shopware
+          composer dumpautoload -d /tmp/shopware/custom/plugins/PayonePayment
           /tmp/shopware/vendor/bin/phpunit --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
   ci-current:
     runs-on: ubuntu-latest
