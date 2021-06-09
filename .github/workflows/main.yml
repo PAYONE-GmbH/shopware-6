@@ -3,13 +3,13 @@ name: Tests
 on: [ push, pull_request ]
 
 jobs:
-  ci:
+  ci-legacy:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 15
       fail-fast: false
       matrix:
-        php-versions: [ '7.3', '7.4' ]
+        php-versions: [ '7.2', '7.3', '7.4' ]
         shopware-versions: [ 'v6.2.0', 'v6.2.1', 'v6.2.2', 'v6.2.3', 'v6.3.0.0', 'v6.3.0.1', 'v6.3.0.2', 'v6.3.1.0', 'v6.3.1.1', 'v6.3.2.0', 'v6.3.3.0', 'v6.3.4.0', 'v6.3.5.0' ]
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
@@ -53,14 +53,10 @@ jobs:
           cd /tmp/shopware
           php bin/console plugin:refresh
           php bin/console plugin:install --activate PayonePayment
-      - name: Codestyle
-        run: |
-          cd /tmp/shopware/custom/plugins/PayonePayment
-          /tmp/shopware/vendor/bin/php-cs-fixer fix -v --dry-run --diff --config /tmp/shopware/custom/plugins/PayonePayment/.php_cs.dist
       - name: PHPUnit
         run: |
           /tmp/shopware/vendor/bin/phpunit --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
-  ci-64:
+  ci-current:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 15
