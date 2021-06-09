@@ -102,6 +102,7 @@ jobs:
         run: |
           mkdir -p /tmp/shopware/custom/plugins/PayonePayment
           cp -r * /tmp/shopware/custom/plugins/PayonePayment
+          cd /tmp/shopware
           php bin/console plugin:refresh
           php bin/console plugin:install --activate PayonePayment
       - name: PHPUnit
