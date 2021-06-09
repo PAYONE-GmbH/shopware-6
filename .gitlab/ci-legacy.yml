@@ -15,9 +15,9 @@ k10r-phpstan-legacy:
     - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${CI_PROJECT_NAME}
     - cd /var/www/html && /var/www/html/composer require phpstan/phpstan:"^0.12" --no-scripts
     - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
-      - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && composer dumpautoload
+    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && /var/www/html/composer dumpautoload
   script:
-    - cd /var/www/html && vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan.neon custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
+    - cd /var/www/html && vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php -a vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
   cache:
     key: global
     paths:
@@ -41,7 +41,7 @@ sw-phpstan-legacy:
     - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git
     - cp -r /tmp/store-plugin-codereview/configs/phpstan/phpstan.neon.sw6 /var/www/html/custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon
     - cd /var/www/html && /var/www/html/composer require phpstan/phpstan:"^0.12" --no-scripts
-    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && composer dumpautoload
+    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && /var/www/html/composer dumpautoload
   script:
     - cd /var/www/html && vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php -a vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
   cache:
@@ -69,7 +69,7 @@ phpunit-legacy:
     - sudo service mysql start
     - cd /var/www/html/ && rm -rf vendor && ${COMPOSER_COMMAND} --no-scripts
     - cd /var/www/html/ && /var/www/html/composer require dms/phpunit-arraysubset-asserts:"^0.3.0" --no-scripts
-    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && composer dumpautoload
+    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && /var/www/html/composer dumpautoload
   script:
     - cd /var/www/html/ && php bin/console plugin:refresh -nq && php bin/console plugin:install --activate -c PayonePayment -nq
     - cd /var/www/html/ && /var/www/html/composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
