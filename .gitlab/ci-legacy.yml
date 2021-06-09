@@ -13,7 +13,7 @@ k10r-phpstan-legacy:
     - chmod +x /var/www/html/composer
     - /var/www/html/composer global require hirak/prestissimo
     - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${CI_PROJECT_NAME}
-    - cd /var/www/html && composer require phpstan/phpstan:"^0.12" --no-scripts
+    - cd /var/www/html && /var/www/html/composer require phpstan/phpstan:"^0.12" --no-scripts
   script:
     - cd /var/www/html && vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan.neon custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
   cache:
@@ -38,7 +38,7 @@ sw-phpstan:
     - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${CI_PROJECT_NAME}
     - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git
     - cp -r /tmp/store-plugin-codereview/configs/phpstan/phpstan.neon.sw6 /var/www/html/custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon
-    - cd /var/www/html && composer require phpstan/phpstan:"^0.12" --no-scripts
+    - cd /var/www/html && /var/www/html/composer require phpstan/phpstan:"^0.12" --no-scripts
     - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && composer dumpautoload
   script:
     - cd /var/www/html && vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php -a vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
@@ -66,9 +66,9 @@ phpunit:
     - sudo chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
     - sudo service mysql start
     - cd /var/www/html/ && rm -rf vendor && ${COMPOSER_COMMAND} --no-scripts
-    - cd /var/www/html/ && composer require phpstan/phpstan:"^0.12" --no-scripts
-    - cd /var/www/html/ && composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
-    - cd /var/www/html/ && composer require dms/phpunit-arraysubset-asserts:"^0.3.0" --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan:"^0.12" --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require dms/phpunit-arraysubset-asserts:"^0.3.0" --no-scripts
     - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && composer dumpautoload
   script:
     - cd /var/www/html/ && php bin/console plugin:refresh -nq && php bin/console plugin:install --activate -c PayonePayment -nq
