@@ -53,7 +53,7 @@ k10r-phpstan:
         - ${COMPOSER_COMMAND}
         - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${CI_PROJECT_NAME}
     script:
-        - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan.neon src tests
+        - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && vendor/bin/phpstan analyse -c phpstan.neon -a vendor/autoload.php -a ../../../vendor/autoload.php src tests
     cache:
         key: global
         paths:
