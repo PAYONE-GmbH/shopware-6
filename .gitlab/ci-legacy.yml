@@ -16,8 +16,13 @@ k10r-phpstan-legacy:
     - cd /var/www/html && /var/www/html/composer require phpstan/phpstan:"^0.12" --no-scripts
     - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
     - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && /var/www/html/composer dumpautoload
+    - cd /var/www/html/ && /var/www/html/composer dumpautoload
   script:
-    - cd /var/www/html && vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/.gitlab/phpstan-legacy.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php -a vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
+    - cd /var/www/html && vendor/bin/phpstan analyse \
+      -c custom/plugins/${CI_PROJECT_NAME}/.gitlab/phpstan-legacy.neon \
+      -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php \
+      -a vendor/autoload.php \
+      custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
   cache:
     key: global
     paths:
@@ -42,6 +47,7 @@ sw-phpstan-legacy:
     - cp -r /tmp/store-plugin-codereview/configs/phpstan/phpstan.neon.sw6 /var/www/html/custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon
     - cd /var/www/html && /var/www/html/composer require phpstan/phpstan:"^0.12" --no-scripts
     - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && /var/www/html/composer dumpautoload
+    - cd /var/www/html/ && /var/www/html/composer dumpautoload
   script:
     - cd /var/www/html && vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php -a vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
   cache:
@@ -75,7 +81,7 @@ phpunit-legacy:
     - cd /var/www/html/ && /var/www/html/composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
     - cd /var/www/html/ && php -d pcov.enabled=1 -d pcov.directory=/var/www/html/
       vendor/bin/phpunit
-      --configuration custom/plugins/${CI_PROJECT_NAME}/phpunit.xml.dist
+      --configuration custom/plugins/${CI_PROJECT_NAME}/phpunit-dockware.xml.dist
   cache:
     key: global
     paths:
