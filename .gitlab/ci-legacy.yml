@@ -17,7 +17,7 @@ k10r-phpstan-legacy:
     - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
     - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && /var/www/html/composer dumpautoload
   script:
-    - cd /var/www/html && vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php -a vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
+    - cd /var/www/html && vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/.gitlab/phpstan-legacy.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php -a vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src custom/plugins/${CI_PROJECT_NAME}/tests
   cache:
     key: global
     paths:
