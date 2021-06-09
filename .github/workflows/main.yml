@@ -50,11 +50,12 @@ jobs:
         run: |
           mkdir -p /tmp/shopware/custom/plugins/PayonePayment
           cp -r * /tmp/shopware/custom/plugins/PayonePayment
+          cd /tmp/shopware
           php bin/console plugin:refresh
           php bin/console plugin:install --activate PayonePayment
       - name: PHPUnit
         run: |
-          /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit --configuration /tmp/shopware/vendor/payone-gmbh/shopware-6/phpunit.xml.dist
+          /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
   ci-64:
     runs-on: ubuntu-latest
     strategy:
@@ -107,4 +108,4 @@ jobs:
           php bin/console plugin:install --activate PayonePayment
       - name: PHPUnit
         run: |
-          /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit --configuration /tmp/shopware/vendor/payone-gmbh/shopware-6/phpunit.xml.dist
+          /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
