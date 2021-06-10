@@ -20,6 +20,7 @@ function getProjectDir(): string
         if ($dir === dirname($dir)) {
             return $rootDir;
         }
+
         $dir = dirname($dir);
     }
 
@@ -27,7 +28,6 @@ function getProjectDir(): string
 }
 
 define('TEST_PROJECT_DIR', getProjectDir());
-
 $loader = require TEST_PROJECT_DIR . '/vendor/autoload.php';
 KernelLifecycleManager::prepare($loader);
 require_once __DIR__ . '/../vendor/autoload.php';
