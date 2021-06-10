@@ -69,3 +69,20 @@ Neue Funktionen
 Fehlerbehebung(en)
 
 * Überarbeitung der txstatus-Logik, so dass benutzerdefinierte Felder mit den Backend-Optionen übereinstimmen
+
+# 2.2.0
+
+Neue Funktionen
+ 
+* Kompatibilität mit Shopware 6.4.x
+ 
+Fehlerbehebungen
+ 
+* API-Test für paydirekt behoben
+* Lieferadresse bei Paypal-Zahlungen immer angeben
+* gefixte Labels für PAYONE Statusmapping (endlich!) 
+ 
+Wartung
+ 
+* getestet mit Shop-Version 6.4.1.0
+* bessere Übersetzungen der Fehlermeldungen
