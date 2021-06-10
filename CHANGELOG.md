@@ -74,3 +74,20 @@ Bugfix(es)
 Maintenance
  
 * tested with Shopware 6.3.4.1
+
+# 2.2.0
+
+New Features
+ 
+* compatibility with Shopware 6.4.x
+ 
+Bugfixes
+ 
+* fixed API Test for paydirekt
+* always provide shipping address for paypal payments
+* fixed labels for PAYONE status mapping (finally!) 
+ 
+Maintenance
+ 
+* tested with Shop version 6.4.1.0
+* better error message translations
