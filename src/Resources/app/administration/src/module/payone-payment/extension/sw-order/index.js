@@ -40,6 +40,14 @@ Component.override('sw-order-detail-base', {
             return transaction.customFields.payone_transaction_id;
         },
 
+        can: function(permission) {
+            try {
+                return acl.can(permission);
+            } catch(e) {
+                return true;
+            }
+        },
+
         isActiveTransaction(transaction) {
             return transaction.stateMachineState.technicalName !== 'cancelled';
         },
