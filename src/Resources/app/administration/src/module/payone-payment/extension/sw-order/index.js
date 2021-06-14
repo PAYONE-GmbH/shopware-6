@@ -42,7 +42,7 @@ Component.override('sw-order-detail-base', {
 
         can: function(permission) {
             try {
-                return acl.can(permission);
+                return this.acl.can(permission);
             } catch(e) {
                 return true;
             }
