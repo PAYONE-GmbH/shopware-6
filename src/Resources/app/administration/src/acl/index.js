@@ -17,7 +17,22 @@ Shopware.Service('privileges').addPrivilegeMappingEntry({
                 'currency:read',
                 'document:read',
                 'order_transaction:read',
-                'order_delivery:read'
+                'order_delivery:read',
+                'order_line_item:read',
+                'shipping_method:read',
+                'country:read',
+                'country_state:read',
+                'payment_method:read',
+                'document_type:read',
+                'tag:read',
+                'custom_field_set:read',
+                'custom_field:read',
+                'custom_field_set_relation:read',
+                'state_machine_history:read',
+                'state_machine_state:read',
+                'user:read',
+                'state_machine_state:read',
+                'state_machine:read'
             ],
             dependencies: []
         }
