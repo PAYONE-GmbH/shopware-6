@@ -1,6 +1,7 @@
 /* eslint-disable import/no-unresolved */
 
 import Plugin from 'src/plugin-system/plugin.class';
+import ButtonLoadingIndicator from 'src/utility/loading-indicator/button-loading-indicator.util';
 
 export default class PayonePaymentCreditCard extends Plugin {
     static options = {
@@ -180,7 +181,7 @@ export default class PayonePaymentCreditCard extends Plugin {
             // Flag that the check interval has started and prevent
             // submitting the form.
             this.iframeFieldCheckerStarted = true;
-            event.preventDefault();
+            this._handleOrderFormError(event);
             return false;
         }
 
@@ -190,10 +191,20 @@ export default class PayonePaymentCreditCard extends Plugin {
             window.payoneCreditCardCheckCallback = this._payoneCheckCallback.bind(this);
             this.iframe.creditCardCheck('payoneCreditCardCheckCallback');
 
-            // Prevent form submit, credit card check handler takes
-            // care about submitting the form.
-            event.preventDefault();
+            this._handleOrderFormError(event);
             return false;
+        }
+    }
+
+    _handleOrderFormError(event) {
+        const confirmFormSubmit = document.getElementById('confirmFormSubmit');
+
+        event.preventDefault();
+
+        if(confirmFormSubmit) {
+            const loader = new ButtonLoadingIndicator(confirmFormSubmit);
+            confirmFormSubmit.disabled = false;
+            loader.remove();
         }
     }
 
