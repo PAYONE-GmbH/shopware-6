@@ -5,7 +5,7 @@ import './sw-order.scss';
 Component.override('sw-order-detail-base', {
     template,
 
-    inject: ['PayonePaymentService'],
+    inject: ['PayonePaymentService', 'acl'],
 
     mixins: [
         Mixin.getByName('notification')
