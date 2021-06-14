@@ -122,5 +122,13 @@
                 "orderNotFound": "Es wurde keine passende Bestellung gefundend"
             }
         }
+    },
+    "sw-privileges": {
+        "additional_permissions": {
+            "Payone": {
+                "label": "PAYONE",
+                "payone_order_management": "PAYONE Transaktionsmanagement"
+            }
+        }
     }
 }
