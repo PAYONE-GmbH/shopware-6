@@ -2,21 +2,23 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\RequestParameter\Builder;
+namespace PayonePayment\Payone\RequestParameter\Builder\Prepayment;
 
-use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePrepaymentPaymentHandler;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Struct\Struct;
 
-class PaypalPreAuthorizeRequestParameterBuilder extends PaypalAuthorizeRequestParameterBuilder
+class PreAuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
     ): array {
-        return array_merge(parent::getRequestParameter($arguments), [
-            'request' => 'preauthorization',
-        ]);
+        return [
+            'request'      => 'preauthorization',
+            'clearingtype' => 'vor',
+        ];
     }
 
     /** @param PaymentTransactionStruct $arguments */
@@ -27,8 +29,7 @@ class PaypalPreAuthorizeRequestParameterBuilder extends PaypalAuthorizeRequestPa
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
 
-        return $paymentMethod === PayonePaypalPaymentHandler::class && $action === self::REQUEST_ACTION_PREAUTHORIZE;
+        return $paymentMethod === PayonePrepaymentPaymentHandler::class;
     }
 }
