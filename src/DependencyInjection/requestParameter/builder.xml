@@ -67,6 +67,24 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalExpress\GetCheckoutDetailsRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="currency.repository"/>
+
+            <tag name="payone_request_builder" />
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalExpress\SetCheckoutDetailsRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="currency.repository"/>
+
+            <tag name="payone_request_builder" />
+        </service>
+
         <!-- Paypal Express -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalExpress\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">

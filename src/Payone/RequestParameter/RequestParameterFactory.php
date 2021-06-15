@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter;
 
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use RuntimeException;
@@ -29,9 +30,7 @@ class RequestParameterFactory
         $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
-    //TODO: add alternative structs for different request types
-
-    /** @param PaymentTransactionStruct|TestCredentialsStruct $arguments */
+    /** @param CheckoutDetailsStruct|PaymentTransactionStruct|TestCredentialsStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
     ): array {
@@ -67,7 +66,6 @@ class RequestParameterFactory
         return array_filter($parameters);
     }
 
-    //TODO: carthashing service?
     protected function generateParameterHash(array &$parameters): void
     {
         $data = $parameters;
