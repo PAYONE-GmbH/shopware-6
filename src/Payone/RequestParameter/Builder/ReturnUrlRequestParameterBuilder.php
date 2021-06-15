@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
+use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
@@ -53,6 +54,10 @@ class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if ($paymentMethod === PayoneSofortBankingPaymentHandler::class) {
+            return true;
+        }
+
+        if ($paymentMethod === PayoneCreditCardPaymentHandler::class) {
             return true;
         }
 
