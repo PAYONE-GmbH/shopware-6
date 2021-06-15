@@ -40,10 +40,10 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         $this->currencyRepository = $currencyRepository;
     }
 
-    /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
     ): array {
+        /** @var PaymentTransactionStruct $arguments */
         $paymentTransaction  = $arguments->getPaymentTransaction();
         $salesChannelContext = $arguments->getSalesChannelContext();
         $requestData         = $arguments->getRequestData();
@@ -107,9 +107,15 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         return $orderNumber . $suffix;
     }
 
-    protected function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity
+    protected function getOrderCurrency(?OrderEntity $order, Context $context): CurrencyEntity
     {
-        $criteria = new Criteria([$order->getCurrencyId()]);
+        $currencyId = $context->getCurrencyId();
+
+        if (null !== $order) {
+            $currencyId = $order->getCurrencyId();
+        }
+
+        $criteria = new Criteria([$currencyId]);
 
         /** @var null|CurrencyEntity $currency */
         $currency = $this->currencyRepository->search($criteria, $context)->first();

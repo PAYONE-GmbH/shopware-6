@@ -10,9 +10,10 @@ use Shopware\Core\Framework\Struct\Struct;
 
 abstract class AbstractRequestParameterBuilder
 {
-    public const REQUEST_ACTION_AUTHORIZE    = 'authorization';
-    public const REQUEST_ACTION_PREAUTHORIZE = 'preauthorization';
-    public const REQUEST_ACTION_TEST         = 'test';
+    public const REQUEST_ACTION_AUTHORIZE                    = 'authorization';
+    public const REQUEST_ACTION_PREAUTHORIZE                 = 'preauthorization';
+    public const REQUEST_ACTION_TEST                         = 'test';
+    public const REQUEST_ACTION_GET_EXPRESS_CHECKOUT_DETAILS = 'getexpresscheckoutdetails';
 
     /** @param PaymentTransactionStruct|TestCredentialsStruct $arguments */
     abstract public function getRequestParameter(
