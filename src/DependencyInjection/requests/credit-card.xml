@@ -9,29 +9,5 @@
             <argument type="service" id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequest" />
             <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
         </service>
-
-        <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequest">
-            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
-            <argument type="service" id="currency.repository" />
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
-        </service>
-
-        <service id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory">
-            <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequest" />
-            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
-            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
-        </service>
-
-        <service id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequest">
-            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
-            <argument type="service" id="currency.repository" />
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
-        </service>
-
-        <service id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory">
-            <argument type="service" id="PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequest" />
-            <argument type="service" id="PayonePayment\Payone\Request\Customer\CustomerRequest" />
-            <argument type="service" id="PayonePayment\Payone\Request\System\SystemRequest" />
-        </service>
     </services>
 </container>

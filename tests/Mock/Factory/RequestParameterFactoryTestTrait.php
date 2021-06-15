@@ -7,7 +7,9 @@ namespace PayonePayment\Test\Mock\Factory;
 use PayonePayment\Components\CartHasher\CartHasher;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Payone\RequestParameter\Builder\CreditCard\PreAuthorizeRequestParameterBuilder as CreditCardPreAuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\CustomerRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\Debit\AuthorizeRequestParameterBuilder as DebitAuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\Paypal\AuthorizeRequestParameterBuilder as PaypalAuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\ReturnUrlRequestParameterBuilder;
@@ -50,6 +52,8 @@ trait RequestParameterFactoryTestTrait
                 new ShippingInformationRequestParameterBuilder(),
                 new SofortBankingAuthorizeRequestParameterBuilder(),
                 new PaypalAuthorizeRequestParameterBuilder(),
+                new CreditCardPreAuthorizeRequestParameterBuilder(),
+                new DebitAuthorizeRequestParameterBuilder(),
                 $this->getSystemRequestBuilder(),
                 $this->getGeneralTransactionRequestBuilder($salesChannelContext),
                 $this->getCustomerRequestBuilder(),
