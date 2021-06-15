@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\RequestParameter\Builder;
+namespace PayonePayment\Payone\RequestParameter\Builder\SofortBanking;
 
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Struct\Struct;
 
-class SofortBankingAuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
+class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(

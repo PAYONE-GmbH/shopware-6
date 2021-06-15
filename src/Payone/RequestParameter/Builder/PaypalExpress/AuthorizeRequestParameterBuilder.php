@@ -2,21 +2,20 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\RequestParameter\Builder;
+namespace PayonePayment\Payone\RequestParameter\Builder\PaypalExpress;
 
-use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
+use PayonePayment\Payone\RequestParameter\Builder\Paypal\AuthorizeRequestParameterBuilder as PaypalAuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Struct\Struct;
 
-class SofortBankingPreAuthorizeRequestParameterBuilder extends SofortBankingAuthorizeRequestParameterBuilder
+class AuthorizeRequestParameterBuilder extends PaypalAuthorizeRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
     ): array {
-        return array_merge(parent::getRequestParameter($arguments), [
-            'request' => 'preauthorization',
-        ]);
+        return array_merge(parent::getRequestParameter($arguments), []);
     }
 
     /** @param PaymentTransactionStruct $arguments */
@@ -29,6 +28,6 @@ class SofortBankingPreAuthorizeRequestParameterBuilder extends SofortBankingAuth
         $paymentMethod = $arguments->getPaymentMethod();
         $action        = $arguments->getAction();
 
-        return $paymentMethod === PayoneSofortBankingPaymentHandler::class && $action === self::REQUEST_ACTION_PREAUTHORIZE;
+        return $paymentMethod === PayonePaypalExpressPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }
 }
