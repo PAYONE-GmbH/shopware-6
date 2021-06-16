@@ -10,7 +10,6 @@
         <import resource="requests/ideal.xml" />
         <import resource="requests/manage-mandate.xml" />
         <import resource="requests/paydirekt.xml" />
-        <import resource="requests/payolution-installment.xml" />
         <import resource="requests/payolution-invoicing.xml" />
         <import resource="requests/refund.xml" />
         <import resource="requests/secure-invoice.xml" />

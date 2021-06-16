@@ -9,6 +9,7 @@ use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use Shopware\Core\Framework\Plugin\PluginService;
 use Shopware\Core\Framework\Struct\Struct;
 
@@ -75,6 +76,10 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if ($arguments instanceof CreditCardCheckStruct) {
+            return true;
+        }
+
+        if ($arguments instanceof PayolutionAdditionalActionStruct) {
             return true;
         }
 

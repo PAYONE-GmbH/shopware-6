@@ -8,6 +8,7 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use RuntimeException;
 use Shopware\Core\Framework\Struct\Struct;
@@ -31,7 +32,7 @@ class RequestParameterFactory
         $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
-    /** @param CheckoutDetailsStruct|CreditCardCheckStruct|PaymentTransactionStruct|TestCredentialsStruct $arguments */
+    /** @param CheckoutDetailsStruct|CreditCardCheckStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct|TestCredentialsStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
     ): array {

@@ -23,9 +23,12 @@ class PayolutionInstallmentCalculationRequest
             'add_paydata[action]' => 'calculation',
             'clearingtype'        => 'fnc',
             'financingtype'       => 'PYS',
-            'amount'              => (int) round(($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision()))),
-            'currency'            => $currency->getIsoCode(),
+            //TODO: just before
+            'amount'   => (int) round(($cart->getPrice()->getTotalPrice() * (10 ** $currency->getDecimalPrecision()))),
+            'currency' => $currency->getIsoCode(),
         ];
+
+        //TODO: + customer & system
 
         if (!empty($dataBag->get('workorder'))) {
             $parameters['workorderid'] = $dataBag->get('workorder');
