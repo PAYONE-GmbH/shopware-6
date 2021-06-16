@@ -67,7 +67,6 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         return $parameters;
     }
 
-    /** @param PaymentTransactionStruct $arguments */
     public function supports(Struct $arguments): bool
     {
         if (!($arguments instanceof PaymentTransactionStruct)) {
