@@ -11,8 +11,8 @@ use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
-use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Framework\Context;
@@ -98,9 +98,12 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
         return array_filter($personalData);
     }
 
-    /** @param CheckoutDetailsStruct|PaymentTransactionStruct $arguments */
     public function supports(Struct $arguments): bool
     {
+        if ($arguments instanceof PayolutionAdditionalActionStruct) {
+            return true;
+        }
+
         if (!($arguments instanceof PaymentTransactionStruct)) {
             return false;
         }

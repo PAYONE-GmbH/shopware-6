@@ -7,14 +7,16 @@ namespace PayonePayment\Storefront\Controller\Payolution;
 use DateTime;
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentMethod\PayonePayolutionDebit;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentCalculationRequestFactory;
-use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequestFactory;
 use PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreCheckRequestFactory;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -51,11 +53,8 @@ class PayolutionController extends StorefrontController
     /** @var PayolutionInvoicingPreCheckRequestFactory */
     private $invoicingPreCheckRequestFactory;
 
-    /** @var PayolutionInstallmentPreCheckRequestFactory */
-    private $installmentPreCheckRequestFactory;
-
-    /** @var PayolutionInstallmentCalculationRequestFactory */
-    private $installmentCalculationRequestFactory;
+    /** @var RequestParameterFactory */
+    private $requestParameterFactory;
 
     /** @var LoggerInterface */
     private $logger;
@@ -66,18 +65,16 @@ class PayolutionController extends StorefrontController
         CartHasherInterface $cartHasher,
         PayoneClientInterface $client,
         PayolutionInvoicingPreCheckRequestFactory $invoicingPreCheckRequestFactory,
-        PayolutionInstallmentPreCheckRequestFactory $installmentPreCheckRequestFactory,
-        PayolutionInstallmentCalculationRequestFactory $installmentCalculationRequestFactory,
+        RequestParameterFactory $requestParameterFactory,
         LoggerInterface $logger
     ) {
-        $this->configReader                         = $configReader;
-        $this->cartService                          = $cartService;
-        $this->cartHasher                           = $cartHasher;
-        $this->client                               = $client;
-        $this->invoicingPreCheckRequestFactory      = $invoicingPreCheckRequestFactory;
-        $this->installmentPreCheckRequestFactory    = $installmentPreCheckRequestFactory;
-        $this->installmentCalculationRequestFactory = $installmentCalculationRequestFactory;
-        $this->logger                               = $logger;
+        $this->configReader                    = $configReader;
+        $this->cartService                     = $cartService;
+        $this->cartHasher                      = $cartHasher;
+        $this->client                          = $client;
+        $this->invoicingPreCheckRequestFactory = $invoicingPreCheckRequestFactory;
+        $this->requestParameterFactory         = $requestParameterFactory;
+        $this->logger                          = $logger;
     }
 
     /**
@@ -162,7 +159,15 @@ class PayolutionController extends StorefrontController
         try {
             $cart = $this->cartService->getCart($context->getToken(), $context);
 
-            $checkRequest = $this->installmentPreCheckRequestFactory->getRequestParameters($cart, $dataBag, $context);
+            $checkRequest = $this->requestParameterFactory->getRequestParameter(
+                new PayolutionAdditionalActionStruct(
+                    $cart,
+                    $dataBag,
+                    $context,
+                    PayonePayolutionInstallmentPaymentHandler::class,
+                    AbstractRequestParameterBuilder::REQUEST_ACTION_PAYOLUTION_PRE_CHECK
+                )
+            );
 
             if ($this->isPreCheckNeeded($cart, $dataBag, $context)) {
                 try {
@@ -183,7 +188,16 @@ class PayolutionController extends StorefrontController
                 ];
             }
 
-            $calculationRequest = $this->installmentCalculationRequestFactory->getRequestParameters($cart, $dataBag, $context);
+            $calculationRequest = $this->requestParameterFactory->getRequestParameter(
+                new PayolutionAdditionalActionStruct(
+                    $cart,
+                    $dataBag,
+                    $context,
+                    PayonePayolutionInstallmentPaymentHandler::class,
+                    AbstractRequestParameterBuilder::REQUEST_ACTION_PAYOLUTION_CALCULATION,
+                    $dataBag->get('workorder')
+                )
+            );
 
             try {
                 $calculationResponse = $this->client->request($calculationRequest);
