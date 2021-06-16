@@ -201,5 +201,22 @@
 
             <tag name="payone_request_builder" />
         </service>
+
+        <!-- Payolution Invoicing -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PayolutionInvoicing\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PayolutionInvoicing\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
     </services>
 </container>
