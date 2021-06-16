@@ -71,14 +71,13 @@
 
         <service id="PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
-            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreAuthorizeRequestFactory" />
-            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentAuthorizeRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="translator" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
             <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
             <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
 
             <tag name="shopware.payment.method.sync" />
         </service>
