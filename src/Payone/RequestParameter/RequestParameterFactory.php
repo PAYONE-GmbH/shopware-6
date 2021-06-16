@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter;
 
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
+use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use RuntimeException;
@@ -30,7 +31,7 @@ class RequestParameterFactory
         $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
-    /** @param CheckoutDetailsStruct|PaymentTransactionStruct|TestCredentialsStruct $arguments */
+    /** @param CheckoutDetailsStruct|CreditCardCheckStruct|PaymentTransactionStruct|TestCredentialsStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
     ): array {

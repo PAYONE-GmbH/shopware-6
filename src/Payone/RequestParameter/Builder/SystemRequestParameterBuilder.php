@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
+use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Plugin\PluginService;
 use Shopware\Core\Framework\Struct\Struct;
@@ -63,7 +64,6 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         ];
     }
 
-    /** @param Struct $arguments */
     public function supports(Struct $arguments): bool
     {
         if ($arguments instanceof PaymentTransactionStruct) {
@@ -71,6 +71,10 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if ($arguments instanceof CheckoutDetailsStruct) {
+            return true;
+        }
+
+        if ($arguments instanceof CreditCardCheckStruct) {
             return true;
         }
 
