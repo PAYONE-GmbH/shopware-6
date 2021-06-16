@@ -149,5 +149,22 @@
 
             <tag name="payone_request_builder"/>
         </service>
+
+        <!-- Payolution Debit -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PayolutionDebit\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PayolutionDebit\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
     </services>
 </container>
