@@ -241,5 +241,18 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <!-- Eps -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Eps\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Eps\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
     </services>
 </container>
