@@ -254,5 +254,18 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <!-- IDeal -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\IDeal\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\IDeal\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
     </services>
 </container>

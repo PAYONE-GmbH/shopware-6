@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaydirektPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Struct\Struct;
@@ -43,6 +46,18 @@ class ShippingInformationRequestParameterBuilder extends AbstractRequestParamete
 
         $paymentMethod = $arguments->getPaymentMethod();
 
-        return $paymentMethod === PayonePaypalPaymentHandler::class;
+        if ($paymentMethod === PayonePaydirektPaymentHandler::class) {
+            return true;
+        }
+
+        if ($paymentMethod === PayonePaypalPaymentHandler::class) {
+            return true;
+        }
+
+        if ($paymentMethod === PayonePaypalExpressPaymentHandler::class) {
+            return true;
+        }
+
+        return false;
     }
 }
