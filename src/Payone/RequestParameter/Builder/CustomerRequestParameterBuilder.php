@@ -12,6 +12,7 @@ use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use RuntimeException;
@@ -140,6 +141,10 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if ($paymentMethod === PayonePayolutionInvoicingPaymentHandler::class) {
+            return true;
+        }
+
+        if ($paymentMethod === PayoneTrustlyPaymentHandler::class) {
             return true;
         }
 

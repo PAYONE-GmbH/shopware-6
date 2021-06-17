@@ -9,6 +9,7 @@ use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Struct\Struct;
 
@@ -58,6 +59,10 @@ class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if ($paymentMethod === PayoneCreditCardPaymentHandler::class) {
+            return true;
+        }
+
+        if ($paymentMethod === PayoneTrustlyPaymentHandler::class) {
             return true;
         }
 

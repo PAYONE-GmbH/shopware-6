@@ -13,6 +13,5 @@
         <import resource="requests/refund.xml" />
         <import resource="requests/secure-invoice.xml" />
         <import resource="requests/system.xml" />
-        <import resource="requests/trustly.xml" />
     </imports>
 </container>
