@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
@@ -145,6 +146,10 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if ($paymentMethod === PayoneTrustlyPaymentHandler::class) {
+            return true;
+        }
+
+        if ($paymentMethod === PayoneEpsPaymentHandler::class) {
             return true;
         }
 

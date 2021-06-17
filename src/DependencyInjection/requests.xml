@@ -5,7 +5,6 @@
     <imports>
         <import resource="requests/capture.xml" />
         <import resource="requests/customer.xml" />
-        <import resource="requests/eps.xml" />
         <import resource="requests/get-file.xml" />
         <import resource="requests/ideal.xml" />
         <import resource="requests/manage-mandate.xml" />
