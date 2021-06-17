@@ -267,5 +267,18 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <!-- Paydirekt -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Paydirekt\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Paydirekt\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
     </services>
 </container>
