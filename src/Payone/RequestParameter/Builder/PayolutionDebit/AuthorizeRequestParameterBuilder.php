@@ -14,6 +14,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Struct;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
@@ -46,13 +47,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'bic'           => $dataBag->get('payolutionBic'),
         ];
 
-        if (!empty($dataBag->get('payolutionBirthday'))) {
-            $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
-
-            if (!empty($birthday)) {
-                $parameters['birthday'] = $birthday->format('Ymd');
-            }
-        }
+        $this->applyBirthdayParameter($parameters, $dataBag);
 
         if ($this->transferCompanyData($salesChannelContext)) {
             $this->provideCompanyParams($paymentTransaction->getOrder()->getId(), $parameters, $salesChannelContext->getContext());
@@ -72,6 +67,17 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $action        = $arguments->getAction();
 
         return $paymentMethod === PayonePayolutionDebitPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
+    }
+
+    protected function applyBirthdayParameter(array &$parameters, RequestDataBag $dataBag): void
+    {
+        if (!empty($dataBag->get('payolutionBirthday'))) {
+            $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
+
+            if (!empty($birthday)) {
+                $parameters['birthday'] = $birthday->format('Ymd');
+            }
+        }
     }
 
     protected function transferCompanyData(SalesChannelContext $context): bool

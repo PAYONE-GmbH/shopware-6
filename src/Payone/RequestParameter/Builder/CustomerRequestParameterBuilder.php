@@ -14,6 +14,7 @@ use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
@@ -115,52 +116,21 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         $paymentMethod = $arguments->getPaymentMethod();
 
-        if ($paymentMethod === PayonePaypalPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayonePaypalExpressPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayoneSofortBankingPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayoneDebitPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayoneCreditCardPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayonePayolutionDebitPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayonePayolutionInstallmentPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayonePayolutionInvoicingPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayoneTrustlyPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayoneEpsPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayoneIDealPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayonePaydirektPaymentHandler::class) {
-            return true;
+        switch ($paymentMethod) {
+            case PayonePaypalPaymentHandler::class:
+            case PayonePaypalExpressPaymentHandler::class:
+            case PayoneSofortBankingPaymentHandler::class:
+            case PayoneDebitPaymentHandler::class:
+            case PayoneCreditCardPaymentHandler::class:
+            case PayonePayolutionDebitPaymentHandler::class:
+            case PayonePayolutionInstallmentPaymentHandler::class:
+            case PayonePayolutionInvoicingPaymentHandler::class:
+            case PayoneTrustlyPaymentHandler::class:
+            case PayoneEpsPaymentHandler::class:
+            case PayoneIDealPaymentHandler::class:
+            case PayonePaydirektPaymentHandler::class:
+            case PayoneSecureInvoicePaymentHandler::class:
+                return true;
         }
 
         return false;
