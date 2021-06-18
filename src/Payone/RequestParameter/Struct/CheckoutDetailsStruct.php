@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Struct;
 
+use PayonePayment\Payone\RequestParameter\Struct\Traits\CartTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\DeterminationTrait;
+use PayonePayment\Payone\RequestParameter\Struct\Traits\SalesChannelContextTrait;
+use PayonePayment\Payone\RequestParameter\Struct\Traits\WorkOrderIdTrait;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -12,18 +15,12 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 class CheckoutDetailsStruct extends Struct
 {
     use DeterminationTrait;
-
-    /** @var Cart */
-    protected $cart;
+    use SalesChannelContextTrait;
+    use CartTrait;
+    use WorkOrderIdTrait;
 
     /** @var string */
     protected $returnUrl;
-
-    /** @var string */
-    protected $workorderId;
-
-    /** @var SalesChannelContext */
-    protected $salesChannelContext;
 
     public function __construct(
         Cart $cart,
@@ -41,46 +38,6 @@ class CheckoutDetailsStruct extends Struct
         $this->workorderId         = $workorderId;
     }
 
-    public function getAction(): string
-    {
-        return $this->action;
-    }
-
-    public function setAction(string $action): void
-    {
-        $this->action = $action;
-    }
-
-    public function getPaymentMethod(): string
-    {
-        return $this->paymentMethod;
-    }
-
-    public function setPaymentMethod(string $paymentMethod): void
-    {
-        $this->paymentMethod = $paymentMethod;
-    }
-
-    public function getSalesChannelContext(): SalesChannelContext
-    {
-        return $this->salesChannelContext;
-    }
-
-    public function setSalesChannelContext(SalesChannelContext $salesChannelContext): void
-    {
-        $this->salesChannelContext = $salesChannelContext;
-    }
-
-    public function getCart(): Cart
-    {
-        return $this->cart;
-    }
-
-    public function setCart(Cart $cart): void
-    {
-        $this->cart = $cart;
-    }
-
     public function getReturnUrl(): string
     {
         return $this->returnUrl;
@@ -89,15 +46,5 @@ class CheckoutDetailsStruct extends Struct
     public function setReturnUrl(string $returnUrl): void
     {
         $this->returnUrl = $returnUrl;
-    }
-
-    public function getWorkorderId(): string
-    {
-        return $this->workorderId;
-    }
-
-    public function setWorkorderId(string $workorderId): void
-    {
-        $this->workorderId = $workorderId;
     }
 }

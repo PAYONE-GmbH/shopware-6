@@ -49,37 +49,16 @@ class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         $paymentMethod = $arguments->getPaymentMethod();
 
-        //TODO: use switch case
-        if ($paymentMethod === PayonePaypalPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayonePaypalExpressPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayoneSofortBankingPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayoneCreditCardPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayoneTrustlyPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayoneEpsPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayoneIDealPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayonePaydirektPaymentHandler::class) {
-            return true;
+        switch ($paymentMethod) {
+            case PayonePaypalPaymentHandler::class:
+            case PayonePaypalExpressPaymentHandler::class:
+            case PayoneSofortBankingPaymentHandler::class:
+            case PayoneCreditCardPaymentHandler::class:
+            case PayoneTrustlyPaymentHandler::class:
+            case PayoneEpsPaymentHandler::class:
+            case PayoneIDealPaymentHandler::class:
+            case PayonePaydirektPaymentHandler::class:
+                return true;
         }
 
         return false;

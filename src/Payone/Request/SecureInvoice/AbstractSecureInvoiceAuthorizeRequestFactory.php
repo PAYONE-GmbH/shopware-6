@@ -61,6 +61,7 @@ abstract class AbstractSecureInvoiceAuthorizeRequestFactory extends AbstractRequ
             $this->systemRequest->getReferenceNumber($transaction, true)
         );
 
+        //TODO: do not forget while refactoring
         $this->requests[] = $this->secureInvoiceRequestBuilder->getAdditionalRequestParameters(
             $transaction,
             $context->getContext(),

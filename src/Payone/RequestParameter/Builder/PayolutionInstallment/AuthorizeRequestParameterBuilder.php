@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\PayolutionInstallment;
 
-use DateTime;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\PayolutionDebit\AuthorizeRequestParameterBuilder as PayolutionDebitAuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
@@ -30,13 +29,7 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
             'bankaccountholder'                 => $dataBag->get('payolutionAccountOwner'),
         ];
 
-        if (!empty($dataBag->get('payolutionBirthday'))) {
-            $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
-
-            if (!empty($birthday)) {
-                $parameters['birthday'] = $birthday->format('Ymd');
-            }
-        }
+        $this->applyBirthdayParameter($parameters, $dataBag);
 
         if ($this->transferCompanyData($salesChannelContext)) {
             $this->provideCompanyParams($paymentTransaction->getOrder()->getId(), $parameters, $salesChannelContext->getContext());

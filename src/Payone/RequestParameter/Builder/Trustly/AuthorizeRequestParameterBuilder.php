@@ -27,7 +27,6 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'onlinebanktransfertype' => 'TRL',
             'iban'                   => $iban,
         ];
-        //TODO:  +  + customer
     }
 
     /** @param PaymentTransactionStruct $arguments */

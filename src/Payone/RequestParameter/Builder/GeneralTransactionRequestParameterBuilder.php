@@ -10,28 +10,23 @@ use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
-use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
+    /** @var EntityRepositoryInterface */
+    protected $currencyRepository;
     /** @var CartHasherInterface */
     private $cartHasher;
 
     /** @var ConfigReaderInterface */
     private $configReader;
-
-    /** @var EntityRepositoryInterface */
-    private $currencyRepository;
 
     public function __construct(CartHasherInterface $cartHasher, ConfigReaderInterface $configReader, EntityRepositoryInterface $currencyRepository)
     {
@@ -106,26 +101,6 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         return $orderNumber . $suffix;
     }
 
-    protected function getOrderCurrency(?OrderEntity $order, Context $context): CurrencyEntity
-    {
-        $currencyId = $context->getCurrencyId();
-
-        if (null !== $order) {
-            $currencyId = $order->getCurrencyId();
-        }
-
-        $criteria = new Criteria([$currencyId]);
-
-        /** @var null|CurrencyEntity $currency */
-        $currency = $this->currencyRepository->search($criteria, $context)->first();
-
-        if (null === $currency) {
-            throw new RuntimeException('missing order currency entity');
-        }
-
-        return $currency;
-    }
-
     private function getWorkOrderId(
         PaymentTransaction $transaction,
         RequestDataBag $dataBag,
@@ -150,9 +125,6 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         return $workOrderId;
     }
 
-    /**
-     * TODO: refactor, just taken from old request
-     */
     private function getLatestReferenceNumber(PaymentTransaction $transaction): ?string
     {
         /** @var null|OrderTransactionCollection $transactions */
@@ -185,11 +157,8 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         $transactions->sort(static function (OrderTransactionEntity $a, OrderTransactionEntity $b) {
             return $a->getCreatedAt() <=> $b->getCreatedAt();
         });
+        /** @var OrderTransactionEntity $orderTransaction */
         $orderTransaction = $transactions->last();
-
-        if ($orderTransaction === null) {
-            return null;
-        }
 
         $customFields = $orderTransaction->getCustomFields();
 
