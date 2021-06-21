@@ -2,33 +2,26 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\Request\Capture;
+namespace PayonePayment\Payone\RequestParameter\Builder\Capture;
 
 use PayonePayment\Installer\CustomFieldInstaller;
-use RuntimeException;
-use Shopware\Core\Checkout\Order\OrderEntity;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Struct\CaptureStruct;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\Framework\Struct\Struct;
 
-class CaptureRequest
+class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     private const CAPTUREMODE_COMPLETED  = 'completed';
     private const CAPTUREMODE_INCOMPLETE = 'notcompleted';
 
-    /** @var EntityRepositoryInterface */
-    private $currencyRepository;
-
-    public function __construct(EntityRepositoryInterface $currencyRepository)
-    {
-        $this->currencyRepository = $currencyRepository;
-    }
-
-    public function getRequestParameters(OrderEntity $order, Context $context, array $customFields, float $totalAmount = null, bool $completed = false): array
-    {
-        //TODO: remove components request builder
+    /** @param CaptureStruct $arguments */
+    public function getRequestParameter(
+        Struct $arguments
+    ): array {
+        $totalAmount  = $arguments->getTotalAmount();
+        $order        = $arguments->getPaymentTransaction()->getOrder();
+        $customFields = $arguments->getCustomFields();
 
         if ($totalAmount === null) {
             $totalAmount = $order->getAmountTotal();
@@ -46,15 +39,15 @@ class CaptureRequest
             throw new InvalidOrderException($order->getId());
         }
 
-        $currency = $this->getOrderCurrency($order, $context);
+        $currency = $this->getOrderCurrency($order, $arguments->getContext());
 
         $parameters = [
             'request'        => 'capture',
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => (int) round($totalAmount * (10 ** $currency->getDecimalPrecision())),
+            'amount'         => $this->getConvertedAmount($totalAmount, $currency->getDecimalPrecision()),
             'currency'       => $currency->getIsoCode(),
-            'capturemode'    => $completed ? self::CAPTUREMODE_COMPLETED : self::CAPTUREMODE_INCOMPLETE,
+            'capturemode'    => $arguments->isCompleted() ? self::CAPTUREMODE_COMPLETED : self::CAPTUREMODE_INCOMPLETE,
         ];
 
         if (!empty($customFields[CustomFieldInstaller::WORK_ORDER_ID])) {
@@ -72,17 +65,12 @@ class CaptureRequest
         return $parameters;
     }
 
-    private function getOrderCurrency(OrderEntity $order, Context $context): CurrencyEntity
+    public function supports(Struct $arguments): bool
     {
-        $criteria = new Criteria([$order->getCurrencyId()]);
-
-        /** @var null|CurrencyEntity $currency */
-        $currency = $this->currencyRepository->search($criteria, $context)->first();
-
-        if (null === $currency) {
-            throw new RuntimeException('missing order currency entity');
+        if ($arguments instanceof CaptureStruct) {
+            return true;
         }
 
-        return $currency;
+        return false;
     }
 }

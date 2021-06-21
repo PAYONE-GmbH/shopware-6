@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Struct;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\DeterminationTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\RequestDataTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\SalesChannelContextTrait;
+use PayonePayment\Payone\RequestParameter\Struct\Traits\TransactionTrait;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -17,9 +18,7 @@ class PaymentTransactionStruct extends Struct
     use DeterminationTrait;
     use SalesChannelContextTrait;
     use RequestDataTrait;
-
-    /** @var PaymentTransaction */
-    protected $paymentTransaction;
+    use TransactionTrait;
 
     public function __construct(
         PaymentTransaction $paymentTransaction,
@@ -33,15 +32,5 @@ class PaymentTransactionStruct extends Struct
         $this->salesChannelContext = $salesChannelContext;
         $this->paymentMethod       = $paymentMethod;
         $this->action              = $action;
-    }
-
-    public function getPaymentTransaction(): PaymentTransaction
-    {
-        return $this->paymentTransaction;
-    }
-
-    public function setPaymentTransaction(PaymentTransaction $paymentTransaction): void
-    {
-        $this->paymentTransaction = $paymentTransaction;
     }
 }
