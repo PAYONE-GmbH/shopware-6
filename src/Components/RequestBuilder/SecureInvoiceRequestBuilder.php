@@ -18,13 +18,6 @@ class SecureInvoiceRequestBuilder extends AbstractRequestBuilder
 
     public function getAdditionalRequestParameters(PaymentTransaction $transaction, Context $context, ParameterBag $parameterBag): array
     {
-        $currency   = $transaction->getOrder()->getCurrency();
-        $orderLines = $parameterBag->get('orderLines', []);
-
-        if ($currency === null || empty($orderLines) || empty($transaction->getOrder()->getLineItems())) {
-            return [];
-        }
-
-        return $this->lineItemHydrator->mapPayoneOrderLinesByRequest($currency, $transaction->getOrder()->getLineItems(), $orderLines);
+        return $this->provideOrderLines($transaction, $context, $parameterBag);
     }
 }
