@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
+use PayonePayment\Payone\RequestParameter\Struct\CaptureStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
@@ -80,6 +81,10 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if ($arguments instanceof PayolutionAdditionalActionStruct) {
+            return true;
+        }
+
+        if ($arguments instanceof CaptureStruct) {
             return true;
         }
 
