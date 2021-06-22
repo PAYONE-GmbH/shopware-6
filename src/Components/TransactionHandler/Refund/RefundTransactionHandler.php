@@ -9,7 +9,6 @@ use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use Shopware\Core\Framework\Context;

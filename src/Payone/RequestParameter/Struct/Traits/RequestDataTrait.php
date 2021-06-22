@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Struct\Traits;
 
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait RequestDataTrait

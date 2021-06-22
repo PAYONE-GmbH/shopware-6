@@ -33,7 +33,7 @@ class RequestParameterFactory
         $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
-    /** @param CheckoutDetailsStruct|CreditCardCheckStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct|TestCredentialsStruct|FinancialTransactionStruct $arguments */
+    /** @param CheckoutDetailsStruct|CreditCardCheckStruct|FinancialTransactionStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct|TestCredentialsStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
     ): array {

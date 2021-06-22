@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Mock\Factory;
 
 use PayonePayment\Components\CartHasher\CartHasher;
+use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Payone\RequestParameter\Builder\Capture\CaptureRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\CreditCard\PreAuthorizeRequestParameterBuilder as CreditCardPreAuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\CustomerRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\Debit\AuthorizeRequestParameterBuilder as DebitAuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\OrderLinesRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\Paypal\AuthorizeRequestParameterBuilder as PaypalAuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\ReturnUrlRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\ShippingInformationRequestParameterBuilder;
@@ -54,6 +57,8 @@ trait RequestParameterFactoryTestTrait
                 new PaypalAuthorizeRequestParameterBuilder(),
                 new CreditCardPreAuthorizeRequestParameterBuilder(),
                 new DebitAuthorizeRequestParameterBuilder(),
+                new CaptureRequestParameterBuilder(),
+                new OrderLinesRequestParameterBuilder(new LineItemHydrator()),
                 $this->getSystemRequestBuilder(),
                 $this->getGeneralTransactionRequestBuilder($salesChannelContext),
                 $this->getCustomerRequestBuilder(),
@@ -139,6 +144,7 @@ trait RequestParameterFactoryTestTrait
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
         $orderEntity->setTransactions(new OrderTransactionCollection([]));
+        $orderEntity->setCurrency($this->getCurrencyEntity());
 
         $paymentMethodEntity = new PaymentMethodEntity();
         $paymentMethodEntity->setHandlerIdentifier($handlerIdentifier);

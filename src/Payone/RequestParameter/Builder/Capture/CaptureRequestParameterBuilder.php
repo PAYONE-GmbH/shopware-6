@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Capture;
 
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
-use PayonePayment\Payone\RequestParameter\Struct\CaptureStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Struct\Struct;
@@ -24,7 +23,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         $totalAmount  = $arguments->getRequestData()->get('amount');
         $order        = $arguments->getPaymentTransaction()->getOrder();
         $customFields = $arguments->getPaymentTransaction()->getCustomFields();
-        $isCompleted = $arguments->getRequestData()->get('complete', false);
+        $isCompleted  = $arguments->getRequestData()->get('complete', false);
 
         if ($totalAmount === null) {
             $totalAmount = $order->getAmountTotal();
@@ -75,7 +74,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
             return false;
         }
 
-        if($arguments->getAction() === self::REQUEST_ACTION_CAPTURE) {
+        if ($arguments->getAction() === self::REQUEST_ACTION_CAPTURE) {
             return true;
         }
 
