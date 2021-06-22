@@ -10,7 +10,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Struct;
 
-class CaptureStruct extends Struct
+class FinancialTransactionStruct extends Struct
 {
     use DeterminationTrait;
     use TransactionTrait;
@@ -27,12 +27,22 @@ class CaptureStruct extends Struct
     /** @var bool */
     protected $completed = false;
 
-    public function __construct(PaymentTransaction $paymentTransaction, Context $context, array $customFields, ?float $totalAmount = null, bool $completed = false)
+    public function __construct(
+        PaymentTransaction $paymentTransaction,
+        Context $context,
+        array $customFields,
+        ?float $totalAmount = null,
+        string $paymentMethod,
+        string $action,
+        bool $completed = false
+    )
     {
         $this->paymentTransaction = $paymentTransaction;
         $this->context            = $context;
         $this->customFields       = $customFields;
         $this->totalAmount        = $totalAmount;
+        $this->paymentMethod = $paymentMethod;
+        $this->action = $action;
         $this->completed          = $completed;
     }
 

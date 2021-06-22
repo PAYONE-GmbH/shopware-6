@@ -24,7 +24,6 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
     protected $currencyRepository;
     /** @var CartHasherInterface */
     private $cartHasher;
-
     /** @var ConfigReaderInterface */
     private $configReader;
 
