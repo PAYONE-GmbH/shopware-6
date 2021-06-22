@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Struct\Traits;
 
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait RequestDataTrait
 {
-    /** @var RequestDataBag */
+    /** @var ParameterBag */
     protected $requestData;
 
-    public function getRequestData(): RequestDataBag
+    public function getRequestData(): ParameterBag
     {
         return $this->requestData;
     }
 
-    public function setRequestData(RequestDataBag $requestData): void
+    public function setRequestData(ParameterBag $requestData): void
     {
         $this->requestData = $requestData;
     }

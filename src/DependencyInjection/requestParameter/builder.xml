@@ -54,6 +54,13 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <service id="PayonePayment\Payone\RequestParameter\Builder\OrderLinesRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
         <!-- Paypal -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Paypal\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
@@ -277,6 +284,12 @@
         <service id="PayonePayment\Payone\RequestParameter\Builder\Paydirekt\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
 
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <!-- Capture -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Capture\CaptureRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <tag name="payone_request_builder"/>
         </service>
 

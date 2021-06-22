@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -69,7 +70,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $paymentMethod === PayonePayolutionDebitPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }
 
-    protected function applyBirthdayParameter(array &$parameters, RequestDataBag $dataBag): void
+    protected function applyBirthdayParameter(array &$parameters, ParameterBag $dataBag): void
     {
         if (!empty($dataBag->get('payolutionBirthday'))) {
             $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));

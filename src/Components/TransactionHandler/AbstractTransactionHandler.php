@@ -78,11 +78,9 @@ abstract class AbstractTransactionHandler
                 new FinancialTransactionStruct(
                     $this->paymentTransaction,
                     $context,
-                    $this->paymentTransaction->getCustomFields(),
-                    (float) $parameterBag->get('amount'),
+                    $parameterBag,
                     $paymentMethod->getHandlerIdentifier(),
-                    $action,
-                    $parameterBag->get('complete')
+                    $action
                 )
             )
         );

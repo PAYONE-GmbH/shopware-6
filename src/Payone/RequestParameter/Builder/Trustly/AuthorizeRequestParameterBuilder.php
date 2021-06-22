@@ -11,6 +11,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -42,7 +43,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $paymentMethod === PayoneTrustlyPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }
 
-    private function validateIbanRequestParameter(RequestDataBag $dataBag, PaymentTransaction $transaction): string
+    private function validateIbanRequestParameter(ParameterBag $dataBag, PaymentTransaction $transaction): string
     {
         $iban = $dataBag->get('iban');
 

@@ -36,13 +36,23 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         $this->configReader    = $configReader;
     }
 
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param FinancialTransactionStruct|PaymentTransactionStruct|CheckoutDetailsStruct|CreditCardCheckStruct|PayolutionAdditionalActionStruct $arguments
+     */
     public function getRequestParameter(
         Struct $arguments
     ): array {
-        $salesChannelContext = $arguments->getSalesChannelContext();
+        if($arguments instanceof FinancialTransactionStruct) {
+            $context = $arguments->getContext();
+            $salesChannelId = $arguments->getPaymentTransaction()->getOrder()->getSalesChannelId();
+        }
+        else {
+            $context = $arguments->getSalesChannelContext()->getContext();
+            $salesChannelId = $arguments->getSalesChannelContext()->getSalesChannel()->getId();
+        }
+
         $paymentMethod       = $arguments->getPaymentMethod();
-        $configuration       = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $configuration       = $this->configReader->read($salesChannelId);
         $configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentMethod];
 
         $accountId  = $configuration->get(sprintf('%sAccountId', $configurationPrefix), $configuration->get('accountId'));
@@ -50,7 +60,7 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         $portalId   = $configuration->get(sprintf('%sPortalId', $configurationPrefix), $configuration->get('portalId'));
         $portalKey  = $configuration->get(sprintf('%sPortalKey', $configurationPrefix), $configuration->get('portalKey'));
 
-        $plugin = $this->pluginService->getPluginByName('PayonePayment', $salesChannelContext->getContext());
+        $plugin = $this->pluginService->getPluginByName('PayonePayment', $context);
 
         return [
             'aid'                => $accountId,

@@ -17,6 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -102,7 +103,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
 
     private function getWorkOrderId(
         PaymentTransaction $transaction,
-        RequestDataBag $dataBag,
+        ParameterBag $dataBag,
         SalesChannelContext $context
     ): ?string {
         $workOrderId = $dataBag->get('workorder');
