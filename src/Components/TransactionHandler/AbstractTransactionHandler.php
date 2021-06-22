@@ -9,7 +9,6 @@ use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInter
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
-use PayonePayment\Payone\RequestParameter\Struct\CaptureStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -70,7 +69,7 @@ abstract class AbstractTransactionHandler
         }
 
         /** @var PaymentMethodEntity $paymentMethod */
-        $paymentMethod = $transaction->getPaymentMethod();
+        $paymentMethod            = $transaction->getPaymentMethod();
         $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($transaction, $transaction->getOrder());
 
         return $this->executeRequest(

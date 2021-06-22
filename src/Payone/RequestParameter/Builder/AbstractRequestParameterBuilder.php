@@ -15,8 +15,8 @@ abstract class AbstractRequestParameterBuilder
 {
     public const REQUEST_ACTION_AUTHORIZE                    = 'authorization';
     public const REQUEST_ACTION_PREAUTHORIZE                 = 'preauthorization';
-    public const REQUEST_ACTION_CAPTURE                    = 'capture';
-    public const REQUEST_ACTION_REFUND                 = 'refund';
+    public const REQUEST_ACTION_CAPTURE                      = 'capture';
+    public const REQUEST_ACTION_REFUND                       = 'refund';
     public const REQUEST_ACTION_TEST                         = 'test';
     public const REQUEST_ACTION_GET_EXPRESS_CHECKOUT_DETAILS = 'getexpresscheckoutdetails';
     public const REQUEST_ACTION_SET_EXPRESS_CHECKOUT         = 'setexpresscheckout';

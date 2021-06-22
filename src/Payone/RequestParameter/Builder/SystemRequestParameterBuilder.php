@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
-use PayonePayment\Payone\RequestParameter\Struct\CaptureStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
@@ -37,17 +36,16 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
     }
 
     /**
-     * @param FinancialTransactionStruct|PaymentTransactionStruct|CheckoutDetailsStruct|CreditCardCheckStruct|PayolutionAdditionalActionStruct $arguments
+     * @param CheckoutDetailsStruct|CreditCardCheckStruct|FinancialTransactionStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments
      */
     public function getRequestParameter(
         Struct $arguments
     ): array {
-        if($arguments instanceof FinancialTransactionStruct) {
-            $context = $arguments->getContext();
+        if ($arguments instanceof FinancialTransactionStruct) {
+            $context        = $arguments->getContext();
             $salesChannelId = $arguments->getPaymentTransaction()->getOrder()->getSalesChannelId();
-        }
-        else {
-            $context = $arguments->getSalesChannelContext()->getContext();
+        } else {
+            $context        = $arguments->getSalesChannelContext()->getContext();
             $salesChannelId = $arguments->getSalesChannelContext()->getSalesChannel()->getId();
         }
 

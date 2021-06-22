@@ -10,7 +10,6 @@ use PayonePayment\Payone\RequestParameter\Struct\Traits\TransactionTrait;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Struct;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class FinancialTransactionStruct extends Struct
@@ -28,13 +27,12 @@ class FinancialTransactionStruct extends Struct
         ParameterBag $requestData,
         string $paymentMethod,
         string $action
-    )
-    {
+    ) {
         $this->paymentTransaction = $paymentTransaction;
         $this->context            = $context;
-        $this->requestData = $requestData;
-        $this->paymentMethod = $paymentMethod;
-        $this->action = $action;
+        $this->requestData        = $requestData;
+        $this->paymentMethod      = $paymentMethod;
+        $this->action             = $action;
     }
 
     public function getContext(): Context
