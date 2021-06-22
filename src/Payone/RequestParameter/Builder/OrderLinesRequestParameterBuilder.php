@@ -24,7 +24,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
         $this->lineItemHydrator = $lineItemHydrator;
     }
 
-    /** @param PaymentTransactionStruct $arguments */
+    /** @param FinancialTransactionStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
     ): array {

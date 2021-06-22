@@ -10,6 +10,7 @@ use PayonePayment\Payone\RequestParameter\Struct\CaptureStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Struct\Struct;
+use Shopware\Core\System\Currency\CurrencyEntity;
 
 class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -20,9 +21,10 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
     public function getRequestParameter(
         Struct $arguments
     ): array {
-        $totalAmount  = $arguments->getTotalAmount();
+        $totalAmount  = $arguments->getRequestData()->get('amount');
         $order        = $arguments->getPaymentTransaction()->getOrder();
-        $customFields = $arguments->getCustomFields();
+        $customFields = $arguments->getPaymentTransaction()->getCustomFields();
+        $isCompleted = $arguments->getRequestData()->get('complete', false);
 
         if ($totalAmount === null) {
             $totalAmount = $order->getAmountTotal();
@@ -40,15 +42,16 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
             throw new InvalidOrderException($order->getId());
         }
 
-        $currency = $this->getOrderCurrency($order, $arguments->getContext());
+        /** @var CurrencyEntity $currency */
+        $currency = $order->getCurrency();
 
         $parameters = [
             'request'        => 'capture',
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => $this->getConvertedAmount($totalAmount, $currency->getDecimalPrecision()),
+            'amount'         => $this->getConvertedAmount((float) $totalAmount, $currency->getDecimalPrecision()),
             'currency'       => $currency->getIsoCode(),
-            'capturemode'    => $arguments->isCompleted() ? self::CAPTUREMODE_COMPLETED : self::CAPTUREMODE_INCOMPLETE,
+            'capturemode'    => $isCompleted ? self::CAPTUREMODE_COMPLETED : self::CAPTUREMODE_INCOMPLETE,
         ];
 
         if (!empty($customFields[CustomFieldInstaller::WORK_ORDER_ID])) {
