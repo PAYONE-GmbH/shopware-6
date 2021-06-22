@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Capture;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\CaptureStruct;
+use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Struct\Struct;
 
@@ -15,7 +16,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
     private const CAPTUREMODE_COMPLETED  = 'completed';
     private const CAPTUREMODE_INCOMPLETE = 'notcompleted';
 
-    /** @param CaptureStruct $arguments */
+    /** @param FinancialTransactionStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
     ): array {
@@ -67,7 +68,11 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     public function supports(Struct $arguments): bool
     {
-        if ($arguments instanceof CaptureStruct) {
+        if (!($arguments instanceof FinancialTransactionStruct)) {
+            return false;
+        }
+
+        if($arguments->getAction() === self::REQUEST_ACTION_CAPTURE) {
             return true;
         }
 

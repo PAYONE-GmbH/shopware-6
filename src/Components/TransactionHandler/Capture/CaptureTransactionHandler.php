@@ -10,6 +10,9 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\CaptureStruct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
@@ -22,7 +25,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
     private $transactionStatusService;
 
     public function __construct(
-        CaptureRequestFactory $requestFactory,
+        RequestParameterFactory $requestFactory,
         PayoneClientInterface $client,
         TransactionDataHandlerInterface $dataHandler,
         TransactionStatusServiceInterface $transactionStatusService,
@@ -42,7 +45,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
      */
     public function capture(ParameterBag $parameterBag, Context $context): JsonResponse
     {
-        [$requestResponse, $payoneResponse] = $this->handleRequest($parameterBag, $context);
+        [$requestResponse, $payoneResponse] = $this->handleRequest($parameterBag, AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE, $context);
 
         if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;

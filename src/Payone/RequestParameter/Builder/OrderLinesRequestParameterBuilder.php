@@ -10,6 +10,7 @@ use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\CaptureStruct;
+use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\Struct\Struct;
 
@@ -41,7 +42,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     public function supports(Struct $arguments): bool
     {
-        if (!($arguments instanceof CaptureStruct)) {
+        if (!($arguments instanceof FinancialTransactionStruct)) {
             return false;
         }
 
