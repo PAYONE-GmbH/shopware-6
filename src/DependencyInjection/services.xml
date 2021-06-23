@@ -9,7 +9,6 @@
         <import resource="entities.xml" />
         <import resource="handler/global_handlers.xml" />
         <import resource="handler/payment_handler.xml" />
-        <import resource="handler/request_handler.xml" />
         <import resource="hydrator.xml" />
         <import resource="listeners.xml" />
         <import resource="requests.xml" />
