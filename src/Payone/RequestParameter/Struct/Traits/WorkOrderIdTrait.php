@@ -13,9 +13,4 @@ trait WorkOrderIdTrait
     {
         return $this->workorderId;
     }
-
-    public function setWorkorderId(string $workorderId): void
-    {
-        $this->workorderId = $workorderId;
-    }
 }

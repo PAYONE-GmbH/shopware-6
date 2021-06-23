@@ -39,9 +39,4 @@ class FinancialTransactionStruct extends Struct
     {
         return $this->context;
     }
-
-    public function setContext(Context $context): void
-    {
-        $this->context = $context;
-    }
 }

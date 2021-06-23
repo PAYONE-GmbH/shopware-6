@@ -15,9 +15,4 @@ trait RequestDataTrait
     {
         return $this->requestData;
     }
-
-    public function setRequestData(ParameterBag $requestData): void
-    {
-        $this->requestData = $requestData;
-    }
 }

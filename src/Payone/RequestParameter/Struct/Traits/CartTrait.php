@@ -15,9 +15,4 @@ trait CartTrait
     {
         return $this->cart;
     }
-
-    public function setCart(Cart $cart): void
-    {
-        $this->cart = $cart;
-    }
 }
