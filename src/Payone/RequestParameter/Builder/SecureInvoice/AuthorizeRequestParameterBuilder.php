@@ -40,11 +40,9 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'request'         => 'authorization',
         ];
 
-        //TODO: might be an additional builder
         if ($order->getLineItems() !== null) {
             $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order->getLineItems()));
         }
-        //TODO: lineItemHydrator->mappedByRequest - really needed as in original factory?
 
         return $parameters;
     }
