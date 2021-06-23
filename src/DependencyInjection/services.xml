@@ -11,7 +11,6 @@
         <import resource="handler/payment_handler.xml" />
         <import resource="hydrator.xml" />
         <import resource="listeners.xml" />
-        <import resource="requests.xml" />
         <import resource="pages.xml" />
         <import resource="translations.xml" />
         <import resource="webhooks.xml"/>
