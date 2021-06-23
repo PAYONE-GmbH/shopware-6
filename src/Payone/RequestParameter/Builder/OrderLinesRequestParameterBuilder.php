@@ -44,8 +44,6 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
             return false;
         }
 
-        //TODO: maybe needed at secure invoice payment transaction
-
         $paymentMethod = $arguments->getPaymentMethod();
 
         switch ($paymentMethod) {

@@ -6,7 +6,6 @@
         <import resource="requests/customer.xml" />
         <import resource="requests/get-file.xml" />
         <import resource="requests/manage-mandate.xml" />
-        <import resource="requests/secure-invoice.xml" />
         <import resource="requests/system.xml" />
     </imports>
 </container>

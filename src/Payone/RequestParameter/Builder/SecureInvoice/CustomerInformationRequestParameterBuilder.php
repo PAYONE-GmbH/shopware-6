@@ -5,27 +5,26 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\SecureInvoice;
 
 use DateTime;
-use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
+use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\Struct;
 
 class CustomerInformationRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var LineItemHydratorInterface */
-    protected $lineItemHydrator;
-
     /** @var EntityRepositoryInterface */
-    protected $currencyRepository;
+    private $orderAddressRepository;
 
-    public function __construct(LineItemHydratorInterface $lineItemHydrator, EntityRepositoryInterface $currencyRepository)
+    public function __construct(EntityRepositoryInterface $orderAddressRepository)
     {
-        $this->lineItemHydrator   = $lineItemHydrator;
-        $this->currencyRepository = $currencyRepository;
+        $this->orderAddressRepository = $orderAddressRepository;
     }
 
     /** @param PaymentTransactionStruct $arguments */
@@ -36,20 +35,13 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
         $dataBag            = $arguments->getRequestData();
         $order              = $paymentTransaction->getOrder();
         $customer           = $order->getOrderCustomer();
-        $orderAddresses     = $order->getAddresses();
+        $billingAddress     = $this->getBillingAddress($order, $arguments->getSalesChannelContext()->getContext());
 
         if ($customer !== null) {
             $parameters['email'] = $customer->getEmail();
         }
 
-        //TODO: we may need to get this from the repository
-        if (null === $orderAddresses) {
-            throw new \RuntimeException('customer order address missing');
-        }
-
-        /** @var OrderAddressEntity $billingAddress */
-        $billingAddress = $orderAddresses->get($order->getBillingAddressId());
-        $company        = $billingAddress->getCompany();
+        $company = $billingAddress->getCompany();
 
         $parameters['businessrelation'] = $company ?
             PayoneSecureInvoice::BUSINESSRELATION_B2B :
@@ -82,5 +74,19 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
         $paymentMethod = $arguments->getPaymentMethod();
 
         return $paymentMethod === PayoneSecureInvoicePaymentHandler::class;
+    }
+
+    private function getBillingAddress(OrderEntity $order, Context $context): OrderAddressEntity
+    {
+        $criteria = new Criteria([$order->getBillingAddressId()]);
+
+        /** @var null|OrderAddressEntity $address */
+        $address = $this->orderAddressRepository->search($criteria, $context)->first();
+
+        if (null === $address) {
+            throw new RuntimeException('missing order customer billing address');
+        }
+
+        return $address;
     }
 }
