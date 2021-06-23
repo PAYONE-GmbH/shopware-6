@@ -8,6 +8,7 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
+use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
@@ -33,7 +34,7 @@ class RequestParameterFactory
         $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
-    /** @param CheckoutDetailsStruct|CreditCardCheckStruct|FinancialTransactionStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct|TestCredentialsStruct $arguments */
+    /** @param CheckoutDetailsStruct|CreditCardCheckStruct|FinancialTransactionStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct|TestCredentialsStruct $arguments */
     public function getRequestParameter(
         Struct $arguments
     ): array {
@@ -52,10 +53,21 @@ class RequestParameterFactory
             throw new RuntimeException('No valid request parameter builder found');
         }
 
-        return $this->createRequest($parameters);
+        $parameters = $this->createRequest($parameters);
+
+        return $this->filterParams($arguments, $parameters);
     }
 
-    protected function createRequest(array $parameters): array
+    private function filterParams(Struct $arguments, array $parameters): array
+    {
+        if ($arguments instanceof GetFileStruct) {
+            unset($parameters['aid'], $parameters['hash']);
+        }
+
+        return $parameters;
+    }
+
+    private function createRequest(array $parameters): array
     {
         ksort($parameters, SORT_NATURAL | SORT_FLAG_CASE);
 
@@ -69,7 +81,7 @@ class RequestParameterFactory
         return array_filter($parameters);
     }
 
-    protected function generateParameterHash(array &$parameters): void
+    private function generateParameterHash(array &$parameters): void
     {
         $data = $parameters;
 

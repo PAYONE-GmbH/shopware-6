@@ -17,18 +17,8 @@ trait DeterminationTrait
         return $this->action;
     }
 
-    public function setAction(string $action): void
-    {
-        $this->action = $action;
-    }
-
     public function getPaymentMethod(): string
     {
         return $this->paymentMethod;
-    }
-
-    public function setPaymentMethod(string $paymentMethod): void
-    {
-        $this->paymentMethod = $paymentMethod;
     }
 }

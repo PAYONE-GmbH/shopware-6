@@ -26,9 +26,4 @@ class TestCredentialsStruct extends Struct
     {
         return $this->parameters;
     }
-
-    public function setParameters(array $parameters): void
-    {
-        $this->parameters = $parameters;
-    }
 }

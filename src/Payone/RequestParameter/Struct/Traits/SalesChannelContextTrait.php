@@ -15,9 +15,4 @@ trait SalesChannelContextTrait
     {
         return $this->salesChannelContext;
     }
-
-    public function setSalesChannelContext(SalesChannelContext $salesChannelContext): void
-    {
-        $this->salesChannelContext = $salesChannelContext;
-    }
 }

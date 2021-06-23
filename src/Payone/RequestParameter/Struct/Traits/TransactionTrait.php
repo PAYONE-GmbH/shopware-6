@@ -15,9 +15,4 @@ trait TransactionTrait
     {
         return $this->paymentTransaction;
     }
-
-    public function setPaymentTransaction(PaymentTransaction $paymentTransaction): void
-    {
-        $this->paymentTransaction = $paymentTransaction;
-    }
 }
