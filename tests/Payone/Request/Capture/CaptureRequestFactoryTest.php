@@ -13,13 +13,6 @@ use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Factory\RequestParameterFactoryTestTrait;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
-use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
-use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
-use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
-use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -193,47 +186,5 @@ class CaptureRequestFactoryTest extends TestCase
 
         $this->assertArrayHasKey('integrator_version', $request);
         $this->assertArrayHasKey('solution_version', $request);
-    }
-
-    protected function getLineItem(int $amount): OrderLineItemCollection
-    {
-        $lineItemTaxRules = new TaxRule(Constants::CURRENCY_TAX_RATE);
-
-        $taxRuleCollection = new TaxRuleCollection();
-        $taxRuleCollection->add($lineItemTaxRules);
-
-        $lineItemtax = new CalculatedTax(
-            Constants::LINE_ITEM_UNIT_PRICE + (Constants::LINE_ITEM_UNIT_PRICE / 100 * Constants::CURRENCY_TAX_RATE),
-            Constants::CURRENCY_TAX_RATE,
-            Constants::LINE_ITEM_UNIT_PRICE
-        );
-
-        $calculatedTaxCollection = new CalculatedTaxCollection();
-        $calculatedTaxCollection->add($lineItemtax);
-
-        $lineItemPrice = new CalculatedPrice(
-            Constants::LINE_ITEM_UNIT_PRICE,
-            Constants::LINE_ITEM_UNIT_PRICE * Constants::LINE_ITEM_QUANTITY,
-            $calculatedTaxCollection,
-            $taxRuleCollection,
-            Constants::LINE_ITEM_QUANTITY
-        );
-
-        $lineItemCollection = new OrderLineItemCollection();
-
-        for ($i = 0; $i < $amount; ++$i) {
-            $lineItem = new OrderLineItemEntity();
-            $lineItem->setId(Constants::LINE_ITEM_ID . $i);
-            $lineItem->setType(Constants::LINE_ITEM_TYPE);
-            $lineItem->setIdentifier(Constants::LINE_ITEM_IDENTIFIER);
-            $lineItem->setUnitPrice(Constants::LINE_ITEM_UNIT_PRICE);
-            $lineItem->setPrice($lineItemPrice);
-            $lineItem->setLabel(Constants::LINE_ITEM_LABEL);
-            $lineItem->setQuantity(Constants::LINE_ITEM_QUANTITY);
-
-            $lineItemCollection->add($lineItem);
-        }
-
-        return $lineItemCollection;
     }
 }
