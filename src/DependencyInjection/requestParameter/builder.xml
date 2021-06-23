@@ -293,5 +293,11 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <!-- Refund -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Refund\RefundRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <tag name="payone_request_builder"/>
+        </service>
+
     </services>
 </container>

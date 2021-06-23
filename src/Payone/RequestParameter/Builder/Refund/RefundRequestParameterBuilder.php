@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\RequestParameter\Builder\Capture;
+namespace PayonePayment\Payone\RequestParameter\Builder\Refund;
 
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
