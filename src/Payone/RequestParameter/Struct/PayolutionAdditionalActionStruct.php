@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Struct;
 
 use PayonePayment\Payone\RequestParameter\Struct\Traits\CartTrait;
-use PayonePayment\Payone\RequestParameter\Struct\Traits\DeterminationTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\RequestDataTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\SalesChannelContextTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\WorkOrderIdTrait;
 use Shopware\Core\Checkout\Cart\Cart;
-use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PayolutionAdditionalActionStruct extends Struct
+class PayolutionAdditionalActionStruct extends AbstractRequestParameterStruct
 {
-    use DeterminationTrait;
     use SalesChannelContextTrait;
     use CartTrait;
     use WorkOrderIdTrait;

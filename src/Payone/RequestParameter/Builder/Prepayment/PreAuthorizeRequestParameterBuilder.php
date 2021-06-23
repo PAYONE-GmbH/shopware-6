@@ -6,14 +6,14 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Prepayment;
 
 use PayonePayment\PaymentHandler\PayonePrepaymentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use Shopware\Core\Framework\Struct\Struct;
 
 class PreAuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
         return [
             'request'      => 'preauthorization',
@@ -21,8 +21,7 @@ class PreAuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilde
         ];
     }
 
-    /** @param PaymentTransactionStruct $arguments */
-    public function supports(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof PaymentTransactionStruct)) {
             return false;

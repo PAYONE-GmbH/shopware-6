@@ -7,9 +7,9 @@ namespace PayonePayment\Payone\RequestParameter\Builder\SecureInvoice;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\Struct\Struct;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -27,7 +27,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
         $paymentTransaction  = $arguments->getPaymentTransaction();
         $salesChannelContext = $arguments->getSalesChannelContext();
@@ -47,8 +47,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $parameters;
     }
 
-    /** @param PaymentTransactionStruct $arguments */
-    public function supports(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof PaymentTransactionStruct)) {
             return false;

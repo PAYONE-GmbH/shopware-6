@@ -9,8 +9,8 @@ use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
-use Shopware\Core\Framework\Struct\Struct;
 
 class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -24,7 +24,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     /** @param FinancialTransactionStruct $arguments */
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
         $paymentTransaction = $arguments->getPaymentTransaction();
 
@@ -38,7 +38,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $this->lineItemHydrator->mapPayoneOrderLinesByRequest($currency, $paymentTransaction->getOrder()->getLineItems(), $orderLines);
     }
 
-    public function supports(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof FinancialTransactionStruct)) {
             return false;

@@ -64,7 +64,7 @@
         </service>
 
         <service id="PayonePayment\Storefront\Controller\Debit\ManageMandateController">
-            <argument type="service" id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
 
             <call method="setContainer">

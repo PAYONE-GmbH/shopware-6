@@ -6,15 +6,15 @@ namespace PayonePayment\Payone\RequestParameter\Builder\PaypalExpress;
 
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
-use Shopware\Core\Framework\Struct\Struct;
 
 class SetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionRequestParameterBuilder
 {
+    /** @param CheckoutDetailsStruct $arguments */
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
-        /** @var CheckoutDetailsStruct $arguments */
         $currency  = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
         $cart      = $arguments->getCart();
         $returnUrl = $arguments->getReturnUrl();
@@ -32,8 +32,7 @@ class SetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionReques
         ];
     }
 
-    /** @param Struct $arguments */
-    public function supports(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof CheckoutDetailsStruct)) {
             return false;

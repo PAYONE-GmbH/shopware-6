@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Struct;
 
-use PayonePayment\Payone\RequestParameter\Struct\Traits\DeterminationTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\RequestDataTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\TransactionTrait;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Struct;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class FinancialTransactionStruct extends Struct
+class FinancialTransactionStruct extends AbstractRequestParameterStruct
 {
-    use DeterminationTrait;
     use TransactionTrait;
     use RequestDataTrait;
 

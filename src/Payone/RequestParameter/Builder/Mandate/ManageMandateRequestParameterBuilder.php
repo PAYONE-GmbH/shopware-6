@@ -6,25 +6,26 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Mandate;
 
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
-use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
+use PayonePayment\Payone\RequestParameter\Struct\ManageMandateStruct;
 
-class GetFileRequestParameterBuilder extends AbstractRequestParameterBuilder
+class ManageMandateRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @param GetFileStruct $arguments */
+    /** @param ManageMandateStruct $arguments */
     public function getRequestParameter(
         AbstractRequestParameterStruct $arguments
     ): array {
         return [
-            'request'        => 'getfile',
-            'file_reference' => $arguments->getIdentification(),
-            'file_type'      => 'SEPA_MANDATE',
-            'file_format'    => 'PDF',
+            'request'      => 'managemandate',
+            'clearingtype' => 'elv',
+            'iban'         => $arguments->getIban(),
+            'bic'          => $arguments->getBic(),
+            'currency'     => $arguments->getSalesChannelContext()->getCurrency()->getIsoCode(),
         ];
     }
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        if ($arguments instanceof GetFileStruct) {
+        if ($arguments instanceof ManageMandateStruct) {
             return true;
         }
 
