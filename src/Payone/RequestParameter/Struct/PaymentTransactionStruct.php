@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Struct;
 
-use PayonePayment\Payone\RequestParameter\Struct\Traits\DeterminationTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\RequestDataTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\SalesChannelContextTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\TransactionTrait;
 use PayonePayment\Struct\PaymentTransaction;
-use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaymentTransactionStruct extends Struct
+class PaymentTransactionStruct extends AbstractRequestParameterStruct
 {
-    use DeterminationTrait;
     use SalesChannelContextTrait;
     use RequestDataTrait;
     use TransactionTrait;

@@ -8,13 +8,13 @@ use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -35,7 +35,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
     }
 
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
         /** @var PaymentTransactionStruct $arguments */
         $paymentTransaction  = $arguments->getPaymentTransaction();
@@ -61,7 +61,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         return $parameters;
     }
 
-    public function supports(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof PaymentTransactionStruct)) {
             return false;

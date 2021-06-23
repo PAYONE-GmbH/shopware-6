@@ -5,15 +5,9 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter;
 
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
-use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
-use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
-use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
-use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
-use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use RuntimeException;
-use Shopware\Core\Framework\Struct\Struct;
 
 class RequestParameterFactory
 {
@@ -34,9 +28,8 @@ class RequestParameterFactory
         $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
-    /** @param CheckoutDetailsStruct|CreditCardCheckStruct|FinancialTransactionStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct|TestCredentialsStruct $arguments */
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
         $parameters = [];
 
@@ -58,7 +51,7 @@ class RequestParameterFactory
         return $this->filterParams($arguments, $parameters);
     }
 
-    private function filterParams(Struct $arguments, array $parameters): array
+    private function filterParams(AbstractRequestParameterStruct $arguments, array $parameters): array
     {
         if ($arguments instanceof GetFileStruct) {
             unset($parameters['aid'], $parameters['hash']);

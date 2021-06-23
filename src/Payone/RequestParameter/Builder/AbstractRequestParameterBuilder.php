@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
 abstract class AbstractRequestParameterBuilder
@@ -24,13 +24,13 @@ abstract class AbstractRequestParameterBuilder
     public const REQUEST_ACTION_PAYOLUTION_CALCULATION       = 'calculation';
 
     abstract public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array;
 
     /**
      * Returns true if builder is meant to build parameters for the given action
      */
-    abstract public function supports(Struct $arguments): bool;
+    abstract public function supports(AbstractRequestParameterStruct $arguments): bool;
 
     protected function getConvertedAmount(float $amount, int $precision): int
     {

@@ -7,14 +7,14 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 use PayonePayment\PaymentHandler\PayonePaydirektPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use Shopware\Core\Framework\Struct\Struct;
 
 class ShippingInformationRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
         $salesChannelContext = $arguments->getSalesChannelContext();
         $shippingAddress     = $salesChannelContext->getCustomer() !== null ? $salesChannelContext->getCustomer()->getActiveShippingAddress() : null;
@@ -36,8 +36,7 @@ class ShippingInformationRequestParameterBuilder extends AbstractRequestParamete
         return $parameters;
     }
 
-    /** @param PaymentTransactionStruct $arguments */
-    public function supports(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof PaymentTransactionStruct)) {
             return false;

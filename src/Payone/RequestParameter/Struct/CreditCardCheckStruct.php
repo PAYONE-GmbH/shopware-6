@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Struct;
 
-use PayonePayment\Payone\RequestParameter\Struct\Traits\DeterminationTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\SalesChannelContextTrait;
-use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class CreditCardCheckStruct extends Struct
+class CreditCardCheckStruct extends AbstractRequestParameterStruct
 {
-    use DeterminationTrait;
     use SalesChannelContextTrait;
 
     public function __construct(

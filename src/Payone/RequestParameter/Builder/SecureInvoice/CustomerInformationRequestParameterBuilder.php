@@ -8,6 +8,7 @@ use DateTime;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -15,7 +16,6 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Struct\Struct;
 
 class CustomerInformationRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -29,7 +29,7 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
 
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
         $paymentTransaction = $arguments->getPaymentTransaction();
         $dataBag            = $arguments->getRequestData();
@@ -64,8 +64,7 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
         return $parameters;
     }
 
-    /** @param PaymentTransactionStruct $arguments */
-    public function supports(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof PaymentTransactionStruct)) {
             return false;

@@ -9,11 +9,11 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Helper\OrderFetcherInterface;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -33,7 +33,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
         $dataBag             = $arguments->getRequestData();
         $salesChannelContext = $arguments->getSalesChannelContext();
@@ -56,8 +56,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $parameters;
     }
 
-    /** @param PaymentTransactionStruct $arguments */
-    public function supports(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof PaymentTransactionStruct)) {
             return false;

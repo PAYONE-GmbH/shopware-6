@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Struct;
 
-use PayonePayment\Payone\RequestParameter\Struct\Traits\DeterminationTrait;
-use Shopware\Core\Framework\Struct\Struct;
-
-class TestCredentialsStruct extends Struct
+class TestCredentialsStruct extends AbstractRequestParameterStruct
 {
-    use DeterminationTrait;
-
     /** @var array */
     protected $parameters = [];
 

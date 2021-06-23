@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\RequestParameter\Struct\Traits;
+namespace PayonePayment\Payone\RequestParameter\Struct;
 
-trait DeterminationTrait
+use Shopware\Core\Framework\Struct\Struct;
+
+class AbstractRequestParameterStruct extends Struct
 {
     /** @var string */
     protected $action = '';

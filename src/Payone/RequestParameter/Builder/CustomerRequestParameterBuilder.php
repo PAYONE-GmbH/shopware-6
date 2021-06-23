@@ -17,6 +17,8 @@ use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
+use PayonePayment\Payone\RequestParameter\Struct\ManageMandateStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use RuntimeException;
@@ -24,7 +26,6 @@ use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEnt
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -59,7 +60,7 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
         $salesChannelContext = $arguments->getSalesChannelContext();
 
@@ -104,9 +105,13 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
         return array_filter($personalData);
     }
 
-    public function supports(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if ($arguments instanceof PayolutionAdditionalActionStruct) {
+            return true;
+        }
+
+        if ($arguments instanceof ManageMandateStruct) {
             return true;
         }
 

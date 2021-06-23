@@ -13,8 +13,8 @@ use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use Shopware\Core\Framework\Struct\Struct;
 
 class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -29,7 +29,7 @@ class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
         $paymentTransaction = $arguments->getPaymentTransaction();
 
@@ -40,8 +40,7 @@ class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
         ];
     }
 
-    /** @param PaymentTransactionStruct $arguments */
-    public function supports(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof PaymentTransactionStruct)) {
             return false;

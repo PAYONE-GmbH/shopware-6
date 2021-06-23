@@ -7,14 +7,14 @@ namespace PayonePayment\Payone\RequestParameter\Builder\PayolutionInstallment;
 use DateTime;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
-use Shopware\Core\Framework\Struct\Struct;
 
 class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameterBuilder
 {
     /** @param PayolutionAdditionalActionStruct $arguments */
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
         $dataBag  = $arguments->getRequestData();
         $currency = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
@@ -42,8 +42,7 @@ class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameter
         return $parameters;
     }
 
-    /** @param PayolutionAdditionalActionStruct $arguments */
-    public function supports(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof PayolutionAdditionalActionStruct)) {
             return false;

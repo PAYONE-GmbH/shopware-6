@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
+use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
@@ -14,7 +15,6 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use Shopware\Core\Framework\Plugin\PluginService;
-use Shopware\Core\Framework\Struct\Struct;
 
 class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -41,7 +41,7 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
      * @param CheckoutDetailsStruct|CreditCardCheckStruct|FinancialTransactionStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments
      */
     public function getRequestParameter(
-        Struct $arguments
+        AbstractRequestParameterStruct $arguments
     ): array {
         if ($arguments instanceof FinancialTransactionStruct) {
             $context        = $arguments->getContext();
@@ -77,7 +77,7 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         ];
     }
 
-    public function supports(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if ($arguments instanceof TestCredentialsStruct) {
             return false;
