@@ -7,7 +7,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder\PaypalExpress;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use Shopware\Core\Framework\Struct\Struct;
 
 class PreAuthorizeRequestParameterBuilder extends AuthorizeRequestParameterBuilder
 {
@@ -20,7 +19,7 @@ class PreAuthorizeRequestParameterBuilder extends AuthorizeRequestParameterBuild
         ]);
     }
 
-    public function AbstractRequestParameterStruct(Struct $arguments): bool
+    public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof PaymentTransactionStruct)) {
             return false;
