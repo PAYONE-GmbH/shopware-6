@@ -8,6 +8,5 @@ parameters:
     checkMissingIterableValueType: false
     ignoreErrors:
         - '#Access to constant CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE(.*)#'
-        - '#Reflection error: Psr\\EventDispatcher\\StoppableEventInterface not found.#'
     excludes_analyse:
         - tests/Bootstrap.php
