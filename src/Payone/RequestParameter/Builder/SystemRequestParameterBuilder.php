@@ -14,6 +14,7 @@ use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Plugin\PluginService;
 
 class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
@@ -43,13 +44,8 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
     public function getRequestParameter(
         AbstractRequestParameterStruct $arguments
     ): array {
-        if ($arguments instanceof FinancialTransactionStruct) {
-            $context        = $arguments->getContext();
-            $salesChannelId = $arguments->getPaymentTransaction()->getOrder()->getSalesChannelId();
-        } else {
-            $context        = $arguments->getSalesChannelContext()->getContext();
-            $salesChannelId = $arguments->getSalesChannelContext()->getSalesChannel()->getId();
-        }
+        $context        = $this->getContext($arguments);
+        $salesChannelId = $this->getSalesChannelId($arguments);
 
         $paymentMethod       = $arguments->getPaymentMethod();
         $configuration       = $this->configReader->read($salesChannelId);
@@ -84,5 +80,25 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         return true;
+    }
+
+    private function getContext(AbstractRequestParameterStruct $arguments): Context
+    {
+        if ($arguments instanceof FinancialTransactionStruct) {
+            return $arguments->getContext();
+        }
+
+        /** @var CheckoutDetailsStruct|CreditCardCheckStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments */
+        return $arguments->getSalesChannelContext()->getContext();
+    }
+
+    private function getSalesChannelId(AbstractRequestParameterStruct $arguments): string
+    {
+        if ($arguments instanceof FinancialTransactionStruct) {
+            return $arguments->getPaymentTransaction()->getOrder()->getSalesChannelId();
+        }
+
+        /** @var CheckoutDetailsStruct|CreditCardCheckStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments */
+        return $arguments->getSalesChannelContext()->getSalesChannel()->getId();
     }
 }
