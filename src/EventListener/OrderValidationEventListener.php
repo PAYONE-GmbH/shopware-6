@@ -49,11 +49,10 @@ class OrderValidationEventListener implements EventSubscriberInterface
             return;
         }
 
-        // TODO: can be removed when https://github.com/shopware/platform/pull/226 is merged
         $context = $this->getContextFromRequest($request);
 
         $customer = $context->getCustomer();
-
+        //TODO: method #1
         if ($this->isSecureInvoicePayment($context) && $customer !== null) {
             $activeBilling = $customer->getActiveBillingAddress();
 
@@ -65,6 +64,7 @@ class OrderValidationEventListener implements EventSubscriberInterface
             }
         }
 
+        //TODO: method #2 / #3
         if ($this->isPayonePayolutionInstallment($context) || $this->isPayonePayolutionInvoicing($context)) {
             $event->getDefinition()->add(
                 'payolutionConsent',
@@ -85,6 +85,7 @@ class OrderValidationEventListener implements EventSubscriberInterface
                 }
             }
 
+            //TODO: into payo invoicing method
             if ($this->isPayonePayolutionInvoicing($context) && $this->companyDataHandlingIsDisabled($context)) {
                 if ($this->customerHasCompanyAddress($context)) {
                     $event->getDefinition()->add(
