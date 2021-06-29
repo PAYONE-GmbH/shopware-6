@@ -75,7 +75,8 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $this->transactionStatusService->transitionByName(
             $context,
             $this->paymentTransaction->getOrderTransaction()->getId(),
-            $transitionName
+            $transitionName,
+            $parameterBag->all()
         );
     }
 
