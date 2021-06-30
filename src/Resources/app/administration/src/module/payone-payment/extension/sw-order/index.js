@@ -5,7 +5,7 @@ import './sw-order.scss';
 Component.override('sw-order-detail-base', {
     template,
 
-    inject: ['PayonePaymentService'],
+    inject: ['PayonePaymentService', 'acl'],
 
     mixins: [
         Mixin.getByName('notification')
@@ -38,6 +38,14 @@ Component.override('sw-order-detail-base', {
             }
 
             return transaction.customFields.payone_transaction_id;
+        },
+
+        can: function(permission) {
+            try {
+                return this.acl.can(permission);
+            } catch(e) {
+                return true;
+            }
         },
 
         isActiveTransaction(transaction) {
