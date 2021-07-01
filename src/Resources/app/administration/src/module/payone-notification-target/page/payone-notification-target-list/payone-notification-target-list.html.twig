@@ -1,0 +1,69 @@
+{% block payone_notification_target_list %}
+    <sw-page class="sw-review-list">
+
+        {% block sw_review_list_smart_bar_header %}
+            <template slot="smart-bar-header">
+
+                {% block sw_review_list_smart_bar_header_title %}
+                    <h2>
+
+                        {% block sw_review_list_smart_bar_header_title_text %}
+                            {{ $tc('sw-review.list.textReviewOverview') }}
+                        {% endblock %}
+
+                        {% block sw_review_list_smart_bar_header_amount %}
+                            <span v-if="!isLoading" class="sw-page__smart-bar-amount">
+                                ({{ items.total }})
+                            </span>
+                        {% endblock %}
+                    </h2>
+                {% endblock %}
+            </template>
+        {% endblock %}
+
+        {% block sw_review_list_content %}
+            <template slot="content">
+
+                {% block sw_review_list_content_list %}
+                    <sw-entity-listing
+                        v-if="items"
+                        ref="listing"
+                        detailRoute="sw.review.detail"
+                        :repository="repository"
+                        :columns="columns"
+                        :items="items"
+                        @page-change="onPageChange"
+                        @column-sort="onSortColumn"
+                        :disableDataFetching="true"
+                        :sortBy="sortBy"
+                        :sortDirection="sortDirection"
+                        identifier="payone-notification-target-list">
+                    </sw-entity-listing>
+                {% endblock %}
+
+                {% block sw_review_list_empty_state %}
+                    <sw-empty-state v-if="!isLoading && !total"
+                                    icon="default-documentation-file"
+                                    :title="$tc('sw-review.list.messageEmpty')"
+                                    :subline="$tc('sw-review.list.messageEmptySubline')">
+                    </sw-empty-state>
+                {% endblock %}
+            </template>
+        {% endblock %}
+
+        {% block sw_review_list_sidebar %}
+            <template slot="sidebar">
+                <sw-sidebar>
+
+                    {% block sw_review_list_sidebar_refresh %}
+                        <sw-sidebar-item
+                            icon="default-arrow-360-left"
+                            :title="$tc('sw-review.list.titleSidebarItemRefresh')"
+                            @click="onRefresh">
+                        </sw-sidebar-item>
+                    {% endblock %}
+                </sw-sidebar>
+            </template>
+        {% endblock %}
+    </sw-page>
+{% endblock %}
