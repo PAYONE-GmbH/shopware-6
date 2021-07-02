@@ -70,5 +70,10 @@
         <service id="PayonePayment\EventListener\CheckoutConfirmTrustlyEventListener">
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="PayonePayment\EventListener\PaypalExpressAddressValidationEventListener">
+            <argument type="service" id="request_stack"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>
