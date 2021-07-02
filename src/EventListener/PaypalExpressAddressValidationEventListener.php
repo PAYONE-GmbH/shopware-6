@@ -37,7 +37,6 @@ class PaypalExpressAddressValidationEventListener implements EventSubscriberInte
 
     /**
      * This additional event listener is needed because of autoloading missbehaviour.
-     * are not triggered on confirm page loader and the validation will otherwise result in an error on confirm page
      */
     public function disableConfirmPageLoaderAddressValidation(BuildValidationEvent $event): void
     {
