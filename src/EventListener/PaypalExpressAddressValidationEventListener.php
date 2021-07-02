@@ -43,7 +43,12 @@ class PaypalExpressAddressValidationEventListener implements EventSubscriberInte
     public function disableConfirmPageLoaderAddressValidation(BuildValidationEvent $event): void
     {
         $request = $this->requestStack->getCurrentRequest();
-        $route   = $request->get('_route');
+
+        if (null === $request) {
+            return;
+        }
+
+        $route = $request->get('_route');
         /** @var null|SalesChannelContext $salesChannelContext */
         $salesChannelContext = $request->get('sw-sales-channel-context');
 
