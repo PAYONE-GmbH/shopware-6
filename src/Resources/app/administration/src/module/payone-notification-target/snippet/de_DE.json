@@ -1,5 +1,28 @@
 {
     "payonePayment": {
-
+        "notificationTarget": {
+            "module": {
+                "title": "Payone Notificationweiterleitungen"
+            },
+            "list": {
+                "title": "Notificationweiterleitungen",
+                "empty": "Keine Einträge"
+            },
+            "detail": {
+                "headline": "Notificationweiterleitung",
+                "placeholder": {
+                    "url": "Url"
+                },
+                "label": {
+                    "url": "Url",
+                    "buttonSave": "Speichern",
+                    "buttonCancel": "Abbrechen"
+                }
+            },
+            "columns": {
+                "url": "Url",
+                "isBasicAuth": "Basic Auth"
+            }
+        }
     }
 }

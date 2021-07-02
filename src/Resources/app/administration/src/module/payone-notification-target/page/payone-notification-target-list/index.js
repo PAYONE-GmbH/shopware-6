@@ -5,7 +5,7 @@ const { Criteria } = Shopware.Data;
 Component.register('payone-notification-target-list', {
     template,
 
-    inject: ['repositoryFactory', 'acl'],
+    inject: ['repositoryFactory'],
 
     mixins: [
         Mixin.getByName('listing')
@@ -26,12 +26,22 @@ Component.register('payone-notification-target-list', {
     },
 
     computed: {
-        columns() {
+        notificationTargetColumns() {
             return [
                 {
-                    property: 'url',
                     dataIndex: 'url',
-                    label: 'sw-review.list.columnTitle'
+                    property: 'url',
+                    label: 'payonePayment.notificationTarget.columns.url',
+                    primary: true
+                },
+                {
+                    dataIndex: 'isBasicAuth',
+                    property: 'isBasicAuth',
+                    label: 'payonePayment.notificationTarget.columns.isBasicAuth'
+                },
+                {
+                    property: 'txactions',
+                    label: 'payonePayment.notificationTarget.columns.txactions'
                 },
             ];
         },
@@ -68,6 +78,6 @@ Component.register('payone-notification-target-list', {
         onDelete(option) {
             this.$refs.listing.deleteItem(option);
             this.getList();
-        }
+        },
     }
 })

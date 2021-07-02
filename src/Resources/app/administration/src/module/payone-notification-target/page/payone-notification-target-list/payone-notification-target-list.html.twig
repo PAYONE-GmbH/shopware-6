@@ -1,17 +1,17 @@
 {% block payone_notification_target_list %}
     <sw-page class="sw-review-list">
 
-        {% block sw_review_list_smart_bar_header %}
+        {% block payone_notification_target_list_smart_bar_header %}
             <template slot="smart-bar-header">
 
-                {% block sw_review_list_smart_bar_header_title %}
+                {% block payone_notification_target_list_smart_bar_header_title %}
                     <h2>
 
-                        {% block sw_review_list_smart_bar_header_title_text %}
-                            {{ $tc('sw-review.list.textReviewOverview') }}
+                        {% block payone_notification_target_list_smart_bar_header_title_text %}
+                            {{ $tc('payonePayment.notificationTarget.list.title') }}
                         {% endblock %}
 
-                        {% block sw_review_list_smart_bar_header_amount %}
+                        {% block payone_notification_target_list_smart_bar_header_amount %}
                             <span v-if="!isLoading" class="sw-page__smart-bar-amount">
                                 ({{ items.total }})
                             </span>
@@ -21,41 +21,59 @@
             </template>
         {% endblock %}
 
-        {% block sw_review_list_content %}
+        {% block payone_notification_target_list_content %}
             <template slot="content">
 
-                {% block sw_review_list_content_list %}
+                {% block payone_notification_target_list_content_list %}
                     <sw-entity-listing
                         v-if="items"
-                        ref="listing"
-                        detailRoute="sw.review.detail"
+                        ref="payoneNotificationTargetGrid"
+                        detailRoute="payone.notification.target.detail"
                         :repository="repository"
-                        :columns="columns"
+                        :columns="notificationTargetColumns"
                         :items="items"
                         @page-change="onPageChange"
                         @column-sort="onSortColumn"
                         :disableDataFetching="true"
                         :sortBy="sortBy"
+                        :showSelection="false"
+                        :allowInlineEdit="false"
                         :sortDirection="sortDirection"
                         identifier="payone-notification-target-list">
+
+                        {% block payone_notification_target_list_grid_columns %}
+                            {% block payone_notification_target_list_grid_columns_url %}
+                                <template #column-url="{ item }">
+                                    <router-link :to="{ name: 'payone.notification.target.detail', params: { id: item.id } }">
+                                        {{ item.url  }}
+                                    </router-link>
+                                </template>
+                            {% endblock %}
+
+                            {% block payone_notification_target_list_grid_columns_is_basic_auth %}
+                                <template #column-isBasicAuth="{ item }">
+                                    <sw-icon v-if="item.isBasicAuth" name="small-default-checkmark-line-medium" small class="is--active"></sw-icon>
+                                    <sw-icon v-else name="small-default-x-line-medium" small class="is--inactive"></sw-icon>
+                                </template>
+                            {% endblock %}
+                        {% endblock %}
                     </sw-entity-listing>
                 {% endblock %}
 
-                {% block sw_review_list_empty_state %}
+                {% block payone_notification_target_list_empty_state %}
                     <sw-empty-state v-if="!isLoading && !total"
                                     icon="default-documentation-file"
-                                    :title="$tc('sw-review.list.messageEmpty')"
-                                    :subline="$tc('sw-review.list.messageEmptySubline')">
+                                    :title="$tc('payonePayment.notificationTarget.list.empty')">
                     </sw-empty-state>
                 {% endblock %}
             </template>
         {% endblock %}
 
-        {% block sw_review_list_sidebar %}
+        {% block payone_notification_target_list_sidebar %}
             <template slot="sidebar">
                 <sw-sidebar>
 
-                    {% block sw_review_list_sidebar_refresh %}
+                    {% block payone_notification_target_list_sidebar_refresh %}
                         <sw-sidebar-item
                             icon="default-arrow-360-left"
                             :title="$tc('sw-review.list.titleSidebarItemRefresh')"
