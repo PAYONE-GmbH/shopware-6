@@ -17,9 +17,8 @@ class PaypalExpressAddressValidationEventListener implements EventSubscriberInte
     /** @var RequestStack */
     private $requestStack;
 
-    public function __construct(
-        RequestStack $requestStack
-    ) {
+    public function __construct(RequestStack $requestStack)
+    {
         $this->requestStack = $requestStack;
     }
 
