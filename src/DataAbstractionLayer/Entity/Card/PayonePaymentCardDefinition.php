@@ -19,9 +19,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class PayonePaymentCardDefinition extends EntityDefinition
 {
+    public const ENTITY_NAME = 'payone_payment_card';
+
     public function getEntityName(): string
     {
-        return 'payone_payment_card';
+        return self::ENTITY_NAME;
     }
 
     public function getCollectionClass(): string
