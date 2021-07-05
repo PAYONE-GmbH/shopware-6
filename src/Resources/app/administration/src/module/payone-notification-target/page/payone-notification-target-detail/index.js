@@ -91,7 +91,29 @@ Component.register('payone-notification-target-detail', {
             });
         },
 
+        isInvalid() {
+            if(this.notificationTarget.isBasicAuth !== true ) {
+                return false;
+            }
+
+            if(this.notificationTarget.username && this.notificationTarget.password) {
+                return false;
+            }
+
+            this.createNotificationError({
+                message: this.$tc(
+                    'global.notification.notificationSaveErrorMessageRequiredFieldsInvalid'
+                )
+            });
+
+            return true;
+        },
+
         onSave() {
+            if(this.isInvalid()) {
+                return;
+            }
+
             this.isLoading = true;
 
             this.notificationTargetRepository.save(this.notificationTarget, Shopware.Context.api).then(() => {

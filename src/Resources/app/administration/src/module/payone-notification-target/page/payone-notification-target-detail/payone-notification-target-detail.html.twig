@@ -61,8 +61,23 @@
                                     {% endblock %}
 
                                     {% block payone_notification_target_detail_base_info_field_is_basic_auth_fields %}
-                                        <h1 v-if="notificationTarget.isBasicAuth">Test</h1>
-                                        {# TODO: audd basic auth credentials fields, required if basic auth is active #}
+                                        <sw-field v-if="notificationTarget.isBasicAuth"
+                                                  type="text"
+                                                  :label="$tc('payonePayment.notificationTarget.detail.label.username')"
+                                                  :placeholder="$tc('payonePayment.notificationTarget.detail.placeholder.username')"
+                                                  name="username"
+                                                  required
+                                                  v-model="notificationTarget.username">
+                                        </sw-field>
+
+                                        <sw-field v-if="notificationTarget.isBasicAuth"
+                                                  type="password"
+                                                  :label="$tc('payonePayment.notificationTarget.detail.label.password')"
+                                                  :placeholder="$tc('payonePayment.notificationTarget.detail.placeholder.password')"
+                                                  name="password"
+                                                  required
+                                                  v-model="notificationTarget.password">
+                                        </sw-field>
                                     {% endblock %}
 
                                     {% block payone_notification_target_detail_base_info_field_txactions %}

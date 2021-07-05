@@ -12,14 +12,18 @@
             "detail": {
                 "headline": "Notificationweiterleitung",
                 "placeholder": {
-                    "url": "Url"
+                    "url": "Url",
+                    "username": "Benutzer",
+                    "password": "Passwort"
                 },
                 "label": {
                     "url": "Url",
                     "isBasicAuth": "Basic Auth",
                     "txactions": "txactions",
                     "buttonSave": "Speichern",
-                    "buttonCancel": "Abbrechen"
+                    "buttonCancel": "Abbrechen",
+                    "username": "Benutzer",
+                    "password": "Passwort"
                 }
             },
             "columns": {
