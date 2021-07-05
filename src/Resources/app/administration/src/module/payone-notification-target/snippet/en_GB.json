@@ -2,28 +2,28 @@
     "payonePayment": {
         "notificationTarget": {
             "module": {
-                "title": "Payone Notificationweiterleitungen"
+                "title": "Payone notification forward"
             },
             "list": {
-                "title": "Notificationweiterleitungen",
-                "empty": "Keine Einträge",
-                "buttonCreate": "Weiterleitungsziel anlegen"
+                "title": "Notification forward",
+                "empty": "No entries",
+                "buttonCreate": "Add new notification target"
             },
             "detail": {
-                "headline": "Notificationweiterleitung",
+                "headline": "Notification forward",
                 "placeholder": {
                     "url": "Url",
-                    "username": "Benutzer",
-                    "password": "Passwort"
+                    "username": "Username",
+                    "password": "Password"
                 },
                 "label": {
                     "url": "Url",
                     "isBasicAuth": "Basic Auth",
                     "txactions": "txactions",
-                    "buttonSave": "Speichern",
-                    "buttonCancel": "Abbrechen",
-                    "username": "Benutzer",
-                    "password": "Passwort"
+                    "buttonSave": "Save",
+                    "buttonCancel": "Cancel",
+                    "username": "Username",
+                    "password": "Password"
                 }
             },
             "columns": {
