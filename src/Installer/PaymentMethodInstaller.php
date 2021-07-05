@@ -36,6 +36,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PaymentMethodInstaller implements InstallerInterface
 {
+    public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
+
     public const PAYMENT_METHODS = [
         PayoneCreditCard::class,
         PayoneDebit::class,

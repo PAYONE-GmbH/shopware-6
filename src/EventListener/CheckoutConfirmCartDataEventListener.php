@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\EventListener;
 
 use PayonePayment\Components\Helper\OrderFetcherInterface;
+use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use Shopware\Core\Checkout\Cart\Cart;
@@ -90,7 +91,7 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
 
         $page->setPaymentMethods(
             $page->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) {
-                return mb_strpos($paymentMethod->getHandlerIdentifier(), 'PayonePayment') === false;
+                return mb_strpos($paymentMethod->getHandlerIdentifier(), PaymentMethodInstaller::HANDLER_IDENTIFIER_ROOT_NAMESPACE) === false;
             })
         );
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\CartValidator;
 
+use PayonePayment\Installer\PaymentMethodInstaller;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\CartValidatorInterface;
 use Shopware\Core\Checkout\Cart\Error\ErrorCollection;
@@ -18,7 +19,7 @@ class ZeroAmountCartValidator implements CartValidatorInterface
             return;
         }
 
-        if (mb_strpos($context->getPaymentMethod()->getHandlerIdentifier(), 'PayonePayment') === false) {
+        if (mb_strpos($context->getPaymentMethod()->getHandlerIdentifier(), PaymentMethodInstaller::HANDLER_IDENTIFIER_ROOT_NAMESPACE) === false) {
             return;
         }
 
