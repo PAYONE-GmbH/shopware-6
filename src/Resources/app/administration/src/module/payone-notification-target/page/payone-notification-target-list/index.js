@@ -15,7 +15,10 @@ Component.register('payone-notification-target-list', {
         return {
             isLoading: false,
             items: null,
-            sortBy: 'createdAt'
+            sortBy: 'createdAt',
+            criteriaLimit: 500,
+            criteriaPage: 1,
+            limit: 500
         };
     },
 
@@ -49,7 +52,7 @@ Component.register('payone-notification-target-list', {
             return this.repositoryFactory.create('payone_payment_notification_target');
         },
         criteria() {
-            const criteria = new Criteria();
+            const criteria = new Criteria(this.criteriaPage, this.criteriaLimit);
 
             return criteria;
         }
@@ -60,6 +63,14 @@ Component.register('payone-notification-target-list', {
     },
 
     methods: {
+        renderTxactions(content) {
+            if(content === null) {
+                return '';
+            }
+
+            return content.join(", ");
+        },
+
         createdComponent() {
             this.getList();
         },

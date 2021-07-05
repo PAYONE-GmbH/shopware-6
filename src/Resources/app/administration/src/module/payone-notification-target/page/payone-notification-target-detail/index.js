@@ -59,6 +59,10 @@ Component.register('payone-notification-target-detail', {
     },
 
     methods: {
+        updateSelection(value) {
+            this.notificationTarget.txactions = value;
+        },
+
         createdComponent() {
             if (this.notificationTargetId) {
                 this.loadEntityData();
@@ -74,7 +78,16 @@ Component.register('payone-notification-target-detail', {
 
             this.notificationTargetRepository.get(this.notificationTargetId, Shopware.Context.api).then((notificationTarget) => {
                 this.isLoading = false;
+
                 this.notificationTarget = notificationTarget;
+
+                if(null === notificationTarget.txactions) {
+                    return;
+                }
+
+                if(!notificationTarget.txactions.length) {
+                    this.notificationTarget.txactions = null;
+                }
             });
         },
 

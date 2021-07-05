@@ -65,12 +65,38 @@
                                     {% endblock %}
 
                                     {% block payone_notification_target_detail_base_info_field_is_basic_auth %}
-                                        <sw-field type="boolean"
-                                                  :label="$tc('payonePayment.notificationTarget.detail.label.isBasicAuth')"
+                                        <sw-checkbox-field :label="$tc('payonePayment.notificationTarget.detail.label.isBasicAuth')"
                                                   name="isBasicAuth"
-                                                  required
                                                   v-model="notificationTarget.isBasicAuth">
-                                        </sw-field>
+                                        </sw-checkbox-field>
+                                    {% endblock %}
+
+                                    {% block payone_notification_target_detail_base_info_field_is_basic_auth_fields %}
+                                        <h1 v-if="notificationTarget.isBasicAuth">Test</h1>
+                                        {# TODO: audd basic auth credentials fields, required if basic auth is active #}
+                                    {% endblock %}
+
+                                    {% block payone_notification_target_detail_base_info_field_txactions %}
+                                        <sw-multi-select
+                                            :label="$tc('payonePayment.notificationTarget.detail.label.txactions')"
+                                            :options="[
+                                                { value: 'appointed', label: 'appointed' },
+                                                { value: 'capture', label: 'capture' },
+                                                { value: 'paid', label: 'paid' },
+                                                { value: 'underpaid', label: 'underpaid' },
+                                                { value: 'cancelation', label: 'cancelation' },
+                                                { value: 'refund', label: 'refund' },
+                                                { value: 'debit', label: 'debit' },
+                                                { value: 'transfer', label: 'transfer' },
+                                                { value: 'reminder', label: 'reminder' },
+                                                { value: 'vauthorization', label: 'vauthorization' },
+                                                { value: 'vsettlement', label: 'vsettlement' },
+                                                { value: 'invoice', label: 'invoice' },
+                                                { value: 'failed', label: 'failed' }
+                                            ]"
+                                            @change="updateSelection"
+                                            :value="notificationTarget.txactions">
+                                        </sw-multi-select>
                                     {% endblock %}
 
                                 </div>

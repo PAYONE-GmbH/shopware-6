@@ -29,10 +29,10 @@
                         v-if="items"
                         ref="payoneNotificationTargetGrid"
                         detailRoute="payone.notification.target.detail"
+                        :limit="criteriaLimit"
                         :repository="repository"
                         :columns="notificationTargetColumns"
                         :items="items"
-                        @page-change="onPageChange"
                         @column-sort="onSortColumn"
                         :disableDataFetching="true"
                         :sortBy="sortBy"
@@ -54,6 +54,12 @@
                                 <template #column-isBasicAuth="{ item }">
                                     <sw-icon v-if="item.isBasicAuth" name="small-default-checkmark-line-medium" small class="is--active"></sw-icon>
                                     <sw-icon v-else name="small-default-x-line-medium" small class="is--inactive"></sw-icon>
+                                </template>
+                            {% endblock %}
+
+                            {% block payone_notification_target_list_grid_columns_txactions %}
+                                <template #column-txactions="{ item }">
+                                    {{ renderTxactions(item.txactions) }}
                                 </template>
                             {% endblock %}
                         {% endblock %}

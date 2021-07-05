@@ -15,13 +15,16 @@
                 },
                 "label": {
                     "url": "Url",
+                    "isBasicAuth": "Basic Auth",
+                    "txactions": "txactions",
                     "buttonSave": "Speichern",
                     "buttonCancel": "Abbrechen"
                 }
             },
             "columns": {
                 "url": "Url",
-                "isBasicAuth": "Basic Auth"
+                "isBasicAuth": "Basic Auth",
+                "txactions": "txactions"
             }
         }
     }
