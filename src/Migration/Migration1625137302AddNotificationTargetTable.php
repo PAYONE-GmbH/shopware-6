@@ -18,8 +18,10 @@ class Migration1625137302AddNotificationTargetTable extends MigrationStep
             CREATE TABLE `payone_payment_notification_target` (
                 `id` BINARY(16) NOT NULL,
                 `url` VARCHAR(255) NOT NULL,
-                `is_basic_auth` TINYINT(1) NOT NULL DEFAULT '0',
+                `is_basic_auth` TINYINT(1) NULL DEFAULT '0',
                 `txactions` VARCHAR(255) NULL,
+                `username` VARCHAR(255) NULL,
+                `password` VARCHAR(255) NULL,
                 `created_at` DATETIME(3) NOT NULL,
                 `updated_at` DATETIME(3) NULL,
                 PRIMARY KEY (`id`)

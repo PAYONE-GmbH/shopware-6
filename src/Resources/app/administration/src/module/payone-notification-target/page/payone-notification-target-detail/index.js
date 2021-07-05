@@ -5,7 +5,7 @@ const { Component, Mixin, Data: { Criteria } } = Shopware;
 Component.register('payone-notification-target-detail', {
     template,
 
-    inject: ['repositoryFactory', 'acl'],
+    inject: ['repositoryFactory'],
 
     mixins: [
         Mixin.getByName('notification'),
@@ -89,18 +89,6 @@ Component.register('payone-notification-target-detail', {
                     this.notificationTarget.txactions = null;
                 }
             });
-        },
-
-        abortOnLanguageChange() {
-            return this.notificationTargetRepository.hasChanges(this.notificationTarget);
-        },
-
-        saveOnLanguageChange() {
-            return this.onSave();
-        },
-
-        onChangeLanguage() {
-            this.loadEntityData();
         },
 
         onSave() {

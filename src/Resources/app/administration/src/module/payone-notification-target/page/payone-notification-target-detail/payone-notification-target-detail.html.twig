@@ -31,17 +31,6 @@
             </template>
         {% endblock %}
 
-        {% block payone_notification_target_detail_language_switch %}
-            <template #language-switch>
-                <sw-language-switch
-                    :disabled="notificationTargetId == null"
-                    :saveChangesFunction="saveOnLanguageChange"
-                    :abortChangeFunction="abortOnLanguageChange"
-                    @on-change="onChangeLanguage">
-                </sw-language-switch>
-            </template>
-        {% endblock %}
-
         {% block payone_notification_target_detail_content %}
             <sw-card-view slot="content">
 

@@ -6,7 +6,8 @@
             },
             "list": {
                 "title": "Notificationweiterleitungen",
-                "empty": "Keine Einträge"
+                "empty": "Keine Einträge",
+                "buttonCreate": "Weiterleitungsziel anlegen"
             },
             "detail": {
                 "headline": "Notificationweiterleitung",

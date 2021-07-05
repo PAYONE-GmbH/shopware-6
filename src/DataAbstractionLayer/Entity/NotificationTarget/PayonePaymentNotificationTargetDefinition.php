@@ -44,8 +44,10 @@ class PayonePaymentNotificationTargetDefinition extends EntityDefinition
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
 
             (new StringField('url', 'url'))->setFlags(new Required()),
-            (new BoolField('is_basic_auth', 'isBasicAuth'))->setFlags(new Required()),
+            (new BoolField('is_basic_auth', 'isBasicAuth')),
             (new JsonField('txactions', 'txactions')),
+            (new StringField('username', 'username')),
+            (new StringField('password', 'password')),
         ]);
     }
 }

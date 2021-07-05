@@ -35,14 +35,13 @@ Shopware.Module.register('payone-notification-target', {
                 parentPath: 'payone.notification.target.list'
             }
         },
-        /*
         create: {
             component: 'payone-notification-target-detail',
             path: 'create',
             meta: {
                 parentPath: 'payone.notification.target.list'
             }
-        }*/
+        }
     },
 
     navigation: [{

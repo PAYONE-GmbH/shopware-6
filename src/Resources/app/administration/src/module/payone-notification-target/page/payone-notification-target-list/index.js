@@ -64,7 +64,7 @@ Component.register('payone-notification-target-list', {
 
     methods: {
         renderTxactions(content) {
-            if(content === null) {
+            if(content === null || !content.length) {
                 return '';
             }
 

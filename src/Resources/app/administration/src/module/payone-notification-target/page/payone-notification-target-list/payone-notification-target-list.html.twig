@@ -3,7 +3,6 @@
 
         {% block payone_notification_target_list_smart_bar_header %}
             <template slot="smart-bar-header">
-
                 {% block payone_notification_target_list_smart_bar_header_title %}
                     <h2>
 
@@ -17,6 +16,18 @@
                             </span>
                         {% endblock %}
                     </h2>
+                {% endblock %}
+            </template>
+        {% endblock %}
+
+        {% block payone_notification_target_list_actions %}
+            <template #smart-bar-actions>
+                {% block payone_notification_target_list_smart_bar_actions %}
+                    <sw-button
+                        :routerLink="{ name: 'payone.notification.target.create' }"
+                        variant="primary">
+                        {{ $tc('payonePayment.notificationTarget.list.buttonCreate') }}
+                    </sw-button>
                 {% endblock %}
             </template>
         {% endblock %}

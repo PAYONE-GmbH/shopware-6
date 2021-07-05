@@ -22,6 +22,12 @@ class PayonePaymentNotificationTargetEntity extends Entity
     /** @var string */
     protected $txactions;
 
+    /** @var string */
+    protected $username;
+
+    /** @var string */
+    protected $password;
+
     public function getUrl(): string
     {
         return $this->url;
@@ -50,5 +56,25 @@ class PayonePaymentNotificationTargetEntity extends Entity
     public function setTxactions(string $txactions): void
     {
         $this->txactions = $txactions;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
     }
 }
