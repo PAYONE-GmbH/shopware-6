@@ -7,7 +7,6 @@ namespace PayonePayment\Components\MandateService;
 use DateTime;
 use PayonePayment\DataAbstractionLayer\Entity\Mandate\PayonePaymentMandateEntity;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
@@ -101,8 +100,6 @@ class MandateService implements MandateServiceInterface
 
         try {
             $response = $this->client->request($request, false);
-        } catch (PayoneRequestException $exception) {
-            throw new RuntimeException('mandate not found');
         } catch (Throwable $exception) {
             throw new RuntimeException('mandate not found');
         }
