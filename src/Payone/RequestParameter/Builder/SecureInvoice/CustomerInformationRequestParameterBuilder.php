@@ -42,7 +42,7 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
 
         $company = $billingAddress->getCompany();
 
-        $parameters['businessrelation'] = $company ?
+        $parameters['businessrelation'] = !empty($company) ?
             PayoneSecureInvoice::BUSINESSRELATION_B2B :
             PayoneSecureInvoice::BUSINESSRELATION_B2C;
 
