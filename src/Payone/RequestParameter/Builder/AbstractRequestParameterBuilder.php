@@ -37,6 +37,10 @@ abstract class AbstractRequestParameterBuilder
 
     protected function getOrderCurrency(?OrderEntity $order, Context $context): CurrencyEntity
     {
+        if (null !== $order && null !== $order->getCurrency()) {
+            return $order->getCurrency();
+        }
+
         if (property_exists($this, 'currencyRepository') === false) {
             throw new RuntimeException('currency repository injection missing');
         }
