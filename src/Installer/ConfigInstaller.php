@@ -15,10 +15,12 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigInstaller implements InstallerInterface
 {
-    public const CONFIG_FIELD_ACCOUNT_ID                        = 'accountId';
-    public const CONFIG_FIELD_MERCHANT_ID                       = 'merchantId';
-    public const CONFIG_FIELD_PORTAL_ID                         = 'portalId';
-    public const CONFIG_FIELD_PORTAL_KEY                        = 'portalKey';
+    public const CONFIG_FIELD_ACCOUNT_ID                             = 'accountId';
+    public const CONFIG_FIELD_MERCHANT_ID                            = 'merchantId';
+    public const CONFIG_FIELD_PORTAL_ID                              = 'portalId';
+    public const CONFIG_FIELD_PORTAL_KEY                             = 'portalKey';
+    public const CONFIG_FIELD_PAYOLUTION_DEBIT_TRANSFER_COMPANY_DATA = 'payolutionDebitTransferCompanyData';
+
     private const STATE_MACHINE_TRANSITION_ACTION_PAY           = 'pay';
     private const STATE_MACHINE_TRANSITION_ACTION_PAY_PARTIALLY = 'pay_partially';
 

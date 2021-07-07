@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\PayolutionDebit;
 use DateTime;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Helper\OrderFetcherInterface;
+use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
@@ -82,7 +83,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     {
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
 
-        return !empty($configuration->get('payolutionDebitTransferCompanyData'));
+        return !empty($configuration->get(ConfigInstaller::CONFIG_FIELD_PAYOLUTION_DEBIT_TRANSFER_COMPANY_DATA));
     }
 
     protected function provideCompanyParams(string $orderId, array &$parameters, Context $context): void
