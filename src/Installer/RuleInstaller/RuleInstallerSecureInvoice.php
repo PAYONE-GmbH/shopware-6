@@ -19,7 +19,6 @@ use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\System\Currency\Rule\CurrencyRule;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class RuleInstallerSecureInvoice implements InstallerInterface
 {
@@ -48,15 +47,11 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     /** @var EntityRepositoryInterface */
     private $currencyRepository;
 
-    public function __construct(ContainerInterface $container)
-    {
-        /** @var EntityRepositoryInterface $ruleRepository */
-        $ruleRepository = $container->get('rule.repository');
-        /** @var EntityRepositoryInterface $countryRepository */
-        $countryRepository = $container->get('country.repository');
-        /** @var EntityRepositoryInterface $currencyRepository */
-        $currencyRepository = $container->get('currency.repository');
-
+    public function __construct(
+        EntityRepositoryInterface $ruleRepository,
+        EntityRepositoryInterface $countryRepository,
+        EntityRepositoryInterface $currencyRepository
+    ) {
         $this->ruleRepository     = $ruleRepository;
         $this->countryRepository  = $countryRepository;
         $this->currencyRepository = $currencyRepository;

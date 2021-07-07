@@ -15,7 +15,8 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
-    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
+    {
         $dataBag            = $arguments->getRequestData();
         $paymentTransaction = $arguments->getPaymentTransaction();
         $iban               = $this->validateIbanRequestParameter($dataBag, $paymentTransaction);

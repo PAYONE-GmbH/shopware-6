@@ -12,7 +12,6 @@ use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ConfigInstaller implements InstallerInterface
 {
@@ -63,10 +62,8 @@ class ConfigInstaller implements InstallerInterface
     /** @var SystemConfigService */
     private $systemConfigService;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(SystemConfigService $systemConfigService)
     {
-        /** @var SystemConfigService $systemConfigService */
-        $systemConfigService       = $container->get(SystemConfigService::class);
         $this->systemConfigService = $systemConfigService;
     }
 

@@ -13,7 +13,8 @@ use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruc
 class CalculationRequestParameterBuilder extends GeneralTransactionRequestParameterBuilder
 {
     /** @param PayolutionAdditionalActionStruct $arguments */
-    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
+    {
         $dataBag  = $arguments->getRequestData();
         $currency = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
         $cart     = $arguments->getCart();

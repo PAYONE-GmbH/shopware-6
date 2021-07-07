@@ -59,7 +59,8 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
     }
 
     /** @param PaymentTransactionStruct $arguments */
-    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
+    {
         $salesChannelContext = $arguments->getSalesChannelContext();
 
         if (null === $salesChannelContext->getCustomer()) {

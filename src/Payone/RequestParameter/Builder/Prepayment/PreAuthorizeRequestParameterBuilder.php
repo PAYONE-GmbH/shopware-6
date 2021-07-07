@@ -12,7 +12,8 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 class PreAuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
-    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
+    {
         return [
             'request'      => 'preauthorization',
             'clearingtype' => 'vor',

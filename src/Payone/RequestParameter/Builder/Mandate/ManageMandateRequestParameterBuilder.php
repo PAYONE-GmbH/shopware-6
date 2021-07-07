@@ -11,7 +11,8 @@ use PayonePayment\Payone\RequestParameter\Struct\ManageMandateStruct;
 class ManageMandateRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     /** @param ManageMandateStruct $arguments */
-    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
+    {
         return [
             'request'      => 'managemandate',
             'clearingtype' => 'elv',
