@@ -12,7 +12,8 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 class AuthorizeRequestParameterBuilder extends PaypalAuthorizeRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
-    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
+    {
         return array_merge(parent::getRequestParameter($arguments), []);
     }
 

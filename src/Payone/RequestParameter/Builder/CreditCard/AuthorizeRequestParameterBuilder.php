@@ -12,7 +12,8 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
-    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
+    {
         $pseudoCardPan      = $arguments->getRequestData()->get('pseudoCardPan');
         $savedPseudoCardPan = $arguments->getRequestData()->get('savedPseudoCardPan');
 

@@ -12,7 +12,8 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
-    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
+    {
         $dataBag             = $arguments->getRequestData();
         $salesChannelContext = $arguments->getSalesChannelContext();
         $paymentTransaction  = $arguments->getPaymentTransaction();

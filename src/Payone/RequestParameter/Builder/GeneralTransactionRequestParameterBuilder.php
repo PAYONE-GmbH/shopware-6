@@ -34,7 +34,8 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         $this->currencyRepository = $currencyRepository;
     }
 
-    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
+    {
         /** @var PaymentTransactionStruct $arguments */
         $paymentTransaction  = $arguments->getPaymentTransaction();
         $salesChannelContext = $arguments->getSalesChannelContext();
