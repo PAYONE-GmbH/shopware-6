@@ -12,9 +12,7 @@ use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 class SetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionRequestParameterBuilder
 {
     /** @param CheckoutDetailsStruct $arguments */
-    public function getRequestParameter(
-        AbstractRequestParameterStruct $arguments
-    ): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
         $currency  = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
         $cart      = $arguments->getCart();
         $returnUrl = $arguments->getReturnUrl();

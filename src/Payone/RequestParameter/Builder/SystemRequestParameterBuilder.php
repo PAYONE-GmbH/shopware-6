@@ -41,9 +41,7 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
     /**
      * @param CheckoutDetailsStruct|CreditCardCheckStruct|FinancialTransactionStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments
      */
-    public function getRequestParameter(
-        AbstractRequestParameterStruct $arguments
-    ): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
         $context        = $this->getContext($arguments);
         $salesChannelId = $this->getSalesChannelId($arguments);
 

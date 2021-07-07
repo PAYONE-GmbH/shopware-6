@@ -14,9 +14,7 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     /** @param FinancialTransactionStruct $arguments */
-    public function getRequestParameter(
-        AbstractRequestParameterStruct $arguments
-    ): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
         $totalAmount  = $arguments->getRequestData()->get('amount');
         $order        = $arguments->getPaymentTransaction()->getOrder();
         $customFields = $arguments->getPaymentTransaction()->getCustomFields();

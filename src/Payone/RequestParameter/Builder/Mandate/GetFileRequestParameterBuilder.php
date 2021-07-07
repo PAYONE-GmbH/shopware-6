@@ -11,9 +11,7 @@ use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
 class GetFileRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     /** @param GetFileStruct $arguments */
-    public function getRequestParameter(
-        AbstractRequestParameterStruct $arguments
-    ): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
         return [
             'request'        => 'getfile',
             'file_reference' => $arguments->getIdentification(),

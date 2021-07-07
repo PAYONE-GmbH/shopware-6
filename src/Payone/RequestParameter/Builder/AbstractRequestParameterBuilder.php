@@ -23,9 +23,7 @@ abstract class AbstractRequestParameterBuilder
     public const REQUEST_ACTION_PAYOLUTION_PRE_CHECK         = 'pre-check';
     public const REQUEST_ACTION_PAYOLUTION_CALCULATION       = 'calculation';
 
-    abstract public function getRequestParameter(
-        AbstractRequestParameterStruct $arguments
-    ): array;
+    abstract public function getRequestParameter(AbstractRequestParameterStruct $arguments): array;
 
     /**
      * Returns true if builder is meant to build parameters for the given action
