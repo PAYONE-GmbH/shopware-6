@@ -108,7 +108,6 @@ class PayolutionController extends StorefrontController
             throw $this->createNotFoundException();
         }
 
-        /** @var string $content */
         $content = (string) file_get_contents(self::URL . base64_encode($companyName));
 
         if (empty($content)) {
