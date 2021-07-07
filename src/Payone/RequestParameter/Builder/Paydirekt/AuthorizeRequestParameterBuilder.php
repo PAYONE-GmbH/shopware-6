@@ -15,7 +15,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'clearingtype' => 'wlt',
+            'clearingtype' => self::CLEARING_TYPE_WALLET,
             'wallettype'   => 'PDT',
             'request'      => self::REQUEST_ACTION_AUTHORIZE,
         ];

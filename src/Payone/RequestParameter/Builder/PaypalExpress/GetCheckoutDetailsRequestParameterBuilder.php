@@ -19,7 +19,7 @@ class GetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionReques
 
         return [
             'request'             => self::REQUEST_ACTION_GENERIC_PAYMENT,
-            'clearingtype'        => 'wlt',
+            'clearingtype'        => self::CLEARING_TYPE_WALLET,
             'wallettype'          => 'PPE',
             'add_paydata[action]' => 'getexpresscheckoutdetails',
             'amount'              => $this->getConvertedAmount($cart->getPrice()->getTotalPrice(), $currency->getDecimalPrecision()),

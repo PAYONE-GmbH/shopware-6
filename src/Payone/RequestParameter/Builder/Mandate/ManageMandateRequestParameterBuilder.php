@@ -15,7 +15,7 @@ class ManageMandateRequestParameterBuilder extends AbstractRequestParameterBuild
     {
         return [
             'request'      => self::REQUEST_ACTION_MANAGE_MANDATE,
-            'clearingtype' => 'elv',
+            'clearingtype' => self::CLEARING_TYPE_DEBIT,
             'iban'         => $arguments->getIban(),
             'bic'          => $arguments->getBic(),
             'currency'     => $arguments->getSalesChannelContext()->getCurrency()->getIsoCode(),

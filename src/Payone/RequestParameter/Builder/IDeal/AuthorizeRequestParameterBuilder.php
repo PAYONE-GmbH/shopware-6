@@ -17,7 +17,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $dataBag = $arguments->getRequestData();
 
         return [
-            'clearingtype'           => 'sb',
+            'clearingtype'           => self::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
             'onlinebanktransfertype' => 'IDL',
             'bankcountry'            => 'NL',
             'bankgrouptype'          => $dataBag->get('idealBankGroup'),

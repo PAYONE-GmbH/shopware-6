@@ -22,7 +22,7 @@ class CalculationRequestParameterBuilder extends GeneralTransactionRequestParame
         $parameters = [
             'request'             => self::REQUEST_ACTION_GENERIC_PAYMENT,
             'add_paydata[action]' => 'calculation',
-            'clearingtype'        => 'fnc',
+            'clearingtype'        => self::CLEARING_TYPE_FINANCING,
             'financingtype'       => 'PYS',
             'amount'              => $this->getConvertedAmount($cart->getPrice()->getTotalPrice(), $currency->getDecimalPrecision()),
             'currency'            => $currency->getIsoCode(),
