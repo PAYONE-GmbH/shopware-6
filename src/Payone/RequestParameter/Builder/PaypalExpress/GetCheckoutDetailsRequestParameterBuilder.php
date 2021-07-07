@@ -18,7 +18,7 @@ class GetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionReques
         $cart     = $arguments->getCart();
 
         return [
-            'request'             => 'genericpayment',
+            'request'             => self::REQUEST_ACTION_GENERIC_PAYMENT,
             'clearingtype'        => 'wlt',
             'wallettype'          => 'PPE',
             'add_paydata[action]' => 'getexpresscheckoutdetails',

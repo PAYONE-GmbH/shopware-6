@@ -15,7 +15,7 @@ class PreAuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilde
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'request'      => 'preauthorization',
+            'request'      => self::REQUEST_ACTION_PREAUTHORIZE,
             'clearingtype' => 'vor',
         ];
     }

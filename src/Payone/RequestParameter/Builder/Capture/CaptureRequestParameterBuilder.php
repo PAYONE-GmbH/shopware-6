@@ -44,7 +44,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         $currency = $order->getCurrency();
 
         $parameters = [
-            'request'        => 'capture',
+            'request'        => self::REQUEST_ACTION_CAPTURE,
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
             'amount'         => $this->getConvertedAmount((float) $totalAmount, $currency->getDecimalPrecision()),

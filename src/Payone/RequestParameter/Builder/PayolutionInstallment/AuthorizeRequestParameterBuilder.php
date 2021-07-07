@@ -21,7 +21,7 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
         $parameters = [
             'clearingtype'                      => 'fnc',
             'financingtype'                     => 'PYS',
-            'request'                           => 'authorization',
+            'request'                           => self::REQUEST_ACTION_AUTHORIZE,
             'add_paydata[installment_duration]' => (int) $dataBag->get('payolutionInstallmentDuration'),
             'iban'                              => $dataBag->get('payolutionIban'),
             'bic'                               => $dataBag->get('payolutionBic'),

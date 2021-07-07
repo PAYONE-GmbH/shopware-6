@@ -14,7 +14,7 @@ class CreditCardCheckRequestParameterBuilder extends AbstractRequestParameterBui
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'request'       => 'creditcardcheck',
+            'request'       => self::REQUEST_ACTION_CREDITCARD_CHECK,
             'storecarddata' => 'yes',
         ];
     }

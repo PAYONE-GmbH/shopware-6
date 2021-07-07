@@ -21,7 +21,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'onlinebanktransfertype' => 'EPS',
             'bankcountry'            => 'AT',
             'bankgrouptype'          => $dataBag->get('epsBankGroup'),
-            'request'                => 'authorization',
+            'request'                => self::REQUEST_ACTION_AUTHORIZE,
         ];
     }
 

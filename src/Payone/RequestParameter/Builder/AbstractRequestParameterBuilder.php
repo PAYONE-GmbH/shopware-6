@@ -22,6 +22,11 @@ abstract class AbstractRequestParameterBuilder
     public const REQUEST_ACTION_SET_EXPRESS_CHECKOUT         = 'setexpresscheckout';
     public const REQUEST_ACTION_PAYOLUTION_PRE_CHECK         = 'pre-check';
     public const REQUEST_ACTION_PAYOLUTION_CALCULATION       = 'calculation';
+    public const REQUEST_ACTION_GENERIC_PAYMENT              = 'genericpayment';
+    public const REQUEST_ACTION_CREDITCARD_CHECK             = 'creditcardcheck';
+    public const REQUEST_ACTION_GET_FILE                     = 'getfile';
+    public const REQUEST_ACTION_MANAGE_MANDATE               = 'managemandate';
+    public const REQUEST_ACTION_DEBIT                        = 'debit';
 
     abstract public function getRequestParameter(AbstractRequestParameterStruct $arguments): array;
 

@@ -36,7 +36,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $parameters = [
             'clearingtype'    => 'rec',
             'clearingsubtype' => 'POV',
-            'request'         => 'authorization',
+            'request'         => self::REQUEST_ACTION_AUTHORIZE,
         ];
 
         if ($order->getLineItems() !== null) {

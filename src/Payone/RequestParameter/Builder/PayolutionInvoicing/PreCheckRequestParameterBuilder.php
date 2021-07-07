@@ -20,7 +20,7 @@ class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameter
         $cart     = $arguments->getCart();
 
         $parameters = [
-            'request'                   => 'genericpayment',
+            'request'                   => self::REQUEST_ACTION_GENERIC_PAYMENT,
             'add_paydata[action]'       => 'pre_check',
             'add_paydata[payment_type]' => 'Payolution-Invoicing',
             'clearingtype'              => 'fnc',
