@@ -23,10 +23,6 @@ class TestCredentialsRequestParameterBuilder extends AbstractRequestParameterBui
 
         $action = $arguments->getAction();
 
-        if ($action === self::REQUEST_ACTION_TEST) {
-            return true;
-        }
-
-        return false;
+        return $action === self::REQUEST_ACTION_TEST;
     }
 }
