@@ -19,7 +19,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'onlinebanktransfertype' => 'PNT',
             // TODO: possible values DE, AT, CH, NL (this has not been implemented before)
             'bankcountry' => 'DE',
-            'request'     => 'authorization',
+            'request'     => self::REQUEST_ACTION_AUTHORIZE,
         ];
     }
 

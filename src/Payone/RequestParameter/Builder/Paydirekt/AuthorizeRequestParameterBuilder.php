@@ -17,7 +17,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         return [
             'clearingtype' => 'wlt',
             'wallettype'   => 'PDT',
-            'request'      => 'authorization',
+            'request'      => self::REQUEST_ACTION_AUTHORIZE,
         ];
     }
 

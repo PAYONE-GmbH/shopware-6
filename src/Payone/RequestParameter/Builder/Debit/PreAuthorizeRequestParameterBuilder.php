@@ -14,7 +14,7 @@ class PreAuthorizeRequestParameterBuilder extends AuthorizeRequestParameterBuild
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return array_merge(parent::getRequestParameter($arguments), [
-            'request' => 'preauthorization',
+            'request' => self::REQUEST_ACTION_PREAUTHORIZE,
         ]);
     }
 

@@ -20,7 +20,7 @@ class CalculationRequestParameterBuilder extends GeneralTransactionRequestParame
         $cart     = $arguments->getCart();
 
         $parameters = [
-            'request'             => 'genericpayment',
+            'request'             => self::REQUEST_ACTION_GENERIC_PAYMENT,
             'add_paydata[action]' => 'calculation',
             'clearingtype'        => 'fnc',
             'financingtype'       => 'PYS',

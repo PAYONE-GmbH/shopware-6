@@ -36,7 +36,7 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
         $currency = $order->getCurrency();
 
         return [
-            'request'        => 'debit',
+            'request'        => self::REQUEST_ACTION_DEBIT,
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
             'amount'         => -1 * $this->getConvertedAmount((float) $totalAmount, $currency->getDecimalPrecision()),

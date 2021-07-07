@@ -14,7 +14,7 @@ class GetFileRequestParameterBuilder extends AbstractRequestParameterBuilder
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'request'        => 'getfile',
+            'request'        => self::REQUEST_ACTION_GET_FILE,
             'file_reference' => $arguments->getIdentification(),
             'file_type'      => 'SEPA_MANDATE',
             'file_format'    => 'PDF',

@@ -14,7 +14,7 @@ class ManageMandateRequestParameterBuilder extends AbstractRequestParameterBuild
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'request'      => 'managemandate',
+            'request'      => self::REQUEST_ACTION_MANAGE_MANDATE,
             'clearingtype' => 'elv',
             'iban'         => $arguments->getIban(),
             'bic'          => $arguments->getBic(),

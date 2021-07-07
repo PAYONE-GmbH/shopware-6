@@ -19,7 +19,7 @@ class SetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionReques
         $returnUrl = $arguments->getReturnUrl();
 
         return [
-            'request'             => 'genericpayment',
+            'request'             => self::REQUEST_ACTION_GENERIC_PAYMENT,
             'clearingtype'        => 'wlt',
             'wallettype'          => 'PPE',
             'add_paydata[action]' => 'setexpresscheckout',

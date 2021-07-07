@@ -21,7 +21,7 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
         $parameters = [
             'clearingtype'  => 'fnc',
             'financingtype' => 'PYV',
-            'request'       => 'authorization',
+            'request'       => self::REQUEST_ACTION_AUTHORIZE,
         ];
 
         $this->applyBirthdayParameter($parameters, $dataBag);

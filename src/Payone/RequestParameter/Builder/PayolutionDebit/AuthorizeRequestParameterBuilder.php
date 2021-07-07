@@ -42,7 +42,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $parameters = [
             'clearingtype'  => 'fnc',
             'financingtype' => 'PYD',
-            'request'       => 'authorization',
+            'request'       => self::REQUEST_ACTION_AUTHORIZE,
             'iban'          => $dataBag->get('payolutionIban'),
             'bic'           => $dataBag->get('payolutionBic'),
         ];

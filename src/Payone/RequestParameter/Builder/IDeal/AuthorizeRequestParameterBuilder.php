@@ -21,7 +21,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'onlinebanktransfertype' => 'IDL',
             'bankcountry'            => 'NL',
             'bankgrouptype'          => $dataBag->get('idealBankGroup'),
-            'request'                => 'authorization',
+            'request'                => self::REQUEST_ACTION_AUTHORIZE,
         ];
     }
 

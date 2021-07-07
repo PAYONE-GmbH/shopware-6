@@ -23,7 +23,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         return [
             'clearingtype'  => 'cc',
-            'request'       => 'authorization',
+            'request'       => self::REQUEST_ACTION_AUTHORIZE,
             'pseudocardpan' => $pseudoCardPan,
         ];
     }
