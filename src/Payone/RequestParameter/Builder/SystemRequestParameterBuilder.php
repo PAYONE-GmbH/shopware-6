@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
+use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
@@ -50,10 +51,10 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         $configuration       = $this->configReader->read($salesChannelId);
         $configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentMethod];
 
-        $accountId  = $configuration->get(sprintf('%sAccountId', $configurationPrefix), $configuration->get('accountId'));
-        $merchantId = $configuration->get(sprintf('%sMerchantId', $configurationPrefix), $configuration->get('merchantId'));
-        $portalId   = $configuration->get(sprintf('%sPortalId', $configurationPrefix), $configuration->get('portalId'));
-        $portalKey  = $configuration->get(sprintf('%sPortalKey', $configurationPrefix), $configuration->get('portalKey'));
+        $accountId  = $configuration->get(sprintf('%sAccountId', $configurationPrefix), $configuration->get(ConfigInstaller::CONFIG_FIELD_ACCOUNT_ID));
+        $merchantId = $configuration->get(sprintf('%sMerchantId', $configurationPrefix), $configuration->get(ConfigInstaller::CONFIG_FIELD_MERCHANT_ID));
+        $portalId   = $configuration->get(sprintf('%sPortalId', $configurationPrefix), $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_ID));
+        $portalKey  = $configuration->get(sprintf('%sPortalKey', $configurationPrefix), $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY));
 
         $plugin = $this->pluginService->getPluginByName('PayonePayment', $context);
 
