@@ -7,6 +7,7 @@ namespace PayonePayment\Storefront\Controller\Payolution;
 use DateTime;
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentMethod\PayonePayolutionDebit;
@@ -95,7 +96,7 @@ class PayolutionController extends StorefrontController
         }
 
         $content = (string) strstr($content, '<header>');
-        $content = (string) strstr($content, '</footer>', true) . '</footer>';
+        $content = strstr($content, '</footer>', true) . '</footer>';
 
         return new Response($content);
     }
@@ -226,8 +227,8 @@ class PayolutionController extends StorefrontController
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
 
         $url      = $this->getCreditInformationUrlFromCart($cart, $duration);
-        $channel  = $configuration->getString('payolutionInstallmentChannelName');
-        $password = $configuration->getString('payolutionInstallmentChannelPassword');
+        $channel  = $configuration->getString(ConfigInstaller::CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_NAME);
+        $password = $configuration->getString(ConfigInstaller::CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_PASSWORD);
 
         if (empty($url) || empty($channel) || empty($password)) {
             $this->logger->error('Could not fetch standard credit information document for payolution installment, please verify the channel credentials.');
