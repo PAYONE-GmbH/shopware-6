@@ -50,10 +50,6 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
             return false;
         }
 
-        if ($arguments->getAction() === self::REQUEST_ACTION_REFUND) {
-            return true;
-        }
-
-        return false;
+        return $arguments->getAction() === self::REQUEST_ACTION_REFUND;
     }
 }
