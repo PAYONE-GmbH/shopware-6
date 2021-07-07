@@ -62,11 +62,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        if (!($arguments instanceof PaymentTransactionStruct)) {
-            return false;
-        }
-
-        return true;
+        return $arguments instanceof PaymentTransactionStruct;
     }
 
     protected function addNarrativeTextIfAllowed(array &$parameters, string $salesChannelId, string $prefix, string $narrativeText = ''): void
