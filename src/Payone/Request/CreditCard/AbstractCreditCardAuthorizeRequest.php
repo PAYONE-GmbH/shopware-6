@@ -40,6 +40,7 @@ abstract class AbstractCreditCardAuthorizeRequest
     public function getRequestParameters(
         PaymentTransaction $transaction,
         Context $context,
+        string $cardholder,
         string $pseudoPan,
         string $referenceNumber
     ): array {
@@ -54,6 +55,7 @@ abstract class AbstractCreditCardAuthorizeRequest
             'amount'        => (int) round(($transaction->getOrder()->getAmountTotal() * (10 ** $currency->getDecimalPrecision()))),
             'currency'      => $currency->getIsoCode(),
             'reference'     => $referenceNumber,
+            'cardholder'    => $cardholder,
             'pseudocardpan' => $pseudoPan,
             'successurl'    => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=success'),
             'errorurl'      => $this->redirectHandler->encode($transaction->getReturnUrl() . '&state=error'),

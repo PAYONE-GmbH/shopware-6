@@ -38,6 +38,7 @@ abstract class AbstractCreditCardAuthorizeRequestFactory extends AbstractRequest
         RequestDataBag $dataBag,
         SalesChannelContext $context
     ): array {
+        $cardholder         = $dataBag->get('cardholder');
         $pseudoCardPan      = $dataBag->get('pseudoCardPan');
         $savedPseudoCardPan = $dataBag->get('savedPseudoCardPan');
 
@@ -60,6 +61,7 @@ abstract class AbstractCreditCardAuthorizeRequestFactory extends AbstractRequest
         $this->requests[] = $this->creditCardRequest->getRequestParameters(
             $transaction,
             $context->getContext(),
+            $cardholder,
             $pseudoCardPan,
             $referenceNumber
         );

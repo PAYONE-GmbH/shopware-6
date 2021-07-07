@@ -27,6 +27,7 @@ class CardRepository implements CardRepositoryInterface
 
     public function saveCard(
         CustomerEntity $customer,
+        string $cardholder,
         string $truncatedCardPan,
         string $pseudoCardPan,
         DateTime $expiresAt,
@@ -43,6 +44,7 @@ class CardRepository implements CardRepositoryInterface
 
         $data = [
             'id'               => null === $card ? Uuid::randomHex() : $card->getId(),
+            'cardholder'       => $cardholder,
             'pseudoCardPan'    => $pseudoCardPan,
             'truncatedCardPan' => $truncatedCardPan,
             'expiresAt'        => $expiresAt,
@@ -86,7 +88,7 @@ class CardRepository implements CardRepositoryInterface
         return $this->cardRepository->search($criteria, $context);
     }
 
-    protected function getExistingCard(
+    public function getExistingCard(
         CustomerEntity $customer,
         string $pseudoCardPan,
         Context $context

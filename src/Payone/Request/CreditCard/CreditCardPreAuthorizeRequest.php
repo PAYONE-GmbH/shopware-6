@@ -12,10 +12,11 @@ class CreditCardPreAuthorizeRequest extends AbstractCreditCardAuthorizeRequest
     public function getRequestParameters(
         PaymentTransaction $transaction,
         Context $context,
+        string $cardholder,
         string $pseudoPan,
         string $referenceNumber
     ): array {
-        return array_merge(parent::getRequestParameters($transaction, $context, $pseudoPan, $referenceNumber), [
+        return array_merge(parent::getRequestParameters($transaction, $context, $cardholder, $pseudoPan, $referenceNumber), [
             'request' => 'preauthorization',
         ]);
     }

@@ -17,6 +17,9 @@ class PayonePaymentCardEntity extends Entity
     protected $pseudoCardPan;
 
     /** @var string */
+    protected $cardholder;
+
+    /** @var string */
     protected $truncatedCardPan;
 
     /** @var DateTimeInterface */
@@ -36,6 +39,16 @@ class PayonePaymentCardEntity extends Entity
     public function setPseudoCardPan(string $pseudoCardPan): void
     {
         $this->pseudoCardPan = $pseudoCardPan;
+    }
+
+    public function getCardholder(): string
+    {
+        return $this->cardholder;
+    }
+
+    public function setCardholder(string $cardholder): void
+    {
+        $this->cardholder = $cardholder;
     }
 
     public function getTruncatedCardPan(): string

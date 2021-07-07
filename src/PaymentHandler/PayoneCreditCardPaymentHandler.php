@@ -29,6 +29,8 @@ use Throwable;
 
 class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
+    public const CARDHOLDER_PATTERN = '^[A-Za-z \-äöüÄÖÜß]{3,50}$';
+
     /** @var PayoneClientInterface */
     protected $client;
 
@@ -92,6 +94,42 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             ? $this->preAuthRequestFactory
             : $this->authRequestFactory;
 
+        $cardholder         = $requestData->get('cardholder');
+        $savedPseudoCardPan = $requestData->get('savedPseudoCardPan');
+
+        // Validate cardholder user data
+        if (!empty($cardholder)) {
+            if (preg_match(sprintf('/%s/i', self::CARDHOLDER_PATTERN), $cardholder) !== 1) {
+                throw new AsyncPaymentProcessException(
+                    $transaction->getOrderTransaction()->getId(),
+                    $this->translator->trans('PayonePayment.errorMessages.genericError')
+                );
+            }
+        }
+
+        // If possible, load saved cardholder from database
+        if (empty($cardholder) && !empty($savedPseudoCardPan)) {
+            $cardEntity = $this->cardRepository->getExistingCard(
+                $salesChannelContext->getCustomer(),
+                $savedPseudoCardPan,
+                $salesChannelContext->getContext()
+            );
+
+            if (!$cardEntity) {
+                // The provided pseudo card number was generated from database.
+                // We are in trouble if we cannot find the card entity by this number.
+                // Probably the request was manipulated, we should catch this here.
+                throw new AsyncPaymentProcessException(
+                    $transaction->getOrderTransaction()->getId(),
+                    $this->translator->trans('PayonePayment.errorMessages.genericError')
+                );
+            }
+
+            // Set the cardholder for use below
+            $cardholder = $cardEntity->getCardholder();
+            $requestData->set('cardholder', $cardholder);
+        }
+
         $request = $factory->getRequestParameters(
             $paymentTransaction,
             $requestData,
@@ -121,10 +159,9 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());
         }
 
-        $truncatedCardPan   = $requestData->get('truncatedCardPan');
-        $cardExpireDate     = $requestData->get('cardExpireDate');
-        $savedPseudoCardPan = $requestData->get('savedPseudoCardPan');
-        $pseudoCardPan      = $requestData->get('pseudoCardPan');
+        $truncatedCardPan = $requestData->get('truncatedCardPan');
+        $cardExpireDate   = $requestData->get('cardExpireDate');
+        $pseudoCardPan    = $requestData->get('pseudoCardPan');
 
         if (empty($savedPseudoCardPan)) {
             $expiresAt = DateTime::createFromFormat('ym', $cardExpireDate);
@@ -132,6 +169,7 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             if (!empty($expiresAt) && null !== $salesChannelContext->getCustomer()) {
                 $this->cardRepository->saveCard(
                     $salesChannelContext->getCustomer(),
+                    $cardholder,
                     $truncatedCardPan,
                     $pseudoCardPan,
                     $expiresAt,
