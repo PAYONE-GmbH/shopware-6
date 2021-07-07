@@ -8,7 +8,6 @@ use DateInterval;
 use DateTimeImmutable;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler as Handler;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -85,8 +84,6 @@ class SettingsController extends AbstractController
                 $testRequest = $this->requestFactory->getRequestParameter(new TestCredentialsStruct($parameters, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST));
 
                 $this->client->request($testRequest);
-            } catch (PayoneRequestException $exception) {
-                $errors[$configurationPrefix] = true;
             } catch (Throwable $exception) {
                 $errors[$configurationPrefix] = true;
             }
