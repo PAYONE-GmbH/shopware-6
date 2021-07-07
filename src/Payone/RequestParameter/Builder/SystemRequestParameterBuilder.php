@@ -81,23 +81,27 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         return true;
     }
 
+    /**
+     * @param CheckoutDetailsStruct|CreditCardCheckStruct|FinancialTransactionStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments
+     */
     private function getContext(AbstractRequestParameterStruct $arguments): Context
     {
         if ($arguments instanceof FinancialTransactionStruct) {
             return $arguments->getContext();
         }
 
-        /** @var CheckoutDetailsStruct|CreditCardCheckStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments */
         return $arguments->getSalesChannelContext()->getContext();
     }
 
+    /**
+     * @param CheckoutDetailsStruct|CreditCardCheckStruct|FinancialTransactionStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments
+     */
     private function getSalesChannelId(AbstractRequestParameterStruct $arguments): string
     {
         if ($arguments instanceof FinancialTransactionStruct) {
             return $arguments->getPaymentTransaction()->getOrder()->getSalesChannelId();
         }
 
-        /** @var CheckoutDetailsStruct|CreditCardCheckStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments */
         return $arguments->getSalesChannelContext()->getSalesChannel()->getId();
     }
 }
