@@ -16,7 +16,7 @@ class PreAuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilde
     {
         return [
             'request'      => self::REQUEST_ACTION_PREAUTHORIZE,
-            'clearingtype' => 'vor',
+            'clearingtype' => self::CLEARING_TYPE_PREPAYMENT,
         ];
     }
 

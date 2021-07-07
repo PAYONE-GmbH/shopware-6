@@ -15,7 +15,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'clearingtype'      => 'elv',
+            'clearingtype'      => self::CLEARING_TYPE_DEBIT,
             'request'           => self::REQUEST_ACTION_AUTHORIZE,
             'iban'              => $arguments->getRequestData()->get('iban', ''),
             'bic'               => $arguments->getRequestData()->get('bic', ''),

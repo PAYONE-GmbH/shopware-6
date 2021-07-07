@@ -34,7 +34,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $currency            = $this->getOrderCurrency($order, $salesChannelContext->getContext());
 
         $parameters = [
-            'clearingtype'    => 'rec',
+            'clearingtype'    => self::CLEARING_TYPE_INVOICE,
             'clearingsubtype' => 'POV',
             'request'         => self::REQUEST_ACTION_AUTHORIZE,
         ];

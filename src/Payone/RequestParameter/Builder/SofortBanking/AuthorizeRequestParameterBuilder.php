@@ -15,7 +15,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'clearingtype'           => 'sb',
+            'clearingtype'           => self::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
             'onlinebanktransfertype' => 'PNT',
             // TODO: possible values DE, AT, CH, NL (this has not been implemented before)
             'bankcountry' => 'DE',

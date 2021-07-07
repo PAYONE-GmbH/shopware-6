@@ -28,6 +28,14 @@ abstract class AbstractRequestParameterBuilder
     public const REQUEST_ACTION_MANAGE_MANDATE               = 'managemandate';
     public const REQUEST_ACTION_DEBIT                        = 'debit';
 
+    public const CLEARING_TYPE_DEBIT                = 'elv';
+    public const CLEARING_TYPE_WALLET               = 'wlt';
+    public const CLEARING_TYPE_FINANCING            = 'fnc';
+    public const CLEARING_TYPE_CREDIT_CARD          = 'cc';
+    public const CLEARING_TYPE_PREPAYMENT           = 'vor';
+    public const CLEARING_TYPE_ONLINE_BANK_TRANSFER = 'sb';
+    public const CLEARING_TYPE_INVOICE              = 'rec';
+
     abstract public function getRequestParameter(AbstractRequestParameterStruct $arguments): array;
 
     /**

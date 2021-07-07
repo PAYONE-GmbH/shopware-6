@@ -22,7 +22,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $iban               = $this->validateIbanRequestParameter($dataBag, $paymentTransaction);
 
         return [
-            'clearingtype'           => 'sb',
+            'clearingtype'           => self::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
             'onlinebanktransfertype' => 'TRL',
             'iban'                   => $iban,
         ];
