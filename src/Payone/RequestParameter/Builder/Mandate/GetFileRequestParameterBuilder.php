@@ -23,10 +23,6 @@ class GetFileRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        if ($arguments instanceof GetFileStruct) {
-            return true;
-        }
-
-        return false;
+        return $arguments instanceof GetFileStruct;
     }
 }
