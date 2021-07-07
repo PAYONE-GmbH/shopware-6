@@ -102,7 +102,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         /** @var OrderAddressEntity $billingAddress */
         $billingAddress = $orderAddresses->get($order->getBillingAddressId());
 
-        if ($billingAddress->getCompany() && $billingAddress->getVatId()) {
+        if (!empty($billingAddress->getCompany()) && !empty($billingAddress->getVatId())) {
             $parameters['add_paydata[b2b]']         = 'yes';
             $parameters['add_paydata[company_uid]'] = $billingAddress->getVatId();
 
