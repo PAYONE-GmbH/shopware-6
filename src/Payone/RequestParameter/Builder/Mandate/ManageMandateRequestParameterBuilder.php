@@ -24,10 +24,6 @@ class ManageMandateRequestParameterBuilder extends AbstractRequestParameterBuild
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        if ($arguments instanceof ManageMandateStruct) {
-            return true;
-        }
-
-        return false;
+        return $arguments instanceof ManageMandateStruct;
     }
 }
