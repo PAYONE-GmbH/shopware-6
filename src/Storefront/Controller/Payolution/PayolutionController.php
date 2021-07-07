@@ -78,29 +78,7 @@ class PayolutionController extends StorefrontController
      */
     public function displayContentModal(SalesChannelContext $context): Response
     {
-        $configuration = $this->configReader->read($context->getSalesChannel()->getId());
-
-        switch ($context->getPaymentMethod()->getId()) {
-            case PayonePayolutionInvoicing::UUID:
-                $companyName = $configuration->getString('payolutionInvoicingCompanyName');
-
-                break;
-
-            case PayonePayolutionInstallment::UUID:
-                $companyName = $configuration->getString('payolutionInstallmentCompanyName');
-
-                break;
-
-            case PayonePayolutionDebit::UUID:
-                $companyName = $configuration->getString('payolutionDebitCompanyName');
-
-                break;
-
-            default:
-                $companyName = null;
-
-                break;
-        }
+        $companyName = $this->getCompanyName($context);
 
         if (empty($companyName)) {
             $this->logger->error('Could not fetch invoicing consent modal content - payolution company name is empty.');
@@ -281,6 +259,22 @@ class PayolutionController extends StorefrontController
         $response->headers->set('Content-Disposition', $disposition);
 
         return $response;
+    }
+
+    protected function getCompanyName(SalesChannelContext $salesChannelContext): ?string
+    {
+        $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+
+        switch ($salesChannelContext->getPaymentMethod()->getId()) {
+            case PayonePayolutionInvoicing::UUID:
+                return $configuration->getString('payolutionInvoicingCompanyName');
+            case PayonePayolutionInstallment::UUID:
+                return $configuration->getString('payolutionInstallmentCompanyName');
+            case PayonePayolutionDebit::UUID:
+                return $configuration->getString('payolutionDebitCompanyName');
+            default:
+                return null;
+        }
     }
 
     private function getCreditInformationUrlFromCart(Cart $cart, int $duration): ?string
