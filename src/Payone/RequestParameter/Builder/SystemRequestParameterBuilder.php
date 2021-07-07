@@ -15,6 +15,7 @@ use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
+use PayonePayment\PayonePayment;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Plugin\PluginService;
 
@@ -56,7 +57,7 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         $portalId   = $configuration->get(sprintf('%sPortalId', $configurationPrefix), $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_ID));
         $portalKey  = $configuration->get(sprintf('%sPortalKey', $configurationPrefix), $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY));
 
-        $plugin = $this->pluginService->getPluginByName('PayonePayment', $context);
+        $plugin = $this->pluginService->getPluginByName(PayonePayment::PLUGIN_NAME, $context);
 
         return [
             'aid'                => $accountId,
