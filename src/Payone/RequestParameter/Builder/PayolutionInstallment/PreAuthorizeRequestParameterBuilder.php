@@ -11,9 +11,7 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 class PreAuthorizeRequestParameterBuilder extends AuthorizeRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
-    public function getRequestParameter(
-        AbstractRequestParameterStruct $arguments
-    ): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
         return array_merge(parent::getRequestParameter($arguments), [
             'request' => 'preauthorization',
         ]);

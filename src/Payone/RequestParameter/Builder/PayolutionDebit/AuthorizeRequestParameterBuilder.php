@@ -32,9 +32,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     }
 
     /** @param PaymentTransactionStruct $arguments */
-    public function getRequestParameter(
-        AbstractRequestParameterStruct $arguments
-    ): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
         $dataBag             = $arguments->getRequestData();
         $salesChannelContext = $arguments->getSalesChannelContext();
         $paymentTransaction  = $arguments->getPaymentTransaction();

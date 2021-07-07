@@ -11,9 +11,7 @@ use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
 class CreditCardCheckRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     /** @param CreditCardCheckStruct $arguments */
-    public function getRequestParameter(
-        AbstractRequestParameterStruct $arguments
-    ): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
         return [
             'request'       => 'creditcardcheck',
             'storecarddata' => 'yes',

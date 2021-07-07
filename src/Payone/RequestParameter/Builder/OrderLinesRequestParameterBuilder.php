@@ -23,9 +23,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
     }
 
     /** @param FinancialTransactionStruct $arguments */
-    public function getRequestParameter(
-        AbstractRequestParameterStruct $arguments
-    ): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
         $paymentTransaction = $arguments->getPaymentTransaction();
 
         $currency   = $paymentTransaction->getOrder()->getCurrency();

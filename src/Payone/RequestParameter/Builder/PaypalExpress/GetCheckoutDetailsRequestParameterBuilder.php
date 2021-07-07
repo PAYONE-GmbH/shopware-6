@@ -11,9 +11,7 @@ use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 
 class GetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionRequestParameterBuilder
 {
-    public function getRequestParameter(
-        AbstractRequestParameterStruct $arguments
-    ): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array {
         /** @var CheckoutDetailsStruct $arguments */
         $currency = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
         $cart     = $arguments->getCart();
