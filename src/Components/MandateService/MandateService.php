@@ -47,7 +47,7 @@ class MandateService implements MandateServiceInterface
         $criteria = new Criteria();
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_mandate.customerId', $customer->getId())
+            new EqualsFilter('customerId', $customer->getId())
         );
 
         return $this->mandateRepository->search($criteria, $context->getContext());
@@ -115,11 +115,11 @@ class MandateService implements MandateServiceInterface
         $criteria = new Criteria();
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_mandate.identification', $identification)
+            new EqualsFilter('identification', $identification)
         );
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_mandate.customerId', $customer->getId())
+            new EqualsFilter('customerId', $customer->getId())
         );
 
         return $this->mandateRepository->search($criteria, $context)->first();
