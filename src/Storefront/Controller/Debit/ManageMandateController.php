@@ -42,8 +42,8 @@ class ManageMandateController extends StorefrontController
         $payoneRequest = $this->requestFactory->getRequestParameter(
             new ManageMandateStruct(
                 $context,
-                (string) $request->get('iban'),
-                (string) $request->get('bic'),
+                (string) $request->get('iban', ''),
+                (string) $request->get('bic', ''),
                 PayoneDebitPaymentHandler::class
             )
         );

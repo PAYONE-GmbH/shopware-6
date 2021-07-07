@@ -25,7 +25,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
 
     /** @var CartHasherInterface */
     private $cartHasher;
-    
+
     /** @var ConfigReaderInterface */
     private $configReader;
 
