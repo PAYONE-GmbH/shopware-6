@@ -27,6 +27,7 @@
         </service>
 
         <service id="PayonePayment\Controller\WebhookController">
+            <argument type="service" id="PayonePayment\Util\Logger"/>
             <argument type="service" id="PayonePayment\Payone\Webhook\Processor\WebhookProcessor" />
 
             <call method="setContainer">

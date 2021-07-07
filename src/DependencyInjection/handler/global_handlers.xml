@@ -28,6 +28,7 @@
         </service>
 
         <service id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler">
+            <argument type="service" id="PayonePayment\Util\Logger" />
             <argument type="service" id="order_transaction.repository" />
         </service>
 

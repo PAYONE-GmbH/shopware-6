@@ -65,6 +65,8 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $customFields);
         $this->transactionDataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['transaction' => array_merge($data, $customFields)]);
         $this->transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction, $data);
+
+        $this->logger->debug('Saved new custom fields.', ['customFields' => $customFields]);
     }
 
     private function utf8EncodeRecursive(array $transactionData): array
