@@ -3,7 +3,7 @@
 {% block component_offcanvas_cart_actions %}
     {{ parent() }}
 
-    {% if not context.customer %}
+    {% if not context.customer and page.cart.price.totalPrice > 0 %}
         {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePaymentPaymentMethods %}
             {% block utilities_offcanvas_payone_paypal_express_button %}
                 <div class="text-center mt-3">
