@@ -24,6 +24,8 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 class PayonePayment extends Plugin
 {
+    public const PLUGIN_NAME = 'PayonePayment';
+
     public function build(ContainerBuilder $container): void
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/DependencyInjection'));
