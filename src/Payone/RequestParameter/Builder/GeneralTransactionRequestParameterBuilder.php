@@ -102,12 +102,6 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         ParameterBag $dataBag,
         SalesChannelContext $context
     ): ?string {
-        $workOrderId = $dataBag->get('workorder');
-
-        if (null === $workOrderId) {
-            return null;
-        }
-
         $cartHash = $dataBag->get('carthash');
 
         if (null === $cartHash) {
@@ -118,7 +112,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
             return null;
         }
 
-        return $workOrderId;
+        return $dataBag->get('workorder');
     }
 
     private function getLatestReferenceNumber(PaymentTransaction $transaction): ?string
