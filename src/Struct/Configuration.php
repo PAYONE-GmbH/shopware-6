@@ -21,6 +21,16 @@ class Configuration extends Struct
      *
      * @return null|array|bool|int|string
      */
+    public function getByPrefix(string $key, string $prefix = '', $default = '')
+    {
+        return $this->get(sprintf('%s%s', $prefix, ucfirst($key)), $default);
+    }
+
+    /**
+     * @param null|array|bool|int|string $default
+     *
+     * @return null|array|bool|int|string
+     */
     public function get(string $key, $default = '')
     {
         if (!array_key_exists($key, $this->configuration)) {
