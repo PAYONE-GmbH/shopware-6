@@ -53,6 +53,7 @@ class PayoneSofortBankingPaymentHandler extends AbstractPayonePaymentHandler imp
         RequestStack $requestStack
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
+
         $this->requestParameterFactory = $requestParameterFactory;
         $this->client                  = $client;
         $this->translator              = $translator;

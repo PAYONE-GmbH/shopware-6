@@ -54,6 +54,7 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
         RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
+
         $this->client                  = $client;
         $this->translator              = $translator;
         $this->dataHandler             = $dataHandler;
