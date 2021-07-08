@@ -15,5 +15,9 @@
         <service id="PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetDefinition">
             <tag name="shopware.entity.definition" entity="payone_payment_notification_target"/>
         </service>
+
+        <service id="PayonePayment\DataAbstractionLayer\Entity\NotificationForward\PayonePaymentNotificationForwardDefinition">
+            <tag name="shopware.entity.definition" entity="payone_payment_notification_forward"/>
+        </service>
     </services>
 </container>

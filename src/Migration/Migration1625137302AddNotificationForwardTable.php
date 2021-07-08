@@ -5,7 +5,7 @@ namespace PayonePayment\Migration;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
-class Migration1625137302AddNotificationTargetTable extends MigrationStep
+class Migration1625137302AddNotificationForwardTable extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
@@ -15,13 +15,11 @@ class Migration1625137302AddNotificationTargetTable extends MigrationStep
     public function update(Connection $connection): void
     {
         $sql = <<<SQL
-            CREATE TABLE IF NOT EXISTS `payone_payment_notification_target` (
+            CREATE TABLE IF NOT EXISTS `payone_payment_notification_forward` (
                 `id` BINARY(16) NOT NULL,
-                `url` VARCHAR(255) NOT NULL,
-                `is_basic_auth` TINYINT(1) NULL DEFAULT '0',
-                `txactions` VARCHAR(255) NULL,
-                `username` VARCHAR(255) NULL,
-                `password` VARCHAR(255) NULL,
+                `notification_target_id` BINARY(16) NULL,
+                `txaction` VARCHAR(255) NULL,
+                `response` VARCHAR(255) NULL,
                 `created_at` DATETIME(3) NOT NULL,
                 `updated_at` DATETIME(3) NULL,
                 PRIMARY KEY (`id`)
