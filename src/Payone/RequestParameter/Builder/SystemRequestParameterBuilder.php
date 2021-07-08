@@ -52,10 +52,10 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         $configuration       = $this->configReader->read($salesChannelId);
         $configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentMethod];
 
-        $accountId  = $configuration->get(sprintf('%sAccountId', $configurationPrefix), $configuration->get(ConfigInstaller::CONFIG_FIELD_ACCOUNT_ID));
-        $merchantId = $configuration->get(sprintf('%sMerchantId', $configurationPrefix), $configuration->get(ConfigInstaller::CONFIG_FIELD_MERCHANT_ID));
-        $portalId   = $configuration->get(sprintf('%sPortalId', $configurationPrefix), $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_ID));
-        $portalKey  = $configuration->get(sprintf('%sPortalKey', $configurationPrefix), $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY));
+        $accountId  = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_ACCOUNT_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_ACCOUNT_ID));
+        $merchantId = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_MERCHANT_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_MERCHANT_ID));
+        $portalId   = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_PORTAL_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_ID));
+        $portalKey  = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY));
 
         $plugin = $this->pluginService->getPluginByName(PayonePayment::PLUGIN_NAME, $context);
 
