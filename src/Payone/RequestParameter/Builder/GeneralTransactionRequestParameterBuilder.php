@@ -139,11 +139,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
 
             $customFields = $paymentMethod->getCustomFields();
 
-            if (!isset($customFields[CustomFieldInstaller::IS_PAYONE])) {
-                return false;
-            }
-
-            return $customFields[CustomFieldInstaller::IS_PAYONE];
+            return $customFields[CustomFieldInstaller::IS_PAYONE] ?? false;
         });
 
         if ($transactions->count() === 0) {
