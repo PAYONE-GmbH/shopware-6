@@ -7,8 +7,8 @@ namespace PayonePayment\DataAbstractionLayer\Entity\NotificationTarget;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                            add(PayonePaymentNotificationTargetEntity $entity)
- * @method void                            set(string $key, PayonePaymentNotificationTargetEntity $entity)
+ * @method void                                       add(PayonePaymentNotificationTargetEntity $entity)
+ * @method void                                       set(string $key, PayonePaymentNotificationTargetEntity $entity)
  * @method PayonePaymentNotificationTargetEntity[]    getIterator()
  * @method PayonePaymentNotificationTargetEntity[]    getElements()
  * @method null|PayonePaymentNotificationTargetEntity get(string $key)

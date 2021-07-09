@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\DataAbstractionLayer\Entity\NotificationTarget;
 
-use DateTimeInterface;
-use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
@@ -16,7 +14,7 @@ class PayonePaymentNotificationTargetEntity extends Entity
     /** @var string */
     protected $url;
 
-    /** @var bool  */
+    /** @var bool */
     protected $isBasicAuth = false;
 
     /** @var string */

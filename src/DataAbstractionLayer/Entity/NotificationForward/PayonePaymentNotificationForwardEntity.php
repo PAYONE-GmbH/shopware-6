@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\DataAbstractionLayer\Entity\NotificationForward;
 
-use DateTimeInterface;
 use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetEntity;
-use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
