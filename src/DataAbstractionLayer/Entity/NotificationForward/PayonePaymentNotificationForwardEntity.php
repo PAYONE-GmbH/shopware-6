@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\DataAbstractionLayer\Entity\NotificationForward;
 
 use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
@@ -23,6 +24,15 @@ class PayonePaymentNotificationForwardEntity extends Entity
 
     /** @var string */
     protected $response;
+
+    /** @var string */
+    protected $transactionId;
+
+    /** @var OrderTransactionEntity */
+    protected $tranaction;
+
+    /** @var string */
+    protected $content;
 
     public function getNotificationTargetId(): string
     {
@@ -62,5 +72,35 @@ class PayonePaymentNotificationForwardEntity extends Entity
     public function setResponse(string $response): void
     {
         $this->response = $response;
+    }
+
+    public function getTransactionId(): string
+    {
+        return $this->transactionId;
+    }
+
+    public function setTransactionId(string $transactionId): void
+    {
+        $this->transactionId = $transactionId;
+    }
+
+    public function getTranaction(): OrderTransactionEntity
+    {
+        return $this->tranaction;
+    }
+
+    public function setTranaction(OrderTransactionEntity $tranaction): void
+    {
+        $this->tranaction = $tranaction;
+    }
+
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    public function setContent(string $content): void
+    {
+        $this->content = $content;
     }
 }

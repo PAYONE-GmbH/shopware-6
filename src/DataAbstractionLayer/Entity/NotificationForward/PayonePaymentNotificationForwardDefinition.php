@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace PayonePayment\DataAbstractionLayer\Entity\NotificationForward;
 
 use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetDefinition;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
@@ -43,6 +45,11 @@ class PayonePaymentNotificationForwardDefinition extends EntityDefinition
 
             (new StringField('txaction', 'txactions')),
             (new StringField('response', 'response')),
+
+            new FkField('transaction_id', 'transactionId', OrderTransactionDefinition::class),
+            new OneToOneAssociationField('transaction', 'transaction_id', 'id', OrderTransactionDefinition::class, false),
+
+            (new LongTextField('content', 'content')),
         ]);
     }
 }
