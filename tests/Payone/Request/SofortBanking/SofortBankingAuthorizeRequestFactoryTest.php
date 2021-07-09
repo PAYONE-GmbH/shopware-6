@@ -5,43 +5,32 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Payone\Request\SofortBanking;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
-use PayonePayment\Components\ConfigReader\ConfigReader;
-use PayonePayment\Components\RedirectHandler\RedirectHandler;
-use PayonePayment\Configuration\ConfigurationPrefixes;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
-use PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequest;
-use PayonePayment\Payone\Request\SofortBanking\SofortBankingAuthorizeRequestFactory;
-use PayonePayment\Struct\Configuration;
-use PayonePayment\Struct\PaymentTransaction;
-use PayonePayment\Test\Constants;
-use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use PayonePayment\Test\Mock\Factory\RequestParameterFactoryTestTrait;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Defaults;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Pricing\CashRoundingConfig;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
-use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
 class SofortBankingAuthorizeRequestFactoryTest extends TestCase
 {
-    use RequestFactoryTestTrait;
+    use RequestParameterFactoryTestTrait;
 
     public function testCorrectRequestParameters(): void
     {
-        $factory = new SofortBankingAuthorizeRequestFactory($this->getSofortBankingAuthorizeRequest(), $this->getCustomerRequest(), $this->getSystemRequest());
-
         $salesChannelContext = $this->getSalesChannelContext();
 
-        $request = $factory->getRequestParameters($this->getPaymentTransaction(), $salesChannelContext);
+        $factory = $this->getRequestParameterFactory($salesChannelContext);
+
+        $request = $factory->getRequestParameter(
+            new PaymentTransactionStruct(
+                $this->getPaymentTransaction(PayoneSofortBankingPaymentHandler::class),
+                new RequestDataBag([]),
+                $salesChannelContext,
+                PayoneSofortBankingPaymentHandler::class,
+                AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
+            )
+        );
 
         Assert::assertArraySubset(
             [
@@ -74,86 +63,5 @@ class SofortBankingAuthorizeRequestFactoryTest extends TestCase
 
         $this->assertArrayHasKey('integrator_version', $request);
         $this->assertArrayHasKey('solution_version', $request);
-    }
-
-    protected function getPaymentTransaction(): PaymentTransaction
-    {
-        $orderTransactionEntity = new OrderTransactionEntity();
-        $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
-
-        $orderEntity = new OrderEntity();
-        $orderEntity->setId(Constants::ORDER_ID);
-        $orderEntity->setOrderNumber('1');
-        $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
-        $orderEntity->setAmountTotal(100);
-        $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
-        $orderEntity->setTransactions(new OrderTransactionCollection([]));
-
-        $paymentMethodEntity = new PaymentMethodEntity();
-        $paymentMethodEntity->setHandlerIdentifier(PayoneSofortBankingPaymentHandler::class);
-        $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
-
-        $orderTransactionEntity->setOrder($orderEntity);
-
-        $customFields = [
-            CustomFieldInstaller::TRANSACTION_ID  => Constants::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER => 0,
-        ];
-        $orderTransactionEntity->setCustomFields($customFields);
-
-        $paymentTransactionStruct = new AsyncPaymentTransactionStruct($orderTransactionEntity, $orderEntity, 'test-url');
-
-        return PaymentTransaction::fromAsyncPaymentTransactionStruct($paymentTransactionStruct, $orderEntity);
-    }
-
-    private function getSofortBankingAuthorizeRequest(): SofortBankingAuthorizeRequest
-    {
-        $currencyRepository = $this->createMock(EntityRepository::class);
-        $currencyEntity     = new CurrencyEntity();
-        $currencyEntity->setId(Constants::CURRENCY_ID);
-        $currencyEntity->setIsoCode('EUR');
-
-        if (method_exists($currencyEntity, 'setDecimalPrecision')) {
-            $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
-        } else {
-            $currencyEntity->setItemRounding(
-                new CashRoundingConfig(
-                    Constants::CURRENCY_DECIMAL_PRECISION,
-                    Constants::ROUNDING_INTERVAL,
-                    true)
-            );
-
-            $currencyEntity->setTotalRounding(
-                new CashRoundingConfig(
-                    Constants::CURRENCY_DECIMAL_PRECISION,
-                    Constants::ROUNDING_INTERVAL,
-                    true)
-            );
-        }
-
-        try {
-            $entitySearchResult = new EntitySearchResult(
-                CurrencyEntity::class,
-                1,
-                new EntityCollection([$currencyEntity]),
-                null,
-                new Criteria(),
-                Context::createDefaultContext()
-            );
-        } catch (\Throwable $e) {
-            /** @phpstan-ignore-next-line */
-            $entitySearchResult = new EntitySearchResult(1, new EntityCollection([$currencyEntity]), null, new Criteria(), Context::createDefaultContext());
-        }
-
-        $currencyRepository->method('search')->willReturn($entitySearchResult);
-
-        $configReader = $this->createMock(ConfigReader::class);
-        $configReader->method('read')->willReturn(
-            new Configuration([
-                sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD) => false,
-            ])
-        );
-
-        return new SofortBankingAuthorizeRequest($this->createMock(RedirectHandler::class), $currencyRepository, $configReader);
     }
 }

@@ -2,8 +2,8 @@ includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
 
 parameters:
-    level: 5
-    reportUnmatchedIgnoredErrors: true
+    level: max
+    reportUnmatchedIgnoredErrors: false
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingIterableValueType: false
     ignoreErrors:

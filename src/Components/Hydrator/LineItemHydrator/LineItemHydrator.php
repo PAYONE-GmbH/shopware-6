@@ -11,6 +11,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 
 class LineItemHydrator implements LineItemHydratorInterface
 {

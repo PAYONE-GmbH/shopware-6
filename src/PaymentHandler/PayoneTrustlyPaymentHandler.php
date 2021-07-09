@@ -11,8 +11,8 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Trustly\TrustlyAuthorizeRequestFactory;
-use PayonePayment\Payone\Request\Trustly\TrustlyPreAuthorizeRequestFactory;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -28,12 +28,6 @@ use Throwable;
 
 class PayoneTrustlyPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var TrustlyPreAuthorizeRequestFactory */
-    private $preAuthRequestFactory;
-
-    /** @var TrustlyAuthorizeRequestFactory */
-    private $authRequestFactory;
-
     /** @var PayoneClientInterface */
     private $client;
 
@@ -46,24 +40,26 @@ class PayoneTrustlyPaymentHandler extends AbstractPayonePaymentHandler implement
     /** @var PaymentStateHandlerInterface */
     private $stateHandler;
 
+    /** @var RequestParameterFactory */
+    private $requestParameterFactory;
+
     public function __construct(
         ConfigReaderInterface $configReader,
-        TrustlyPreAuthorizeRequestFactory $preAuthRequestFactory,
-        TrustlyAuthorizeRequestFactory $authRequestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         EntityRepositoryInterface $lineItemRepository,
         PaymentStateHandlerInterface $stateHandler,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-        $this->preAuthRequestFactory = $preAuthRequestFactory;
-        $this->authRequestFactory    = $authRequestFactory;
-        $this->client                = $client;
-        $this->translator            = $translator;
-        $this->dataHandler           = $dataHandler;
-        $this->stateHandler          = $stateHandler;
+
+        $this->client                  = $client;
+        $this->translator              = $translator;
+        $this->dataHandler             = $dataHandler;
+        $this->stateHandler            = $stateHandler;
+        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
@@ -82,15 +78,14 @@ class PayoneTrustlyPaymentHandler extends AbstractPayonePaymentHandler implement
 
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
-        // Select request factory based on configured authorization method
-        $factory = $authorizationMethod === 'preauthorization'
-            ? $this->preAuthRequestFactory
-            : $this->authRequestFactory;
-
-        $request = $factory->getRequestParameters(
-            $paymentTransaction,
-            $dataBag,
-            $salesChannelContext
+        $request = $this->requestParameterFactory->getRequestParameter(
+            new PaymentTransactionStruct(
+                $paymentTransaction,
+                $requestData,
+                $salesChannelContext,
+                __CLASS__,
+                $authorizationMethod
+            )
         );
 
         try {

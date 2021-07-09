@@ -36,7 +36,7 @@
 
         <service id="PayonePayment\Controller\SettingsController">
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="PayonePayment\Payone\Request\Test\TestRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="state_machine_transition.repository" />
             <argument type="service" id="PayonePayment\Util\Logger"/>
 
@@ -64,7 +64,7 @@
         </service>
 
         <service id="PayonePayment\Storefront\Controller\Debit\ManageMandateController">
-            <argument type="service" id="PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
 
             <call method="setContainer">
@@ -77,9 +77,7 @@
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreCheckRequestFactory" />
-            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequestFactory" />
-            <argument type="service" id="PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentCalculationRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="PayonePayment\Util\Logger" />
 
             <call method="setContainer">
@@ -88,8 +86,6 @@
         </service>
 
         <service id="PayonePayment\Storefront\Controller\Paypal\PaypalExpressController">
-            <argument type="service" id="PayonePayment\Payone\Request\PaypalExpress\PaypalExpressSetCheckoutRequestFactory" />
-            <argument type="service" id="PayonePayment\Payone\Request\PaypalExpress\PaypalExpressGetCheckoutDetailsRequestFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
             <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\RegisterRoute" />
@@ -100,6 +96,7 @@
             <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher" />
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
             <argument type="service" id="Shopware\Storefront\Framework\Routing\Router"/>
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

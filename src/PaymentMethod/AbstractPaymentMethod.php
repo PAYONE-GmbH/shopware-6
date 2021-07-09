@@ -6,12 +6,25 @@ namespace PayonePayment\PaymentMethod;
 
 abstract class AbstractPaymentMethod implements PaymentMethodInterface
 {
+    /** @var string */
     protected $id;
+
+    /** @var string */
     protected $name;
+
+    /** @var string */
     protected $description;
+
+    /** @var string */
     protected $paymentHandler;
+
+    /** @var null|string */
     protected $template = null;
+
+    /** @var array */
     protected $translations;
+
+    /** @var int */
     protected $position;
 
     public function getId(): string

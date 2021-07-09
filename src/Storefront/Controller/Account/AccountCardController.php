@@ -97,8 +97,8 @@ class AccountCardController extends StorefrontController
             $context
             && $context->getCustomer()
             && (
-                $allowGuest === true
-                || $context->getCustomer()->getGuest() === false
+                /** @phpstan-ignore-next-line */
+                $allowGuest === true || $context->getCustomer()->getGuest() === false
             )
         ) {
             return;

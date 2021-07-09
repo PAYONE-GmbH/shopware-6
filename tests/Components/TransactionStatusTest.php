@@ -35,7 +35,7 @@ class TransactionStatusTest extends TestCase
     /** @var TransactionStatusServiceInterface */
     private $transactionStatusService;
 
-    public function dataProvider()
+    public function dataProvider(): \Generator
     {
         yield [
             'open' => [

@@ -11,8 +11,8 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\IDeal\IDealAuthorizeRequestFactory;
-use PayonePayment\Payone\Request\IDeal\IDealPreAuthorizeRequestFactory;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -46,12 +46,6 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
         'MONEYOU',
     ];
 
-    /** @var IDealPreAuthorizeRequestFactory */
-    private $preAuthRequestFactory;
-
-    /** @var IDealAuthorizeRequestFactory */
-    private $authRequestFactory;
-
     /** @var PayoneClientInterface */
     private $client;
 
@@ -64,24 +58,26 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
     /** @var PaymentStateHandlerInterface */
     private $stateHandler;
 
+    /** @var RequestParameterFactory */
+    private $requestParameterFactory;
+
     public function __construct(
         ConfigReaderInterface $configReader,
         EntityRepositoryInterface $lineItemRepository,
-        IDealPreAuthorizeRequestFactory $preAuthRequestFactory,
-        IDealAuthorizeRequestFactory $authRequestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         PaymentStateHandlerInterface $stateHandler,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-        $this->preAuthRequestFactory = $preAuthRequestFactory;
-        $this->authRequestFactory    = $authRequestFactory;
-        $this->client                = $client;
-        $this->translator            = $translator;
-        $this->dataHandler           = $dataHandler;
-        $this->stateHandler          = $stateHandler;
+
+        $this->client                  = $client;
+        $this->translator              = $translator;
+        $this->dataHandler             = $dataHandler;
+        $this->stateHandler            = $stateHandler;
+        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
@@ -109,15 +105,14 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
             );
         }
 
-        // Select request factory based on configured authorization method
-        $factory = $authorizationMethod === 'preauthorization'
-            ? $this->preAuthRequestFactory
-            : $this->authRequestFactory;
-
-        $request = $factory->getRequestParameters(
-            $paymentTransaction,
-            $requestData,
-            $salesChannelContext
+        $request = $this->requestParameterFactory->getRequestParameter(
+            new PaymentTransactionStruct(
+                $paymentTransaction,
+                $requestData,
+                $salesChannelContext,
+                __CLASS__,
+                $authorizationMethod
+            )
         );
 
         try {

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\Storefront\Controller\Debit;
 
+use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\ManageMandate\ManageMandateRequestFactory;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\ManageMandateStruct;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
@@ -17,14 +19,14 @@ use Throwable;
 
 class ManageMandateController extends StorefrontController
 {
-    /** @var ManageMandateRequestFactory */
+    /** @var RequestParameterFactory */
     private $requestFactory;
 
     /** @var PayoneClientInterface */
     private $client;
 
     public function __construct(
-        ManageMandateRequestFactory $mandateRequestFactory,
+        RequestParameterFactory $mandateRequestFactory,
         PayoneClientInterface $client
     ) {
         $this->requestFactory = $mandateRequestFactory;
@@ -37,13 +39,13 @@ class ManageMandateController extends StorefrontController
      */
     public function mandateOverview(Request $request, SalesChannelContext $context): JsonResponse
     {
-        $iban = (string) $request->get('iban');
-        $bic  = (string) $request->get('bic');
-
-        $payoneRequest = $this->requestFactory->getRequestParameters(
-            $context,
-            $iban,
-            $bic
+        $payoneRequest = $this->requestFactory->getRequestParameter(
+            new ManageMandateStruct(
+                $context,
+                (string) $request->get('iban', ''),
+                (string) $request->get('bic', ''),
+                PayoneDebitPaymentHandler::class
+            )
         );
 
         try {
