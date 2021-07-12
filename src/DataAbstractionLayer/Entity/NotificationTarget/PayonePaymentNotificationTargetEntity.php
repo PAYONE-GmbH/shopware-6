@@ -20,10 +20,10 @@ class PayonePaymentNotificationTargetEntity extends Entity
     /** @var string */
     protected $txactions;
 
-    /** @var string */
+    /** @var null|string */
     protected $username;
 
-    /** @var string */
+    /** @var null|string */
     protected $password;
 
     public function getUrl(): string
@@ -56,22 +56,22 @@ class PayonePaymentNotificationTargetEntity extends Entity
         $this->txactions = $txactions;
     }
 
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    public function setUsername(string $username): void
+    public function setUsername(?string $username): void
     {
         $this->username = $username;
     }
 
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): void
+    public function setPassword(?string $password): void
     {
         $this->password = $password;
     }

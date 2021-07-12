@@ -6,14 +6,15 @@ namespace PayonePayment\Payone\Webhook\Handler;
 
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetEntity;
+use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardCommand;
 use PayonePayment\Struct\PaymentTransaction;
-use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class NotificationForwardHandler implements WebhookHandlerInterface
 {
@@ -26,19 +27,19 @@ class NotificationForwardHandler implements WebhookHandlerInterface
     /** @var TransactionDataHandlerInterface */
     private $transactionDataHandler;
 
-    /** @var LoggerInterface */
-    private $logger;
+    /** @var MessageBusInterface */
+    private $messageBus;
 
     public function __construct(
         EntityRepositoryInterface $notificationTargetRepository,
         EntityRepositoryInterface $notificationForwardRepository,
-        LoggerInterface $logger,
-        TransactionDataHandlerInterface $transactionDataHandler
+        TransactionDataHandlerInterface $transactionDataHandler,
+        MessageBusInterface $messageBus
     ) {
         $this->notificationTargetRepository  = $notificationTargetRepository;
         $this->notificationForwardRepository = $notificationForwardRepository;
-        $this->logger                        = $logger;
         $this->transactionDataHandler        = $transactionDataHandler;
+        $this->messageBus                    = $messageBus;
     }
 
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool
@@ -64,50 +65,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
 
         $notificationForwards = $this->persistNotificationForwards($notificationTargets, $data, $paymentTransactionId, $salesChannelContext);
 
-        $forwardRequests = [];
-        $multiHandle     = curl_multi_init();
-
-        foreach ($notificationForwards as $forward) {
-            $id                   = $forward['id'];
-            $forwardRequests[$id] = curl_init();
-
-            curl_setopt($forwardRequests[$id], CURLOPT_URL, $forward['target']->getUrl());
-            curl_setopt($forwardRequests[$id], CURLOPT_HEADER, 0);
-            curl_setopt($forwardRequests[$id], CURLOPT_POST, 1);
-            curl_setopt($forwardRequests[$id], CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($forwardRequests[$id], CURLOPT_TIMEOUT, 10);
-            curl_setopt($forwardRequests[$id], CURLOPT_CONNECTTIMEOUT, 10);
-            curl_setopt($forwardRequests[$id], CURLOPT_POSTFIELDS, http_build_query($data));
-            curl_setopt($forwardRequests[$id], CURLOPT_FAILONERROR, true);
-            curl_multi_add_handle($multiHandle, $forwardRequests[$id]);
-        }
-
-        do {
-            $status = curl_multi_exec($multiHandle, $active);
-
-            if ($active) {
-                curl_multi_select($multiHandle);
-            }
-        } while ($active && $status == CURLM_OK);
-
-        $test = [];
-
-        foreach ($notificationForwards as &$forward) {
-            $id                  = $forward['id'];
-            $response            = curl_multi_getcontent($forwardRequests[$id]);
-            $forward['response'] = (!empty($response)) ? $response : 'NO_RESPONSE';
-            curl_multi_remove_handle($multiHandle, $forwardRequests[$id]);
-        }
-
-        curl_multi_close($multiHandle);
-
-        $this->notificationForwardRepository->update($notificationForwards, $salesChannelContext->getContext());
-
-        dd($test);
-        //TODO: timeout
-        //TODO: no response
-        //TODO: basic auth
-        //TODO: shutdown handler
+        $this->messageBus->dispatch(new NotificationForwardCommand(array_column($notificationForwards, 'id'), $salesChannelContext->getContext()));
     }
 
     private function persistNotificationForwards(EntityCollection $notificationTargets, array $data, ?string $paymentTransactionId, SalesChannelContext $salesChannelContext): array
@@ -122,7 +80,6 @@ class NotificationForwardHandler implements WebhookHandlerInterface
                 'notificationTargetId' => $target->getId(),
                 'transactionId'        => $paymentTransactionId,
                 'txaction'             => $data['txaction'],
-                'target'               => $target,
             ];
         }
 
