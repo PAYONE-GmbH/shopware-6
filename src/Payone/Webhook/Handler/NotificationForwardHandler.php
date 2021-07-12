@@ -64,9 +64,49 @@ class NotificationForwardHandler implements WebhookHandlerInterface
 
         $notificationForwards = $this->persistNotificationForwards($notificationTargets, $data, $paymentTransactionId, $salesChannelContext);
 
-        //TODO: curl multi exec
+        $forwardRequests = [];
+        $multiHandle     = curl_multi_init();
+
+        foreach ($notificationForwards as $forward) {
+            $id                   = $forward['id'];
+            $forwardRequests[$id] = curl_init();
+
+            curl_setopt($forwardRequests[$id], CURLOPT_URL, $forward['target']->getUrl());
+            curl_setopt($forwardRequests[$id], CURLOPT_HEADER, 0);
+            curl_setopt($forwardRequests[$id], CURLOPT_POST, 1);
+            curl_setopt($forwardRequests[$id], CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($forwardRequests[$id], CURLOPT_TIMEOUT, 10);
+            curl_setopt($forwardRequests[$id], CURLOPT_CONNECTTIMEOUT, 10);
+            curl_setopt($forwardRequests[$id], CURLOPT_POSTFIELDS, http_build_query($data));
+            curl_setopt($forwardRequests[$id], CURLOPT_FAILONERROR, true);
+            curl_multi_add_handle($multiHandle, $forwardRequests[$id]);
+        }
+
+        do {
+            $status = curl_multi_exec($multiHandle, $active);
+
+            if ($active) {
+                curl_multi_select($multiHandle);
+            }
+        } while ($active && $status == CURLM_OK);
+
+        $test = [];
+
+        foreach ($notificationForwards as &$forward) {
+            $id                  = $forward['id'];
+            $response            = curl_multi_getcontent($forwardRequests[$id]);
+            $forward['response'] = (!empty($response)) ? $response : 'NO_RESPONSE';
+            curl_multi_remove_handle($multiHandle, $forwardRequests[$id]);
+        }
+
+        curl_multi_close($multiHandle);
+
+        $this->notificationForwardRepository->update($notificationForwards, $salesChannelContext->getContext());
+
+        dd($test);
+        //TODO: timeout
+        //TODO: no response
         //TODO: basic auth
-        //TODO: update responses
         //TODO: shutdown handler
     }
 
@@ -82,6 +122,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
                 'notificationTargetId' => $target->getId(),
                 'transactionId'        => $paymentTransactionId,
                 'txaction'             => $data['txaction'],
+                'target'               => $target,
             ];
         }
 
