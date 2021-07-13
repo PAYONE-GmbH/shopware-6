@@ -1,11 +1,12 @@
 const { Component, Mixin } = Shopware;
+const { Criteria } = Shopware.Data;
 import template from './sw-order.html.twig';
 import './sw-order.scss';
 
 Component.override('sw-order-detail-base', {
     template,
 
-    inject: ['PayonePaymentService'],
+    inject: ['PayonePaymentService', 'repositoryFactory'],
 
     mixins: [
         Mixin.getByName('notification')
@@ -13,7 +14,8 @@ Component.override('sw-order-detail-base', {
 
     data() {
         return {
-            disableButtons: false
+            disableButtons: false,
+            notificationForwards: null
         };
     },
 
@@ -28,6 +30,28 @@ Component.override('sw-order-detail-base', {
                     return 0;
                 }
             });
+        },
+
+        notificationForwardRepository() {
+            return this.repositoryFactory.create('payone_payment_notification_forward');
+        },
+
+        notificationTargetColumns() {
+            return [{
+                property: 'txaction',
+                type: 'text',
+                width: '100px'
+            },{
+                property: 'notificationTarget.url',
+                type: 'text',
+            }, {
+                property: 'response',
+                width: '100px'
+            }, {
+                property: 'updatedAt',
+                align: 'right',
+                type: 'date'
+            }];
         }
     },
 
@@ -38,6 +62,31 @@ Component.override('sw-order-detail-base', {
             }
 
             return transaction.customFields.payone_transaction_id;
+        },
+
+        hasNotificationForwards(transaction) {
+            if(null === this.notificationForwards) {
+                this.getNotificationForwards(transaction);
+                return false;
+            }
+
+            if(this.notificationForwards.length <= 0) {
+                return false;
+            }
+
+            return true;
+        },
+
+        getNotificationForwards(transaction) {
+            const criteria = new Criteria();
+            criteria.addAssociation('notificationTarget');
+            criteria.addFilter(Criteria.equals('transactionId', transaction.id));
+
+            return this.notificationForwardRepository.search(criteria, Shopware.Context.api)
+                .then((searchResult) => {
+                    this.notificationForwards = searchResult;
+                    console.log(searchResult);
+                });
         },
 
         isActiveTransaction(transaction) {
