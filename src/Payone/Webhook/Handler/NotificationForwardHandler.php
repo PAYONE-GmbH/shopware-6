@@ -76,7 +76,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
             /** @var PayonePaymentNotificationTargetEntity $target */
             $notificationForwards[] = [
                 'id'                   => Uuid::randomHex(),
-                'content'              => serialize($data),
+                'content'              => serialize(mb_convert_encoding($data, 'UTF-8', 'ISO-8859-1')),
                 'notificationTargetId' => $target->getId(),
                 'transactionId'        => $paymentTransactionId,
                 'txaction'             => $data['txaction'],

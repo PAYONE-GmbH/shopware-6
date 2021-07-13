@@ -23,7 +23,7 @@ class Migration1625137302AddNotificationForwardTable extends MigrationStep
                 `txaction` VARCHAR(255) NULL,
                 `response` VARCHAR(255) NULL,
                 `transaction_id` BINARY(16) NULL,
-                `content` LONGTEXT CHARACTER SET latin1 NULL,
+                `content` LONGTEXT NULL,
                 `created_at` DATETIME(3) NOT NULL,
                 `updated_at` DATETIME(3) NULL,
                 PRIMARY KEY (`id`)
