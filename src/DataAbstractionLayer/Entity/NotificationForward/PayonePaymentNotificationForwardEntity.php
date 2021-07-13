@@ -16,7 +16,7 @@ class PayonePaymentNotificationForwardEntity extends Entity
     /** @var string */
     protected $notificationTargetId;
 
-    /** @var PayonePaymentNotificationTargetEntity */
+    /** @var null|PayonePaymentNotificationTargetEntity */
     protected $notificationTarget;
 
     /** @var string */
@@ -44,12 +44,12 @@ class PayonePaymentNotificationForwardEntity extends Entity
         $this->notificationTargetId = $notificationTargetId;
     }
 
-    public function getNotificationTarget(): PayonePaymentNotificationTargetEntity
+    public function getNotificationTarget(): ?PayonePaymentNotificationTargetEntity
     {
         return $this->notificationTarget;
     }
 
-    public function setNotificationTarget(PayonePaymentNotificationTargetEntity $notificationTarget): void
+    public function setNotificationTarget(?PayonePaymentNotificationTargetEntity $notificationTarget): void
     {
         $this->notificationTarget = $notificationTarget;
     }

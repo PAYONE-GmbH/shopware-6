@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\Webhook\MessageBus\MessageHandler;
 
 use PayonePayment\DataAbstractionLayer\Entity\NotificationForward\PayonePaymentNotificationForwardEntity;
 use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardCommand;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,9 +18,13 @@ class NotificationForwardHandler extends AbstractMessageHandler
     /** @var EntityRepositoryInterface */
     private $notificationForwardRepository;
 
-    public function __construct(EntityRepositoryInterface $notificationForwardRepository)
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(EntityRepositoryInterface $notificationForwardRepository, LoggerInterface $logger)
     {
         $this->notificationForwardRepository = $notificationForwardRepository;
+        $this->logger                        = $logger;
     }
 
     /** @param NotificationForwardCommand $message */
@@ -27,6 +32,8 @@ class NotificationForwardHandler extends AbstractMessageHandler
     {
         $notificationForwards = $this->getNotificationForwards($message->getNotificationTargetIds(), $message->getContext());
         $multiHandle          = curl_multi_init();
+
+        $this->logger->info('Forwarding notifications', array_keys($notificationForwards->getElements()));
 
         $forwardRequests = $this->getForwardRequests($multiHandle, $notificationForwards);
 
@@ -38,7 +45,6 @@ class NotificationForwardHandler extends AbstractMessageHandler
             }
         } while ($active && $status == CURLM_OK);
 
-        //TODO: implement logging
         $this->updateResponses($multiHandle, $notificationForwards, $forwardRequests, $message->getContext());
 
         curl_multi_close($multiHandle);
@@ -83,9 +89,13 @@ class NotificationForwardHandler extends AbstractMessageHandler
         $forwardRequests = [];
 
         foreach ($notificationForwards as $forward) {
+            $id = $forward->getId();
             /** @var PayonePaymentNotificationForwardEntity $forward */
-            $id     = $forward->getId();
             $target = $forward->getNotificationTarget();
+
+            if (null === $target) {
+                continue;
+            }
 
             $forwardRequests[$id] = curl_init();
 

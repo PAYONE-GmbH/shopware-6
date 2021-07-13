@@ -29,6 +29,7 @@
 
         <service id="PayonePayment\Payone\Webhook\MessageBus\MessageHandler\NotificationForwardHandler">
             <argument type="service" id="payone_payment_notification_forward.repository" />
+            <argument type="service" id="PayonePayment\Util\Logger" />
             <tag name="messenger.message_handler"/>
         </service>
     </services>
