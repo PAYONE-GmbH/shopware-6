@@ -73,7 +73,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
 
     private function persistNotificationForwards(EntityCollection $notificationTargets, Request $request, ?string $paymentTransactionId, SalesChannelContext $salesChannelContext): array
     {
-        $data = $request->request->all();
+        $data                 = $request->request->all();
         $notificationForwards = [];
 
         foreach ($notificationTargets as $target) {
