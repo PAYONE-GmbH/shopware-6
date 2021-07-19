@@ -42,7 +42,7 @@
                             :isFullpage="false"
                             :showSelection="false"
                             :compactMode="true"
-                            :showActions="false"
+                            :showActions="true"
                             :allowInlineEdit="false"
                             :columns="notificationTargetColumns"
                             :plainAppearance="true"
@@ -52,6 +52,14 @@
                             <template #column-updatedAt="{ item }">
                                 {{ item.updatedAt| date({ hour: '2-digit', minute: '2-digit' }) }}
                             </template>
+
+                            <template #actions="{ item }">
+                                <sw-context-menu-item
+                                    @click="requeue(item)">
+                                    {{ $tc('payonePayment.notificationTarget.actions.requeue') }}
+                                </sw-context-menu-item>
+                            </template>
+
                         </sw-data-grid>
                     </sw-container>
                 </sw-card>

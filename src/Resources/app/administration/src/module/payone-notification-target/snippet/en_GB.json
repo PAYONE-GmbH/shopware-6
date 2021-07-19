@@ -30,6 +30,9 @@
                 "url": "Url",
                 "isBasicAuth": "Basic Auth",
                 "txactions": "txactions"
+            },
+            "actions": {
+                "requeue": "Requeue"
             }
         }
     }

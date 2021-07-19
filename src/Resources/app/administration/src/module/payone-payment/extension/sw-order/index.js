@@ -85,7 +85,6 @@ Component.override('sw-order-detail-base', {
             return this.notificationForwardRepository.search(criteria, Shopware.Context.api)
                 .then((searchResult) => {
                     this.notificationForwards = searchResult;
-                    console.log(searchResult);
                 });
         },
 
