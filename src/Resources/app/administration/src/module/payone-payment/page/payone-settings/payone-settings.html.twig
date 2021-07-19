@@ -24,6 +24,18 @@
         </sw-button>
         {% endblock %}
 
+        {% block payone_payment_settings_actions_notification_forward_target %}
+            <sw-button
+                :routerLink="{ name: 'payone.notification.target.list' }"
+                :disabled="false"
+                variant="ghost"
+                :square="false"
+                :block="false"
+                :isLoading="false">
+                {{ $tc('payonePayment.notificationTarget.module.buttonTitle') }}
+            </sw-button>
+        {% endblock %}
+
         {% block payone_payment_settings_actions_test %}
         <sw-button-process @click="onTest"
                            :isLoading="isTesting"

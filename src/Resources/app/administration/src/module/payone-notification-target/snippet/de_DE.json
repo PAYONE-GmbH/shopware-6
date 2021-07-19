@@ -2,7 +2,8 @@
     "payonePayment": {
         "notificationTarget": {
             "module": {
-                "title": "Payone Notificationweiterleitungen"
+                "title": "Payone Notificationweiterleitungen",
+                "buttonTitle": "Notifications"
             },
             "list": {
                 "title": "Notificationweiterleitungen",

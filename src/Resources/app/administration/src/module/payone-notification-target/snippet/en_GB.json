@@ -2,7 +2,8 @@
     "payonePayment": {
         "notificationTarget": {
             "module": {
-                "title": "Payone notification forward"
+                "title": "Payone notification forward",
+                "buttonTitle": "Notifications"
             },
             "list": {
                 "title": "Notification forward",

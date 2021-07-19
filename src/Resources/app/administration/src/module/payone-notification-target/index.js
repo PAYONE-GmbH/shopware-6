@@ -42,14 +42,5 @@ Shopware.Module.register('payone-notification-target', {
                 parentPath: 'payone.notification.target.list'
             }
         }
-    },
-
-    navigation: [{
-        label: 'payonePayment.notificationTarget.module.title',
-        color: '#3596d6',
-        path: 'payone.notification.target.list',
-        icon: 'default-shopping-paper-bag-product',
-        parent: 'sw-settings',
-        position: 100
-    }]
+    }
 });
