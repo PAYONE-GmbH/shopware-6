@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
+use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardCommand;
 use PayonePayment\Payone\Webhook\Processor\WebhookProcessorInterface;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class WebhookController extends StorefrontController
@@ -18,9 +22,20 @@ class WebhookController extends StorefrontController
     /** @var WebhookProcessorInterface */
     private $webhookProcessor;
 
-    public function __construct(WebhookProcessorInterface $webhookProcessor)
-    {
-        $this->webhookProcessor = $webhookProcessor;
+    /** @var EntityRepositoryInterface */
+    private $notificationForwardRepository;
+
+    /** @var MessageBusInterface */
+    private $messageBus;
+
+    public function __construct(
+        WebhookProcessorInterface $webhookProcessor,
+        EntityRepositoryInterface $notificationForwardRepository,
+        MessageBusInterface $messageBus
+    ) {
+        $this->webhookProcessor              = $webhookProcessor;
+        $this->notificationForwardRepository = $notificationForwardRepository;
+        $this->messageBus                    = $messageBus;
     }
 
     /**
@@ -39,11 +54,12 @@ class WebhookController extends StorefrontController
      */
     public function reQueueForward(Request $request, Context $context): Response
     {
-        //TODO: get id
-        //TODO: get forward by id
-        //TODO: repersist forward
+        $id    = $request->get('notificationForwardId');
+        $newId = Uuid::randomHex();
 
-        //TODO: success response
-        //TODO: error response
+        $this->notificationForwardRepository->clone($id, $context, $newId);
+        $this->messageBus->dispatch(new NotificationForwardCommand([$newId], $context));
+
+        return $this->createActionResponse($request);
     }
 }

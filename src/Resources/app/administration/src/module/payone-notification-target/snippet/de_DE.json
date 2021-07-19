@@ -33,6 +33,9 @@
             },
             "actions": {
                 "requeue": "Erneut senden"
+            },
+            "messages": {
+                "success": "Die Weiterleitung wurde erfolgreich in Auftrag gegeben."
             }
         }
     }

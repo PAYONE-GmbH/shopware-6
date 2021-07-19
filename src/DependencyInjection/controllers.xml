@@ -28,6 +28,8 @@
 
         <service id="PayonePayment\Controller\WebhookController">
             <argument type="service" id="PayonePayment\Payone\Webhook\Processor\WebhookProcessor" />
+            <argument type="service" id="payone_payment_notification_forward.repository"/>
+            <argument type="service" id="messenger.bus.shopware"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

@@ -49,13 +49,18 @@
                             :showHeader="false"
                             table>
 
+                            <template #column-response="{ item }">
+                                <span v-if="item.updatedAt">{{ item.response }}</span>
+                                <span v-else></span>
+                            </template>
+
                             <template #column-updatedAt="{ item }">
                                 {{ item.updatedAt| date({ hour: '2-digit', minute: '2-digit' }) }}
                             </template>
 
                             <template #actions="{ item }">
                                 <sw-context-menu-item
-                                    @click="requeue(item)">
+                                    @click="requeue(item, transaction)">
                                     {{ $tc('payonePayment.notificationTarget.actions.requeue') }}
                                 </sw-context-menu-item>
                             </template>

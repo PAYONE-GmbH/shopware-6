@@ -33,6 +33,9 @@
             },
             "actions": {
                 "requeue": "Requeue"
+            },
+            "messages": {
+                "success": "The notification forward has been successfully queued."
             }
         }
     }

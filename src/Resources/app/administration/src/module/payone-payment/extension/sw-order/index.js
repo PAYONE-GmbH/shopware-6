@@ -56,6 +56,30 @@ Component.override('sw-order-detail-base', {
     },
 
     methods: {
+        requeue(notificationForward, transaction) {
+            const request = {
+                notificationForwardId: notificationForward.id
+            };
+
+            this.PayonePaymentService.requeueNotificationForward(request).then(() => {
+                this.createNotificationSuccess({
+                    title: this.$tc('payonePayment.notificationTarget.actions.requeue'),
+                    message: this.$tc('payonePayment.notificationTarget.messages.success')
+                });
+
+                this.getNotificationForwards(transaction);
+            }).catch((error) => {
+                this.createNotificationError({
+                    title: this.$tc('payonePayment.notificationTarget.actions.requeue'),
+                    message: error.message
+                });
+            }).finally(() => {
+                this.$nextTick().then(() => {
+                    this.$emit('reload')
+                });
+            });
+        },
+
         isPayoneTransaction(transaction) {
             if (!transaction.customFields) {
                 return false;
@@ -80,7 +104,9 @@ Component.override('sw-order-detail-base', {
         getNotificationForwards(transaction) {
             const criteria = new Criteria();
             criteria.addAssociation('notificationTarget');
+            criteria.addSorting(Criteria.sort('updatedAt', 'DESC', true));
             criteria.addFilter(Criteria.equals('transactionId', transaction.id));
+            criteria.setLimit(500);
 
             return this.notificationForwardRepository.search(criteria, Shopware.Context.api)
                 .then((searchResult) => {
