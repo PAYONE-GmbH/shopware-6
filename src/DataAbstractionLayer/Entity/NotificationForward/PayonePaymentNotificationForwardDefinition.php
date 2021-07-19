@@ -43,6 +43,7 @@ class PayonePaymentNotificationForwardDefinition extends EntityDefinition
             new FkField('notification_target_id', 'notificationTargetId', PayonePaymentNotificationTargetDefinition::class),
             new OneToOneAssociationField('notificationTarget', 'notification_target_id', 'id', PayonePaymentNotificationTargetDefinition::class, true),
 
+            (new StringField('ip', 'ip')),
             (new StringField('txaction', 'txaction')),
             (new StringField('response', 'response')),
 

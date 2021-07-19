@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class NotificationForwardHandler implements WebhookHandlerInterface
@@ -54,8 +55,10 @@ class NotificationForwardHandler implements WebhookHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function process(SalesChannelContext $salesChannelContext, array $data): void
+    public function process(SalesChannelContext $salesChannelContext, Request $request): void
     {
+        $data = $request->request->all();
+
         $paymentTransactionId = $this->getPaymentTransactionId((int) $data['txid'], $salesChannelContext);
         $notificationTargets  = $this->getRelevantNotificationTargets($data['txaction'], $salesChannelContext);
 
@@ -63,13 +66,14 @@ class NotificationForwardHandler implements WebhookHandlerInterface
             return;
         }
 
-        $notificationForwards = $this->persistNotificationForwards($notificationTargets, $data, $paymentTransactionId, $salesChannelContext);
+        $notificationForwards = $this->persistNotificationForwards($notificationTargets, $request, $paymentTransactionId, $salesChannelContext);
 
         $this->messageBus->dispatch(new NotificationForwardCommand(array_column($notificationForwards, 'id'), $salesChannelContext->getContext()));
     }
 
-    private function persistNotificationForwards(EntityCollection $notificationTargets, array $data, ?string $paymentTransactionId, SalesChannelContext $salesChannelContext): array
+    private function persistNotificationForwards(EntityCollection $notificationTargets, Request $request, ?string $paymentTransactionId, SalesChannelContext $salesChannelContext): array
     {
+        $data = $request->request->all();
         $notificationForwards = [];
 
         foreach ($notificationTargets as $target) {
@@ -79,6 +83,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
                 'content'              => serialize(mb_convert_encoding($data, 'UTF-8', 'ISO-8859-1')),
                 'notificationTargetId' => $target->getId(),
                 'transactionId'        => $paymentTransactionId,
+                'ip'                   => $request->getClientIp(),
                 'txaction'             => $data['txaction'],
             ];
         }

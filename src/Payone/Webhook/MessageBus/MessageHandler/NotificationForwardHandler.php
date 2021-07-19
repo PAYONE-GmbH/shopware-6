@@ -111,14 +111,15 @@ class NotificationForwardHandler extends AbstractMessageHandler
             curl_setopt($forwardRequests[$id], CURLOPT_FAILONERROR, true);
             curl_multi_add_handle($multiHandle, $forwardRequests[$id]);
 
-            if ($target->isBasicAuth() === false) {
-                continue;
+            $headers = [
+                'X-Forwarded-For: ' . $forward->getIp(),
+            ];
+
+            if ($target->isBasicAuth() === true) {
+                $headers[] = 'Content-Type:application/json';
+                $headers[] = 'Authorization: Basic ' . base64_encode($target->getUsername() . ':' . $target->getPassword());
             }
 
-            $headers = [
-                'Content-Type:application/json',
-                'Authorization: Basic ' . base64_encode($target->getUsername() . ':' . $target->getPassword()),
-            ];
             curl_setopt($forwardRequests[$id], CURLOPT_HTTPHEADER, $headers);
         }
 

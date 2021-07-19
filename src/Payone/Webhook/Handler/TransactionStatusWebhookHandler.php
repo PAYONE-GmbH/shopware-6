@@ -9,6 +9,7 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface
 use PayonePayment\Struct\PaymentTransaction;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\Request;
 
 class TransactionStatusWebhookHandler implements WebhookHandlerInterface
 {
@@ -43,8 +44,10 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function process(SalesChannelContext $salesChannelContext, array $data): void
+    public function process(SalesChannelContext $salesChannelContext, Request $request): void
     {
+        $data = $request->request->all();
+
         /** @var null|PaymentTransaction $paymentTransaction */
         $paymentTransaction = $this->transactionDataHandler->getPaymentTransactionByPayoneTransactionId(
             $salesChannelContext->getContext(),

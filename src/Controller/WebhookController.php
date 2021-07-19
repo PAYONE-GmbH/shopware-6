@@ -44,7 +44,7 @@ class WebhookController extends StorefrontController
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {
-        return $this->webhookProcessor->process($salesChannelContext, $request->request->all());
+        return $this->webhookProcessor->process($salesChannelContext, $request);
     }
 
     /**

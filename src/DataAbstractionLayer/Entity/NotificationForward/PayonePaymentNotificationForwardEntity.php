@@ -20,6 +20,9 @@ class PayonePaymentNotificationForwardEntity extends Entity
     protected $notificationTarget;
 
     /** @var string */
+    protected $ip;
+
+    /** @var string */
     protected $txaction;
 
     /** @var string */
@@ -52,6 +55,16 @@ class PayonePaymentNotificationForwardEntity extends Entity
     public function setNotificationTarget(?PayonePaymentNotificationTargetEntity $notificationTarget): void
     {
         $this->notificationTarget = $notificationTarget;
+    }
+
+    public function getIp(): string
+    {
+        return $this->ip;
+    }
+
+    public function setIp(string $ip): void
+    {
+        $this->ip = $ip;
     }
 
     public function getTxaction(): string

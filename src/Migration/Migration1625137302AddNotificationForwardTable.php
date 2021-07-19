@@ -20,6 +20,7 @@ class Migration1625137302AddNotificationForwardTable extends MigrationStep
             CREATE TABLE IF NOT EXISTS `payone_payment_notification_forward` (
                 `id` BINARY(16) NOT NULL,
                 `notification_target_id` BINARY(16) NULL,
+                `ip` VARCHAR(255) NULL,
                 `txaction` VARCHAR(255) NULL,
                 `response` VARCHAR(255) NULL,
                 `transaction_id` BINARY(16) NULL,
