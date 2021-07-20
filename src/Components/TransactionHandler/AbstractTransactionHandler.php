@@ -159,10 +159,10 @@ abstract class AbstractTransactionHandler
             }
 
             $saveData[] = [
-                'id'                            => $orderLine['id'],
+                'id'           => $orderLine['id'],
                 'customFields' => [
                     $this->getQuantityCustomField() => $quantity,
-                ]
+                ],
             ];
         }
 
