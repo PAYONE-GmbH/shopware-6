@@ -106,6 +106,10 @@ Component.register('payone-settings', {
             ];
         },
 
+        isVisiblePaymentMethodCard(card) {
+            return card.name.startsWith('payment') && !this.isCollapsed(card);
+        },
+
         isCollapsible(card) {
             return card.name in this.collapsibleState;
         },
