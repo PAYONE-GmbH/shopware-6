@@ -17,6 +17,7 @@ Component.register('payone-settings', {
        data() {
         return {
             isLoading: false,
+            emptyObject: 'cancel',
             isTesting: false,
             isSaveSuccessful: false,
             isTestSuccessful: false,

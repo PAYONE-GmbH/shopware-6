@@ -152,7 +152,7 @@
                 <template #afterElements="{card, config}">
                     <sw-checkbox-field v-if="isVisiblePaymentMethodCard(card)" label="Deine Mutter"></sw-checkbox-field>
 
-                    <div v-if="!isLoading">
+                    <div v-if="config">
                         <template v-for="element in card.elements">
                             <sw-form-field-renderer
                                 v-if="element.name.includes('PaymentStatus')"
