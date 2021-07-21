@@ -28,6 +28,7 @@ Component.register('payone-settings', {
             showValidationErrors: false,
             isSupportModalOpen: false,
             stateMachineTransitionActions: [],
+            displayStatusMapping: {},
             collapsibleState: {
                 'status_mapping': true,
                 'payment_credit_card': true,
