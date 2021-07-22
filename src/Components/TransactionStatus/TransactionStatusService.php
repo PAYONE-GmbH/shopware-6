@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\TransactionStatus;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
 use Psr\Log\LoggerInterface;
@@ -78,8 +79,10 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return;
         }
 
-        $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $currency      = $paymentTransaction->getOrder()->getCurrency();
+        $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $currency         = $paymentTransaction->getOrder()->getCurrency();
+        $orderTransaction = $paymentTransaction->getOrderTransaction();
+        $paymentMethod    = $orderTransaction->getPaymentMethod();
 
         if (null === $currency) {
             return;
@@ -94,6 +97,12 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         }
 
         $transitionName = $configuration->getString($configurationKey);
+
+        if (null !== $paymentMethod) {
+            $configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentMethod->getHandlerIdentifier()];
+            /** @var string $transitionName */
+            $transitionName = $configuration->getByPrefix($configurationKey, $configurationPrefix, $configuration->getString($configurationKey));
+        }
 
         if (empty($transitionName)) {
             if ($this->isTransactionOpen($transactionData)) {
@@ -115,7 +124,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return;
         }
 
-        $this->executeTransition($salesChannelContext->getContext(), $paymentTransaction->getOrderTransaction()->getId(), strtolower($transitionName));
+        $this->executeTransition($salesChannelContext->getContext(), $orderTransaction->getId(), strtolower($transitionName));
     }
 
     public function transitionByName(Context $context, string $transactionId, string $transitionName): void
