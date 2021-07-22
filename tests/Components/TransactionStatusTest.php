@@ -6,6 +6,7 @@ namespace PayonePayment\Test\Components;
 
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Struct\PaymentTransaction;
@@ -147,6 +148,40 @@ class TransactionStatusTest extends TestCase
             TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_CAPTURE)         => StateMachineTransitionActions::ACTION_PAID,
             TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_PAID)            => StateMachineTransitionActions::ACTION_PAID,
             TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_COMPLETED)       => StateMachineTransitionActions::ACTION_PAID,
+        ];
+
+        $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService($stateMachineRegistry, $configuration, $paymentTransaction->getOrderTransaction());
+        $transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction, $transactionData);
+    }
+
+    /**
+     * @dataProvider dataProvider
+     */
+    public function testTransactionStatusWithMethodSpecificMapping(array $transactionData, string $expectedTransitionName): void
+    {
+        $salesChannelContext  = $this->getSalesChannelContext();
+        $paymentTransaction   = $this->getPaymentTransaction();
+        $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
+        $stateMachineRegistry->expects($this->once())->method('transition')->with(
+            new Transition(
+                OrderTransactionDefinition::ENTITY_NAME,
+                Constants::ORDER_TRANSACTION_ID,
+                $expectedTransitionName,
+                'stateId'
+            ),
+            $salesChannelContext->getContext()
+        );
+
+        $configuration = [
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD . ucfirst(TransactionStatusService::STATUS_PREFIX) . ucfirst(TransactionStatusService::ACTION_APPOINTED)       => StateMachineTransitionActions::ACTION_REOPEN,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD . ucfirst(TransactionStatusService::STATUS_PREFIX) . ucfirst(TransactionStatusService::ACTION_CANCELATION)     => StateMachineTransitionActions::ACTION_CANCEL,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD . ucfirst(TransactionStatusService::STATUS_PREFIX) . ucfirst(TransactionStatusService::ACTION_FAILED)          => StateMachineTransitionActions::ACTION_CANCEL,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD . ucfirst(TransactionStatusService::STATUS_PREFIX) . ucfirst(TransactionStatusService::ACTION_DEBIT)           => StateMachineTransitionActions::ACTION_REFUND,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD . ucfirst(TransactionStatusService::STATUS_PREFIX) . ucfirst(TransactionStatusService::ACTION_PARTIAL_DEBIT)   => StateMachineTransitionActions::ACTION_REFUND_PARTIALLY,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD . ucfirst(TransactionStatusService::STATUS_PREFIX) . ucfirst(TransactionStatusService::ACTION_PARTIAL_CAPTURE) => StateMachineTransitionActions::ACTION_PAID_PARTIALLY,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD . ucfirst(TransactionStatusService::STATUS_PREFIX) . ucfirst(TransactionStatusService::ACTION_CAPTURE)         => StateMachineTransitionActions::ACTION_PAID,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD . ucfirst(TransactionStatusService::STATUS_PREFIX) . ucfirst(TransactionStatusService::ACTION_PAID)            => StateMachineTransitionActions::ACTION_PAID,
+            ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD . ucfirst(TransactionStatusService::STATUS_PREFIX) . ucfirst(TransactionStatusService::ACTION_COMPLETED)       => StateMachineTransitionActions::ACTION_PAID,
         ];
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService($stateMachineRegistry, $configuration, $paymentTransaction->getOrderTransaction());
