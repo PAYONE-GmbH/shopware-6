@@ -196,15 +196,7 @@ class TransactionStatusTest extends TestCase
         $salesChannelContext  = $this->getSalesChannelContext();
         $paymentTransaction   = $this->getPaymentTransaction();
         $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
-        $stateMachineRegistry->expects($this->once())->method('transition')->with(
-            new Transition(
-                OrderTransactionDefinition::ENTITY_NAME,
-                Constants::ORDER_TRANSACTION_ID,
-                $expectedTransitionName,
-                'stateId'
-            ),
-            $salesChannelContext->getContext()
-        );
+        $stateMachineRegistry->expects($this->never())->method('transition');
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService($stateMachineRegistry, [], $paymentTransaction->getOrderTransaction());
         $transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction, $transactionData);
