@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Webhook\MessageBus\MessageHandler;
 
 use PayonePayment\DataAbstractionLayer\Entity\NotificationForward\PayonePaymentNotificationForwardEntity;
+use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetEntity;
 use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardCommand;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
@@ -37,13 +38,19 @@ class NotificationForwardHandler extends AbstractMessageHandler
 
         $forwardRequests = $this->getForwardRequests($multiHandle, $notificationForwards);
 
+        if (empty($forwardRequests)) {
+            curl_multi_close($multiHandle);
+
+            return;
+        }
+
         do {
             $status = curl_multi_exec($multiHandle, $active);
 
             if ($active) {
                 curl_multi_select($multiHandle);
             }
-        } while ($active && $status == CURLM_OK);
+        } while ($active && $status === CURLM_OK);
 
         $this->updateResponses($multiHandle, $notificationForwards, $forwardRequests, $message->getContext());
 
@@ -90,6 +97,7 @@ class NotificationForwardHandler extends AbstractMessageHandler
 
         foreach ($notificationForwards as $forward) {
             $id = $forward->getId();
+
             /** @var PayonePaymentNotificationForwardEntity $forward */
             $target = $forward->getNotificationTarget();
 
@@ -99,7 +107,8 @@ class NotificationForwardHandler extends AbstractMessageHandler
 
             $forwardRequests[$id] = curl_init();
 
-            $content = mb_convert_encoding(unserialize($forward->getContent(), []), 'ISO-8859-1', 'UTF-8');
+            $serialize = unserialize($forward->getContent(), []);
+            $content   = mb_convert_encoding($serialize, 'ISO-8859-1', 'UTF-8');
 
             curl_setopt($forwardRequests[$id], CURLOPT_URL, $target->getUrl());
             curl_setopt($forwardRequests[$id], CURLOPT_HEADER, 0);
@@ -109,20 +118,27 @@ class NotificationForwardHandler extends AbstractMessageHandler
             curl_setopt($forwardRequests[$id], CURLOPT_CONNECTTIMEOUT, 10);
             curl_setopt($forwardRequests[$id], CURLOPT_POSTFIELDS, http_build_query($content));
             curl_setopt($forwardRequests[$id], CURLOPT_FAILONERROR, true);
+            curl_setopt($forwardRequests[$id], CURLOPT_HTTPHEADER, $this->buildHeaders($forward, $target));
+
             curl_multi_add_handle($multiHandle, $forwardRequests[$id]);
-
-            $headers = [
-                'X-Forwarded-For: ' . $forward->getIp(),
-            ];
-
-            if ($target->isBasicAuth() === true) {
-                $headers[] = 'Content-Type:application/json';
-                $headers[] = 'Authorization: Basic ' . base64_encode($target->getUsername() . ':' . $target->getPassword());
-            }
-
-            curl_setopt($forwardRequests[$id], CURLOPT_HTTPHEADER, $headers);
         }
 
         return $forwardRequests;
+    }
+
+    private function buildHeaders(
+        PayonePaymentNotificationForwardEntity $forward,
+        PayonePaymentNotificationTargetEntity $target
+    ): array {
+        $headers = [
+            'X-Forwarded-For: ' . $forward->getIp(),
+        ];
+
+        if ($target->isBasicAuth() === true) {
+            $headers[] = 'Content-Type:application/json';
+            $headers[] = 'Authorization: Basic ' . base64_encode($target->getUsername() . ':' . $target->getPassword());
+        }
+
+        return $headers;
     }
 }

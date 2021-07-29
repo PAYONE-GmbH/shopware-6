@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Handler;
 
+use LogicException;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
-use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetEntity;
+use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetCollection;
 use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardCommand;
 use PayonePayment\Struct\PaymentTransaction;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
@@ -60,7 +60,12 @@ class NotificationForwardHandler implements WebhookHandlerInterface
         $data = $request->request->all();
 
         $paymentTransactionId = $this->getPaymentTransactionId((int) $data['txid'], $salesChannelContext);
-        $notificationTargets  = $this->getRelevantNotificationTargets($data['txaction'], $salesChannelContext);
+
+        if (null === $paymentTransactionId) {
+            return;
+        }
+
+        $notificationTargets = $this->getRelevantNotificationTargets($data['txaction'], $salesChannelContext);
 
         if (null === $notificationTargets) {
             return;
@@ -71,13 +76,16 @@ class NotificationForwardHandler implements WebhookHandlerInterface
         $this->messageBus->dispatch(new NotificationForwardCommand(array_column($notificationForwards, 'id'), $salesChannelContext->getContext()));
     }
 
-    private function persistNotificationForwards(EntityCollection $notificationTargets, Request $request, ?string $paymentTransactionId, SalesChannelContext $salesChannelContext): array
-    {
+    private function persistNotificationForwards(
+        PayonePaymentNotificationTargetCollection $notificationTargets,
+        Request $request,
+        string $paymentTransactionId,
+        SalesChannelContext $salesChannelContext
+    ): array {
         $data                 = $request->request->all();
         $notificationForwards = [];
 
         foreach ($notificationTargets as $target) {
-            /** @var PayonePaymentNotificationTargetEntity $target */
             $notificationForwards[] = [
                 'id'                   => Uuid::randomHex(),
                 'content'              => serialize(mb_convert_encoding($data, 'UTF-8', 'ISO-8859-1')),
@@ -93,7 +101,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
         return $notificationForwards;
     }
 
-    private function getRelevantNotificationTargets(string $txaction, SalesChannelContext $salesChannelContext): ?EntityCollection
+    private function getRelevantNotificationTargets(string $txaction, SalesChannelContext $salesChannelContext): ?PayonePaymentNotificationTargetCollection
     {
         $criteria = new Criteria();
         $criteria->addFilter(
@@ -106,7 +114,13 @@ class NotificationForwardHandler implements WebhookHandlerInterface
             return null;
         }
 
-        return $notificationTargets->getEntities();
+        $result = $notificationTargets->getEntities();
+
+        if (!($result instanceof PayonePaymentNotificationTargetCollection)) {
+            throw new LogicException('invalid collection type ' . get_class($result));
+        }
+
+        return $result;
     }
 
     private function getPaymentTransactionId(int $txid, SalesChannelContext $salesChannelContext): ?string
