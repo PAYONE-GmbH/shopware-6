@@ -70,7 +70,10 @@ class CaptureRequestFactory extends AbstractRequestFactory
 
             $this->requests[] = $requestHandler->getAdditionalRequestParameters($transaction, $context, $parameterBag);
         } catch (NoRequestBuilderFoundException $exception) {
-            $this->logger->error($exception->getMessage(), $exception->getTrace());
+            $this->logger->error($exception->getMessage(), [
+                'trace'       => $exception->getTrace(),
+                'orderNumber' => $transaction->getOrder()->getOrderNumber(),
+            ]);
         }
 
         return $this->createRequest();
