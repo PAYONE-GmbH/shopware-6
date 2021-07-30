@@ -57,7 +57,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $clearingType = strtolower($customFields[$this->getClearingTypeCustomField()] ?? '');
 
         // Filter payment methods that do not allow changing transaction status at this point
-        if (!in_array($clearingType, ['vor'], true)) {
+        if ($clearingType !== 'vor') {
             // Update the transaction status if PAYONE capture request was approved
             $this->updateTransactionStatus($parameterBag, $context);
         }
@@ -76,7 +76,8 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $this->transactionStatusService->transitionByName(
             $context,
             $this->paymentTransaction->getOrderTransaction()->getId(),
-            $transitionName
+            $transitionName,
+            $parameterBag->all()
         );
     }
 
