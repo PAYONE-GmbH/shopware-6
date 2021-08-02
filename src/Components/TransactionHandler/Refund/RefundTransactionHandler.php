@@ -61,7 +61,8 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         $this->transactionStatusService->transitionByName(
             $context,
             $this->paymentTransaction->getOrderTransaction()->getId(),
-            $transitionName
+            $transitionName,
+            $parameterBag->all()
         );
 
         return $requestResponse;
