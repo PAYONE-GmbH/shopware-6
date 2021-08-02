@@ -245,7 +245,7 @@ class PayolutionController extends StorefrontController
         $document = file_get_contents($url, false, $streamContext);
 
         if (empty($document)) {
-            $this->logger->error('Could not fetch standard credit information document for payolution installment, empty document response.');
+            $this->logger->error('Could not fetch standard credit information document for payolution installment, empty document response.', ['url' => $url]);
 
             throw new UnprocessableEntityHttpException();
         }
