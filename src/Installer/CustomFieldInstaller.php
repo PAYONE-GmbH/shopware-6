@@ -12,7 +12,6 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\System\CustomField\CustomFieldTypes;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class CustomFieldInstaller implements InstallerInterface
 {
@@ -55,10 +54,10 @@ class CustomFieldInstaller implements InstallerInterface
     /** @var array */
     private $customFieldSets;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(EntityRepositoryInterface $customFieldSetRepository, EntityRepositoryInterface $customFieldRepository)
     {
-        $this->customFieldSetRepository = $container->get('custom_field_set.repository');
-        $this->customFieldRepository    = $container->get('custom_field.repository');
+        $this->customFieldSetRepository = $customFieldSetRepository;
+        $this->customFieldRepository    = $customFieldRepository;
 
         $this->customFieldSets = [
             [

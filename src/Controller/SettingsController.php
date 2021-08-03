@@ -8,9 +8,10 @@ use DateInterval;
 use DateTimeImmutable;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler as Handler;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Test\TestRequestFactory;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -33,7 +34,7 @@ class SettingsController extends AbstractController
     /** @var PayoneClientInterface */
     private $client;
 
-    /** @var TestRequestFactory */
+    /** @var RequestParameterFactory */
     private $requestFactory;
 
     /** @var EntityRepositoryInterface */
@@ -44,7 +45,7 @@ class SettingsController extends AbstractController
 
     public function __construct(
         PayoneClientInterface $client,
-        TestRequestFactory $requestFactory,
+        RequestParameterFactory $requestFactory,
         EntityRepositoryInterface $stateMachineTransitionRepository,
         LoggerInterface $logger
     ) {
@@ -80,11 +81,9 @@ class SettingsController extends AbstractController
 
             try {
                 $parameters  = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
-                $testRequest = $this->requestFactory->getRequestParameters($parameters);
+                $testRequest = $this->requestFactory->getRequestParameter(new TestCredentialsStruct($parameters, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST));
 
                 $this->client->request($testRequest);
-            } catch (PayoneRequestException $exception) {
-                $errors[$configurationPrefix] = true;
             } catch (Throwable $exception) {
                 $errors[$configurationPrefix] = true;
             }
