@@ -9,13 +9,12 @@
         <import resource="entities.xml" />
         <import resource="handler/global_handlers.xml" />
         <import resource="handler/payment_handler.xml" />
-        <import resource="handler/request_handler.xml" />
         <import resource="hydrator.xml" />
         <import resource="listeners.xml" />
-        <import resource="requests.xml" />
         <import resource="pages.xml" />
         <import resource="translations.xml" />
         <import resource="webhooks.xml"/>
+        <import resource="requestParameter/*.xml"/>
     </imports>
 
     <services>
@@ -32,7 +31,7 @@
         <service id="PayonePayment\Components\MandateService\MandateService">
             <argument type="service" id="payone_payment_mandate.repository" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="PayonePayment\Payone\Request\GetFile\GetFileRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
         </service>
 
         <service id="PayonePayment\Components\TransactionStatus\TransactionStatusService">
