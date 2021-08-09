@@ -32,7 +32,6 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PaymentMethodInstaller implements InstallerInterface
 {
@@ -85,13 +84,18 @@ class PaymentMethodInstaller implements InstallerInterface
     /** @var Connection */
     private $connection;
 
-    public function __construct(ContainerInterface $container)
-    {
-        $this->pluginIdProvider                    = $container->get(PluginIdProvider::class);
-        $this->paymentMethodRepository             = $container->get('payment_method.repository');
-        $this->salesChannelRepository              = $container->get('sales_channel.repository');
-        $this->paymentMethodSalesChannelRepository = $container->get('sales_channel_payment_method.repository');
-        $this->connection                          = $container->get(Connection::class);
+    public function __construct(
+        PluginIdProvider $pluginIdProvider,
+        EntityRepositoryInterface $paymentMethodRepository,
+        EntityRepositoryInterface $salesChannelRepository,
+        EntityRepositoryInterface $paymentMethodSalesChannelRepository,
+        Connection $connection
+    ) {
+        $this->pluginIdProvider                    = $pluginIdProvider;
+        $this->paymentMethodRepository             = $paymentMethodRepository;
+        $this->salesChannelRepository              = $salesChannelRepository;
+        $this->paymentMethodSalesChannelRepository = $paymentMethodSalesChannelRepository;
+        $this->connection                          = $connection;
     }
 
     public function install(InstallContext $context): void

@@ -93,7 +93,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower($transactionData['txaction']));
         }
 
-        $transitionName = $configuration->get($configurationKey);
+        $transitionName = $configuration->getString($configurationKey);
 
         if (empty($transitionName)) {
             if ($this->isTransactionOpen($transactionData)) {
@@ -115,15 +115,15 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return;
         }
 
-        $this->executeTransition($salesChannelContext->getContext(), $paymentTransaction->getOrderTransaction()->getId(), strtolower($transitionName));
+        $this->executeTransition($salesChannelContext->getContext(), $paymentTransaction->getOrderTransaction()->getId(), strtolower($transitionName), $transactionData);
     }
 
-    public function transitionByName(Context $context, string $transactionId, string $transitionName): void
+    public function transitionByName(Context $context, string $transactionId, string $transitionName, array $parameter = []): void
     {
-        $this->executeTransition($context, $transactionId, strtolower($transitionName));
+        $this->executeTransition($context, $transactionId, strtolower($transitionName), $parameter);
     }
 
-    private function executeTransition(Context $context, string $transactionId, string $transitionName): void
+    private function executeTransition(Context $context, string $transactionId, string $transitionName, array $transactionData = []): void
     {
         $transactionCriteria = (new Criteria([$transactionId]))
             ->addAssociation('stateMachineState');
@@ -136,7 +136,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
         if ($transitionName === StateMachineTransitionActions::ACTION_PAID && $transaction->getStateMachineState()->getTechnicalName() === OrderTransactionStates::STATE_PARTIALLY_PAID) {
             // If the previous state is "paid_partially", "paid" is currently not allowed as direct transition, see https://github.com/shopwareLabs/SwagPayPal/blob/b63efb9/src/Util/PaymentStatusUtil.php#L79
-            $this->executeTransition($context, $transactionId, StateMachineTransitionActions::ACTION_DO_PAY);
+            $this->executeTransition($context, $transactionId, StateMachineTransitionActions::ACTION_DO_PAY, $transactionData);
         }
 
         try {
@@ -151,7 +151,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             );
         } catch (IllegalTransitionException $exception) {
             /** false-positiv handling (paid -> paid, open -> open) */
-            $this->logger->notice(sprintf('Transition %s not possible from state %s for transaction ID %s', $transitionName, $transaction->getStateMachineState()->getTechnicalName(), $transactionId));
+            $this->logger->notice(sprintf('Transition %s not possible from state %s for transaction ID %s', $transitionName, $transaction->getStateMachineState()->getTechnicalName(), $transactionId), $transactionData);
         }
     }
 
@@ -283,7 +283,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return false;
     }
 
-    private function isFailedRedirect(array $firstTransaction, array $transactionData)
+    private function isFailedRedirect(array $firstTransaction, array $transactionData): bool
     {
         return
             array_key_exists('response', $firstTransaction) &&

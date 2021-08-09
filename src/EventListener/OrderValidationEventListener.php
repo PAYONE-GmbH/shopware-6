@@ -49,50 +49,84 @@ class OrderValidationEventListener implements EventSubscriberInterface
             return;
         }
 
-        // TODO: can be removed when https://github.com/shopware/platform/pull/226 is merged
         $context = $this->getContextFromRequest($request);
 
-        $customer = $context->getCustomer();
+        $this->addSecureInvoiceValidationDefinitions($context, $event);
+        $this->addPayolutionInvoicingValidationDefinitions($context, $event);
+        $this->addPayolutionInstallmentValidationDefinitions($context, $event);
+    }
 
-        if ($this->isSecureInvoicePayment($context) && $customer !== null) {
-            $activeBilling = $customer->getActiveBillingAddress();
+    private function addSecureInvoiceValidationDefinitions(SalesChannelContext $salesChannelContext, BuildValidationEvent $event): void
+    {
+        $customer = $salesChannelContext->getCustomer();
 
-            if ($activeBilling !== null && empty($activeBilling->getCompany())) {
-                $event->getDefinition()->add(
-                    'secureInvoiceBirthday',
-                    new Birthday(['value' => $this->getMinimumDate()])
-                );
-            }
+        if (null === $customer) {
+            return;
         }
 
-        if ($this->isPayonePayolutionInstallment($context) || $this->isPayonePayolutionInvoicing($context)) {
-            $event->getDefinition()->add(
-                'payolutionConsent',
-                new NotBlank()
-            );
+        if ($this->isSecureInvoicePayment($salesChannelContext) === false) {
+            return;
+        }
 
+        $activeBilling = $customer->getActiveBillingAddress();
+
+        if ($activeBilling !== null && empty($activeBilling->getCompany())) {
             $event->getDefinition()->add(
-                'payolutionBirthday',
+                'secureInvoiceBirthday',
                 new Birthday(['value' => $this->getMinimumDate()])
             );
+        }
+    }
 
-            if ($this->isPayonePayolutionInstallment($context)) {
-                if ($this->customerHasCompanyAddress($context)) {
-                    $event->getDefinition()->add(
-                        'payonePaymentMethod',
-                        new PaymentMethod(['value' => $context->getPaymentMethod()])
-                    );
-                }
-            }
+    private function addPayolutionInvoicingValidationDefinitions(SalesChannelContext $salesChannelContext, BuildValidationEvent $event): void
+    {
+        if ($this->isPayonePayolutionInvoicing($salesChannelContext) === false) {
+            return;
+        }
 
-            if ($this->isPayonePayolutionInvoicing($context) && $this->companyDataHandlingIsDisabled($context)) {
-                if ($this->customerHasCompanyAddress($context)) {
-                    $event->getDefinition()->add(
-                        'payonePaymentMethod',
-                        new PaymentMethod(['value' => $context->getPaymentMethod()])
-                    );
-                }
-            }
+        $event->getDefinition()->add(
+            'payolutionConsent',
+            new NotBlank()
+        );
+
+        $event->getDefinition()->add(
+            'payolutionBirthday',
+            new Birthday(['value' => $this->getMinimumDate()])
+        );
+
+        if ($this->companyDataHandlingIsDisabled($salesChannelContext) === false) {
+            return;
+        }
+
+        if ($this->customerHasCompanyAddress($salesChannelContext)) {
+            $event->getDefinition()->add(
+                'payonePaymentMethod',
+                new PaymentMethod(['value' => $salesChannelContext->getPaymentMethod()])
+            );
+        }
+    }
+
+    private function addPayolutionInstallmentValidationDefinitions(SalesChannelContext $salesChannelContext, BuildValidationEvent $event): void
+    {
+        if ($this->isPayonePayolutionInstallment($salesChannelContext) === false) {
+            return;
+        }
+
+        $event->getDefinition()->add(
+            'payolutionConsent',
+            new NotBlank()
+        );
+
+        $event->getDefinition()->add(
+            'payolutionBirthday',
+            new Birthday(['value' => $this->getMinimumDate()])
+        );
+
+        if ($this->customerHasCompanyAddress($salesChannelContext)) {
+            $event->getDefinition()->add(
+                'payonePaymentMethod',
+                new PaymentMethod(['value' => $salesChannelContext->getPaymentMethod()])
+            );
         }
     }
 
