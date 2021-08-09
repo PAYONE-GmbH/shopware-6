@@ -163,7 +163,7 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     {
         $configuration = $this->configReader->read($salesChannelId);
 
-        return $configuration->get($configKey, $default);
+        return $configuration->getString($configKey, $default);
     }
 
     /**

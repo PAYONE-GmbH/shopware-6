@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\EventListener;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
+use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
-use PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use Shopware\Core\Framework\Context;
@@ -20,8 +22,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
 {
-    /** @var CreditCardCheckRequestFactory */
-    private $requestFactory;
+    /** @var RequestParameterFactory */
+    private $requestParameterFactory;
 
     /** @var EntityRepositoryInterface */
     private $languageRepository;
@@ -30,13 +32,13 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
     private $cardRepository;
 
     public function __construct(
-        CreditCardCheckRequestFactory $requestFactory,
+        RequestParameterFactory $requestParameterFactory,
         EntityRepositoryInterface $languageRepository,
         CardRepositoryInterface $cardRepository
     ) {
-        $this->requestFactory     = $requestFactory;
-        $this->languageRepository = $languageRepository;
-        $this->cardRepository     = $cardRepository;
+        $this->requestParameterFactory = $requestParameterFactory;
+        $this->languageRepository      = $languageRepository;
+        $this->cardRepository          = $cardRepository;
     }
 
     public static function getSubscribedEvents(): array
@@ -56,7 +58,12 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
             return;
         }
 
-        $cardRequest = $this->requestFactory->getRequestParameters($context);
+        $cardRequest = $this->requestParameterFactory->getRequestParameter(
+            new CreditCardCheckStruct(
+                $event->getSalesChannelContext(),
+                PayoneCreditCardPaymentHandler::class
+            )
+        );
 
         if (null !== $context->getCustomer()) {
             $savedCards = $this->cardRepository->getCards($context->getCustomer(), $context->getContext());
