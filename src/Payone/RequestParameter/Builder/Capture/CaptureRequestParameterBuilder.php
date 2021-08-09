@@ -87,7 +87,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         $isCompleted  = $arguments->getRequestData()->get('complete', false);
         $customFields = $arguments->getPaymentTransaction()->getCustomFields();
 
-        if ($isCompleted === self::CAPTUREMODE_COMPLETED
+        if ($isCompleted === true
             && array_key_exists(CustomFieldInstaller::LAST_REQUEST, $customFields)
             && $customFields[CustomFieldInstaller::LAST_REQUEST] === AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE
             && in_array($arguments->getPaymentMethod(), [PayoneSofortBankingPaymentHandler::class, PayoneTrustlyPaymentHandler::class])) {
