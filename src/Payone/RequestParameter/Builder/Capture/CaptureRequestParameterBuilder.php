@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\Capture;
 
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
@@ -22,7 +24,6 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         $totalAmount  = $arguments->getRequestData()->get('amount');
         $order        = $arguments->getPaymentTransaction()->getOrder();
         $customFields = $arguments->getPaymentTransaction()->getCustomFields();
-        $isCompleted  = $arguments->getRequestData()->get('complete', false);
 
         if ($totalAmount === null) {
             $totalAmount = $order->getAmountTotal();
@@ -49,7 +50,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
             'amount'         => $this->getConvertedAmount((float) $totalAmount, $currency->getDecimalPrecision()),
             'currency'       => $currency->getIsoCode(),
-            'capturemode'    => $isCompleted ? self::CAPTUREMODE_COMPLETED : self::CAPTUREMODE_INCOMPLETE,
+            'capturemode'    => $this->getCaptureMode($arguments),
         ];
 
         if (!empty($customFields[CustomFieldInstaller::WORK_ORDER_ID])) {
@@ -78,5 +79,21 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         return false;
+    }
+
+    /** @param FinancialTransactionStruct $arguments */
+    private function getCaptureMode(AbstractRequestParameterStruct $arguments): ?string
+    {
+        $isCompleted  = $arguments->getRequestData()->get('complete', false);
+        $customFields = $arguments->getPaymentTransaction()->getCustomFields();
+
+        if ($isCompleted === self::CAPTUREMODE_COMPLETED
+            && array_key_exists(CustomFieldInstaller::LAST_REQUEST, $customFields)
+            && $customFields[CustomFieldInstaller::LAST_REQUEST] === AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE
+            && in_array($arguments->getPaymentMethod(), [PayoneSofortBankingPaymentHandler::class, PayoneTrustlyPaymentHandler::class])) {
+            return null;
+        }
+
+        return $isCompleted ? self::CAPTUREMODE_COMPLETED : self::CAPTUREMODE_INCOMPLETE;
     }
 }
