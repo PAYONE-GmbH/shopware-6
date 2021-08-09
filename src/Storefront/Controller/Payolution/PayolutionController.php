@@ -7,14 +7,17 @@ namespace PayonePayment\Storefront\Controller\Payolution;
 use DateTime;
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Installer\ConfigInstaller;
+use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentMethod\PayonePayolutionDebit;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentCalculationRequestFactory;
-use PayonePayment\Payone\Request\PayolutionInstallment\PayolutionInstallmentPreCheckRequestFactory;
-use PayonePayment\Payone\Request\PayolutionInvoicing\PayolutionInvoicingPreCheckRequestFactory;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -48,14 +51,8 @@ class PayolutionController extends StorefrontController
     /** @var PayoneClientInterface */
     private $client;
 
-    /** @var PayolutionInvoicingPreCheckRequestFactory */
-    private $invoicingPreCheckRequestFactory;
-
-    /** @var PayolutionInstallmentPreCheckRequestFactory */
-    private $installmentPreCheckRequestFactory;
-
-    /** @var PayolutionInstallmentCalculationRequestFactory */
-    private $installmentCalculationRequestFactory;
+    /** @var RequestParameterFactory */
+    private $requestParameterFactory;
 
     /** @var LoggerInterface */
     private $logger;
@@ -65,19 +62,15 @@ class PayolutionController extends StorefrontController
         CartService $cartService,
         CartHasherInterface $cartHasher,
         PayoneClientInterface $client,
-        PayolutionInvoicingPreCheckRequestFactory $invoicingPreCheckRequestFactory,
-        PayolutionInstallmentPreCheckRequestFactory $installmentPreCheckRequestFactory,
-        PayolutionInstallmentCalculationRequestFactory $installmentCalculationRequestFactory,
+        RequestParameterFactory $requestParameterFactory,
         LoggerInterface $logger
     ) {
-        $this->configReader                         = $configReader;
-        $this->cartService                          = $cartService;
-        $this->cartHasher                           = $cartHasher;
-        $this->client                               = $client;
-        $this->invoicingPreCheckRequestFactory      = $invoicingPreCheckRequestFactory;
-        $this->installmentPreCheckRequestFactory    = $installmentPreCheckRequestFactory;
-        $this->installmentCalculationRequestFactory = $installmentCalculationRequestFactory;
-        $this->logger                               = $logger;
+        $this->configReader            = $configReader;
+        $this->cartService             = $cartService;
+        $this->cartHasher              = $cartHasher;
+        $this->client                  = $client;
+        $this->requestParameterFactory = $requestParameterFactory;
+        $this->logger                  = $logger;
     }
 
     /**
@@ -86,29 +79,7 @@ class PayolutionController extends StorefrontController
      */
     public function displayContentModal(SalesChannelContext $context): Response
     {
-        $configuration = $this->configReader->read($context->getSalesChannel()->getId());
-
-        switch ($context->getPaymentMethod()->getId()) {
-            case PayonePayolutionInvoicing::UUID:
-                $companyName = $configuration->get('payolutionInvoicingCompanyName');
-
-                break;
-
-            case PayonePayolutionInstallment::UUID:
-                $companyName = $configuration->get('payolutionInstallmentCompanyName');
-
-                break;
-
-            case PayonePayolutionDebit::UUID:
-                $companyName = $configuration->get('payolutionDebitCompanyName');
-
-                break;
-
-            default:
-                $companyName = null;
-
-                break;
-        }
+        $companyName = $this->getCompanyName($context);
 
         if (empty($companyName)) {
             $this->logger->error('Could not fetch invoicing consent modal content - payolution company name is empty.');
@@ -116,7 +87,6 @@ class PayolutionController extends StorefrontController
             throw $this->createNotFoundException();
         }
 
-        /** @var string $content */
         $content = (string) file_get_contents(self::URL . base64_encode($companyName));
 
         if (empty($content)) {
@@ -126,7 +96,7 @@ class PayolutionController extends StorefrontController
         }
 
         $content = (string) strstr($content, '<header>');
-        $content = (string) strstr($content, '</footer>', true) . '</footer>';
+        $content = strstr($content, '</footer>', true) . '</footer>';
 
         return new Response($content);
     }
@@ -139,7 +109,15 @@ class PayolutionController extends StorefrontController
     {
         $cart = $this->cartService->getCart($context->getToken(), $context);
 
-        $checkRequest = $this->invoicingPreCheckRequestFactory->getRequestParameters($cart, $dataBag, $context);
+        $checkRequest = $this->requestParameterFactory->getRequestParameter(
+            new PayolutionAdditionalActionStruct(
+                $cart,
+                $dataBag,
+                $context,
+                PayonePayolutionInvoicingPaymentHandler::class,
+                AbstractRequestParameterBuilder::REQUEST_ACTION_PAYOLUTION_PRE_CHECK
+            )
+        );
 
         try {
             $response = $this->client->request($checkRequest);
@@ -162,7 +140,15 @@ class PayolutionController extends StorefrontController
         try {
             $cart = $this->cartService->getCart($context->getToken(), $context);
 
-            $checkRequest = $this->installmentPreCheckRequestFactory->getRequestParameters($cart, $dataBag, $context);
+            $checkRequest = $this->requestParameterFactory->getRequestParameter(
+                new PayolutionAdditionalActionStruct(
+                    $cart,
+                    $dataBag,
+                    $context,
+                    PayonePayolutionInstallmentPaymentHandler::class,
+                    AbstractRequestParameterBuilder::REQUEST_ACTION_PAYOLUTION_PRE_CHECK
+                )
+            );
 
             if ($this->isPreCheckNeeded($cart, $dataBag, $context)) {
                 try {
@@ -183,7 +169,16 @@ class PayolutionController extends StorefrontController
                 ];
             }
 
-            $calculationRequest = $this->installmentCalculationRequestFactory->getRequestParameters($cart, $dataBag, $context);
+            $calculationRequest = $this->requestParameterFactory->getRequestParameter(
+                new PayolutionAdditionalActionStruct(
+                    $cart,
+                    $dataBag,
+                    $context,
+                    PayonePayolutionInstallmentPaymentHandler::class,
+                    AbstractRequestParameterBuilder::REQUEST_ACTION_PAYOLUTION_CALCULATION,
+                    $dataBag->get('workorder')
+                )
+            );
 
             try {
                 $calculationResponse = $this->client->request($calculationRequest);
@@ -232,8 +227,8 @@ class PayolutionController extends StorefrontController
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
 
         $url      = $this->getCreditInformationUrlFromCart($cart, $duration);
-        $channel  = $configuration->get('payolutionInstallmentChannelName');
-        $password = $configuration->get('payolutionInstallmentChannelPassword');
+        $channel  = $configuration->getString(ConfigInstaller::CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_NAME);
+        $password = $configuration->getString(ConfigInstaller::CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_PASSWORD);
 
         if (empty($url) || empty($channel) || empty($password)) {
             $this->logger->error('Could not fetch standard credit information document for payolution installment, please verify the channel credentials.');
@@ -250,7 +245,7 @@ class PayolutionController extends StorefrontController
         $document = file_get_contents($url, false, $streamContext);
 
         if (empty($document)) {
-            $this->logger->error('Could not fetch standard credit information document for payolution installment, empty document response.');
+            $this->logger->error('Could not fetch standard credit information document for payolution installment, empty document response.', ['url' => $url]);
 
             throw new UnprocessableEntityHttpException();
         }
@@ -265,6 +260,22 @@ class PayolutionController extends StorefrontController
         $response->headers->set('Content-Disposition', $disposition);
 
         return $response;
+    }
+
+    protected function getCompanyName(SalesChannelContext $salesChannelContext): ?string
+    {
+        $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+
+        switch ($salesChannelContext->getPaymentMethod()->getId()) {
+            case PayonePayolutionInvoicing::UUID:
+                return $configuration->getString('payolutionInvoicingCompanyName');
+            case PayonePayolutionInstallment::UUID:
+                return $configuration->getString('payolutionInstallmentCompanyName');
+            case PayonePayolutionDebit::UUID:
+                return $configuration->getString('payolutionDebitCompanyName');
+            default:
+                return null;
+        }
     }
 
     private function getCreditInformationUrlFromCart(Cart $cart, int $duration): ?string
@@ -361,6 +372,11 @@ class PayolutionController extends StorefrontController
         return $this->renderView($view, $calculationResponse);
     }
 
+    /**
+     * This method does return mixed. Therefore we are ignoring errors for now.
+     *
+     * @phpstan-ignore-next-line
+     */
     private function convertType(string $key, $value)
     {
         $float = [

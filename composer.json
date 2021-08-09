@@ -1,77 +1,75 @@
 {
-    "name": "payone-gmbh/shopware-6",
-    "type": "shopware-platform-plugin",
-    "description": "PAYONE Payment Plugin",
-    "version": "2.2.0-beta.1",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "PAYONE GmbH",
-            "email": "shopware@payone.com",
-            "homepage": "https://www.payone.com"
-        },
-        {
-            "name": "Kellerkinder GmbH",
-            "email": "hallo@kellerkinder.de",
-            "homepage": "https://www.kellerkinder.de",
-            "role": "Contributor"
-        }
-    ],
-    "minimum-stability": "stable",
-    "prefer-stable": true,
-    "require": {
-        "php": "^7.2",
-        "ext-curl": "*",
-        "ext-json": "*",
-        "shopware/core": "^6.2.0",
-        "shopware/administration": "^6.2.0",
-        "shopware/storefront": "^6.2.0"
+  "name": "payone-gmbh/shopware-6",
+  "type": "shopware-platform-plugin",
+  "description": "PAYONE Payment Plugin",
+  "version": "2.1.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "PAYONE GmbH",
+      "email": "shopware@payone.com",
+      "homepage": "https://www.payone.com"
     },
-    "require-dev": {
-        "dms/phpunit-arraysubset-asserts": "^0.3.0",
-        "fzaninotto/faker": "1.8.0",
-        "k10r/codestyle": "^1.0",
-        "phpstan/phpstan": "^0.12",
-        "phpstan/phpstan-phpunit": "^0.12",
-        "phpunit/phpunit": "8.5.2 || 9.5.2"
-    },
-    "autoload": {
-        "psr-4": {
-            "PayonePayment\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "PayonePayment\\Test\\": "tests/"
-        }
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "shopware-plugin-class": "PayonePayment\\PayonePayment",
-        "plugin-icon": "src/Resources/public/plugin.png",
-        "copyright": "(c) by PAYONE GmbH",
-        "label": {
-            "de-DE": "PAYONE Payment",
-            "en-GB": "PAYONE Payment"
-        },
-        "description": {
-            "de-DE": "PAYONE Payment Plugin",
-            "en-GB": "PAYONE Payment Plugin"
-        },
-        "manufacturerLink": {
-            "de-DE": "https://www.payone.com",
-            "en-GB": "https://www.payone.com"
-        },
-        "supportLink": {
-            "de-DE": "https://www.payone.com",
-            "en-GB": "https://www.payone.com"
-        }
-    },
-    "scripts": {
-        "phpcs": "./vendor/bin/php-cs-fixer fix",
-        "phpstan": "./vendor/bin/phpstan analyse src tests -a ../../../vendor/autoload.php",
-        "phpunit": "./../../../vendor/bin/phpunit"
+    {
+      "name": "Kellerkinder GmbH",
+      "email": "hallo@kellerkinder.de",
+      "homepage": "https://www.kellerkinder.de",
+      "role": "Contributor"
     }
+  ],
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "require": {
+    "ext-curl": "*",
+    "ext-json": "*",
+    "shopware/core": ">= 6.2",
+    "shopware/administration": ">= 6.2",
+    "shopware/storefront": ">= 6.2"
+  },
+  "require-dev": {
+    "dms/phpunit-arraysubset-asserts": "^0.3.0",
+    "k10r/codestyle": "^1.0",
+    "phpstan/phpstan": "^0.12",
+    "phpstan/phpstan-phpunit": "^0.12",
+    "phpunit/phpunit": "9.5.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "PayonePayment\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "PayonePayment\\Test\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "shopware-plugin-class": "PayonePayment\\PayonePayment",
+    "plugin-icon": "src/Resources/public/plugin.png",
+    "copyright": "(c) by PAYONE GmbH",
+    "label": {
+      "de-DE": "PAYONE Payment",
+      "en-GB": "PAYONE Payment"
+    },
+    "description": {
+      "de-DE": "PAYONE Payment Plugin",
+      "en-GB": "PAYONE Payment Plugin"
+    },
+    "manufacturerLink": {
+      "de-DE": "https://www.payone.com",
+      "en-GB": "https://www.payone.com"
+    },
+    "supportLink": {
+      "de-DE": "https://www.payone.com",
+      "en-GB": "https://www.payone.com"
+    }
+  },
+  "scripts": {
+    "phpcs": "./vendor/bin/php-cs-fixer fix",
+    "phpstan": "./vendor/bin/phpstan analyse src tests -a ../../../vendor/autoload.php",
+    "phpunit": "./../../../vendor/bin/phpunit"
+  }
 }

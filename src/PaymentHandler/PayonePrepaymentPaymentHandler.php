@@ -10,7 +10,9 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Prepayment\PrepaymentPreAuthorizeRequestFactory;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
@@ -24,8 +26,8 @@ use Throwable;
 
 class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var PrepaymentPreAuthorizeRequestFactory */
-    private $preAuthRequestFactory;
+    /** @var RequestParameterFactory */
+    private $requestParameterFactory;
 
     /** @var PayoneClientInterface */
     private $client;
@@ -38,7 +40,7 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        PrepaymentPreAuthorizeRequestFactory $preAuthRequestFactory,
+        RequestParameterFactory $requestParameterFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
@@ -46,10 +48,11 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
         RequestStack $requestStack
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-        $this->preAuthRequestFactory = $preAuthRequestFactory;
-        $this->client                = $client;
-        $this->translator            = $translator;
-        $this->dataHandler           = $dataHandler;
+
+        $this->requestParameterFactory = $requestParameterFactory;
+        $this->client                  = $client;
+        $this->translator              = $translator;
+        $this->dataHandler             = $dataHandler;
     }
 
     /**
@@ -61,10 +64,14 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
 
         $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
-        $request = $this->preAuthRequestFactory->getRequestParameters(
-            $paymentTransaction,
-            $requestData,
-            $salesChannelContext
+        $request = $this->requestParameterFactory->getRequestParameter(
+            new PaymentTransactionStruct(
+                $paymentTransaction,
+                $requestData,
+                $salesChannelContext,
+                __CLASS__,
+                AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE
+            )
         );
 
         try {
