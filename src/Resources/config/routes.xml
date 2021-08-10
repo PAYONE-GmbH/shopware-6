@@ -20,4 +20,5 @@
 
     <!-- Store-Api routes -->
     <import resource="@PayonePayment/StoreApi/Route/CardRoute.php" type="annotation" />
+    <import resource="@PayonePayment/StoreApi/Route/MandateRoute.php" type="annotation" />
 </routes>
