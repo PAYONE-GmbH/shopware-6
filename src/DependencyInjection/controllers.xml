@@ -56,7 +56,7 @@
 
         <service id="PayonePayment\Storefront\Controller\Account\AccountMandateController">
             <argument type="service" id="PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader" />
-            <argument type="service" id="PayonePayment\Components\MandateService\MandateService" />
+            <argument type="service" id="PayonePayment\StoreApi\Route\MandateRoute" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

@@ -51,10 +51,7 @@ class CardRoute extends AbstractCardRoute
 
         $result = $this->cardRepository->getCards($customer, $context->getContext());
 
-        $response = new CardResponse($result);
-        $response->setContent('sdsd');
-
-        return $response;
+        return new CardResponse($result);
     }
 
     /**
