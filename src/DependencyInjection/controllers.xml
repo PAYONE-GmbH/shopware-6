@@ -47,7 +47,7 @@
 
         <service id="PayonePayment\Storefront\Controller\Account\AccountCardController">
             <argument type="service" id="PayonePayment\Storefront\Page\Card\AccountCardPageLoader" />
-            <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
+            <argument type="service" id="PayonePayment\StoreApi\Route\CardRoute" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
