@@ -6,6 +6,7 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingIterableValueType: false
+    treatPhpDocTypesAsCertain: false
     ignoreErrors:
         - '#Access to constant CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE(.*)#'
     excludes_analyse:
