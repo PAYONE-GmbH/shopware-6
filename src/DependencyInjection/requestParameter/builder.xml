@@ -12,6 +12,7 @@
             <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
             <argument type="service" id="currency.repository"/>
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
             <tag name="payone_request_builder" priority="100" />
         </service>
@@ -314,12 +315,16 @@
         <!-- Capture -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Capture\CaptureRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
+
             <tag name="payone_request_builder"/>
         </service>
 
         <!-- Refund -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Refund\RefundRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
+
             <tag name="payone_request_builder"/>
         </service>
 

@@ -29,6 +29,7 @@
 
         <service id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler">
             <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
         </service>
 
         <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler">

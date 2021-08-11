@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\Capture;
 
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
@@ -15,6 +16,14 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     private const CAPTUREMODE_COMPLETED  = 'completed';
     private const CAPTUREMODE_INCOMPLETE = 'notcompleted';
+
+    /** @var CurrencyPrecisionInterface */
+    private $currencyPrecision;
+
+    public function __construct(CurrencyPrecisionInterface $currencyPrecision)
+    {
+        $this->currencyPrecision = $currencyPrecision;
+    }
 
     /** @param FinancialTransactionStruct $arguments */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
@@ -41,13 +50,14 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         /** @var CurrencyEntity $currency */
-        $currency = $order->getCurrency();
+        $currency  = $order->getCurrency();
+        $precision = $this->currencyPrecision->getTotalRoundingPrecision($currency);
 
         $parameters = [
             'request'        => self::REQUEST_ACTION_CAPTURE,
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => $this->getConvertedAmount((float) $totalAmount, $currency->getDecimalPrecision()),
+            'amount'         => $this->getConvertedAmount((float) $totalAmount, $precision),
             'currency'       => $currency->getIsoCode(),
             'capturemode'    => $isCompleted ? self::CAPTUREMODE_COMPLETED : self::CAPTUREMODE_INCOMPLETE,
         ];

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\TransactionHandler;
 
 use Exception;
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -42,6 +43,9 @@ abstract class AbstractTransactionHandler
 
     /** @var PaymentTransaction */
     protected $paymentTransaction;
+
+    /** @var CurrencyPrecisionInterface */
+    protected $currencyPrecision;
 
     public function handleRequest(ParameterBag $parameterBag, string $action, Context $context): array
     {
@@ -137,7 +141,8 @@ abstract class AbstractTransactionHandler
         }
 
         if ($currency !== null) {
-            $currentCaptureAmount  = (int) round($captureAmount * (10 ** $currency->getDecimalPrecision()));
+            $precision             = $this->currencyPrecision->getTotalRoundingPrecision($currency);
+            $currentCaptureAmount  = (int) round($captureAmount * (10 ** $precision));
             $alreadyCapturedAmount = $customFields[$this->getAmountCustomField()] ?? 0;
 
             if ($captureAmount) {
