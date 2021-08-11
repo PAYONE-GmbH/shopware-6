@@ -15,6 +15,7 @@ class SetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionReques
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         $currency  = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
+        $precision = $this->currencyPrecision->getTotalRoundingPrecision($currency);
         $cart      = $arguments->getCart();
         $returnUrl = $arguments->getReturnUrl();
 
@@ -23,7 +24,7 @@ class SetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionReques
             'clearingtype'        => self::CLEARING_TYPE_WALLET,
             'wallettype'          => 'PPE',
             'add_paydata[action]' => 'setexpresscheckout',
-            'amount'              => $this->getConvertedAmount($cart->getPrice()->getTotalPrice(), $currency->getDecimalPrecision()),
+            'amount'              => $this->getConvertedAmount($cart->getPrice()->getTotalPrice(), $precision),
             'currency'            => $currency->getIsoCode(),
             'successurl'          => $returnUrl . '?state=success',
             'errorurl'            => $returnUrl . '?state=error',

@@ -6,6 +6,7 @@ namespace PayonePayment\Components\CartHasher;
 
 use Exception;
 use LogicException;
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Struct\Struct;
@@ -18,6 +19,14 @@ class CartHasher implements CartHasherInterface
         Cart::class,
         OrderEntity::class,
     ];
+
+    /** @var CurrencyPrecisionInterface */
+    private $currencyPrecision;
+
+    public function __construct(CurrencyPrecisionInterface $currencyPrecision)
+    {
+        $this->currencyPrecision = $currencyPrecision;
+    }
 
     /**
      * {@inheritdoc}
@@ -78,7 +87,8 @@ class CartHasher implements CartHasherInterface
                 ];
 
                 if (null !== $lineItem->getPrice()) {
-                    $detail['price'] = (int) round($lineItem->getPrice()->getTotalPrice() * (10 ** $context->getCurrency()->getDecimalPrecision()));
+                    $precision       = $this->currencyPrecision->getItemRoundingPrecision($context->getCurrency());
+                    $detail['price'] = (int) round($lineItem->getPrice()->getTotalPrice() * (10 ** $precision));
                 }
 
                 $hashData[] = $detail;
