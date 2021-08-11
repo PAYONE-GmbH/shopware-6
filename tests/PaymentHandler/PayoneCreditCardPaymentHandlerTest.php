@@ -7,6 +7,7 @@ namespace PayonePayment\Test\PaymentHandler;
 use DateInterval;
 use DateTimeImmutable;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
+use PayonePayment\Components\Currency\CurrencyPrecision;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
@@ -68,7 +69,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             $configReader,
             $client,
             $this->translator,
-            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
+            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
             $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
             $cardRepository,
@@ -129,7 +130,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             $configReader,
             $client,
             $this->translator,
-            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
+            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
             $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
             $cardRepository,
@@ -191,7 +192,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             $configReader,
             $client,
             $this->translator,
-            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
+            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
             $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
             $cardRepository,
