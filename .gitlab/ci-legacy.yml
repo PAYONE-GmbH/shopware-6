@@ -4,7 +4,7 @@ k10r-phpstan-legacy:
   parallel:
     matrix:
       - PHP_VERSION: [ "7.2", "7.3", "7.4" ]
-        SW_VERSION: [ "6.2.0", "6.2.1", "6.2.3", "6.3.0.1", "6.3.0.2", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
+        SW_VERSION: [ "6.2.0", "6.2.1", "6.2.3", "6.3.0.1", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
   needs: [ ]
   except:
     variables: [ $DISABLE_PHPSTAN_K10R == "1" ]
@@ -32,7 +32,7 @@ sw-phpstan-legacy:
   parallel:
     matrix:
       - PHP_VERSION: [ "7.2", "7.3", "7.4" ]
-        SW_VERSION: [ "6.2.0", "6.2.1", "6.2.3", "6.3.0.1", "6.3.0.2", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
+        SW_VERSION: [ "6.2.0", "6.2.1", "6.2.3", "6.3.0.1", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
   needs: [ ]
   except:
     variables: [ $DISABLE_PHPSTAN_SW == "1" ]
@@ -62,7 +62,7 @@ phpunit-legacy:
   parallel:
     matrix:
       - PHP_VERSION: [ "7.2", "7.3", "7.4" ]
-        SW_VERSION: [ "6.2.0", "6.2.1", "6.2.3", "6.3.0.1", "6.3.0.2", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
+        SW_VERSION: [ "6.2.0", "6.2.1", "6.2.3", "6.3.0.1", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
   needs: [ ]
   except:
     variables: [ $DISABLE_PHPUNIT == "1" ]
