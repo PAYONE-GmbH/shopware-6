@@ -9,7 +9,7 @@ use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 
 class PayoneDebit extends AbstractPaymentMethod
 {
-    public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS['PayoneDebit'];
+    public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
     /** @var string */
     protected $id = self::UUID;
