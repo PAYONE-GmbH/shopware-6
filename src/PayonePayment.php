@@ -89,11 +89,12 @@ class PayonePayment extends Plugin
         }
 
         if (method_exists($connection, 'exec')) {
+            /** @noinspection PhpDeprecationInspection */
             $connection->exec('DROP TABLE payone_payment_card');
+            /** @noinspection PhpDeprecationInspection */
             $connection->exec('DROP TABLE payone_payment_redirect');
+            /** @noinspection PhpDeprecationInspection */
             $connection->exec('DROP TABLE payone_payment_mandate');
-
-            return;
         }
     }
 
