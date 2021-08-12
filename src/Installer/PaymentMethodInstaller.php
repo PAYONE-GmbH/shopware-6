@@ -135,8 +135,15 @@ class PaymentMethodInstaller implements InstallerInterface
         // before any update procedures take place otherwise we would have a duplicate payment method.
         // This is also the reason why a migration is not a viable way here.
         if ($this->findPaymentMethodEntity('0b532088e2da3092f9f7054ec4009d18', $context->getContext())) {
-            $this->connection->exec("UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');");
-            $this->connection->exec("UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');");
+            if (method_exists($this->connection, 'executeStatement')) {
+                $this->connection->executeStatement("UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');");
+                $this->connection->executeStatement("UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');");
+            } elseif (method_exists($this->connection, 'exec')) {
+                /** @noinspection PhpDeprecationInspection */
+                $this->connection->exec("UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');");
+                /** @noinspection PhpDeprecationInspection */
+                $this->connection->exec("UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');");
+            }
         }
 
         foreach ($this->getPaymentMethods() as $paymentMethod) {
