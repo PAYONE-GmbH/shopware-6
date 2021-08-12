@@ -17,6 +17,7 @@ class CurrencyPrecision implements CurrencyPrecisionInterface
         }
 
         if (method_exists($currency, 'getDecimalPrecision')) {
+            /** @noinspection PhpDeprecationInspection */
             return $currency->getDecimalPrecision();
         }
 
@@ -30,6 +31,7 @@ class CurrencyPrecision implements CurrencyPrecisionInterface
         }
 
         if (method_exists($currency, 'getDecimalPrecision')) {
+            /** @noinspection PhpDeprecationInspection */
             return $currency->getDecimalPrecision();
         }
 
