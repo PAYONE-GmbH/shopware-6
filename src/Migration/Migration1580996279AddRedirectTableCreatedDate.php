@@ -16,10 +16,18 @@ class Migration1580996279AddRedirectTableCreatedDate extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->exec('
-            ALTER TABLE `payone_payment_redirect`
-            ADD `created_at` datetime(3) NULL;
-        ');
+        $sql = 'ALTER TABLE `payone_payment_redirect` ADD `created_at` datetime(3) NULL;';
+
+        if (method_exists($connection, 'executeStatement')) {
+            $connection->executeStatement($sql);
+
+            return;
+        }
+
+        if (method_exists($connection, 'exec')) {
+            /** @noinspection PhpDeprecationInspection */
+            $connection->exec($sql);
+        }
     }
 
     public function updateDestructive(Connection $connection): void
