@@ -79,9 +79,12 @@ class CardRepository implements CardRepositoryInterface
         $criteria->addFilter(
             new EqualsFilter('payone_payment_card.customerId', $customer->getId())
         );
-        $criteria->addSorting(
-            new FieldSorting('expiresAt', FieldSorting::DESCENDING)
-        );
+
+        if (empty($criteria->getSorting())) {
+            $criteria->addSorting(
+                new FieldSorting('expiresAt', FieldSorting::DESCENDING)
+            );
+        }
 
         return $this->cardRepository->search($criteria, $context);
     }
