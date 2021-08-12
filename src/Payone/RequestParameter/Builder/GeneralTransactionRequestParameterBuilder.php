@@ -133,7 +133,9 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
 
             $customFields = $paymentMethod->getCustomFields();
 
-            return $customFields[CustomFieldInstaller::IS_PAYONE] ?? false;
+            //TODO: update by using uuid
+            return true;
+            //return $customFields[CustomFieldInstaller::IS_PAYONE] ?? false;
         });
 
         if ($transactions->count() === 0) {

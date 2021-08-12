@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Installer\PaymentMethodInstaller;
 use Psr\Cache\CacheItemPoolInterface;
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
@@ -12,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelPaymentMethod\SalesChannelPaymentMethodDefinition;
 use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepositoryInterface;
@@ -121,9 +121,7 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
     {
         $criteria = new Criteria();
 
-        $field = sprintf('customFields.%s', CustomFieldInstaller::IS_PAYONE);
-        $criteria->addFilter(new EqualsFilter($field, true));
-
+        $criteria->addFilter(new ContainsFilter('handlerIdentifier', 'PayonePayment'));
         $criteria->addFilter(new EqualsFilter('active', true));
 
         return $this->paymentMethodRepository->search($criteria, $context)->getIds();

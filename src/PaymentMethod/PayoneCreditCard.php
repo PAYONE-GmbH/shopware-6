@@ -9,7 +9,7 @@ use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 
 class PayoneCreditCard extends AbstractPaymentMethod
 {
-    public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS['PayoneCreditCard'];
+    public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
     /** @var string */
     protected $id = self::UUID;
