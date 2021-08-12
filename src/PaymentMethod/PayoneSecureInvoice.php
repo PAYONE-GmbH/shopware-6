@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentMethod;
 
+use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 
 class PayoneSecureInvoice extends AbstractPaymentMethod
 {
-    public const UUID                 = '4e8a9d3d3c6e428887573856b38c9003';
+    public const UUID                 = PaymentMethodInstaller::PAYMENT_METHOD_IDS['PayoneSecureInvoice'];
     public const BUSINESSRELATION_B2B = 'b2b';
     public const BUSINESSRELATION_B2C = 'b2c';
 
