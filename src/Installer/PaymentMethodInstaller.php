@@ -35,6 +35,23 @@ use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 
 class PaymentMethodInstaller implements InstallerInterface
 {
+    public const PAYMENT_METHOD_IDS = [
+        'PayoneCreditCard'            => '37f90a48d9194762977c9e6db36334e0',
+        'PayoneDebit'                 => '1b017bef157b4222b734659361d996fd',
+        'PayonePaypal'                => '21e157163fdb4aa4862a2109abcd7522',
+        'PayonePaypalExpress'         => '5ddf648859a84396a98c97a1a92c107f',
+        'PayonePayolutionInstallment' => '569b46970ad2458ca8f17f1ebb754137',
+        'PayonePayolutionInvoicing'   => '0407fd0a5c4b4d2bafc88379efe8cf8d',
+        'PayonePayolutionDebit'       => '700954775fad4a8f92463b3d629c8ad5',
+        'PayoneSofortBanking'         => '9022c4733d14411e84a78707088487aa',
+        'PayoneEps'                   => '6004c8b082234ba5b2834da9874c5ec7',
+        'PayoneIDeal'                 => '3f567ad46f1947e3960b66ed3af537aa',
+        'PayonePaydirekt'             => 'b5b52a27e6b14a37bbb4087ec821b0f4',
+        'PayonePrepayment'            => '267699739afd4cdd9663cac0bd269da6',
+        'PayoneTrustly'               => '741f1deec67d4012bd3ccce265b2e15e',
+        'PayoneSecureInvoice'         => '4e8a9d3d3c6e428887573856b38c9003',
+    ];
+
     public const PAYMENT_METHODS = [
         PayoneCreditCard::class,
         PayoneDebit::class,
@@ -192,8 +209,6 @@ class PaymentMethodInstaller implements InstallerInterface
             // todo: find a better solution, for now just ignore this problem
             return;
         }
-
-        $this->fixMissingCustomFieldsForTranslations($paymentMethod, $paymentMethodEntity);
     }
 
     private function installPaymentMethod(array $data, PaymentMethodInterface $paymentMethod, Context $context): void
@@ -259,27 +274,5 @@ class PaymentMethodInstaller implements InstallerInterface
         }
 
         return true;
-    }
-
-    private function fixMissingCustomFieldsForTranslations(PaymentMethodInterface $paymentMethod, PaymentMethodEntity $paymentMethodEntity): void
-    {
-        $customFields = $paymentMethodEntity->getCustomFields() ?? [];
-
-        // Prepare custom fields for JSON encoding
-        $customFields[CustomFieldInstaller::IS_PAYONE] = 1;
-
-        // TODO: This is a quite ugly workaround for the custom field translation problem here.
-        // The custom fields are only set for the current language which results in non loading
-        // checkout contents for other language contexts. We need a proper way to install the
-        // custom fields for all languages but not only the current one.
-        $customFields = json_encode($customFields, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        $this->connection->exec(sprintf("
-            UPDATE `payment_method_translation`
-            SET
-                `custom_fields` = '%s'
-            WHERE
-                `custom_fields` IS NULL AND
-                `payment_method_id` = UNHEX('%s');
-         ", $customFields, $paymentMethod->getId()));
     }
 }
