@@ -187,7 +187,6 @@ class PaymentMethodInstaller implements InstallerInterface
 
             'customFields' => [
                 CustomFieldInstaller::TEMPLATE  => $paymentMethod->getTemplate(),
-                CustomFieldInstaller::IS_PAYONE => true,
             ],
         ];
 
