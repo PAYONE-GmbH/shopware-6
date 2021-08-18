@@ -15,17 +15,16 @@ class CalculationRequestParameterBuilder extends GeneralTransactionRequestParame
     /** @param PayolutionAdditionalActionStruct $arguments */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $dataBag   = $arguments->getRequestData();
-        $currency  = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
-        $precision = $this->currencyPrecision->getTotalRoundingPrecision($currency);
-        $cart      = $arguments->getCart();
+        $dataBag  = $arguments->getRequestData();
+        $currency = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
+        $cart     = $arguments->getCart();
 
         $parameters = [
             'request'             => self::REQUEST_ACTION_GENERIC_PAYMENT,
             'add_paydata[action]' => 'calculation',
             'clearingtype'        => self::CLEARING_TYPE_FINANCING,
             'financingtype'       => 'PYS',
-            'amount'              => $this->getConvertedAmount($cart->getPrice()->getTotalPrice(), $precision),
+            'amount'              => $this->currencyPrecision->getTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency'            => $currency->getIsoCode(),
             'workorderid'         => $arguments->getWorkorderId(),
         ];
