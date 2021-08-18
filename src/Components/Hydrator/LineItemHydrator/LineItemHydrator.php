@@ -138,15 +138,13 @@ class LineItemHydrator implements LineItemHydratorInterface
             ? $lineItemEntity->getPayload()['productNumber']
             : $lineItemEntity->getIdentifier();
 
-        $precision = $this->currencyPrecision->getItemRoundingPrecision($currencyEntity);
-
         return [
             'it[' . $index . ']' => $this->mapItemType($lineItemEntity->getType()),
             'id[' . $index . ']' => $productNumber,
-            'pr[' . $index . ']' => (int) round($lineItemEntity->getUnitPrice() * (10 ** $precision)),
+            'pr[' . $index . ']' => $this->currencyPrecision->getItemAmount($lineItemEntity->getUnitPrice(), $currencyEntity),
             'no[' . $index . ']' => $quantity,
             'de[' . $index . ']' => $lineItemEntity->getLabel(),
-            'va[' . $index . ']' => (int) round($calculatedTax->getTaxRate() * (10 ** $precision)),
+            'va[' . $index . ']' => $this->currencyPrecision->getItemAmount($calculatedTax->getTaxRate(), $currencyEntity),
         ];
     }
 }

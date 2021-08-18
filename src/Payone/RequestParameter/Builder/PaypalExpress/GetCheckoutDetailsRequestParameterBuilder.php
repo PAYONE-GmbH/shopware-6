@@ -14,16 +14,15 @@ class GetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionReques
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         /** @var CheckoutDetailsStruct $arguments */
-        $currency  = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
-        $precision = $this->currencyPrecision->getTotalRoundingPrecision($currency);
-        $cart      = $arguments->getCart();
+        $currency = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
+        $cart     = $arguments->getCart();
 
         return [
             'request'             => self::REQUEST_ACTION_GENERIC_PAYMENT,
             'clearingtype'        => self::CLEARING_TYPE_WALLET,
             'wallettype'          => 'PPE',
             'add_paydata[action]' => 'getexpresscheckoutdetails',
-            'amount'              => $this->getConvertedAmount($cart->getPrice()->getTotalPrice(), $precision),
+            'amount'              => $this->currencyPrecision->getTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency'            => $currency->getIsoCode(),
             'workorderid'         => $arguments->getWorkorderId(),
         ];
