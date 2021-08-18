@@ -38,14 +38,14 @@ class CurrencyPrecision implements CurrencyPrecisionInterface
         return self::DEFAULT_ROUNDING_PRECISION;
     }
 
-    public function getTotalAmount(float $amount, CurrencyEntity $currency): int
+    public function getRoundedTotalAmount(float $amount, CurrencyEntity $currency): int
     {
         $precision = $this->getTotalRoundingPrecision($currency);
 
         return (int) round($amount * (10 ** $precision));
     }
 
-    public function getItemAmount(float $price, CurrencyEntity $currency): int
+    public function getRoundedItemAmount(float $price, CurrencyEntity $currency): int
     {
         $precision = $this->getItemRoundingPrecision($currency);
 

@@ -56,7 +56,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
             'request'        => self::REQUEST_ACTION_CAPTURE,
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => $this->currencyPrecision->getTotalAmount((float) $totalAmount, $currency),
+            'amount'         => $this->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
             'currency'       => $currency->getIsoCode(),
             'capturemode'    => $isCompleted ? self::CAPTUREMODE_COMPLETED : self::CAPTUREMODE_INCOMPLETE,
         ];

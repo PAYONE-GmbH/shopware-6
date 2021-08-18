@@ -141,10 +141,10 @@ class LineItemHydrator implements LineItemHydratorInterface
         return [
             'it[' . $index . ']' => $this->mapItemType($lineItemEntity->getType()),
             'id[' . $index . ']' => $productNumber,
-            'pr[' . $index . ']' => $this->currencyPrecision->getItemAmount($lineItemEntity->getUnitPrice(), $currencyEntity),
+            'pr[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($lineItemEntity->getUnitPrice(), $currencyEntity),
             'no[' . $index . ']' => $quantity,
             'de[' . $index . ']' => $lineItemEntity->getLabel(),
-            'va[' . $index . ']' => $this->currencyPrecision->getItemAmount($calculatedTax->getTaxRate(), $currencyEntity),
+            'va[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($calculatedTax->getTaxRate(), $currencyEntity),
         ];
     }
 }

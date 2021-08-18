@@ -12,7 +12,7 @@ interface CurrencyPrecisionInterface
 
     public function getTotalRoundingPrecision(CurrencyEntity $currency): int;
 
-    public function getTotalAmount(float $amount, CurrencyEntity $currency): int;
+    public function getRoundedTotalAmount(float $amount, CurrencyEntity $currency): int;
 
-    public function getItemAmount(float $price, CurrencyEntity $currency): int;
+    public function getRoundedItemAmount(float $price, CurrencyEntity $currency): int;
 }
