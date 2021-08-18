@@ -32,7 +32,6 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
             return;
         }
 
-        //TODO: get template without customField use
         $template = $this->getTemplateFromPaymentMethod($context->getPaymentMethod());
 
         if ($page->hasExtension(CheckoutCartPaymentData::EXTENSION_NAME)) {
