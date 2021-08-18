@@ -54,10 +54,9 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         $requestData         = $arguments->getRequestData();
         $paymentMethod       = $arguments->getPaymentMethod();
         $currency            = $this->getOrderCurrency($paymentTransaction->getOrder(), $salesChannelContext->getContext());
-        $precision           = $this->currencyPrecision->getTotalRoundingPrecision($currency);
 
         $parameters = [
-            'amount'      => $this->getConvertedAmount($paymentTransaction->getOrder()->getAmountTotal(), $precision),
+            'amount'      => $this->currencyPrecision->getTotalAmount($paymentTransaction->getOrder()->getAmountTotal(), $currency),
             'currency'    => $currency->getIsoCode(),
             'reference'   => $this->getReferenceNumber($paymentTransaction, true),
             'workorderid' => $this->getWorkOrderId($paymentTransaction, $requestData, $salesChannelContext),

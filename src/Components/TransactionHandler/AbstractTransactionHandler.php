@@ -141,8 +141,7 @@ abstract class AbstractTransactionHandler
         }
 
         if ($currency !== null) {
-            $precision             = $this->currencyPrecision->getTotalRoundingPrecision($currency);
-            $currentCaptureAmount  = (int) round($captureAmount * (10 ** $precision));
+            $currentCaptureAmount  = $this->currencyPrecision->getTotalAmount($captureAmount, $currency);
             $alreadyCapturedAmount = $customFields[$this->getAmountCustomField()] ?? 0;
 
             if ($captureAmount) {

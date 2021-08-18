@@ -50,14 +50,13 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         /** @var CurrencyEntity $currency */
-        $currency  = $order->getCurrency();
-        $precision = $this->currencyPrecision->getTotalRoundingPrecision($currency);
+        $currency = $order->getCurrency();
 
         $parameters = [
             'request'        => self::REQUEST_ACTION_CAPTURE,
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => $this->getConvertedAmount((float) $totalAmount, $precision),
+            'amount'         => $this->currencyPrecision->getTotalAmount((float) $totalAmount, $currency),
             'currency'       => $currency->getIsoCode(),
             'capturemode'    => $isCompleted ? self::CAPTUREMODE_COMPLETED : self::CAPTUREMODE_INCOMPLETE,
         ];
