@@ -48,7 +48,7 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
             'request'        => self::REQUEST_ACTION_DEBIT,
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => -1 * $this->currencyPrecision->getTotalAmount((float) $totalAmount, $currency),
+            'amount'         => -1 * $this->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
             'currency'       => $currency->getIsoCode(),
         ];
     }
