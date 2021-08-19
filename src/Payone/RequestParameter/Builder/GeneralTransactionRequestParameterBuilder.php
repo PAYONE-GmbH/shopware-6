@@ -8,6 +8,7 @@ use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
@@ -128,12 +129,12 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
             $paymentMethod = $transaction->getPaymentMethod();
 
             if ($paymentMethod === null) {
-                return false;
+                return null;
             }
 
-            $customFields = $paymentMethod->getCustomFields();
-
-            return $customFields[CustomFieldInstaller::IS_PAYONE] ?? false;
+            if (in_array($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS) === false) {
+                return null;
+            }
         });
 
         if ($transactions->count() === 0) {
