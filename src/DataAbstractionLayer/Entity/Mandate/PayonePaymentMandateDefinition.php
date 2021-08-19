@@ -9,6 +9,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\DateTimeField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\ApiAware;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
@@ -43,7 +44,7 @@ class PayonePaymentMandateDefinition extends EntityDefinition
 
             (new FkField('customer_id', 'customerId', CustomerDefinition::class))->addFlags(new Required()),
 
-            (new StringField('identification', 'identification'))->setFlags(new Required()),
+            (new StringField('identification', 'identification'))->setFlags(new Required(), new ApiAware()),
             (new DateTimeField('signature_date', 'signatureDate'))->setFlags(new Required()),
 
             new ManyToOneAssociationField('customer', 'customer_id', CustomerDefinition::class, 'id', false),
