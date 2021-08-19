@@ -6,6 +6,7 @@ namespace PayonePayment\Installer;
 
 use Doctrine\DBAL\Connection;
 use PayonePayment\PaymentMethod\PaymentMethodInterface;
+use PayonePayment\PaymentMethod\PayoneApplePay;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
 use PayonePayment\PaymentMethod\PayoneEps;
@@ -36,6 +37,7 @@ use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 class PaymentMethodInstaller implements InstallerInterface
 {
     public const PAYMENT_METHOD_IDS = [
+        PayoneApplePay::class              => '4cbc89a06e544c06b413a41d158f5e00',
         PayoneCreditCard::class            => '37f90a48d9194762977c9e6db36334e0',
         PayoneDebit::class                 => '1b017bef157b4222b734659361d996fd',
         PayonePaypal::class                => '21e157163fdb4aa4862a2109abcd7522',
@@ -53,6 +55,7 @@ class PaymentMethodInstaller implements InstallerInterface
     ];
 
     public const PAYMENT_METHODS = [
+        PayoneApplePay::class,
         PayoneCreditCard::class,
         PayoneDebit::class,
         PayonePaypal::class,
