@@ -1,14 +1,14 @@
 /* eslint-disable import/no-unresolved */
 
 import Plugin from 'src/plugin-system/plugin.class';
-import StoreApiClient from 'src/service/store-api-client.service';
+import HttpClient from "src/service/http-client.service";
 import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
 
 export default class PayonePaymentPayolutionInvoicing extends Plugin {
     init() {
         this.orderFormDisabled = true;
 
-        this._client = new StoreApiClient();
+        this._client = new HttpClient();
 
         this._registerEventListeners();
     }
