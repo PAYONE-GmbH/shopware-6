@@ -7,6 +7,15 @@ $payone-logo-gutter: 1rem;
     }
 }
 
+apple-pay-button {
+    --apple-pay-button-width: 100%;
+    --apple-pay-button-height: 45px;
+    --apple-pay-button-border-radius: 3px;
+    --apple-pay-button-padding: 0px 0px;
+    --apple-pay-button-box-sizing: border-box;
+    display: block;
+}
+
 .payone-payment.credit-card {
     .alert {
         margin: 0;
