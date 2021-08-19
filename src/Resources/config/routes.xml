@@ -17,4 +17,8 @@
     <import resource="@PayonePayment/Storefront/Controller/Paypal/PaypalExpressController.php" type="annotation"/>
 
     <import resource="@PayonePayment/Storefront/Controller/Payolution/PayolutionController.php" type="annotation"/>
+
+    <!-- Store-Api routes -->
+    <import resource="@PayonePayment/StoreApi/Route/CardRoute.php" type="annotation" />
+    <import resource="@PayonePayment/StoreApi/Route/MandateRoute.php" type="annotation" />
 </routes>
