@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -51,10 +51,10 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
 
     private function getTemplateFromPaymentMethod(PaymentMethodEntity $paymentMethod): ?string
     {
-        $customFields = $paymentMethod->getCustomFields();
+        $method = array_search($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS);
 
-        if (!empty($customFields[CustomFieldInstaller::TEMPLATE])) {
-            return $customFields[CustomFieldInstaller::TEMPLATE];
+        if ($method !== false) {
+            return (new $method())->getTemplate();
         }
 
         return null;
@@ -62,16 +62,6 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
 
     private function isPayonePayment(PaymentMethodEntity $paymentMethod): bool
     {
-        $customFields = $paymentMethod->getCustomFields();
-
-        if (empty($customFields[CustomFieldInstaller::IS_PAYONE])) {
-            return false;
-        }
-
-        if (!$customFields[CustomFieldInstaller::IS_PAYONE]) {
-            return false;
-        }
-
-        return true;
+        return in_array($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS);
     }
 }

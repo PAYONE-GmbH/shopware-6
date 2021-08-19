@@ -25,8 +25,6 @@ class CustomFieldInstaller implements InstallerInterface
     public const AUTHORIZATION_TYPE     = 'payone_authorization_type';
     public const CLEARING_REFERENCE     = 'payone_clearing_reference';
     public const TRANSACTION_STATE      = 'payone_transaction_state';
-    public const TEMPLATE               = 'payone_template';
-    public const IS_PAYONE              = 'payone_payment';
     public const CAPTURE_MODE           = 'payone_capture_mode';
     public const CLEARING_TYPE          = 'payone_clearing_type';
     public const FINANCING_TYPE         = 'payone_financing_type';
@@ -164,18 +162,6 @@ class CustomFieldInstaller implements InstallerInterface
                 'name'             => self::REFUNDED_AMOUNT,
                 'type'             => CustomFieldTypes::INT,
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
-            ],
-            [
-                'id'               => '40071bc8de194cdc83c0b4c6938320c3',
-                'name'             => self::TEMPLATE,
-                'type'             => CustomFieldTypes::TEXT,
-                'customFieldSetId' => self::FIELDSET_ID_PAYMENT_METHOD,
-            ],
-            [
-                'id'               => '68eae9619aa54103a546d72b95d86e9b',
-                'name'             => self::IS_PAYONE,
-                'type'             => CustomFieldTypes::BOOL,
-                'customFieldSetId' => self::FIELDSET_ID_PAYMENT_METHOD,
             ],
             [
                 'id'               => '441218e612d045d99e851c0b8829dc29',
