@@ -1,5 +1,10 @@
 {% block component_payone_apple_pay_button %}
     <script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
 
-    <apple-pay-button buttonstyle="black" type="checkout-out" locale="de-DE"></apple-pay-button>
+    <apple-pay-button data-apple-pay-session-data='{
+            "countryCode": "{{ context.customer.defaultBillingAddress.country.iso }}",
+            "currencyCode": "{{ context.currency.isoCode }}",
+            "amount": "{{ page.cart.price.totalPrice }}"
+        }'
+        buttonstyle="black" type="checkout-out" locale="{{ app.request.locale }}"></apple-pay-button>
 {% endblock %}
