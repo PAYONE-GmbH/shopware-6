@@ -2,7 +2,15 @@
 
 {% block page_checkout_confirm_form_submit %}
     {% if constant('PayonePayment\\PaymentMethod\\PayoneApplePay::UUID') == context.paymentMethod.id %}
-        {% sw_include '@Storefront/storefront/component/checkout/apple-pay-button.html.twig' %}
+        {% if not page.cart.errors.blockOrder %}
+            {% sw_include '@Storefront/storefront/component/checkout/apple-pay-button.html.twig' %}
+        {% endif %}
+
+        <button id="confirmFormSubmit"
+                class="submit--hidden d-none"
+                form="confirmOrderForm"
+                type="submit">
+        </button>
     {% else %}
         {{ parent() }}
     {% endif %}
