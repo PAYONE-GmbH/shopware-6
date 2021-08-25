@@ -13,5 +13,9 @@
         <service id="PayonePayment\StoreApi\Route\MandateRoute">
             <argument type="service" id="PayonePayment\Components\MandateService\MandateService" />
         </service>
+
+        <service id="PayonePayment\StoreApi\Route\ApplePayRoute">
+            <argument type="service" id="shopware.app_system.guzzle" />
+        </service>
     </services>
 </container>

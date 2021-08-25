@@ -1,8 +1,8 @@
 /* eslint-disable import/no-unresolved */
 
 import Plugin from 'src/plugin-system/plugin.class';
-import ButtonLoadingIndicator from 'src/utility/loading-indicator/button-loading-indicator.util';
 import DomAccess from 'src/helper/dom-access.helper';
+import StoreApiClient from "src/service/store-api-client.service";
 
 export default class PayonePaymentApplePay extends Plugin {
     static options = {
@@ -19,8 +19,17 @@ export default class PayonePaymentApplePay extends Plugin {
 
     static session;
 
+    static client;
+
+    static validateMerchantUrl;
+
+    static processPaymentUrl;
+
     init() {
-        //TODO: loading indicator, remove on error
+        this.client = new StoreApiClient();
+        this.validateMerchantUrl = this.el.dataset.validateMerchantUrl;
+        this.processPaymentUrl = this.el.dataset.processPaymentUrl;
+
         this._registerEventHandler();
     }
 
@@ -28,18 +37,31 @@ export default class PayonePaymentApplePay extends Plugin {
         //TODO: remove
         this.options.total.amount = 0.01;
         this.session = new ApplePaySession(3, this.options);
+
+        this.session.addEventListener('validatemerchant', this.validateMerchant.bind(this));
+        this.session.addEventListener('paymentauthorized', this.authorizePayment.bind(this));
     }
 
     performPayment() {
         this.session.begin();
-        this.session.addEventListener('validatemerchant', this.validateMerchant.bind(this));
-        console.log(this.session);
     }
 
     validateMerchant(event) {
-    console.log('validate merchant');
-    console.log(event);
         //TODO: implement merchant validation
+        const validationUrl = event.validationURL;
+
+        this.client.abort();
+        this.client.post(this.validateMerchantUrl, JSON.stringify({ validationUrl: validationUrl }), (response) => {
+            console.log(response);
+        })
+    }
+
+    authorizePayment(event) {
+        //TODO: implement authorization request
+    }
+
+    _handleMerchantValidationResponse() {
+
     }
 
     _handleApplePayButtonClick() {
@@ -50,7 +72,6 @@ export default class PayonePaymentApplePay extends Plugin {
 
         this.createSession();
         this.performPayment();
-        this.validateMerchant();
     }
 
     _registerEventHandler() {

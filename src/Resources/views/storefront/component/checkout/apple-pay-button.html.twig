@@ -1,7 +1,10 @@
 {% block component_payone_apple_pay_button %}
     <script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
 
-    <apple-pay-button data-payone-payment-apple-pay-options='{
+    <apple-pay-button
+        data-validate-merchant-url="{{ path('store-api.payone.apple-pay.validate-merchant') }}"
+        data-process-payment-url="{{ path('store-api.payone.apple-pay.process') }}"
+        data-payone-payment-apple-pay-options='{
             "countryCode": "{{ context.customer.defaultBillingAddress.country.iso }}",
             "currencyCode": "{{ context.currency.isoCode }}",
             "total": {
