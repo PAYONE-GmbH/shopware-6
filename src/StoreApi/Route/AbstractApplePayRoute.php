@@ -12,5 +12,5 @@ abstract class AbstractApplePayRoute
 {
     abstract public function validateMerchant(Request $request, SalesChannelContext $context): Response;
 
-    abstract public function process(SalesChannelContext $context): Response;
+    abstract public function process(Request $request, SalesChannelContext $context): Response;
 }
