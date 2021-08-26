@@ -7,16 +7,11 @@ namespace PayonePayment\StoreApi\Route;
 use GuzzleHttp\Client;
 use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\StoreApi\Response\MandateResponse;
-use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Plugin\Exception\DecorationPatternException;
 use Shopware\Core\Framework\Routing\Annotation\ContextTokenRequired;
-use Shopware\Core\Framework\Routing\Annotation\Entity;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpClient\CurlHttpClient;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
-use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +26,10 @@ class ApplePayRoute extends AbstractApplePayRoute
     /** @var Client */
     private $httpClient;
 
-    public function __construct(Client $httpClient)
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(Client $httpClient, LoggerInterface $logger)
     {
         $this->httpClient = $httpClient;
     }
@@ -46,16 +44,9 @@ class ApplePayRoute extends AbstractApplePayRoute
      */
     public function validateMerchant(Request $request, SalesChannelContext $context): Response
     {
-        $validationUrl = $request->get('validationUrl', 'https://apple-pay-gateway.apple.com');
+        $validationUrl = $request->get('validationUrl', 'https://apple-pay-gateway.apple.com/paymentservices/paymentSession');
 
-        $header = [
-            'verify_peer' => false,
-            'cert'  => file_get_contents(__DIR__ . '/../../cert/merchant_id.pem'),
-            'key'    => file_get_contents(__DIR__ . '/../../cert/merchant_id.key'),
-            'content-type' => 'application/json'
-        ];
-
-
+        //TODO: get from config
         $body = [
             'merchantIdentifier' => 'merchant.saltyrocks.payone',
             'displayName' => 'PAYONE Apple Pay Prototyp',
@@ -63,11 +54,12 @@ class ApplePayRoute extends AbstractApplePayRoute
             'initiativeContext' => 'saltmann-payone-kellerkinder-io.eu.ngrok.io',
         ];
 
+        //TODO: add notice in config for certs
         $response = $this->httpClient->request('POST', $validationUrl,
             [
-                'headers' => $header,
-                'body' => json_encode($body),
-                'verify' => false
+                'json' => $body,
+                'cert'  => __DIR__ . '/../../apple-pay-cert/merchant_id.pem',
+                'ssl_key'    => __DIR__ . '/../../apple-pay-cert/merchant_id.key',
             ]
         );
 
