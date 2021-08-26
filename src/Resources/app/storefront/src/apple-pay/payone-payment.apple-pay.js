@@ -47,17 +47,22 @@ export default class PayonePaymentApplePay extends Plugin {
     }
 
     validateMerchant(event) {
-        //TODO: implement merchant validation
         const validationUrl = event.validationURL;
 
         this.client.abort();
         this.client.post(this.validateMerchantUrl, JSON.stringify({ validationUrl: validationUrl }), (response) => {
             console.log(response);
+
+            //TODO: handle errrors
+            //TODO: session completeMerchantValidation
         })
     }
 
     authorizePayment(event) {
         //TODO: implement authorization request
+        //TODO: store response data to form
+        //TODO: update transaction with data
+        //TODO: session complete payment
     }
 
     _handleMerchantValidationResponse() {
