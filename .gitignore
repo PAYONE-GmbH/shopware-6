@@ -1,5 +1,7 @@
 # dependencies
 /vendor
+/src/apple-pay-cert/*
+!/src/apple-pay-cert/.gitkeep
 
 # shopware
 /src/Resources/public/static/
