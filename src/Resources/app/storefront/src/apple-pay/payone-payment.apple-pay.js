@@ -51,22 +51,35 @@ export default class PayonePaymentApplePay extends Plugin {
 
         this.client.abort();
         this.client.post(this.validateMerchantUrl, JSON.stringify({ validationUrl: validationUrl }), (response) => {
-            console.log(response);
+            let merchantSession = null;
 
-            //TODO: handle errrors
-            //TODO: session completeMerchantValidation
+            try {
+                merchantSession = JSON.parse(response);
+            } catch (e) {
+                this.handleErrorOnPayment();
+                return;
+            }
+
+            if(!merchantSession || !merchantSession.merchantSessionIdentifier || !merchantSession.signature) {
+                this.handleErrorOnPayment();
+                return;
+            }
+
+            this.session.completeMerchantValidation(merchantSession);
         })
     }
 
+    handleErrorOnPayment() {
+        //TODO: show error message
+    }
+
     authorizePayment(event) {
+        console.log('authorize');
+        console.log(event);
         //TODO: implement authorization request
         //TODO: store response data to form
         //TODO: update transaction with data
         //TODO: session complete payment
-    }
-
-    _handleMerchantValidationResponse() {
-
     }
 
     _handleApplePayButtonClick() {
