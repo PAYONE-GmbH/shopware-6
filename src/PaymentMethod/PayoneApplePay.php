@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentMethod;
 
 use PayonePayment\Installer\PaymentMethodInstaller;
+use PayonePayment\PaymentHandler\PayoneApplePayPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 
 class PayoneApplePay extends AbstractPaymentMethod
@@ -21,9 +22,8 @@ class PayoneApplePay extends AbstractPaymentMethod
     /** @var string */
     protected $description = '';
 
-    //TODO: change
     /** @var string */
-    protected $paymentHandler = PayoneCreditCardPaymentHandler::class;
+    protected $paymentHandler = PayoneApplePayPaymentHandler::class;
 
     /** @var null|string */
     protected $template = null;

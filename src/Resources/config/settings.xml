@@ -1066,4 +1066,74 @@
             <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
         </input-field>
     </card>
+
+    <card>
+        <title>Apple Pay</title>
+        <title lang="de-DE">Apple Pay</title>
+
+        <name>payment_apple_pay</name>
+
+        <input-field>
+            <name>applePayMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>applePayAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>applePayPortalId</name>
+            <label>Portal ID</label>
+            <helpText>You need an ID to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen eine ID zu einem separates Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>applePayPortalKey</name>
+            <label>Key</label>
+            <helpText>You need a key to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Defines the authorization method for this payment method.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field>
+            <name>applePayMerchantName</name>
+            <label>ApplePay Merchant ID</label>
+        </input-field>
+
+        <input-field>
+            <name>applePayDisplayName</name>
+            <label>ApplePay Display Name</label>
+        </input-field>
+
+        <input-field>
+            <name>applePayCertPassphrase</name>
+            <label>Certificate Passphrase</label>
+        </input-field>
+    </card>
 </config>
