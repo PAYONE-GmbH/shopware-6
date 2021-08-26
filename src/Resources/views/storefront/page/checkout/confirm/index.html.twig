@@ -20,6 +20,14 @@
     {% sw_include '@Storefront/storefront/page/checkout/confirm/field/payment_method.html.twig' %}
 {% endblock %}
 
+{% block base_flashbags_checkout %}
+    <div id="payone-apple-pay-error" style="display: none;">
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with { type: "danger", content: 'PayonePayment.errorMessages.genericError'|trans  } %}
+    </div>
+
+    {{ parent() }}
+{% endblock %}
+
 {% block page_checkout_confirm %}
     {{ parent() }}
 

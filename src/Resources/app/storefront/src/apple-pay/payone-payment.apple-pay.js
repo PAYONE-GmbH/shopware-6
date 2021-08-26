@@ -70,7 +70,13 @@ export default class PayonePaymentApplePay extends Plugin {
     }
 
     handleErrorOnPayment() {
+        console.log('error');
+        const errorContainer = DomAccess.querySelector(document, '#payone-apple-pay-error');
+        errorContainer.style.display = "block";
+        errorContainer.scrollIntoView({block: "start"});
+
         //TODO: show error message
+        //TODO: scroll to error
     }
 
     authorizePayment(event) {
