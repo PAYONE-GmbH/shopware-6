@@ -124,5 +124,13 @@
                 "orderNotFound": "No matching order could be found"
             }
         }
+    },
+    "sw-privileges": {
+        "additional_permissions": {
+            "Payone": {
+                "label": "PAYONE",
+                "payone_order_management": "PAYONE transaction management"
+            }
+        }
     }
 }
