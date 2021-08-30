@@ -21,11 +21,13 @@ export default class PayonePaymentApplePay extends Plugin {
     static client;
     static validateMerchantUrl;
     static processPaymentUrl;
+    static orderForm;
 
     init() {
         this.client = new StoreApiClient();
         this.validateMerchantUrl = this.el.dataset.validateMerchantUrl;
         this.processPaymentUrl = this.el.dataset.processPaymentUrl;
+        this.orderForm = DomAccess.querySelector(document, '#confirmOrderForm');
 
         this._registerEventHandler();
     }
@@ -76,21 +78,45 @@ export default class PayonePaymentApplePay extends Plugin {
     authorizePayment(event) {
         this.client.abort();
         this.client.post(this.processPaymentUrl, JSON.stringify({token: event.payment.token}), (response) => {
-
+            this.completePayment(response);
+            this.orderForm.submit();
         })
+    }
 
-        //TODO: implement authorization request
-        //TODO: store response data to form
-        //TODO: applepaysession complete payment
+    completePayment(response) {
+        let txid = '';
+        let status = '';
+        let userid = '';
 
-        //TODO: update transaction with data in payment handler afterwards with response data
-        //TODO: on success -> send form
-        //TODO: on error -> finish order -> throw payment exception in handler
+        try {
+            let responseData = JSON.parse(response);
+            status = responseData.status;
+            txid = responseData.txid;
+            userid = responseData.userid;
+        } catch (e) {
+            this.orderForm.submit();
+        }
+
+        this.updateFormData(status, txid, userid);
+
+        if(status === 'APPROVED' || status === 'PENDING') {
+            this.session.completePayment({
+                status: ApplePaySession.STATUS_SUCCESS,
+                errors: [],
+            });
+        }
+
+        this.orderForm.submit();
+    }
+
+    updateFormData(status, txid, userid) {
+        DomAccess.querySelector(this.orderForm, 'input[name=\'status\']').value = status;
+        DomAccess.querySelector(this.orderForm, 'input[name=\'txid\']').value = txid;
+        DomAccess.querySelector(this.orderForm, 'input[name=\'userid\']').value = userid;
     }
 
     _handleApplePayButtonClick() {
-        const form = DomAccess.querySelector(document, '#confirmOrderForm');
-        if (!form.reportValidity()) {
+        if (!this.orderForm.reportValidity()) {
             return;
         }
 

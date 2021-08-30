@@ -43,8 +43,7 @@ class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
             return;
         }
 
-        //TODO: uncomment
-        //$paymentMethods = $this->removePaymentMethod($paymentMethods, PayoneApplePay::UUID);
+        $paymentMethods = $this->removePaymentMethod($paymentMethods, PayoneApplePay::UUID);
         $event->getPage()->setPaymentMethods($paymentMethods);
     }
 }
