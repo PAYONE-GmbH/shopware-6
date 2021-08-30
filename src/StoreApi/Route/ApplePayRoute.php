@@ -125,10 +125,8 @@ class ApplePayRoute extends AbstractApplePayRoute
         $configuration  = $this->configReader->read($salesChannelId);
         $token          = $request->get('token');
 
-        // Get configured authorization method
         $authorizationMethod = $configuration->getString('applePayAuthorizationMethod', 'preauthorization');
 
-        //TODO: merge with master cuz of precision
         $request = $this->requestParameterFactory->getRequestParameter(
             new ApplePayTransactionStruct(
                 new RequestDataBag($token),
@@ -138,8 +136,12 @@ class ApplePayRoute extends AbstractApplePayRoute
             )
         );
 
-        dd($request);
+        try {
+            $response = $this->client->request($request);
+        } catch (Throwable $exception) {
+            return new JsonResponse([], 402);
+        }
 
-        return new Response();
+        return new JsonResponse($response);
     }
 }
