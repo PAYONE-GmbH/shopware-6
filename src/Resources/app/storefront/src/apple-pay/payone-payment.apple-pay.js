@@ -97,7 +97,7 @@ export default class PayonePaymentApplePay extends Plugin {
             this.orderForm.submit();
         }
 
-        this.updateFormData(status, txid, userid);
+        this.updateFormData(status, txid, userid, response);
 
         if(status === 'APPROVED' || status === 'PENDING') {
             this.session.completePayment({
@@ -109,10 +109,11 @@ export default class PayonePaymentApplePay extends Plugin {
         this.orderForm.submit();
     }
 
-    updateFormData(status, txid, userid) {
+    updateFormData(status, txid, userid, response) {
         DomAccess.querySelector(this.orderForm, 'input[name=\'status\']').value = status;
         DomAccess.querySelector(this.orderForm, 'input[name=\'txid\']').value = txid;
         DomAccess.querySelector(this.orderForm, 'input[name=\'userid\']').value = userid;
+        DomAccess.querySelector(this.orderForm, 'input[name=\'response\']').value = response;
     }
 
     _handleApplePayButtonClick() {

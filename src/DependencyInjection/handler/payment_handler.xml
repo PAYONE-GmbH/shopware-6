@@ -188,6 +188,7 @@
             <argument type="service" id="translator" />
             <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler"/>
 
             <tag name="shopware.payment.method.sync" />
         </service>
