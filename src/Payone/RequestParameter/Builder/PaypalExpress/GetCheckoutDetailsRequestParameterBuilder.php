@@ -22,7 +22,7 @@ class GetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionReques
             'clearingtype'        => self::CLEARING_TYPE_WALLET,
             'wallettype'          => 'PPE',
             'add_paydata[action]' => 'getexpresscheckoutdetails',
-            'amount'              => $this->getConvertedAmount($cart->getPrice()->getTotalPrice(), $currency->getDecimalPrecision()),
+            'amount'              => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency'            => $currency->getIsoCode(),
             'workorderid'         => $arguments->getWorkorderId(),
         ];
