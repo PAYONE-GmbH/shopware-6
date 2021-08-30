@@ -6,7 +6,6 @@ namespace PayonePayment\PaymentMethod;
 
 use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\PaymentHandler\PayoneApplePayPaymentHandler;
-use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 
 class PayoneApplePay extends AbstractPaymentMethod
 {

@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\ApplePay;
 
-use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
-use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\RequestParameter\Struct\ApplePayTransactionStruct;
 
 class PreAuthorizeRequestParameterBuilder extends AuthorizeRequestParameterBuilder
 {
-    /** @param PaymentTransactionStruct $arguments */
+    /** @param ApplePayTransactionStruct $arguments */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return array_merge(parent::getRequestParameter($arguments), [
@@ -20,13 +19,10 @@ class PreAuthorizeRequestParameterBuilder extends AuthorizeRequestParameterBuild
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        if (!($arguments instanceof PaymentTransactionStruct)) {
+        if (!($arguments instanceof ApplePayTransactionStruct)) {
             return false;
         }
 
-        $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
-
-        return $paymentMethod === PayoneCreditCardPaymentHandler::class && $action === self::REQUEST_ACTION_PREAUTHORIZE;
+        return $arguments->getAction() === self::REQUEST_ACTION_PREAUTHORIZE;
     }
 }

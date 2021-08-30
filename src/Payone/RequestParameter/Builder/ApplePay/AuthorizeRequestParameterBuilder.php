@@ -4,39 +4,80 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\ApplePay;
 
-use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
-use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\RequestParameter\Struct\ApplePayTransactionStruct;
+use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\Country\CountryEntity;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @param PaymentTransactionStruct $arguments */
+    /** @var CartService */
+    protected $cartService;
+
+    public function __construct(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
+
+    /** @param ApplePayTransactionStruct $arguments */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $pseudoCardPan      = $arguments->getRequestData()->get('pseudoCardPan');
-        $savedPseudoCardPan = $arguments->getRequestData()->get('savedPseudoCardPan');
+        $salesChannelContext = $arguments->getSalesChannelContext();
+        $customer            = $salesChannelContext->getCustomer();
+        $currency            = $salesChannelContext->getCurrency();
+        $tokenData           = $arguments->getRequestData()->all();
+        $cart                = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
 
-        if (!empty($savedPseudoCardPan)) {
-            $pseudoCardPan = $savedPseudoCardPan;
+        if (null === $customer || null === $customer->getActiveBillingAddress() || null === $customer->getActiveBillingAddress()->getCountry()) {
+            return [];
         }
 
+        $billingAddress = $customer->getActiveBillingAddress();
+        /** @var CountryEntity $country */
+        $country = $billingAddress->getCountry();
+
         return [
-            'clearingtype'  => self::CLEARING_TYPE_CREDIT_CARD,
-            'request'       => self::REQUEST_ACTION_AUTHORIZE,
-            'pseudocardpan' => $pseudoCardPan,
+            'wallettype'   => 'APL',
+            'clearingtype' => self::CLEARING_TYPE_WALLET,
+            'request'      => self::REQUEST_ACTION_AUTHORIZE,
+
+            'lastname'  => $customer->getLastName(),
+            'firstname' => $customer->getFirstName(),
+            'country'   => $country->getIso(),
+
+            'currency' => $currency->getIsoCode(),
+            'cardtype' => $this->getCardType($arguments->getRequestData()),
+
+            //TODO
+            'amount' => '',
+
+            'reference' => $tokenData['paymentData']['header']['transactionId'] ?? bin2hex(random_bytes(8)),
+
+            'add_paydata[paymentdata_token_version]'             => $tokenData['paymentData']['version'] ?? 'EC_v1',
+            'add_paydata[paymentdata_token_data]'                => $tokenData['paymentData']['data'] ?? '',
+            'add_paydata[paymentdata_token_signature]'           => $tokenData['paymentData']['signature'] ?? '',
+            'add_paydata[paymentdata_token_ephemeral_publickey]' => $tokenData['paymentData']['header']['ephemeralPublicKey'] ?? '',
+            'add_paydata[paymentdata_token_publickey_hash]'      => $tokenData['paymentData']['header']['publicKeyHash'] ?? '',
+            'add_paydata[paymentdata_token_transaction_id]'      => $tokenData['paymentData']['header']['transactionId'] ?? '',
         ];
     }
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        if (!($arguments instanceof PaymentTransactionStruct)) {
+        if (!($arguments instanceof ApplePayTransactionStruct)) {
             return false;
         }
 
-        $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        return $arguments->getAction() === self::REQUEST_ACTION_AUTHORIZE;
+    }
 
-        return $paymentMethod === PayoneCreditCardPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
+    private function getCardType(ParameterBag $requestDataBag): string
+    {
+        $paymentMethod = $requestDataBag->get('paymentMethod', new RequestDataBag());
+
+        return strtoupper(substr($paymentMethod->get('network', '?'), 0, 1));
     }
 }
