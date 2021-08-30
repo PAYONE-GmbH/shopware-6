@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\Refund;
 
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
@@ -13,6 +14,14 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 
 class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
+    /** @var CurrencyPrecisionInterface */
+    private $currencyPrecision;
+
+    public function __construct(CurrencyPrecisionInterface $currencyPrecision)
+    {
+        $this->currencyPrecision = $currencyPrecision;
+    }
+
     /** @param FinancialTransactionStruct $arguments */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
@@ -39,7 +48,7 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
             'request'        => self::REQUEST_ACTION_DEBIT,
             'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
             'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => -1 * $this->getConvertedAmount((float) $totalAmount, $currency->getDecimalPrecision()),
+            'amount'         => -1 * $this->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
             'currency'       => $currency->getIsoCode(),
         ];
     }

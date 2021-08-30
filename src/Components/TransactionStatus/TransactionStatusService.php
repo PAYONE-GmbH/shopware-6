@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\TransactionStatus;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
 use Psr\Log\LoggerInterface;
@@ -60,16 +61,21 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var CurrencyPrecisionInterface */
+    private $currencyPrecision;
+
     public function __construct(
         StateMachineRegistry $stateMachineRegistry,
         ConfigReaderInterface $configReader,
         EntityRepositoryInterface $transactionRepository,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        CurrencyPrecisionInterface $currencyPrecision
     ) {
         $this->stateMachineRegistry  = $stateMachineRegistry;
         $this->configReader          = $configReader;
         $this->transactionRepository = $transactionRepository;
         $this->logger                = $logger;
+        $this->currencyPrecision     = $currencyPrecision;
     }
 
     public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, PaymentTransaction $paymentTransaction, array $transactionData): void
@@ -174,17 +180,19 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
+        $precision = $this->currencyPrecision->getTotalRoundingPrecision($currency);
+
         if (array_key_exists('price', $transactionData) && array_key_exists('receivable', $transactionData) &&
-            (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()))) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())))) {
+            (int) round(((float) $transactionData['receivable'] * (10 ** $precision))) === (int) round(((float) $transactionData['price'] * (10 ** $precision)))) {
             return true;
         }
 
         if (array_key_exists('price', $transactionData) && array_key_exists('invoice_grossamount', $transactionData) &&
-            (int) round(((float) $transactionData['invoice_grossamount'] * (10 ** $currency->getDecimalPrecision()))) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())))) {
+            (int) round(((float) $transactionData['invoice_grossamount'] * (10 ** $precision))) === (int) round(((float) $transactionData['price'] * (10 ** $precision)))) {
             return true;
         }
 
-        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()))) === 0) {
+        if ((int) round(((float) $transactionData['receivable'] * (10 ** $precision))) === 0) {
             return true;
         }
 
@@ -201,17 +209,19 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if (array_key_exists('receivable', $transactionData) && (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()))) === 0) {
+        $precision = $this->currencyPrecision->getTotalRoundingPrecision($currency);
+
+        if (array_key_exists('receivable', $transactionData) && (int) round(((float) $transactionData['receivable'] * (10 ** $precision))) === 0) {
             return false;
         }
 
         if (array_key_exists('price', $transactionData) && array_key_exists('receivable', $transactionData) &&
-            (int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()))) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())))) {
+            (int) round(((float) $transactionData['receivable'] * (10 ** $precision))) === (int) round(((float) $transactionData['price'] * (10 ** $precision)))) {
             return false;
         }
 
         if (array_key_exists('price', $transactionData) && array_key_exists('invoice_grossamount', $transactionData) &&
-            (int) round(((float) $transactionData['invoice_grossamount'] * (10 ** $currency->getDecimalPrecision()))) === (int) round(((float) $transactionData['price'] * (10 ** $currency->getDecimalPrecision())))) {
+            (int) round(((float) $transactionData['invoice_grossamount'] * (10 ** $precision))) === (int) round(((float) $transactionData['price'] * (10 ** $precision)))) {
             return false;
         }
 
@@ -220,6 +230,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionRefund(array $transactionData, CurrencyEntity $currency): bool
     {
+        $precision = $this->currencyPrecision->getTotalRoundingPrecision($currency);
+
         if (strtolower($transactionData['txaction']) !== self::ACTION_DEBIT) {
             return false;
         }
@@ -232,7 +244,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()))) !== 0) {
+        if ((int) round(((float) $transactionData['receivable'] * (10 ** $precision))) !== 0) {
             return false;
         }
 
@@ -241,6 +253,8 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPartialRefund(array $transactionData, CurrencyEntity $currency): bool
     {
+        $precision = $this->currencyPrecision->getTotalRoundingPrecision($currency);
+
         if (strtolower($transactionData['txaction']) !== self::ACTION_DEBIT) {
             return false;
         }
@@ -253,7 +267,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if ((int) round(((float) $transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()))) === 0) {
+        if ((int) round(((float) $transactionData['receivable'] * (10 ** $precision))) === 0) {
             return false;
         }
 
