@@ -6,16 +6,15 @@ namespace PayonePayment\StoreApi\Route;
 
 use GuzzleHttp\Client;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Components\MandateService\MandateServiceInterface;
+use PayonePayment\PaymentHandler\PayoneApplePayPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
-use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use PayonePayment\StoreApi\Response\MandateResponse;
-use PayonePayment\Struct\PaymentTransaction;
+use PayonePayment\Payone\RequestParameter\Struct\ApplePayTransactionStruct;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Plugin\Exception\DecorationPatternException;
 use Shopware\Core\Framework\Routing\Annotation\ContextTokenRequired;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -51,13 +50,12 @@ class ApplePayRoute extends AbstractApplePayRoute
         RequestParameterFactory $requestParameterFactory,
         PayoneClientInterface $client,
         ConfigReaderInterface $configReader
-    )
-    {
-        $this->httpClient = $httpClient;
-        $this->logger = $logger;
+    ) {
+        $this->httpClient              = $httpClient;
+        $this->logger                  = $logger;
         $this->requestParameterFactory = $requestParameterFactory;
-        $this->client = $client;
-        $this->configReader = $configReader;
+        $this->client                  = $client;
+        $this->configReader            = $configReader;
     }
 
     public function getDecorated(): AbstractCardRoute
@@ -70,22 +68,22 @@ class ApplePayRoute extends AbstractApplePayRoute
      */
     public function validateMerchant(Request $request, SalesChannelContext $context): Response
     {
-        $configuration = $this->configReader->read($context->getSalesChannelId());
-        $validationUrl = $request->get('validationUrl', 'https://apple-pay-gateway.apple.com/paymentservices/paymentSession');
+        $configuration      = $this->configReader->read($context->getSalesChannelId());
+        $validationUrl      = $request->get('validationUrl', 'https://apple-pay-gateway.apple.com/paymentservices/paymentSession');
         $merchantIdCertPath = __DIR__ . '/../../apple-pay-cert/merchant_id.pem';
-        $merchantIdKeyPath = __DIR__ . '/../../apple-pay-cert/merchant_id.key';
+        $merchantIdKeyPath  = __DIR__ . '/../../apple-pay-cert/merchant_id.key';
 
         $passPhrase = $configuration->get('applePayCertPassphrase');
 
         $body = [
             'merchantIdentifier' => $configuration->get('applePayMerchantName'),
-            'displayName' => $configuration->get('applePayDisplayName'),
-            'initiative' => 'web',
-            'initiativeContext' => $request->getHttpHost(),
+            'displayName'        => $configuration->get('applePayDisplayName'),
+            'initiative'         => 'web',
+            'initiativeContext'  => $request->getHttpHost(),
         ];
 
-        if(!file_exists($merchantIdCertPath) || !file_exists($merchantIdKeyPath)) {
-            $this->logger->error('ApplePay MerchantValidation Cert files missing.', [ $merchantIdCertPath, $merchantIdKeyPath ]);
+        if (!file_exists($merchantIdCertPath) || !file_exists($merchantIdKeyPath)) {
+            $this->logger->error('ApplePay MerchantValidation Cert files missing.', [$merchantIdCertPath, $merchantIdKeyPath]);
             throw new FileNotFoundException();
         }
 
@@ -93,21 +91,22 @@ class ApplePayRoute extends AbstractApplePayRoute
         try {
             $response = $this->httpClient->request('POST', $validationUrl,
                 [
-                    'json' => $body,
-                    'cert' => (empty($passPhrase)) ? $merchantIdCertPath : [$merchantIdCertPath, $passPhrase],
-                    'ssl_key' => $merchantIdKeyPath,
-                    'http_errors' => false
+                    'json'        => $body,
+                    'cert'        => (empty($passPhrase)) ? $merchantIdCertPath : [$merchantIdCertPath, $passPhrase],
+                    'ssl_key'     => $merchantIdKeyPath,
+                    'http_errors' => false,
                 ]
             );
-        } catch(Throwable $e) {
-            $this->logger->error('ApplePay merchant validation failed.', [ 'body' => $body, 'message' =>  $e->getMessage(), 'url' => $validationUrl ]);
+        } catch (Throwable $e) {
+            $this->logger->error('ApplePay merchant validation failed.', ['body' => $body, 'message' => $e->getMessage(), 'url' => $validationUrl]);
+
             return new Response(null, 500);
         }
 
         $statusCode = $response->getStatusCode();
 
-        if($statusCode !== 200) {
-            $this->logger->error('ApplePay merchant validation failed.', [ 'body' => $body, 'statusCode' =>  $statusCode, 'url' => $validationUrl ]);
+        if ($statusCode !== 200) {
+            $this->logger->error('ApplePay merchant validation failed.', ['body' => $body, 'statusCode' => $statusCode, 'url' => $validationUrl]);
         }
 
         return new JsonResponse(
@@ -123,31 +122,24 @@ class ApplePayRoute extends AbstractApplePayRoute
     public function process(Request $request, SalesChannelContext $context): Response
     {
         $salesChannelId = $context->getSalesChannelId();
-        $configuration = $this->configReader->read($salesChannelId);
-        $token = $request->get('token');
+        $configuration  = $this->configReader->read($salesChannelId);
+        $token          = $request->get('token');
 
         // Get configured authorization method
         $authorizationMethod = $configuration->getString('applePayAuthorizationMethod', 'preauthorization');
 
-        //TODO: get amount from cart, not from request!!
-
-        //TODO: get card type
-        //TODO: get country
-        //TODO: get first name
-        //TODO: get last name
-
-        //TODO: we do need a new struct containing all apple pay relevant information
-/*        $request = $this->requestParameterFactory->getRequestParameter(
-            new PaymentTransactionStruct(
-                $paymentTransaction,
-                $requestData,
-                $salesChannelContext,
-                __CLASS__,
+        //TODO: merge with master cuz of precision
+        $request = $this->requestParameterFactory->getRequestParameter(
+            new ApplePayTransactionStruct(
+                new RequestDataBag($token),
+                $context,
+                PayoneApplePayPaymentHandler::class,
                 $authorizationMethod
             )
-        );*/
+        );
 
+        dd($request);
 
-
+        return new Response();
     }
 }

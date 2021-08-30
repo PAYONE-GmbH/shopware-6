@@ -311,6 +311,19 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <!-- Apple Pay -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\ApplePay\AuthorizeRequestParameterBuilder">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\ApplePay\PreAuthorizeRequestParameterBuilder">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
         <!-- Capture -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Capture\CaptureRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
