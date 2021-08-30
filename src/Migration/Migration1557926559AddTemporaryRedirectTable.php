@@ -16,14 +16,24 @@ class Migration1557926559AddTemporaryRedirectTable extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->exec('
+        $sql = '
             CREATE TABLE IF NOT EXISTS payone_payment_redirect (
                 `id` binary(16) NOT NULL PRIMARY KEY,
-                
                 `hash` text NOT NULL,
-                `url` text NOT NULL                    
+                `url` text NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        ');
+        ';
+
+        if (method_exists($connection, 'executeStatement')) {
+            $connection->executeStatement($sql);
+
+            return;
+        }
+
+        if (method_exists($connection, 'exec')) {
+            /** @noinspection PhpDeprecationInspection */
+            $connection->exec($sql);
+        }
     }
 
     public function updateDestructive(Connection $connection): void

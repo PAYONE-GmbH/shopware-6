@@ -23,7 +23,7 @@ class SetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionReques
             'clearingtype'        => self::CLEARING_TYPE_WALLET,
             'wallettype'          => 'PPE',
             'add_paydata[action]' => 'setexpresscheckout',
-            'amount'              => $this->getConvertedAmount($cart->getPrice()->getTotalPrice(), $currency->getDecimalPrecision()),
+            'amount'              => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency'            => $currency->getIsoCode(),
             'successurl'          => $returnUrl . '?state=success',
             'errorurl'            => $returnUrl . '?state=error',
