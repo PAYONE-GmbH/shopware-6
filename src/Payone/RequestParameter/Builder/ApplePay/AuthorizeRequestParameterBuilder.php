@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\ApplePay;
 
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\ApplePayTransactionStruct;
@@ -17,9 +18,13 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     /** @var CartService */
     protected $cartService;
 
-    public function __construct(CartService $cartService)
+    /** @var CurrencyPrecisionInterface */
+    protected $currencyPrecision;
+
+    public function __construct(CartService $cartService, CurrencyPrecisionInterface $currencyPrecision)
     {
-        $this->cartService = $cartService;
+        $this->cartService       = $cartService;
+        $this->currencyPrecision = $currencyPrecision;
     }
 
     /** @param ApplePayTransactionStruct $arguments */
@@ -51,10 +56,11 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'currency' => $currency->getIsoCode(),
             'cardtype' => $this->getCardType($arguments->getRequestData()),
 
-            //TODO
-            'amount' => '',
+            //TODO: remove
+            'amount' => $this->currencyPrecision->getRoundedTotalAmount(0.01, $currency),
+            //'amount' => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
 
-            'reference' => $tokenData['paymentData']['header']['transactionId'] ?? bin2hex(random_bytes(8)),
+            'reference' => substr($tokenData['paymentData']['header']['transactionId'], 0, 20) ?? bin2hex(random_bytes(8)),
 
             'add_paydata[paymentdata_token_version]'             => $tokenData['paymentData']['version'] ?? 'EC_v1',
             'add_paydata[paymentdata_token_data]'                => $tokenData['paymentData']['data'] ?? '',

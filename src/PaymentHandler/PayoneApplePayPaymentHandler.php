@@ -48,6 +48,9 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
         //TODO: store data on transaction
+
+        //APPROVED / REDIRECT / ERROR / PENDING
+        //TODO: Exception on Redirect, Error
     }
 
     /**
