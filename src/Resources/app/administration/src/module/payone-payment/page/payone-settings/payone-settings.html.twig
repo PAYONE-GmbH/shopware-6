@@ -142,10 +142,31 @@
                         />
 
                         <sw-form-field-renderer
-                            v-else
+                            v-else-if="!element.name.includes('PaymentStatus')"
                             v-bind="getElementBind(getBind(element, config))"
                             v-model="config[element.name]"
                         />
+                    </div>
+                </template>
+
+                <template #afterElements="{card, config}">
+                    <sw-switch-field v-if="isVisiblePaymentMethodCard(card)"
+                                     v-model="displayStatusMapping[card.name]"
+                                     :label="$tc('payone-payment.settingsForm.labelShowSpecificStatusMapping')"
+                                     :helpText="$tc('payone-payment.settingsForm.helpTextShowSpecificStatusMapping')"></sw-switch-field>
+
+                    <div v-if="config">
+                        <template v-for="element in card.elements">
+                            <sw-form-field-renderer
+                                v-if="element.name.includes('PaymentStatus') && displayStatusMapping[card.name]"
+                                :config="{
+                                    componentName: 'sw-single-select',
+                                    label: getInlineSnippet(getElementBind(getBind(element, config)).config.label),
+                                    helpText: getInlineSnippet(getElementBind(getBind(element, config)).config.helpText),
+                                    options: stateMachineTransitionActions,
+                                }"
+                                v-model="config[element.name]" />
+                        </template>
                     </div>
                 </template>
             </sw-system-config>
