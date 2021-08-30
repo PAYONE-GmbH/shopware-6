@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Components\TransactionStatus;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
 use Psr\Log\LoggerInterface;
