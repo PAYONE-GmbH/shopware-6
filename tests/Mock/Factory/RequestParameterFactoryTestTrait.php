@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Mock\Factory;
 
 use PayonePayment\Components\CartHasher\CartHasher;
+use PayonePayment\Components\Currency\CurrencyPrecision;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
@@ -65,9 +66,9 @@ trait RequestParameterFactoryTestTrait
                 new PaypalAuthorizeRequestParameterBuilder(),
                 new CreditCardPreAuthorizeRequestParameterBuilder(),
                 new DebitAuthorizeRequestParameterBuilder(),
-                new CaptureRequestParameterBuilder(),
-                new RefundRequestParameterBuilder(),
-                new OrderLinesRequestParameterBuilder(new LineItemHydrator()),
+                new CaptureRequestParameterBuilder(new CurrencyPrecision()),
+                new RefundRequestParameterBuilder(new CurrencyPrecision()),
+                new OrderLinesRequestParameterBuilder(new LineItemHydrator(new CurrencyPrecision())),
                 $this->getSystemRequestBuilder(),
                 $this->getGeneralTransactionRequestBuilder($salesChannelContext),
                 $this->getCustomerRequestBuilder(),
@@ -95,7 +96,7 @@ trait RequestParameterFactoryTestTrait
     {
         $currencyRepositoryMock = $this->createMock(EntityRepositoryInterface::class);
 
-        $builder = new GeneralTransactionRequestParameterBuilder(new CartHasher(), new ConfigReaderMock([]), $currencyRepositoryMock);
+        $builder = new GeneralTransactionRequestParameterBuilder(new CartHasher(new CurrencyPrecision()), new ConfigReaderMock([]), $currencyRepositoryMock, new CurrencyPrecision());
 
         $currencyRepositoryMock->method('search')->willReturn(
             $this->getCurrencySearchResult($salesChannelContext->getContext())
@@ -112,6 +113,7 @@ trait RequestParameterFactoryTestTrait
 
         if (method_exists($currencyEntity, 'setItemRounding')) {
             $currencyEntity->setItemRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, false));
+            $currencyEntity->setTotalRounding(new CashRoundingConfig(Constants::CURRENCY_DECIMAL_PRECISION, 1, false));
         } else {
             /** @phpstan-ignore-next-line */
             $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);

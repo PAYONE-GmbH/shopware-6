@@ -24,7 +24,7 @@ class CalculationRequestParameterBuilder extends GeneralTransactionRequestParame
             'add_paydata[action]' => 'calculation',
             'clearingtype'        => self::CLEARING_TYPE_FINANCING,
             'financingtype'       => 'PYS',
-            'amount'              => $this->getConvertedAmount($cart->getPrice()->getTotalPrice(), $currency->getDecimalPrecision()),
+            'amount'              => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency'            => $currency->getIsoCode(),
             'workorderid'         => $arguments->getWorkorderId(),
         ];

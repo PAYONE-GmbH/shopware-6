@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionHandler\Capture;
 
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
@@ -28,7 +29,8 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         TransactionDataHandlerInterface $dataHandler,
         TransactionStatusServiceInterface $transactionStatusService,
         EntityRepositoryInterface $transactionRepository,
-        EntityRepositoryInterface $lineItemRepository
+        EntityRepositoryInterface $lineItemRepository,
+        CurrencyPrecisionInterface $currencyPrecision
     ) {
         $this->requestFactory           = $requestFactory;
         $this->client                   = $client;
@@ -36,6 +38,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $this->transactionStatusService = $transactionStatusService;
         $this->transactionRepository    = $transactionRepository;
         $this->lineItemRepository       = $lineItemRepository;
+        $this->currencyPrecision        = $currencyPrecision;
     }
 
     /**

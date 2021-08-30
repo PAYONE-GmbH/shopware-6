@@ -43,11 +43,6 @@ abstract class AbstractRequestParameterBuilder
      */
     abstract public function supports(AbstractRequestParameterStruct $arguments): bool;
 
-    protected function getConvertedAmount(float $amount, int $precision): int
-    {
-        return (int) round($amount * (10 ** $precision));
-    }
-
     protected function getOrderCurrency(?OrderEntity $order, Context $context): CurrencyEntity
     {
         if (null !== $order && null !== $order->getCurrency()) {
