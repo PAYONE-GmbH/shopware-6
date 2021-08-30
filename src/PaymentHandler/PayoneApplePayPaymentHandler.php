@@ -50,7 +50,8 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
     {
         //APPROVED / REDIRECT / ERROR / PENDING
         //TODO: Exception on Redirect, Error
-        //TODO: set transaction status
+        //TODO: simulate error setting too long reference on request
+        //TODO: simulate empty response
 
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannelId());
         $response      = json_decode($dataBag->get('response', '{}'), true);
