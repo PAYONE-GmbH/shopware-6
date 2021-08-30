@@ -24,22 +24,17 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
     /** @var TranslatorInterface */
     protected $translator;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
-
     public function __construct(
         ConfigReaderInterface $configReader,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         EntityRepositoryInterface $lineItemRepository,
-        RequestStack $requestStack,
-        RequestParameterFactory $requestParameterFactory
+        RequestStack $requestStack
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
         $this->client                  = $client;
         $this->translator              = $translator;
-        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
@@ -48,9 +43,12 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
         //TODO: store data on transaction
+        //TODO: set custom fields
+
 
         //APPROVED / REDIRECT / ERROR / PENDING
         //TODO: Exception on Redirect, Error
+        //APPROVED -> authorized as status
     }
 
     /**

@@ -1,6 +1,10 @@
 {% block component_payone_apple_pay_button %}
     <script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
 
+    <input type="hidden" name="status" value=""/>
+    <input type="hidden" name="txid" value=""/>
+    <input type="hidden" name="userid" value=""/>
+
     <apple-pay-button
         data-validate-merchant-url="{{ path('store-api.payone.apple-pay.validate-merchant') }}"
         data-process-payment-url="{{ path('store-api.payone.apple-pay.process') }}"
