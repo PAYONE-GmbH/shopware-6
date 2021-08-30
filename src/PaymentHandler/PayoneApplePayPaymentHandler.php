@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -24,17 +25,22 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
     /** @var TranslatorInterface */
     protected $translator;
 
+    /** @var TransactionDataHandlerInterface */
+    private $dataHandler;
+
     public function __construct(
         ConfigReaderInterface $configReader,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         EntityRepositoryInterface $lineItemRepository,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        TransactionDataHandlerInterface $dataHandler
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client                  = $client;
-        $this->translator              = $translator;
+        $this->client      = $client;
+        $this->translator  = $translator;
+        $this->dataHandler = $dataHandler;
     }
 
     /**
@@ -42,13 +48,22 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
      */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
-        //TODO: store data on transaction
-        //TODO: set custom fields
-
-
         //APPROVED / REDIRECT / ERROR / PENDING
         //TODO: Exception on Redirect, Error
-        //APPROVED -> authorized as status
+        //TODO: set transaction status
+
+        $configuration = $this->configReader->read($salesChannelContext->getSalesChannelId());
+        $response      = json_decode($dataBag->get('response', '{}'), true);
+
+        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
+
+        $request = [
+            'request' => $configuration->getString('applePayAuthorizationMethod', 'preauthorization'),
+        ];
+
+        $data = $this->prepareTransactionCustomFields($request, $response);
+        $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
     }
 
     /**
