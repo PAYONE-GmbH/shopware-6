@@ -25,7 +25,7 @@ class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameter
             'add_paydata[payment_type]' => 'Payolution-Invoicing',
             'clearingtype'              => self::CLEARING_TYPE_FINANCING,
             'financingtype'             => 'PYV',
-            'amount'                    => $this->getConvertedAmount($cart->getPrice()->getTotalPrice(), $currency->getDecimalPrecision()),
+            'amount'                    => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency'                  => $currency->getIsoCode(),
             'workorderid'               => $arguments->getWorkorderId(),
         ];

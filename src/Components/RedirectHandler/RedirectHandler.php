@@ -53,7 +53,13 @@ class RedirectHandler
     public function decode(string $hash): string
     {
         $query = 'SELECT url FROM payone_payment_redirect WHERE hash = ?';
-        $url   = $this->connection->fetchColumn($query, [$hash]);
+
+        if (method_exists($this->connection, 'fetchOne')) {
+            $url = $this->connection->fetchOne($query, [$hash]);
+        } elseif (method_exists($this->connection, 'fetchColumn')) {
+            /** @noinspection PhpDeprecationInspection */
+            $url = $this->connection->fetchColumn($query, [$hash]);
+        }
 
         if (empty($url)) {
             throw new RuntimeException('no matching url for hash found');
