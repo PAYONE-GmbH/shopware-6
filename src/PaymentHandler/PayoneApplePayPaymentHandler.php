@@ -11,6 +11,7 @@ use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -48,13 +49,24 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
      */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
-        //APPROVED / REDIRECT / ERROR / PENDING
-        //TODO: Exception on Redirect, Error
-        //TODO: simulate error setting too long reference on request
-        //TODO: simulate empty response
+        //TODO: get data from requeststack for after order handling
 
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannelId());
         $response      = json_decode($dataBag->get('response', '{}'), true);
+
+        if (!array_key_exists('status', $response)) {
+            throw new SyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
+
+        if ($response['status'] !== 'APPROVED' && $response['status'] !== 'PENDING') {
+            throw new SyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
 
         $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 

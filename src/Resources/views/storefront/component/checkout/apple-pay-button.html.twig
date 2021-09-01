@@ -14,7 +14,7 @@
             "currencyCode": "{{ context.currency.isoCode }}",
             "total": {
                 "label": "{{ config('core.basicInformation.shopName') }}",
-                "amount": "{{ page.cart.price.totalPrice }}"
+                "amount": "{{ amount }}"
             }
         }'
         buttonstyle="black" type="checkout-out" locale="{{ app.request.locale }}"></apple-pay-button>

@@ -1,5 +1,19 @@
 {% sw_extends '@Storefront/storefront/page/account/order/index.html.twig' %}
 
+{% block page_checkout_confirm_form_submit %}
+    {% if constant('PayonePayment\\PaymentMethod\\PayoneApplePay::UUID') == context.paymentMethod.id %}
+        {% sw_include '@Storefront/storefront/component/checkout/apple-pay-button.html.twig' with {'amount': page.order.amountTotal } %}
+
+        <button id="confirmFormSubmit"
+                class="submit--hidden d-none"
+                form="confirmOrderForm"
+                type="submit">
+        </button>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
 {% block page_checkout_confirm_payment %}
     {{ parent() }}
 

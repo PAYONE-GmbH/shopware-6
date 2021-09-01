@@ -88,7 +88,6 @@ Component.register('payone-settings', {
         },
 
         paymentMethodPrefixes() {
-            // TODO: Autogenerate config array with these prefixes
             return [
                 'creditCard',
                 'debit',
