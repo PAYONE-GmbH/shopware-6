@@ -132,9 +132,7 @@
                     <div v-show="displayField(element, config, card)">
                         <sw-alert v-if="element.name === 'PayonePayment.settings.applePayCertPassphrase'"
                             variant="info" appearance="default" :showIcon="true" :closable="false">
-                            Link payone
-                            Info zertifikatskonfiguration
-                            Info erstellung pem
+                            <span v-html="$tc('payone-payment.applePay.cert.notification')"></span>
                         </sw-alert>
 
                         <sw-form-field-renderer
