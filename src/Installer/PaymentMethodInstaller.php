@@ -205,15 +205,6 @@ class PaymentMethodInstaller implements InstallerInterface
         } else {
             $this->installPaymentMethod($data, $paymentMethod, $context);
         }
-
-        // Re-fetch payment method from database to operate on proper data
-        $paymentMethodEntity = $this->findPaymentMethodEntity($paymentMethod->getId(), $context);
-
-        if (!($paymentMethodEntity instanceof PaymentMethodEntity)) {
-            // we are in a bad state here because the payment method must exist if everything went well
-            // todo: find a better solution, for now just ignore this problem
-            return;
-        }
     }
 
     private function installPaymentMethod(array $data, PaymentMethodInterface $paymentMethod, Context $context): void

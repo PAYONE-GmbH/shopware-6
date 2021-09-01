@@ -87,7 +87,6 @@ class ApplePayRoute extends AbstractApplePayRoute
             throw new FileNotFoundException();
         }
 
-        //TODO: add notice in config for certs
         try {
             $response = $this->httpClient->request('POST', $validationUrl,
                 [
