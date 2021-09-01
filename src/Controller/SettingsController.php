@@ -360,6 +360,24 @@ class SettingsController extends AbstractController
                     'errorurl'                            => 'https://www.payone.com',
                 ];
 
+            case Handler\PayoneApplePayPaymentHandler::class:
+                //TODO: Test request for apple pay is failing because of missing token params, we will use prepayment request to validate specific merchant data
+                return [
+                    'request'      => 'preauthorization',
+                    'clearingtype' => 'vor',
+                    'amount'       => 10000,
+                    'currency'     => 'EUR',
+                    'reference'    => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'firstname'    => 'Test',
+                    'lastname'     => 'Test',
+                    'country'      => 'DE',
+                    'email'        => 'test@example.com',
+                    'street'       => 'teststreet 2',
+                    'zip'          => '12345',
+                    'city'         => 'Test',
+                    'ip'           => '127.0.0.1',
+                ];
+
             default:
                 $this->logger->error(sprintf('There is no test data defined for payment class %s', $paymentClass));
                 throw new RuntimeException(sprintf('There is no test data defined for payment class %s', $paymentClass));

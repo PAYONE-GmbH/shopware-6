@@ -73,6 +73,7 @@ class PaymentMethodInstaller implements InstallerInterface
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [
+        PayoneApplePay::class,
         PayoneCreditCard::class,
         PayoneDebit::class,
         PayonePaypal::class,
