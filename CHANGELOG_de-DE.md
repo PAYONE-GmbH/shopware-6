@@ -86,3 +86,22 @@ Wartung
  
 * getestet mit Shop-Version 6.4.1.0
 * bessere Übersetzungen der Fehlermeldungen
+
+
+# 2.3.0
+
+Neue Funktionen
+ 
+* neue PAYONE Berechtigungsverwaltung
+* Status Mapping pro Zahlungsmethode möglich
+ 
+Fehlerbehebungen
+ 
+* Fix für die Freischaltung der Schaltfläche "Jetzt kaufen"
+* PayPal Express: Telefonnummer ist kein Pflichtfeld mehr
+ 
+Wartung
+ 
+* getestet mit Shopware 6.4.3.1
+* massive Überarbeitungen in der Pluginstruktur
+* Elasticsearch Kompatibilität hergestellt
