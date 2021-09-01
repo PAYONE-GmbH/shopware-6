@@ -9,5 +9,6 @@ parameters:
     treatPhpDocTypesAsCertain: false
     ignoreErrors:
         - '#Access to constant CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE(.*)#'
+        - '#Shopware\\Core\\Framework\\DataAbstractionLayer\\Field\\Flag\\ApiAware given#'
     excludes_analyse:
         - tests/*

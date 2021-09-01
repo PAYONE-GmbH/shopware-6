@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\StoreApi\Route;
 
+use Doctrine\Common\Annotations\Annotation\IgnoreAnnotation;
 use OpenApi\Annotations as OA;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\StoreApi\Response\CardResponse;
@@ -18,7 +19,17 @@ use Shopware\Core\System\SalesChannel\SuccessResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+if (!class_exists('Shopware\Core\Framework\Routing\Annotation\ContextTokenRequired')) {
+    include_once __DIR__ . '/../Annotation/ContextTokenRequired.php';
+}
+
+if (!class_exists('Shopware\Core\Framework\Routing\Annotation\Entity')) {
+    include_once __DIR__ . '/../Annotation/Entity.php';
+}
+
 /**
+ * @IgnoreAnnotation("ContextTokenRequired")
+ * @IgnoreAnnotation("Entity")
  * @RouteScope(scopes={"store-api"})
  * @ContextTokenRequired
  */
