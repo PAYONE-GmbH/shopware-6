@@ -107,7 +107,6 @@ class PayoneSecureInvoicePaymentHandler extends AbstractPayonePaymentHandler imp
                 CustomFieldInstaller::CAPTURE_MODE => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
 
                 // Set clearing type explicitly
-                // todo: evaluate moving this to parent::getBaseCustomFields()
                 CustomFieldInstaller::CLEARING_TYPE => static::PAYONE_CLEARING_REC,
 
                 // Store clearing bank account information as custom field of the transaction in order to

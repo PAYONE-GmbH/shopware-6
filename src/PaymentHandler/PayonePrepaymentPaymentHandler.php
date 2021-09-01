@@ -99,7 +99,6 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
             $this->getBaseCustomFields($response['status']),
             [
                 // Set clearing type explicitly
-                // todo: evaluate moving this to parent::getBaseCustomFields()
                 CustomFieldInstaller::CLEARING_TYPE => static::PAYONE_CLEARING_VOR,
 
                 // Store clearing bank account information as custom field of the transaction in order to
