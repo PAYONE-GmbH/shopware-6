@@ -104,6 +104,7 @@ Component.register('payone-settings', {
                 'prepayment',
                 'trustly',
                 'secureInvoice',
+                'applePay',
             ];
         },
 

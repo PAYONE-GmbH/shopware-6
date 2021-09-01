@@ -17,9 +17,8 @@ class PayoneApplePay extends AbstractPaymentMethod
     /** @var string */
     protected $name = 'Payone Apple Pay';
 
-    //TODO: add description
     /** @var string */
-    protected $description = '';
+    protected $description = 'Apple Pay is a mobile payment system providing straightforward payment on Apple devices';
 
     /** @var string */
     protected $paymentHandler = PayoneApplePayPaymentHandler::class;
@@ -27,16 +26,15 @@ class PayoneApplePay extends AbstractPaymentMethod
     /** @var null|string */
     protected $template = null;
 
-    //TODO: add description
     /** @var array */
     protected $translations = [
         'de-DE' => [
             'name'        => 'Payone Apple Pay',
-            'description' => '',
+            'description' => 'Apple Pay ist ein mobiles Zahlungssystem, welches die bequeme Zahlung auf Endgeräten von Apple ermöglicht.',
         ],
         'en-GB' => [
             'name'        => 'Payone Apple Pay',
-            'description' => '',
+            'description' => 'Apple Pay is a mobile payment system providing straightforward payment on Apple devices',
         ],
     ];
 
