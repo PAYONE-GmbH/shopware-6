@@ -2,7 +2,7 @@
   "name": "payone-gmbh/shopware-6",
   "type": "shopware-platform-plugin",
   "description": "PAYONE Payment Plugin",
-  "version": "2.3.0-beta.1",
+  "version": "2.3.0",
   "license": "MIT",
   "authors": [
     {
