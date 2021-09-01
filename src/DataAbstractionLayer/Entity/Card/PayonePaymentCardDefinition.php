@@ -41,7 +41,7 @@ class PayonePaymentCardDefinition extends EntityDefinition
     {
         $pseudoCardPanField = (new StringField('pseudo_card_pan', 'pseudoCardPan'))->setFlags(new Required());
 
-        if(class_exists(ApiAware::class)) {
+        if (class_exists(ApiAware::class)) {
             $pseudoCardPanField = (new StringField('pseudo_card_pan', 'pseudoCardPan'))->setFlags(new Required(), new ApiAware());
         }
 

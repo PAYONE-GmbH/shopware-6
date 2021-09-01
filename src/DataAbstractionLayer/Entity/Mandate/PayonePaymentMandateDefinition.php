@@ -41,7 +41,7 @@ class PayonePaymentMandateDefinition extends EntityDefinition
     {
         $identificationField = (new StringField('identification', 'identification'))->setFlags(new Required());
 
-        if(class_exists(ApiAware::class)) {
+        if (class_exists(ApiAware::class)) {
             $identificationField = (new StringField('identification', 'identification'))->setFlags(new Required(), new ApiAware());
         }
 
