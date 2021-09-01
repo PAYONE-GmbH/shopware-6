@@ -2395,5 +2395,95 @@
             <name>applePayCertPassphrase</name>
             <label>Certificate Passphrase</label>
         </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusAppointed</name>
+            <label>Transition for APPOINTED</label>
+            <label lang="de-DE">Statuswechsel für APPOINTED</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusCapture</name>
+            <label>Transition for CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusPartialCapture</name>
+            <label>Transition for PARTIAL_CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusPaid</name>
+            <label>Transition for PAID</label>
+            <label lang="de-DE">Statuswechsel für PAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusUnderpaid</name>
+            <label>Transition for UNDERPAID</label>
+            <label lang="de-DE">Statuswechsel für UNDERPAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusCancelation</name>
+            <label>Transition for CANCELLATION</label>
+            <label lang="de-DE">Statuswechsel für CANCELLATION</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusRefund</name>
+            <label>Transition for REFUND</label>
+            <label lang="de-DE">Statuswechsel für REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusPartialRefund</name>
+            <label>Transition for PARTIAL_REFUND</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusDebit</name>
+            <label>Transition for DEBIT</label>
+            <label lang="de-DE">Statuswechsel für DEBIT</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusReminder</name>
+            <label>Transition for REMINDER</label>
+            <label lang="de-DE">Statuswechsel für REMINDER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusVauthorization</name>
+            <label>Transition for VAuthorization</label>
+            <label lang="de-DE">Statuswechsel für VAuthorization</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusVsettlement</name>
+            <label>Transition for VSettlement</label>
+            <label lang="de-DE">Statuswechsel für VSettlement</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusTransfer</name>
+            <label>Transition for TRANSFER</label>
+            <label lang="de-DE">Statuswechsel für TRANSFER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusInvoice</name>
+            <label>Transition for INVOICE</label>
+            <label lang="de-DE">Statuswechsel für INVOICE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>applePayPaymentStatusFailed</name>
+            <label>Transition for FAILED</label>
+            <label lang="de-DE">Statuswechsel für FAILED</label>
+        </input-field>
     </card>
 </config>
