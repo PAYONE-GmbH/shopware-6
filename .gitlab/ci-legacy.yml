@@ -48,6 +48,7 @@ sw-phpstan-legacy:
     - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
     - cd /var/www/html/ && /var/www/html/composer require dms/phpunit-arraysubset-asserts:"^0.3.0" --no-scripts
     - cd /var/www/html/ && /var/www/html/composer require psr/event-dispatcher --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require  sinergi/browser-detector:"^6.1" --no-scripts
     - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && /var/www/html/composer dumpautoload
     - cd /var/www/html/ && /var/www/html/composer dumpautoload
   script:
