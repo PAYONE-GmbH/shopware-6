@@ -56,9 +56,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'currency' => $currency->getIsoCode(),
             'cardtype' => $this->getCardType($arguments->getRequestData()),
 
-            //TODO: remove
-            'amount' => $this->currencyPrecision->getRoundedTotalAmount(0.01, $currency),
-            //'amount' => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
+            'amount' => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
 
             'reference' => substr($tokenData['paymentData']['header']['transactionId'], 0, 20) ?? bin2hex(random_bytes(8)),
 

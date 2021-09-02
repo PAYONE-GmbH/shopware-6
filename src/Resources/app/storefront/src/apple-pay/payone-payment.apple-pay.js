@@ -33,8 +33,6 @@ export default class PayonePaymentApplePay extends Plugin {
     }
 
     createSession() {
-        //TODO: remove
-        this.options.total.amount = 0.01;
         this.session = new ApplePaySession(3, this.options);
 
         this.session.addEventListener('validatemerchant', this.validateMerchant.bind(this));
