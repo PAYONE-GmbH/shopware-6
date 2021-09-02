@@ -49,12 +49,12 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
      */
     public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
-        //TODO: get data from requeststack for after order handling
+        $requestData = $this->fetchRequestData();
 
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannelId());
-        $response      = json_decode($dataBag->get('response', '{}'), true);
+        $response      = json_decode($requestData->get('response', '{}'), true);
 
-        if (!array_key_exists('status', $response)) {
+        if (!array_key_exists('status', $response) || !array_key_exists('txid', $response)) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
