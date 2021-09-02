@@ -39,12 +39,18 @@ class PayonePaymentMandateDefinition extends EntityDefinition
 
     protected function defineFields(): FieldCollection
     {
+        $identificationField = (new StringField('identification', 'identification'))->setFlags(new Required());
+
+        if (class_exists(ApiAware::class)) {
+            $identificationField = (new StringField('identification', 'identification'))->setFlags(new Required(), new ApiAware());
+        }
+
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
 
             (new FkField('customer_id', 'customerId', CustomerDefinition::class))->addFlags(new Required()),
 
-            (new StringField('identification', 'identification'))->setFlags(new Required(), new ApiAware()),
+            $identificationField,
             (new DateTimeField('signature_date', 'signatureDate'))->setFlags(new Required()),
 
             new ManyToOneAssociationField('customer', 'customer_id', CustomerDefinition::class, 'id', false),

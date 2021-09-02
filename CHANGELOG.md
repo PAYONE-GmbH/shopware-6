@@ -106,6 +106,6 @@ Bugfixes
  
 Maintenance
  
-* Shopware 6.4.3 compatibility
+* Shopware 6.4.3.1 compatibility
 * massive refactoring effort
 * Elasticsearch compatibility

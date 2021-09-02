@@ -39,12 +39,18 @@ class PayonePaymentCardDefinition extends EntityDefinition
 
     protected function defineFields(): FieldCollection
     {
+        $pseudoCardPanField = (new StringField('pseudo_card_pan', 'pseudoCardPan'))->setFlags(new Required());
+
+        if (class_exists(ApiAware::class)) {
+            $pseudoCardPanField = (new StringField('pseudo_card_pan', 'pseudoCardPan'))->setFlags(new Required(), new ApiAware());
+        }
+
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
 
             (new FkField('customer_id', 'customerId', CustomerDefinition::class))->addFlags(new Required()),
 
-            (new StringField('pseudo_card_pan', 'pseudoCardPan'))->setFlags(new Required(), new ApiAware()),
+            $pseudoCardPanField,
             (new StringField('truncated_card_pan', 'truncatedCardPan'))->setFlags(new Required()),
             (new DateTimeField('expires_at', 'expiresAt'))->setFlags(new Required()),
 
