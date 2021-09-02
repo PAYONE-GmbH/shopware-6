@@ -44,7 +44,6 @@ export default class PayonePaymentApplePay extends Plugin {
     }
 
     validateMerchant(event) {
-        console.log('validate');
         const validationUrl = event.validationURL;
 
         this.client.abort();
