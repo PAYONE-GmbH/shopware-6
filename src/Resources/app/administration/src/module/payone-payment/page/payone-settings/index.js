@@ -20,6 +20,7 @@ Component.register('payone-settings', {
             isTesting: false,
             isSaveSuccessful: false,
             isTestSuccessful: false,
+            isApplePayCertConfigured: true,
             config: {},
             merchantIdFilled: false,
             accountIdFilled: false,
@@ -84,6 +85,11 @@ Component.register('payone-settings', {
                             "value": element.value,
                         })
                     });
+                });
+
+            this.PayonePaymentSettingsService.hasApplePayCert()
+                .then((result) => {
+                    this.isApplePayCertConfigured = result;
                 });
         },
 

@@ -128,6 +128,24 @@ class SettingsController extends AbstractController
         return new JsonResponse(['data' => $transitionNames, 'total' => count($transitionNames)]);
     }
 
+    /**
+     * @RouteScope(scopes={"api"})
+     * @Route("/api/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert", methods={"GET"})
+     * @Route("/api/v{version}/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert.legacy", methods={"GET"})
+     */
+    public function checkApplePayCert(Request $request, Context $context): JsonResponse
+    {
+        if(!file_exists(__DIR__ . '/../apple-pay-cert/merchant_id.key')) {
+            return new JsonResponse(['success' => false], 404);
+        }
+
+        if(!file_exists(__DIR__ . '/../apple-pay-cert/merchant_id.pem')) {
+            return new JsonResponse(['success' => false], 404);
+        }
+
+        return new JsonResponse(['success' => true], 200);
+    }
+
     private function getPaymentParameters(string $paymentClass): array
     {
         switch ($paymentClass) {
