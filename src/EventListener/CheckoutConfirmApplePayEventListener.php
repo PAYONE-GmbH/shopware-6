@@ -39,11 +39,24 @@ class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
 
         $browser = (new Browser($userAgent))->getName();
 
-        if ($browser === Browser::SAFARI) {
+        if ($browser === Browser::SAFARI && $this->isSetup() === true) {
             return;
         }
 
         $paymentMethods = $this->removePaymentMethod($paymentMethods, PayoneApplePay::UUID);
         $event->getPage()->setPaymentMethods($paymentMethods);
+    }
+
+    private function isSetup(): bool
+    {
+        if (!file_exists(__DIR__ . '/../apple-pay-cert/merchant_id.key')) {
+            return false;
+        }
+
+        if (!file_exists(__DIR__ . '/../apple-pay-cert/merchant_id.pem')) {
+            return false;
+        }
+
+        return true;
     }
 }
