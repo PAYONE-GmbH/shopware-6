@@ -109,3 +109,9 @@ Maintenance
 * Shopware 6.4.3.1 compatibility
 * massive refactoring effort
 * Elasticsearch compatibility
+
+# 2.3.1
+
+Bugfix
+
+* backward compatibility to version <6.4.0
