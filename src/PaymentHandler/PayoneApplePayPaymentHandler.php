@@ -51,7 +51,7 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
     {
         $requestData = $this->fetchRequestData();
 
-        $configuration = $this->configReader->read($salesChannelContext->getSalesChannelId());
+        $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $response      = json_decode($requestData->get('response', '{}'), true);
 
         if (!array_key_exists('status', $response) || !array_key_exists('txid', $response)) {

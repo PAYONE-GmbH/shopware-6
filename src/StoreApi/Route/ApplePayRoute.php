@@ -68,7 +68,7 @@ class ApplePayRoute extends AbstractApplePayRoute
      */
     public function validateMerchant(Request $request, SalesChannelContext $context): Response
     {
-        $configuration      = $this->configReader->read($context->getSalesChannelId());
+        $configuration      = $this->configReader->read($context->getSalesChannel()->getId());
         $validationUrl      = $request->get('validationUrl', 'https://apple-pay-gateway.apple.com/paymentservices/paymentSession');
         $merchantIdCertPath = __DIR__ . '/../../apple-pay-cert/merchant_id.pem';
         $merchantIdKeyPath  = __DIR__ . '/../../apple-pay-cert/merchant_id.key';
@@ -120,7 +120,7 @@ class ApplePayRoute extends AbstractApplePayRoute
      */
     public function process(Request $request, SalesChannelContext $context): Response
     {
-        $salesChannelId = $context->getSalesChannelId();
+        $salesChannelId = $context->getSalesChannel()->getId();
         $configuration  = $this->configReader->read($salesChannelId);
         $token          = $request->get('token');
 
