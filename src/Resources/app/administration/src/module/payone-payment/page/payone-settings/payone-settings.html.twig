@@ -130,7 +130,7 @@
 
                 <template #card-element="{element, config, card}">
                     <div v-show="displayField(element, config, card)">
-                        <sw-alert v-if="element.name === 'PayonePayment.settings.applePayCertPassphrase'"
+                        <sw-alert v-if="element.name === 'PayonePayment.settings.applePayCertPassphrase' && !isApplePayCertConfigured"
                             variant="info" appearance="default" :showIcon="true" :closable="false">
                             <span v-html="$tc('payone-payment.applePay.cert.notification')"></span>
                         </sw-alert>
