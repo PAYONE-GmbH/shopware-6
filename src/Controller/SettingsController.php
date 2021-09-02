@@ -135,11 +135,11 @@ class SettingsController extends AbstractController
      */
     public function checkApplePayCert(Request $request, Context $context): JsonResponse
     {
-        if(!file_exists(__DIR__ . '/../apple-pay-cert/merchant_id.key')) {
+        if (!file_exists(__DIR__ . '/../apple-pay-cert/merchant_id.key')) {
             return new JsonResponse(['success' => false], 404);
         }
 
-        if(!file_exists(__DIR__ . '/../apple-pay-cert/merchant_id.pem')) {
+        if (!file_exists(__DIR__ . '/../apple-pay-cert/merchant_id.pem')) {
             return new JsonResponse(['success' => false], 404);
         }
 
