@@ -20,6 +20,7 @@
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory"/>
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient"/>
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+            <argument type="string">%kernel.project_dir%</argument>
         </service>
     </services>
 </container>

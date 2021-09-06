@@ -68,6 +68,7 @@
         </service>
 
         <service id="PayonePayment\EventListener\CheckoutConfirmApplePayEventListener">
+            <argument type="string">%kernel.project_dir%</argument>
             <tag name="kernel.event_subscriber"/>
         </service>
 
