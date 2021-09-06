@@ -8,8 +8,8 @@ export default class PayonePaymentApplePay extends Plugin {
     static options = {
         countryCode: '',
         currencyCode: '',
-        supportedNetworks: ['visa', 'masterCard'],
-        merchantCapabilities: ['supports3DS'],
+        supportedNetworks: [],
+        merchantCapabilities: ['supports3DS', 'supportsDebit', 'supportsCredit'],
         total: {
             label: '',
             type: 'final',
@@ -24,6 +24,10 @@ export default class PayonePaymentApplePay extends Plugin {
     static orderForm;
 
     init() {
+        if(this.options.supportedNetworks === null) {
+            this.options.supportedNetworks = [];
+        }
+
         this.client = new StoreApiClient();
         this.validateMerchantUrl = this.el.dataset.validateMerchantUrl;
         this.processPaymentUrl = this.el.dataset.processPaymentUrl;

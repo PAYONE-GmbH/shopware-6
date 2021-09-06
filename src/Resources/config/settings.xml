@@ -2381,6 +2381,29 @@
             </options>
         </input-field>
 
+        <input-field type="multi-select">
+            <name>applePaySupportedCardTypes</name>
+            <label>Supported Cards</label>
+            <label lang="de-DE">Unterstützte Kartentypen</label>
+            <options>
+                <option>
+                    <id>visa</id>
+                    <name>Visa</name>
+                    <name lang="de-DE">Visa</name>
+                </option>
+                <option>
+                    <id>masterCard</id>
+                    <name>MasterCard</name>
+                    <name lang="de-DE">MasterCard</name>
+                </option>
+                <option>
+                    <id>girocard</id>
+                    <name>girocard</name>
+                    <name lang="de-DE">girocard</name>
+                </option>
+            </options>
+        </input-field>
+
         <input-field>
             <name>applePayMerchantName</name>
             <label>ApplePay Merchant ID</label>
