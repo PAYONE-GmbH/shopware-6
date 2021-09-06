@@ -39,6 +39,7 @@
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="state_machine_transition.repository" />
             <argument type="service" id="PayonePayment\Util\Logger"/>
+            <argument type="string">%kernel.project_dir%</argument>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

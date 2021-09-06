@@ -12,6 +12,7 @@ use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
+use PayonePayment\StoreApi\Route\ApplePayRoute;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -43,16 +44,21 @@ class SettingsController extends AbstractController
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var string */
+    private $kernelDirectory;
+
     public function __construct(
         PayoneClientInterface $client,
         RequestParameterFactory $requestFactory,
         EntityRepositoryInterface $stateMachineTransitionRepository,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        string $kernelDirectory
     ) {
         $this->client                           = $client;
         $this->requestFactory                   = $requestFactory;
         $this->stateMachineTransitionRepository = $stateMachineTransitionRepository;
         $this->logger                           = $logger;
+        $this->kernelDirectory                  = $kernelDirectory;
     }
 
     /**
@@ -133,13 +139,13 @@ class SettingsController extends AbstractController
      * @Route("/api/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert", methods={"GET"})
      * @Route("/api/v{version}/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert.legacy", methods={"GET"})
      */
-    public function checkApplePayCert(Request $request, Context $context): JsonResponse
+    public function checkApplePayCert(): JsonResponse
     {
-        if (!file_exists(__DIR__ . '/../apple-pay-cert/merchant_id.key')) {
+        if (!file_exists($this->kernelDirectory . ApplePayRoute::CERT_FOLDER . 'merchant_id.key')) {
             return new JsonResponse(['success' => false], 404);
         }
 
-        if (!file_exists(__DIR__ . '/../apple-pay-cert/merchant_id.pem')) {
+        if (!file_exists($this->kernelDirectory . ApplePayRoute::CERT_FOLDER . 'merchant_id.pem')) {
             return new JsonResponse(['success' => false], 404);
         }
 

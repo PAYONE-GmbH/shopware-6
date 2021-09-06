@@ -6,6 +6,7 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\Core\Utils\PayoneClassLoader;
 use PayonePayment\PaymentMethod\PayoneApplePay;
+use PayonePayment\StoreApi\Route\ApplePayRoute;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Sinergi\BrowserDetector\Browser;
@@ -18,6 +19,14 @@ if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
 class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
 {
     use RemovesPaymentMethod;
+
+    /** @var string */
+    private $kernelDirectory;
+
+    public function __construct(string $kernelDirectory)
+    {
+        $this->kernelDirectory = $kernelDirectory;
+    }
 
     public static function getSubscribedEvents(): array
     {
@@ -49,11 +58,11 @@ class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
 
     private function isSetup(): bool
     {
-        if (!file_exists(__DIR__ . '/../apple-pay-cert/merchant_id.key')) {
+        if (!file_exists($this->kernelDirectory . ApplePayRoute::CERT_FOLDER . 'merchant_id.key')) {
             return false;
         }
 
-        if (!file_exists(__DIR__ . '/../apple-pay-cert/merchant_id.pem')) {
+        if (!file_exists($this->kernelDirectory . ApplePayRoute::CERT_FOLDER . 'merchant_id.pem')) {
             return false;
         }
 

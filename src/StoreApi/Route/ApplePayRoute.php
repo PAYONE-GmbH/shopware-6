@@ -29,6 +29,8 @@ use Throwable;
  */
 class ApplePayRoute extends AbstractApplePayRoute
 {
+    public const CERT_FOLDER = '/config/apple-pay-cert/';
+
     /** @var Client */
     private $httpClient;
 
@@ -44,18 +46,23 @@ class ApplePayRoute extends AbstractApplePayRoute
     /** @var ConfigReaderInterface */
     private $configReader;
 
+    /** @var string */
+    private $kernelDirectory;
+
     public function __construct(
         Client $httpClient,
         LoggerInterface $logger,
         RequestParameterFactory $requestParameterFactory,
         PayoneClientInterface $client,
-        ConfigReaderInterface $configReader
+        ConfigReaderInterface $configReader,
+        string $kernelDirectory
     ) {
         $this->httpClient              = $httpClient;
         $this->logger                  = $logger;
         $this->requestParameterFactory = $requestParameterFactory;
         $this->client                  = $client;
         $this->configReader            = $configReader;
+        $this->kernelDirectory         = $kernelDirectory;
     }
 
     public function getDecorated(): AbstractCardRoute
@@ -70,8 +77,8 @@ class ApplePayRoute extends AbstractApplePayRoute
     {
         $configuration      = $this->configReader->read($context->getSalesChannel()->getId());
         $validationUrl      = $request->get('validationUrl', 'https://apple-pay-gateway.apple.com/paymentservices/paymentSession');
-        $merchantIdCertPath = __DIR__ . '/../../apple-pay-cert/merchant_id.pem';
-        $merchantIdKeyPath  = __DIR__ . '/../../apple-pay-cert/merchant_id.key';
+        $merchantIdCertPath = $this->kernelDirectory . self::CERT_FOLDER . 'merchant_id.pem';
+        $merchantIdKeyPath  = $this->kernelDirectory . self::CERT_FOLDER . 'merchant_id.key';
 
         $passPhrase = $configuration->get('applePayCertPassphrase');
 
