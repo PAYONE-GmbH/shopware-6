@@ -37,7 +37,13 @@ export default class PayonePaymentApplePay extends Plugin {
     }
 
     createSession() {
-        this.session = new ApplePaySession(3, this.options);
+        try {
+            this.session = new ApplePaySession(3, this.options);
+        }
+        catch (e) {
+            this.handleErrorOnPayment();
+            return;
+        }
 
         this.session.addEventListener('validatemerchant', this.validateMerchant.bind(this));
         this.session.addEventListener('paymentauthorized', this.authorizePayment.bind(this));
