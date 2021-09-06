@@ -12,6 +12,7 @@
         data-payone-payment-apple-pay-options='{
             "countryCode": "{{ context.customer.defaultBillingAddress.country.iso }}",
             "currencyCode": "{{ context.currency.isoCode }}",
+            "supportedNetworks": {{ config('PayonePayment.settings.applePaySupportedCardTypes')|json_encode() }},
             "total": {
                 "label": "{{ config('core.basicInformation.shopName') }}",
                 "amount": "{{ amount }}"
