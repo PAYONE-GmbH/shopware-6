@@ -2412,6 +2412,8 @@
         <input-field>
             <name>applePayDisplayName</name>
             <label>ApplePay Display Name</label>
+            <helpText>This name will be display on the device during the payment process. E.g. the MacBook Pro Touchbar</helpText>
+            <helpText lang="de-DE">Wird auf dem jeweiligen Gerät während des Zahlungsprozesses ausgegeben. (Bsp. MacBook Pro Touchbar)</helpText>
         </input-field>
 
         <input-field>
