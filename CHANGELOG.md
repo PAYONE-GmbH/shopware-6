@@ -115,3 +115,17 @@ Maintenance
 Bugfix
 
 * backward compatibility to version <6.4.0
+
+# 2.3.2
+
+Bugfix
+
+* transaction status transmission of txstatus "paid" 
+
+Maintenance
+
+* Shopware 6.4.4.0 compatibility
+
+Notice
+
+* We're dropping compatibility with Shopware 6.2.* in a future release of this plugin
