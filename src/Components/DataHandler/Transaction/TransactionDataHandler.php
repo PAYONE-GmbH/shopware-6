@@ -221,7 +221,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         }
 
         if (array_key_exists('receivable', $transactionData)) {
-            $receivable = $this->currencyPrecision->getRoundedTotalAmount($transactionData['receivable'], $currency);
+            $receivable = $this->currencyPrecision->getRoundedTotalAmount((float) $transactionData['receivable'], $currency);
         }
 
         return max($currentCapturedAmount, $receivable);
