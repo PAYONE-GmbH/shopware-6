@@ -105,3 +105,23 @@ Wartung
 * getestet mit Shopware 6.4.3.1
 * massive Überarbeitungen in der Pluginstruktur
 * Elasticsearch Kompatibilität hergestellt
+
+# 2.3.1
+
+Fehlerbehebungen
+
+* Abwärtskompatiblität zu Version <6.4.0
+
+# 2.3.2
+
+Fehlerbehebungen
+
+* Transaktionstatus-Übertragung des txstatus "paid"
+
+Wartung
+
+* getestet mit Shopware 6.4.4.0
+
+Hinweis
+
+* Wir werden die Kompatibilität zu 6.2.* in zukünftigen Versionen einstellen
