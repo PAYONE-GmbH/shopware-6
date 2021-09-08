@@ -15,7 +15,7 @@
         </service>
 
         <service id="PayonePayment\StoreApi\Route\ApplePayRoute">
-            <argument type="service" id="shopware.app_system.guzzle" />
+            <argument type="service" id="payone.app_system.guzzle" />
             <argument type="service" id="PayonePayment\Util\Logger"/>
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory"/>
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient"/>

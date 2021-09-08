@@ -60,5 +60,8 @@
 
             <argument type="string">payone_payment</argument>
         </service>
+
+        <service id="payone.app_system.guzzle" class="GuzzleHttp\Client">
+        </service>
     </services>
 </container>
