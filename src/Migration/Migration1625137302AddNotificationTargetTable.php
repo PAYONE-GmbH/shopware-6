@@ -30,7 +30,16 @@ class Migration1625137302AddNotificationTargetTable extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         SQL;
 
-        $connection->executeStatement($sql);
+        if (method_exists($connection, 'executeStatement')) {
+            $connection->executeStatement($sql);
+
+            return;
+        }
+
+        if (method_exists($connection, 'exec')) {
+            /** @noinspection PhpDeprecationInspection */
+            $connection->exec($sql);
+        }
     }
 
     public function updateDestructive(Connection $connection): void
