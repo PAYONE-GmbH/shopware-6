@@ -27,7 +27,7 @@
                             </sw-description-list>
                         </sw-container>
 
-                        <sw-container gap="30px" v-if="isActiveTransaction(transaction)">
+                        <sw-container gap="30px" v-if="isActiveTransaction(transaction) && can('Payone.payone_order_management')">
                             <payone-capture-button :order="order" :transaction="transaction" v-on:reload="reloadEntityData"></payone-capture-button>
                             <payone-refund-button :order="order" :transaction="transaction" v-on:reload="reloadEntityData"></payone-refund-button>
                         </sw-container>

@@ -6,9 +6,10 @@ namespace PayonePayment\Components\MandateService;
 
 use DateTime;
 use PayonePayment\DataAbstractionLayer\Entity\Mandate\PayonePaymentMandateEntity;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
+use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\GetFile\GetFileRequestFactory;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
@@ -18,6 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Throwable;
 
 class MandateService implements MandateServiceInterface
@@ -28,13 +30,13 @@ class MandateService implements MandateServiceInterface
     /** @var PayoneClientInterface */
     private $client;
 
-    /** @var GetFileRequestFactory */
+    /** @var RequestParameterFactory */
     private $requestFactory;
 
     public function __construct(
         EntityRepositoryInterface $mandateRepository,
         PayoneClientInterface $client,
-        GetFileRequestFactory $requestFactory
+        RequestParameterFactory $requestFactory
     ) {
         $this->mandateRepository = $mandateRepository;
         $this->client            = $client;
@@ -46,7 +48,7 @@ class MandateService implements MandateServiceInterface
         $criteria = new Criteria();
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_mandate.customerId', $customer->getId())
+            new EqualsFilter('customerId', $customer->getId())
         );
 
         return $this->mandateRepository->search($criteria, $context->getContext());
@@ -86,18 +88,19 @@ class MandateService implements MandateServiceInterface
         );
 
         if (null === $mandate) {
-            throw new RuntimeException('mandate not found');
+            throw new FileNotFoundException('mandate not found');
         }
 
-        $request = $this->requestFactory->getRequestParameters(
-            $mandate->getIdentification(),
-            $context
+        $request = $this->requestFactory->getRequestParameter(
+            new GetFileStruct(
+                $context,
+                PayoneDebitPaymentHandler::class,
+                $mandate->getIdentification()
+            )
         );
 
         try {
             $response = $this->client->request($request, false);
-        } catch (PayoneRequestException $exception) {
-            throw new RuntimeException('mandate not found');
         } catch (Throwable $exception) {
             throw new RuntimeException('mandate not found');
         }
@@ -113,11 +116,11 @@ class MandateService implements MandateServiceInterface
         $criteria = new Criteria();
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_mandate.identification', $identification)
+            new EqualsFilter('identification', $identification)
         );
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_mandate.customerId', $customer->getId())
+            new EqualsFilter('customerId', $customer->getId())
         );
 
         return $this->mandateRepository->search($criteria, $context)->first();

@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace PayonePayment\Storefront\Controller\Paypal;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
+use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\PaypalExpress\PaypalExpressGetCheckoutDetailsRequestFactory;
-use PayonePayment\Payone\Request\PaypalExpress\PaypalExpressSetCheckoutRequestFactory;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\Cart;
@@ -40,12 +42,6 @@ use Throwable;
 
 class PaypalExpressController extends StorefrontController
 {
-    /** @var PaypalExpressSetCheckoutRequestFactory */
-    private $checkoutRequestFactory;
-
-    /** @var PaypalExpressGetCheckoutDetailsRequestFactory */
-    private $checkoutDetailsRequestFactory;
-
     /** @var PayoneClientInterface */
     private $client;
 
@@ -76,12 +72,13 @@ class PaypalExpressController extends StorefrontController
     /** @var RouterInterface */
     private $router;
 
+    /** @var RequestParameterFactory */
+    private $requestParameterFactory;
+
     /**
      * @param SalesChannelContextFactory $salesChannelContextFactory
      */
     public function __construct(
-        PaypalExpressSetCheckoutRequestFactory $checkoutRequestFactory,
-        PaypalExpressGetCheckoutDetailsRequestFactory $checkoutDetailsRequestFactory,
         PayoneClientInterface $client,
         CartService $cartService,
         RegisterRoute $registerRoute,
@@ -91,20 +88,20 @@ class PaypalExpressController extends StorefrontController
         EntityRepositoryInterface $countryRepository,
         SalesChannelContextSwitcher $salesChannelContextSwitcher,
         CartHasherInterface $cartHasher,
-        RouterInterface $router
+        RouterInterface $router,
+        RequestParameterFactory $requestParameterFactory
     ) {
-        $this->checkoutRequestFactory        = $checkoutRequestFactory;
-        $this->checkoutDetailsRequestFactory = $checkoutDetailsRequestFactory;
-        $this->client                        = $client;
-        $this->cartService                   = $cartService;
-        $this->registerRoute                 = $registerRoute;
-        $this->accountService                = $accountService;
-        $this->salesChannelContextFactory    = $salesChannelContextFactory;
-        $this->salutationRepository          = $salutationRepository;
-        $this->countryRepository             = $countryRepository;
-        $this->salesChannelContextSwitcher   = $salesChannelContextSwitcher;
-        $this->cartHasher                    = $cartHasher;
-        $this->router                        = $router;
+        $this->client                      = $client;
+        $this->cartService                 = $cartService;
+        $this->registerRoute               = $registerRoute;
+        $this->accountService              = $accountService;
+        $this->salesChannelContextFactory  = $salesChannelContextFactory;
+        $this->salutationRepository        = $salutationRepository;
+        $this->countryRepository           = $countryRepository;
+        $this->salesChannelContextSwitcher = $salesChannelContextSwitcher;
+        $this->cartHasher                  = $cartHasher;
+        $this->router                      = $router;
+        $this->requestParameterFactory     = $requestParameterFactory;
     }
 
     /**
@@ -127,10 +124,14 @@ class PaypalExpressController extends StorefrontController
             ]);
         }
 
-        $setRequest = $this->checkoutRequestFactory->getRequestParameters(
-            $cart,
-            $context,
-            $this->generateReturnUrl()
+        $setRequest = $this->requestParameterFactory->getRequestParameter(
+            new CheckoutDetailsStruct(
+                $cart,
+                $context,
+                PayonePaypalExpressPaymentHandler::class,
+                AbstractRequestParameterBuilder::REQUEST_ACTION_SET_EXPRESS_CHECKOUT,
+                $this->generateReturnUrl()
+            )
         );
 
         try {
@@ -165,8 +166,16 @@ class PaypalExpressController extends StorefrontController
             throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
-        $workOrderId = $cartExtension->getWorkorderId();
-        $getRequest  = $this->checkoutDetailsRequestFactory->getRequestParameters($cart, $context, $workOrderId);
+        $getRequest = $this->requestParameterFactory->getRequestParameter(
+            new CheckoutDetailsStruct(
+                $cart,
+                $context,
+                PayonePaypalExpressPaymentHandler::class,
+                AbstractRequestParameterBuilder::REQUEST_ACTION_GET_EXPRESS_CHECKOUT_DETAILS,
+                '',
+                $cartExtension->getWorkorderId()
+            )
+        );
 
         try {
             $response = $this->client->request($getRequest);

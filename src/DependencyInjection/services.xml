@@ -4,18 +4,18 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <imports>
+        <import resource="store_api.xml"/>
         <import resource="controllers.xml" />
         <import resource="decorations.xml"/>
         <import resource="entities.xml" />
         <import resource="handler/global_handlers.xml" />
         <import resource="handler/payment_handler.xml" />
-        <import resource="handler/request_handler.xml" />
         <import resource="hydrator.xml" />
         <import resource="listeners.xml" />
-        <import resource="requests.xml" />
         <import resource="pages.xml" />
         <import resource="translations.xml" />
         <import resource="webhooks.xml"/>
+        <import resource="requestParameter/*.xml"/>
     </imports>
 
     <services>
@@ -23,7 +23,9 @@
             <argument type="service" id="payone_payment_card.repository" />
         </service>
 
-        <service id="PayonePayment\Components\CartHasher\CartHasher" />
+        <service id="PayonePayment\Components\CartHasher\CartHasher">
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
+        </service>
 
         <service id="PayonePayment\Components\ConfigReader\ConfigReader">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
@@ -32,7 +34,7 @@
         <service id="PayonePayment\Components\MandateService\MandateService">
             <argument type="service" id="payone_payment_mandate.repository" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="PayonePayment\Payone\Request\GetFile\GetFileRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
         </service>
 
         <service id="PayonePayment\Components\TransactionStatus\TransactionStatusService">
@@ -40,7 +42,10 @@
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="PayonePayment\Util\Logger" />
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
         </service>
+
+        <service id="PayonePayment\Components\Currency\CurrencyPrecision" />
 
         <service id="PayonePayment\Components\Helper\OrderFetcher">
             <argument type="service" id="order.repository" />

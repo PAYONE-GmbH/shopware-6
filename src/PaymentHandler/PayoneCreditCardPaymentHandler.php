@@ -12,8 +12,8 @@ use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory;
-use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -34,11 +34,6 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
 
     /** @var TranslatorInterface */
     protected $translator;
-    /** @var CreditCardPreAuthorizeRequestFactory */
-    private $preAuthRequestFactory;
-
-    /** @var CreditCardAuthorizeRequestFactory */
-    private $authRequestFactory;
 
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
@@ -49,26 +44,28 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
     /** @var CardRepositoryInterface */
     private $cardRepository;
 
+    /** @var RequestParameterFactory */
+    private $requestParameterFactory;
+
     public function __construct(
         ConfigReaderInterface $configReader,
-        CreditCardPreAuthorizeRequestFactory $preAuthRequestFactory,
-        CreditCardAuthorizeRequestFactory $authRequestFactory,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         EntityRepositoryInterface $lineItemRepository,
         PaymentStateHandlerInterface $stateHandler,
         CardRepositoryInterface $cardRepository,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-        $this->preAuthRequestFactory = $preAuthRequestFactory;
-        $this->authRequestFactory    = $authRequestFactory;
-        $this->client                = $client;
-        $this->translator            = $translator;
-        $this->dataHandler           = $dataHandler;
-        $this->stateHandler          = $stateHandler;
-        $this->cardRepository        = $cardRepository;
+
+        $this->client                  = $client;
+        $this->translator              = $translator;
+        $this->dataHandler             = $dataHandler;
+        $this->stateHandler            = $stateHandler;
+        $this->cardRepository          = $cardRepository;
+        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
@@ -87,15 +84,14 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
 
         $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
-        // Select request factory based on configured authorization method
-        $factory = $authorizationMethod === 'preauthorization'
-            ? $this->preAuthRequestFactory
-            : $this->authRequestFactory;
-
-        $request = $factory->getRequestParameters(
-            $paymentTransaction,
-            $requestData,
-            $salesChannelContext
+        $request = $this->requestParameterFactory->getRequestParameter(
+            new PaymentTransactionStruct(
+                $paymentTransaction,
+                $requestData,
+                $salesChannelContext,
+                __CLASS__,
+                $authorizationMethod
+            )
         );
 
         try {

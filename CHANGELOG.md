@@ -91,3 +91,41 @@ Maintenance
  
 * tested with Shop version 6.4.1.0
 * better error message translations
+
+# 2.3.0
+
+New Features
+ 
+* new PAYONE permissions management
+* status mapping per payment method possible
+ 
+Bugfixes
+ 
+* fix for unlock the buy now button
+* PayPal Express: telephone number not a mandatory field 
+ 
+Maintenance
+ 
+* Shopware 6.4.3.1 compatibility
+* massive refactoring effort
+* Elasticsearch compatibility
+
+# 2.3.1
+
+Bugfix
+
+* backward compatibility to version <6.4.0
+
+# 2.3.2
+
+Bugfix
+
+* transaction status transmission of txstatus "paid" 
+
+Maintenance
+
+* Shopware 6.4.4.0 compatibility
+
+Notice
+
+* We're dropping compatibility with Shopware 6.2.* in a future release of this plugin

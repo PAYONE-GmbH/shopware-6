@@ -32,7 +32,6 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PaymentMethodInstaller implements InstallerInterface
 {
@@ -83,13 +82,18 @@ class PaymentMethodInstaller implements InstallerInterface
     /** @var Connection */
     private $connection;
 
-    public function __construct(ContainerInterface $container)
-    {
-        $this->pluginIdProvider                    = $container->get(PluginIdProvider::class);
-        $this->paymentMethodRepository             = $container->get('payment_method.repository');
-        $this->salesChannelRepository              = $container->get('sales_channel.repository');
-        $this->paymentMethodSalesChannelRepository = $container->get('sales_channel_payment_method.repository');
-        $this->connection                          = $container->get(Connection::class);
+    public function __construct(
+        PluginIdProvider $pluginIdProvider,
+        EntityRepositoryInterface $paymentMethodRepository,
+        EntityRepositoryInterface $salesChannelRepository,
+        EntityRepositoryInterface $paymentMethodSalesChannelRepository,
+        Connection $connection
+    ) {
+        $this->pluginIdProvider                    = $pluginIdProvider;
+        $this->paymentMethodRepository             = $paymentMethodRepository;
+        $this->salesChannelRepository              = $salesChannelRepository;
+        $this->paymentMethodSalesChannelRepository = $paymentMethodSalesChannelRepository;
+        $this->connection                          = $connection;
     }
 
     public function install(InstallContext $context): void
@@ -111,8 +115,15 @@ class PaymentMethodInstaller implements InstallerInterface
         // before any update procedures take place otherwise we would have a duplicate payment method.
         // This is also the reason why a migration is not a viable way here.
         if ($this->findPaymentMethodEntity('0b532088e2da3092f9f7054ec4009d18', $context->getContext())) {
-            $this->connection->exec("UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');");
-            $this->connection->exec("UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');");
+            if (method_exists($this->connection, 'executeStatement')) {
+                $this->connection->executeStatement("UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');");
+                $this->connection->executeStatement("UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');");
+            } elseif (method_exists($this->connection, 'exec')) {
+                /** @noinspection PhpDeprecationInspection */
+                $this->connection->exec("UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');");
+                /** @noinspection PhpDeprecationInspection */
+                $this->connection->exec("UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');");
+            }
         }
 
         foreach ($this->getPaymentMethods() as $paymentMethod) {
@@ -264,11 +275,13 @@ class PaymentMethodInstaller implements InstallerInterface
         // Prepare custom fields for JSON encoding
         $customFields[CustomFieldInstaller::IS_PAYONE] = 1;
 
+        // TODO: This will be removed with PAYONE-77
         // TODO: This is a quite ugly workaround for the custom field translation problem here.
         // The custom fields are only set for the current language which results in non loading
         // checkout contents for other language contexts. We need a proper way to install the
         // custom fields for all languages but not only the current one.
         $customFields = json_encode($customFields, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        /** @noinspection PhpDeprecationInspection */
         $this->connection->exec(sprintf("
             UPDATE `payment_method_translation`
             SET

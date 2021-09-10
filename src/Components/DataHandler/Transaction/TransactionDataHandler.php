@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\DataHandler\Transaction;
 
 use DateTime;
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
@@ -20,9 +21,13 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
     /** @var EntityRepositoryInterface */
     private $transactionRepository;
 
-    public function __construct(EntityRepositoryInterface $transactionRepository)
+    /** @var CurrencyPrecisionInterface */
+    private $currencyPrecision;
+
+    public function __construct(EntityRepositoryInterface $transactionRepository, CurrencyPrecisionInterface $currencyPrecision)
     {
         $this->transactionRepository = $transactionRepository;
+        $this->currencyPrecision     = $currencyPrecision;
     }
 
     public function getPaymentTransactionByPayoneTransactionId(Context $context, int $payoneTransactionId): ?PaymentTransaction
@@ -216,7 +221,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         }
 
         if (array_key_exists('receivable', $transactionData)) {
-            $receivable = (int) round($transactionData['receivable'] * (10 ** $currency->getDecimalPrecision()));
+            $receivable = $this->currencyPrecision->getRoundedTotalAmount((float) $transactionData['receivable'], $currency);
         }
 
         return max($currentCapturedAmount, $receivable);

@@ -7,13 +7,13 @@ namespace PayonePayment\Test\PaymentHandler;
 use DateInterval;
 use DateTimeImmutable;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
+use PayonePayment\Components\Currency\CurrencyPrecision;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\CreditCard\CreditCardAuthorizeRequestFactory;
-use PayonePayment\Payone\Request\CreditCard\CreditCardPreAuthorizeRequestFactory;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
 use PayonePayment\Test\Mock\Components\ConfigReaderMock;
@@ -44,7 +44,9 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
     {
         parent::setUp();
 
-        $this->translator = $this->getContainer()->get('translator');
+        /** @var Translator $translator */
+        $translator       = $this->getContainer()->get('translator');
+        $this->translator = $translator;
     }
 
     public function testRequestOnPay(): void
@@ -53,10 +55,9 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             'creditCardAuthorizationMethod' => 'preauthorization',
         ]);
 
-        $client                = $this->createMock(PayoneClientInterface::class);
-        $preAuthRequestFactory = $this->createMock(CreditCardPreAuthorizeRequestFactory::class);
-        $authRequestFactory    = $this->createMock(CreditCardAuthorizeRequestFactory::class);
-        $cardRepository        = $this->createMock(CardRepositoryInterface::class);
+        $client         = $this->createMock(PayoneClientInterface::class);
+        $requestFactory = $this->createMock(RequestParameterFactory::class);
+        $cardRepository = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
         $dataBag->set('truncatedCardPan', '');
@@ -66,20 +67,19 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
 
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
-            $preAuthRequestFactory,
-            $authRequestFactory,
             $client,
             $this->translator,
-            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
+            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
             $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
             $cardRepository,
-            $this->getRequestStack($dataBag)
+            $this->getRequestStack($dataBag),
+            $requestFactory
         );
 
         $paymentTransaction = $this->getPaymentTransaction();
 
-        $preAuthRequestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
+        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
             [
                 'request'    => '',
                 'successurl' => 'test-url',
@@ -116,10 +116,9 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             'creditCardAuthorizationMethod' => 'preauthorization',
         ]);
 
-        $client                = $this->createMock(PayoneClientInterface::class);
-        $preAuthRequestFactory = $this->createMock(CreditCardPreAuthorizeRequestFactory::class);
-        $authRequestFactory    = $this->createMock(CreditCardAuthorizeRequestFactory::class);
-        $cardRepository        = $this->createMock(CardRepositoryInterface::class);
+        $client         = $this->createMock(PayoneClientInterface::class);
+        $requestFactory = $this->createMock(RequestParameterFactory::class);
+        $cardRepository = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
         $dataBag->set('truncatedCardPan', '');
@@ -129,20 +128,19 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
 
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
-            $preAuthRequestFactory,
-            $authRequestFactory,
             $client,
             $this->translator,
-            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
+            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
             $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
             $cardRepository,
-            $this->getRequestStack($dataBag)
+            $this->getRequestStack($dataBag),
+            $requestFactory
         );
 
         $paymentTransaction = $this->getPaymentTransaction();
 
-        $preAuthRequestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
+        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
             [
                 'request'    => '',
                 'successurl' => 'test-url',
@@ -180,10 +178,9 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             'creditCardAuthorizationMethod' => 'preauthorization',
         ]);
 
-        $client                = $this->createMock(PayoneClientInterface::class);
-        $preAuthRequestFactory = $this->createMock(CreditCardPreAuthorizeRequestFactory::class);
-        $authRequestFactory    = $this->createMock(CreditCardAuthorizeRequestFactory::class);
-        $cardRepository        = $this->createMock(CardRepositoryInterface::class);
+        $client         = $this->createMock(PayoneClientInterface::class);
+        $requestFactory = $this->createMock(RequestParameterFactory::class);
+        $cardRepository = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
         $dataBag->set('truncatedCardPan', '');
@@ -193,20 +190,19 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
 
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
-            $preAuthRequestFactory,
-            $authRequestFactory,
             $client,
             $this->translator,
-            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class)),
+            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
             $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($this->translator),
             $cardRepository,
-            $this->getRequestStack($dataBag)
+            $this->getRequestStack($dataBag),
+            $requestFactory
         );
 
         $paymentTransaction = $this->getPaymentTransaction();
 
-        $preAuthRequestFactory->expects($this->once())->method('getRequestParameters')->willReturn(
+        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
             [
                 'request'    => '',
                 'successurl' => 'test-url',

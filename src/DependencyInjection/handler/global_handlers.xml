@@ -5,21 +5,23 @@
     <services>
         <!-- Global handlers -->
         <service id="PayonePayment\Components\TransactionHandler\Refund\RefundTransactionHandler">
-            <argument type="service" id="PayonePayment\Payone\Request\Refund\RefundRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
             <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
         </service>
 
         <service id="PayonePayment\Components\TransactionHandler\Capture\CaptureTransactionHandler">
-            <argument type="service" id="PayonePayment\Payone\Request\Capture\CaptureRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
             <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
         </service>
 
         <service id="PayonePayment\Components\RedirectHandler\RedirectHandler">
@@ -29,6 +31,7 @@
 
         <service id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler">
             <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
         </service>
 
         <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler">

@@ -6,7 +6,7 @@ import './sw-order.scss';
 Component.override('sw-order-detail-base', {
     template,
 
-    inject: ['PayonePaymentService', 'repositoryFactory'],
+    inject: ['PayonePaymentService', 'repositoryFactory', 'acl'],
 
     mixins: [
         Mixin.getByName('notification')
@@ -112,6 +112,14 @@ Component.override('sw-order-detail-base', {
                 .then((searchResult) => {
                     this.notificationForwards = searchResult;
                 });
+        },
+
+        can: function(permission) {
+            try {
+                return this.acl.can(permission);
+            } catch(e) {
+                return true;
+            }
         },
 
         isActiveTransaction(transaction) {

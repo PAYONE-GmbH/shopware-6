@@ -1,0 +1,85 @@
+k10r-phpstan-legacy:
+  stage: quality
+  image: "dockware/play:${SW_VERSION}"
+  parallel:
+    matrix:
+      - PHP_VERSION: [ "7.2", "7.3", "7.4" ]
+        SW_VERSION: [ "6.2.0", "6.2.1", "6.2.3", "6.3.0.1", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
+  needs: [ ]
+  except:
+    variables: [ $DISABLE_PHPSTAN_K10R == "1" ]
+  before_script:
+    - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
+    - chmod +x /var/www/html/composer
+    - /var/www/html/composer global require hirak/prestissimo
+    - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${CI_PROJECT_NAME}
+    - cd /var/www/html && /var/www/html/composer require phpstan/phpstan:"^0.12" --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require dms/phpunit-arraysubset-asserts:"^0.3.0" --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require  psr/event-dispatcher --no-scripts
+    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && /var/www/html/composer dumpautoload
+    - cd /var/www/html/ && /var/www/html/composer dumpautoload
+  script:
+    - cd /var/www/html && vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/.gitlab/phpstan-legacy.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php -a vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src
+  cache:
+    key: global
+    paths:
+      - vendor
+
+sw-phpstan-legacy:
+  stage: quality
+  image: "dockware/play:${SW_VERSION}"
+  parallel:
+    matrix:
+      - PHP_VERSION: [ "7.2", "7.3", "7.4" ]
+        SW_VERSION: [ "6.2.0", "6.2.1", "6.2.3", "6.3.0.1", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
+  needs: [ ]
+  except:
+    variables: [ $DISABLE_PHPSTAN_SW == "1" ]
+  before_script:
+    - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
+    - chmod +x /var/www/html/composer
+    - /var/www/html/composer global require hirak/prestissimo
+    - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${CI_PROJECT_NAME}
+    - cd /tmp && git clone https://github.com/shopwareLabs/store-plugin-codereview.git
+    - cp -r /tmp/store-plugin-codereview/configs/phpstan/phpstan.neon.sw6 /var/www/html/custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon
+    - cd /var/www/html && /var/www/html/composer require phpstan/phpstan:"^0.12" --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require dms/phpunit-arraysubset-asserts:"^0.3.0" --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require psr/event-dispatcher --no-scripts
+    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && /var/www/html/composer dumpautoload
+    - cd /var/www/html/ && /var/www/html/composer dumpautoload
+  script:
+    - cd /var/www/html && vendor/bin/phpstan analyse -c custom/plugins/${CI_PROJECT_NAME}/phpstan_sw.neon -a custom/plugins/${CI_PROJECT_NAME}/vendor/autoload.php -a vendor/autoload.php custom/plugins/${CI_PROJECT_NAME}/src
+  cache:
+    key: global
+    paths:
+      - vendor
+
+phpunit-legacy:
+  stage: test
+  image: "dockware/play:${SW_VERSION}"
+  parallel:
+    matrix:
+      - PHP_VERSION: [ "7.2", "7.3", "7.4" ]
+        SW_VERSION: [ "6.2.0", "6.2.1", "6.2.3", "6.3.0.1", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
+  needs: [ ]
+  except:
+    variables: [ $DISABLE_PHPUNIT == "1" ]
+  before_script:
+    - curl https://getcomposer.org/download/1.10.19/composer.phar -o /var/www/html/composer
+    - chmod +x /var/www/html/composer
+    - /var/www/html/composer global require hirak/prestissimo
+    - cp -r ${CI_PROJECT_DIR} /var/www/html/custom/plugins/${CI_PROJECT_NAME}
+    - sudo rm -rf /var/run/mysqld/mysqld.sock.lock
+    - sudo chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
+    - sudo service mysql start
+    - cd /var/www/html/ && rm -rf vendor && ${COMPOSER_COMMAND} --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require dms/phpunit-arraysubset-asserts:"^0.3.0" --no-scripts
+    - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && /var/www/html/composer dumpautoload
+  script:
+    - cd /var/www/html/ && php bin/console plugin:refresh -nq && php bin/console plugin:install --activate -c PayonePayment -nq
+    - cd /var/www/html/ && /var/www/html/composer dump-autoload -d custom/plugins/${CI_PROJECT_NAME}
+    - cd /var/www/html/ && php -d pcov.enabled=1 -d pcov.directory=/var/www/html/
+      vendor/bin/phpunit
+      --configuration custom/plugins/${CI_PROJECT_NAME}/phpunit-dockware.xml.dist

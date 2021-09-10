@@ -12,9 +12,9 @@
         </service>
 
         <service id="PayonePayment\EventListener\CheckoutConfirmCreditCardEventListener">
-            <argument type="service" id="PayonePayment\Payone\Request\CreditCardCheck\CreditCardCheckRequestFactory" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="language.repository" />
-            <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
+            <argument type="service" id="PayonePayment\StoreApi\Route\CardRoute" />
 
             <tag name="kernel.event_subscriber"/>
         </service>
@@ -68,6 +68,11 @@
         </service>
 
         <service id="PayonePayment\EventListener\CheckoutConfirmTrustlyEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\PaypalExpressAddressValidationEventListener">
+            <argument type="service" id="request_stack"/>
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

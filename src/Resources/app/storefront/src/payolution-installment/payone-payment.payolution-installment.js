@@ -1,14 +1,15 @@
 /* eslint-disable import/no-unresolved */
 
 import Plugin from 'src/plugin-system/plugin.class';
-import StoreApiClient from 'src/service/store-api-client.service';
+import HttpClient from "src/service/http-client.service";
 import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
+import ButtonLoadingIndicator from 'src/utility/loading-indicator/button-loading-indicator.util';
 
 export default class PayonePaymentPayolutionInstallment extends Plugin {
     init() {
         this.orderFormDisabled = true;
 
-        this._client = new StoreApiClient();
+        this._client = new HttpClient();
 
         this._disableSubmitButton();
         this._registerEventListeners();
@@ -189,7 +190,7 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
 
         checkbox.classList.add('is-invalid');
 
-        event.preventDefault();
+        this._handleOrderFormError(event);
     }
 
     _validateInput(event, field) {
@@ -208,7 +209,19 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
 
         input.classList.add('is-invalid');
 
+        this._handleOrderFormError(event);
+    }
+
+    _handleOrderFormError(event) {
+        const confirmFormSubmit = document.getElementById('confirmFormSubmit');
+
         event.preventDefault();
+
+        if(confirmFormSubmit) {
+            const loader = new ButtonLoadingIndicator(confirmFormSubmit);
+            confirmFormSubmit.disabled = false;
+            loader.remove();
+        }
     }
 
     _getRequestData() {

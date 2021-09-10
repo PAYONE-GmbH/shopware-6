@@ -5,47 +5,45 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Payone\Request\Debit;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
-use PayonePayment\Components\ConfigReader\ConfigReader;
-use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
-use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequest;
-use PayonePayment\Payone\Request\Debit\DebitAuthorizeRequestFactory;
-use PayonePayment\Struct\Configuration;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\Test\Constants;
-use PayonePayment\Test\Mock\Factory\RequestFactoryTestTrait;
+use PayonePayment\Test\Mock\Factory\RequestParameterFactoryTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Defaults;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Pricing\CashRoundingConfig;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\Currency\CurrencyEntity;
 
 class DebitAuthorizeRequestFactoryTest extends TestCase
 {
-    use RequestFactoryTestTrait;
+    use RequestParameterFactoryTestTrait;
 
     public function testCorrectRequestParameters(): void
     {
-        $factory = new DebitAuthorizeRequestFactory($this->getDebitAuthorizeRequest(), $this->getCustomerRequest(), $this->getSystemRequest());
-
         $salesChannelContext = $this->getSalesChannelContext();
-
-        $dataBag = new RequestDataBag([
+        $dataBag             = new RequestDataBag([
             'iban'         => '',
             'bic'          => '',
             'accountOwner' => '',
         ]);
-        $request = $factory->getRequestParameters($this->getPaymentTransaction(), $dataBag, $salesChannelContext);
+
+        $factory = $this->getRequestParameterFactory($salesChannelContext);
+
+        $request = $factory->getRequestParameter(
+            new PaymentTransactionStruct(
+                $this->getPaymentTransaction(),
+                $dataBag,
+                $salesChannelContext,
+                PayoneDebitPaymentHandler::class,
+                AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
+            )
+        );
 
         Assert::assertArraySubset(
             [
@@ -107,56 +105,5 @@ class DebitAuthorizeRequestFactoryTest extends TestCase
         $orderTransactionEntity->setCustomFields($customFields);
 
         return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
-    }
-
-    private function getDebitAuthorizeRequest(): DebitAuthorizeRequest
-    {
-        $currencyRepository = $this->createMock(EntityRepository::class);
-        $currencyEntity     = new CurrencyEntity();
-        $currencyEntity->setId(Constants::CURRENCY_ID);
-        $currencyEntity->setIsoCode('EUR');
-
-        if (method_exists($currencyEntity, 'setDecimalPrecision')) {
-            $currencyEntity->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
-        } else {
-            $currencyEntity->setItemRounding(
-                new CashRoundingConfig(
-                    Constants::CURRENCY_DECIMAL_PRECISION,
-                    Constants::ROUNDING_INTERVAL,
-                    true)
-            );
-
-            $currencyEntity->setTotalRounding(
-                new CashRoundingConfig(
-                    Constants::CURRENCY_DECIMAL_PRECISION,
-                    Constants::ROUNDING_INTERVAL,
-                    true)
-            );
-        }
-
-        try {
-            $entitySearchResult = new EntitySearchResult(
-                CurrencyEntity::class,
-                1,
-                new EntityCollection([$currencyEntity]),
-                null,
-                new Criteria(),
-                Context::createDefaultContext()
-            );
-        } catch (\Throwable $e) {
-            /** @phpstan-ignore-next-line */
-            $entitySearchResult = new EntitySearchResult(1, new EntityCollection([$currencyEntity]), null, new Criteria(), Context::createDefaultContext());
-        }
-
-        $currencyRepository->method('search')->willReturn($entitySearchResult);
-
-        $configReader = $this->createMock(ConfigReader::class);
-        $configReader->method('read')->willReturn(
-            new Configuration([
-                sprintf('%sProvideNarrativeText', ConfigurationPrefixes::CONFIGURATION_PREFIX_CREDITCARD) => false,
-            ])
-        );
-
-        return new DebitAuthorizeRequest($currencyRepository, $configReader);
     }
 }
