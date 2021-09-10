@@ -123,7 +123,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
 
         $transactionStatusHandler->process(
             $salesChannelContext,
-            $transactionData
+            new Request([], $transactionData)
         );
     }
 

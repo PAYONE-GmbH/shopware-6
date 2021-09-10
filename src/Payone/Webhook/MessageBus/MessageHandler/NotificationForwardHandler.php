@@ -32,7 +32,8 @@ class NotificationForwardHandler extends AbstractMessageHandler
     public function handle($message): void
     {
         $notificationForwards = $this->getNotificationForwards($message->getNotificationTargetIds(), $message->getContext());
-        $multiHandle          = curl_multi_init();
+        /** @var resource $multiHandle */
+        $multiHandle = curl_multi_init();
 
         $this->logger->info('Forwarding notifications', array_keys($notificationForwards->getElements()));
 
@@ -72,6 +73,9 @@ class NotificationForwardHandler extends AbstractMessageHandler
         return $this->notificationForwardRepository->search($criteria, $context);
     }
 
+    /**
+     * @param resource $multiHandle
+     */
     private function updateResponses($multiHandle, EntitySearchResult $notificationForwards, array $forwardRequests, Context $context): void
     {
         $data = [];
@@ -91,6 +95,9 @@ class NotificationForwardHandler extends AbstractMessageHandler
         $this->notificationForwardRepository->update($data, $context);
     }
 
+    /**
+     * @param resource $multiHandle
+     */
     private function getForwardRequests($multiHandle, EntitySearchResult $notificationForwards): array
     {
         $forwardRequests = [];
@@ -108,7 +115,8 @@ class NotificationForwardHandler extends AbstractMessageHandler
             $forwardRequests[$id] = curl_init();
 
             $serialize = unserialize($forward->getContent(), []);
-            $content   = mb_convert_encoding($serialize, 'ISO-8859-1', 'UTF-8');
+            /** @var array $content */
+            $content = mb_convert_encoding($serialize, 'ISO-8859-1', 'UTF-8');
 
             curl_setopt($forwardRequests[$id], CURLOPT_URL, $target->getUrl());
             curl_setopt($forwardRequests[$id], CURLOPT_HEADER, 0);
