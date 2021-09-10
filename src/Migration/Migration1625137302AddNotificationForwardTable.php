@@ -16,8 +16,7 @@ class Migration1625137302AddNotificationForwardTable extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $sql = <<<SQL
-            CREATE TABLE IF NOT EXISTS `payone_payment_notification_forward` (
+        $sql = 'CREATE TABLE IF NOT EXISTS `payone_payment_notification_forward` (
                 `id` BINARY(16) NOT NULL,
                 `notification_target_id` BINARY(16) NULL,
                 `ip` VARCHAR(255) NULL,
@@ -28,8 +27,7 @@ class Migration1625137302AddNotificationForwardTable extends MigrationStep
                 `created_at` DATETIME(3) NOT NULL,
                 `updated_at` DATETIME(3) NULL,
                 PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        SQL;
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;';
 
         if (method_exists($connection, 'executeStatement')) {
             $connection->executeStatement($sql);
