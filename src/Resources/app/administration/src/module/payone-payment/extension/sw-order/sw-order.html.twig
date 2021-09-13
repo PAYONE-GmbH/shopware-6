@@ -32,6 +32,41 @@
                             <payone-refund-button :order="order" :transaction="transaction" v-on:reload="reloadEntityData"></payone-refund-button>
                         </sw-container>
                     </sw-container>
+
+                    <sw-container v-if="hasNotificationForwards(transaction)" gap="10px" class="payone-payment-detail--notification-forwards">
+                        <b>{{ $tc('payonePayment.notificationTarget.list.title') }}</b>
+
+                        <sw-data-grid
+                            :dataSource="notificationForwards"
+                            :selectable="false"
+                            :isFullpage="false"
+                            :showSelection="false"
+                            :compactMode="true"
+                            :showActions="true"
+                            :allowInlineEdit="false"
+                            :columns="notificationTargetColumns"
+                            :plainAppearance="true"
+                            :showHeader="false"
+                            table>
+
+                            <template #column-response="{ item }">
+                                <span v-if="item.updatedAt">{{ item.response }}</span>
+                                <span v-else></span>
+                            </template>
+
+                            <template #column-updatedAt="{ item }">
+                                {{ item.updatedAt| date({ hour: '2-digit', minute: '2-digit' }) }}
+                            </template>
+
+                            <template #actions="{ item }">
+                                <sw-context-menu-item
+                                    @click="requeue(item, transaction)">
+                                    {{ $tc('payonePayment.notificationTarget.actions.requeue') }}
+                                </sw-context-menu-item>
+                            </template>
+
+                        </sw-data-grid>
+                    </sw-container>
                 </sw-card>
             </template>
         </template>

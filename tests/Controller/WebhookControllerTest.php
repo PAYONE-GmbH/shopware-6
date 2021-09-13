@@ -24,6 +24,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Pricing\CashRoundingConfig;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
@@ -31,6 +32,7 @@ use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMa
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class WebhookControllerTest extends TestCase
 {
@@ -213,7 +215,9 @@ class WebhookControllerTest extends TestCase
         );
 
         return new WebhookController(
-            new WebhookProcessor(new ConfigReaderMock([]), new \ArrayObject([$transactionStatusHandler]), new NullLogger())
+            new WebhookProcessor(new ConfigReaderMock([]), new \ArrayObject([$transactionStatusHandler]), new NullLogger()),
+            $this->createMock(EntityRepositoryInterface::class),
+            $this->createMock(MessageBusInterface::class)
         );
     }
 }

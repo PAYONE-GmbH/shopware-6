@@ -68,10 +68,6 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
             return false;
         }
 
-        if (!$customFields[CustomFieldInstaller::IS_PAYONE]) {
-            return false;
-        }
-
         return true;
     }
 }
