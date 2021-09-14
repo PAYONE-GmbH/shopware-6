@@ -1,0 +1,115 @@
+{% block payone_notification_target_detail %}
+    <sw-page class="payone-notification-target-detail">
+
+        {% block payone_notification_target_detail_header %}
+            <template #smart-bar-header>
+                <h2>{{ $tc('payonePayment.notificationTarget.detail.headline') }}</h2>
+            </template>
+        {% endblock %}
+
+        {% block payone_notification_target_detail_actions %}
+            <template #smart-bar-actions>
+
+                {% block payone_notification_target_detail_actions_abort %}
+                    <sw-button :disabled="notificationTargetIsLoading" @click="onCancel">
+                        {{ $tc('payonePayment.notificationTarget.detail.label.buttonCancel') }}
+                    </sw-button>
+                {% endblock %}
+
+                {% block payone_notification_target_detail_actions_save %}
+                    <sw-button-process
+                        class="payone-notification-target-detail__save-action"
+                        :isLoading="isLoading"
+                        v-model="isSaveSuccessful"
+                        :disabled="isLoading"
+                        variant="primary"
+                        @click.prevent="onSave">
+                        {{ $tc('payonePayment.notificationTarget.detail.label.buttonSave') }}
+                    </sw-button-process>
+                {% endblock %}
+
+            </template>
+        {% endblock %}
+
+        {% block payone_notification_target_detail_content %}
+            <sw-card-view slot="content">
+
+                {% block payone_notification_target_detail_base_basic_info_card %}
+                    <sw-card :title="$tc('payonePayment.notificationTarget.detail.headline')" :isLoading="notificationTargetIsLoading">
+                        <template v-if="!notificationTargetIsLoading">
+                            <sw-container class="payone-notification-target-detail__container"
+                                          columns="repeat(auto-fit, minmax(250px, 1fr))"
+                                          gap="0 30px">
+                                <div class="payone-notification-target-detail__base-info-wrapper">
+
+                                    {% block payone_notification_target_detail_base_info_field_url %}
+                                        <sw-field type="text"
+                                                  :label="$tc('payonePayment.notificationTarget.detail.label.url')"
+                                                  :placeholder="$tc('payonePayment.notificationTarget.detail.placeholder.url')"
+                                                  name="url"
+                                                  validation="required"
+                                                  required
+                                                  v-model="notificationTarget.url">
+                                        </sw-field>
+                                    {% endblock %}
+
+                                    {% block payone_notification_target_detail_base_info_field_is_basic_auth %}
+                                        <sw-checkbox-field :label="$tc('payonePayment.notificationTarget.detail.label.isBasicAuth')"
+                                                  name="isBasicAuth"
+                                                  v-model="notificationTarget.isBasicAuth">
+                                        </sw-checkbox-field>
+                                    {% endblock %}
+
+                                    {% block payone_notification_target_detail_base_info_field_is_basic_auth_fields %}
+                                        <sw-field v-if="notificationTarget.isBasicAuth"
+                                                  type="text"
+                                                  :label="$tc('payonePayment.notificationTarget.detail.label.username')"
+                                                  :placeholder="$tc('payonePayment.notificationTarget.detail.placeholder.username')"
+                                                  name="username"
+                                                  required
+                                                  v-model="notificationTarget.username">
+                                        </sw-field>
+
+                                        <sw-field v-if="notificationTarget.isBasicAuth"
+                                                  type="password"
+                                                  :label="$tc('payonePayment.notificationTarget.detail.label.password')"
+                                                  :placeholder="$tc('payonePayment.notificationTarget.detail.placeholder.password')"
+                                                  name="password"
+                                                  required
+                                                  v-model="notificationTarget.password">
+                                        </sw-field>
+                                    {% endblock %}
+
+                                    {% block payone_notification_target_detail_base_info_field_txactions %}
+                                        <sw-multi-select
+                                            :label="$tc('payonePayment.notificationTarget.detail.label.txactions')"
+                                            :options="[
+                                                { value: 'appointed', label: 'appointed' },
+                                                { value: 'capture', label: 'capture' },
+                                                { value: 'paid', label: 'paid' },
+                                                { value: 'underpaid', label: 'underpaid' },
+                                                { value: 'cancelation', label: 'cancelation' },
+                                                { value: 'refund', label: 'refund' },
+                                                { value: 'debit', label: 'debit' },
+                                                { value: 'transfer', label: 'transfer' },
+                                                { value: 'reminder', label: 'reminder' },
+                                                { value: 'vauthorization', label: 'vauthorization' },
+                                                { value: 'vsettlement', label: 'vsettlement' },
+                                                { value: 'invoice', label: 'invoice' },
+                                                { value: 'failed', label: 'failed' }
+                                            ]"
+                                            @change="updateSelection"
+                                            :value="notificationTarget.txactions">
+                                        </sw-multi-select>
+                                    {% endblock %}
+
+                                </div>
+                            </sw-container>
+                        </template>
+                    </sw-card>
+                {% endblock %}
+            </sw-card-view>
+        {% endblock %}
+
+    </sw-page>
+{% endblock %}

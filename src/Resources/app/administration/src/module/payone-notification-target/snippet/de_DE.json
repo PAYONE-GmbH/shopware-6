@@ -1,0 +1,43 @@
+{
+    "payonePayment": {
+        "notificationTarget": {
+            "module": {
+                "title": "Payone Notificationweiterleitungen",
+                "buttonTitle": "Notifications"
+            },
+            "list": {
+                "title": "Notificationweiterleitungen",
+                "empty": "Keine Einträge",
+                "buttonCreate": "Weiterleitungsziel anlegen"
+            },
+            "detail": {
+                "headline": "Notificationweiterleitung",
+                "placeholder": {
+                    "url": "Url",
+                    "username": "Benutzer",
+                    "password": "Passwort"
+                },
+                "label": {
+                    "url": "Url",
+                    "isBasicAuth": "Basic Auth",
+                    "txactions": "txactions",
+                    "buttonSave": "Speichern",
+                    "buttonCancel": "Abbrechen",
+                    "username": "Benutzer",
+                    "password": "Passwort"
+                }
+            },
+            "columns": {
+                "url": "Url",
+                "isBasicAuth": "Basic Auth",
+                "txactions": "txactions"
+            },
+            "actions": {
+                "requeue": "Erneut senden"
+            },
+            "messages": {
+                "success": "Die Weiterleitung wurde erfolgreich in Auftrag gegeben."
+            }
+        }
+    }
+}

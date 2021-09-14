@@ -26,6 +26,7 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
+use Symfony\Component\HttpFoundation\Request;
 
 class TransactionStatusWebhookHandlerTest extends TestCase
 {
@@ -122,7 +123,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
 
         $transactionStatusHandler->process(
             $salesChannelContext,
-            $transactionData
+            new Request([], $transactionData)
         );
     }
 
@@ -219,7 +220,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
 
         $transactionStatusHandler->process(
             $salesChannelContext,
-            $transactionData
+            new Request([], $transactionData)
         );
     }
 
@@ -316,7 +317,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
 
         $transactionStatusHandler->process(
             $salesChannelContext,
-            $transactionData
+            new Request([], $transactionData)
         );
     }
 }
