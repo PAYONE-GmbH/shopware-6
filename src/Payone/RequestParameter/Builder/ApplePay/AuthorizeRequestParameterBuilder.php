@@ -12,6 +12,7 @@ use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\Order\IdStruct;
 use Shopware\Core\Checkout\Cart\Order\OrderConverter;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -72,8 +73,10 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         if (null !== $order) {
             /** @var CurrencyEntity $currency */
             $currency = $order->getCurrency();
+            /** @var OrderAddressCollection $addresses */
+            $addresses = $order->getAddresses();
             /** @var OrderAddressEntity $billingAddress */
-            $billingAddress = $order->getBillingAddress();
+            $billingAddress = $addresses->get($order->getBillingAddressId());
             /** @var CountryEntity $country */
             $country = $billingAddress->getCountry();
             $amount  = $order->getAmountTotal();
@@ -150,6 +153,8 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $criteria->addAssociation('currency');
         $criteria->addAssociation('billingAddress');
         $criteria->addAssociation('billingAddress.country');
+        $criteria->addAssociation('addresses');
+        $criteria->addAssociation('addresses.country');
 
         return $this->orderRepository->search($criteria, $context)->first();
     }
