@@ -54,7 +54,7 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $response      = json_decode($requestData->get('response', '{}'), true);
 
-        if (!array_key_exists('status', $response) || !array_key_exists('txid', $response)) {
+        if (null === $response || !array_key_exists('status', $response) || !array_key_exists('txid', $response)) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')

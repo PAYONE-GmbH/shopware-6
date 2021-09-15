@@ -321,6 +321,8 @@
         <service id="PayonePayment\Payone\RequestParameter\Builder\ApplePay\AuthorizeRequestParameterBuilder">
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
             <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
+            <argument type="service" id="Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface"/>
+            <argument type="service" id="order.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>
@@ -328,6 +330,8 @@
         <service id="PayonePayment\Payone\RequestParameter\Builder\ApplePay\PreAuthorizeRequestParameterBuilder">
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
             <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
+            <argument type="service" id="Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface"/>
+            <argument type="service" id="order.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>

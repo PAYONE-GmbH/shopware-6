@@ -138,7 +138,8 @@ class ApplePayRoute extends AbstractApplePayRoute
                 new RequestDataBag($token),
                 $context,
                 PayoneApplePayPaymentHandler::class,
-                $authorizationMethod
+                $authorizationMethod,
+                $request->get('orderId', null)
             )
         );
 

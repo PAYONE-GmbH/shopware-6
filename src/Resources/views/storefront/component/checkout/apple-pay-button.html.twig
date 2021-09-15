@@ -6,6 +6,7 @@
         <input type="hidden" name="txid" value=""/>
         <input type="hidden" name="userid" value=""/>
         <input type="hidden" name="response" value=""/>
+        <input type="hidden" name="orderId" value="{{ page.order.id }}"/>
 
         <apple-pay-button
             data-validate-merchant-url="{{ path('store-api.payone.apple-pay.validate-merchant') }}"

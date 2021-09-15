@@ -83,8 +83,10 @@ export default class PayonePaymentApplePay extends Plugin {
     }
 
     authorizePayment(event) {
+        let orderId = DomAccess.querySelector(this.orderForm, 'input[name=\'orderId\']').value;
+
         this.client.abort();
-        this.client.post(this.processPaymentUrl, JSON.stringify({token: event.payment.token}), (response) => {
+        this.client.post(this.processPaymentUrl, JSON.stringify({token: event.payment.token, orderId: orderId}), (response) => {
             this.completePayment(response);
             this.orderForm.submit();
         })
