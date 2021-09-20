@@ -35,6 +35,8 @@ use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 
 class PaymentMethodInstaller implements InstallerInterface
 {
+    public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
+
     public const PAYMENT_METHODS = [
         PayoneCreditCard::class,
         PayoneDebit::class,

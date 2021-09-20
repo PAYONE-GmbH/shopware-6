@@ -60,5 +60,9 @@
 
             <argument type="string">payone_payment</argument>
         </service>
+
+        <service id="PayonePayment\Components\CartValidator\ZeroAmountCartValidator">
+            <tag name="shopware.cart.validator"/>
+        </service>
     </services>
 </container>
