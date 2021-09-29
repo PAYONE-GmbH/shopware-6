@@ -54,6 +54,8 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneSecureInvoice::class         => '4e8a9d3d3c6e428887573856b38c9003',
     ];
 
+    public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
+
     public const PAYMENT_METHODS = [
         PayoneApplePay::class,
         PayoneCreditCard::class,

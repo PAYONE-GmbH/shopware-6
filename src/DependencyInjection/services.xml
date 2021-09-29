@@ -63,5 +63,9 @@
 
         <service id="payone.app_system.guzzle" class="GuzzleHttp\Client">
         </service>
+
+        <service id="PayonePayment\Components\CartValidator\ZeroAmountCartValidator">
+            <tag name="shopware.cart.validator"/>
+        </service>
     </services>
 </container>

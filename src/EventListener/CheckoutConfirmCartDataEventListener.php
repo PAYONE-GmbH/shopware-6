@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace PayonePayment\EventListener;
 
 use PayonePayment\Components\Helper\OrderFetcherInterface;
+use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\Order\OrderConverter;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPage;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
+use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPage;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
+use Shopware\Storefront\Page\Page;
 use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Process\Exception\LogicException;
@@ -41,18 +47,19 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
         ];
     }
 
+    /** @param AccountEditOrderPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event */
     public function addCartData(PageLoadedEvent $event): void
     {
         $page = $event->getPage();
 
         if ($event instanceof CheckoutConfirmPageLoadedEvent) {
             $cart = $event->getPage()->getCart();
-        } elseif ($event instanceof AccountEditOrderPageLoadedEvent) {
+        } else {
             $order = $event->getPage()->getOrder();
             $cart  = $this->convertCartFromOrder($order, $event->getContext());
-        } else {
-            return;
         }
+
+        $this->hidePayonePaymentMethodsOnZeroAmountCart($page, $cart, $event->getSalesChannelContext());
 
         if ($cart->hasExtension(CheckoutCartPaymentData::EXTENSION_NAME)) {
             $payoneData = $cart->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
@@ -71,6 +78,24 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
         }
 
         $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+    }
+
+    /** @param AccountEditOrderPage|CheckoutConfirmPage $page */
+    private function hidePayonePaymentMethodsOnZeroAmountCart(Page $page, Cart $cart, SalesChannelContext $salesChannelContext): void
+    {
+        $totalAmount = (int) round($cart->getPrice()->getTotalPrice() * (10 ** $salesChannelContext->getCurrency()->getDecimalPrecision()));
+
+        if ($totalAmount > 0) {
+            return;
+        }
+
+        $page->setPaymentMethods(
+            $page->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) {
+                return mb_strpos($paymentMethod->getHandlerIdentifier(), PaymentMethodInstaller::HANDLER_IDENTIFIER_ROOT_NAMESPACE) === false;
+            })
+        );
+
+        $salesChannelContext->assign(['paymentMethods' => $page->getPaymentMethods()]);
     }
 
     private function convertCartFromOrder(OrderEntity $orderEntity, Context $context): Cart

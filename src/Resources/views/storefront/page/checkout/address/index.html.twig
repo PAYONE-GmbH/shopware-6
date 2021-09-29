@@ -3,7 +3,7 @@
 {% block page_checkout_address_login_toggle %}
     {{ parent() }}
 
-    {% if not context.customer %}
+    {% if not context.customer and page.cart.price.totalPrice > 0 %}
         {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePaymentPaymentMethods %}
             {% block page_checkout_address_payone_paypal_express_button %}
                 <div class="row">
