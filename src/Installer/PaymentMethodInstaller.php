@@ -6,6 +6,7 @@ namespace PayonePayment\Installer;
 
 use Doctrine\DBAL\Connection;
 use PayonePayment\PaymentMethod\PaymentMethodInterface;
+use PayonePayment\PaymentMethod\PayoneApplePay;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
 use PayonePayment\PaymentMethod\PayoneEps;
@@ -36,6 +37,7 @@ use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 class PaymentMethodInstaller implements InstallerInterface
 {
     public const PAYMENT_METHOD_IDS = [
+        PayoneApplePay::class              => '4cbc89a06e544c06b413a41d158f5e00',
         PayoneCreditCard::class            => '37f90a48d9194762977c9e6db36334e0',
         PayoneDebit::class                 => '1b017bef157b4222b734659361d996fd',
         PayonePaypal::class                => '21e157163fdb4aa4862a2109abcd7522',
@@ -55,6 +57,7 @@ class PaymentMethodInstaller implements InstallerInterface
     public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
 
     public const PAYMENT_METHODS = [
+        PayoneApplePay::class,
         PayoneCreditCard::class,
         PayoneDebit::class,
         PayonePaypal::class,
@@ -72,6 +75,7 @@ class PaymentMethodInstaller implements InstallerInterface
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [
+        PayoneApplePay::class,
         PayoneCreditCard::class,
         PayoneDebit::class,
         PayonePaypal::class,
@@ -203,15 +207,6 @@ class PaymentMethodInstaller implements InstallerInterface
             $this->updatePaymentMethod($data, $context);
         } else {
             $this->installPaymentMethod($data, $paymentMethod, $context);
-        }
-
-        // Re-fetch payment method from database to operate on proper data
-        $paymentMethodEntity = $this->findPaymentMethodEntity($paymentMethod->getId(), $context);
-
-        if (!($paymentMethodEntity instanceof PaymentMethodEntity)) {
-            // we are in a bad state here because the payment method must exist if everything went well
-            // todo: find a better solution, for now just ignore this problem
-            return;
         }
     }
 

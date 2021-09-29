@@ -1,0 +1,25 @@
+{% block component_payone_apple_pay_button %}
+    {% if constant('PayonePayment\\PaymentMethod\\PayoneApplePay::UUID') in page.paymentMethods|keys %}
+        <script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
+
+        <input type="hidden" name="status" value=""/>
+        <input type="hidden" name="txid" value=""/>
+        <input type="hidden" name="userid" value=""/>
+        <input type="hidden" name="response" value=""/>
+        <input type="hidden" name="orderId" value="{{ page.order.id }}"/>
+
+        <apple-pay-button
+            data-validate-merchant-url="{{ path('store-api.payone.apple-pay.validate-merchant') }}"
+            data-process-payment-url="{{ path('store-api.payone.apple-pay.process') }}"
+            data-payone-payment-apple-pay-options='{
+                "countryCode": "{{ context.customer.defaultBillingAddress.country.iso }}",
+                "currencyCode": "{{ context.currency.isoCode }}",
+                "supportedNetworks": {{ config('PayonePayment.settings.applePaySupportedCardTypes')|json_encode() }},
+                "total": {
+                    "label": "{{ config('core.basicInformation.shopName') }}",
+                    "amount": "{{ amount }}"
+                }
+            }'
+            buttonstyle="black" type="checkout-out" locale="{{ app.request.locale }}"></apple-pay-button>
+    {% endif %}
+{% endblock %}

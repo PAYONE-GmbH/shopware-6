@@ -20,6 +20,7 @@ Component.register('payone-settings', {
             isTesting: false,
             isSaveSuccessful: false,
             isTestSuccessful: false,
+            isApplePayCertConfigured: true,
             config: {},
             merchantIdFilled: false,
             accountIdFilled: false,
@@ -85,10 +86,14 @@ Component.register('payone-settings', {
                         })
                     });
                 });
+
+            this.PayonePaymentSettingsService.hasApplePayCert()
+                .then((result) => {
+                    this.isApplePayCertConfigured = result;
+                });
         },
 
         paymentMethodPrefixes() {
-            // TODO: Autogenerate config array with these prefixes
             return [
                 'creditCard',
                 'debit',
@@ -104,6 +109,7 @@ Component.register('payone-settings', {
                 'prepayment',
                 'trustly',
                 'secureInvoice',
+                'applePay',
             ];
         },
 

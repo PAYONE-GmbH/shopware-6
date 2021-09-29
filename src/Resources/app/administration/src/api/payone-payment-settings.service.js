@@ -39,6 +39,26 @@ class PayonePaymentSettingsService extends ApiService {
             });
     }
 
+    hasApplePayCert() {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient
+            .get(
+                `_action/${this.getApiBasePath()}/check-apple-pay-cert`,
+                {
+                    headers: headers
+                }
+            )
+            .catch(() => {
+                return false;
+            })
+            .then((response) => {
+                if(!response) {
+                    return false;
+                }
+                return true;
+            });
+    }
 }
 
 Application.addServiceProvider('PayonePaymentSettingsService', (container) => {
