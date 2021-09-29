@@ -28,6 +28,7 @@ Component.register('payone-settings', {
             showValidationErrors: false,
             isSupportModalOpen: false,
             stateMachineTransitionActions: [],
+            displayStatusMapping: {},
             collapsibleState: {
                 'status_mapping': true,
                 'payment_credit_card': true,
@@ -104,6 +105,10 @@ Component.register('payone-settings', {
                 'trustly',
                 'secureInvoice',
             ];
+        },
+
+        isVisiblePaymentMethodCard(card) {
+            return card.name.startsWith('payment') && !this.isCollapsed(card);
         },
 
         isCollapsible(card) {

@@ -4,6 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <imports>
+        <import resource="store_api.xml"/>
         <import resource="controllers.xml" />
         <import resource="decorations.xml"/>
         <import resource="entities.xml" />
@@ -22,7 +23,9 @@
             <argument type="service" id="payone_payment_card.repository" />
         </service>
 
-        <service id="PayonePayment\Components\CartHasher\CartHasher" />
+        <service id="PayonePayment\Components\CartHasher\CartHasher">
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
+        </service>
 
         <service id="PayonePayment\Components\ConfigReader\ConfigReader">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
@@ -39,7 +42,10 @@
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="PayonePayment\Util\Logger" />
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
         </service>
+
+        <service id="PayonePayment\Components\Currency\CurrencyPrecision" />
 
         <service id="PayonePayment\Components\Helper\OrderFetcher">
             <argument type="service" id="order.repository" />
@@ -53,6 +59,10 @@
             <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
 
             <argument type="string">payone_payment</argument>
+        </service>
+
+        <service id="PayonePayment\Components\CartValidator\ZeroAmountCartValidator">
+            <tag name="shopware.cart.validator"/>
         </service>
     </services>
 </container>

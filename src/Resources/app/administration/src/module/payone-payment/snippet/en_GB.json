@@ -57,6 +57,8 @@
             "test": "Test API Credentials",
             "titleSuccess": "Success",
             "titleError": "Error",
+            "labelShowSpecificStatusMapping": "Display state mapping configuration",
+            "helpTextShowSpecificStatusMapping": "If not configured the general status mapping config will be applied.",
             "messageTestSuccess": "The API credentials were verified successfully.",
             "messageTestNoTestedPayments": "No payment methods were tested during the check because none of the PAYONE payment methods are activated. Please activate at least one PAYONE payment method under Settings --> Shop --> Payment.",
             "messageTestError": {

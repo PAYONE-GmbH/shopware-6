@@ -17,5 +17,20 @@
 
             <tag name="payone.webhook.handler" />
         </service>
+
+        <service id="PayonePayment\Payone\Webhook\Handler\NotificationForwardHandler">
+            <argument type="service" id="payone_payment_notification_target.repository"/>
+            <argument type="service" id="payone_payment_notification_forward.repository" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="messenger.bus.shopware"/>
+
+            <tag name="payone.webhook.handler" />
+        </service>
+
+        <service id="PayonePayment\Payone\Webhook\MessageBus\MessageHandler\NotificationForwardHandler">
+            <argument type="service" id="payone_payment_notification_forward.repository" />
+            <argument type="service" id="PayonePayment\Util\Logger" />
+            <tag name="messenger.message_handler"/>
+        </service>
     </services>
 </container>

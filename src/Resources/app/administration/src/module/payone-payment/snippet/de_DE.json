@@ -57,6 +57,8 @@
             "test": "API-Zugangsdaten testen",
             "titleSuccess": "Erfolg",
             "titleError": "Fehler",
+            "labelShowSpecificStatusMapping": "Statusmappingkonfiguration einblenden",
+            "helpTextShowSpecificStatusMapping": "Sie können für jede Zahlungsart ein spezifisches Statusmapping konfigurieren. Existiert eine solche Konfiguration nicht, wird auf die allgemeine Konfiguration zurückgegriffen.",
             "messageTestSuccess": "Die API-Zugangsdaten wurden erfolgreich validiert.",
             "messageTestNoTestedPayments": "Bei der Prüfung wurden keine Zahlarten getestet, weil keine der PAYONE Zahlarten aktiviert ist. Bitte aktivieren Sie mindestens eine PAYONE Zahlart unter Einstellungen --> Shop --> Zahlungsarten.",
             "messageTestError": {
