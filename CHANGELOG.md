@@ -129,3 +129,20 @@ Maintenance
 Notice
 
 * We're dropping compatibility with Shopware 6.2.* in a future release of this plugin
+
+# 2.4.0
+
+New Features
+
+* New payment method: Apple Pay
+* Enable forwarding of transaction status to third-party systems
+
+Bugfixes
+
+* Various fixes for different languages
+* Fixed the bug for Prepayment method
+
+Maintenance
+
+* Compatibility with 0€ orders
+* tested with 6.4.1
