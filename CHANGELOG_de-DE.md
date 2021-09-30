@@ -125,3 +125,20 @@ Wartung
 Hinweis
 
 * Wir werden die Kompatibilität zu 6.2.* in zukünftigen Versionen einstellen
+
+# 2.4.0
+
+Neue Funktionen
+
+* Neue Zahlart: Apple Pay
+* Weiterleitung des Transaktionsstatus an Drittsysteme ermöglichen
+
+Fehlerbehebungen
+
+* Verschiedene Fehler in mehreren Sprachen behoben
+* Fehler bei der Vorkasse behoben
+
+Wartung
+
+* Kompatibel mit 0€ Bestellungen
+* getestet mit 6.4.1
