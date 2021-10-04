@@ -24,7 +24,7 @@
         "shopware/core": ">= 6.2",
         "shopware/administration": ">= 6.2",
         "shopware/storefront": ">= 6.2",
-        "sinergi/browser-detector": "*"
+        "sinergi/browser-detector": "^6.1"
     },
     "require-dev": {
         "dms/phpunit-arraysubset-asserts": "^0.3.0",
