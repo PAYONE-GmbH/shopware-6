@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentMethod;
 
+use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 
 class PayonePayolutionInstallment extends AbstractPaymentMethod
 {
-    public const UUID = '569b46970ad2458ca8f17f1ebb754137';
+    public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
     /** @var string */
     protected $id = self::UUID;

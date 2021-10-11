@@ -12,7 +12,7 @@ class ConfigReaderMock implements ConfigReaderInterface
     /** @var array */
     private $configuration;
 
-    public function __construct($configuration)
+    public function __construct(array $configuration)
     {
         $this->configuration = $configuration;
     }

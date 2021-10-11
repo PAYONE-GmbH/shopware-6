@@ -86,3 +86,59 @@ Wartung
  
 * getestet mit Shop-Version 6.4.1.0
 * bessere Übersetzungen der Fehlermeldungen
+
+
+# 2.3.0
+
+Neue Funktionen
+ 
+* neue PAYONE Berechtigungsverwaltung
+* Status Mapping pro Zahlungsmethode möglich
+ 
+Fehlerbehebungen
+ 
+* Fix für die Freischaltung der Schaltfläche "Jetzt kaufen"
+* PayPal Express: Telefonnummer ist kein Pflichtfeld mehr
+ 
+Wartung
+ 
+* getestet mit Shopware 6.4.3.1
+* massive Überarbeitungen in der Pluginstruktur
+* Elasticsearch Kompatibilität hergestellt
+
+# 2.3.1
+
+Fehlerbehebungen
+
+* Abwärtskompatiblität zu Version <6.4.0
+
+# 2.3.2
+
+Fehlerbehebungen
+
+* Transaktionstatus-Übertragung des txstatus "paid"
+
+Wartung
+
+* getestet mit Shopware 6.4.4.0
+
+Hinweis
+
+* Wir werden die Kompatibilität zu 6.2.* in zukünftigen Versionen einstellen
+
+# 2.4.0
+
+Neue Funktionen
+
+* Neue Zahlart: Apple Pay
+* Weiterleitung des Transaktionsstatus an Drittsysteme ermöglichen
+
+Fehlerbehebungen
+
+* Verschiedene Fehler in mehreren Sprachen behoben
+* Fehler bei der Vorkasse behoben
+
+Wartung
+
+* Kompatibel mit 0€ Bestellungen
+* getestet mit 6.4.1

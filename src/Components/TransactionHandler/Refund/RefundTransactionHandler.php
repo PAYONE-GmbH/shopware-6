@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionHandler\Refund;
 
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
@@ -22,12 +24,13 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
     private $transactionStatusService;
 
     public function __construct(
-        RefundRequestFactory $requestFactory,
+        RequestParameterFactory $requestFactory,
         PayoneClientInterface $client,
         TransactionDataHandlerInterface $dataHandler,
         TransactionStatusServiceInterface $transactionStatusService,
         EntityRepositoryInterface $transactionRepository,
-        EntityRepositoryInterface $lineItemRepository
+        EntityRepositoryInterface $lineItemRepository,
+        CurrencyPrecisionInterface $currencyPrecision
     ) {
         $this->requestFactory           = $requestFactory;
         $this->client                   = $client;
@@ -35,6 +38,7 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         $this->transactionStatusService = $transactionStatusService;
         $this->transactionRepository    = $transactionRepository;
         $this->lineItemRepository       = $lineItemRepository;
+        $this->currencyPrecision        = $currencyPrecision;
     }
 
     /**
@@ -42,7 +46,7 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
      */
     public function refund(ParameterBag $parameterBag, Context $context): JsonResponse
     {
-        [$requestResponse,] = $this->handleRequest($parameterBag, $context);
+        [$requestResponse,] = $this->handleRequest($parameterBag, AbstractRequestParameterBuilder::REQUEST_ACTION_REFUND, $context);
 
         if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
@@ -60,7 +64,8 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         $this->transactionStatusService->transitionByName(
             $context,
             $this->paymentTransaction->getOrderTransaction()->getId(),
-            $transitionName
+            $transitionName,
+            $parameterBag->all()
         );
 
         return $requestResponse;

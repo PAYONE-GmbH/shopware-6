@@ -6,6 +6,7 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\DataAbstractionLayer\Entity\Mandate\PayonePaymentMandateEntity;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Storefront\Struct\CheckoutFinishPaymentData;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -78,17 +79,7 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
 
     private function isPayonePayment(PaymentMethodEntity $paymentMethod): bool
     {
-        $customFields = $paymentMethod->getCustomFields();
-
-        if (empty($customFields[CustomFieldInstaller::IS_PAYONE])) {
-            return false;
-        }
-
-        if (!$customFields[CustomFieldInstaller::IS_PAYONE]) {
-            return false;
-        }
-
-        return true;
+        return in_array($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS);
     }
 
     private function getMandate(string $mandateIdentification, Context $context): ?PayonePaymentMandateEntity

@@ -11,6 +11,7 @@ use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class WebhookProcessor implements WebhookProcessorInterface
@@ -34,13 +35,15 @@ class WebhookProcessor implements WebhookProcessorInterface
         $this->logger       = $logger;
     }
 
-    public function process(SalesChannelContext $salesChannelContext, array $data): Response
+    public function process(SalesChannelContext $salesChannelContext, Request $request): Response
     {
+        $data = $request->request->all();
+
         $config     = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $storedKeys = [hash('md5', $config->get('portalKey'))];
+        $storedKeys = [hash('md5', $config->getString('portalKey'))];
 
         foreach (ConfigurationPrefixes::CONFIGURATION_PREFIXES as $prefix) {
-            $key = $config->get(sprintf('%sPortalKey', $prefix));
+            $key = $config->getString(sprintf('%sPortalKey', $prefix));
 
             if (empty($key)) {
                 continue;
@@ -50,7 +53,7 @@ class WebhookProcessor implements WebhookProcessorInterface
         }
 
         if (!isset($data['key']) || !in_array($data['key'], $storedKeys)) {
-            $this->logger->error('Received webhook without known portal key');
+            $this->logger->error('Received webhook without known portal key', $data);
 
             return new Response(WebhookHandlerInterface::RESPONSE_TSNOTOK);
         }
@@ -59,20 +62,21 @@ class WebhookProcessor implements WebhookProcessorInterface
 
         foreach ($this->handlers as $handler) {
             if (!$handler->supports($salesChannelContext, $data)) {
-                $this->logger->debug(sprintf('Skipping webhook handler %s', get_class($handler)));
+                $this->logger->debug(sprintf('Skipping webhook handler %s', get_class($handler)), $data);
 
                 continue;
             }
 
             try {
-                $handler->process($salesChannelContext, $data);
+                $handler->process($salesChannelContext, $request);
 
-                $this->logger->info(sprintf('Processed webhook handler %s', get_class($handler)));
+                $this->logger->info(sprintf('Processed webhook handler %s', get_class($handler)), $data);
             } catch (Exception $exception) {
                 $this->logger->error(sprintf('Error during processing of webhook handler %s', get_class($handler)), [
                     'message' => $exception->getMessage(),
                     'file'    => $exception->getFile(),
                     'line'    => $exception->getLine(),
+                    'data'    => $data,
                 ]);
 
                 $response = WebhookHandlerInterface::RESPONSE_TSNOTOK;

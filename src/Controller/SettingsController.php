@@ -8,9 +8,11 @@ use DateInterval;
 use DateTimeImmutable;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler as Handler;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Test\TestRequestFactory;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
+use PayonePayment\StoreApi\Route\ApplePayRoute;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -33,7 +35,7 @@ class SettingsController extends AbstractController
     /** @var PayoneClientInterface */
     private $client;
 
-    /** @var TestRequestFactory */
+    /** @var RequestParameterFactory */
     private $requestFactory;
 
     /** @var EntityRepositoryInterface */
@@ -42,16 +44,21 @@ class SettingsController extends AbstractController
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var string */
+    private $kernelDirectory;
+
     public function __construct(
         PayoneClientInterface $client,
-        TestRequestFactory $requestFactory,
+        RequestParameterFactory $requestFactory,
         EntityRepositoryInterface $stateMachineTransitionRepository,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        string $kernelDirectory
     ) {
         $this->client                           = $client;
         $this->requestFactory                   = $requestFactory;
         $this->stateMachineTransitionRepository = $stateMachineTransitionRepository;
         $this->logger                           = $logger;
+        $this->kernelDirectory                  = $kernelDirectory;
     }
 
     /**
@@ -80,11 +87,9 @@ class SettingsController extends AbstractController
 
             try {
                 $parameters  = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
-                $testRequest = $this->requestFactory->getRequestParameters($parameters);
+                $testRequest = $this->requestFactory->getRequestParameter(new TestCredentialsStruct($parameters, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST));
 
                 $this->client->request($testRequest);
-            } catch (PayoneRequestException $exception) {
-                $errors[$configurationPrefix] = true;
             } catch (Throwable $exception) {
                 $errors[$configurationPrefix] = true;
             }
@@ -127,6 +132,24 @@ class SettingsController extends AbstractController
         }
 
         return new JsonResponse(['data' => $transitionNames, 'total' => count($transitionNames)]);
+    }
+
+    /**
+     * @RouteScope(scopes={"api"})
+     * @Route("/api/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert", methods={"GET"})
+     * @Route("/api/v{version}/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert.legacy", methods={"GET"})
+     */
+    public function checkApplePayCert(): JsonResponse
+    {
+        if (!file_exists($this->kernelDirectory . ApplePayRoute::CERT_FOLDER . 'merchant_id.key')) {
+            return new JsonResponse(['success' => false], 404);
+        }
+
+        if (!file_exists($this->kernelDirectory . ApplePayRoute::CERT_FOLDER . 'merchant_id.pem')) {
+            return new JsonResponse(['success' => false], 404);
+        }
+
+        return new JsonResponse(['success' => true], 200);
     }
 
     private function getPaymentParameters(string $paymentClass): array
@@ -359,6 +382,24 @@ class SettingsController extends AbstractController
                     'successurl'                          => 'https://www.payone.com',
                     'backurl'                             => 'https://www.payone.com',
                     'errorurl'                            => 'https://www.payone.com',
+                ];
+
+            case Handler\PayoneApplePayPaymentHandler::class:
+                //TODO: Test request for apple pay is failing because of missing token params, we will use prepayment request to validate specific merchant data
+                return [
+                    'request'      => 'preauthorization',
+                    'clearingtype' => 'vor',
+                    'amount'       => 10000,
+                    'currency'     => 'EUR',
+                    'reference'    => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'firstname'    => 'Test',
+                    'lastname'     => 'Test',
+                    'country'      => 'DE',
+                    'email'        => 'test@example.com',
+                    'street'       => 'teststreet 2',
+                    'zip'          => '12345',
+                    'city'         => 'Test',
+                    'ip'           => '127.0.0.1',
                 ];
 
             default:

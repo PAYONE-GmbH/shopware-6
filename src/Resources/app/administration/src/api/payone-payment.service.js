@@ -6,6 +6,20 @@ class PayonePaymentService extends ApiService {
         super(httpClient, loginService, apiEndpoint);
     }
 
+    requeueNotificationForward(requestBody) {
+        const apiRoute = `_action/${this.getApiBasePath()}/requeue-forward`;
+
+        return this.httpClient.post(
+            apiRoute,
+            requestBody,
+            {
+                headers: this.getBasicHeaders()
+            }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
     capturePayment(requestBody) {
         const apiRoute = `_action/${this.getApiBasePath()}/capture-payment`;
 

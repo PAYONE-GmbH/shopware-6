@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionHandler\Capture;
 
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
@@ -22,12 +24,13 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
     private $transactionStatusService;
 
     public function __construct(
-        CaptureRequestFactory $requestFactory,
+        RequestParameterFactory $requestFactory,
         PayoneClientInterface $client,
         TransactionDataHandlerInterface $dataHandler,
         TransactionStatusServiceInterface $transactionStatusService,
         EntityRepositoryInterface $transactionRepository,
-        EntityRepositoryInterface $lineItemRepository
+        EntityRepositoryInterface $lineItemRepository,
+        CurrencyPrecisionInterface $currencyPrecision
     ) {
         $this->requestFactory           = $requestFactory;
         $this->client                   = $client;
@@ -35,6 +38,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $this->transactionStatusService = $transactionStatusService;
         $this->transactionRepository    = $transactionRepository;
         $this->lineItemRepository       = $lineItemRepository;
+        $this->currencyPrecision        = $currencyPrecision;
     }
 
     /**
@@ -42,7 +46,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
      */
     public function capture(ParameterBag $parameterBag, Context $context): JsonResponse
     {
-        [$requestResponse, $payoneResponse] = $this->handleRequest($parameterBag, $context);
+        [$requestResponse, $payoneResponse] = $this->handleRequest($parameterBag, AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE, $context);
 
         if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
@@ -56,7 +60,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $clearingType = strtolower($customFields[$this->getClearingTypeCustomField()] ?? '');
 
         // Filter payment methods that do not allow changing transaction status at this point
-        if (!in_array($clearingType, ['vor'], true)) {
+        if ($clearingType !== 'vor') {
             // Update the transaction status if PAYONE capture request was approved
             $this->updateTransactionStatus($parameterBag, $context);
         }
@@ -75,7 +79,8 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $this->transactionStatusService->transitionByName(
             $context,
             $this->paymentTransaction->getOrderTransaction()->getId(),
-            $transitionName
+            $transitionName,
+            $parameterBag->all()
         );
     }
 

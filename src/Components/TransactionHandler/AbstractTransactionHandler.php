@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace PayonePayment\Components\TransactionHandler;
 
 use Exception;
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\Request\Capture\CaptureRequestFactory;
-use PayonePayment\Payone\Request\Refund\RefundRequestFactory;
+use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -24,7 +26,7 @@ abstract class AbstractTransactionHandler
     /** @var EntityRepositoryInterface */
     protected $lineItemRepository;
 
-    /** @var CaptureRequestFactory|RefundRequestFactory */
+    /** @var RequestParameterFactory */
     protected $requestFactory;
 
     /** @var PayoneClientInterface */
@@ -42,7 +44,10 @@ abstract class AbstractTransactionHandler
     /** @var PaymentTransaction */
     protected $paymentTransaction;
 
-    public function handleRequest(ParameterBag $parameterBag, Context $context)
+    /** @var CurrencyPrecisionInterface */
+    protected $currencyPrecision;
+
+    public function handleRequest(ParameterBag $parameterBag, string $action, Context $context): array
     {
         $this->context = $context;
         $transaction   = $this->getTransaction($parameterBag->get('orderTransactionId', ''));
@@ -67,13 +72,19 @@ abstract class AbstractTransactionHandler
             ];
         }
 
+        /** @var PaymentMethodEntity $paymentMethod */
+        $paymentMethod            = $transaction->getPaymentMethod();
         $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($transaction, $transaction->getOrder());
 
         return $this->executeRequest(
-            $this->requestFactory->getRequest(
-                $this->paymentTransaction,
-                $parameterBag,
-                $this->context
+            $this->requestFactory->getRequestParameter(
+                new FinancialTransactionStruct(
+                    $this->paymentTransaction,
+                    $context,
+                    $parameterBag,
+                    $paymentMethod->getHandlerIdentifier(),
+                    $action
+                )
             )
         );
     }
@@ -84,7 +95,7 @@ abstract class AbstractTransactionHandler
 
     abstract protected function getAllowCustomField(): string;
 
-    protected function executeRequest(array $request)
+    protected function executeRequest(array $request): array
     {
         try {
             $response = $this->client->request($request);
@@ -130,7 +141,7 @@ abstract class AbstractTransactionHandler
         }
 
         if ($currency !== null) {
-            $currentCaptureAmount  = (int) round($captureAmount * (10 ** $currency->getDecimalPrecision()));
+            $currentCaptureAmount  = $this->currencyPrecision->getRoundedTotalAmount($captureAmount, $currency);
             $alreadyCapturedAmount = $customFields[$this->getAmountCustomField()] ?? 0;
 
             if ($captureAmount) {

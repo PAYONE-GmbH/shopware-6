@@ -5,17 +5,27 @@ declare(strict_types=1);
 namespace PayonePayment\Components\Hydrator\LineItemHydrator;
 
 use Exception;
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 
 class LineItemHydrator implements LineItemHydratorInterface
 {
     public const TYPE_GOODS   = 'goods';
     public const TYPE_VOUCHER = 'voucher';
+
+    /** @var CurrencyPrecisionInterface */
+    private $currencyPrecision;
+
+    public function __construct(CurrencyPrecisionInterface $currencyPrecision)
+    {
+        $this->currencyPrecision = $currencyPrecision;
+    }
 
     public function mapPayoneOrderLinesByRequest(
         CurrencyEntity $currency,
@@ -131,10 +141,10 @@ class LineItemHydrator implements LineItemHydratorInterface
         return [
             'it[' . $index . ']' => $this->mapItemType($lineItemEntity->getType()),
             'id[' . $index . ']' => $productNumber,
-            'pr[' . $index . ']' => (int) round($lineItemEntity->getUnitPrice() * (10 ** $currencyEntity->getDecimalPrecision())),
+            'pr[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($lineItemEntity->getUnitPrice(), $currencyEntity),
             'no[' . $index . ']' => $quantity,
             'de[' . $index . ']' => $lineItemEntity->getLabel(),
-            'va[' . $index . ']' => (int) round($calculatedTax->getTaxRate() * (10 ** $currencyEntity->getDecimalPrecision())),
+            'va[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($calculatedTax->getTaxRate(), $currencyEntity),
         ];
     }
 }
