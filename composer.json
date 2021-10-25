@@ -22,6 +22,7 @@
   "require": {
     "ext-curl": "*",
     "ext-json": "*",
+    "sinergi/browser-detector": "^6.1",
     "shopware/core": ">= 6.2",
     "shopware/administration": ">= 6.2",
     "shopware/storefront": ">= 6.2"
