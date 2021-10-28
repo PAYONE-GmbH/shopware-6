@@ -142,3 +142,25 @@ Wartung
 
 * Kompatibel mit 0€ Bestellungen
 * getestet mit 6.4.1
+
+# 2.4.1
+
+Neue Funktionen
+
+* PAYONE Zahlungsarten für 0€ Bestellungen gesperrt
+* Apple-pay hinzugefügt
+* Zahlartenbeschreibung hinzugefügt
+
+Fehlerbehebungen
+
+* Fehler beim Laden der Konfiguration behoben
+* Storefront Anfragen korrigiert
+* Fehlende Services behoben
+* Fehlender Parameter bei der Vorkasse hinzugefügt
+
+Wartung
+
+* Abwärtskompatibilität beheben
+* Kartentyp Discover entfernt
+* Abhängigkeit zur GitHub-Pipeline hinzufügen
+* getestet mit 6.4.5.0
