@@ -146,3 +146,25 @@ Maintenance
 
 * Compatibility with 0€ orders
 * tested with 6.4.1
+
+# 2.4.1
+
+New Features
+
+* Deactivate payone payment methods on zero amount carts
+* Add apple-pay
+* Add payment method description
+
+Bugfixes
+
+* Fix config loading error
+* Fix storefront requests
+* Fix missing service
+* Fix missing customer parameter on prepayment
+
+Maintenance
+
+* Fix backwards compatibility
+* Removed cardtype type discover
+* Add dependency to GitHub pipeline
+* Add fix for Version 6.4.5.0
