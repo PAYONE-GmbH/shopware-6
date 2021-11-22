@@ -1,5 +1,5 @@
 name: Create Download on Release
-on:
+on: 
   release:
     types: [published]
 jobs:
@@ -35,7 +35,7 @@ jobs:
         cd ./PayonePayment
         composer install --no-dev --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     - name: Build the zip
-      uses: thedoctor0/zip-release@master
+      uses: thedoctor0/zip-release@v0.2.1
       with:
         path: ./PayonePayment/
         filename: PayonePayment-${{ env.RELEASE_VERSION }}.zip
