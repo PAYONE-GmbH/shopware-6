@@ -1,6 +1,6 @@
 name: Tests
 
-on: [ push, pull_request ]
+on: [ push, pull_request, workflow_dispatch ]
 
 jobs:
   ci-legacy:
@@ -48,6 +48,7 @@ jobs:
           composer require k10r/codestyle:"^1.0" --no-scripts
           composer require phpstan/phpstan:"^0.12" --no-scripts
           composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
+          composer require sinergi/browser-detector:"^6.1" --no-scripts
       - name: Install plugin
         run: |
           mkdir -p /tmp/shopware/custom/plugins/PayonePayment
