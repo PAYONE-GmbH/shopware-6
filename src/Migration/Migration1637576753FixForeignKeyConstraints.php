@@ -20,11 +20,8 @@ class Migration1637576753FixForeignKeyConstraints extends MigrationStep
 
         if (method_exists($connection, 'executeStatement')) {
             $connection->executeStatement($sql);
-
-            return;
-        }
-
-        if (method_exists($connection, 'exec')) {
+        } elseif (method_exists($connection, 'exec')) {
+            /** method exec() is deprecated and will be removed in future doctrine releases */
             /** @noinspection PhpDeprecationInspection */
             $connection->exec($sql);
         }
@@ -34,11 +31,8 @@ class Migration1637576753FixForeignKeyConstraints extends MigrationStep
 
         if (method_exists($connection, 'executeStatement')) {
             $connection->executeStatement($sql);
-
-            return;
-        }
-
-        if (method_exists($connection, 'exec')) {
+        } elseif (method_exists($connection, 'exec')) {
+            /** method exec() is deprecated and will be removed in future doctrine releases */
             /** @noinspection PhpDeprecationInspection */
             $connection->exec($sql);
         }
