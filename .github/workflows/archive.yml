@@ -1,5 +1,5 @@
 name: Create Download on Release
-on: 
+on:
   release:
     types: [published]
 jobs:
@@ -22,7 +22,7 @@ jobs:
       run: php -m
     - name: Set Tag env
       run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF:10}
-      env:
+      env: 
         ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
     - name: Test tag
       run: echo ${{ env.RELEASE_VERSION }}
