@@ -26,7 +26,7 @@ class Migration1637576753FixForeignKeyConstraints extends MigrationStep
             $connection->exec($sql);
         }
 
-        $sql = 'ALTER TABLE payone_payment_card ADD FOREIGN KEY (`fk.payone_payment_card.customer_id`)
+        $sql = 'ALTER TABLE payone_payment_card ADD CONSTRAINT `fk.payone_payment_card.customer_id` FOREIGN KEY (`customer_id`)
                 REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;';
 
         if (method_exists($connection, 'executeStatement')) {
