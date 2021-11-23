@@ -3,13 +3,13 @@
         <input type="hidden" id="payoneCsrfTokenOpenInvoiceValidation"
                value="{{ sw_csrf('frontend.payone.openInvoice.validate', {'mode': 'token'}) }}">
 
-        {% block page_checkout_confirm_payone_card_title_secure_invoice %}
+        {% block page_checkout_confirm_payone_card_title_open_invoice %}
             <div class="card-title">
                 {{ "PayonePayment.openInvoice.cardTitle" | trans }}
             </div>
         {% endblock %}
 
-        {% block page_checkout_confirm_payone_card_content_secure_invoice %}
+        {% block page_checkout_confirm_payone_card_content_open_invoice %}
             {% sw_include '@Storefront/storefront/payone/open-invoice/birthDay.html.twig' with {
                 style: 'wide'
             } %}
