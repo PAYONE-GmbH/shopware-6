@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentMethod;
 
 use PayonePayment\Installer\PaymentMethodInstaller;
-use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
+use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
 
 class PayoneOpenInvoice extends AbstractPaymentMethod
 {
-    public const UUID                 = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
-    public const BUSINESSRELATION_B2B = 'b2b';
-    public const BUSINESSRELATION_B2C = 'b2c';
+    public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
     /** @var string */
     protected $id = self::UUID;
@@ -23,7 +21,7 @@ class PayoneOpenInvoice extends AbstractPaymentMethod
     protected $description = 'Open invoice payment.';
 
     /** @var string */
-    protected $paymentHandler = PayoneSecureInvoicePaymentHandler::class;
+    protected $paymentHandler = PayoneOpenInvoicePaymentHandler::class;
 
     /** @var null|string */
     protected $template = '@Storefront/storefront/payone/open-invoice/open-invoice.html.twig';
