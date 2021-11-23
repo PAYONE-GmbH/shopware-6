@@ -64,7 +64,7 @@ class PayoneOpenInvoicePaymentHandler extends AbstractPayonePaymentHandler imple
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
-            'secureInvoiceAuthorizationMethod',
+            'openInvoiceAuthorizationMethod',
             'preauthorization'
         );
 
