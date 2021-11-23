@@ -1,5 +1,5 @@
 {% if context.customer.activeBillingAddress and context.customer.activeBillingAddress.company is empty %}
-    <div class="payone-payment secure-invoice">
+    <div class="payone-payment open-invoice">
         <input type="hidden" id="payoneCsrfTokenOpenInvoiceValidation"
                value="{{ sw_csrf('frontend.payone.openInvoice.validate', {'mode': 'token'}) }}">
 
