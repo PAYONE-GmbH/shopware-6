@@ -72,7 +72,7 @@ class OrderValidationEventListener implements EventSubscriberInterface
 
         if ($activeBilling !== null && empty($activeBilling->getCompany())) {
             $event->getDefinition()->add(
-                'secureInvoiceBirthday',
+                'payoneInvoiceBirthday',
                 new Birthday(['value' => $this->getMinimumDate()])
             );
         }
