@@ -7,17 +7,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Master
-      uses: actions/checkout@master        
+      uses: actions/checkout@master
+    - name: Install PHP
+      uses: shivammathur/setup-php@master
+      with:
+        php-version: 7.4
+        extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium
+        tools: composer:v2
+    - name: Check PHP Version
+      run: php -v
+    - name: Check Composer Version
+      run: composer -V
+    - name: Check PHP Extensions
+      run: php -m
     - name: Set Tag env
       run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF:10}
-      env: 
+      env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
     - name: Test tag
       run: echo ${{ env.RELEASE_VERSION }}
     - name: Prepare folder
       run: |
         mkdir ./PayonePayment
-        cp -r src CHANGELOG* README.md composer.json ./PayonePayment/
+        cp -r src CHANGELOG* README.md composer.json composer.lock ./PayonePayment/
+    - name: Composer setup
+      run: |
+        cd ./PayonePayment
+        composer install --no-dev --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
     - name: Build the zip
       uses: thedoctor0/zip-release@v0.2.1
       with:
@@ -28,3 +44,4 @@ jobs:
       env:
         GHR_PATH: PayonePayment-${{ env.RELEASE_VERSION }}.zip
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
