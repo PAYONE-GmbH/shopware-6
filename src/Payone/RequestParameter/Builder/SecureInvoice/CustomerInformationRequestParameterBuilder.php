@@ -70,7 +70,13 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
 
         $paymentMethod = $arguments->getPaymentMethod();
 
-        return $paymentMethod === PayoneSecureInvoicePaymentHandler::class || $paymentMethod === PayoneOpenInvoicePaymentHandler::class;
+        switch ($paymentMethod) {
+            case PayoneSecureInvoicePaymentHandler::class:
+            case PayoneOpenInvoicePaymentHandler::class:
+                return true;
+        }
+
+        return false;
     }
 
     private function getBillingAddress(OrderEntity $order, Context $context): OrderAddressEntity
