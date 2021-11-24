@@ -34,7 +34,7 @@ class PayoneOpenInvoice extends AbstractPaymentMethod
         ],
         'en-GB' => [
             'name'        => 'Payone open invoice',
-            'description' => 'Pay by invoice. After reception of goods.',
+            'description' => 'Pay by invoice.',
         ],
     ];
 
