@@ -251,6 +251,22 @@ class SettingsController extends AbstractController
                     'successurl'             => 'https://www.payone.com',
                 ];
 
+            case Handler\PayoneBancontactPaymentHandler::class:
+                return [
+                    'request'                => 'preauthorization',
+                    'clearingtype'           => 'sb',
+                    'onlinebanktransfertype' => 'BCT',
+                    'bankcountry'            => 'BE',
+                    'amount'                 => 100,
+                    'currency'               => 'EUR',
+                    'reference'              => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'lastname'               => 'Test',
+                    'country'                => 'BE',
+                    'successurl'             => 'https://www.payone.com',
+                    'errorurl'               => 'https://www.payone.com',
+                    'backurl'                => 'https://www.payone.com',
+                ];
+
             case Handler\PayonePayolutionInvoicingPaymentHandler::class:
                 return [
                     'request'                   => 'genericpayment',
