@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
@@ -134,6 +135,7 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneTrustlyPaymentHandler::class:
             case PayoneEpsPaymentHandler::class:
             case PayoneIDealPaymentHandler::class:
+            case PayoneBancontactPaymentHandler::class:
             case PayonePaydirektPaymentHandler::class:
             case PayoneSecureInvoicePaymentHandler::class:
             case PayoneOpenInvoicePaymentHandler::class:

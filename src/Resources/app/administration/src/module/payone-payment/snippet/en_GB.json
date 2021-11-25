@@ -78,7 +78,8 @@
                 "openInvoice": "The API credentials for open invoice payment are not valid.",
                 "paydirekt": "The API credentials for Paydirekt payment are not valid.",
                 "trustly": "The API credentials for Trustly payment are not valid.",
-                "applePay": "The API credentials for ApplePay payment are not valid."
+                "applePay": "The API credentials for ApplePay payment are not valid.",
+                "bancontact": "The API credentials for Bancontact payment are not valid."
             }
         },
         "supportModal": {

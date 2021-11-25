@@ -48,6 +48,7 @@ Component.register('payone-settings', {
                 'payment_secure_invoice': true,
                 'payment_open_invoice': true,
                 'payment_apple_pay': true,
+                'payment_bancontact': true,
             },
         };
     },
@@ -113,6 +114,7 @@ Component.register('payone-settings', {
                 'secureInvoice',
                 'openInvoice',
                 'applePay',
+                'bancontact',
             ];
         },
 
