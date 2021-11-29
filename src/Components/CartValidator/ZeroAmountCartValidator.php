@@ -15,6 +15,10 @@ class ZeroAmountCartValidator implements CartValidatorInterface
 {
     public function validate(Cart $cart, ErrorCollection $errors, SalesChannelContext $context): void
     {
+        if ($cart->getLineItems()->count() === 0) {
+            return;
+        }
+        
         if (((int) round($cart->getPrice()->getTotalPrice() * (10 ** $context->getCurrency()->getDecimalPrecision()))) > 0) {
             return;
         }
