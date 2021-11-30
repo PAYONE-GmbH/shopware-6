@@ -80,6 +80,14 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
         $customFields = array_merge($customFields, $data);
 
+        //TODO: just a test, remove
+        $this->transactionRepository->upsert([[
+           'id' => $transaction->getOrderTransaction()->getId(),
+           'payonePaymentOrderTransactionData' => [
+               'transactionId' => '123'
+           ]
+        ]], $context);
+
         $this->updateTransactionCustomFields($transaction, $context, $customFields);
     }
 
