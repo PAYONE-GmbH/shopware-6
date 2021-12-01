@@ -116,11 +116,9 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
     /**
      * {@inheritdoc}
      */
-    public static function isCapturable(array $transactionData, array $customFields): bool
+    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        // Prepayment is always pre-authorization
-
-        if (static::isNeverCapturable($transactionData, $customFields)) {
+        if (static::isNeverCapturable($payoneTransActionData)) {
             return false;
         }
 
@@ -135,7 +133,7 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
             return true;
         }
 
-        return static::matchesIsCapturableDefaults($transactionData, $customFields);
+        return static::matchesIsCapturableDefaults($transactionData);
     }
 
     /**

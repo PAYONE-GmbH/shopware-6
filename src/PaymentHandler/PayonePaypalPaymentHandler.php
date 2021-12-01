@@ -130,13 +130,9 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
     /**
      * {@inheritdoc}
      */
-    public static function isCapturable(array $transactionData, array $customFields): bool
+    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        if (static::isNeverCapturable($transactionData, $customFields)) {
-            return false;
-        }
-
-        if (!array_key_exists(CustomFieldInstaller::AUTHORIZATION_TYPE, $customFields)) {
+        if (static::isNeverCapturable($payoneTransActionData)) {
             return false;
         }
 
@@ -147,7 +143,7 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
             return true;
         }
 
-        return static::matchesIsCapturableDefaults($transactionData, $customFields);
+        return static::matchesIsCapturableDefaults($transactionData);
     }
 
     /**

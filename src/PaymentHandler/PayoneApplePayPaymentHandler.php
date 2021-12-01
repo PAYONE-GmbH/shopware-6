@@ -81,9 +81,9 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
     /**
      * {@inheritdoc}
      */
-    public static function isCapturable(array $transactionData, array $customFields): bool
+    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        if (static::isNeverCapturable($transactionData, $customFields)) {
+        if (static::isNeverCapturable($payoneTransActionData)) {
             return false;
         }
 
@@ -94,7 +94,7 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
             return true;
         }
 
-        return static::matchesIsCapturableDefaults($transactionData, $customFields);
+        return static::matchesIsCapturableDefaults($transactionData);
     }
 
     /**

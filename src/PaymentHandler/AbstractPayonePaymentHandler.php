@@ -56,14 +56,13 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      * based on the current TX status notification. Use this method early in
      * isCapturable() to match common rules shared by all payment methods.
      *
-     * @param array $transactionData Parameters of the TX status notification
-     * @param array $customFields    Custom fields of the affected transaction
+     * @param array $payoneTransactionData Updated transaction data
      *
      * @return bool True if the transaction cannot be captured
      */
-    final protected static function isNeverCapturable(array $transactionData, array $customFields): bool
+    final protected static function isNeverCapturable(array $payoneTransactionData): bool
     {
-        $authorizationType = $customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] ?? null;
+        $authorizationType = $payoneTransactionData['authorizationType'] ?? null;
 
         // Transaction types of authorization are never capturable
         if ($authorizationType === TransactionStatusService::AUTHORIZATION_TYPE_AUTHORIZATION) {
@@ -80,11 +79,10 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      * payment methods.
      *
      * @param array $transactionData Parameters of the TX status notification
-     * @param array $customFields    Custom fields of the affected transaction
      *
      * @return bool True if the transaction can be captured based on matching default rules
      */
-    final protected static function matchesIsCapturableDefaults(array $transactionData, array $customFields): bool
+    final protected static function matchesIsCapturableDefaults(array $transactionData): bool
     {
         $txAction   = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
         $price      = isset($transactionData['price']) ? ((float) $transactionData['price']) : null;

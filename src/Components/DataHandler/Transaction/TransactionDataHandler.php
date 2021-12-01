@@ -7,6 +7,7 @@ namespace PayonePayment\Components\DataHandler\Transaction;
 use DateTime;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
@@ -50,29 +51,36 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         return PaymentTransaction::fromOrderTransaction($transaction, $transaction->getOrder());
     }
 
+    //TODO: rename here and in interface
     public function getCustomFieldsFromWebhook(PaymentTransaction $paymentTransaction, array $transactionData): array
     {
-        $newCustomFields      = [];
-        $existingCustomFields = $paymentTransaction->getCustomFields() ?? [];
+        /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        $payoneTransactionData = $paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        $currentSequenceNumber                                  = array_key_exists(CustomFieldInstaller::SEQUENCE_NUMBER, $existingCustomFields) ? $existingCustomFields[CustomFieldInstaller::SEQUENCE_NUMBER] : 0;
-        $newCustomFields[CustomFieldInstaller::SEQUENCE_NUMBER] = max((int) $transactionData['sequencenumber'], $currentSequenceNumber);
+        $newTransactionData = [
+            'id' => $payoneTransactionData->getId()
+        ];
 
-        $newCustomFields[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
+        $currentSequenceNumber                                  = $payoneTransactionData->getSequenceNumber();
 
+        $newTransactionData['sequenceNumber'] = max((int) $transactionData['sequencenumber'], $currentSequenceNumber);
+        $newTransactionData['transactionState'] = strtolower($transactionData['txaction']);
+        $newTransactionData['authorizationType'] = $payoneTransactionData->getAuthorizationType();
+
+        //TODO: fix
         if ($this->canChangeCapturableState($transactionData)) {
-            $newCustomFields[CustomFieldInstaller::ALLOW_CAPTURE] = $this->shouldAllowCapture($paymentTransaction, $transactionData);
+            $newTransactionData['allowCapture'] = $this->shouldAllowCapture($paymentTransaction, $transactionData, $newTransactionData);
         }
 
         if ($this->canChangeRefundableState($transactionData)) {
-            $newCustomFields[CustomFieldInstaller::ALLOW_REFUND] = $this->shouldAllowRefund($paymentTransaction, $transactionData);
+            $newTransactionData['allowRefund'] = $this->shouldAllowRefund($paymentTransaction, $transactionData);
         }
 
-        if (in_array($newCustomFields[CustomFieldInstaller::TRANSACTION_STATE], [TransactionStatusService::ACTION_PAID, TransactionStatusService::ACTION_COMPLETED])) {
-            $newCustomFields[CustomFieldInstaller::CAPTURED_AMOUNT] = $this->getCapturedAmount($paymentTransaction, $transactionData);
+        if (in_array($newTransactionData['transactionState'], [TransactionStatusService::ACTION_PAID, TransactionStatusService::ACTION_COMPLETED])) {
+            $newTransactionData['capturedAmount'] = $this->getCapturedAmount($paymentTransaction, $transactionData);
         }
 
-        return $newCustomFields;
+        return $newTransactionData;
     }
 
     public function saveTransactionData(PaymentTransaction $transaction, Context $context, array $data): void
@@ -157,7 +165,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         return true;
     }
 
-    private function shouldAllowCapture(PaymentTransaction $paymentTransaction, array $transactionData): bool
+    private function shouldAllowCapture(PaymentTransaction $paymentTransaction, array $transactionData, array $payoneTransactionData): bool
     {
         $handlerClass = $this->getHandlerIdentifier($paymentTransaction);
 
@@ -165,7 +173,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             return false;
         }
 
-        return $handlerClass::isCapturable($transactionData, $paymentTransaction->getCustomFields());
+        return $handlerClass::isCapturable($transactionData, $payoneTransactionData);
     }
 
     /**
