@@ -41,11 +41,13 @@ Component.register('payone-capture-button', {
         },
 
         capturedAmount() {
-            if (!this.transaction.customFields || this.transaction.customFields.payone_captured_amount === undefined) {
+            if (!this.transaction.extensions
+                || !this.transaction.extensions.payonePaymentOrderTransactionData
+                || this.transaction.extensions.payonePaymentOrderTransactionData.capturedAmount) {
                 return 0;
             }
 
-            return this.transaction.customFields.payone_captured_amount;
+            return this.transaction.extensions.payonePaymentOrderTransactionData.capturedAmount;
         },
 
         remainingAmount() {
@@ -57,11 +59,12 @@ Component.register('payone-capture-button', {
         },
 
         buttonEnabled() {
-            if (!this.transaction.customFields) {
+            if (!this.transaction.extensions
+                || !this.transaction.extensions.payonePaymentOrderTransactionData) {
                 return false;
             }
 
-            return (this.remainingAmount > 0 && this.capturedAmount > 0) || this.transaction.customFields.payone_allow_capture;
+            return (this.remainingAmount > 0 && this.capturedAmount > 0) || this.transaction.extensions.payonePaymentOrderTransactionData.allowCapture;
         },
 
         isItemSelected() {
@@ -122,7 +125,7 @@ Component.register('payone-capture-button', {
         captureOrder() {
             const request = {
                 orderTransactionId: this.transaction.id,
-                payone_order_id: this.transaction.customFields.payone_transaction_id,
+                payone_order_id: this.transaction.extensions.payonePaymentOrderTransactionData.transactionId,
                 salesChannel: this.order.salesChannel,
                 amount: this.captureAmount,
                 orderLines: [],
@@ -156,7 +159,7 @@ Component.register('payone-capture-button', {
         captureFullOrder() {
             const request = {
                 orderTransactionId: this.transaction.id,
-                payone_order_id: this.transaction.customFields.payone_transaction_id,
+                payone_order_id: this.transaction.extensions.payonePaymentOrderTransactionData.transactionId,
                 salesChannel: this.order.salesChannel,
                 amount: this.remainingAmount / (10 ** this.decimalPrecision),
                 orderLines: [],

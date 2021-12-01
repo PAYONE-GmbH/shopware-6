@@ -33,10 +33,9 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     public function getPaymentTransactionByPayoneTransactionId(Context $context, int $payoneTransactionId): ?PaymentTransaction
     {
-        $field = 'order_transaction.customFields.' . CustomFieldInstaller::TRANSACTION_ID;
-
         $criteria = (new Criteria())
-            ->addFilter(new EqualsFilter($field, $payoneTransactionId))
+            ->addAssociation(PayonePaymentOrderTransactionExtension::NAME)
+            ->addFilter(new EqualsFilter(PayonePaymentOrderTransactionExtension::NAME . '.transactionId', $payoneTransactionId))
             ->addAssociation('paymentMethod')
             ->addAssociation('order')
             ->addAssociation('order.currency');
