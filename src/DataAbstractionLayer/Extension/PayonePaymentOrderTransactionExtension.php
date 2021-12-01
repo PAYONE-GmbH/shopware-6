@@ -10,11 +10,18 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
-class PayonePaymentOrderTransactionExtension extends EntityExtension {
+class PayonePaymentOrderTransactionExtension extends EntityExtension
+{
+    public const NAME = 'payonePaymentOrderTransactionData';
+
     public function extendFields(FieldCollection $collection): void
     {
         $collection->add(
-            new OneToOneAssociationField('payonePaymentOrderTransactionData', 'id', 'order_transaction_id', PayonePaymentOrderTransactionDataDefinition::class)
+            new OneToOneAssociationField(
+                self::NAME,
+                'id',
+                'order_transaction_id',
+                PayonePaymentOrderTransactionDataDefinition::class)
         );
     }
 
@@ -23,4 +30,3 @@ class PayonePaymentOrderTransactionExtension extends EntityExtension {
         return OrderTransactionDefinition::class;
     }
 }
-

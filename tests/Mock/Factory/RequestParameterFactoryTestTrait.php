@@ -8,7 +8,8 @@ use PayonePayment\Components\CartHasher\CartHasher;
 use PayonePayment\Components\Currency\CurrencyPrecision;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Payone\RequestParameter\Builder\Capture\CaptureRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\CreditCard\PreAuthorizeRequestParameterBuilder as CreditCardPreAuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Builder\CustomerRequestParameterBuilder;
@@ -161,13 +162,15 @@ trait RequestParameterFactoryTestTrait
         $paymentMethodEntity->setHandlerIdentifier($handlerIdentifier);
         $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
 
-        $orderTransactionEntity->setOrder($orderEntity);
+        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
+        $payoneTransactionData->setTransactionId(Constants::PAYONE_TRANSACTION_ID);
+        $payoneTransactionData->setSequenceNumber(0);
 
-        $customFields = [
-            CustomFieldInstaller::TRANSACTION_ID  => Constants::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER => 0,
-        ];
-        $orderTransactionEntity->setCustomFields($customFields);
+        $orderTransactionEntity->setOrder($orderEntity);
+        $orderTransactionEntity->addExtension(
+            PayonePaymentOrderTransactionExtension::NAME,
+            $payoneTransactionData
+        );
 
         $paymentTransactionStruct = new AsyncPaymentTransactionStruct($orderTransactionEntity, $orderEntity, 'test-url');
 

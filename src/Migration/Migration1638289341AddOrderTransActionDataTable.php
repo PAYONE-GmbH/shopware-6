@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PayonePayment\Migration;
 
@@ -27,9 +29,9 @@ class Migration1638289341AddOrderTransActionDataTable extends MigrationStep
             `user_id` VARCHAR(255) NULL,
             `last_request` VARCHAR(255) NULL,
             `allow_capture` TINYINT(1) NULL DEFAULT \'0\',
-            `captured_amount` INT(11) NULL,
+            `captured_amount` INT(11) NULL DEFAULT \'0\',
             `allow_refund` TINYINT(1) NULL DEFAULT \'0\',
-            `refunded_amount` INT(11) NULL,
+            `refunded_amount` INT(11) NULL DEFAULT \'0\',
             `mandate_identification` VARCHAR(255) NULL,
             `authorization_type` VARCHAR(255) NULL,
             `work_order_id` VARCHAR(255) NULL,
@@ -47,16 +49,10 @@ class Migration1638289341AddOrderTransActionDataTable extends MigrationStep
 
         if (method_exists($connection, 'executeStatement')) {
             $connection->executeStatement($sql);
-
-            return;
-        }
-
-        if (method_exists($connection, 'exec')) {
+        } elseif (method_exists($connection, 'exec')) {
             /** @noinspection PhpDeprecationInspection */
             $connection->exec($sql);
         }
-
-        $this->updateInheritance($connection, );
     }
 
     public function updateDestructive(Connection $connection): void

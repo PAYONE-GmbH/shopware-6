@@ -101,28 +101,23 @@ class PayoneSecureInvoicePaymentHandler extends AbstractPayonePaymentHandler imp
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
-            $this->getBaseCustomFields($response['status']),
-            [
-                CustomFieldInstaller::CAPTURE_MODE => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-
-                // Set clearing type explicitly
-                CustomFieldInstaller::CLEARING_TYPE => static::PAYONE_CLEARING_REC,
-
+        $data = $this->preparePayoneOrderTransactionData($request, $response, [
+                'captureMode'  => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+                'clearingType' => self::PAYONE_CLEARING_REC,
                 // Store clearing bank account information as custom field of the transaction in order to
                 // use this data for payment instructions of an invoice or similar.
                 // See: https://docs.payone.com/display/public/PLATFORM/How+to+use+JSON-Responses#HowtouseJSON-Responses-JSON,Clearing-Data
-                CustomFieldInstaller::CLEARING_BANK_ACCOUNT => array_merge(array_filter($response['clearing']['BankAccount'] ?? []), [
+                'clearingBankAccount' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
+                array_merge(array_filter($response['clearing']['BankAccount'] ?? []), [
                     // The PAYONE transaction ID acts as intended purpose of the transfer.
                     // We add this field explicitly here to make clear that the transaction ID is used
                     // as payment reference in context of the prepayment.
                     'Reference' => (string) $response['txid'],
                 ]),
             ]
-        ));
+        );
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
     }
 
     /**

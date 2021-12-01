@@ -109,10 +109,8 @@ class PayonePaypalPaymentHandler extends AbstractPayonePaymentHandler implements
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, $this->getBaseCustomFields($response['status']));
-
+        $data = $this->preparePayoneOrderTransactionData($request, $response);
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
 
         if (strtolower($response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);

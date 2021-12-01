@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use DateTime;
 use LogicException;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
@@ -166,23 +167,20 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         return $configuration->getString($configKey, $default);
     }
 
-    /**
-     * Prepares and returns custom fields for the transaction.
-     *
-     * @param array $request  the PAYONE request parameters
-     * @param array $response the PAYONE response parameters
-     * @param array $fields   any additional custom fields (higher priority)
-     *
-     * @return array a resulting array of custom fields for the transaction
-     */
-    protected function prepareTransactionCustomFields(array $request, array $response, array $fields = []): array
+    protected function preparePayoneOrderTransactionData(array $request, array $response, array $fields = []): array
     {
+        $key = (new DateTime())->format(DATE_ATOM);
+
         return array_merge([
-            CustomFieldInstaller::AUTHORIZATION_TYPE => $request['request'],
-            CustomFieldInstaller::LAST_REQUEST       => $request['request'],
-            CustomFieldInstaller::TRANSACTION_ID     => (string) $response['txid'],
-            CustomFieldInstaller::SEQUENCE_NUMBER    => -1,
-            CustomFieldInstaller::USER_ID            => $response['userid'],
+            'authorizationType' => $request['request'],
+            'lastRequest'       => $request['request'],
+            'transactionId'     => (string) $response['txid'],
+            'sequenceNumber'    => -1,
+            'userId'            => $response['userid'],
+            'transactionState'  => $response['status'],
+            'transactionData'   => [
+                $key => ['request' => $request, 'response' => $response],
+            ],
         ], $fields);
     }
 
@@ -203,17 +201,6 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         }
 
         $this->lineItemRepository->update($saveData, $context);
-    }
-
-    protected function getBaseCustomFields(string $status): array
-    {
-        return [
-            CustomFieldInstaller::TRANSACTION_STATE => $status,
-            CustomFieldInstaller::ALLOW_CAPTURE     => false,
-            CustomFieldInstaller::CAPTURED_AMOUNT   => 0,
-            CustomFieldInstaller::ALLOW_REFUND      => false,
-            CustomFieldInstaller::REFUNDED_AMOUNT   => 0,
-        ];
     }
 
     protected function fetchRequestData(): RequestDataBag

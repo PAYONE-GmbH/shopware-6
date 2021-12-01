@@ -74,9 +74,8 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
             'request' => $configuration->getString('applePayAuthorizationMethod', 'preauthorization'),
         ];
 
-        $data = $this->prepareTransactionCustomFields($request, $response);
+        $data = $this->preparePayoneOrderTransactionData($request, $response);
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
     }
 
     /**

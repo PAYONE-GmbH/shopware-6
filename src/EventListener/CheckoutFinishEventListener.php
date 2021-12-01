@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Entity\Mandate\PayonePaymentMandateEntity;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Storefront\Struct\CheckoutFinishPaymentData;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -99,10 +100,11 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
         $transactions = $this->orderTransactionRepository->search($criteria, $context);
 
         foreach ($transactions as $transaction) {
-            $customFields = $transaction->getCustomFields();
+            /** @var null|PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+            $payoneTransactionData = $transaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-            if (!empty($customFields[CustomFieldInstaller::MANDATE_IDENTIFICATION])) {
-                return $customFields[CustomFieldInstaller::MANDATE_IDENTIFICATION];
+            if (null !== $payoneTransactionData && !empty($payoneTransactionData->getMandateIdentification())) {
+                return $payoneTransactionData->getMandateIdentification();
             }
         }
 

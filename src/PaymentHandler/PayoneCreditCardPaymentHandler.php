@@ -108,10 +108,8 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, $this->getBaseCustomFields($response['status']));
-
+        $data = $this->preparePayoneOrderTransactionData($request, $response);
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
 
         if (null !== $paymentTransaction->getOrder()->getLineItems()) {
             $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());

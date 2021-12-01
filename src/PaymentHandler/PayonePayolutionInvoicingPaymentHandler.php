@@ -101,19 +101,16 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandl
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
-            $this->getBaseCustomFields($response['status']),
-            [
-                CustomFieldInstaller::WORK_ORDER_ID      => $requestData->get('workorder'),
-                CustomFieldInstaller::CLEARING_REFERENCE => $response['addpaydata']['clearing_reference'],
-                CustomFieldInstaller::CAPTURE_MODE       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-                CustomFieldInstaller::CLEARING_TYPE      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                CustomFieldInstaller::FINANCING_TYPE     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYV,
+        $data = $this->preparePayoneOrderTransactionData($request, $response, [
+                'workOrderId'       => $requestData->get('workorder'),
+                'clearingReference' => $response['addpaydata']['clearing_reference'],
+                'captureMode'       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+                'clearingType'      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+                'financingType'     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYV,
             ]
-        ));
+        );
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
     }
 
     /**

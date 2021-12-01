@@ -17,39 +17,39 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
     protected $orderTransactionId;
     /** @var OrderTransactionEntity */
     protected $orderTransaction;
-    /** @var array|null */
+    /** @var null|array */
     protected $transactionData;
-    /** @var int|null */
+    /** @var null|int */
     protected $sequenceNumber;
-    /** @var string|null */
+    /** @var null|string */
     protected $transactionState;
-    /** @var string|null */
+    /** @var null|string */
     protected $userId;
-    /** @var string|null */
+    /** @var null|string */
     protected $lastRequest;
-    /** @var bool|null */
+    /** @var null|bool */
     protected $allowCapture;
-    /** @var int|null */
+    /** @var null|int */
     protected $capturedAmount;
-    /** @var bool|null */
+    /** @var null|bool */
     protected $allowRefund;
-    /** @var int|null */
+    /** @var null|int */
     protected $refundedAmount;
-    /** @var string|null */
+    /** @var null|string */
     protected $mandateIdentification;
-    /** @var string|null */
+    /** @var null|string */
     protected $authorizationType;
-    /** @var string|null */
+    /** @var null|string */
     protected $workOrderId;
-    /** @var string|null */
+    /** @var null|string */
     protected $clearingReference;
-    /** @var string|null */
+    /** @var null|string */
     protected $clearingType;
-    /** @var string|null */
+    /** @var null|string */
     protected $financingType;
-    /** @var string|null */
+    /** @var null|string */
     protected $captureMode;
-    /** @var array|null */
+    /** @var null|array */
     protected $clearingBankAccount;
 
     public function setTransactionId(string $value): void

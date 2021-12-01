@@ -109,10 +109,9 @@ class PayoneTrustlyPaymentHandler extends AbstractPayonePaymentHandler implement
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, $this->getBaseCustomFields($response['status']));
+        $data = $this->preparePayoneOrderTransactionData($request, $response);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
 
         return new RedirectResponse($response['redirecturl']);
     }

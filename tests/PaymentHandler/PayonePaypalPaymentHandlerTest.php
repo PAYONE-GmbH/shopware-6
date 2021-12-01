@@ -7,7 +7,8 @@ namespace PayonePayment\Test\PaymentHandler;
 use PayonePayment\Components\Currency\CurrencyPrecision;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -111,13 +112,15 @@ class PayonePaypalPaymentHandlerTest extends TestCase
         $paymentMethodEntity->setHandlerIdentifier(PayonePaypalPaymentHandler::class);
         $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
 
-        $orderTransactionEntity->setOrder($orderEntity);
+        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
+        $payoneTransactionData->setTransactionId(Constants::PAYONE_TRANSACTION_ID);
+        $payoneTransactionData->setSequenceNumber(0);
 
-        $customFields = [
-            CustomFieldInstaller::TRANSACTION_ID  => Constants::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER => 0,
-        ];
-        $orderTransactionEntity->setCustomFields($customFields);
+        $orderTransactionEntity->setOrder($orderEntity);
+        $orderTransactionEntity->addExtension(
+            PayonePaymentOrderTransactionExtension::NAME,
+            $payoneTransactionData
+        );
 
         return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
     }

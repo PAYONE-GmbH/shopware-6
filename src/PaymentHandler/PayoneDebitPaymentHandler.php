@@ -10,7 +10,6 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -102,16 +101,14 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
-            $this->getBaseCustomFields($response['status']),
+        $data = $this->preparePayoneOrderTransactionData($request, $response,
             [
-                CustomFieldInstaller::TRANSACTION_STATE      => AbstractPayonePaymentHandler::PAYONE_STATE_PENDING,
-                CustomFieldInstaller::MANDATE_IDENTIFICATION => $response['mandate']['Identification'],
+                'transactionState'      => AbstractPayonePaymentHandler::PAYONE_STATE_PENDING,
+                'mandateIdentification' => $response['mandate']['Identification'],
             ]
-        ));
+        );
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
 
         $date = DateTime::createFromFormat('Ymd', $response['mandate']['DateOfSignature']);
 

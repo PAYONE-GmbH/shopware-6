@@ -7,6 +7,7 @@ namespace PayonePayment\Components\DataHandler\Transaction;
 use DateTime;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
@@ -77,38 +78,34 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     public function saveTransactionData(PaymentTransaction $transaction, Context $context, array $data): void
     {
-        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
-        $customFields = array_merge($customFields, $data);
-
-        //TODO: just a test, remove
         $this->transactionRepository->upsert([[
-           'id' => $transaction->getOrderTransaction()->getId(),
-           'payonePaymentOrderTransactionData' => [
-               'transactionId' => '123'
-           ]
+           'id'                                         => $transaction->getOrderTransaction()->getId(),
+           PayonePaymentOrderTransactionExtension::NAME => $data,
         ]], $context);
-
-        $this->updateTransactionCustomFields($transaction, $context, $customFields);
     }
 
     public function logResponse(PaymentTransaction $transaction, Context $context, array $data): void
     {
-        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
+        //TODO: get existing data -> used in webhook handler
 
         $key = (new DateTime())->format(DATE_ATOM);
 
-        $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $data;
-
-        $this->updateTransactionCustomFields($transaction, $context, $customFields);
+        $this->transactionRepository->update([[
+            'id'                                         => $transaction->getOrderTransaction()->getId(),
+            PayonePaymentOrderTransactionExtension::NAME => [
+                'transactionData' => [
+                    $key => $data,
+                ],
+            ],
+        ]], $context);
     }
 
     public function incrementSequenceNumber(PaymentTransaction $transaction, Context $context): void
     {
+        //TODO: update
         $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
 
         ++$customFields[CustomFieldInstaller::SEQUENCE_NUMBER];
-
-        $this->updateTransactionCustomFields($transaction, $context, $customFields);
     }
 
     public function saveTransactionState(string $stateId, PaymentTransaction $transaction, Context $context): void
@@ -121,19 +118,6 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($update): void {
             $this->transactionRepository->update([$update], $context);
         });
-    }
-
-    private function updateTransactionCustomFields(PaymentTransaction $transaction, Context $context, array $customFields): void
-    {
-        $update = [
-            'id'           => $transaction->getOrderTransaction()->getId(),
-            'customFields' => $customFields,
-        ];
-
-        $transaction->getOrderTransaction()->setCustomFields($customFields);
-        $transaction->setCustomFields($customFields);
-
-        $this->transactionRepository->update([$update], $context);
     }
 
     /**

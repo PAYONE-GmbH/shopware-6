@@ -8,7 +8,6 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -109,15 +108,12 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
-            $this->getBaseCustomFields($response['status']),
-            [
-                CustomFieldInstaller::WORK_ORDER_ID => $requestData->get('workorder'),
+        $data = $this->preparePayoneOrderTransactionData($request, $response, [
+                'workOrderId' => $requestData->get('workorder'),
             ]
-        ));
+        );
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
 
         if (strtolower($response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);

@@ -40,9 +40,9 @@ class PayonePaymentOrderTransactionDataDefinition extends EntityDefinition
             [
                 (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
                 (new FkField('order_transaction_id', 'orderTransactionId', OrderTransactionDefinition::class))->addFlags(new Required()),
-                (new StringField('transaction_id', 'transactionId', 255))->addFlags(new Required()),
-                new JsonField('transaction_data', 'transactionData', [], NULL),
-                new IntField('sequence_number', 'sequenceNumber', 0, null),
+                new StringField('transaction_id', 'transactionId', 255),
+                new JsonField('transaction_data', 'transactionData', [], null),
+                new IntField('sequence_number', 'sequenceNumber'),
                 new StringField('transaction_state', 'transactionState', 255),
                 new StringField('user_id', 'userId', 255),
                 new StringField('last_request', 'lastRequest', 255),
@@ -57,9 +57,9 @@ class PayonePaymentOrderTransactionDataDefinition extends EntityDefinition
                 new StringField('clearing_type', 'clearingType', 255),
                 new StringField('financing_type', 'financingType', 255),
                 new StringField('capture_mode', 'captureMode', 255),
-                new JsonField('clearing_bank_account', 'clearingBankAccount', [], NULL),
+                new JsonField('clearing_bank_account', 'clearingBankAccount', [], null),
 
-                new OneToOneAssociationField('orderTransaction', 'order_transaction_id', 'id', OrderTransactionDefinition::class, false)
+                new OneToOneAssociationField('orderTransaction', 'order_transaction_id', 'id', OrderTransactionDefinition::class, false),
             ]
         );
     }
