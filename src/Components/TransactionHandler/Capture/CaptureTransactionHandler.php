@@ -8,10 +8,13 @@ use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
@@ -56,8 +59,9 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $this->updateClearingBankAccountData($payoneResponse);
         $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
 
-        $customFields = $this->paymentTransaction->getCustomFields();
-        $clearingType = strtolower($customFields[$this->getClearingTypeCustomField()] ?? '');
+        /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        $payoneTransactionData = $this->paymentTransaction->getCustomFields();
+        $clearingType          = $payoneTransactionData->getClearingBankAccount();
 
         // Filter payment methods that do not allow changing transaction status at this point
         if ($clearingType !== 'vor') {
@@ -84,9 +88,12 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         );
     }
 
-    protected function getAmountCustomField(): string
+    protected function getAmount(OrderTransactionEntity $transaction): int
     {
-        return CustomFieldInstaller::CAPTURED_AMOUNT;
+        /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        $payoneTransactionData = $transaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+
+        return (int) $payoneTransactionData->getCapturedAmount();
     }
 
     protected function getQuantityCustomField(): string
@@ -94,14 +101,9 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         return CustomFieldInstaller::CAPTURED_QUANTITY;
     }
 
-    protected function getAllowCustomField(): string
+    protected function getAllowPropertyName(): string
     {
-        return CustomFieldInstaller::ALLOW_CAPTURE;
-    }
-
-    protected function getClearingTypeCustomField(): string
-    {
-        return CustomFieldInstaller::CLEARING_TYPE;
+        return 'allowCapture';
     }
 
     /**
@@ -113,22 +115,25 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
      */
     private function updateClearingBankAccountData(array $payoneResponse): void
     {
-        $customFields = $this->paymentTransaction->getCustomFields();
+        $currentClearingBankAccountData = [];
+        /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        $payoneTransactionData = $this->paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        if (array_key_exists(CustomFieldInstaller::CLEARING_BANK_ACCOUNT, $customFields) === false) {
-            $customFields[CustomFieldInstaller::CLEARING_BANK_ACCOUNT] = [];
+        if (null !== $payoneTransactionData->getClearingBankAccount()) {
+            $currentClearingBankAccountData = $payoneTransactionData->getClearingBankAccount();
         }
-
-        $currentClearingBankAccountData = $customFields[CustomFieldInstaller::CLEARING_BANK_ACCOUNT];
-        $newClearingBankAccountData     = $payoneResponse['clearing']['BankAccount'] ?? null;
+        $newClearingBankAccountData = $payoneResponse['clearing']['BankAccount'] ?? null;
 
         if (!empty($newClearingBankAccountData)) {
-            $this->dataHandler->saveTransactionData($this->paymentTransaction, $this->context, [
-                CustomFieldInstaller::CLEARING_BANK_ACCOUNT => array_merge(
-                    $currentClearingBankAccountData,
-                    $newClearingBankAccountData
-                ),
-            ]);
+            $this->dataHandler->saveTransactionData($this->paymentTransaction, $this->context,
+                [
+                    'id'                  => $payoneTransactionData->getId(),
+                    'clearingBankAccount' => array_merge(
+                        $currentClearingBankAccountData,
+                        $newClearingBankAccountData
+                    ),
+                ]
+            );
         }
     }
 }

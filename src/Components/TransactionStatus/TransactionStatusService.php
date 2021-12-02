@@ -7,7 +7,8 @@ namespace PayonePayment\Components\TransactionStatus;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Struct\PaymentTransaction;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
@@ -215,14 +216,15 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isAsyncCancelled(PaymentTransaction $paymentTransaction, array $transactionData): bool
     {
-        $customFields = $paymentTransaction->getCustomFields();
+        /** @var null|PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        $payoneTransactionData = $paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        if (!array_key_exists(CustomFieldInstaller::TRANSACTION_DATA, $customFields)) {
+        if (null === $payoneTransactionData || empty($payoneTransactionData->getTransactionData())) {
             return false;
         }
 
-        $fullTransactionData = $customFields[CustomFieldInstaller::TRANSACTION_DATA];
-        $firstTransaction    = $fullTransactionData[array_key_first($fullTransactionData)];
+        $payoneTransactionDataHistory = $payoneTransactionData->getTransactionData();
+        $firstTransaction             = $payoneTransactionDataHistory[array_key_first($payoneTransactionDataHistory)];
 
         if ($this->isFailedRedirect($firstTransaction, $transactionData)) {
             return true;

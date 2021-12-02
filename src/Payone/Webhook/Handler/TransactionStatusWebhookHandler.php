@@ -63,12 +63,9 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
         // Sanitize incoming data
         $data = $this->utf8EncodeRecursive($data);
 
-        $payoneTransactionData = $this->transactionDataHandler->getCustomFieldsFromWebhook($paymentTransaction, $data);
+        $payoneTransactionData = $this->transactionDataHandler->getTransactionDataFromWebhook($paymentTransaction, $data);
 
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $payoneTransactionData);
-
-        //TODO: update
-        //$this->transactionDataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['transaction' => array_merge($data, $customFields)]);
         $this->transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction, $data);
     }
 

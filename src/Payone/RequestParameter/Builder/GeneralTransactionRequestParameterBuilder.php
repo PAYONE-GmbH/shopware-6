@@ -8,7 +8,8 @@ use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
@@ -156,13 +157,15 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         /** @var OrderTransactionEntity $orderTransaction */
         $orderTransaction = $transactions->last();
 
-        $customFields = $orderTransaction->getCustomFields();
+        /** @var null|PayonePaymentOrderTransactionDataEntity $transactionData */
+        $transactionData = $orderTransaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        if (empty($customFields[CustomFieldInstaller::TRANSACTION_DATA])) {
+        if (null === $transactionData || empty($transactionData->getTransactionData())) {
             return null;
         }
 
-        $payoneTransactionData = array_pop($customFields[CustomFieldInstaller::TRANSACTION_DATA]);
+        $transactionDataHistory = $transactionData->getTransactionData();
+        $payoneTransactionData  = array_pop($transactionDataHistory);
 
         if (!isset($payoneTransactionData['request'])) {
             return null;

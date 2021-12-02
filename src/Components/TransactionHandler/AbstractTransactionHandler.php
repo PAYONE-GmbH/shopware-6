@@ -89,11 +89,11 @@ abstract class AbstractTransactionHandler
         );
     }
 
-    abstract protected function getAmountCustomField(): string;
+    abstract protected function getAmount(OrderTransactionEntity $transaction): int;
 
     abstract protected function getQuantityCustomField(): string;
 
-    abstract protected function getAllowCustomField(): string;
+    abstract protected function getAllowPropertyName(): string;
 
     protected function executeRequest(array $request): array
     {
@@ -133,22 +133,22 @@ abstract class AbstractTransactionHandler
     protected function updateTransactionData(ParameterBag $parameterBag, float $captureAmount): void
     {
         $transactionData = [];
-        $customFields    = $this->paymentTransaction->getCustomFields();
         $currency        = $this->paymentTransaction->getOrder()->getCurrency();
 
         if ($parameterBag->has('complete') && $parameterBag->get('complete')) {
-            $transactionData[$this->getAllowCustomField()] = false;
+            $transactionData[$this->getAllowPropertyName()] = false;
         }
 
         if ($currency !== null) {
             $currentCaptureAmount  = $this->currencyPrecision->getRoundedTotalAmount($captureAmount, $currency);
-            $alreadyCapturedAmount = $customFields[$this->getAmountCustomField()] ?? 0;
+            $alreadyCapturedAmount = $this->getAmount($this->paymentTransaction->getOrderTransaction());
 
             if ($captureAmount) {
-                $transactionData[$this->getAmountCustomField()] = $alreadyCapturedAmount + $currentCaptureAmount;
+                $transactionData['capturedAmount'] = $alreadyCapturedAmount + $currentCaptureAmount;
             }
         }
 
+        //TODO: update
         $this->dataHandler->incrementSequenceNumber($this->paymentTransaction, $this->context);
         $this->dataHandler->saveTransactionData($this->paymentTransaction, $this->context, $transactionData);
     }

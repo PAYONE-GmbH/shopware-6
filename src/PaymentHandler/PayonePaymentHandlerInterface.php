@@ -14,5 +14,5 @@ interface PayonePaymentHandlerInterface
     /**
      * Called from the administration controllers to verify if a transaction can be refunded.
      */
-    public static function isRefundable(array $transactionData, array $customFields): bool;
+    public static function isRefundable(array $transactionData): bool;
 }

@@ -9,7 +9,6 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Controller\WebhookController;
 use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use PayonePayment\Payone\Webhook\Processor\WebhookProcessor;
@@ -211,7 +210,7 @@ class WebhookControllerTest extends TestCase
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
         $transactionDataHandler->expects($this->once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
-        $transactionDataHandler->expects($this->once())->method('getCustomFieldsFromWebhook')->willReturn($transactionData);
+        $transactionDataHandler->expects($this->once())->method('getTransactionDataFromWebhook')->willReturn($transactionData);
 
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
             $transactionStatusService,

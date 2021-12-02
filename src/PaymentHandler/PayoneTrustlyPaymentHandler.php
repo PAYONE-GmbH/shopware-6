@@ -8,7 +8,6 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -139,7 +138,7 @@ class PayoneTrustlyPaymentHandler extends AbstractPayonePaymentHandler implement
     /**
      * {@inheritdoc}
      */
-    public static function isRefundable(array $transactionData, array $customFields): bool
+    public static function isRefundable(array $transactionData): bool
     {
         if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
             return true;

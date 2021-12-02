@@ -106,11 +106,10 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      * isRefundable() to match common rules shared by all payment methods.
      *
      * @param array $transactionData Parameters of the TX status notification
-     * @param array $customFields    Custom fields of the affected transaction
      *
      * @return bool True if the transaction cannot be captured
      */
-    final protected static function isNeverRefundable(array $transactionData, array $customFields): bool
+    final protected static function isNeverRefundable(array $transactionData): bool
     {
         return false;
     }
@@ -122,11 +121,10 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      * payment methods.
      *
      * @param array $transactionData Parameters of the TX status notification
-     * @param array $customFields    Custom fields of the affected transaction
      *
      * @return bool True if the transaction can be refunded based on matching default rules
      */
-    final protected static function matchesIsRefundableDefaults(array $transactionData, array $customFields): bool
+    final protected static function matchesIsRefundableDefaults(array $transactionData): bool
     {
         $txAction   = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
         $receivable = isset($transactionData['receivable']) ? ((float) $transactionData['receivable']) : null;

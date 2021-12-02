@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\Capture;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
@@ -28,24 +29,26 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
     /** @param FinancialTransactionStruct $arguments */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $totalAmount  = $arguments->getRequestData()->get('amount');
-        $order        = $arguments->getPaymentTransaction()->getOrder();
-        $customFields = $arguments->getPaymentTransaction()->getCustomFields();
-        $isCompleted  = $arguments->getRequestData()->get('complete', false);
+        $totalAmount = $arguments->getRequestData()->get('amount');
+        $order       = $arguments->getPaymentTransaction()->getOrder();
+
+        /** @var null|PayonePaymentOrderTransactionDataEntity $transactionData */
+        $transactionData = $arguments->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+        $isCompleted     = $arguments->getRequestData()->get('complete', false);
 
         if ($totalAmount === null) {
             $totalAmount = $order->getAmountTotal();
         }
 
-        if (empty($customFields[CustomFieldInstaller::TRANSACTION_ID])) {
+        if (null === $transactionData) {
             throw new InvalidOrderException($order->getId());
         }
 
-        if ($customFields[CustomFieldInstaller::SEQUENCE_NUMBER] === null || $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] === '') {
+        if (null === $transactionData->getSequenceNumber()) {
             throw new InvalidOrderException($order->getId());
         }
 
-        if ($customFields[CustomFieldInstaller::SEQUENCE_NUMBER] < 0) {
+        if ($transactionData->getSequenceNumber() < 0) {
             throw new InvalidOrderException($order->getId());
         }
 
@@ -54,23 +57,23 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         $parameters = [
             'request'        => self::REQUEST_ACTION_CAPTURE,
-            'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
-            'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
+            'txid'           => $transactionData->getTransactionId(),
+            'sequencenumber' => $transactionData->getSequenceNumber() + 1,
             'amount'         => $this->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
             'currency'       => $currency->getIsoCode(),
             'capturemode'    => $isCompleted ? self::CAPTUREMODE_COMPLETED : self::CAPTUREMODE_INCOMPLETE,
         ];
 
-        if (!empty($customFields[CustomFieldInstaller::WORK_ORDER_ID])) {
-            $parameters['workorderid'] = $customFields[CustomFieldInstaller::WORK_ORDER_ID];
+        if (null !== $transactionData->getWorkOrderId()) {
+            $parameters['workorderid'] = $transactionData->getWorkOrderId();
         }
 
-        if (!empty($customFields[CustomFieldInstaller::CAPTURE_MODE])) {
-            $parameters['capturemode'] = $customFields[CustomFieldInstaller::CAPTURE_MODE];
+        if (!empty($transactionData->getCaptureMode())) {
+            $parameters['capturemode'] = $transactionData->getCaptureMode();
         }
 
-        if (!empty($customFields[CustomFieldInstaller::CLEARING_TYPE])) {
-            $parameters['clearingtype'] = $customFields[CustomFieldInstaller::CLEARING_TYPE];
+        if (!empty($transactionData->getClearingType())) {
+            $parameters['clearingtype'] = $transactionData->getClearingType();
         }
 
         return $parameters;
