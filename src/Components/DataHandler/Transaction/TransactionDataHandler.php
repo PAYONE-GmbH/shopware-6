@@ -9,7 +9,6 @@ use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Struct\PaymentTransaction;
 use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -125,12 +124,16 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         ]], $context);
     }
 
-    public function incrementSequenceNumber(PaymentTransaction $transaction, Context $context): void
+    public function incrementSequenceNumber(PaymentTransaction $transaction, array &$transactionData): void
     {
-        //TODO: update
-        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
+        /** @var null|PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        $payoneTransactionData = $transaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        ++$customFields[CustomFieldInstaller::SEQUENCE_NUMBER];
+        if (null === $payoneTransactionData) {
+            return;
+        }
+
+        $transactionData['sequenceNumber'] = $payoneTransactionData->getSequenceNumber() + 1;
     }
 
     public function saveTransactionState(string $stateId, PaymentTransaction $transaction, Context $context): void
@@ -218,7 +221,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             return false;
         }
 
-        return $handlerClass::isRefundable($transactionData, $paymentTransaction->getCustomFields());
+        return $handlerClass::isRefundable($transactionData);
     }
 
     private function getCapturedAmount(PaymentTransaction $paymentTransaction, array $transactionData): int

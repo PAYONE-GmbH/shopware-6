@@ -60,7 +60,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
 
         /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
-        $payoneTransactionData = $this->paymentTransaction->getCustomFields();
+        $payoneTransactionData = $this->paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
         $clearingType          = $payoneTransactionData->getClearingBankAccount();
 
         // Filter payment methods that do not allow changing transaction status at this point

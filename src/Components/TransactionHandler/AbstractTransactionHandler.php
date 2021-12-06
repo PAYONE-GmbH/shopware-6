@@ -148,8 +148,7 @@ abstract class AbstractTransactionHandler
             }
         }
 
-        //TODO: update
-        $this->dataHandler->incrementSequenceNumber($this->paymentTransaction, $this->context);
+        $this->dataHandler->incrementSequenceNumber($this->paymentTransaction, $transactionData);
         $this->dataHandler->saveTransactionData($this->paymentTransaction, $this->context, $transactionData);
     }
 

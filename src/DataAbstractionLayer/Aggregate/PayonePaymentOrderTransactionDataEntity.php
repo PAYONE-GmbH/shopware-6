@@ -251,4 +251,28 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
     {
         return $this->clearingBankAccount;
     }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id'                    => $this->id,
+            'transactionData'       => $this->transactionData,
+            'sequenceNumber'        => $this->sequenceNumber,
+            'transactionState'      => $this->transactionState,
+            'userId'                => $this->userId,
+            'lastRequest'           => $this->lastRequest,
+            'allowCapture'          => $this->allowCapture,
+            'capturedAmount'        => $this->capturedAmount,
+            'allowRefund'           => $this->allowRefund,
+            'refundedAmount'        => $this->refundedAmount,
+            'mandateIdentification' => $this->mandateIdentification,
+            'authorizationType'     => $this->authorizationType,
+            'workOrderId'           => $this->workOrderId,
+            'clearingReference'     => $this->clearingReference,
+            'clearingType'          => $this->clearingType,
+            'financingType'         => $this->financingType,
+            'captureMode'           => $this->captureMode,
+            'clearingBankAccount'   => $this->clearingBankAccount,
+        ];
+    }
 }

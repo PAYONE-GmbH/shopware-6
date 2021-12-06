@@ -17,7 +17,7 @@ interface TransactionDataHandlerInterface
 
     public function logResponse(PaymentTransaction $transaction, Context $context, array $data): void;
 
-    public function incrementSequenceNumber(PaymentTransaction $transaction, Context $context): void;
+    public function incrementSequenceNumber(PaymentTransaction $transaction, array &$transactionData): void;
 
     public function saveTransactionState(string $stateId, PaymentTransaction $transaction, Context $context): void;
 }
