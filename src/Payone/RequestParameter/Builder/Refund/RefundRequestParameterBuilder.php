@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\Refund;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
@@ -25,19 +26,28 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
     /** @param FinancialTransactionStruct $arguments */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $totalAmount  = $arguments->getRequestData()->get('amount');
-        $order        = $arguments->getPaymentTransaction()->getOrder();
-        $customFields = $arguments->getPaymentTransaction()->getCustomFields();
+        $totalAmount = $arguments->getRequestData()->get('amount');
+        $order       = $arguments->getPaymentTransaction()->getOrder();
+        /** @var null|PayonePaymentOrderTransactionDataEntity $transactionData */
+        $transactionData = $arguments->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+
+        if (null === $transactionData) {
+            throw new InvalidOrderException($order->getId());
+        }
 
         if ($totalAmount === null) {
             $totalAmount = $order->getAmountTotal();
         }
 
-        if (empty($customFields[CustomFieldInstaller::TRANSACTION_ID])) {
+        if (empty($transactionData->getTransactionId())) {
             throw new InvalidOrderException($order->getId());
         }
 
-        if ($customFields[CustomFieldInstaller::SEQUENCE_NUMBER] === null || $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] === '') {
+        if (null === $transactionData->getSequenceNumber()) {
+            throw new InvalidOrderException($order->getId());
+        }
+
+        if ($transactionData->getSequenceNumber() < 0) {
             throw new InvalidOrderException($order->getId());
         }
 
@@ -46,8 +56,8 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         return [
             'request'        => self::REQUEST_ACTION_DEBIT,
-            'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
-            'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
+            'txid'           => $transactionData->getTransactionId(),
+            'sequencenumber' => $transactionData->getSequenceNumber() + 1,
             'amount'         => -1 * $this->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
             'currency'       => $currency->getIsoCode(),
         ];

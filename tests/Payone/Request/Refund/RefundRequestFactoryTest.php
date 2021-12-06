@@ -6,7 +6,8 @@ namespace PayonePayment\Test\Payone\Request\Refund;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -28,10 +29,15 @@ class RefundRequestFactoryTest extends TestCase
         $factory = $this->getRequestParameterFactory($salesChannelContext);
 
         $paymentTransaction = $this->getPaymentTransaction(PayoneCreditCardPaymentHandler::class);
-        $paymentTransaction->setCustomFields([
-            CustomFieldInstaller::TRANSACTION_ID  => Constants::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER => 1,
-        ]);
+
+        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
+        $payoneTransactionData->setTransactionId(Constants::PAYONE_TRANSACTION_ID);
+        $payoneTransactionData->setSequenceNumber(1);
+
+        $paymentTransaction->getOrderTransaction()->addExtension(
+            PayonePaymentOrderTransactionExtension::NAME,
+            $payoneTransactionData
+        );
 
         $request = $factory->getRequestParameter(
             new FinancialTransactionStruct(
@@ -90,10 +96,14 @@ class RefundRequestFactoryTest extends TestCase
 
         $paymentTransaction = $this->getPaymentTransaction(PayonePayolutionInstallmentPaymentHandler::class);
         $paymentTransaction->getOrder()->setLineItems($this->getLineItem(2));
-        $paymentTransaction->setCustomFields([
-            CustomFieldInstaller::TRANSACTION_ID  => Constants::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER => 1,
-        ]);
+        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
+        $payoneTransactionData->setTransactionId(Constants::PAYONE_TRANSACTION_ID);
+        $payoneTransactionData->setSequenceNumber(1);
+
+        $paymentTransaction->getOrderTransaction()->addExtension(
+            PayonePaymentOrderTransactionExtension::NAME,
+            $payoneTransactionData
+        );
 
         $request = $factory->getRequestParameter(
             new FinancialTransactionStruct(
@@ -155,10 +165,14 @@ class RefundRequestFactoryTest extends TestCase
 
         $paymentTransaction = $this->getPaymentTransaction(PayonePayolutionInstallmentPaymentHandler::class);
         $paymentTransaction->getOrder()->setLineItems($this->getLineItem(1));
-        $paymentTransaction->setCustomFields([
-            CustomFieldInstaller::TRANSACTION_ID  => Constants::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER => 1,
-        ]);
+        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
+        $payoneTransactionData->setTransactionId(Constants::PAYONE_TRANSACTION_ID);
+        $payoneTransactionData->setSequenceNumber(1);
+
+        $paymentTransaction->getOrderTransaction()->addExtension(
+            PayonePaymentOrderTransactionExtension::NAME,
+            $payoneTransactionData
+        );
 
         $request = $factory->getRequestParameter(
             new FinancialTransactionStruct(
