@@ -18,7 +18,7 @@ class ZeroAmountCartValidator implements CartValidatorInterface
         if ($cart->getLineItems()->count() === 0) {
             return;
         }
-        
+
         if (((int) round($cart->getPrice()->getTotalPrice() * (10 ** $context->getCurrency()->getDecimalPrecision()))) > 0) {
             return;
         }
