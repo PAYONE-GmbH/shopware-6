@@ -36,6 +36,7 @@ class PayonePaymentOrderTransactionDataDefinition extends EntityDefinition
 
     protected function defineFields(): FieldCollection
     {
+        //TODO: add version id
         return new FieldCollection(
             [
                 (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),

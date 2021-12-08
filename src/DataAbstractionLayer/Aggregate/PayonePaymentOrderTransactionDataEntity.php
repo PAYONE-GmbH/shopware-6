@@ -256,6 +256,7 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
     {
         return [
             'id'                    => $this->id,
+            'transactionId'         => $this->transactionId,
             'transactionData'       => $this->transactionData,
             'sequenceNumber'        => $this->sequenceNumber,
             'transactionState'      => $this->transactionState,

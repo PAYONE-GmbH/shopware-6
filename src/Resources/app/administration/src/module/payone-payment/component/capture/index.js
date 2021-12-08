@@ -43,7 +43,7 @@ Component.register('payone-capture-button', {
         capturedAmount() {
             if (!this.transaction.extensions
                 || !this.transaction.extensions.payonePaymentOrderTransactionData
-                || this.transaction.extensions.payonePaymentOrderTransactionData.capturedAmount) {
+                || !this.transaction.extensions.payonePaymentOrderTransactionData.capturedAmount) {
                 return 0;
             }
 

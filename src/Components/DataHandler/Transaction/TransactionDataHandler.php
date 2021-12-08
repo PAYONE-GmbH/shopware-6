@@ -133,6 +133,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             return;
         }
 
+        $transactionData['id'] = $payoneTransactionData->getId();
         $transactionData['sequenceNumber'] = $payoneTransactionData->getSequenceNumber() + 1;
     }
 

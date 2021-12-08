@@ -50,7 +50,7 @@ Component.register('payone-refund-button', {
         remainingAmount() {
             if (!this.transaction.extensions
                 || !this.transaction.extensions.payonePaymentOrderTransactionData
-                || this.transaction.extensions.payonePaymentOrderTransactionData.capturedAmount) {
+                || !this.transaction.extensions.payonePaymentOrderTransactionData.capturedAmount) {
                 return 0;
             }
 

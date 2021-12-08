@@ -51,6 +51,8 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
             throw new InvalidOrderException($order->getId());
         }
 
+        //TODO: fix set refunded amount
+
         /** @var CurrencyEntity $currency */
         $currency = $order->getCurrency();
 
