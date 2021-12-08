@@ -21,6 +21,7 @@ class Migration1638289341AddOrderTransActionDataTable extends MigrationStep
     {
         $sql = 'CREATE TABLE IF NOT EXISTS `payone_payment_order_transaction_data` (
             `id` BINARY(16) NOT NULL,
+            `order_transaction_version_id` BINARY(16) NOT NULL,
             `order_transaction_id` BINARY(16) NOT NULL,
             `transaction_id` VARCHAR(255) NOT NULL,
             `transaction_data` JSON NULL,
@@ -42,7 +43,7 @@ class Migration1638289341AddOrderTransActionDataTable extends MigrationStep
             `clearing_bank_account` JSON NULL,
             `created_at` DATETIME(3) NOT NULL,
             `updated_at` DATETIME(3) NULL,
-            PRIMARY KEY (`id`),
+            PRIMARY KEY (`id`, `order_transaction_version_id`),
             CONSTRAINT `json.payone_payment_order_transaction_data.transaction_data` CHECK (JSON_VALID(`transaction_data`)),
             CONSTRAINT `json.payone_payment_order_transaction_data.clearing_bank_account` CHECK (JSON_VALID(`clearing_bank_account`))
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;';

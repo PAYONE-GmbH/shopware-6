@@ -106,6 +106,11 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         return 'allowCapture';
     }
 
+    protected function getAmountPropertyName(): string
+    {
+        return 'capturedAmount';
+    }
+
     /**
      * Updates transaction custom fields that contain clearing bank account data.
      * Payment methods like invoice or secure invoice get these data through the response of a capture request.

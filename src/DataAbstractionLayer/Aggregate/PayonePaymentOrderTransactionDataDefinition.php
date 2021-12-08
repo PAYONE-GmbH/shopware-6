@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IntField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ReferenceVersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
@@ -36,11 +37,11 @@ class PayonePaymentOrderTransactionDataDefinition extends EntityDefinition
 
     protected function defineFields(): FieldCollection
     {
-        //TODO: add version id
         return new FieldCollection(
             [
                 (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
                 (new FkField('order_transaction_id', 'orderTransactionId', OrderTransactionDefinition::class))->addFlags(new Required()),
+                (new ReferenceVersionField(OrderTransactionDefinition::class, 'order_transaction_version_id'))->addFlags(new Required()),
                 new StringField('transaction_id', 'transactionId', 255),
                 new JsonField('transaction_data', 'transactionData', [], null),
                 new IntField('sequence_number', 'sequenceNumber'),

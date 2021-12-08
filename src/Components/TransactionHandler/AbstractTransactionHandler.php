@@ -95,6 +95,8 @@ abstract class AbstractTransactionHandler
 
     abstract protected function getAllowPropertyName(): string;
 
+    abstract protected function getAmountPropertyName(): string;
+
     protected function executeRequest(array $request): array
     {
         try {
@@ -144,7 +146,7 @@ abstract class AbstractTransactionHandler
             $alreadyCapturedAmount = $this->getAmount($this->paymentTransaction->getOrderTransaction());
 
             if ($captureAmount) {
-                $transactionData['capturedAmount'] = $alreadyCapturedAmount + $currentCaptureAmount;
+                $transactionData[$this->getAmountPropertyName()] = $alreadyCapturedAmount + $currentCaptureAmount;
             }
         }
 

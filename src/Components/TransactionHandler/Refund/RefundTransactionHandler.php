@@ -91,4 +91,9 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
     {
         return 'allowRefund';
     }
+
+    protected function getAmountPropertyName(): string
+    {
+        return 'refundedAmount';
+    }
 }
