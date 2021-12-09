@@ -164,3 +164,35 @@ Wartung
 * Kartentyp Discover entfernt
 * Abhängigkeit zur GitHub-Pipeline hinzufügen
 * getestet mit 6.4.5.0
+
+# 2.5.0
+
+Wartung
+
+* Die Transaktionsdaten wurden von den customFields in eine EntityExtension verlagert
+
+### Lesen der Transaktionsdaten ###
+```        
+$criteria = (new Criteria())
+->addAssociation(PayonePaymentOrderTransactionExtension::NAME)
+->addFilter(new EqualsFilter(PayonePaymentOrderTransactionExtension::NAME . '.transactionId', $payoneTransactionId));
+
+/** @var null|OrderTransactionEntity $transaction */
+$transaction = $this->transactionRepository->search($criteria, $context)->first();
+
+/** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+$payoneTransactionData = $transaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+   ```
+
+### Aktualisieren der Transaktionsdaten ###
+
+```
+$this->transactionRepository->upsert([[
+   'id'                                         => $transaction->getId(),
+   PayonePaymentOrderTransactionExtension::NAME => [
+        'id' => $payoneTransactionData->getId(),
+        'sequenceNumber' => 1,
+        'transactionState' => 'appointed'
+   ],
+]], $context);
+ ```
