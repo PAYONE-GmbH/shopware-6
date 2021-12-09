@@ -54,6 +54,28 @@ class Migration1638289341AddOrderTransActionDataTable extends MigrationStep
             /** @noinspection PhpDeprecationInspection */
             $connection->exec($sql);
         }
+
+        //TODO: SELECT id as order_transaction_id, version_id as order_transaction_version_id,
+        //TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_transaction_id')) as transaction_id,
+        //JSON_EXTRACT(custom_fields, '$.payone_transaction_data') as transaction_data,
+        //CAST(JSON_EXTRACT(custom_fields, '$.payone_sequence_number') as SIGNED) as sequence_number,
+        //TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_transaction_state')) as transaction_state,
+        //TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_user_id')) as user_id,
+        //TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_last_request')) as last_request,
+        //TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_allow_capture')) as allow_capture,
+        //TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_allow_refund')) as allow_refund,
+        //IFNULL(CAST(JSON_EXTRACT(custom_fields, '$.payone_captured_amount') as SIGNED), 0) as captured_amount,
+        //IFNULL(CAST(JSON_EXTRACT(custom_fields, '$.payone_refunded_amount') as SIGNED), 0) as refunded_amount,
+        //TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_mandate_identification')) as mandate_identification,
+        //TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_authorization_type')) as authorization_type,
+        //REPLACE(TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_work_order_id')), 'null', NULL) as work_order_id,
+        //TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_clearing_reference')) as clearing_reference,
+        //TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_clearing_type')) as clearing_type,
+        //TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_financing_type')) as financing_type,
+        //TRIM(BOTH '"' FROM JSON_EXTRACT(custom_fields, '$.payone_capture_mode')) as capture_mode,
+        //JSON_EXTRACT(custom_fields, '$.payone_clearing_bank_account') as clearing_bank_account,
+        //NOW()
+        //FROM order_transaction WHERE custom_fields IS NOT NULL AND JSON_CONTAINS_PATH(custom_fields, 'one', '$.payone_transaction_id') = 1;
     }
 
     public function updateDestructive(Connection $connection): void
