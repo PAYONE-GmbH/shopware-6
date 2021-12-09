@@ -168,3 +168,35 @@ Maintenance
 * Removed cardtype type discover
 * Add dependency to GitHub pipeline
 * Add fix for Version 6.4.5.0
+
+# 2.5.0
+
+Maintenance
+
+* customFields on orderTransaction for storing payone transaction data have been replaced by an entity extension
+
+### Read transaction data ###
+```        
+$criteria = (new Criteria())
+->addAssociation(PayonePaymentOrderTransactionExtension::NAME)
+->addFilter(new EqualsFilter(PayonePaymentOrderTransactionExtension::NAME . '.transactionId', $payoneTransactionId));
+
+/** @var null|OrderTransactionEntity $transaction */
+$transaction = $this->transactionRepository->search($criteria, $context)->first();
+
+/** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+$payoneTransactionData = $transaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+   ```
+
+### Update transaction data ###
+
+```
+$this->transactionRepository->upsert([[
+   'id'                                         => $transaction->getId(),
+   PayonePaymentOrderTransactionExtension::NAME => [
+        'id' => $payoneTransactionData->getId(),
+        'sequenceNumber' => 1,
+        'transactionState' => 'appointed'
+   ],
+]], $context);
+ ```
