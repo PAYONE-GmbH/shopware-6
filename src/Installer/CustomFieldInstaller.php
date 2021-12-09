@@ -15,26 +15,8 @@ use Shopware\Core\System\CustomField\CustomFieldTypes;
 
 class CustomFieldInstaller implements InstallerInterface
 {
-    /*    public const TRANSACTION_ID         = 'payone_transaction_id';
-        public const SEQUENCE_NUMBER        = 'payone_sequence_number';
-        public const WORK_ORDER_ID          = 'payone_work_order_id';
-        public const MANDATE_IDENTIFICATION = 'payone_mandate_identification';
-        public const TRANSACTION_DATA       = 'payone_transaction_data';
-        public const USER_ID                = 'payone_user_id';
-        public const LAST_REQUEST           = 'payone_last_request';
-        public const AUTHORIZATION_TYPE     = 'payone_authorization_type';
-        public const CLEARING_REFERENCE     = 'payone_clearing_reference';
-        public const TRANSACTION_STATE      = 'payone_transaction_state';
-        public const CAPTURE_MODE           = 'payone_capture_mode';
-        public const CLEARING_TYPE          = 'payone_clearing_type';
-        public const FINANCING_TYPE         = 'payone_financing_type';
-        public const ALLOW_REFUND           = 'payone_allow_refund';
-        public const ALLOW_CAPTURE          = 'payone_allow_capture';
-        public const CAPTURED_AMOUNT        = 'payone_captured_amount';
-        public const REFUNDED_AMOUNT        = 'payone_refunded_amount';*/
     public const CAPTURED_QUANTITY = 'payone_captured_quantity';
     public const REFUNDED_QUANTITY = 'payone_refunded_quantity';
-    /*    public const CLEARING_BANK_ACCOUNT  = 'payone_clearing_bank_account';*/
 
     public const FIELDSET_ID_ORDER_TRANSACTION = 'aacbcf9bedfb4827853b75c5fd278d3f';
     public const FIELDSET_ID_ORDER_LINE_ITEM   = '12f3f06c895e11eabc550242ac130003';
