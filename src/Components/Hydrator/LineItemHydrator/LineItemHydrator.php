@@ -7,7 +7,6 @@ namespace PayonePayment\Components\Hydrator\LineItemHydrator;
 use Exception;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
-use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -82,7 +81,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         }
 
         if ($isComplete === true) {
-            $requestLineItems = $this->addShippingItems($order->getShippingCosts(), $counter, $requestLineItems, $currency, $order->getLanguage());
+            $requestLineItems = $this->addShippingItems($order, $counter, $requestLineItems, $currency);
         }
 
         return $requestLineItems;
@@ -124,7 +123,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             );
         }
 
-        return $this->addShippingItems($order->getShippingCosts(), $counter, $requestLineItems, $currency, $order->getLanguage()->getLocale());
+        return $this->addShippingItems($order, $counter, $requestLineItems, $currency);
     }
 
     protected function mapItemType(?string $itemType): string
@@ -172,17 +171,22 @@ class LineItemHydrator implements LineItemHydratorInterface
         ];
     }
 
-    private function addShippingItems(?CalculatedPrice $shippingCosts, int $index, array $lineItems, CurrencyEntity $currencyEntity, ?string $locale): array
+    private function addShippingItems(OrderEntity $order, int $index, array $lineItems, CurrencyEntity $currencyEntity): array
     {
+        $shippingCosts = $order->getShippingCosts();
+        $locale        = $order->getLanguage()->getLocale();
+
         /**
          * locale might be null, the shipment items are only required for secured invoice and payolution payment methods.
          * those are only available in DACH. because of this we do use de-DE as fallback locale
          */
-        if (null === $locale) {
-            $locale = 'de-DE';
+        $localeCode = 'de-DE';
+
+        if (null !== $locale) {
+            $localeCode = $locale->getCode();
         }
 
-        if (null === $shippingCosts || $shippingCosts->getTotalPrice() < 0.01 || $shippingCosts->getCalculatedTaxes()->count() <= 0) {
+        if ($shippingCosts->getTotalPrice() < 0.01 || $shippingCosts->getCalculatedTaxes()->count() <= 0) {
             return $lineItems;
         }
 
@@ -197,7 +201,7 @@ class LineItemHydrator implements LineItemHydratorInterface
                     'id[' . $index . ']' => $index,
                     'pr[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($shipmentPosition->getPrice(), $currencyEntity),
                     'no[' . $index . ']' => 1,
-                    'de[' . $index . ']' => $this->translator->trans('PayonePayment.general.shippingCosts', [], null, $locale),
+                    'de[' . $index . ']' => $this->translator->trans('PayonePayment.general.shippingCosts', [], null, $localeCode),
                     'va[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($shipmentPosition->getTaxRate(), $currencyEntity),
                 ]
             );
