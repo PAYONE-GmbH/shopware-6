@@ -167,20 +167,19 @@ Component.register('payone-capture-button', {
 
             this._populateSelectionProperty();
 
-            this.selection.forEach((selection) => {
-                this.order.lineItems.forEach((order_item) => {
-                    if (order_item.id === selection.id && 0 < selection.quantity) {
-                        const copy = { ...order_item },
-                            taxRate = copy.tax_rate / (10 ** this.decimalPrecision);
+            console.log('full capture');
 
-                        copy.quantity         = selection.quantity;
-                        copy.total_amount     = copy.unit_price * copy.quantity;
-                        copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
+            this.order.lineItems.forEach((order_item) => {
+                const copy = { ...order_item },
+                    taxRate = copy.tax_rate / (10 ** this.decimalPrecision);
 
-                        request.orderLines.push(copy);
-                    }
-                });
+                console.log(order_item);
+                copy.total_amount     = copy.unit_price * copy.quantity;
+                copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
+
+                request.orderLines.push(copy);
             });
+
 
             this.executeCapture(request);
         },

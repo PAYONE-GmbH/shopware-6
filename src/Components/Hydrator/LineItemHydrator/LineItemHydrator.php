@@ -7,12 +7,14 @@ namespace PayonePayment\Components\Hydrator\LineItemHydrator;
 use Exception;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LineItemHydrator implements LineItemHydratorInterface
 {
@@ -22,16 +24,27 @@ class LineItemHydrator implements LineItemHydratorInterface
     /** @var CurrencyPrecisionInterface */
     private $currencyPrecision;
 
-    public function __construct(CurrencyPrecisionInterface $currencyPrecision)
+    /** @var TranslatorInterface */
+    private $translator;
+
+    public function __construct(CurrencyPrecisionInterface $currencyPrecision, TranslatorInterface $translator)
     {
         $this->currencyPrecision = $currencyPrecision;
+        $this->translator        = $translator;
     }
 
     public function mapPayoneOrderLinesByRequest(
         CurrencyEntity $currency,
-        OrderLineItemCollection $orderLineItems,
-        array $requestLines
+        OrderEntity $order,
+        array $requestLines,
+        bool $isComplete = false
     ): array {
+        $orderLineItems = $order->getLineItems();
+
+        if (empty($orderLineItems)) {
+            return [];
+        }
+
         $requestLineItems = [];
         $counter          = 0;
 
@@ -68,11 +81,22 @@ class LineItemHydrator implements LineItemHydratorInterface
             );
         }
 
+        if ($isComplete === true) {
+            $requestLineItems = $this->addShippingItems($order->getShippingCosts(), $counter, $requestLineItems, $currency, $order->getLanguage());
+        }
+
         return $requestLineItems;
     }
 
-    public function mapOrderLines(CurrencyEntity $currency, OrderLineItemCollection $lineItemCollection): array
+    /** @noinspection SlowArrayOperationsInLoopInspection */
+    public function mapOrderLines(CurrencyEntity $currency, OrderEntity $order): array
     {
+        $lineItemCollection = $order->getLineItems();
+
+        if (empty($lineItemCollection)) {
+            return [];
+        }
+
         $requestLineItems = [];
         $counter          = 0;
 
@@ -100,7 +124,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             );
         }
 
-        return $requestLineItems;
+        return $this->addShippingItems($order->getShippingCosts(), $counter, $requestLineItems, $currency, $order->getLanguage()->getLocale());
     }
 
     protected function mapItemType(?string $itemType): string
@@ -146,5 +170,39 @@ class LineItemHydrator implements LineItemHydratorInterface
             'de[' . $index . ']' => $lineItemEntity->getLabel(),
             'va[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($calculatedTax->getTaxRate(), $currencyEntity),
         ];
+    }
+
+    private function addShippingItems(?CalculatedPrice $shippingCosts, int $index, array $lineItems, CurrencyEntity $currencyEntity, ?string $locale): array
+    {
+        /**
+         * locale might be null, the shipment items are only required for secured invoice and payolution payment methods.
+         * those are only available in DACH. because of this we do use de-DE as fallback locale
+         */
+        if (null === $locale) {
+            $locale = 'de-DE';
+        }
+
+        if (null === $shippingCosts || $shippingCosts->getTotalPrice() < 0.01 || $shippingCosts->getCalculatedTaxes()->count() <= 0) {
+            return $lineItems;
+        }
+
+        foreach ($shippingCosts->getCalculatedTaxes() as $shipmentPosition) {
+            /** @var CalculatedTax $shipmentPosition */
+            ++$index;
+
+            $lineItems = array_merge(
+                $lineItems,
+                [
+                    'it[' . $index . ']' => 'shipment',
+                    'id[' . $index . ']' => $index,
+                    'pr[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($shipmentPosition->getPrice(), $currencyEntity),
+                    'no[' . $index . ']' => 1,
+                    'de[' . $index . ']' => $this->translator->trans('PayonePayment.general.shippingCosts', [], null, $locale),
+                    'va[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($shipmentPosition->getTaxRate(), $currencyEntity),
+                ]
+            );
+        }
+
+        return $lineItems;
     }
 }

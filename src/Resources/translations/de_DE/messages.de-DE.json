@@ -3,6 +3,9 @@
         "errorMessages": {
             "genericError": "Es ist ein Fehler aufgetreten. Bitte wählen Sie eine andere Zahlungsweise."
         },
+        "general": {
+            "shippingCosts": "Versandkosten"
+        },
         "creditCard": {
             "newCard": "Eine neue Kreditkarte verwenden",
             "cardNumber": "Kartennummer",

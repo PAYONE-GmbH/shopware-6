@@ -29,12 +29,18 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         $currency   = $paymentTransaction->getOrder()->getCurrency();
         $orderLines = $arguments->getRequestData()->get('orderLines', []);
+        $isComplete = $arguments->getRequestData()->get('complete', false);
 
         if (empty($orderLines) || empty($currency) || empty($paymentTransaction->getOrder()->getLineItems())) {
             return [];
         }
 
-        return $this->lineItemHydrator->mapPayoneOrderLinesByRequest($currency, $paymentTransaction->getOrder()->getLineItems(), $orderLines);
+        return $this->lineItemHydrator->mapPayoneOrderLinesByRequest(
+            $currency,
+            $paymentTransaction->getOrder(),
+            $orderLines,
+            $isComplete
+        );
     }
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
