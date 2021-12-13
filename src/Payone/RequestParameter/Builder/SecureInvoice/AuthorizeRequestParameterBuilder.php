@@ -40,7 +40,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         ];
 
         if ($order->getLineItems() !== null) {
-            $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order));
+            $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order, $salesChannelContext));
         }
 
         return $parameters;

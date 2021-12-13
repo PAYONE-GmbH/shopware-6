@@ -11,7 +11,10 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -26,10 +29,14 @@ class LineItemHydrator implements LineItemHydratorInterface
     /** @var TranslatorInterface */
     private $translator;
 
-    public function __construct(CurrencyPrecisionInterface $currencyPrecision, TranslatorInterface $translator)
+    /** @var EntityRepositoryInterface */
+    private $languageRepository;
+
+    public function __construct(CurrencyPrecisionInterface $currencyPrecision, TranslatorInterface $translator, EntityRepositoryInterface $languageRepository)
     {
-        $this->currencyPrecision = $currencyPrecision;
-        $this->translator        = $translator;
+        $this->currencyPrecision  = $currencyPrecision;
+        $this->translator         = $translator;
+        $this->languageRepository = $languageRepository;
     }
 
     public function mapPayoneOrderLinesByRequest(
@@ -88,7 +95,7 @@ class LineItemHydrator implements LineItemHydratorInterface
     }
 
     /** @noinspection SlowArrayOperationsInLoopInspection */
-    public function mapOrderLines(CurrencyEntity $currency, OrderEntity $order): array
+    public function mapOrderLines(CurrencyEntity $currency, OrderEntity $order, SalesChannelContext $salesChannelContext): array
     {
         $lineItemCollection = $order->getLineItems();
 
@@ -123,7 +130,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             );
         }
 
-        return $this->addShippingItems($order, $counter, $requestLineItems, $currency);
+        return $this->addShippingItems($order, $counter, $requestLineItems, $currency, $salesChannelContext);
     }
 
     protected function mapItemType(?string $itemType): string
@@ -171,19 +178,22 @@ class LineItemHydrator implements LineItemHydratorInterface
         ];
     }
 
-    private function addShippingItems(OrderEntity $order, int $index, array $lineItems, CurrencyEntity $currencyEntity): array
-    {
+    private function addShippingItems(
+        OrderEntity $order,
+        int $index,
+        array $lineItems,
+        CurrencyEntity $currencyEntity,
+        ?SalesChannelContext $salesChannelContext = null
+    ): array {
         $shippingCosts = $order->getShippingCosts();
         $locale        = $order->getLanguage()->getLocale();
 
-        /**
-         * locale might be null, the shipment items are only required for secured invoice and payolution payment methods.
-         * those are only available in DACH. because of this we do use de-DE as fallback locale
-         */
-        $localeCode = 'de-DE';
-
         if (null !== $locale) {
             $localeCode = $locale->getCode();
+        }
+
+        if (null === $locale) {
+            $localeCode = $this->getLocaleCode($salesChannelContext);
         }
 
         if ($shippingCosts->getTotalPrice() < 0.01 || $shippingCosts->getCalculatedTaxes()->count() <= 0) {
@@ -208,5 +218,26 @@ class LineItemHydrator implements LineItemHydratorInterface
         }
 
         return $lineItems;
+    }
+
+    private function getLocaleCode(?SalesChannelContext $salesChannelContext): string
+    {
+        /**
+         * locale might be null, the shipment items are only required for secured invoice and payolution payment methods.
+         * those are only available in DACH. because of this we do use de-DE as fallback locale
+         */
+        if (null === $salesChannelContext) {
+            return 'de-DE';
+        }
+
+        $criteria = new Criteria([$salesChannelContext->getContext()->getLanguageId()]);
+        $criteria->addAssociation('locale');
+        $language = $this->languageRepository->search($criteria, $salesChannelContext->getContext())->first();
+
+        if (null === $language || null === $language->getLocale()) {
+            return 'de-DE';
+        }
+
+        return $language->getLocale()->getCode();
     }
 }

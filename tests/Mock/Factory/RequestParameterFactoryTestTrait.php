@@ -69,7 +69,7 @@ trait RequestParameterFactoryTestTrait
                 new DebitAuthorizeRequestParameterBuilder(),
                 new CaptureRequestParameterBuilder(new CurrencyPrecision()),
                 new RefundRequestParameterBuilder(new CurrencyPrecision()),
-                new OrderLinesRequestParameterBuilder(new LineItemHydrator(new CurrencyPrecision(), $this->createMock(TranslatorInterface::class))),
+                new OrderLinesRequestParameterBuilder(new LineItemHydrator(new CurrencyPrecision(), $this->createMock(TranslatorInterface::class), $this->createMock(EntityRepositoryInterface::class))),
                 $this->getSystemRequestBuilder(),
                 $this->getGeneralTransactionRequestBuilder($salesChannelContext),
                 $this->getCustomerRequestBuilder(),
