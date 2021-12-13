@@ -167,13 +167,10 @@ Component.register('payone-capture-button', {
 
             this._populateSelectionProperty();
 
-            console.log('full capture');
-
             this.order.lineItems.forEach((order_item) => {
                 const copy = { ...order_item },
                     taxRate = copy.tax_rate / (10 ** this.decimalPrecision);
 
-                console.log(order_item);
                 copy.total_amount     = copy.unit_price * copy.quantity;
                 copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
 

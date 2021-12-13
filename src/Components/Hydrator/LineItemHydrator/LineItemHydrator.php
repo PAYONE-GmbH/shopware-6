@@ -43,7 +43,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         CurrencyEntity $currency,
         OrderEntity $order,
         array $requestLines,
-        bool $isComplete = false
+        bool $isComplete
     ): array {
         $orderLineItems = $order->getLineItems();
 
