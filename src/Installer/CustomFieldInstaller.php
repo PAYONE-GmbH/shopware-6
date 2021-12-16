@@ -41,20 +41,6 @@ class CustomFieldInstaller implements InstallerInterface
 
         $this->customFieldSets = [
             [
-                'id'     => self::FIELDSET_ID_ORDER_TRANSACTION,
-                'name'   => 'order_transaction_payone_payment',
-                'config' => [
-                    'label' => [
-                        'en-GB' => 'PAYONE',
-                        'de-DE' => 'PAYONE',
-                    ],
-                ],
-                'relation' => [
-                    'id'         => '0f2e6036750a4eb98ffe7155be89a5a6',
-                    'entityName' => 'order_transaction',
-                ],
-            ],
-            [
                 'id'     => self::FIELDSET_ID_PAYMENT_METHOD,
                 'name'   => 'payment_method_payone_payment',
                 'config' => [
@@ -112,6 +98,7 @@ class CustomFieldInstaller implements InstallerInterface
 
     public function update(UpdateContext $context): void
     {
+        $this->removeObsoleteCustomFieldSets($context->getContext());
         foreach ($this->customFieldSets as $customFieldSet) {
             $this->upsertCustomFieldSet($customFieldSet, $context->getContext());
         }
@@ -122,6 +109,8 @@ class CustomFieldInstaller implements InstallerInterface
 
     public function uninstall(UninstallContext $context): void
     {
+        $this->removeObsoleteCustomFieldSets($context->getContext());
+
         foreach ($this->customFieldSets as $customFieldSet) {
             $this->deactivateCustomFieldSet($customFieldSet, $context->getContext());
         }
@@ -192,6 +181,11 @@ class CustomFieldInstaller implements InstallerInterface
         ];
 
         $this->customFieldSetRepository->upsert([$data], $context);
+    }
+
+    private function removeObsoleteCustomFieldSets(Context $context): void
+    {
+        $this->customFieldSetRepository->delete([['id' => self::FIELDSET_ID_ORDER_TRANSACTION]], $context);
     }
 
     private function deactivateCustomFieldSet(array $customFieldSet, Context $context): void
