@@ -23,6 +23,14 @@
                                      v-model="captureAmount"
                                      :min="0"
                                      :max="maxCaptureAmount"></sw-number-field>
+
+                    <sw-text-field :disabled="true" :label="$tc('payone-payment.modal.shippingCosts')" :value="shippingCosts | payone_currency(order.currency.shortName, decimalPrecision)"></sw-text-field>
+                    <sw-checkbox-field v-if="hasRemainingShippingCosts"
+                                       class="payone-payment-detail--capture-modal--checkbox-shipping-costs"
+                                       :value="isShippingCostsSelected"
+                                       :label="$tc('payone-payment.modal.captureShippingCosts')"
+                                       @change="onSelectShippingCosts($event)">
+                    </sw-checkbox-field>
                 </sw-container>
             </div>
 

@@ -20,8 +20,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LineItemHydrator implements LineItemHydratorInterface
 {
-    public const TYPE_GOODS   = 'goods';
-    public const TYPE_VOUCHER = 'voucher';
+    public const TYPE_GOODS    = 'goods';
+    public const TYPE_VOUCHER  = 'voucher';
+    public const TYPE_SHIPMENT = 'shipment';
 
     /** @var CurrencyPrecisionInterface */
     private $currencyPrecision;
@@ -43,7 +44,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         CurrencyEntity $currency,
         OrderEntity $order,
         array $requestLines,
-        bool $isComplete
+        bool $captureShippingCosts
     ): array {
         $orderLineItems = $order->getLineItems();
 
@@ -75,6 +76,10 @@ class LineItemHydrator implements LineItemHydratorInterface
                 continue;
             }
 
+            if (empty($orderLine['quantity'])) {
+                continue;
+            }
+
             $requestLineItems = array_merge(
                 $requestLineItems,
                 $this->getLineItemRequest(
@@ -87,7 +92,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             );
         }
 
-        if ($isComplete === true) {
+        if ($captureShippingCosts === true) {
             $requestLineItems = $this->addShippingItems($order, $counter, $requestLineItems, $currency);
         }
 
@@ -207,7 +212,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             $lineItems = array_merge(
                 $lineItems,
                 [
-                    'it[' . $index . ']' => 'shipment',
+                    'it[' . $index . ']' => self::TYPE_SHIPMENT,
                     'id[' . $index . ']' => $index,
                     'pr[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($shipmentPosition->getPrice(), $currencyEntity),
                     'no[' . $index . ']' => 1,

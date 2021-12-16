@@ -27,9 +27,9 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
     {
         $paymentTransaction = $arguments->getPaymentTransaction();
 
-        $currency   = $paymentTransaction->getOrder()->getCurrency();
-        $orderLines = $arguments->getRequestData()->get('orderLines', []);
-        $isComplete = $arguments->getRequestData()->get('complete', false);
+        $currency             = $paymentTransaction->getOrder()->getCurrency();
+        $orderLines           = $arguments->getRequestData()->get('orderLines', []);
+        $captureShippingCosts = $arguments->getRequestData()->get('captureShippingCosts', false);
 
         if (empty($orderLines) || empty($currency) || empty($paymentTransaction->getOrder()->getLineItems())) {
             return [];
@@ -39,7 +39,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
             $currency,
             $paymentTransaction->getOrder(),
             $orderLines,
-            $isComplete
+            $captureShippingCosts
         );
     }
 

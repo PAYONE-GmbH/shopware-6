@@ -75,6 +75,33 @@ Component.register('payone-capture-button', {
 
             return returnValue;
         },
+
+        isShippingCostsSelected() {
+            return this.captureShippingCosts === true;
+        },
+
+        hasRemainingShippingCosts() {
+            if(this.order.shippingCosts.totalPrice <= 0) {
+                return false;
+            }
+
+            this.shippingCosts = this.order.shippingCosts.totalPrice * (10 ** this.decimalPrecision);
+
+            let capturedPositionAmount = 0;
+
+            this.order.lineItems.forEach((order_item) => {
+                if (order_item.customFields && order_item.customFields.payone_captured_quantity
+                    && 0 < order_item.customFields.payone_captured_quantity) {
+                    capturedPositionAmount += order_item.customFields.payone_captured_quantity * order_item.unitPrice * (10 ** this.decimalPrecision);
+                }
+            });
+
+            if(this.capturedAmount > Math.round(capturedPositionAmount)) {
+                return false;
+            }
+
+            return true;
+        }
     },
 
     data() {
@@ -84,7 +111,9 @@ Component.register('payone-capture-button', {
             showCaptureModal: false,
             isCaptureSuccessful: false,
             selection: [],
-            captureAmount: 0.0
+            captureAmount: 0.0,
+            shippingCosts: 0.0,
+            captureShippingCosts: false
         };
     },
 
@@ -97,6 +126,10 @@ Component.register('payone-capture-button', {
                     amount += selection.unit_price * selection.quantity;
                 }
             });
+
+            if(this.captureShippingCosts && this.shippingCosts > 0) {
+                amount += this.shippingCosts / (10 ** this.decimalPrecision);
+            }
 
             if (amount > this.remainingAmount) {
                 amount = this.remainingAmount;
@@ -126,7 +159,8 @@ Component.register('payone-capture-button', {
                 salesChannel: this.order.salesChannel,
                 amount: this.captureAmount,
                 orderLines: [],
-                complete: this.captureAmount === this.remainingAmount
+                complete: this.captureAmount === this.remainingAmount,
+                captureShippingCosts: this.captureShippingCosts
             };
 
             this.isLoading = true;
@@ -160,23 +194,27 @@ Component.register('payone-capture-button', {
                 salesChannel: this.order.salesChannel,
                 amount: this.remainingAmount / (10 ** this.decimalPrecision),
                 orderLines: [],
-                complete: true
+                complete: true,
+                captureShippingCosts: this.hasRemainingShippingCosts
             };
 
             this.isLoading = true;
 
-            this._populateSelectionProperty();
-
             this.order.lineItems.forEach((order_item) => {
-                const copy = { ...order_item },
-                    taxRate = copy.tax_rate / (10 ** this.decimalPrecision);
+                let quantity = order_item.quantity;
 
-                copy.total_amount     = copy.unit_price * copy.quantity;
-                copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
+                if (order_item.customFields && order_item.customFields.payone_captured_quantity
+                    && 0 < order_item.customFields.payone_captured_quantity) {
+                    quantity -= order_item.customFields.payone_captured_quantity;
+                }
 
-                request.orderLines.push(copy);
+                request.orderLines.push({
+                    id: order_item.id,
+                    quantity: quantity,
+                    unit_price: order_item.unitPrice,
+                    selected: false
+                });
             });
-
 
             this.executeCapture(request);
         },
@@ -204,6 +242,16 @@ Component.register('payone-capture-button', {
                     this.$emit('reload')
                 });
             });
+        },
+
+        onSelectShippingCosts(selected) {
+            this.captureShippingCosts = false;
+
+            if(selected === true) {
+                this.captureShippingCosts = true;
+            }
+
+            this.calculateCaptureAmount();
         },
 
         onSelectItem(id, selected) {
