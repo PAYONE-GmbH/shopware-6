@@ -100,8 +100,7 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
                 // Store clearing bank account information as custom field of the transaction in order to
                 // use this data for payment instructions of an invoice or similar.
                 // See: https://docs.payone.com/display/public/PLATFORM/How+to+use+JSON-Responses#HowtouseJSON-Responses-JSON,Clearing-Data
-                'clearingBankAccount' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
-                array_merge(array_filter($response['clearing']['BankAccount'] ?? []), [
+                'clearingBankAccount' => array_merge(array_filter($response['clearing']['BankAccount'] ?? []), [
                     // The PAYONE transaction ID acts as intended purpose of the transfer.
                     // We add this field explicitly here to make clear that the transaction ID is used
                     // as payment reference in context of the prepayment.

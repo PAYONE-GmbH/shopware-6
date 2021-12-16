@@ -80,5 +80,9 @@
             <argument type="service" id="request_stack"/>
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="PayonePayment\EventListener\DocumentOrderEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>
