@@ -76,12 +76,8 @@ Component.register('payone-capture-button', {
             return returnValue;
         },
 
-        isShippingCostsSelected() {
-            return this.captureShippingCosts === true;
-        },
-
         hasRemainingShippingCosts() {
-            if(this.order.shippingCosts.totalPrice <= 0) {
+            if (this.order.shippingCosts.totalPrice <= 0) {
                 return false;
             }
 
@@ -96,7 +92,7 @@ Component.register('payone-capture-button', {
                 }
             });
 
-            if(this.capturedAmount > Math.round(capturedPositionAmount)) {
+            if (this.capturedAmount - Math.round(capturedPositionAmount) >= this.shippingCosts) {
                 return false;
             }
 
@@ -127,10 +123,6 @@ Component.register('payone-capture-button', {
                 }
             });
 
-            if(this.captureShippingCosts && this.shippingCosts > 0) {
-                amount += this.shippingCosts / (10 ** this.decimalPrecision);
-            }
-
             if (amount > this.remainingAmount) {
                 amount = this.remainingAmount;
             }
@@ -160,7 +152,7 @@ Component.register('payone-capture-button', {
                 amount: this.captureAmount,
                 orderLines: [],
                 complete: this.captureAmount === this.remainingAmount,
-                captureShippingCosts: this.captureShippingCosts
+                captureShippingCosts: false
             };
 
             this.isLoading = true;
@@ -178,6 +170,10 @@ Component.register('payone-capture-button', {
                         request.orderLines.push(copy);
                     }
                 });
+
+                if (selection.id === 'shipping' && selection.selected && 0 < selection.quantity) {
+                    request.captureShippingCosts = true;
+                }
             });
 
             if (this.remainingAmount < (request.amount * (10 ** this.decimalPrecision))) {
@@ -244,16 +240,6 @@ Component.register('payone-capture-button', {
             });
         },
 
-        onSelectShippingCosts(selected) {
-            this.captureShippingCosts = false;
-
-            if(selected === true) {
-                this.captureShippingCosts = true;
-            }
-
-            this.calculateCaptureAmount();
-        },
-
         onSelectItem(id, selected) {
             if (this.selection.length === 0) {
                 this._populateSelectionProperty();
@@ -298,6 +284,15 @@ Component.register('payone-capture-button', {
                     selected: false
                 });
             });
+
+            if (this.order.shippingCosts.totalPrice > 0) {
+                this.selection.push({
+                    id: 'shipping',
+                    quantity: 1,
+                    unit_price: this.order.shippingCosts.totalPrice,
+                    selected: false
+                });
+            }
         }
     }
 });
