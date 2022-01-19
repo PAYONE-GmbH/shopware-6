@@ -43,7 +43,6 @@
             "orderAmount": "Order amount",
             "remainingAmount": "Remaining amount",
             "shippingCosts": "Shipping costs",
-            "captureShippingCosts": "Capture shipping costs",
             "descriptionHelpText": "Description help text",
             "close": "Close",
             "labelComment": "Label comment",

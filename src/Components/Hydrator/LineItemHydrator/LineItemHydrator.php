@@ -44,7 +44,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         CurrencyEntity $currency,
         OrderEntity $order,
         array $requestLines,
-        bool $captureShippingCosts
+        bool $includeShippingCosts
     ): array {
         $orderLineItems = $order->getLineItems();
 
@@ -92,7 +92,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             );
         }
 
-        if ($captureShippingCosts === true) {
+        if ($includeShippingCosts === true) {
             $requestLineItems = $this->addShippingItems($order, $counter, $requestLineItems, $currency);
         }
 

@@ -29,7 +29,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         $currency             = $paymentTransaction->getOrder()->getCurrency();
         $orderLines           = $arguments->getRequestData()->get('orderLines', []);
-        $captureShippingCosts = $arguments->getRequestData()->get('captureShippingCosts', false);
+        $includeShippingCosts = $arguments->getRequestData()->get('includeShippingCosts', false);
 
         if (empty($currency) || empty($paymentTransaction->getOrder()->getLineItems())) {
             return [];
@@ -39,7 +39,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
             $currency,
             $paymentTransaction->getOrder(),
             $orderLines,
-            $captureShippingCosts
+            $includeShippingCosts
         );
     }
 

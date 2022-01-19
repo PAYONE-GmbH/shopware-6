@@ -14,7 +14,7 @@ interface LineItemHydratorInterface
         CurrencyEntity $currency,
         OrderEntity $order,
         array $requestLines,
-        bool $captureShippingCosts
+        bool $includeShippingCosts
     ): array;
 
     public function mapOrderLines(CurrencyEntity $currency, OrderEntity $order, SalesChannelContext $salesChannelContext): array;

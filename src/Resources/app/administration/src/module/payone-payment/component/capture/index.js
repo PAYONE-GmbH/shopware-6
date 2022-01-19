@@ -109,7 +109,7 @@ Component.register('payone-capture-button', {
             selection: [],
             captureAmount: 0.0,
             shippingCosts: 0.0,
-            captureShippingCosts: false
+            includeShippingCosts: false
         };
     },
 
@@ -152,7 +152,7 @@ Component.register('payone-capture-button', {
                 amount: this.captureAmount,
                 orderLines: [],
                 complete: this.captureAmount === this.remainingAmount,
-                captureShippingCosts: false
+                includeShippingCosts: false
             };
 
             this.isLoading = true;
@@ -172,7 +172,7 @@ Component.register('payone-capture-button', {
                 });
 
                 if (selection.id === 'shipping' && selection.selected && 0 < selection.quantity) {
-                    request.captureShippingCosts = true;
+                    request.includeShippingCosts = true;
                 }
             });
 
@@ -191,7 +191,7 @@ Component.register('payone-capture-button', {
                 amount: this.remainingAmount / (10 ** this.decimalPrecision),
                 orderLines: [],
                 complete: true,
-                captureShippingCosts: this.hasRemainingShippingCosts
+                includeShippingCosts: this.hasRemainingShippingCosts
             };
 
             this.isLoading = true;

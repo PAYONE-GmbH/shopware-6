@@ -44,7 +44,6 @@
             "orderAmount": "Bestellungswert",
             "remainingAmount": "Ausstehender Wert",
             "shippingCosts": "Versandkosten",
-            "captureShippingCosts": "Versandkosten einziehen",
             "labelComment": "Label comment",
             "descriptionHelpText": "Description help text",
             "columns": {
