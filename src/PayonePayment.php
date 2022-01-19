@@ -50,6 +50,11 @@ class PayonePayment extends Plugin
         $this->getRuleInstallerSecureInvoice()->update($context);
     }
 
+    public function postUpdate(UpdateContext $updateContext): void
+    {
+        $this->getCustomFieldInstaller()->cleanup($updateContext);
+    }
+
     public function activate(ActivateContext $context): void
     {
         $this->getConfigInstaller()->activate($context);

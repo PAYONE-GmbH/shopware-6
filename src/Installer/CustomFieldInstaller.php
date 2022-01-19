@@ -98,7 +98,6 @@ class CustomFieldInstaller implements InstallerInterface
 
     public function update(UpdateContext $context): void
     {
-        $this->removeObsoleteCustomFieldSets($context->getContext());
         foreach ($this->customFieldSets as $customFieldSet) {
             $this->upsertCustomFieldSet($customFieldSet, $context->getContext());
         }
@@ -109,8 +108,6 @@ class CustomFieldInstaller implements InstallerInterface
 
     public function uninstall(UninstallContext $context): void
     {
-        $this->removeObsoleteCustomFieldSets($context->getContext());
-
         foreach ($this->customFieldSets as $customFieldSet) {
             $this->deactivateCustomFieldSet($customFieldSet, $context->getContext());
         }
@@ -137,6 +134,11 @@ class CustomFieldInstaller implements InstallerInterface
         foreach ($this->customFields as $customField) {
             $this->deactivateCustomField($customField, $context->getContext());
         }
+    }
+
+    public function cleanup(InstallContext $context): void
+    {
+        $this->removeObsoleteCustomFieldSets($context->getContext());
     }
 
     private function upsertCustomField(array $customField, Context $context): void
