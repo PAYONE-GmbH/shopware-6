@@ -164,3 +164,16 @@ Wartung
 * Kartentyp Discover entfernt
 * Abhängigkeit zur GitHub-Pipeline hinzufügen
 * getestet mit 6.4.5.0
+
+# 3.0.0
+
+Fehlerbehebungen
+
+* Löschung von Kunden ist jetzt möglich
+* Gutschrift nur bei noch nicht gutgeschriebenen Artikeln möglich
+* Fehlende Abhängigkeiten hinzugefügt für die Installation via Store
+
+Wartung
+
+* Kompatibilität zu 6.4.7.0 hergestellt
+* Unterstützung für 6.2 entfernt
