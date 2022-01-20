@@ -83,7 +83,7 @@ Component.register('payone-refund-button', {
                 return false;
             }
 
-            this.shippingCosts = this.order.shippingCosts.totalPrice * (10 ** this.decimalPrecision);
+            const shippingCosts = this.order.shippingCosts.totalPrice * (10 ** this.decimalPrecision);
 
             let refundedPositionAmount = 0;
 
@@ -94,7 +94,7 @@ Component.register('payone-refund-button', {
                 }
             });
 
-            if (this.refundedAmount - Math.round(refundedPositionAmount) >= this.shippingCosts) {
+            if (this.refundedAmount - Math.round(refundedPositionAmount) >= shippingCosts) {
                 return false;
             }
 

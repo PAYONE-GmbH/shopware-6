@@ -81,7 +81,7 @@ Component.register('payone-capture-button', {
                 return false;
             }
 
-            this.shippingCosts = this.order.shippingCosts.totalPrice * (10 ** this.decimalPrecision);
+            const shippingCosts = this.order.shippingCosts.totalPrice * (10 ** this.decimalPrecision);
 
             let capturedPositionAmount = 0;
 
@@ -92,7 +92,7 @@ Component.register('payone-capture-button', {
                 }
             });
 
-            if (this.capturedAmount - Math.round(capturedPositionAmount) >= this.shippingCosts) {
+            if (this.capturedAmount - Math.round(capturedPositionAmount) >= shippingCosts) {
                 return false;
             }
 
@@ -108,7 +108,6 @@ Component.register('payone-capture-button', {
             isCaptureSuccessful: false,
             selection: [],
             captureAmount: 0.0,
-            shippingCosts: 0.0,
             includeShippingCosts: false
         };
     },
