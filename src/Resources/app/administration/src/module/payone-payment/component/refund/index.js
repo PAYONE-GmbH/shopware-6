@@ -115,7 +115,7 @@ Component.register('payone-refund-button', {
         refundOrder() {
             const request = {
                 orderTransactionId: this.transaction.id,
-                payone_order_id: this.transaction.extensions.payonePaymentOrderTransactionData.transactionid,
+                payone_order_id: this.transaction.extensions.payonePaymentOrderTransactionData.transactionId,
                 salesChannel: this.order.salesChannel,
                 amount: this.refundAmount,
                 orderLines: [],
@@ -165,7 +165,7 @@ Component.register('payone-refund-button', {
         refundFullOrder() {
             const request = {
                 orderTransactionId: this.transaction.id,
-                payone_order_id: this.transaction.extensions.payonePaymentOrderTransactionData.transactionid,
+                payone_order_id: this.transaction.extensions.payonePaymentOrderTransactionData.transactionId,
                 salesChannel: this.order.salesChannel,
                 amount: this.maxRefundAmount,
                 orderLines: [],
