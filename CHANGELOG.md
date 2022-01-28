@@ -169,7 +169,21 @@ Maintenance
 * Add dependency to GitHub pipeline
 * Add fix for Version 6.4.5.0
 
-# 2.5.0
+# 3.0.0
+
+Bugfixes
+
+* Customer deletion now possible
+* Refund only from not yet refunded items possible
+* Adjustment missing dependencies when installing via store
+
+Maintenance
+
+* fix compatibility 6.4.7.0
+* drop support for 6.2
+
+
+# 3.1.0
 
 Maintenance
 
@@ -200,16 +214,3 @@ $this->transactionRepository->upsert([[
    ],
 ]], $context);
  ```
-
-# 3.0.0
-
-Bugfixes
-
-* Customer deletion now possible
-* Refund only from not yet refunded items possible
-* Adjustment missing dependencies when installing via store
-
-Maintenance
-
-* fix compatibility 6.4.7.0
-* drop support for 6.2
