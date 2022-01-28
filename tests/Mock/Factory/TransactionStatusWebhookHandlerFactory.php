@@ -46,6 +46,7 @@ class TransactionStatusWebhookHandlerFactory
 
         try {
             $entitySearchResult = new EntitySearchResult(
+                OrderTransactionEntity::class,
                 1,
                 new EntityCollection(array_filter([$transaction])),
                 null,
