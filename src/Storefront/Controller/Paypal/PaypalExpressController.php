@@ -31,6 +31,7 @@ use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\Salutation\SalutationEntity;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,6 +76,9 @@ class PaypalExpressController extends StorefrontController
     /** @var RequestParameterFactory */
     private $requestParameterFactory;
 
+    /** @var SystemConfigService */
+    private $systemConfigService;
+
     /**
      * @param SalesChannelContextFactory $salesChannelContextFactory
      */
@@ -89,7 +93,8 @@ class PaypalExpressController extends StorefrontController
         SalesChannelContextSwitcher $salesChannelContextSwitcher,
         CartHasherInterface $cartHasher,
         RouterInterface $router,
-        RequestParameterFactory $requestParameterFactory
+        RequestParameterFactory $requestParameterFactory,
+        SystemConfigService $systemConfigService
     ) {
         $this->client                      = $client;
         $this->cartService                 = $cartService;
@@ -102,6 +107,7 @@ class PaypalExpressController extends StorefrontController
         $this->cartHasher                  = $cartHasher;
         $this->router                      = $router;
         $this->requestParameterFactory     = $requestParameterFactory;
+        $this->systemConfigService         = $systemConfigService;
     }
 
     /**
@@ -187,7 +193,7 @@ class PaypalExpressController extends StorefrontController
             throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
-        $customerDataBag  = $this->getCustomerDataBagFromResponse($response, $context->getContext());
+        $customerDataBag  = $this->getCustomerDataBagFromResponse($response, $context);
         $customerResponse = $this->registerRoute->register($customerDataBag, $context, false);
         $customerId       = $customerResponse->getCustomer()->getId();
         $newContextToken  = $this->accountService->login($response['addpaydata']['email'], $context, true);
@@ -234,12 +240,12 @@ class PaypalExpressController extends StorefrontController
         return $this->router->generate('frontend.account.payone.paypal.express-checkout-handler', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
-    private function getCustomerDataBagFromResponse(array $response, Context $context): RequestDataBag
+    private function getCustomerDataBagFromResponse(array $response, SalesChannelContext $salesChannelContext): RequestDataBag
     {
-        $salutationId = $this->getSalutationId($context);
-        $countryId    = $this->getCountryIdByCode($response['addpaydata']['shipping_country'], $context);
+        $salutationId = $this->getSalutationId($salesChannelContext->getContext());
+        $countryId    = $this->getCountryIdByCode($response['addpaydata']['shipping_country'], $salesChannelContext->getContext());
 
-        return new RequestDataBag([
+        $customerData = [
             'guest'          => true,
             'salutationId'   => $salutationId,
             'email'          => $response['addpaydata']['email'],
@@ -257,7 +263,13 @@ class PaypalExpressController extends StorefrontController
                 'additionalAddressLine1' => $response['addpaydata']['shipping_addressaddition']
                     ?? null,
             ]),
-        ]);
+        ];
+
+        if ($this->systemConfigService->get('core.loginRegistration.requireDataProtectionCheckbox', $salesChannelContext->getSalesChannelId())) {
+            $customerData['acceptedDataProtection'] = true;
+        }
+
+        return new RequestDataBag($customerData);
     }
 
     private function getSalutationId(Context $context): string
