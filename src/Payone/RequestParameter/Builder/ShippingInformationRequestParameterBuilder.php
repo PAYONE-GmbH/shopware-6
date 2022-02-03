@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\PaymentHandler\PayonePaydirektPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
@@ -43,18 +44,14 @@ class ShippingInformationRequestParameterBuilder extends AbstractRequestParamete
 
         $paymentMethod = $arguments->getPaymentMethod();
 
-        if ($paymentMethod === PayonePaydirektPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayonePaypalPaymentHandler::class) {
-            return true;
-        }
-
-        if ($paymentMethod === PayonePaypalExpressPaymentHandler::class) {
-            return true;
-        }
-
-        return false;
+        return in_array($paymentMethod,
+            [
+                PayonePaydirektPaymentHandler::class,
+                PayonePaypalPaymentHandler::class,
+                PayonePaypalExpressPaymentHandler::class,
+                PayonePayolutionInvoicingPaymentHandler::class,
+            ],
+            true
+        );
     }
 }
