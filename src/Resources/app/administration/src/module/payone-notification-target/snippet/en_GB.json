@@ -1,0 +1,43 @@
+{
+    "payonePayment": {
+        "notificationTarget": {
+            "module": {
+                "title": "Payone notification forward",
+                "buttonTitle": "Notifications"
+            },
+            "list": {
+                "title": "Notification forward",
+                "empty": "No entries",
+                "buttonCreate": "Add new notification target"
+            },
+            "detail": {
+                "headline": "Notification forward",
+                "placeholder": {
+                    "url": "Url",
+                    "username": "Username",
+                    "password": "Password"
+                },
+                "label": {
+                    "url": "Url",
+                    "isBasicAuth": "Basic Auth",
+                    "txactions": "txactions",
+                    "buttonSave": "Save",
+                    "buttonCancel": "Cancel",
+                    "username": "Username",
+                    "password": "Password"
+                }
+            },
+            "columns": {
+                "url": "Url",
+                "isBasicAuth": "Basic Auth",
+                "txactions": "txactions"
+            },
+            "actions": {
+                "requeue": "Requeue"
+            },
+            "messages": {
+                "success": "The notification forward has been successfully queued."
+            }
+        }
+    }
+}

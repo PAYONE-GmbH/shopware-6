@@ -19,6 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Throwable;
 
 class MandateService implements MandateServiceInterface
@@ -87,7 +88,7 @@ class MandateService implements MandateServiceInterface
         );
 
         if (null === $mandate) {
-            throw new RuntimeException('mandate not found');
+            throw new FileNotFoundException('mandate not found');
         }
 
         $request = $this->requestFactory->getRequestParameter(

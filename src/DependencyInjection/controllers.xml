@@ -28,6 +28,8 @@
 
         <service id="PayonePayment\Controller\WebhookController">
             <argument type="service" id="PayonePayment\Payone\Webhook\Processor\WebhookProcessor" />
+            <argument type="service" id="payone_payment_notification_forward.repository"/>
+            <argument type="service" id="messenger.bus.shopware"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -39,6 +41,7 @@
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="state_machine_transition.repository" />
             <argument type="service" id="PayonePayment\Util\Logger"/>
+            <argument type="string">%kernel.project_dir%</argument>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -47,7 +50,7 @@
 
         <service id="PayonePayment\Storefront\Controller\Account\AccountCardController">
             <argument type="service" id="PayonePayment\Storefront\Page\Card\AccountCardPageLoader" />
-            <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
+            <argument type="service" id="PayonePayment\StoreApi\Route\CardRoute" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -56,7 +59,7 @@
 
         <service id="PayonePayment\Storefront\Controller\Account\AccountMandateController">
             <argument type="service" id="PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader" />
-            <argument type="service" id="PayonePayment\Components\MandateService\MandateService" />
+            <argument type="service" id="PayonePayment\StoreApi\Route\MandateRoute" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

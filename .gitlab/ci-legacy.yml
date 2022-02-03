@@ -4,7 +4,7 @@ k10r-phpstan-legacy:
   parallel:
     matrix:
       - PHP_VERSION: [ "7.2", "7.3", "7.4" ]
-        SW_VERSION: [ "6.2.0", "6.2.1", "6.2.3", "6.3.0.1", "6.3.0.2", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
+        SW_VERSION: [ "6.3.0.1", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
   needs: [ ]
   except:
     variables: [ $DISABLE_PHPSTAN_K10R == "1" ]
@@ -17,6 +17,7 @@ k10r-phpstan-legacy:
     - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
     - cd /var/www/html/ && /var/www/html/composer require dms/phpunit-arraysubset-asserts:"^0.3.0" --no-scripts
     - cd /var/www/html/ && /var/www/html/composer require  psr/event-dispatcher --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require  sinergi/browser-detector:"^6.1" --no-scripts
     - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && /var/www/html/composer dumpautoload
     - cd /var/www/html/ && /var/www/html/composer dumpautoload
   script:
@@ -32,7 +33,7 @@ sw-phpstan-legacy:
   parallel:
     matrix:
       - PHP_VERSION: [ "7.2", "7.3", "7.4" ]
-        SW_VERSION: [ "6.2.0", "6.2.1", "6.2.3", "6.3.0.1", "6.3.0.2", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
+        SW_VERSION: [ "6.3.0.1", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
   needs: [ ]
   except:
     variables: [ $DISABLE_PHPSTAN_SW == "1" ]
@@ -47,6 +48,7 @@ sw-phpstan-legacy:
     - cd /var/www/html/ && /var/www/html/composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
     - cd /var/www/html/ && /var/www/html/composer require dms/phpunit-arraysubset-asserts:"^0.3.0" --no-scripts
     - cd /var/www/html/ && /var/www/html/composer require psr/event-dispatcher --no-scripts
+    - cd /var/www/html/ && /var/www/html/composer require  sinergi/browser-detector:"^6.1" --no-scripts
     - cd /var/www/html/custom/plugins/${CI_PROJECT_NAME} && /var/www/html/composer dumpautoload
     - cd /var/www/html/ && /var/www/html/composer dumpautoload
   script:
@@ -62,7 +64,7 @@ phpunit-legacy:
   parallel:
     matrix:
       - PHP_VERSION: [ "7.2", "7.3", "7.4" ]
-        SW_VERSION: [ "6.2.0", "6.2.1", "6.2.3", "6.3.0.1", "6.3.0.2", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
+        SW_VERSION: [ "6.3.0.1", "6.3.1.1", "6.3.2.1", "6.3.3.1" ]
   needs: [ ]
   except:
     variables: [ $DISABLE_PHPUNIT == "1" ]

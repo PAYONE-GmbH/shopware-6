@@ -1,6 +1,6 @@
 name: Tests
 
-on: [ push, pull_request ]
+on: [ push, pull_request, workflow_dispatch ]
 
 jobs:
   ci-legacy:
@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         php-versions: [ '7.2', '7.3', '7.4' ]
-        shopware-versions: [ 'v6.2.0', 'v6.2.1', 'v6.2.2', 'v6.2.3', 'v6.3.0.0', 'v6.3.0.1', 'v6.3.0.2', 'v6.3.1.0', 'v6.3.1.1', 'v6.3.2.0', 'v6.3.3.0', 'v6.3.4.0', 'v6.3.5.0' ]
+        shopware-versions: [ 'v6.3.0.0', 'v6.3.0.1', 'v6.3.0.2', 'v6.3.1.0', 'v6.3.1.1', 'v6.3.2.0', 'v6.3.3.0', 'v6.3.4.0', 'v6.3.5.0' ]
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
       mysql:
@@ -48,6 +48,7 @@ jobs:
           composer require k10r/codestyle:"^1.0" --no-scripts
           composer require phpstan/phpstan:"^0.12" --no-scripts
           composer require phpstan/phpstan-phpunit:"^0.12" --no-scripts
+          composer require sinergi/browser-detector:"^6.1" --no-scripts
       - name: Install plugin
         run: |
           mkdir -p /tmp/shopware/custom/plugins/PayonePayment
@@ -67,7 +68,7 @@ jobs:
       fail-fast: false
       matrix:
         php-versions: [ '7.4' ]
-        shopware-versions: [ 'v6.4.0.0', 'v6.4.1.0' ]
+        shopware-versions: [ 'v6.4.0.0', 'v6.4.1.0', 'v6.4.2.0', 'v6.4.3.0', 'v6.4.4.0', 'v6.4.5.0', 'v6.4.6.0', 'v6.4.7.0' ]
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
       mysql:

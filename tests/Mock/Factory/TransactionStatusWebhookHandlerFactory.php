@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Test\Mock\Factory;
 
+use PayonePayment\Components\Currency\CurrencyPrecision;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
@@ -65,7 +66,8 @@ class TransactionStatusWebhookHandlerFactory
             $stateMachineRegistry,
             new ConfigReaderMock($configuration),
             $entityRepositoryMock,
-            new NullLogger()
+            new NullLogger(),
+            new CurrencyPrecision()
         );
     }
 }

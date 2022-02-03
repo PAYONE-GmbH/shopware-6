@@ -10,7 +10,7 @@ cache:
 
 variables:
   DOCKER_DRIVER: overlay2
-  BASE_SW_VERSION: '6.2.0'
+  BASE_SW_VERSION: '6.4.0.0'
   COMPOSER_COMMAND: "/var/www/html/composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader"
 
 
@@ -42,7 +42,7 @@ k10r-phpstan:
   parallel:
     matrix:
       - PHP_VERSION: [ "7.4" ]
-        SW_VERSION: [ "6.4.0.0", "6.4.1.0" ]
+        SW_VERSION: [ "6.4.0.0", "6.4.1.0", "6.4.2.1", "6.4.3.0" ]
   needs: [ ]
   except:
     variables: [ $DISABLE_PHPSTAN_K10R == "1" ]
@@ -65,7 +65,7 @@ sw-phpstan:
   parallel:
     matrix:
       - PHP_VERSION: [ "7.4" ]
-        SW_VERSION: [ "6.4.0.0", "6.4.1.0" ]
+        SW_VERSION: [ "6.4.0.0", "6.4.1.0", "6.4.2.1", "6.4.3.0" ]
   needs: [ ]
   except:
     variables: [ $DISABLE_PHPSTAN_SW == "1" ]
@@ -90,7 +90,7 @@ phpunit:
   parallel:
     matrix:
       - PHP_VERSION: [ "7.4" ]
-        SW_VERSION: [ "6.4.0.0", "6.4.1.0" ]
+        SW_VERSION: [ "6.4.0.0", "6.4.1.0", "6.4.2.1", "6.4.3.0" ]
   needs: [ ]
   except:
     variables: [ $DISABLE_PHPUNIT == "1" ]

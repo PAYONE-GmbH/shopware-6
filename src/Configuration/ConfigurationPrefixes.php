@@ -22,8 +22,10 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_PREPAYMENT             = 'prepayment';
     public const CONFIGURATION_PREFIX_TRUSTLY                = 'trustly';
     public const CONFIGURATION_PREFIX_SECURE_INVOICE         = 'secureInvoice';
+    public const CONFIGURATION_PREFIX_APPLE_PAY              = 'applePay';
 
     public const CONFIGURATION_PREFIXES = [
+        Handler\PayoneApplePayPaymentHandler::class              => self::CONFIGURATION_PREFIX_APPLE_PAY,
         Handler\PayoneCreditCardPaymentHandler::class            => self::CONFIGURATION_PREFIX_CREDITCARD,
         Handler\PayoneDebitPaymentHandler::class                 => self::CONFIGURATION_PREFIX_DEBIT,
         Handler\PayonePaypalPaymentHandler::class                => self::CONFIGURATION_PREFIX_PAYPAL,

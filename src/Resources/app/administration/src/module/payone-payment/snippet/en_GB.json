@@ -57,6 +57,8 @@
             "test": "Test API Credentials",
             "titleSuccess": "Success",
             "titleError": "Error",
+            "labelShowSpecificStatusMapping": "Display state mapping configuration",
+            "helpTextShowSpecificStatusMapping": "If not configured the general status mapping config will be applied.",
             "messageTestSuccess": "The API credentials were verified successfully.",
             "messageTestNoTestedPayments": "No payment methods were tested during the check because none of the PAYONE payment methods are activated. Please activate at least one PAYONE payment method under Settings --> Shop --> Payment.",
             "messageTestError": {
@@ -74,7 +76,8 @@
                 "iDeal": "The API credentials for iDEAL are not valid.",
                 "secureInvoice": "The API credentials for secure invoice payment are not valid.",
                 "paydirekt": "The API credentials for Paydirekt payment are not valid.",
-                "trustly": "The API credentials for Trustly payment are not valid."
+                "trustly": "The API credentials for Trustly payment are not valid.",
+                "applePay": "The API credentials for ApplePay payment are not valid."
             }
         },
         "supportModal": {
@@ -91,6 +94,11 @@
             "repository": {
                 "description": "Report errors on GitHub",
                 "button": "GitHub"
+            }
+        },
+        "applePay": {
+            "cert": {
+                "notification": "The ApplePay merchant authentication requires a certificate/key-pair. Further information:<br />\n                            <a href=\"https://docs.payone.com/display/public/PLATFORM/Special+Remarks+-+Apple+Pay#SpecialRemarks-ApplePay-Onboarding\" target=\"_blank\">https://docs.payone.com/display/public/PLATFORM/Special+Remarks+-+Apple+Pay#SpecialRemarks-ApplePay-Onboarding</a><br/><br/>\n\n                            Create a pem-File afterwards by using the following command:<br />\n                            <pre>openssl x509 -inform der -in merchant_id.cer -out merchant_id.pem</pre><br/>\n                            Copy certificate <b>(merchant_id.pem)</b> and key <b>(merchant_id.key)</b> file into the following folder:<br/>\n                            <pre>%shopwareRoot%/config/apple-pay-cert</pre>"
             }
         },
         "transitionActionNames": {
@@ -120,6 +128,14 @@
             "transaction": {
                 "notFound": "No matching transaction could be found",
                 "orderNotFound": "No matching order could be found"
+            }
+        }
+    },
+    "sw-privileges": {
+        "additional_permissions": {
+            "Payone": {
+                "label": "PAYONE",
+                "payone_order_management": "PAYONE transaction management"
             }
         }
     }

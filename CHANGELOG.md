@@ -91,3 +91,93 @@ Maintenance
  
 * tested with Shop version 6.4.1.0
 * better error message translations
+
+# 2.3.0
+
+New Features
+ 
+* new PAYONE permissions management
+* status mapping per payment method possible
+ 
+Bugfixes
+ 
+* fix for unlock the buy now button
+* PayPal Express: telephone number not a mandatory field 
+ 
+Maintenance
+ 
+* Shopware 6.4.3.1 compatibility
+* massive refactoring effort
+* Elasticsearch compatibility
+
+# 2.3.1
+
+Bugfix
+
+* backward compatibility to version <6.4.0
+
+# 2.3.2
+
+Bugfix
+
+* transaction status transmission of txstatus "paid" 
+
+Maintenance
+
+* Shopware 6.4.4.0 compatibility
+
+Notice
+
+* We're dropping compatibility with Shopware 6.2.* in a future release of this plugin
+
+# 2.4.0
+
+New Features
+
+* New payment method: Apple Pay
+* Enable forwarding of transaction status to third-party systems
+
+Bugfixes
+
+* Various fixes for different languages
+* Fixed the bug for Prepayment method
+
+Maintenance
+
+* Compatibility with 0€ orders
+* tested with 6.4.1
+
+# 2.4.1
+
+New Features
+
+* Deactivate payone payment methods on zero amount carts
+* Add apple-pay
+* Add payment method description
+
+Bugfixes
+
+* Fix config loading error
+* Fix storefront requests
+* Fix missing service
+* Fix missing customer parameter on prepayment
+
+Maintenance
+
+* Fix backwards compatibility
+* Removed cardtype type discover
+* Add dependency to GitHub pipeline
+* Add fix for Version 6.4.5.0
+
+# 3.0.0
+
+Bugfixes
+
+* Customer deletion now possible
+* Refund only from not yet refunded items possible
+* Adjustment missing dependencies when installing via store
+
+Maintenance
+
+* fix compatibility 6.4.7.0
+* drop support for 6.2

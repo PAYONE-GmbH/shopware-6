@@ -11,6 +11,7 @@ use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class WebhookProcessor implements WebhookProcessorInterface
@@ -34,8 +35,10 @@ class WebhookProcessor implements WebhookProcessorInterface
         $this->logger       = $logger;
     }
 
-    public function process(SalesChannelContext $salesChannelContext, array $data): Response
+    public function process(SalesChannelContext $salesChannelContext, Request $request): Response
     {
+        $data = $request->request->all();
+
         $config     = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $storedKeys = [hash('md5', $config->getString('portalKey'))];
 
@@ -65,7 +68,7 @@ class WebhookProcessor implements WebhookProcessorInterface
             }
 
             try {
-                $handler->process($salesChannelContext, $data);
+                $handler->process($salesChannelContext, $request);
 
                 $this->logger->info(sprintf('Processed webhook handler %s', get_class($handler)), $data);
             } catch (Exception $exception) {

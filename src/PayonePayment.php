@@ -79,9 +79,23 @@ class PayonePayment extends Plugin
 
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
-        $connection->exec('DROP TABLE payone_payment_card');
-        $connection->exec('DROP TABLE payone_payment_redirect');
-        $connection->exec('DROP TABLE payone_payment_mandate');
+
+        if (method_exists($connection, 'executeStatement')) {
+            $connection->executeStatement('DROP TABLE payone_payment_card');
+            $connection->executeStatement('DROP TABLE payone_payment_redirect');
+            $connection->executeStatement('DROP TABLE payone_payment_mandate');
+
+            return;
+        }
+
+        if (method_exists($connection, 'exec')) {
+            /** @noinspection PhpDeprecationInspection */
+            $connection->exec('DROP TABLE payone_payment_card');
+            /** @noinspection PhpDeprecationInspection */
+            $connection->exec('DROP TABLE payone_payment_redirect');
+            /** @noinspection PhpDeprecationInspection */
+            $connection->exec('DROP TABLE payone_payment_mandate');
+        }
     }
 
     private function getRuleInstallerSecureInvoice(): RuleInstallerSecureInvoice

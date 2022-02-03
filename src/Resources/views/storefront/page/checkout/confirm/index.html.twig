@@ -1,11 +1,31 @@
 {% sw_extends '@Storefront/storefront/page/checkout/confirm/index.html.twig' %}
 
 {% block page_checkout_confirm_form_submit %}
-    {{ parent() }}
+    {% if constant('PayonePayment\\PaymentMethod\\PayoneApplePay::UUID') == context.paymentMethod.id %}
+        {% if not page.cart.errors.blockOrder %}
+            {% sw_include '@Storefront/storefront/component/checkout/apple-pay-button.html.twig' with {'amount': page.cart.price.totalPrice } %}
+        {% endif %}
+
+        <button id="confirmFormSubmit"
+                class="submit--hidden d-none"
+                form="confirmOrderForm"
+                type="submit">
+        </button>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
 
     {% sw_include '@Storefront/storefront/page/checkout/confirm/field/work_order.html.twig' %}
     {% sw_include '@Storefront/storefront/page/checkout/confirm/field/cart_hash.html.twig' %}
     {% sw_include '@Storefront/storefront/page/checkout/confirm/field/payment_method.html.twig' %}
+{% endblock %}
+
+{% block base_flashbags_checkout %}
+    <div id="payone-apple-pay-error" style="display: none;">
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with { type: "danger", content: 'PayonePayment.errorMessages.genericError'|trans  } %}
+    </div>
+
+    {{ parent() }}
 {% endblock %}
 
 {% block page_checkout_confirm %}

@@ -6,8 +6,10 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
@@ -23,17 +25,25 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
     /** @var EntityRepositoryInterface */
     protected $currencyRepository;
 
+    /** @var CurrencyPrecisionInterface */
+    protected $currencyPrecision;
+
     /** @var CartHasherInterface */
     private $cartHasher;
 
     /** @var ConfigReaderInterface */
     private $configReader;
 
-    public function __construct(CartHasherInterface $cartHasher, ConfigReaderInterface $configReader, EntityRepositoryInterface $currencyRepository)
-    {
+    public function __construct(
+        CartHasherInterface $cartHasher,
+        ConfigReaderInterface $configReader,
+        EntityRepositoryInterface $currencyRepository,
+        CurrencyPrecisionInterface $currencyPrecision
+    ) {
         $this->cartHasher         = $cartHasher;
         $this->configReader       = $configReader;
         $this->currencyRepository = $currencyRepository;
+        $this->currencyPrecision  = $currencyPrecision;
     }
 
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
@@ -46,7 +56,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         $currency            = $this->getOrderCurrency($paymentTransaction->getOrder(), $salesChannelContext->getContext());
 
         $parameters = [
-            'amount'      => $this->getConvertedAmount($paymentTransaction->getOrder()->getAmountTotal(), $currency->getDecimalPrecision()),
+            'amount'      => $this->currencyPrecision->getRoundedTotalAmount($paymentTransaction->getOrder()->getAmountTotal(), $currency),
             'currency'    => $currency->getIsoCode(),
             'reference'   => $this->getReferenceNumber($paymentTransaction, true),
             'workorderid' => $this->getWorkOrderId($paymentTransaction, $requestData, $salesChannelContext),
@@ -128,12 +138,12 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
             $paymentMethod = $transaction->getPaymentMethod();
 
             if ($paymentMethod === null) {
-                return false;
+                return null;
             }
 
-            $customFields = $paymentMethod->getCustomFields();
-
-            return $customFields[CustomFieldInstaller::IS_PAYONE] ?? false;
+            if (in_array($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS) === false) {
+                return null;
+            }
         });
 
         if ($transactions->count() === 0) {

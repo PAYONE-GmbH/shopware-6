@@ -57,6 +57,8 @@
             "test": "API-Zugangsdaten testen",
             "titleSuccess": "Erfolg",
             "titleError": "Fehler",
+            "labelShowSpecificStatusMapping": "Statusmappingkonfiguration einblenden",
+            "helpTextShowSpecificStatusMapping": "Sie können für jede Zahlungsart ein spezifisches Statusmapping konfigurieren. Existiert eine solche Konfiguration nicht, wird auf die allgemeine Konfiguration zurückgegriffen.",
             "messageTestSuccess": "Die API-Zugangsdaten wurden erfolgreich validiert.",
             "messageTestNoTestedPayments": "Bei der Prüfung wurden keine Zahlarten getestet, weil keine der PAYONE Zahlarten aktiviert ist. Bitte aktivieren Sie mindestens eine PAYONE Zahlart unter Einstellungen --> Shop --> Zahlungsarten.",
             "messageTestError": {
@@ -74,7 +76,8 @@
                 "iDeal": "Die API-Zugangsdaten für iDEAL sind nicht korrekt.",
                 "secureInvoice": "Die API-Zugangsdaten für den gesicherten Rechnungskauf sind nicht korrekt.",
                 "paydirekt": "Die API-Zugangsdaten für Paydirekt sind nicht korrekt.",
-                "trustly": "Die API-Zugangsdaten für Trustly sind nicht korrekt."
+                "trustly": "Die API-Zugangsdaten für Trustly sind nicht korrekt.",
+                "applePay": "Die API-Zugangsdaten für ApplePay sind nicht korrekt."
             }
         },
         "supportModal": {
@@ -91,6 +94,11 @@
             "repository": {
                 "description": "Melden Sie Fehler und Verbesserungen auf GitHub",
                 "button": "GitHub"
+            }
+        },
+        "applePay": {
+            "cert": {
+                "notification": "Für die Nutzung von ApplePay ist ein Zertifikat/Key-Paar zur Authentifizierung des Merchants erforderlich. Die Anlage eines solchen Zertifikats wird hier beschrieben:<br />\n                            <a href=\"https://docs.payone.com/display/public/PLATFORM/Special+Remarks+-+Apple+Pay#SpecialRemarks-ApplePay-Onboarding\" target=\"_blank\">https://docs.payone.com/display/public/PLATFORM/Special+Remarks+-+Apple+Pay#SpecialRemarks-ApplePay-Onboarding</a><br/><br/>\n\n                            Erstellen Sie im Anschluss unter Verwendung des folgenden Befehls eine PEM-Datei des Zertifikates:<br />\n                            <pre>openssl x509 -inform der -in merchant_id.cer -out merchant_id.pem</pre><br/>\n                            Hinterlegen Sie das Zertifikat <b>(merchant_id.pem)</b> und den Key <b>(merchant_id.key)</b> in folgendem Verzeichnis:<br/>\n                            <pre>%shopwareRoot%/config/apple-pay-cert</pre>"
             }
         },
         "transitionActionNames": {
@@ -120,6 +128,14 @@
             "transaction": {
                 "notFound": "Es wurde keine passende Transaktion gefundend",
                 "orderNotFound": "Es wurde keine passende Bestellung gefundend"
+            }
+        }
+    },
+    "sw-privileges": {
+        "additional_permissions": {
+            "Payone": {
+                "label": "PAYONE",
+                "payone_order_management": "PAYONE Transaktionsmanagement"
             }
         }
     }
