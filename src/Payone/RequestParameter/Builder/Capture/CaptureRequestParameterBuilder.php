@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Capture;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
@@ -71,6 +72,10 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         if (!empty($customFields[CustomFieldInstaller::CLEARING_TYPE])) {
             $parameters['clearingtype'] = $customFields[CustomFieldInstaller::CLEARING_TYPE];
+        }
+
+        if ($arguments->getPaymentMethod() === PayoneBancontactPaymentHandler::class) {
+            unset($parameters['capturemode']);
         }
 
         return $parameters;
