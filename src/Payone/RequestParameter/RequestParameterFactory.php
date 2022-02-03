@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter;
 
+use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
+use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
 use RuntimeException;
 
@@ -55,6 +57,10 @@ class RequestParameterFactory
     {
         if ($arguments instanceof GetFileStruct) {
             unset($parameters['aid'], $parameters['hash']);
+        }
+
+        if ($arguments instanceof FinancialTransactionStruct && $arguments->getPaymentMethod() === PayoneBancontactPaymentHandler::class) {
+            unset($parameters['capturemode']);
         }
 
         return $parameters;
