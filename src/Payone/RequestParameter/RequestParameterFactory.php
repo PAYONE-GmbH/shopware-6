@@ -59,10 +59,6 @@ class RequestParameterFactory
             unset($parameters['aid'], $parameters['hash']);
         }
 
-        if ($arguments instanceof FinancialTransactionStruct && $arguments->getPaymentMethod() === PayoneBancontactPaymentHandler::class) {
-            unset($parameters['capturemode']);
-        }
-
         return $parameters;
     }
 
