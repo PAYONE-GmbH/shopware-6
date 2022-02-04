@@ -239,7 +239,7 @@ class PaypalExpressController extends StorefrontController
         $salutationId = $this->getSalutationId($context);
         $countryId    = $this->getCountryIdByCode($response['addpaydata']['shipping_country'], $context);
 
-        $customerData = [
+        return new RequestDataBag([
             'guest'                  => true,
             'salutationId'           => $salutationId,
             'email'                  => $response['addpaydata']['email'],
@@ -258,9 +258,7 @@ class PaypalExpressController extends StorefrontController
                 'additionalAddressLine1' => $response['addpaydata']['shipping_addressaddition']
                     ?? null,
             ]),
-        ];
-
-        return new RequestDataBag($customerData);
+        ]);
     }
 
     private function getSalutationId(Context $context): string
