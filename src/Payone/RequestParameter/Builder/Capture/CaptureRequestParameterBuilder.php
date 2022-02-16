@@ -17,8 +17,8 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     private const CAPTUREMODE_COMPLETED  = 'completed';
     private const CAPTUREMODE_INCOMPLETE = 'notcompleted';
-    private const SETTLEACCOUNT_YES = 'yes';
-    private const SETTLEACCOUNT_AUTO = 'auto';
+    private const SETTLEACCOUNT_YES      = 'yes';
+    private const SETTLEACCOUNT_AUTO     = 'auto';
 
     /** @var CurrencyPrecisionInterface */
     private $currencyPrecision;
