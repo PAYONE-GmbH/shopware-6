@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter;
 
-use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
-use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
 use RuntimeException;
 
