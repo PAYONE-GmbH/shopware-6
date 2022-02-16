@@ -75,7 +75,11 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if ($arguments->getPaymentMethod() === PayoneBancontactPaymentHandler::class) {
-            unset($parameters['capturemode']);
+            if ($isCompleted) {
+                $parameters['settleaccount'] = 'yes';
+            } else {
+                unset($parameters['capturemode']);
+            }
         }
 
         return $parameters;
