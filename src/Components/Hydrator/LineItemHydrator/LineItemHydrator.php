@@ -52,9 +52,9 @@ class LineItemHydrator implements LineItemHydratorInterface
 
             $taxes = $lineItem->getPrice() !== null ? $lineItem->getPrice()->getCalculatedTaxes() : null;
 
-            if (null === $taxes || null === $taxes->first()) {
-                continue;
-            }
+            $taxRate = null === $taxes || null === $taxes->first()
+                ? 0.0
+                : $taxes->first()->getTaxRate();
 
             $requestLineItems = array_merge(
                 $requestLineItems,
@@ -62,7 +62,7 @@ class LineItemHydrator implements LineItemHydratorInterface
                     ++$counter,
                     $lineItem,
                     $currency,
-                    $taxes->first(),
+                    $taxRate,
                     $orderLine['quantity']
                 )
             );
@@ -84,9 +84,9 @@ class LineItemHydrator implements LineItemHydratorInterface
 
             $taxes = $lineItem->getPrice() !== null ? $lineItem->getPrice()->getCalculatedTaxes() : null;
 
-            if (null === $taxes || null === $taxes->first()) {
-                continue;
-            }
+            $taxRate = null === $taxes || null === $taxes->first()
+                ? 0.0
+                : $taxes->first()->getTaxRate();
 
             $requestLineItems = array_merge(
                 $requestLineItems,
@@ -94,7 +94,7 @@ class LineItemHydrator implements LineItemHydratorInterface
                     ++$counter,
                     $lineItem,
                     $currency,
-                    $taxes->first(),
+                    $taxRate,
                     $lineItem->getQuantity()
                 )
             );
@@ -132,7 +132,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         return false;
     }
 
-    private function getLineItemRequest(int $index, OrderLineItemEntity $lineItemEntity, CurrencyEntity $currencyEntity, CalculatedTax $calculatedTax, int $quantity): array
+    private function getLineItemRequest(int $index, OrderLineItemEntity $lineItemEntity, CurrencyEntity $currencyEntity, float $taxRate, int $quantity): array
     {
         $productNumber = is_array($lineItemEntity->getPayload()) && array_key_exists('productNumber', $lineItemEntity->getPayload())
             ? $lineItemEntity->getPayload()['productNumber']
@@ -144,7 +144,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             'pr[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($lineItemEntity->getUnitPrice(), $currencyEntity),
             'no[' . $index . ']' => $quantity,
             'de[' . $index . ']' => $lineItemEntity->getLabel(),
-            'va[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($calculatedTax->getTaxRate(), $currencyEntity),
+            'va[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($taxRate, $currencyEntity),
         ];
     }
 }
