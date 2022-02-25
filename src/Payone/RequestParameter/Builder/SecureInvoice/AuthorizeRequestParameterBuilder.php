@@ -30,8 +30,9 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     {
         $paymentTransaction  = $arguments->getPaymentTransaction();
         $salesChannelContext = $arguments->getSalesChannelContext();
+        $context             = $salesChannelContext->getContext();
         $order               = $paymentTransaction->getOrder();
-        $currency            = $this->getOrderCurrency($order, $salesChannelContext->getContext());
+        $currency            = $this->getOrderCurrency($order, $context);
 
         $parameters = [
             'clearingtype'    => self::CLEARING_TYPE_INVOICE,
@@ -40,7 +41,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         ];
 
         if ($order->getLineItems() !== null) {
-            $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order, $salesChannelContext));
+            $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order, $context));
         }
 
         return $parameters;

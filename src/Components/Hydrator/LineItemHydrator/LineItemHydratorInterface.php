@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Components\Hydrator\LineItemHydrator;
 
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Currency\CurrencyEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 interface LineItemHydratorInterface
 {
@@ -17,5 +17,5 @@ interface LineItemHydratorInterface
         bool $includeShippingCosts
     ): array;
 
-    public function mapOrderLines(CurrencyEntity $currency, OrderEntity $order, SalesChannelContext $salesChannelContext): array;
+    public function mapOrderLines(CurrencyEntity $currency, OrderEntity $order, Context $context): array;
 }
