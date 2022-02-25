@@ -21,6 +21,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
     private const CAPTUREMODE_INCOMPLETE = 'notcompleted';
     private const SETTLEACCOUNT_YES      = 'yes';
     private const SETTLEACCOUNT_AUTO     = 'auto';
+    private const SETTLEACCOUNT_NO       = 'no';
 
     /** @var CurrencyPrecisionInterface */
     private $currencyPrecision;
@@ -78,7 +79,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if ($arguments->getPaymentMethod() === PayoneBancontactPaymentHandler::class) {
-            $parameters['settleaccount'] = $isCompleted ? self::SETTLEACCOUNT_YES : self::SETTLEACCOUNT_AUTO;
+            $parameters['settleaccount'] = $isCompleted ? self::SETTLEACCOUNT_YES : self::SETTLEACCOUNT_NO;
         }
 
         return $parameters;
