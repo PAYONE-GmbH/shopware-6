@@ -201,7 +201,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             $localeCode = $this->getLocaleCode($salesChannelContext);
         }
 
-        if ((int) round($shippingCosts->getTotalPrice() * (10 ** $currencyEntity->getDecimalPrecision())) >= 1 || $shippingCosts->getCalculatedTaxes()->count() <= 0) {
+        if ((int) round($shippingCosts->getTotalPrice() * (10 ** $currencyEntity->getDecimalPrecision())) <= 0 || $shippingCosts->getCalculatedTaxes()->count() <= 0) {
             return $lineItems;
         }
 
