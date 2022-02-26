@@ -190,7 +190,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             $context = Context::createDefaultContext();
         }
 
-        if($order->getDeliveries() === null) {
+        if ($order->getDeliveries() === null) {
             return $requestLineItems;
         }
 
