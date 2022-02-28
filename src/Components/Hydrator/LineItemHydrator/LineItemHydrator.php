@@ -201,6 +201,12 @@ class LineItemHydrator implements LineItemHydratorInterface
         }
 
         $shippingCosts  = $deliveryEntity->getShippingCosts();
+
+        if ($shippingCosts->getCalculatedTaxes()->count() <= 0
+            || $this->currencyPrecision->getRoundedItemAmount($shippingCosts->getTotalPrice(), $currencyEntity) <= 0) {
+            return $requestLineItems;
+        }
+
         $shippingMethod = $deliveryEntity->getShippingMethod();
 
         if ($shippingMethod === null) {
