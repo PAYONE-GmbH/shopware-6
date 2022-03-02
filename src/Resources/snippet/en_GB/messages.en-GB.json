@@ -3,9 +3,6 @@
         "errorMessages": {
             "genericError": "An error has occurred. Please try another payment method."
         },
-        "general": {
-            "shippingCosts": "Shipping costs"
-        },
         "creditCard": {
             "newCard": "Use a new credit card",
             "cardNumber": "Card number",
