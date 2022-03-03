@@ -207,10 +207,23 @@ class LineItemHydrator implements LineItemHydratorInterface
             return $requestLineItems;
         }
 
-        $shippingMethod = $deliveryEntity->getShippingMethod();
+        $languages = $context->getLanguageIdChain();
+
+        if (!in_array($order->getLanguageId(), $languages, true)) {
+            array_splice($languages, 0, 0, $order->getLanguageId());
+        }
+
+        $newContext = new Context(
+            $context->getSource(),
+            $context->getRuleIds(),
+            $context->getCurrencyId(),
+            $languages
+        );
+
+        $shippingMethod = $this->shipmentRepository->search(new Criteria([$deliveryEntity->getShippingMethodId()]), $newContext)->first();
 
         if ($shippingMethod === null) {
-            $shippingMethod = $this->shipmentRepository->search(new Criteria([$deliveryEntity->getShippingMethodId()]), $context)->first();
+            return $requestLineItems;
         }
 
         foreach ($shippingCosts->getCalculatedTaxes() as $shipmentPosition) {
