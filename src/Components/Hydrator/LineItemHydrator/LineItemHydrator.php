@@ -211,9 +211,9 @@ class LineItemHydrator implements LineItemHydratorInterface
 
         if (!in_array($order->getLanguageId(), $languages, true)) {
             array_splice($languages, 0, 0, $order->getLanguageId());
-        }
 
-        $context->assign(['languageIdChain' => $languages]);
+            $context->assign(['languageIdChain' => $languages]);
+        }
 
         $shippingMethod = $this->shipmentRepository->search(new Criteria([$deliveryEntity->getShippingMethodId()]), $context)->first();
 
