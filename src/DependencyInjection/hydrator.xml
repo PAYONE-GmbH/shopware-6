@@ -5,8 +5,7 @@
     <services>
         <service id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator">
             <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
-            <argument type="service" id="translator"/>
-            <argument type="service" id="language.repository"/>
+            <argument type="service" id="shipping_method.repository"/>
         </service>
     </services>
 </container>

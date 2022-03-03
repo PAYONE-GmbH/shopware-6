@@ -54,7 +54,6 @@ use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\Salutation\SalutationEntity;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 trait RequestParameterFactoryTestTrait
 {
@@ -69,7 +68,7 @@ trait RequestParameterFactoryTestTrait
                 new DebitAuthorizeRequestParameterBuilder(),
                 new CaptureRequestParameterBuilder(new CurrencyPrecision()),
                 new RefundRequestParameterBuilder(new CurrencyPrecision()),
-                new OrderLinesRequestParameterBuilder(new LineItemHydrator(new CurrencyPrecision(), $this->createMock(TranslatorInterface::class), $this->createMock(EntityRepositoryInterface::class))),
+                new OrderLinesRequestParameterBuilder(new LineItemHydrator(new CurrencyPrecision(), $this->createMock(EntityRepositoryInterface::class))),
                 $this->getSystemRequestBuilder(),
                 $this->getGeneralTransactionRequestBuilder($salesChannelContext),
                 $this->getCustomerRequestBuilder(),
