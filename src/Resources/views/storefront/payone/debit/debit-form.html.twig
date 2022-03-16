@@ -36,6 +36,22 @@
                         <div id="errorOutput" class="alert alert-warning" role="alert" style="display: none;"></div>
                     </div>
                 </div>
+
+                {% if not context.customer.guest %}
+                    <div class="form-row col-md-12">
+                        <div class="form-group col-md-6">
+                            <input type="checkbox"
+                                   name="saveMandate"
+                                   id="saveMandate"
+                                   form="confirmOrderForm"
+                                   {% if page.extensions.payone.savedMandates.total > 0 %}
+                                    checked="checked"
+                                   {% endif %}"
+                                   />
+                            <label class="form-label" for="saveMandate">{{ "PayonePayment.debit.save" | trans }}</label>
+                        </div>
+                    </div>
+                {% endif %}
             </fieldset>
         </div>
 

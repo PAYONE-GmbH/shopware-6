@@ -119,11 +119,18 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
             throw new LogicException('could not parse sepa mandate signature date');
         }
 
-        if (null !== $salesChannelContext->getCustomer()) {
+        $saveMandate = $requestData->get('saveMandate') === 'on';
+
+        if (null !== $salesChannelContext->getCustomer() && $saveMandate) {
             $this->mandateService->saveMandate(
                 $salesChannelContext->getCustomer(),
                 $response['mandate']['Identification'],
                 $date,
+                $salesChannelContext
+            );
+        } elseif (null !== $salesChannelContext->getCustomer() && !$saveMandate) {
+            $this->mandateService->removeAllMandatesForCustomer(
+                $salesChannelContext->getCustomer(),
                 $salesChannelContext
             );
         }

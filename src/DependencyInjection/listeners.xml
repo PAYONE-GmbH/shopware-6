@@ -19,6 +19,12 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="PayonePayment\EventListener\CheckoutConfirmDebitEventListener">
+            <argument type="service" id="PayonePayment\StoreApi\Route\MandateRoute" />
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <service id="PayonePayment\EventListener\CheckoutConfirmPaypalExpressEventListener">
             <tag name="kernel.event_subscriber"/>
         </service>

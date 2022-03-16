@@ -9,12 +9,14 @@
             "securityCode": "CVV",
             "expiryDate": "Gültig bis",
             "savedCards": "Gespeicherte Karte",
-            "iframeError": "Bitte prüfen Sie, ob alle Felder korrekt und vollständig ausgefüllt sind."
+            "iframeError": "Bitte prüfen Sie, ob alle Felder korrekt und vollständig ausgefüllt sind.",
+            "save": "Daten für zukünftige Nutzung speichern"
         },
         "debit": {
             "accountOwner": "Kontoinhaber",
             "iban": "IBAN",
-            "bic": "BIC"
+            "bic": "BIC",
+            "save": "Daten für zukünftige Nutzung speichern"
         },
         "cardPage": {
             "menuName": "Kreditkarten",

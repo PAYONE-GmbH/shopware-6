@@ -9,12 +9,14 @@
             "securityCode": "Security code",
             "expiryDate": "Expiry date",
             "savedCards": "Saved card",
-            "iframeError": "Please verify the fields and make sure no field is empty."
+            "iframeError": "Please verify the fields and make sure no field is empty.",
+            "save": "Save data for future use"
         },
         "debit": {
             "accountOwner": "Account owner",
             "iban": "IBAN",
-            "bic": "BIC"
+            "bic": "BIC",
+            "save": "Save data for future use"
         },
         "cardPage": {
             "menuName": "Credit Cards",

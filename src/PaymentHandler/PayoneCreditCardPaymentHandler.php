@@ -121,11 +121,12 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
         $cardExpireDate     = $requestData->get('cardExpireDate');
         $savedPseudoCardPan = $requestData->get('savedPseudoCardPan');
         $pseudoCardPan      = $requestData->get('pseudoCardPan');
+        $saveCreditCard     = $requestData->get('saveCreditCard') === 'on';
 
         if (empty($savedPseudoCardPan)) {
             $expiresAt = DateTime::createFromFormat('ym', $cardExpireDate);
 
-            if (!empty($expiresAt) && null !== $salesChannelContext->getCustomer()) {
+            if (!empty($expiresAt) && null !== $salesChannelContext->getCustomer() && $saveCreditCard) {
                 $this->cardRepository->saveCard(
                     $salesChannelContext->getCustomer(),
                     $truncatedCardPan,
@@ -133,6 +134,8 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
                     $expiresAt,
                     $salesChannelContext->getContext()
                 );
+            } elseif (null !== $salesChannelContext->getCustomer() && !$saveCreditCard) {
+                $this->cardRepository->removeAllCardsForCustomer($salesChannelContext->getCustomer(), $salesChannelContext->getContext());
             }
         }
 

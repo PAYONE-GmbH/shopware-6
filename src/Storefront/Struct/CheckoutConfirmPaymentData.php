@@ -29,6 +29,9 @@ class CheckoutConfirmPaymentData extends Struct
     /** @var null|string */
     protected $cartHash = '';
 
+    /** @var null|EntitySearchResult */
+    protected $savedMandates;
+
     public function getCardRequest(): array
     {
         return $this->cardRequest;
@@ -57,5 +60,10 @@ class CheckoutConfirmPaymentData extends Struct
     public function getCartHash(): ?string
     {
         return $this->cartHash;
+    }
+
+    public function getSavedMandates(): ?EntitySearchResult
+    {
+        return $this->savedMandates;
     }
 }
