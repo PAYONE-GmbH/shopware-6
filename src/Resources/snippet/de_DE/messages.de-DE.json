@@ -9,14 +9,12 @@
             "securityCode": "CVV",
             "expiryDate": "Gültig bis",
             "savedCards": "Gespeicherte Karte",
-            "iframeError": "Bitte prüfen Sie, ob alle Felder korrekt und vollständig ausgefüllt sind.",
-            "save": "Daten für zukünftige Nutzung speichern"
+            "iframeError": "Bitte prüfen Sie, ob alle Felder korrekt und vollständig ausgefüllt sind."
         },
         "debit": {
             "accountOwner": "Kontoinhaber",
             "iban": "IBAN",
-            "bic": "BIC",
-            "save": "Daten für zukünftige Nutzung speichern"
+            "bic": "BIC"
         },
         "cardPage": {
             "menuName": "Kreditkarten",
@@ -42,7 +40,8 @@
             "noEntries": "Keine SEPA-Lastschriftmandate vorhanden."
         },
         "checkoutConfirmPage": {
-            "defaultCardTitle": "Zahlungsinformationen"
+            "defaultCardTitle": "Zahlungsinformationen",
+            "save": "Daten für zukünftige Nutzung speichern"
         },
         "checkoutFinishPage": {
             "mandateIdentification": "SEPA-Laschtschriftmandat"

@@ -64,7 +64,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
         $dataBag->set('savedPseudoCardPan', '');
         $dataBag->set('pseudoCardPan', '');
-        $dataBag->set('saveCreditCard', 'on');
+        $dataBag->set('saveCreditCard', PayoneCreditCardPaymentHandler::SAVE_CREDIT_CARD);
 
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
@@ -187,7 +187,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
         $dataBag->set('savedPseudoCardPan', '');
         $dataBag->set('pseudoCardPan', '');
-        $dataBag->set('saveCreditCard', 'on');
+        $dataBag->set('saveCreditCard', PayoneCreditCardPaymentHandler::SAVE_CREDIT_CARD);
 
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,

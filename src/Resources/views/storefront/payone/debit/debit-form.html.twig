@@ -37,18 +37,18 @@
                     </div>
                 </div>
 
-                {% if not context.customer.guest %}
+                {% if context.customer and not context.customer.guest %}
                     <div class="form-row col-md-12">
                         <div class="form-group col-md-6">
                             <input type="checkbox"
-                                   name="saveMandate"
+                                   name="{{ constant('PayonePayment\\PaymentHandler\\PayoneDebitPaymentHandler::REQUEST_PARAM_SAVE_MANDATE') }}"
                                    id="saveMandate"
                                    form="confirmOrderForm"
                                    {% if page.extensions.payone.savedMandates.total > 0 %}
                                     checked="checked"
                                    {% endif %}
                                    />
-                            <label class="form-label" for="saveMandate">{{ "PayonePayment.debit.save" | trans }}</label>
+                            <label class="form-label" for="saveMandate">{{ "PayonePayment.checkoutConfirmPage.save" | trans }}</label>
                         </div>
                     </div>
                 {% endif %}

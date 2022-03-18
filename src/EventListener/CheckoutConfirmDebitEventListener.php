@@ -18,9 +18,8 @@ class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
     /** @var AbstractMandateRoute */
     private $mandateRoute;
 
-    public function __construct(
-        AbstractMandateRoute $mandateRoute
-    ) {
+    public function __construct(AbstractMandateRoute $mandateRoute)
+    {
         $this->mandateRoute = $mandateRoute;
     }
 
@@ -47,11 +46,9 @@ class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
             $savedMandates = $this->mandateRoute->load($context)->getSearchResult();
         }
 
-        if ($page->hasExtension(CheckoutCartPaymentData::EXTENSION_NAME)) {
-            $payoneData = $page->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
-        } else {
-            $payoneData = new CheckoutConfirmPaymentData();
-        }
+        $payoneData = $page->hasExtension(CheckoutCartPaymentData::EXTENSION_NAME)
+            ? $page->getExtension(CheckoutCartPaymentData::EXTENSION_NAME)
+            : new CheckoutConfirmPaymentData();
 
         if (null !== $payoneData) {
             $payoneData->assign([

@@ -9,14 +9,12 @@
             "securityCode": "Security code",
             "expiryDate": "Expiry date",
             "savedCards": "Saved card",
-            "iframeError": "Please verify the fields and make sure no field is empty.",
-            "save": "Save data for future use"
+            "iframeError": "Please verify the fields and make sure no field is empty."
         },
         "debit": {
             "accountOwner": "Account owner",
             "iban": "IBAN",
-            "bic": "BIC",
-            "save": "Save data for future use"
+            "bic": "BIC"
         },
         "cardPage": {
             "menuName": "Credit Cards",
@@ -42,7 +40,8 @@
             "noEntries": "No mandates saved."
         },
         "checkoutConfirmPage": {
-            "defaultCardTitle": "Payment Information"
+            "defaultCardTitle": "Payment Information",
+            "save": "Save data for future use"
         },
         "checkoutFinishPage": {
             "mandateIdentification": "Direct Debit Mandate"

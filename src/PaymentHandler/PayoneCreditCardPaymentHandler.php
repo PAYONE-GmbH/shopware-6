@@ -29,6 +29,12 @@ use Throwable;
 
 class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
+    public const REQUEST_PARAM_SAVE_CREDIT_CARD      = 'saveCreditCard';
+    public const REQUEST_PARAM_PSEUDO_CARD_PAN       = 'pseudoCardPan';
+    public const REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN = 'savedPseudoCardPan';
+    public const REQUEST_PARAM_CARD_EXPIRE_DATE      = 'cardExpireDate';
+    public const REQUEST_PARAM_TRUNCATED_CARD_PAN    = 'truncatedCardPan';
+
     /** @var PayoneClientInterface */
     protected $client;
 
@@ -117,11 +123,11 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());
         }
 
-        $truncatedCardPan   = $requestData->get('truncatedCardPan');
-        $cardExpireDate     = $requestData->get('cardExpireDate');
-        $savedPseudoCardPan = $requestData->get('savedPseudoCardPan');
-        $pseudoCardPan      = $requestData->get('pseudoCardPan');
-        $saveCreditCard     = $requestData->get('saveCreditCard') === 'on';
+        $truncatedCardPan   = $requestData->get(self::REQUEST_PARAM_TRUNCATED_CARD_PAN);
+        $cardExpireDate     = $requestData->get(self::REQUEST_PARAM_CARD_EXPIRE_DATE);
+        $savedPseudoCardPan = $requestData->get(self::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN);
+        $pseudoCardPan      = $requestData->get(self::REQUEST_PARAM_PSEUDO_CARD_PAN);
+        $saveCreditCard     = $requestData->get(self::REQUEST_PARAM_SAVE_CREDIT_CARD) === 'on';
 
         if (empty($savedPseudoCardPan)) {
             $expiresAt = DateTime::createFromFormat('ym', $cardExpireDate);

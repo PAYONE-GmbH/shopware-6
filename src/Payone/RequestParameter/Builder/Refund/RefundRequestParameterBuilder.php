@@ -57,6 +57,10 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
             $transactionData  = $customFields[CustomFieldInstaller::TRANSACTION_DATA];
             $firstTransaction = reset($transactionData);
 
+            if (!array_key_exists('request', $firstTransaction) || !array_key_exists('iban', $firstTransaction['request'])) {
+                return $parameters;
+            }
+
             $parameters['iban'] = $firstTransaction['request']['iban'];
         }
 
