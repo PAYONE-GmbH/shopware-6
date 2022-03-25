@@ -60,11 +60,11 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
-        $dataBag->set('truncatedCardPan', '');
-        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
-        $dataBag->set('savedPseudoCardPan', '');
-        $dataBag->set('pseudoCardPan', '');
-        $dataBag->set('saveCreditCard', PayoneCreditCardPaymentHandler::SAVE_CREDIT_CARD);
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE, (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVE_CREDIT_CARD, 'on');
 
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
@@ -122,10 +122,10 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
-        $dataBag->set('truncatedCardPan', '');
-        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
-        $dataBag->set('savedPseudoCardPan', '');
-        $dataBag->set('pseudoCardPan', '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE, (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN, '');
 
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
@@ -183,11 +183,11 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
-        $dataBag->set('truncatedCardPan', '');
-        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
-        $dataBag->set('savedPseudoCardPan', '');
-        $dataBag->set('pseudoCardPan', '');
-        $dataBag->set('saveCreditCard', PayoneCreditCardPaymentHandler::SAVE_CREDIT_CARD);
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE, (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVE_CREDIT_CARD, 'on');
 
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
@@ -246,10 +246,10 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
-        $dataBag->set('truncatedCardPan', '');
-        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
-        $dataBag->set('savedPseudoCardPan', 'saved-pan');
-        $dataBag->set('pseudoCardPan', '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE, (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN, 'saved-pan');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN, '');
 
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
