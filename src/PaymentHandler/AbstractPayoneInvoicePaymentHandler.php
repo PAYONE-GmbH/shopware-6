@@ -6,26 +6,23 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
-use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
+use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
+abstract class AbstractPayoneInvoicePaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
     /** @var PayoneClientInterface */
     private $client;
@@ -36,9 +33,6 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
 
-    /** @var PaymentStateHandlerInterface */
-    private $stateHandler;
-
     /** @var RequestParameterFactory */
     private $requestParameterFactory;
 
@@ -48,7 +42,6 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         EntityRepositoryInterface $lineItemRepository,
-        PaymentStateHandlerInterface $stateHandler,
         RequestStack $requestStack,
         RequestParameterFactory $requestParameterFactory
     ) {
@@ -57,32 +50,31 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
         $this->client                  = $client;
         $this->translator              = $translator;
         $this->dataHandler             = $dataHandler;
-        $this->stateHandler            = $stateHandler;
         $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
+    public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
         $requestData = $this->fetchRequestData();
 
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
-            'paypalExpressAuthorizationMethod',
+            $this->getConfigKey(),
             'preauthorization'
         );
 
-        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
+        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         $request = $this->requestParameterFactory->getRequestParameter(
             new PaymentTransactionStruct(
                 $paymentTransaction,
                 $requestData,
                 $salesChannelContext,
-                __CLASS__,
+                $this->getPaymentMethod(),
                 $authorizationMethod
             )
         );
@@ -90,19 +82,19 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
         try {
             $response = $this->client->request($request);
         } catch (PayoneRequestException $exception) {
-            throw new AsyncPaymentProcessException(
+            throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
         } catch (Throwable $exception) {
-            throw new AsyncPaymentProcessException(
+            throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
 
         if (empty($response['status']) || $response['status'] === 'ERROR') {
-            throw new AsyncPaymentProcessException(
+            throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
@@ -111,52 +103,34 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
         $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
             $this->getBaseCustomFields($response['status']),
             [
-                CustomFieldInstaller::WORK_ORDER_ID => $requestData->get('workorder'),
+                CustomFieldInstaller::CAPTURE_MODE => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+
+                // Set clearing type explicitly
+                CustomFieldInstaller::CLEARING_TYPE => static::PAYONE_CLEARING_REC,
+
+                // Store clearing bank account information as custom field of the transaction in order to
+                // use this data for payment instructions of an invoice or similar.
+                // See: https://docs.payone.com/display/public/PLATFORM/How+to+use+JSON-Responses#HowtouseJSON-Responses-JSON,Clearing-Data
+                CustomFieldInstaller::CLEARING_BANK_ACCOUNT => array_merge(array_filter($response['clearing']['BankAccount'] ?? []), [
+                    // The PAYONE transaction ID acts as intended purpose of the transfer.
+                    // We add this field explicitly here to make clear that the transaction ID is used
+                    // as payment reference in context of the prepayment.
+                    'Reference' => (string) $response['txid'],
+                ]),
             ]
         ));
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
-
-        if (strtolower($response['status']) === 'redirect') {
-            return new RedirectResponse($response['redirecturl']);
-        }
-
-        return new RedirectResponse($request['successurl']);
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the config key for self::getAuthorizationMethod()
      */
-    public function finalize(
-        AsyncPaymentTransactionStruct $transaction,
-        Request $request,
-        SalesChannelContext $salesChannelContext
-    ): void {
-        $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
-    }
+    abstract protected function getConfigKey(): string;
 
     /**
-     * {@inheritdoc}
+     * Returns the payment method for the request parameters
      */
-    public static function isCapturable(array $transactionData, array $customFields): bool
-    {
-        if (static::isNeverCapturable($transactionData, $customFields)) {
-            return false;
-        }
-
-        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData, $customFields);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function isRefundable(array $transactionData, array $customFields): bool
-    {
-        if (static::isNeverRefundable($transactionData, $customFields)) {
-            return false;
-        }
-
-        return static::matchesIsRefundableDefaults($transactionData, $customFields);
-    }
+    abstract protected function getPaymentMethod(): string;
 }

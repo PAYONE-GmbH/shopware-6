@@ -8,6 +8,7 @@ use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneIDealPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaydirektPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
@@ -135,6 +136,7 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneIDealPaymentHandler::class:
             case PayonePaydirektPaymentHandler::class:
             case PayoneSecureInvoicePaymentHandler::class:
+            case PayoneOpenInvoicePaymentHandler::class:
             case PayonePrepaymentPaymentHandler::class:
                 return true;
         }

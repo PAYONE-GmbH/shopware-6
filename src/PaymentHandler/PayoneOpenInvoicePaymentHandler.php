@@ -6,7 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Installer\CustomFieldInstaller;
 
-class PayoneSecureInvoicePaymentHandler extends AbstractPayoneInvoicePaymentHandler
+class PayoneOpenInvoicePaymentHandler extends AbstractPayoneInvoicePaymentHandler
 {
     /**
      * {@inheritdoc}
@@ -41,7 +41,7 @@ class PayoneSecureInvoicePaymentHandler extends AbstractPayoneInvoicePaymentHand
      */
     protected function getConfigKey(): string
     {
-        return 'secureInvoiceAuthorizationMethod';
+        return 'openInvoiceAuthorizationMethod';
     }
 
     /**

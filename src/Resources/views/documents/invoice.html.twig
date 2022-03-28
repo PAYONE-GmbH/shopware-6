@@ -82,7 +82,7 @@
         {% endif %}
     {% endif %}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayoneSecureInvoice::UUID') == order.transactions.first.paymentMethod.id %}
+    {% if constant('PayonePayment\\PaymentMethod\\PayoneSecureInvoice::UUID') == order.transactions.first.paymentMethod.id or constant('PayonePayment\\PaymentMethod\\PayoneOpenInvoice::UUID') == order.transactions.first.paymentMethod.id %}
         {% block document_payment_payone_secure_invoice_clearing_reference %}
             {% if order.transactions.first.customFields.payone_clearing_bank_account.Reference %}
                 <br>

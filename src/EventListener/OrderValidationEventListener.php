@@ -9,6 +9,7 @@ use DateTimeInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Components\Validator\PaymentMethod;
+use PayonePayment\PaymentMethod\PayoneOpenInvoice;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
@@ -51,12 +52,12 @@ class OrderValidationEventListener implements EventSubscriberInterface
 
         $context = $this->getContextFromRequest($request);
 
-        $this->addSecureInvoiceValidationDefinitions($context, $event);
+        $this->addInvoiceValidationDefinitions($context, $event);
         $this->addPayolutionInvoicingValidationDefinitions($context, $event);
         $this->addPayolutionInstallmentValidationDefinitions($context, $event);
     }
 
-    private function addSecureInvoiceValidationDefinitions(SalesChannelContext $salesChannelContext, BuildValidationEvent $event): void
+    private function addInvoiceValidationDefinitions(SalesChannelContext $salesChannelContext, BuildValidationEvent $event): void
     {
         $customer = $salesChannelContext->getCustomer();
 
@@ -64,7 +65,7 @@ class OrderValidationEventListener implements EventSubscriberInterface
             return;
         }
 
-        if ($this->isSecureInvoicePayment($salesChannelContext) === false) {
+        if ($this->isInvoicePayment($salesChannelContext) === false) {
             return;
         }
 
@@ -72,7 +73,7 @@ class OrderValidationEventListener implements EventSubscriberInterface
 
         if ($activeBilling !== null && empty($activeBilling->getCompany())) {
             $event->getDefinition()->add(
-                'secureInvoiceBirthday',
+                'payoneInvoiceBirthday',
                 new Birthday(['value' => $this->getMinimumDate()])
             );
         }
@@ -150,9 +151,9 @@ class OrderValidationEventListener implements EventSubscriberInterface
         return $context->getPaymentMethod()->getId() === PayonePayolutionInvoicing::UUID;
     }
 
-    private function isSecureInvoicePayment(SalesChannelContext $context): bool
+    private function isInvoicePayment(SalesChannelContext $context): bool
     {
-        return $context->getPaymentMethod()->getId() === PayoneSecureInvoice::UUID;
+        return in_array($context->getPaymentMethod()->getId(), [PayoneSecureInvoice::UUID, PayoneOpenInvoice::UUID]);
     }
 
     private function customerHasCompanyAddress(SalesChannelContext $context): bool

@@ -368,6 +368,25 @@ class SettingsController extends AbstractController
                     'businessrelation' => 'b2c',
                 ];
 
+                case Handler\PayoneOpenInvoicePaymentHandler::class:
+                return [
+                    'request'          => 'preauthorization',
+                    'clearingtype'     => 'rec',
+                    'amount'           => 10000,
+                    'currency'         => 'EUR',
+                    'reference'        => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'birthday'         => '19900505',
+                    'firstname'        => 'Test',
+                    'lastname'         => 'Test',
+                    'country'          => 'DE',
+                    'email'            => 'test@example.com',
+                    'street'           => 'teststreet 2',
+                    'zip'              => '12345',
+                    'city'             => 'Test',
+                    'ip'               => '127.0.0.1',
+                    'businessrelation' => 'b2c',
+                ];
+
             case Handler\PayonePaydirektPaymentHandler::class:
                 return [
                     'request'                             => 'genericpayment',
