@@ -240,12 +240,13 @@ class PaypalExpressController extends StorefrontController
         $countryId    = $this->getCountryIdByCode($response['addpaydata']['shipping_country'], $context);
 
         return new RequestDataBag([
-            'guest'          => true,
-            'salutationId'   => $salutationId,
-            'email'          => $response['addpaydata']['email'],
-            'firstName'      => $response['addpaydata']['shipping_firstname'],
-            'lastName'       => $response['addpaydata']['shipping_lastname'],
-            'billingAddress' => array_filter([
+            'guest'                  => true,
+            'salutationId'           => $salutationId,
+            'email'                  => $response['addpaydata']['email'],
+            'firstName'              => $response['addpaydata']['shipping_firstname'],
+            'lastName'               => $response['addpaydata']['shipping_lastname'],
+            'acceptedDataProtection' => true,
+            'billingAddress'         => array_filter([
                 'firstName'              => $response['addpaydata']['shipping_firstname'],
                 'lastName'               => $response['addpaydata']['shipping_lastname'],
                 'salutationId'           => $salutationId,
