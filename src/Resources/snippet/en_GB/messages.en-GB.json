@@ -40,7 +40,8 @@
             "noEntries": "No mandates saved."
         },
         "checkoutConfirmPage": {
-            "defaultCardTitle": "Payment Information"
+            "defaultCardTitle": "Payment Information",
+            "save": "Save data for future use"
         },
         "checkoutFinishPage": {
             "mandateIdentification": "Direct Debit Mandate"

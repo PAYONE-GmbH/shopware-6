@@ -28,6 +28,8 @@ use Throwable;
 
 class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
+    public const REQUEST_PARAM_SAVE_MANDATE = 'saveMandate';
+
     /** @var PayoneClientInterface */
     protected $client;
 
@@ -119,11 +121,18 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
             throw new LogicException('could not parse sepa mandate signature date');
         }
 
-        if (null !== $salesChannelContext->getCustomer()) {
+        $saveMandate = $requestData->get(self::REQUEST_PARAM_SAVE_MANDATE) === 'on';
+
+        if (null !== $salesChannelContext->getCustomer() && $saveMandate) {
             $this->mandateService->saveMandate(
                 $salesChannelContext->getCustomer(),
                 $response['mandate']['Identification'],
                 $date,
+                $salesChannelContext
+            );
+        } elseif (null !== $salesChannelContext->getCustomer() && !$saveMandate) {
+            $this->mandateService->removeAllMandatesForCustomer(
+                $salesChannelContext->getCustomer(),
                 $salesChannelContext
             );
         }

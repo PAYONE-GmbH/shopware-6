@@ -29,4 +29,9 @@ interface CardRepositoryInterface
         CustomerEntity $customer,
         Context $context
     ): EntitySearchResult;
+
+    public function removeAllCardsForCustomer(
+        CustomerEntity $customer,
+        Context $context
+    ): void;
 }

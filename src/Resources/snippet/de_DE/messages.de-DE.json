@@ -40,7 +40,8 @@
             "noEntries": "Keine SEPA-Lastschriftmandate vorhanden."
         },
         "checkoutConfirmPage": {
-            "defaultCardTitle": "Zahlungsinformationen"
+            "defaultCardTitle": "Zahlungsinformationen",
+            "save": "Daten für zukünftige Nutzung speichern"
         },
         "checkoutFinishPage": {
             "mandateIdentification": "SEPA-Laschtschriftmandat"
