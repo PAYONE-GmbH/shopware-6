@@ -101,9 +101,13 @@ jobs:
           mkdir -p /tmp/shopware
           git clone --depth 1 --single-branch -b ${{ matrix.shopware-versions }} https://github.com/shopware/development /tmp/shopware
           printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"127.0.0.1\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"shopware\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"root\"" > /tmp/shopware/.psh.yaml.override
+          rm -rf /tmp/shopware/platform
+          git clone --depth 1 --single-branch -b ${{ matrix.shopware-versions }} https://github.com/shopware/platform /tmp/shopware/platform
           cd /tmp/shopware
           php psh.phar init
-          composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-scripts
+          cd /tmp/shopware/vendor/shopware/platform
+          wget https://github.com/shopware/platform/commit/0e6cbc24383f0123c01f59bd9aae0a49ce739cca.patch
+          patch -p1 -N < 0e6cbc24383f0123c01f59bd9aae0a49ce739cca.patch || true
       - name: Install plugin
         run: |
           mkdir -p /tmp/shopware/custom/plugins/PayonePayment
