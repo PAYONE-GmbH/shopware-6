@@ -177,3 +177,23 @@ Wartung
 
 * Kompatibilität zu 6.4.7.0 hergestellt
 * Unterstützung für 6.2 entfernt
+
+# 3.1.0
+
+Neue Funktionen
+ 
+* Neue Zahlungsart: Rechnung
+* Checkbox für Kreditkartenzahlungen hinzugefügt, um Zahlungsdaten zu speichern
+
+Fehlerbehebungen
+ 
+* Der Capturemode Parameter wurde entfernt bei abgeschlossenen Zahlungen 
+* den ZeroAmountCartValidator geupdatet
+* Data Protection Check wird immer aktiviert
+
+Wartung
+* Artikel ohne Steuern werden beim Capture berücksichtigt
+* Versandinformationen wurden bei Unzer hinzugefügt
+
+Getestet mit:
+Shopware 6.4.10.0
