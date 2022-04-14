@@ -15,6 +15,12 @@
       "email": "hallo@kellerkinder.de",
       "homepage": "https://www.kellerkinder.de",
       "role": "Contributor"
+    },
+    {
+      "name": "André Gregor-Herrmann",
+      "email": "andre.gregor-herrmann@payone.com",
+      "homepage": "https://www.payone.com",
+      "role": "Contributor"
     }
   ],
   "minimum-stability": "stable",
