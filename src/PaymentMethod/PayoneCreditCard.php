@@ -15,7 +15,7 @@ class PayoneCreditCard extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Payone Credit Card';
+    protected $name = 'Credit Card';
 
     /** @var string */
     protected $description = 'Use your credit card to safely pay through our PCI DSS certified payment provider. After your order, you may be redirected to your bank to authorize the payment.';
@@ -29,11 +29,11 @@ class PayoneCreditCard extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Payone Kreditkarte',
+            'name'        => 'Kreditkarte',
             'description' => 'Zahlen Sie sicher mit Ihrer Kreditkarte über unseren PCI DSS zertifizierten Zahlungsprovider. Nach der Bestellung werden Sie ggf. auf eine Seite Ihrer Bank weitergeleitet, um die Zahlung zu autorisieren.',
         ],
         'en-GB' => [
-            'name'        => 'Payone Credit Card',
+            'name'        => 'Credit Card',
             'description' => 'Use your credit card to safely pay through our PCI DSS certified payment provider. After your order, you may be redirected to your bank to authorize the payment.',
         ],
     ];

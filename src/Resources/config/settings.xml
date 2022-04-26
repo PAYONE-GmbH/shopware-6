@@ -432,6 +432,7 @@
 
     <card>
         <title>PayPal</title>
+        <title lang="de-DE">PayPal</title>
 
         <name>payment_paypal</name>
 
@@ -584,6 +585,7 @@
 
     <card>
         <title>PayPal Express</title>
+        <title lang="de-DE">PayPal Express</title>
 
         <name>payment_paypal_express</name>
 
@@ -735,8 +737,8 @@
     </card>
 
     <card>
-        <title>Debit</title>
-        <title lang="de-DE">Lastschrift</title>
+        <title>PAYONE Direct Debit</title>
+        <title lang="de-DE">PAYONE Lastschrift</title>
 
         <name>payment_debit</name>
 
@@ -888,7 +890,8 @@
     </card>
 
     <card>
-        <title>SOFORT</title>
+        <title>Sofort</title>
+        <title lang="de-DE">Sofort Überweisung</title>
 
         <name>payment_sofort</name>
 
@@ -1041,6 +1044,7 @@
 
     <card>
         <title>EPS</title>
+        <title lang="de-DE">EPS</title>
 
         <name>payment_eps</name>
 
@@ -1193,6 +1197,7 @@
 
     <card>
         <title>iDEAL</title>
+        <title lang="de-DE">iDEAL</title>
 
         <name>payment_ideal</name>
 
@@ -1344,8 +1349,8 @@
     </card>
 
     <card>
-        <title>Paysafe Pay Later Installment</title>
-        <title lang="de-DE">Paysafe Pay Later Ratenzahlung</title>
+        <title>Unzer Ratenkauf</title>
+        <title lang="de-DE">Unzer Ratenkauf</title>
 
         <name>payment_payolution_installment</name>
 
@@ -1521,8 +1526,8 @@
     </card>
 
     <card>
-        <title>Paysafe Pay Later Invoicing</title>
-        <title lang="de-DE">Paysafe Pay Later Rechnung</title>
+        <title>Unzer Rechnungskauf</title>
+        <title lang="de-DE">Unzer Rechnungskauf</title>
 
         <name>payment_payolution_invoicing</name>
 
@@ -1704,8 +1709,8 @@
     </card>
 
     <card>
-        <title>Paysafe Pay Later Debit</title>
-        <title lang="de-DE">Paysafe Pay Later Lastschrift</title>
+        <title>Unzer Lastschrift</title>
+        <title lang="de-DE">Unzer Lastschrift</title>
 
         <name>payment_payolution_debit</name>
 
@@ -1871,7 +1876,8 @@
     </card>
 
     <card>
-        <title>Paydirekt</title>
+        <title>paydirekt</title>
+        <title lang="de-DE">paydirekt</title>
 
         <name>payment_paydirekt</name>
 
@@ -2024,6 +2030,7 @@
 
     <card>
         <title>Trustly</title>
+        <title lang="de-DE">Trustly</title>
 
         <name>payment_trustly</name>
 
@@ -2175,8 +2182,8 @@
     </card>
 
     <card>
-        <title>Secure invoice (own payment portal is required)</title>
-        <title lang="de-DE">Gesicherter Rechnungskauf (Eigenes Zahlungsportal wird benötigt)</title>
+        <title>PAYONE Secure Invoice</title>
+        <title lang="de-DE">PAYONE Gesicherter Rechnungskauf</title>
 
         <name>payment_secure_invoice</name>
 
@@ -2328,8 +2335,8 @@
     </card>
 
     <card>
-        <title>Open invoice</title>
-        <title lang="de-DE">Offener Rechnungskauf</title>
+        <title>PAYONE Invoice</title>
+        <title lang="de-DE">PAYONE Rechnungskauf</title>
 
         <name>payment_open_invoice</name>
 
