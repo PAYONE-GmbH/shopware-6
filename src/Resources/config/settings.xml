@@ -145,8 +145,8 @@
     </card>
 
     <card>
-        <title>Credit Card</title>
-        <title lang="de-DE">Kreditkarte</title>
+        <title>PAYONE Credit Card</title>
+        <title lang="de-DE">PAYONE Kreditkarte</title>
 
         <name>payment_credit_card</name>
 
@@ -298,8 +298,8 @@
     </card>
 
     <card>
-        <title>Prepayment</title>
-        <title lang="de-DE">Vorkasse</title>
+        <title>PAYONE Prepayment</title>
+        <title lang="de-DE">PAYONE Vorkasse</title>
 
         <name>payment_prepayment</name>
 
@@ -431,8 +431,8 @@
     </card>
 
     <card>
-        <title>PayPal</title>
-        <title lang="de-DE">PayPal</title>
+        <title>PAYONE PayPal</title>
+        <title lang="de-DE">PAYONE PayPal</title>
 
         <name>payment_paypal</name>
 
@@ -584,8 +584,8 @@
     </card>
 
     <card>
-        <title>PayPal Express</title>
-        <title lang="de-DE">PayPal Express</title>
+        <title>PAYONE PayPal Express</title>
+        <title lang="de-DE">PAYONE PayPal Express</title>
 
         <name>payment_paypal_express</name>
 
@@ -890,8 +890,8 @@
     </card>
 
     <card>
-        <title>Sofort</title>
-        <title lang="de-DE">Sofort Überweisung</title>
+        <title>PAYONE Sofort</title>
+        <title lang="de-DE">PAYONE Sofort Überweisung</title>
 
         <name>payment_sofort</name>
 
@@ -1043,8 +1043,8 @@
     </card>
 
     <card>
-        <title>EPS</title>
-        <title lang="de-DE">EPS</title>
+        <title>PAYONE eps</title>
+        <title lang="de-DE">PAYONE eps Überweisung</title>
 
         <name>payment_eps</name>
 
@@ -1196,8 +1196,8 @@
     </card>
 
     <card>
-        <title>iDEAL</title>
-        <title lang="de-DE">iDEAL</title>
+        <title>PAYONE iDEAL</title>
+        <title lang="de-DE">PAYONE iDEAL</title>
 
         <name>payment_ideal</name>
 
@@ -1349,8 +1349,8 @@
     </card>
 
     <card>
-        <title>Unzer Ratenkauf</title>
-        <title lang="de-DE">Unzer Ratenkauf</title>
+        <title>PAYONE Unzer Ratenkauf</title>
+        <title lang="de-DE">PAYONE Unzer Ratenkauf</title>
 
         <name>payment_payolution_installment</name>
 
@@ -1526,8 +1526,8 @@
     </card>
 
     <card>
-        <title>Unzer Rechnungskauf</title>
-        <title lang="de-DE">Unzer Rechnungskauf</title>
+        <title>PAYONE Unzer Rechnungskauf</title>
+        <title lang="de-DE">PAYONE Unzer Rechnungskauf</title>
 
         <name>payment_payolution_invoicing</name>
 
@@ -1709,8 +1709,8 @@
     </card>
 
     <card>
-        <title>Unzer Lastschrift</title>
-        <title lang="de-DE">Unzer Lastschrift</title>
+        <title>PAYONE Unzer Lastschrift</title>
+        <title lang="de-DE">PAYONE Unzer Lastschrift</title>
 
         <name>payment_payolution_debit</name>
 
@@ -1876,8 +1876,8 @@
     </card>
 
     <card>
-        <title>paydirekt</title>
-        <title lang="de-DE">paydirekt</title>
+        <title>PAYONE paydirekt</title>
+        <title lang="de-DE">PAYONE paydirekt</title>
 
         <name>payment_paydirekt</name>
 
@@ -2029,8 +2029,8 @@
     </card>
 
     <card>
-        <title>Trustly</title>
-        <title lang="de-DE">Trustly</title>
+        <title>PAYONE Trustly</title>
+        <title lang="de-DE">PAYONE Trustly</title>
 
         <name>payment_trustly</name>
 
@@ -2488,8 +2488,8 @@
     </card>
 
     <card>
-        <title>Apple Pay</title>
-        <title lang="de-DE">Apple Pay</title>
+        <title>PAYONE Apple Pay</title>
+        <title lang="de-DE">PAYONE Apple Pay</title>
 
         <name>payment_apple_pay</name>
 

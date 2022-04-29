@@ -15,7 +15,7 @@ class PayonePayolutionInstallment extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Unzer Ratenkauf';
+    protected $name = 'PAYONE Unzer Ratenkauf';
 
     /** @var string */
     protected $description = 'Installment payment by Paysafe Pay Later.';
@@ -29,11 +29,11 @@ class PayonePayolutionInstallment extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Unzer Ratenkauf',
+            'name'        => 'PAYONE Unzer Ratenkauf',
             'description' => 'Bezahlen Sie einfach und bequem in monatlichen Raten.',
         ],
         'en-GB' => [
-            'name'        => 'Unzer Ratenkauf',
+            'name'        => 'PAYONE Unzer Ratenkauf',
             'description' => 'Easily pay in monthly installments.',
         ],
     ];

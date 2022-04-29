@@ -15,7 +15,7 @@ class PayoneTrustly extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Trustly';
+    protected $name = 'PAYONE Trustly';
 
     /** @var string */
     protected $description = 'Wire the amount instantly with your online banking credentials.';
@@ -29,11 +29,11 @@ class PayoneTrustly extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Trustly',
+            'name'        => 'PAYONE Trustly',
             'description' => 'Überweisen Sie schnell und sicher mit Ihren Online Banking Zugangsdaten.',
         ],
         'en-GB' => [
-            'name'        => 'Trustly',
+            'name'        => 'PAYONE Trustly',
             'description' => 'Wire the amount instantly with your online banking credentials.',
         ],
     ];

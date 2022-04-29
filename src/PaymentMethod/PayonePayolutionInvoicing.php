@@ -15,7 +15,7 @@ class PayonePayolutionInvoicing extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Unzer Rechnungskauf';
+    protected $name = 'PAYONE Unzer Rechnungskauf';
 
     /** @var string */
     protected $description = 'Invoice payment by Paysafe Pay Later.';
@@ -29,11 +29,11 @@ class PayonePayolutionInvoicing extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Unzer Rechnungskauf',
+            'name'        => 'PAYONE Unzer Rechnungskauf',
             'description' => 'Sie zahlen entspannt nach Erhalt der Ware auf Rechnung.',
         ],
         'en-GB' => [
-            'name'        => 'Unzer Rechnungskauf',
+            'name'        => 'PAYONE Unzer Rechnungskauf',
             'description' => 'Pay the invoice after receiving the goods.',
         ],
     ];

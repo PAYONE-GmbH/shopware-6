@@ -15,7 +15,7 @@ class PayoneEps extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'eps';
+    protected $name = 'PAYONE eps';
 
     /** @var string */
     protected $description = 'Wire the amount instantly with your online banking credentials.';
@@ -29,11 +29,11 @@ class PayoneEps extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'eps Überweisung',
+            'name'        => 'PAYONE eps Überweisung',
             'description' => 'Überweisen Sie schnell und sicher mit Ihren Online Banking Zugangsdaten.',
         ],
         'en-GB' => [
-            'name'        => 'eps',
+            'name'        => 'PAYONE eps',
             'description' => 'Wire the amount instantly with your online banking credentials.',
         ],
     ];

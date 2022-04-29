@@ -18,7 +18,7 @@ class PayoneSofortBanking extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Sofort';
+    protected $name = 'PAYONE Sofort';
 
     /** @var string */
     protected $description = 'Wire the amount instantly with your online banking credentials.';
@@ -32,11 +32,11 @@ class PayoneSofortBanking extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Sofortüberweisung',
+            'name'        => 'PAYONE Sofortüberweisung',
             'description' => 'Überweisen Sie schnell und sicher mit Ihren Online Banking Zugangsdaten.',
         ],
         'en-GB' => [
-            'name'        => 'Sofort',
+            'name'        => 'PAYONE Sofort',
             'description' => 'Wire the amount instantly with your online banking credentials.',
         ],
     ];

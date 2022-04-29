@@ -15,7 +15,7 @@ class PayonePrepayment extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Prepayment';
+    protected $name = 'PAYONE Prepayment';
 
     /** @var string */
     protected $description = 'Pay by prepayment.';
@@ -29,11 +29,11 @@ class PayonePrepayment extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Vorkasse',
+            'name'        => 'PAYONE Vorkasse',
             'description' => 'Sie zahlen per Vorkasse und erhalten die Ware nach Zahlungseingang.',
         ],
         'en-GB' => [
-            'name'        => 'Prepayment',
+            'name'        => 'PAYONE Prepayment',
             'description' => 'Pay in advance and receive your order after we received your payment.',
         ],
     ];

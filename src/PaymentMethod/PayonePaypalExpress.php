@@ -15,7 +15,7 @@ class PayonePaypalExpress extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Paypal Express';
+    protected $name = 'PAYONE Paypal Express';
 
     /** @var string */
     protected $description = 'Pay easily and secure with PayPal Express.';
@@ -29,11 +29,11 @@ class PayonePaypalExpress extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'PayPal Express',
+            'name'        => 'PAYONE PayPal Express',
             'description' => 'Zahlen Sie sicher und bequem mit PayPal Express.',
         ],
         'en-GB' => [
-            'name'        => 'PayPal Express',
+            'name'        => 'PAYONE PayPal Express',
             'description' => 'Pay easily and secure with PayPal Express.',
         ],
     ];

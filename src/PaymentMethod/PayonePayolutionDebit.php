@@ -15,7 +15,7 @@ class PayonePayolutionDebit extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Unzer Lastschrift';
+    protected $name = 'PAYONE Unzer Lastschrift';
 
     /** @var string */
     protected $description = 'SEPA Direct Debit by Paysafe Pay Later.';
@@ -29,11 +29,11 @@ class PayonePayolutionDebit extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Unzer Lastschrift',
+            'name'        => 'PAYONE Unzer Lastschrift',
             'description' => 'Gesicherte Lastschrift von Paysafe Pay Later.',
         ],
         'en-GB' => [
-            'name'        => 'Unzer Lastschrift',
+            'name'        => 'PAYONE Unzer Lastschrift',
             'description' => 'SEPA Direct Debit by Paysafe Pay Later.',
         ],
     ];
