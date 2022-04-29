@@ -19,6 +19,9 @@ use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use PayonePayment\PaymentMethod\PayonePrepayment;
+use PayonePayment\PaymentMethod\PayoneRatepayDebit;
+use PayonePayment\PaymentMethod\PayoneRatepayInstallment;
+use PayonePayment\PaymentMethod\PayoneRatepayInvoicing;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\PaymentMethod\PayoneSofortBanking;
 use PayonePayment\PaymentMethod\PayoneTrustly;
@@ -54,6 +57,9 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneTrustly::class               => '741f1deec67d4012bd3ccce265b2e15e',
         PayoneSecureInvoice::class         => '4e8a9d3d3c6e428887573856b38c9003',
         PayoneOpenInvoice::class           => '9024aa5a502b4544a745b6b64b486e21',
+        PayoneRatepayDebit::class          => '48f2034b3c62480a8554781cf9cac574',
+        PayoneRatepayInstallment::class    => '0af0f201fd164ca9ae72313c70201d18',
+        PayoneRatepayInvoicing::class      => '240dcc8bf5fc409c9dcf840698c082aa',
     ];
 
     public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
@@ -75,6 +81,9 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneTrustly::class,
         PayoneSecureInvoice::class,
         PayoneOpenInvoice::class,
+        PayoneRatepayDebit::class,
+        PayoneRatepayInstallment::class,
+        PayoneRatepayInvoicing::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [

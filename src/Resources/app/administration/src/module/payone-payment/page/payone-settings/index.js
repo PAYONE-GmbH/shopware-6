@@ -48,6 +48,9 @@ Component.register('payone-settings', {
                 'payment_secure_invoice': true,
                 'payment_open_invoice': true,
                 'payment_apple_pay': true,
+                'payment_ratepay_debit': true,
+                'payment_ratepay_installment': true,
+                'payment_ratepay_invoicing': true,
             },
         };
     },
@@ -113,6 +116,9 @@ Component.register('payone-settings', {
                 'secureInvoice',
                 'openInvoice',
                 'applePay',
+                'ratepayDebit',
+                'ratepayInstallment',
+                'ratepayInvoicing',
             ];
         },
 

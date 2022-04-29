@@ -78,7 +78,10 @@
                 "openInvoice": "The API credentials for PAYONE Invoice are not valid.",
                 "paydirekt": "The API credentials for PAYONE paydirekt are not valid.",
                 "trustly": "The API credentials for PAYONE Trustly are not valid.",
-                "applePay": "The API credentials for PAYONE Apple Pay are not valid."
+                "applePay": "The API credentials for PAYONE Apple Pay are not valid.",
+                "ratepayDebit": "The API credentials for PAYONE Ratepay Direct Debit payment are not valid.",
+                "ratepayInstallment": "The API credentials for PAYONE Ratepay Installments payment are not valid.",
+                "ratepayInvoicing": "The API credentials for PAYONE Ratepay Open Invoice payment are not valid."
             }
         },
         "supportModal": {

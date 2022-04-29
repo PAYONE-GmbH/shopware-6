@@ -368,7 +368,7 @@ class SettingsController extends AbstractController
                     'businessrelation' => 'b2c',
                 ];
 
-                case Handler\PayoneOpenInvoicePaymentHandler::class:
+            case Handler\PayoneOpenInvoicePaymentHandler::class:
                 return [
                     'request'          => 'preauthorization',
                     'clearingtype'     => 'rec',
@@ -419,6 +419,32 @@ class SettingsController extends AbstractController
                     'zip'          => '12345',
                     'city'         => 'Test',
                     'ip'           => '127.0.0.1',
+                ];
+
+            case Handler\PayoneRatepayDebitPaymentHandler::class:
+                return [
+                    'request'       => 'preauthorization',
+                    'clearingtype'  => 'fnc',
+                    'financingtype' => 'RPD',
+                    'amount'        => 10000, // ToDo: Nachfragen!
+                    'currency'      => 'EUR',
+                    'company'       => 'ToDo',
+                ];
+
+            case Handler\PayoneRatepayInstallmentPaymentHandler::class:
+                return [
+                    'request'       => 'preauthorization',
+                    'clearingtype'  => 'fnc',
+                    'financingtype' => 'RPS',
+                    'amount'        => 10000, // ToDo: Nachfragen!
+                ];
+
+            case Handler\PayoneRatepayInvoicingPaymentHandler::class:
+                return [
+                    'request'       => 'preauthorization',
+                    'clearingtype'  => 'fnc',
+                    'financingtype' => 'RPV',
+                    'amount'        => 10000, // ToDo: Nachfragen!
                 ];
 
             default:
