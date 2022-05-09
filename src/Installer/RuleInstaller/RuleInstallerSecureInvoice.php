@@ -141,7 +141,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     {
         // Remove rule from payment methods first
         $update = [
-            'id' => PayoneSecureInvoice::UUID,
+            'id'                 => PayoneSecureInvoice::UUID,
             'availabilityRuleId' => null,
         ];
 
