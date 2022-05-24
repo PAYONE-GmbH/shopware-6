@@ -32,7 +32,7 @@ class PayoneSofortBanking extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Sofortüberweisung',
+            'name'        => 'PAYONE Sofort Überweisung',
             'description' => 'Überweisen Sie schnell und sicher mit Ihren Online Banking Zugangsdaten.',
         ],
         'en-GB' => [
