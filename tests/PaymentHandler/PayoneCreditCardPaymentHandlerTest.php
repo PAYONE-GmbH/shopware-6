@@ -12,6 +12,7 @@ use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
@@ -23,6 +24,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
@@ -42,8 +44,6 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         /** @var Translator $translator */
         $translator       = $this->getContainer()->get('translator');
         $this->translator = $translator;
@@ -109,6 +109,128 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         );
 
         $this->assertEquals($response->getTargetUrl(), 'test-url');
+    }
+
+    public function testFailedRequestOnPay(): void
+    {
+        $configReader = new ConfigReaderMock([
+            'creditCardAuthorizationMethod' => 'preauthorization',
+        ]);
+
+        $client         = $this->createMock(PayoneClientInterface::class);
+        $requestFactory = $this->createMock(RequestParameterFactory::class);
+        $cardRepository = $this->createMock(CardRepositoryInterface::class);
+
+        $dataBag = new RequestDataBag();
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE, (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVE_CREDIT_CARD, 'on');
+
+        $paymentHandler = new PayoneCreditCardPaymentHandler(
+            $configReader,
+            $client,
+            $this->translator,
+            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
+            $this->createMock(EntityRepositoryInterface::class),
+            new PaymentStateHandler($this->translator),
+            $cardRepository,
+            $this->getRequestStack($dataBag),
+            $requestFactory
+        );
+
+        $paymentTransaction = $this->getPaymentTransaction();
+
+        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+            [
+                'request'    => '',
+                'successurl' => 'test-url',
+            ]
+        );
+
+        $client->expects($this->once())->method('request')->willThrowException(
+            new PayoneRequestException(
+                'The message',
+                [],
+                [
+                    'error' => [
+                        'CustomerMessage' => 'The message',
+                    ],
+                ]
+            )
+        );
+
+        $this->assertNotNull($paymentTransaction->getOrder());
+        $this->expectException(AsyncPaymentProcessException::class);
+
+        $paymentHandler->pay(
+            new AsyncPaymentTransactionStruct(
+                $paymentTransaction->getOrderTransaction(),
+                $paymentTransaction->getOrder(),
+                ''
+            ),
+            $dataBag,
+            Generator::createSalesChannelContext()
+        );
+    }
+
+    public function testFailedRequestOnPay2(): void
+    {
+        $configReader = new ConfigReaderMock([
+            'creditCardAuthorizationMethod' => 'preauthorization',
+        ]);
+
+        $client         = $this->createMock(PayoneClientInterface::class);
+        $requestFactory = $this->createMock(RequestParameterFactory::class);
+        $cardRepository = $this->createMock(CardRepositoryInterface::class);
+
+        $dataBag = new RequestDataBag();
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE, (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVE_CREDIT_CARD, 'on');
+
+        $paymentHandler = new PayoneCreditCardPaymentHandler(
+            $configReader,
+            $client,
+            $this->translator,
+            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
+            $this->createMock(EntityRepositoryInterface::class),
+            new PaymentStateHandler($this->translator),
+            $cardRepository,
+            $this->getRequestStack($dataBag),
+            $requestFactory
+        );
+
+        $paymentTransaction = $this->getPaymentTransaction();
+
+        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+            [
+                'request'    => '',
+                'successurl' => 'test-url',
+            ]
+        );
+
+        $client->expects($this->once())->method('request')->willThrowException(
+            new \Exception('The message')
+        );
+
+        $this->assertNotNull($paymentTransaction->getOrder());
+        $this->expectException(AsyncPaymentProcessException::class);
+        $this->expectExceptionMessage('The asynchronous payment process was interrupted due to the following error:
+PayonePayment.errorMessages.genericError');
+
+        $paymentHandler->pay(
+            new AsyncPaymentTransactionStruct(
+                $paymentTransaction->getOrderTransaction(),
+                $paymentTransaction->getOrder(),
+                ''
+            ),
+            $dataBag,
+            Generator::createSalesChannelContext()
+        );
     }
 
     public function testRequestOnPayWithoutSave(): void
