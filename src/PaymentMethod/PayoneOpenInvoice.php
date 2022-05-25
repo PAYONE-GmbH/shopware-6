@@ -15,7 +15,7 @@ class PayoneOpenInvoice extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Payone Open Invoice';
+    protected $name = 'PAYONE Invoice';
 
     /** @var string */
     protected $description = 'Open invoice payment.';
@@ -29,11 +29,11 @@ class PayoneOpenInvoice extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Payone offener Rechnungskauf',
+            'name'        => 'PAYONE Rechnungskauf',
             'description' => 'Bezahlen per Rechnung.',
         ],
         'en-GB' => [
-            'name'        => 'Payone open invoice',
+            'name'        => 'PAYONE Invoice',
             'description' => 'Pay by invoice.',
         ],
     ];
