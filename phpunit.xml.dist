@@ -2,7 +2,7 @@
 
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
-         bootstrap="./tests/Bootstrap.php"
+         bootstrap="./tests/TestBootstrap.php"
          colors="true">
     <php>
         <ini name="error_reporting" value="-1"/>
@@ -11,7 +11,7 @@
         <env name="APP_DEBUG" value="1"/>
         <env name="APP_SECRET" value="s$cretf0rt3st"/>
         <env name="SHELL_VERBOSITY" value="-1"/>
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
     </php>
 
     <testsuites>

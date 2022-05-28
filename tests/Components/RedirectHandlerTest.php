@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Test\Components;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Types;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
@@ -41,10 +42,10 @@ class RedirectHandlerTest extends TestCase
         putenv('APP_SECRET=' . $this->appSecret);
     }
 
-    public function testEncoding(): void
+    public function testEncodingWithoutDatabase(): void
     {
         $connection = $this->createMock(Connection::class);
-        $router = $this->getContainer()->get('router.default');
+        $router     = $this->getContainer()->get('router.default');
 
         $connection->expects($this->once())->method('insert')->with(
             'payone_payment_redirect',
@@ -62,18 +63,70 @@ class RedirectHandlerTest extends TestCase
         );
 
         $url = $redirectHandler->encode('the-url');
+
         $this->assertSame(
             'http://localhost/payone/redirect?hash=MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ%3D%3D',
             $url
         );
     }
 
-    public function testExceptionOnMissingSecret(): void
+    public function testEncodingWithDatabase(): string
+    {
+        $connection = $this->getContainer()->get(Connection::class);
+        $router     = $this->getContainer()->get('router.default');
+
+        $redirectHandler = new RedirectHandler(
+            $connection,
+            $router
+        );
+
+        $originalUrl = 'the-url';
+        $redirectUrl = $redirectHandler->encode($originalUrl);
+
+        $this->assertSame(
+            'http://localhost/payone/redirect?hash=MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ%3D%3D',
+            $redirectUrl
+        );
+
+        // Frage: Folgendes ist ja jetzt theoretisch genau das, was die "decode" Funktion macht. Hätte man
+        //        die hier nutzen können, oder ist es besser so wie es jetzt ist, also nochmal im Test genau zu
+        //        definieren, was man erwartet?
+        $hash = 'MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ==';
+        $query = 'SELECT url FROM payone_payment_redirect WHERE hash = ?';
+        $foundOriginalUrl = $this->fetchOne($connection, $query, [$hash]);
+
+        $this->assertSame($originalUrl, $foundOriginalUrl);
+
+        return $hash;
+    }
+
+    /**
+     * @depends testEncodingWithDatabase
+     */
+    public function testDecodingWithDatabase(string $hash): void
+    {
+        $connection = $this->getContainer()->get(Connection::class);
+        $router     = $this->getContainer()->get('router.default');
+
+        $redirectHandler = new RedirectHandler(
+            $connection,
+            $router
+        );
+
+        $originalUrl = $redirectHandler->decode($hash);
+
+        $this->assertSame(
+            'the-url',
+            $originalUrl
+        );
+    }
+
+    public function testEncodingFailureOnMissingSecret(): void
     {
         putenv('APP_SECRET=');
 
         $connection = $this->createMock(Connection::class);
-        $router = $this->getContainer()->get('router.default');
+        $router     = $this->getContainer()->get('router.default');
 
         $redirectHandler = new RedirectHandler(
             $connection,
@@ -89,7 +142,7 @@ class RedirectHandlerTest extends TestCase
     public function testMissingUrlOnDecode(): void
     {
         $connection = $this->createStub(Connection::class);
-        $router = $this->createStub(RouterInterface::class);
+        $router     = $this->createStub(RouterInterface::class);
 
         $connection->method('fetchOne')->willReturn(false);
 
@@ -100,11 +153,54 @@ class RedirectHandlerTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('no matching url for hash found');
+
         $redirectHandler->decode('the-hash');
     }
 
+    /**
+     * @depends testEncodingWithDatabase
+     */
     public function testCleanup(): void
     {
+        $connection = $this->getContainer()->get(Connection::class);
+        $router     = $this->getContainer()->get('router.default');
 
+        $redirectHandler = new RedirectHandler(
+            $connection,
+            $router
+        );
+
+        $redirectHandler->encode('the-url-2');
+
+        $countQuery = 'SELECT COUNT(*) FROM payone_payment_redirect';
+        $redirectCount = (int) $this->fetchOne($connection, $countQuery);
+
+        $this->assertSame(2, $redirectCount);
+
+        $connection->executeStatement(
+            'UPDATE payone_payment_redirect SET created_at = ? WHERE url = ?',
+            [new \DateTime('-8 day'), 'the-url-2'],
+            [Types::DATETIME_MUTABLE, Types::STRING]
+        );
+
+        $redirectHandler->cleanup();
+
+        $redirectCount = (int) $this->fetchOne($connection, $countQuery);
+
+        $this->assertSame(1, $redirectCount);
+    }
+
+    private function fetchOne(Connection $connection, string $query, array $params = [])
+    {
+        $result = null;
+
+        if (method_exists($connection, 'fetchOne')) {
+            $result = $connection->fetchOne($query, $params);
+        } elseif (method_exists($connection, 'fetchColumn')) {
+            /** @noinspection PhpDeprecationInspection */
+            $result = $connection->fetchColumn($query, $params);
+        }
+
+        return $result;
     }
 }
