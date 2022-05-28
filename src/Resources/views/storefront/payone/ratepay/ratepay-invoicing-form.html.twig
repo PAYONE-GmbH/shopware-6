@@ -1,0 +1,26 @@
+<div class="payone-payment payolution-invoicing">
+    <input type="hidden" id="payoneCsrfTokenPayolutionInvoiceValidation" value="{{ sw_csrf('frontend.payone.payolution.invoicing.validate', {'mode': 'token'}) }}">
+
+    {% block page_checkout_confirm_payone_card_title_payolution_installment %}
+        <div class="card-title">
+            {{ "PayonePayment.payolution.cardTitleInvoicing" | trans }}
+        </div>
+    {% endblock %}
+
+    <div id="payolutionErrorContainer" hidden="hidden">
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            type: "danger",
+            content: "PayonePayment.errorMessages.genericError" | trans
+        } %}
+    </div>
+
+    {% block page_checkout_confirm_payone_card_content_payolution_installment %}
+        <div class="card">
+            {% sw_include '@Storefront/storefront/payone/payolution/consent-checkbox.html.twig' with {
+                style: 'default',
+            } %}
+        </div>
+
+        <div id="payone-configuration" data-is-payone-payolution-invoicing="true" data-validate-url="{{ path('frontend.payone.payolution.invoicing.validate') }}"></div>
+    {% endblock %}
+</div>

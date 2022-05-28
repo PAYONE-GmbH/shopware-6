@@ -1,0 +1,34 @@
+{% block payone_payolution_installment_selection %}
+    <div class="form-group">
+        <label class="form-label" for="payolutionInstallmentDuration">{{ "PayonePayment.payolution.installment.selectInstallmentsLabel" | trans }}{{ "general.required" | trans }}</label>
+
+        <select class="form-control" id="payolutionInstallmentDuration" name="payolutionInstallmentDuration" form="confirmOrderForm">
+            {% for element in addpaydata  %}
+                <option value="{{ element.Duration }}">
+                    {{ "PayonePayment.payolution.installment.select" | trans({
+                        '%duration%': element.Duration,
+                        '%amount%':  element.Installment[0].Amount | currency(element.Currency)
+                    }) }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    {% for element in addpaydata  %}
+        <div class="installmentDetail" data-duration="{{ element.Duration }}" {% if not loop.first %}hidden="hidden"{% endif %}>
+            {% for installment in element.Installment %}
+                <div class="installment">
+                    {{ "PayonePayment.payolution.installment.info" | trans({
+                        '%index%': loop.index,
+                        '%amount%':  element.Installment[0].Amount | currency(element.Currency),
+                        '%date%': installment.Due | format_date
+                    }) }}
+                </div>
+            {% endfor %}
+
+            <div class="creditInformationButton">
+                <a class="btn-link" href="{{ url('frontend.payone.payolution.installment.download', {'duration': element.Duration}) }}">{{ "PayonePayment.payolution.installment.downloadButton" | trans }}</a>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

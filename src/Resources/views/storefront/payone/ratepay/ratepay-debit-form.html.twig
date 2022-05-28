@@ -1,0 +1,96 @@
+<div class="payone-payment payolution-debit">
+    {% block page_checkout_confirm_payone_card_title_payolution_debit %}
+        <div class="card-title">
+            {{ "PayonePayment.payolution.cardTitleDebit" | trans }}
+        </div>
+    {% endblock %}
+
+    <div id="payolutionErrorContainer" hidden="hidden">
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            type: "danger",
+            content: "PayonePayment.errorMessages.genericError" | trans
+        } %}
+    </div>
+
+    {% block page_checkout_confirm_payone_card_content_payolution_debit %}
+        <div class="form-row">
+            <div class="col-12">
+                <label class="form-label" for="payolutionAccountHolder">
+                    {{ "PayonePayment.payolution.accountHolder.label" | trans }}{{ "general.required" | trans }}
+                </label>
+            </div>
+            <div class="form-group {% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
+                <input
+                    type="text"
+                    id="payolutionAccountHolder"
+                    name="payolutionAccountHolder"
+                    class="form-control{% if formViolations.getViolations('/payolutionAccountHolder') is not empty %} is-invalid{% endif %}"
+                    form="confirmOrderForm"
+                    required="required"
+                />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-12">
+                <label class="form-label" for="payolutionIban">
+                    {{ "PayonePayment.payolution.iban.label" | trans }}{{ "general.required" | trans }}
+                </label>
+            </div>
+            <div class="form-group {% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
+                <input
+                    type="text"
+                    id="payolutionIban"
+                    name="payolutionIban"
+                    class="form-control{% if formViolations.getViolations('/payolutionIban') is not empty %} is-invalid{% endif %}"
+                    form="confirmOrderForm"
+                    required="required"
+                />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-12">
+                <label class="form-label" for="payolutionBic">
+                    {{ "PayonePayment.payolution.bic.label" | trans }}{{ "general.required" | trans }}
+                </label>
+            </div>
+            <div class="form-group {% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
+                <input
+                    type="text"
+                    id="payolutionBic"
+                    name="payolutionBic"
+                    class="form-control{% if formViolations.getViolations('/payolutionBic') is not empty %} is-invalid{% endif %}"
+                    form="confirmOrderForm"
+                    required="required"
+                />
+            </div>
+        </div>
+        {% sw_include '@Storefront/storefront/payone/payolution/consent-checkbox.html.twig' with {
+            style: 'wide'
+        } %}
+
+        <div class="form-row">
+            <div class="form-group col-12">
+                <div class="custom-control custom-checkbox">
+                    <input
+                        type="checkbox"
+                        class="custom-control-input{% if formViolations.getViolations('/payolutionMandate') is not empty %} is-invalid{% endif %}"
+                        id="payolutionMandate"
+                        form="confirmOrderForm"
+                        name="payolutionMandate"
+                        required="required"
+                    />
+
+                    <label for="payolutionMandate" class="custom-control-label consent-label">
+                        {{ "PayonePayment.payolution.mandateCheckbox.textWithLink" | trans({
+                            '%link%': 'https://payment.payolution.com/payolution-payment/infoport/sepa/mandate.pdf'
+                        }) | raw }}
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div id="payone-configuration" data-is-payone-payolution-debit="true" data-validate-url="{{ path('frontend.payone.payolution.invoicing.validate') }}"></div>
+    {% endblock %}
+</div>

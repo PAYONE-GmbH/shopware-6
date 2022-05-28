@@ -100,6 +100,9 @@ class PaymentMethodInstaller implements InstallerInterface
         PayonePaydirekt::class,
         PayonePrepayment::class,
         PayoneTrustly::class,
+        PayoneRatepayDebit::class,
+        PayoneRatepayInstallment::class,
+        PayoneRatepayInvoicing::class,
     ];
 
     /** @var PluginIdProvider */

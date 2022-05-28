@@ -1,0 +1,60 @@
+<div class="payone-payment payolution-installment">
+    <input type="hidden" id="payoneCsrfTokenPayolutionInstallmentCalculation" value="{{ sw_csrf('frontend.payone.payolution.installment.calculation', {'mode': 'token'}) }}">
+
+    {% block page_checkout_confirm_payone_card_title_payolution_installment %}
+        <div class="card-title">
+            {{ "PayonePayment.payolution.cardTitleInstallment" | trans }}
+        </div>
+    {% endblock %}
+
+    <div id="payolutionErrorContainer" hidden="hidden">
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            type: "danger",
+            content: "PayonePayment.errorMessages.genericError" | trans
+        } %}
+    </div>
+
+    {% block page_checkout_confirm_payone_card_content_payolution_installment %}
+        <div class="card payolution-installment--card step1">
+            <div class="row">
+                <div class="col-4 headline consent">
+                    <div>{{ "PayonePayment.payolution.installment.step1" | trans }}</div>
+                </div>
+
+                <div class="col-4 headline installments">
+                    <div>{{ "PayonePayment.payolution.installment.step2" | trans }}</div>
+                </div>
+
+                <div class="col-4 headline calculation">
+                    <div>{{ "PayonePayment.payolution.installment.step3" | trans }}</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4 form consent">
+                    {% sw_include '@Storefront/storefront/payone/payolution/consent-checkbox.html.twig' with {
+                        style: 'wide'
+                    } %}
+                </div>
+
+                <div class="col-4 form installments hidden">
+                    <div id="installmentSelection"></div>
+                </div>
+
+                <div class="col-4 form calculation hidden">
+                    <div id="calculationOverview"></div>
+                </div>
+            </div>
+
+            <div class="row buttons">
+                <div class="col-4">
+                    <button id="checkInstallmentButton" class="btn btn-primary btn-block btn-lg">
+                        {{ "PayonePayment.payolution.installment.checkAvailabilityButton" | trans }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="payone-configuration" data-is-payone-payolution-installment="true" data-calculation-url="{{ path('frontend.payone.payolution.installment.calculation') }}"></div>
+    {% endblock %}
+</div>

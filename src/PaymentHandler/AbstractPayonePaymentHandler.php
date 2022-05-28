@@ -31,6 +31,10 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     public const PAYONE_FINANCING_PYS = 'PYS';
     public const PAYONE_FINANCING_PYD = 'PYD';
 
+    public const PAYONE_FINANCING_RPV = 'RPV';
+    public const PAYONE_FINANCING_RPS = 'RPS';
+    public const PAYONE_FINANCING_RPD = 'RPD';
+
     /** @var ConfigReaderInterface */
     protected $configReader;
 

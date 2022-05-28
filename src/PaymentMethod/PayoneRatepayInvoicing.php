@@ -15,29 +15,29 @@ class PayoneRatepayInvoicing extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Payone Ratepay Open Invoice';
+    protected $name = 'PAYONE Ratepay Open Invoice';
 
     /** @var string */
-    protected $description = 'ToDo';
+    protected $description = 'Pay with Ratepay Open Invoice';
 
     /** @var string */
     protected $paymentHandler = PayoneRatepayInvoicingPaymentHandler::class;
 
     /** @var null|string */
-    protected $template;
+    protected $template = '@Storefront/storefront/payone/ratepay/ratepay-invoicing-form.html.twig';
 
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Payone Ratepay Rechnungskauf',
-            'description' => 'ToDo',
+            'name'        => 'PAYONE Ratepay Rechnungskauf',
+            'description' => 'Zahle mit dem Ratepay Rechnungskauf',
         ],
         'en-GB' => [
-            'name'        => 'Payone Ratepay Open Invoice',
-            'description' => 'ToDo',
+            'name'        => 'PAYONE Ratepay Open Invoice',
+            'description' => 'Pay with Ratepay Open Invoice',
         ],
     ];
 
     /** @var int */
-    protected $position = 102; // ToDo
+    protected $position = 132;
 }

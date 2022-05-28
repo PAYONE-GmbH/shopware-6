@@ -205,5 +205,20 @@
             <tag name="shopware.payment.method.sync" />
         </service>
 
+<!--        <service id="PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler">-->
+
+<!--            <tag name="shopware.payment.method.sync" />-->
+<!--        </service>-->
+
+<!--        <service id="PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler">-->
+
+<!--            <tag name="shopware.payment.method.sync" />-->
+<!--        </service>-->
+
+<!--        <service id="PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler">-->
+
+<!--            <tag name="shopware.payment.method.sync" />-->
+<!--        </service>-->
+
     </services>
 </container>

@@ -15,29 +15,29 @@ class PayoneRatepayDebit extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Payone Ratepay Direct Debit';
+    protected $name = 'PAYONE Ratepay Direct Debit';
 
     /** @var string */
-    protected $description = 'ToDo';
+    protected $description = 'Pay with Ratepay Direct Debit';
 
     /** @var string */
     protected $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
 
     /** @var null|string */
-    protected $template;
+    protected $template = '@Storefront/storefront/payone/ratepay/ratepay-debit-form.html.twig';
 
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Payone Ratepay Lastschrift',
-            'description' => 'ToDo',
+            'name'        => 'PAYONE Ratepay Lastschrift',
+            'description' => 'Zahle mit Ratepay Lastschrift',
         ],
         'en-GB' => [
-            'name'        => 'Payone Ratepay Direct Debit',
-            'description' => 'ToDo',
+            'name'        => 'PAYONE Ratepay Direct Debit',
+            'description' => 'Pay with Ratepay Direct Debit',
         ],
     ];
 
     /** @var int */
-    protected $position = 102; // ToDo
+    protected $position = 130;
 }

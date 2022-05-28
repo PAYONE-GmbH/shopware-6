@@ -354,40 +354,40 @@
         </service>
 
         <!-- Ratepay Debit -->
-        <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\PreAuthorizeRequestParameterBuilder"
-                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-
-            <tag name="payone_request_builder"/>
-        </service>
-
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
 
             <tag name="payone_request_builder"/>
         </service>
 
-        <!-- Ratepay Installment -->
-        <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\PreAuthorizeRequestParameterBuilder"
-                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+        <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\AuthorizeRequestParameterBuilder">
 
             <tag name="payone_request_builder"/>
         </service>
 
+        <!-- Ratepay Installment -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
 
             <tag name="payone_request_builder"/>
         </service>
 
+        <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\AuthorizeRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
         <!-- Ratepay Invoicing -->
-        <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing\PreAuthorizeRequestParameterBuilder"
+        <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
 
             <tag name="payone_request_builder"/>
         </service>
 
-        <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing\AuthorizeRequestParameterBuilder"
-                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+        <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing\AuthorizeRequestParameterBuilder">
 
             <tag name="payone_request_builder"/>
         </service>

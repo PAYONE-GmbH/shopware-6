@@ -1,0 +1,51 @@
+{% block payone_payolution_calculation_overview %}
+    {% for element in addpaydata  %}
+        <div class="installmentDetail" data-duration="{{ element.Duration }}" {% if not loop.first %}hidden="hidden"{% endif %}>
+            <div class="table-responsive">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>{{ "PayonePayment.payolution.installment.numberOfInstallments" | trans }}</td>
+                            <td>{{ element.Duration }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ "PayonePayment.payolution.installment.financingAmount" | trans }}</td>
+                            <td>{{ element.OriginalAmount | currency(element.Currency) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ "PayonePayment.payolution.installment.total" | trans }}</td>
+                            <td>{{ element.TotalAmount | currency(element.Currency) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ "PayonePayment.payolution.installment.interestRate" | trans }}</td>
+                            <td>{{ element.InterestRate }} %</td>
+                        </tr>
+                        <tr>
+                            <td>{{ "PayonePayment.payolution.installment.effectiveInterestRate" | trans }}</td>
+                            <td>{{ element.EffectiveInterestRate }} %</td>
+                        </tr>
+                        <tr>
+                            <td>{{ "PayonePayment.payolution.installment.monthlyInstallment" | trans }}</td>
+                            <td><b>{{ element.Installment[0].Amount | currency(element.Currency) }}</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="form-group">
+        <label class="form-label" for="payolutionAccountOwner">{{ "PayonePayment.payolution.installment.accountOwner" | trans }}{{ "general.required" | trans }}</label>
+        <input class="form-control" type="text" id="payolutionAccountOwner" name="payolutionAccountOwner" form="confirmOrderForm">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="payolutionIban">{{ "PayonePayment.payolution.installment.iban" | trans }}{{ "general.required" | trans }}</label>
+        <input class="form-control" type="text" id="payolutionIban" name="payolutionIban" form="confirmOrderForm">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="payolutionBic">{{ "PayonePayment.payolution.installment.bic" | trans }}{{ "general.required" | trans }}</label>
+        <input class="form-control" type="text" id="payolutionBic" name="payolutionBic" form="confirmOrderForm">
+    </div>
+{% endblock %}

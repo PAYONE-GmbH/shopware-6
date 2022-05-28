@@ -1,0 +1,42 @@
+{% block payone_payolution_consent_checkbox %}
+    <div class="form-row">
+        <div class="col-12">
+            <label class="form-label" for="payolutionBirthday">
+                {{ "PayonePayment.payolution.birthday.label" | trans }}{{ "general.required" | trans }}
+            </label>
+        </div>
+
+        <div class="form-group {% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
+            <input
+                type="date"
+                id="payolutionBirthday"
+                name="payolutionBirthday"
+                class="form-control{% if formViolations.getViolations('/payolutionBirthday') is not empty %} is-invalid{% endif %}"
+                form="confirmOrderForm"
+                required="required"
+            />
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-12">
+            <div class="custom-control custom-checkbox">
+                <input
+                    type="checkbox"
+                    class="custom-control-input{% if formViolations.getViolations('/payolutionConsent') is not empty %} is-invalid{% endif %}"
+                    id="payolutionConsent"
+                    form="confirmOrderForm"
+                    name="payolutionConsent"
+                    required="required"
+                />
+
+                <label for="payolutionConsent" class="custom-control-label consent-label">
+                    {{ "PayonePayment.payolution.consentCheckbox.introduction" | trans }}
+                    {{ "PayonePayment.payolution.consentCheckbox.textWithLink" | trans({
+                        '%link%': path('frontend.account.payone.payolution.consent')
+                    }) | raw }}
+                </label>
+            </div>
+        </div>
+    </div>
+{% endblock %}
