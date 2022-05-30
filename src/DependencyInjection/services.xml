@@ -13,6 +13,7 @@
         <import resource="hydrator.xml" />
         <import resource="listeners.xml" />
         <import resource="pages.xml" />
+        <import resource="scheduled_tasks.xml" />
         <import resource="webhooks.xml"/>
         <import resource="requestParameter/*.xml"/>
     </imports>
