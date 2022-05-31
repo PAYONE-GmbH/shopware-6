@@ -70,7 +70,7 @@ class RedirectHandlerTest extends TestCase
         );
     }
 
-    public function testEncodingWithDatabase(): string
+    public function testEncodingWithDatabase(): array
     {
         $connection = $this->getContainer()->get(Connection::class);
         $router     = $this->getContainer()->get('router.default');
@@ -97,13 +97,13 @@ class RedirectHandlerTest extends TestCase
 
         $this->assertSame($originalUrl, $foundOriginalUrl);
 
-        return $hash;
+        return ['hash' => $hash, 'originalUrl' => $originalUrl];
     }
 
     /**
      * @depends testEncodingWithDatabase
      */
-    public function testDecodingWithDatabase(string $hash): void
+    public function testDecodingWithDatabase(array $data): void
     {
         $connection = $this->getContainer()->get(Connection::class);
         $router     = $this->getContainer()->get('router.default');
@@ -113,10 +113,10 @@ class RedirectHandlerTest extends TestCase
             $router
         );
 
-        $originalUrl = $redirectHandler->decode($hash);
+        $originalUrl = $redirectHandler->decode($data['hash']);
 
         $this->assertSame(
-            'the-url',
+            $data['originalUrl'],
             $originalUrl
         );
     }
@@ -188,19 +188,18 @@ class RedirectHandlerTest extends TestCase
         $redirectCount = (int) $this->fetchOne($connection, $countQuery);
 
         $this->assertSame(1, $redirectCount);
+
+        // ToDo: Auf die richtige URL prüfen
     }
 
     private function fetchOne(Connection $connection, string $query, array $params = [])
     {
-        $result = null;
-
+        // Shopware >= x
         if (method_exists($connection, 'fetchOne')) {
-            $result = $connection->fetchOne($query, $params);
-        } elseif (method_exists($connection, 'fetchColumn')) {
-            /** @noinspection PhpDeprecationInspection */
-            $result = $connection->fetchColumn($query, $params);
+            return $connection->fetchOne($query, $params);
         }
 
-        return $result;
+        /** @noinspection PhpDeprecationInspection */
+        return $connection->fetchColumn($query, $params);
     }
 }
