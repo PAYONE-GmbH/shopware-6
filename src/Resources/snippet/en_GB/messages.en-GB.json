@@ -41,7 +41,8 @@
         },
         "checkoutConfirmPage": {
             "defaultCardTitle": "Payment Information",
-            "save": "Save data for future use"
+            "save": "Save data for future use",
+            "saveMandate": "Save direct debit mandate for future use"
         },
         "checkoutFinishPage": {
             "mandateIdentification": "Direct Debit Mandate"
