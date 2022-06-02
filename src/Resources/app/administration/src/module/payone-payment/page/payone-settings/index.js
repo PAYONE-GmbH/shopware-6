@@ -14,7 +14,7 @@ Component.register('payone-settings', {
 
     inject: [ 'PayonePaymentSettingsService' ],
 
-       data() {
+    data() {
         return {
             isLoading: false,
             isTesting: false,

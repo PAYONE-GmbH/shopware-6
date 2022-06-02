@@ -6,14 +6,11 @@ namespace PayonePayment\Payone\RequestParameter\Builder\RatepayDebit;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Helper\OrderFetcherInterface;
-use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
-use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -45,21 +42,17 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'financingtype'   => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
             'iban'          => $dataBag->get('ratepayIban'),
             'bic'           => $dataBag->get('ratepayBic'),
-
-            // ToDo: Folgende Felder sind Pflichtfelder. Prüfen welche davon an anderer Stelle befüllt werden und den Rest hier befüllen.
-            'add_paydata[shop_id]' => 1,
+            'telephonenumber' => $dataBag->get('ratepayPhone'),
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-            'birthday'                  => '19900505',
 
-
-            // ToDo: In der Doku steht nur für KLV und KLS (Klarna)???
-            'telephonenumber'                  => '+4915121231231',
+            // ToDo: Ratepay Profile in der Administration pflegbar machen
+            'add_paydata[shop_id]' => 88880103,
         ];
 
         $this->applyBirthdayParameter($parameters, $dataBag);
 
-        if ($this->transferCompanyData($salesChannelContext)) {
-            $this->provideCompanyParams($paymentTransaction->getOrder()->getId(), $parameters, $salesChannelContext->getContext());
+        if ($this->isConsideredB2B($salesChannelContext)) {
+            $this->applyB2BParameters($paymentTransaction->getOrder()->getId(), $parameters, $salesChannelContext->getContext());
         }
 
         return $parameters;
@@ -79,8 +72,9 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     protected function applyBirthdayParameter(array &$parameters, ParameterBag $dataBag): void
     {
-        if (!empty($dataBag->get('payolutionBirthday'))) {
-            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
+        // ToDo: Muss eigentlich ein Pflichtfeld sein
+        if (!empty($dataBag->get('ratepayBirthday'))) {
+            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('ratepayBirthday'));
 
             if (!empty($birthday)) {
                 $parameters['birthday'] = $birthday->format('Ymd');
@@ -88,53 +82,26 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
     }
 
-    protected function transferCompanyData(SalesChannelContext $context): bool
+    protected function isConsideredB2B(SalesChannelContext $context): bool
     {
-        $configuration = $this->configReader->read($context->getSalesChannel()->getId());
-
-        return !empty($configuration->get(ConfigInstaller::CONFIG_FIELD_PAYOLUTION_DEBIT_TRANSFER_COMPANY_DATA));
+        // ToDo: Wenn eine Company beim Kunden gesetzt ist, wird es für Ratepay als B2B gehandhabt
+        return false;
     }
 
-    protected function provideCompanyParams(string $orderId, array &$parameters, Context $context): void
+    protected function applyB2BParameters(string $orderId, array &$parameters, Context $context): void
     {
-        $order = $this->orderFetcher->getOrderById($orderId, $context);
+        // ToDo: Felder befüllen
+        // Kein Pflichtfeld
+        $parameters['add_paydata[vat_id]'] = null;
+        $parameters['add_paydata[company_id]'] = null; // Handelsregisternummer
 
-        if (null === $order) {
-            return;
-        }
-
-        $orderAddresses = $order->getAddresses();
-
-        if (null === $orderAddresses) {
-            return;
-        }
-
-        /** @var OrderAddressEntity $billingAddress */
-        $billingAddress = $orderAddresses->get($order->getBillingAddressId());
-
-        if (!empty($billingAddress->getCompany()) && !empty($billingAddress->getVatId())) {
-            $parameters['add_paydata[b2b]']         = 'yes';
-            $parameters['add_paydata[company_uid]'] = $billingAddress->getVatId();
-
-            return;
-        }
-
-        /** @var OrderCustomerEntity $orderCustomer */
-        $orderCustomer = $order->getOrderCustomer();
-
-        if (empty($orderCustomer->getCompany()) && empty($billingAddress->getCompany())) {
-            return;
-        }
-
-        if (method_exists($orderCustomer, 'getVatIds') === false) {
-            return;
-        }
-
-        $vatIds = $orderCustomer->getVatIds();
-
-        if (empty($vatIds) === false) {
-            $parameters['add_paydata[b2b]']         = 'yes';
-            $parameters['add_paydata[company_uid]'] = $vatIds[0];
-        }
+        // Pflichtfeld (falls B2B)
+        $parameters['add_paydata[registry_location]'] = null;
+        $parameters['add_paydata[registry_country_code]'] = null;
+        $parameters['add_paydata[registry_city]'] = null;
+        $parameters['add_paydata[registry_zip]'] = null;
+        $parameters['add_paydata[registry_street]'] = null;
+        $parameters['add_paydata[company_type]'] = null;
+        $parameters['add_paydata[homepage]'] = null;
     }
 }

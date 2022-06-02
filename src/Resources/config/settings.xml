@@ -2725,6 +2725,10 @@
                 </option>
             </options>
         </input-field>
+
+        <component name="payone-ratepay-profiles">
+            <name>ratepayDebitProfiles</name>
+        </component>
     </card>
 
     <card>
@@ -2760,6 +2764,10 @@
             <helpText>You need a key to a separate payment gateway to use this payment method.</helpText>
             <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
         </input-field>
+
+        <component name="payone-ratepay-profiles">
+            <name>ratepayInstallmentProfiles</name>
+        </component>
     </card>
 
     <card>
@@ -2795,5 +2803,9 @@
             <helpText>You need a key to a separate payment gateway to use this payment method.</helpText>
             <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
         </input-field>
+
+        <component name="payone-ratepay-profiles">
+            <name>ratepayInvoicingProfiles</name>
+        </component>
     </card>
 </config>
