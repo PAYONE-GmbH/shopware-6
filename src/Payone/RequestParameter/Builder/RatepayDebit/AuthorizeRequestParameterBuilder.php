@@ -72,7 +72,6 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     protected function applyBirthdayParameter(array &$parameters, ParameterBag $dataBag): void
     {
-        // ToDo: Muss eigentlich ein Pflichtfeld sein
         if (!empty($dataBag->get('ratepayBirthday'))) {
             $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('ratepayBirthday'));
 
