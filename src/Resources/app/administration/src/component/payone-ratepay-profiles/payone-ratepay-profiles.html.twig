@@ -1,5 +1,108 @@
 {% block payone_ratepay_profiles %}
     <div class="payone-ratepay-profiles">
-        ToDo: Element bauen, um mehrere Ratepay Profile pflegen zu können
+        {% block payone_ratepay_shop_ids %}
+            <sw-container slot="grid" type="row" class="">
+
+                {% block payone_ratepay_shop_ids_actions %}
+                    <sw-container class="sw-card__toolbar"
+                                  columns="1fr">
+
+                        {% block payone_ratepay_shop_ids_create_actions %}
+                            <div align="right">
+                                <sw-button class=""
+                                           size="small"
+                                           @click="createNewLineItem">
+                                    {{ $tc('payone-payment.general.actions.addShop') }}
+                                </sw-button>
+                            </div>
+                        {% endblock %}
+                    </sw-container>
+                {% endblock %}
+
+                {% block payone_ratepay_shop_ids_grid %}
+                    <sw-data-grid v-if="value"
+                                  ref="shopIdsDataGrid"
+                                  :dataSource="valueItems"
+                                  :columns="getLineItemColumns"
+                                  :fullPage="false"
+                                  :showSettings="false"
+                                  :showSelection="false"
+                                  :showActions="true"
+                                  :isLoading="isLoading"
+                                  :allowColumnEdit="false"
+                                  :allowInlineEdit="true"
+                                  :compactMode="true"
+                                  identifier="sw-order-line-item-grid"
+                                  required
+                                  class="sw-order-line-items-grid__data-grid"
+                                  @inline-edit-start="onInlineEditStart"
+                                  @inline-edit-save=""
+                                  @inline-edit-cancel="onInlineEditCancel"
+                                  @selection-change="onSelectionChanged">
+                        {% block payone_ratepay_shop_ids_grid_columns %}
+                            {% block payone_ratepay_shop_ids_grid_columns_shop_id %}
+                                <template slot="column-name" slot-scope="{ item, isInlineEdit}">
+
+                                    {% block payone_ratepay_shop_ids_grid_columns_shop_id_inline_edit %}
+                                        <sw-field v-if="isInlineEdit"
+                                                  type="text"
+                                                  v-model="item.name"
+                                                  size="small"
+                                        >
+                                            {{ item.shopID }}
+                                        </sw-field>
+                                    {% endblock %}
+
+                                    {% block payone_ratepay_shop_ids_grid_columns_shop_id_content %}
+                                        <template v-else>
+                                            {{ item.shopID }}
+                                        </template>
+                                    {% endblock %}
+
+                                </template>
+                            {% endblock %}
+
+                            {% block payone_ratepay_shop_ids_grid_columns_currency %}
+                                <template slot="column-name" slot-scope="{ item, isInlineEdit}">
+
+                                    {% block payone_ratepay_shop_ids_grid_columns_currency_inline_edit %}
+                                        <sw-field v-if="isInlineEdit"
+                                                  type="text"
+                                                  v-model="item.name"
+                                                  size="small"
+                                        >
+                                            {{ item.currency }}
+                                        </sw-field>
+                                    {% endblock %}
+
+                                    {% block payone_ratepay_shop_ids_grid_columns_currency_content %}
+                                        <template v-else>
+                                            {{ item.currency }}
+                                        </template>
+                                    {% endblock %}
+
+                                </template>
+                            {% endblock %}
+
+                            {% block payone_ratepay_shop_ids_bulk_actions %}
+                                <template slot="actions" slot-scope="{ item }">
+                                    {% block sw_settings_units_content_grid_column_menu_delete %}
+                                        <sw-context-menu-item @click="onDeleteSelectedItems(item)" variant="danger">
+                                            {{ $tc('global.default.delete') }}
+                                        </sw-context-menu-item>
+                                    {% endblock %}
+                                </template>
+                            {% endblock %}
+                        {% endblock %}
+                    </sw-data-grid>
+                {% endblock %}
+
+                {% block payone_ratepay_shop_ids_error %}
+                    <sw-alert v-if="showAlert" variant="error">
+                        {{ $tc('payone-payment.general.errors.existingShopId') }}
+                    </sw-alert>
+                {% endblock %}
+        </sw-container>
+        {% endblock %}
     </div>
 {% endblock %}

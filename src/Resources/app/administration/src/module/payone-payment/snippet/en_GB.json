@@ -3,7 +3,17 @@
         "title": "PAYONE",
         "general": {
             "mainMenuItemGeneral": "PAYONE",
-            "descriptionTextModule": "Settings for PAYONE"
+            "descriptionTextModule": "Settings for PAYONE",
+            "label": {
+                "shopId": "Shop-ID",
+                "currencx": "Currency"
+            },
+            "actions": {
+                "addShop": "Add Shop"
+            },
+            "errors": {
+                "existingShopId": "The entered shop-id already exists."
+            }
         },
         "capture": {
             "buttonTitle": "Capture",
