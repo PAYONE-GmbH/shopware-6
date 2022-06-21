@@ -28,17 +28,13 @@
                                   :showSettings="false"
                                   :showSelection="false"
                                   :showActions="true"
-                                  :isLoading="isLoading"
                                   :allowColumnEdit="false"
                                   :allowInlineEdit="true"
                                   :compactMode="true"
                                   identifier="sw-order-line-item-grid"
-                                  required
                                   class="sw-order-line-items-grid__data-grid"
-                                  @inline-edit-start="onInlineEditStart"
-                                  @inline-edit-save=""
-                                  @inline-edit-cancel="onInlineEditCancel"
-                                  @selection-change="onSelectionChanged">
+                                  @inline-edit-save="onInlineEditSave"
+                                  @inline-edit-cancel="onInlineEditCancel">
                         {% block payone_ratepay_shop_ids_grid_columns %}
                             {% block payone_ratepay_shop_ids_grid_columns_shop_id %}
                                 <template slot="column-name" slot-scope="{ item, isInlineEdit}">
@@ -87,7 +83,7 @@
                             {% block payone_ratepay_shop_ids_bulk_actions %}
                                 <template slot="actions" slot-scope="{ item }">
                                     {% block sw_settings_units_content_grid_column_menu_delete %}
-                                        <sw-context-menu-item @click="onDeleteSelectedItems(item)" variant="danger">
+                                        <sw-context-menu-item @click="onDeleteSelectedItem(item)" variant="danger">
                                             {{ $tc('global.default.delete') }}
                                         </sw-context-menu-item>
                                     {% endblock %}
