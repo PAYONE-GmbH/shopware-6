@@ -7,11 +7,6 @@ Component.register('payone-ratepay-profiles', {
     template,
 
     props: {
-        profile: {
-            type: String,
-            required: false
-        },
-
         value: {
             type: Array,
             required: false,
@@ -23,27 +18,13 @@ Component.register('payone-ratepay-profiles', {
 
     data() {
         return {
-            isLoading: false,
             selectedItems: {},
-            total: 0,
             newItem: null,
             showAlert: false,
         };
     },
 
     computed: {
-        shopIdsRepository() {
-            return this.repositoryFactory.create('payone_ratepay_shop_ids');
-        },
-
-        getCriteria() {
-            const criteria = new Criteria(1, 500);
-            criteria.addFilter(Criteria.equals('profile', this.profile))
-              .addSorting(Criteria.sort('position', 'ASC'));
-
-            return criteria;
-        },
-
         valueItems() {
             return this.value;
         },
@@ -77,51 +58,30 @@ Component.register('payone-ratepay-profiles', {
     },
 
     methods: {
-        createdComponent() {
-            this.isLoading = true;
-            this.shopIdsRepository.search(this.getCriteria, Shopware.Context.api).then((items) => {
-                this.total = items.total;
-                this.groupOptions = items;
-                this.isLoading = false;
-                return items;
-            }).catch(() => {
-                this.isLoading = false;
-            });
-        },
-
         onInlineEditCancel() {
             this.$emit('item-cancel');
         },
 
         onInlineEditSave(currentItem) {
-            const values = JSON.stringify(this.value);
-            const currentId = currentItem.shopId;
+          let shopIdExists = false;
+            this.value.forEach(function(item) {
+                if(item.id !== currentItem.id && item.shopId === currentItem.shopId) {
+                    shopIdExists = true;
+                }
+            });
 
-            console.log(values);
-            console.log(currentId);
-            console.log(values.indexOf(currentId));
+            if(shopIdExists) {
+              this.showAlert = true;
 
-            if(values.indexOf(currentId) !== -1) {
-                this.showAlert = true;
-
-                this.$nextTick(() => {
-                    this.$refs.shopIdsDataGrid.currentInlineEditId = currentItem.id;
-                    this.$refs.shopIdsDataGrid.enableInlineEdit();
-                });
+              this.$nextTick(() => {
+                this.$refs.shopIdsDataGrid.currentInlineEditId = currentItem.id;
+                this.$refs.shopIdsDataGrid.enableInlineEdit();
+              });
             } else {
               this.showAlert = false;
             }
 
             this.$emit('update-list', this.value);
-        },
-
-        onInlineEditStart() {
-          console.log("START INLINE EDIT")
-            this.showAlert = false;
-        },
-
-        addProfile(item) {
-            this.value.push(item);
         },
 
         createNewLineItem() {
@@ -135,12 +95,9 @@ Component.register('payone-ratepay-profiles', {
             });
         },
 
-        onSelectionChanged(selection) {
-            this.selectedItems = selection;
-        },
-
-        onDeleteSelectedItems(itemToDelete) {
+        onDeleteSelectedItem(itemToDelete) {
             this.value = this.value.filter(currentItem => currentItem.shopId !== itemToDelete.shopId);
+
             this.$emit('deleted', this.value);
         },
     }
