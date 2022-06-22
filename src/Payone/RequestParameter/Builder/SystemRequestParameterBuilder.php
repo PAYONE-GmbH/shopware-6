@@ -16,6 +16,7 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use PayonePayment\PayonePayment;
+use RuntimeException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Plugin\PluginService;
 
@@ -76,34 +77,36 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        if ($arguments instanceof TestCredentialsStruct) {
-            return false;
-        }
-
-        return true;
+        return !($arguments instanceof TestCredentialsStruct);
     }
 
-    /**
-     * @param CheckoutDetailsStruct|CreditCardCheckStruct|FinancialTransactionStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments
-     */
     private function getContext(AbstractRequestParameterStruct $arguments): Context
     {
         if ($arguments instanceof FinancialTransactionStruct) {
             return $arguments->getContext();
         }
 
-        return $arguments->getSalesChannelContext()->getContext();
+        if (method_exists($arguments, 'getSalesChannelContext')) {
+            return $arguments->getSalesChannelContext()->getContext();
+        }
+
+        return Context::createDefaultContext();
     }
 
-    /**
-     * @param CheckoutDetailsStruct|CreditCardCheckStruct|FinancialTransactionStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments
-     */
     private function getSalesChannelId(AbstractRequestParameterStruct $arguments): string
     {
         if ($arguments instanceof FinancialTransactionStruct) {
             return $arguments->getPaymentTransaction()->getOrder()->getSalesChannelId();
         }
 
-        return $arguments->getSalesChannelContext()->getSalesChannel()->getId();
+        if (method_exists($arguments, 'getSalesChannelContext')) {
+            return $arguments->getSalesChannelContext()->getSalesChannel()->getId();
+        }
+
+        if (method_exists($arguments, 'getSalesChannelId')) {
+            return $arguments->getSalesChannelId();
+        }
+
+        throw new RuntimeException('missing sales channel id');
     }
 }

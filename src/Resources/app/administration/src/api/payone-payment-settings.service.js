@@ -59,6 +59,25 @@ class PayonePaymentSettingsService extends ApiService {
                 return true;
             });
     }
+
+    getSettingValue(name, salesChannelId) {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient
+            .get(
+                `_action/${this.getApiBasePath()}/setting-value`,
+                {
+                    headers: headers,
+                    params: {
+                        name,
+                        salesChannelId
+                    }
+                }
+            )
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 Application.addServiceProvider('PayonePaymentSettingsService', (container) => {

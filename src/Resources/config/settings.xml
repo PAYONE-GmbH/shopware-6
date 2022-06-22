@@ -2729,6 +2729,10 @@
         <component name="payone-ratepay-profiles">
             <name>ratepayDebitProfiles</name>
         </component>
+
+        <component name="payone-ratepay-profile-configurations">
+            <name>ratepayDebitProfileConfigurations</name>
+        </component>
     </card>
 
     <card>
@@ -2768,6 +2772,10 @@
         <component name="payone-ratepay-profiles">
             <name>ratepayInstallmentProfiles</name>
         </component>
+
+        <component name="payone-ratepay-profile-configurations">
+            <name>ratepayInstallmentProfileConfigurations</name>
+        </component>
     </card>
 
     <card>
@@ -2806,6 +2814,10 @@
 
         <component name="payone-ratepay-profiles">
             <name>ratepayInvoicingProfiles</name>
+        </component>
+
+        <component name="payone-ratepay-profile-configurations">
+            <name>ratepayInvoicingProfileConfigurations</name>
         </component>
     </card>
 </config>

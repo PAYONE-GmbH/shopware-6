@@ -163,6 +163,13 @@
                             v-bind="getElementBind(getBind(element, config))"
                             v-model="config[element.name]"
                         />
+
+                        <div v-if="element.name.includes('ProfileConfigurations')">
+                            <button class="sw-button"
+                                    @click="onSave">Profil-Konfiguration neuladen</button>
+                            <p>(Änderungen an der Plugin-Konfiguration werden dabei zuerst gespeichert)</p>
+                        </div>
+
                     </div>
                 </template>
 

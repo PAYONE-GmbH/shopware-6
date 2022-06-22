@@ -1,3 +1,4 @@
+import './component/payone-ratepay-profile-configurations';
 import './component/payone-ratepay-profiles';
 import './module/payone-payment';
 import './module/payone-notification-target';

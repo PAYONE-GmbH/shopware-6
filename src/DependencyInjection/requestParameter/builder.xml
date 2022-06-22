@@ -356,6 +356,7 @@
         <!-- Ratepay Debit -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
 
             <tag name="payone_request_builder"/>
         </service>
@@ -366,11 +367,28 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\ProfileRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
         <!-- Ratepay Installment -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
 
             <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\CalculationRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="currency.repository"/>
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
+
+            <tag name="payone_request_builder" />
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\PreAuthorizeRequestParameterBuilder"
@@ -379,15 +397,28 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\ProfileRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
         <!-- Ratepay Invoicing -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing\AuthorizeRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing\ProfileRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder">
 
             <tag name="payone_request_builder"/>
         </service>

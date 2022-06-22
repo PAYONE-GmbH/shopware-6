@@ -27,7 +27,8 @@ abstract class AbstractRequestParameterBuilder
     public const REQUEST_ACTION_GET_FILE                     = 'getfile';
     public const REQUEST_ACTION_MANAGE_MANDATE               = 'managemandate';
     public const REQUEST_ACTION_DEBIT                        = 'debit';
-    public const REQUEST_RATEPAY_PROFILE                        = 'ratepayProfile';
+    public const REQUEST_ACTION_RATEPAY_PROFILE              = 'ratepayProfile';
+    public const REQUEST_ACTION_RATEPAY_CALCULATION          = 'ratepayCalculation';
 
     public const CLEARING_TYPE_DEBIT                = 'elv';
     public const CLEARING_TYPE_WALLET               = 'wlt';

@@ -4,28 +4,24 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\RatepayDebit;
 
-use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Helper\OrderFetcherInterface;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use RuntimeException;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var ConfigReaderInterface */
-    protected $configReader;
-
     /** @var OrderFetcherInterface */
     protected $orderFetcher;
 
-    public function __construct(ConfigReaderInterface $configReader, OrderFetcherInterface $orderFetcher)
+    public function __construct(OrderFetcherInterface $orderFetcher)
     {
-        $this->configReader = $configReader;
         $this->orderFetcher = $orderFetcher;
     }
 
@@ -37,23 +33,23 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $paymentTransaction  = $arguments->getPaymentTransaction();
 
         $parameters = [
-            'request'      => self::REQUEST_ACTION_AUTHORIZE,
-            'clearingtype' => self::CLEARING_TYPE_FINANCING,
-            'financingtype'   => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
-            'iban'          => $dataBag->get('ratepayIban'),
-            'bic'           => $dataBag->get('ratepayBic'),
-            'telephonenumber' => $dataBag->get('ratepayPhone'),
+            'request'                                    => self::REQUEST_ACTION_AUTHORIZE,
+            'clearingtype'                               => self::CLEARING_TYPE_FINANCING,
+            'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
+            'iban'                                       => $dataBag->get('ratepayIban'),
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
 
             // ToDo: Ratepay Profile in der Administration pflegbar machen
             'add_paydata[shop_id]' => 88880103,
         ];
 
+        $this->applyPhoneParameter(
+            $paymentTransaction->getOrder()->getId(),
+            $parameters,
+            $dataBag,
+            $salesChannelContext->getContext()
+        );
         $this->applyBirthdayParameter($parameters, $dataBag);
-
-        if ($this->isConsideredB2B($salesChannelContext)) {
-            $this->applyB2BParameters($paymentTransaction->getOrder()->getId(), $parameters, $salesChannelContext->getContext());
-        }
 
         return $parameters;
     }
@@ -70,6 +66,41 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $paymentMethod === PayoneRatepayDebitPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }
 
+    protected function applyPhoneParameter(string $orderId, array &$parameters, ParameterBag $dataBag, Context $context): void
+    {
+        $order = $this->orderFetcher->getOrderById($orderId, $context);
+
+        if (null === $order) {
+            throw new RuntimeException('missing order');
+        }
+
+        $orderAddresses = $order->getAddresses();
+
+        if (null === $orderAddresses) {
+            throw new RuntimeException('missing order addresses');
+        }
+
+        /** @var OrderAddressEntity $billingAddress */
+        $billingAddress = $orderAddresses->get($order->getBillingAddressId());
+
+        if (null === $billingAddress) {
+            throw new RuntimeException('missing order billing address');
+        }
+
+        $submittedPhoneNumber = $dataBag->get('ratepayPhone');
+
+        if (!empty($submittedPhoneNumber) && $submittedPhoneNumber !== $billingAddress->getPhoneNumber()) {
+            $billingAddress->setPhoneNumber($submittedPhoneNumber);
+            // ToDo: Save billing address
+        }
+
+        if (!$billingAddress->getPhoneNumber()) {
+            throw new RuntimeException('missing phone number');
+        }
+
+        $parameters['telephonenumber'] = $billingAddress->getPhoneNumber();
+    }
+
     protected function applyBirthdayParameter(array &$parameters, ParameterBag $dataBag): void
     {
         if (!empty($dataBag->get('ratepayBirthday'))) {
@@ -79,28 +110,5 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
                 $parameters['birthday'] = $birthday->format('Ymd');
             }
         }
-    }
-
-    protected function isConsideredB2B(SalesChannelContext $context): bool
-    {
-        // ToDo: Wenn eine Company beim Kunden gesetzt ist, wird es für Ratepay als B2B gehandhabt
-        return false;
-    }
-
-    protected function applyB2BParameters(string $orderId, array &$parameters, Context $context): void
-    {
-        // ToDo: Felder befüllen
-        // Kein Pflichtfeld
-        $parameters['add_paydata[vat_id]'] = null;
-        $parameters['add_paydata[company_id]'] = null; // Handelsregisternummer
-
-        // Pflichtfeld (falls B2B)
-        $parameters['add_paydata[registry_location]'] = null;
-        $parameters['add_paydata[registry_country_code]'] = null;
-        $parameters['add_paydata[registry_city]'] = null;
-        $parameters['add_paydata[registry_zip]'] = null;
-        $parameters['add_paydata[registry_street]'] = null;
-        $parameters['add_paydata[company_type]'] = null;
-        $parameters['add_paydata[homepage]'] = null;
     }
 }

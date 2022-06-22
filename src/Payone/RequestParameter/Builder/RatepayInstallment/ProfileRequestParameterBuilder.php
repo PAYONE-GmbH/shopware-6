@@ -16,12 +16,12 @@ class ProfileRequestParameterBuilder extends GeneralTransactionRequestParameterB
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'request'                   => self::REQUEST_ACTION_GENERIC_PAYMENT,
-            'add_paydata[action]'       => 'profile',
-            // ToDo: Ratepay Profile in der Administration pflegbar machen
-            'add_paydata[shop_id]'      => 88880103,
-            'clearingtype'              => self::CLEARING_TYPE_FINANCING,
-            'financingtype'             => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
+            'request'              => self::REQUEST_ACTION_GENERIC_PAYMENT,
+            'add_paydata[action]'  => 'profile',
+            'add_paydata[shop_id]' => $arguments->getShopId(),
+            'currency'             => $arguments->getCurrency(),
+            'clearingtype'         => self::CLEARING_TYPE_FINANCING,
+            'financingtype'        => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
         ];
     }
 
@@ -34,6 +34,6 @@ class ProfileRequestParameterBuilder extends GeneralTransactionRequestParameterB
         $paymentMethod = $arguments->getPaymentMethod();
         $action        = $arguments->getAction();
 
-        return $paymentMethod === PayoneRatepayInstallmentPaymentHandler::class && $action === self::REQUEST_RATEPAY_PROFILE;
+        return $paymentMethod === PayoneRatepayInstallmentPaymentHandler::class && $action === self::REQUEST_ACTION_RATEPAY_PROFILE;
     }
 }

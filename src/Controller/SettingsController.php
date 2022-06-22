@@ -22,6 +22,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Grouping\FieldGrouping;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,6 +45,9 @@ class SettingsController extends AbstractController
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var SystemConfigService */
+    private $systemConfigService;
+
     /** @var string */
     private $kernelDirectory;
 
@@ -52,12 +56,14 @@ class SettingsController extends AbstractController
         RequestParameterFactory $requestFactory,
         EntityRepositoryInterface $stateMachineTransitionRepository,
         LoggerInterface $logger,
+        SystemConfigService $systemConfigService,
         string $kernelDirectory
     ) {
         $this->client                           = $client;
         $this->requestFactory                   = $requestFactory;
         $this->stateMachineTransitionRepository = $stateMachineTransitionRepository;
         $this->logger                           = $logger;
+        $this->systemConfigService              = $systemConfigService;
         $this->kernelDirectory                  = $kernelDirectory;
     }
 
@@ -150,6 +156,19 @@ class SettingsController extends AbstractController
         }
 
         return new JsonResponse(['success' => true], 200);
+    }
+
+    /**
+     * @RouteScope(scopes={"api"})
+     * @Route("/api/_action/payone_payment/setting-value", name="api.action.payone_payment.get.setting_value", methods={"GET"})
+     * @Route("/api/v{version}/_action/payone_payment/setting-value", name="api.action.payone_payment.get.setting_value.legacy", methods={"GET"})
+     */
+    public function getSettingValue(Request $request): JsonResponse
+    {
+        return new JsonResponse([
+            'success' => true,
+            'value'   => $this->systemConfigService->get($request->get('name'), $request->get('salesChannelId')),
+        ], 200);
     }
 
     private function getPaymentParameters(string $paymentClass): array
@@ -423,87 +442,87 @@ class SettingsController extends AbstractController
 
             case Handler\PayoneRatepayDebitPaymentHandler::class:
                 return [
-                    'request'       => 'preauthorization',
-                    'clearingtype'  => Handler\AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                    'financingtype' => Handler\AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
-                    'add_paydata[shop_id]' => 1,
-                    'iban'        => 'DE00123456782599100003',
-                    'bic'        => 'TESTTEST',
-                    'amount'        => 10000,
+                    'request'                                    => 'preauthorization',
+                    'clearingtype'                               => Handler\AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+                    'financingtype'                              => Handler\AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
+                    'add_paydata[shop_id]'                       => 1,
+                    'iban'                                       => 'DE00123456782599100003',
+                    'bic'                                        => 'TESTTEST',
+                    'amount'                                     => 10000,
                     'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-                    'currency'     => 'EUR',
-                    'reference'    => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
-                    'email'        => 'test@example.com',
-                    'birthday'                  => '19900505',
-                    'telephonenumber'                  => '+4915121231231',
-                    'firstname'    => 'Test',
-                    'lastname'     => 'Test',
-                    'country'      => 'DE',
-                    'street'       => 'teststreet 2',
-                    'zip'          => '12345',
-                    'city'         => 'Test',
-                    'it[1]' => 'goods',
-                    'id[1]' => '5013210425384',
-                    'pr[1]' => 10000,
-                    'de[1]' => 'Test product',
+                    'currency'                                   => 'EUR',
+                    'reference'                                  => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'email'                                      => 'test@example.com',
+                    'birthday'                                   => '19900505',
+                    'telephonenumber'                            => '+4915121231231',
+                    'firstname'                                  => 'Test',
+                    'lastname'                                   => 'Test',
+                    'country'                                    => 'DE',
+                    'street'                                     => 'teststreet 2',
+                    'zip'                                        => '12345',
+                    'city'                                       => 'Test',
+                    'it[1]'                                      => 'goods',
+                    'id[1]'                                      => '5013210425384',
+                    'pr[1]'                                      => 10000,
+                    'de[1]'                                      => 'Test product',
                 ];
 
             case Handler\PayoneRatepayInstallmentPaymentHandler::class:
                 return [
-                    'request'       => 'preauthorization',
-                    'clearingtype'  => Handler\AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                    'financingtype' => Handler\AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
-                    'add_paydata[shop_id]' => 1,
-                    'add_paydata[debit_paytype]' => 'DIRECT-DEBIT',
-                    'add_paydata[installment_amount]' => 500,
-                    'add_paydata[installment_number]' => 12,
-                    'add_paydata[last_installment_amount]' => 4000,
-                    'add_paydata[interest_rate]' => 100,
-                    'add_paydata[amount]' => 100,
-                    'iban'        => 'DE00123456782599100003',
-                    'bic'        => 'TESTTEST',
-                    'amount'        => 10000,
+                    'request'                                    => 'preauthorization',
+                    'clearingtype'                               => Handler\AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+                    'financingtype'                              => Handler\AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
+                    'add_paydata[shop_id]'                       => 1,
+                    'add_paydata[debit_paytype]'                 => 'DIRECT-DEBIT',
+                    'add_paydata[installment_amount]'            => 500,
+                    'add_paydata[installment_number]'            => 12,
+                    'add_paydata[last_installment_amount]'       => 4000,
+                    'add_paydata[interest_rate]'                 => 100,
+                    'add_paydata[amount]'                        => 100,
+                    'iban'                                       => 'DE00123456782599100003',
+                    'bic'                                        => 'TESTTEST',
+                    'amount'                                     => 10000,
                     'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-                    'currency'     => 'EUR',
-                    'reference'    => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
-                    'email'        => 'test@example.com',
-                    'birthday'                  => '19900505',
-                    'telephonenumber'                  => '+4915121231231',
-                    'firstname'    => 'Test',
-                    'lastname'     => 'Test',
-                    'country'      => 'DE',
-                    'street'       => 'teststreet 2',
-                    'zip'          => '12345',
-                    'city'         => 'Test',
-                    'it[1]' => 'goods',
-                    'id[1]' => '5013210425384',
-                    'pr[1]' => 10000,
-                    'de[1]' => 'Test product',
+                    'currency'                                   => 'EUR',
+                    'reference'                                  => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'email'                                      => 'test@example.com',
+                    'birthday'                                   => '19900505',
+                    'telephonenumber'                            => '+4915121231231',
+                    'firstname'                                  => 'Test',
+                    'lastname'                                   => 'Test',
+                    'country'                                    => 'DE',
+                    'street'                                     => 'teststreet 2',
+                    'zip'                                        => '12345',
+                    'city'                                       => 'Test',
+                    'it[1]'                                      => 'goods',
+                    'id[1]'                                      => '5013210425384',
+                    'pr[1]'                                      => 10000,
+                    'de[1]'                                      => 'Test product',
                 ];
 
             case Handler\PayoneRatepayInvoicingPaymentHandler::class:
                 return [
-                    'request'       => 'preauthorization',
-                    'clearingtype'  => Handler\AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                    'financingtype' => Handler\AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
-                    'add_paydata[shop_id]' => 1,
-                    'amount'        => 10000,
+                    'request'                                    => 'preauthorization',
+                    'clearingtype'                               => Handler\AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+                    'financingtype'                              => Handler\AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
+                    'add_paydata[shop_id]'                       => 1,
+                    'amount'                                     => 10000,
                     'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-                    'currency'     => 'EUR',
-                    'reference'    => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
-                    'email'        => 'test@example.com',
-                    'birthday'                  => '19900505',
-                    'telephonenumber'                  => '+4915121231231',
-                    'firstname'    => 'Test',
-                    'lastname'     => 'Test',
-                    'country'      => 'DE',
-                    'street'       => 'teststreet 2',
-                    'zip'          => '12345',
-                    'city'         => 'Test',
-                    'it[1]' => 'goods',
-                    'id[1]' => '5013210425384',
-                    'pr[1]' => 10000,
-                    'de[1]' => 'Test product',
+                    'currency'                                   => 'EUR',
+                    'reference'                                  => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'email'                                      => 'test@example.com',
+                    'birthday'                                   => '19900505',
+                    'telephonenumber'                            => '+4915121231231',
+                    'firstname'                                  => 'Test',
+                    'lastname'                                   => 'Test',
+                    'country'                                    => 'DE',
+                    'street'                                     => 'teststreet 2',
+                    'zip'                                        => '12345',
+                    'city'                                       => 'Test',
+                    'it[1]'                                      => 'goods',
+                    'id[1]'                                      => '5013210425384',
+                    'pr[1]'                                      => 10000,
+                    'de[1]'                                      => 'Test product',
                 ];
 
             default:
