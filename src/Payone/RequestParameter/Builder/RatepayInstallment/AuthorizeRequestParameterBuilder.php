@@ -16,6 +16,13 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         $dataBag = $arguments->getRequestData();
+        $salesChannelContext = $arguments->getSalesChannelContext();
+        $paymentTransaction  = $arguments->getPaymentTransaction();
+        $order = $this->getOrder(
+            $paymentTransaction->getOrder()->getId(),
+            $salesChannelContext->getContext()
+        );
+        $profile = $this->getProfileByOrder($order, PayoneRatepayInstallmentPaymentHandler::class);
 
         $parameters = [
             'request'                                    => self::REQUEST_ACTION_AUTHORIZE,
@@ -30,9 +37,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
             'add_paydata[last_installment_amount]'       => $dataBag->get('ratepayLastInstallmentAmount'),
             'add_paydata[interest_rate]'                 => $dataBag->get('ratepayInterestRate'),
             'add_paydata[amount]'                        => $dataBag->get('ratepayTotalAmount'),
-
-            // ToDo: Ratepay Profile in der Administration pflegbar machen
-            'add_paydata[shop_id]' => 88880103,
+            'add_paydata[shop_id]' => $profile['shopId'],
         ];
 
         $this->applyBirthdayParameter($parameters, $dataBag);

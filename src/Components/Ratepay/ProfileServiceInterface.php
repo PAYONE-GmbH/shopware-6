@@ -6,4 +6,5 @@ namespace PayonePayment\Components\Ratepay;
 
 interface ProfileServiceInterface
 {
+    public function getProfile(ProfileSearch $profileSearch): ?array;
 }
