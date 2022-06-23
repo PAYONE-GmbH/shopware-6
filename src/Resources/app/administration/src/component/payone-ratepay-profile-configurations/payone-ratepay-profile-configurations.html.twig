@@ -2,7 +2,26 @@
     <div class="payone-ratepay-profile-configurations">
 
         <template v-for="profileConfiguration in profileConfigurations">
-            <p>{{ profileConfiguration }}</p>
+            <p class="payone-ratepay-profile-configuration--headline">{{ $tc('payone-payment.general.label.shopId') }}: {{ profileConfiguration.shopId }}</p>
+
+            {% block payone_ratepay_configuration_grid %}
+                <sw-description-list grid="1fr 1fr">
+                    <dt>{{ $tc('payone-payment.general.label.currency') }}</dt>
+                    <dd>{{ profileConfiguration.shopCurrency }}</dd>
+
+                    <dt>{{ $tc('payone-payment.general.label.invoiceCountry') }}</dt>
+                    <dd>{{ profileConfiguration.invoiceCountry }}</dd>
+
+                    <dt>{{ $tc('payone-payment.general.label.shippingCountry') }}</dt>
+                    <dd>{{ profileConfiguration.shippingCountry }}</dd>
+
+                    <dt>{{ $tc('payone-payment.general.label.minBasket') }}</dt>
+                    <dd>{{ profileConfiguration.minBasket }}</dd>
+
+                    <dt>{{ $tc('payone-payment.general.label.maxBasket') }}</dt>
+                    <dd>{{ profileConfiguration.maxBasket }}</dd>
+                </sw-description-list>
+            {% endblock %}
         </template>
     </div>
 {% endblock %}

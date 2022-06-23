@@ -165,9 +165,9 @@
                         />
 
                         <div v-if="element.name.includes('ProfileConfigurations')">
-                            <button class="sw-button"
-                                    @click="onSave">Profil-Konfiguration neuladen</button>
-                            <p>(Änderungen an der Plugin-Konfiguration werden dabei zuerst gespeichert)</p>
+                            <button class="sw-button payone-config-reaload__btn"
+                                    @click="onSave">{{ $tc('payone-payment.general.label.reloadConfigBtn') }}</button>
+                            <p class="payone-config-reaload__info">{{ $tc('payone-payment.general.label.reloadConfigInfo') }}</p>
                         </div>
 
                     </div>

@@ -47,6 +47,12 @@ Component.register('payone-ratepay-profiles', {
                 inlineEdit: 'string',
                 width: '200px',
                 primary: true,
+            }, {
+                property: 'error',
+                label: this.$tc('payone-payment.general.label.error'),
+                allowResize: false,
+                width: '100px',
+                primary: true,
             }];
         }
     },

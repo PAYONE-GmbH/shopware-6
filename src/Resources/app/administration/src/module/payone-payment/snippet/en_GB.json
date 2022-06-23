@@ -6,7 +6,14 @@
             "descriptionTextModule": "Settings for PAYONE",
             "label": {
                 "shopId": "Shop-ID",
-                "currencx": "Currency"
+                "currency": "Currency",
+                "error": "Status",
+                "invoiceCountry": "Invoice Country",
+                "shippingCountry": "Shipping Country",
+                "minBasket": "Min. Basket",
+                "maxBasket": "Max. Basket",
+                "reloadConfigBtn": "Reload Profile Configuration",
+                "reloadConfigInfo": "(Plugin Configuration Changes will be saved first)"
             },
             "actions": {
                 "addShop": "Add Shop"

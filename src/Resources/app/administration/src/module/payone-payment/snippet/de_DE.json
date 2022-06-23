@@ -6,7 +6,14 @@
             "descriptionTextModule": "Einstellungen für PAYONE",
             "label": {
                 "shopId": "Shop-ID",
-                "currency": "Währung"
+                "currency": "Währung",
+                "error": "Status",
+                "invoiceCountry": "Rechnungsland",
+                "shippingCountry": "Lieferland",
+                "minBasket": "Min. Warenkorb",
+                "maxBasket": "Max. Warenkorb",
+                "reloadConfigBtn": "Profil-Konfiguration neuladen",
+                "reloadConfigInfo": "(Änderungen an der Plugin-Konfiguration werden dabei zuerst gespeichert)"
             },
             "actions": {
                 "addShop": "Shop hinzufügen"
