@@ -87,10 +87,8 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="PayonePayment\EventListener\SystemConfigEventListener">
-            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
-            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+        <service id="PayonePayment\EventListener\KernelEventListener">
+            <argument type="service" id="PayonePayment\Components\Ratepay\ProfileService" />
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

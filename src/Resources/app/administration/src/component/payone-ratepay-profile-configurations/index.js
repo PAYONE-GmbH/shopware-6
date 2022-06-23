@@ -39,22 +39,17 @@ Component.register('payone-ratepay-profile-configurations', {
 
     methods: {
         createdComponent() {
-            this.$root.$on('payone-settings-save-successful', this.loadProfile);
-            this.$root.$on('payone-settings-save-failed', this.loadProfile);
+            this.$root.$on('payone-ratepay-profiles-update-result', this.onProfilesUpdateResult);
         },
 
         destroyedComponent() {
-            this.$root.$off('payone-settings-save-successful');
-            this.$root.$off('payone-settings-save-failed');
+            this.$root.$off('payone-ratepay-profiles-update-result');
         },
 
-        loadProfile(salesChannelId) {
-            this.isLoading = true;
-            this.PayonePaymentSettingsService.getSettingValue(this.name, salesChannelId)
-                .then((result) => {
-                    this.configuration = result.value;
-                    this.isLoading = false;
-                });
+        onProfilesUpdateResult(result) {
+            if (result['updates'][this.name]) {
+                this.configuration = result['updates'][this.name];
+            }
         }
     }
 });

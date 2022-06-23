@@ -22,7 +22,7 @@
                 {% block payone_ratepay_shop_ids_grid %}
                     <sw-data-grid v-if="value"
                                   ref="shopIdsDataGrid"
-                                  :dataSource="valueItems"
+                                  :dataSource="profiles"
                                   :columns="getLineItemColumns"
                                   :fullPage="false"
                                   :showSettings="false"

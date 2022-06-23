@@ -197,35 +197,15 @@ Component.register('payone-settings', {
                 return;
             }
 
-            // These values are readonly and should not be changed by administration
-            this.$delete(
-                this.$refs.systemConfig.actualConfigData[this.$refs.systemConfig.currentSalesChannelId],
-                'PayonePayment.settings.ratepayDebitProfileConfigurations'
-            );
-            this.$delete(
-              this.$refs.systemConfig.actualConfigData[this.$refs.systemConfig.currentSalesChannelId],
-              'PayonePayment.settings.ratepayInstallmentProfileConfigurations'
-            );
-            this.$delete(
-              this.$refs.systemConfig.actualConfigData[this.$refs.systemConfig.currentSalesChannelId],
-              'PayonePayment.settings.ratepayInvoicingProfileConfigurations'
-            );
-
             this.isSaveSuccessful = false;
             this.isLoading = true;
-            this.$refs.systemConfig.saveAll().then(() => {
+            this.$refs.systemConfig.saveAll().then((response) => {
+                this.handleRatepayProfileUpdates(response);
+
                 this.isLoading = false;
                 this.isSaveSuccessful = true;
-                this.$root.$emit('payone-settings-save-successful', this.$refs.systemConfig.currentSalesChannelId);
-            }).catch((error) => {
+            }).catch(() => {
                 this.isLoading = false;
-                this.$root.$emit('payone-settings-save-failed', this.$refs.systemConfig.currentSalesChannelId);
-                if (this.isRatepayProfileError(error)) {
-                    this.createNotificationError({
-                        title: this.$tc('payone-payment.settingsForm.titleError'),
-                        message: this.$tc('payone-payment.settingsForm.messageSaveError.ratepayProfileRequestFailed')
-                    });
-                }
             });
         },
 
@@ -356,10 +336,24 @@ Component.register('payone-settings', {
             return bind;
         },
 
-        isRatepayProfileError(error) {
-            return error.response.data.errors.some((err) => {
-                return err.code === 'PAYONE__RATEPAY_PROFILE_REQUEST_FAILED';
-            });
-        },
+        handleRatepayProfileUpdates(response) {
+            const salesChannelId = this.$refs.systemConfig.currentSalesChannelId;
+
+            if (response.payoneRatepayProfilesUpdateResult && response.payoneRatepayProfilesUpdateResult[salesChannelId]) {
+                const resultBySalesChannel = response.payoneRatepayProfilesUpdateResult[salesChannelId];
+
+                this.$root.$emit(
+                  'payone-ratepay-profiles-update-result',
+                  resultBySalesChannel
+                );
+
+                if (!Array.isArray(resultBySalesChannel.errors)) {
+                    this.createNotificationError({
+                        title: this.$tc('payone-payment.settingsForm.titleError'),
+                        message: this.$tc('payone-payment.settingsForm.messageSaveError.ratepayProfilesUpdateFailed')
+                    });
+                }
+            }
+        }
     }
 });

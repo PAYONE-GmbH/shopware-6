@@ -70,7 +70,7 @@
             "labelShowSpecificStatusMapping": "Display state mapping configuration",
             "helpTextShowSpecificStatusMapping": "If not configured the general status mapping config will be applied.",
             "messageSaveError": {
-                "ratepayProfileRequestFailed": "Error loading Ratepay profiles"
+                "ratepayProfilesUpdateFailed": "At least one Ratepay profile could not be saved successfully, please check your configuration."
             },
             "messageTestSuccess": "The API credentials were verified successfully.",
             "messageTestNoTestedPayments": "No payment methods were tested during the check because none of the PAYONE payment methods are activated. Please activate at least one PAYONE payment method under Settings --> Shop --> Payment.",

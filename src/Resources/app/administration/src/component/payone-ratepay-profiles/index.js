@@ -13,7 +13,11 @@ Component.register('payone-ratepay-profiles', {
             default() {
                 return [];
             }
-        }
+        },
+        name: {
+            type: String,
+            required: true
+        },
     },
 
     data() {
@@ -21,14 +25,11 @@ Component.register('payone-ratepay-profiles', {
             selectedItems: {},
             newItem: null,
             showAlert: false,
+            profiles: this.value,
         };
     },
 
     computed: {
-        valueItems() {
-            return this.value;
-        },
-
         getLineItemColumns() {
             return [{
                 property: 'shopId',
@@ -51,20 +52,47 @@ Component.register('payone-ratepay-profiles', {
     },
 
     watch: {
-        value(value) {
-            this.$emit('input', value);
-            this.$emit('change', value);
+        profiles(profiles) {
+            this.$emit('input', profiles);
+            this.$emit('change', profiles);
         },
     },
 
+    created() {
+        this.createdComponent();
+    },
+
+    destroyed() {
+        this.destroyedComponent();
+    },
+
     methods: {
+        createdComponent() {
+            this.$root.$on('payone-ratepay-profiles-update-result', this.onProfilesUpdateResult);
+        },
+
+        destroyedComponent() {
+            this.$root.$off('payone-ratepay-profiles-update-result');
+        },
+
+        onProfilesUpdateResult(result) {
+            if (result['updates'][this.name]) {
+                this.profiles = result['updates'][this.name];
+            }
+            if (result['errors'][this.name]) {
+                for (const error of result['errors'][this.name]) {
+                    this.profiles.push(error);
+                }
+            }
+        },
+
         onInlineEditCancel() {
             this.$emit('item-cancel');
         },
 
         onInlineEditSave(currentItem) {
           let shopIdExists = false;
-            this.value.forEach(function(item) {
+            this.profiles.forEach(function(item) {
                 if(item.id !== currentItem.id && item.shopId === currentItem.shopId) {
                     shopIdExists = true;
                 }
@@ -81,13 +109,13 @@ Component.register('payone-ratepay-profiles', {
               this.showAlert = false;
             }
 
-            this.$emit('update-list', this.value);
+            this.$emit('update-list', this.profiles);
         },
 
         createNewLineItem() {
             const newId = Utils.createId();
 
-            this.value.push({'id': newId, 'shopId': '', 'currency': '' });
+            this.profiles.push({'id': newId, 'shopId': '', 'currency': '' });
 
             this.$nextTick(() => {
                 this.$refs.shopIdsDataGrid.currentInlineEditId = newId;
@@ -96,9 +124,9 @@ Component.register('payone-ratepay-profiles', {
         },
 
         onDeleteSelectedItem(itemToDelete) {
-            this.value = this.value.filter(currentItem => currentItem.shopId !== itemToDelete.shopId);
+            this.profiles = this.profiles.filter(currentItem => currentItem.shopId !== itemToDelete.shopId);
 
-            this.$emit('deleted', this.value);
+            this.$emit('deleted', this.profiles);
         },
     }
 });

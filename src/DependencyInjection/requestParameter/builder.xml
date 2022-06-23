@@ -357,6 +357,7 @@
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
+            <argument type="service" id="PayonePayment\Components\Ratepay\ProfileService"/>
 
             <tag name="payone_request_builder"/>
         </service>
@@ -375,8 +376,7 @@
 
         <!-- Ratepay Installment -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\AuthorizeRequestParameterBuilder"
-                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
+                 parent="PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\AuthorizeRequestParameterBuilder">
 
             <tag name="payone_request_builder"/>
         </service>
@@ -405,8 +405,7 @@
 
         <!-- Ratepay Invoicing -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing\AuthorizeRequestParameterBuilder"
-                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
+                 parent="PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\AuthorizeRequestParameterBuilder">
 
             <tag name="payone_request_builder"/>
         </service>

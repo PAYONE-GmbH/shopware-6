@@ -22,7 +22,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Grouping\FieldGrouping;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,9 +44,6 @@ class SettingsController extends AbstractController
     /** @var LoggerInterface */
     private $logger;
 
-    /** @var SystemConfigService */
-    private $systemConfigService;
-
     /** @var string */
     private $kernelDirectory;
 
@@ -56,14 +52,12 @@ class SettingsController extends AbstractController
         RequestParameterFactory $requestFactory,
         EntityRepositoryInterface $stateMachineTransitionRepository,
         LoggerInterface $logger,
-        SystemConfigService $systemConfigService,
         string $kernelDirectory
     ) {
         $this->client                           = $client;
         $this->requestFactory                   = $requestFactory;
         $this->stateMachineTransitionRepository = $stateMachineTransitionRepository;
         $this->logger                           = $logger;
-        $this->systemConfigService              = $systemConfigService;
         $this->kernelDirectory                  = $kernelDirectory;
     }
 
@@ -156,19 +150,6 @@ class SettingsController extends AbstractController
         }
 
         return new JsonResponse(['success' => true], 200);
-    }
-
-    /**
-     * @RouteScope(scopes={"api"})
-     * @Route("/api/_action/payone_payment/setting-value", name="api.action.payone_payment.get.setting_value", methods={"GET"})
-     * @Route("/api/v{version}/_action/payone_payment/setting-value", name="api.action.payone_payment.get.setting_value.legacy", methods={"GET"})
-     */
-    public function getSettingValue(Request $request): JsonResponse
-    {
-        return new JsonResponse([
-            'success' => true,
-            'value'   => $this->systemConfigService->get($request->get('name'), $request->get('salesChannelId')),
-        ], 200);
     }
 
     private function getPaymentParameters(string $paymentClass): array
