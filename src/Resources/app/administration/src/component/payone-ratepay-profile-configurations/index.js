@@ -17,7 +17,7 @@ Component.register('payone-ratepay-profile-configurations', {
             }
         },
         name: {
-            type: String,
+            type: String, // PayonePayment.settings.ratepayDebitProfileConfigurations || PayonePayment.settings.ratepayInstallmentProfileConfigurations || PayonePayment.settings.ratepayInvoicingProfileConfigurations
             required: true
         },
     },
@@ -35,6 +35,55 @@ Component.register('payone-ratepay-profile-configurations', {
 
     destroyed() {
         this.destroyedComponent();
+    },
+
+    computed: {
+        profileConfigurations() {
+          const name = this.name;
+          let profileConfigurations = [];
+
+          Object.entries(this.value).forEach(function(shop) {
+            let minBasket = '';
+            let maxBasket = '';
+
+            console.log(name);
+            console.log(shop[1]['tx-limit-prepayment-min']);
+
+            switch (name) {
+              case 'PayonePayment.settings.ratepayDebitProfileConfigurations':
+                minBasket = shop[1]['tx-limit-prepayment-min'];
+                maxBasket = shop[1]['tx-limit-prepayment-max'];
+                break;
+              case 'PayonePayment.settings.ratepayInstallmentProfileConfigurations':
+                minBasket = shop[1]['tx-limit-installment-min'];
+                maxBasket = shop[1]['tx-limit-installment-max'];
+                break;
+              case 'PayonePayment.settings.ratepayInvoicingProfileConfigurations':
+                minBasket = shop[1]['tx-limit-invoice-min'];
+                maxBasket = shop[1]['tx-limit-invoice-max'];
+                break;
+              default:
+                return;
+            }
+
+            const profileConfig = {
+              'shopId': shop[0],
+              'shopCurrency': shop[1]['currency'],
+              'invoiceCountry': shop[1]['country-code-billing'],
+              'shippingCountry': shop[1]['country-code-delivery'],
+              'minBasket': minBasket,
+              'maxBasket': maxBasket
+            }
+
+            console.log(profileConfig);
+
+            profileConfigurations.push(profileConfig);
+
+            console.log(profileConfigurations);
+          })
+
+          return profileConfigurations;
+        }
     },
 
     methods: {
