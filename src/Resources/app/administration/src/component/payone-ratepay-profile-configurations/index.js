@@ -42,38 +42,38 @@ Component.register('payone-ratepay-profile-configurations', {
             const name = this.name;
             let profileConfigurations = [];
 
-            Object.entries(this.configuration).forEach(function (shop) {
+            for (const shopId in this.configuration) {
                 let minBasket = '';
                 let maxBasket = '';
 
                 switch (name) {
                     case 'PayonePayment.settings.ratepayDebitProfileConfigurations':
-                        minBasket = shop[1]['tx-limit-prepayment-min'];
-                        maxBasket = shop[1]['tx-limit-prepayment-max'];
+                        minBasket = this.configuration[shopId]['tx-limit-elv-min'];
+                        maxBasket = this.configuration[shopId]['tx-limit-elv-max'];
                         break;
                     case 'PayonePayment.settings.ratepayInstallmentProfileConfigurations':
-                        minBasket = shop[1]['tx-limit-installment-min'];
-                        maxBasket = shop[1]['tx-limit-installment-max'];
+                        minBasket = this.configuration[shopId]['tx-limit-installment-min'];
+                        maxBasket = this.configuration[shopId]['tx-limit-installment-max'];
                         break;
                     case 'PayonePayment.settings.ratepayInvoicingProfileConfigurations':
-                        minBasket = shop[1]['tx-limit-invoice-min'];
-                        maxBasket = shop[1]['tx-limit-invoice-max'];
+                        minBasket = this.configuration[shopId]['tx-limit-invoice-min'];
+                        maxBasket = this.configuration[shopId]['tx-limit-invoice-max'];
                         break;
                     default:
                         return;
                 }
 
                 const profileConfig = {
-                    'shopId': shop[0],
-                    'shopCurrency': shop[1]['currency'],
-                    'invoiceCountry': shop[1]['country-code-billing'],
-                    'shippingCountry': shop[1]['country-code-delivery'],
+                    'shopId': shopId,
+                    'shopCurrency': this.configuration[shopId]['currency'],
+                    'invoiceCountry': this.configuration[shopId]['country-code-billing'],
+                    'shippingCountry': this.configuration[shopId]['country-code-delivery'],
                     'minBasket': minBasket,
                     'maxBasket': maxBasket
                 }
 
                 profileConfigurations.push(profileConfig);
-            });
+            }
 
             return profileConfigurations;
         }
@@ -82,6 +82,7 @@ Component.register('payone-ratepay-profile-configurations', {
     methods: {
         createdComponent() {
             this.$root.$on('payone-ratepay-profiles-update-result', this.onProfilesUpdateResult);
+            console.log(this.configuration);
         },
 
         destroyedComponent() {

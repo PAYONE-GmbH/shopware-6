@@ -1,5 +1,6 @@
 {% block payone_ratepay_profile_configurations %}
     <div class="payone-ratepay-profile-configurations">
+        <h3>{{ $tc('payone-payment.general.headlines.ratepayProfileConfigurations') }}</h3>
 
         <template v-for="profileConfiguration in profileConfigurations">
             <p class="payone-ratepay-profile-configuration--headline">{{ $tc('payone-payment.general.label.shopId') }}: {{ profileConfiguration.shopId }}</p>

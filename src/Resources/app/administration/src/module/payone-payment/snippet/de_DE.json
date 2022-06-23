@@ -4,6 +4,10 @@
         "general": {
             "mainMenuItemGeneral": "PAYONE",
             "descriptionTextModule": "Einstellungen für PAYONE",
+            "headlines": {
+                "ratepayProfiles": "Profile",
+                "ratepayProfileConfigurations": "Profil-Konfigurationen"
+            },
             "label": {
                 "shopId": "Shop-ID",
                 "currency": "Währung",
