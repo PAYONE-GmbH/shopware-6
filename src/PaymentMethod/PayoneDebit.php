@@ -15,7 +15,7 @@ class PayoneDebit extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Payone SEPA Lastschrift';
+    protected $name = 'PAYONE Lastschrift';
 
     /** @var string */
     protected $description = 'We\'ll automatically debit the amount from your bank account.';
@@ -29,11 +29,11 @@ class PayoneDebit extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Payone SEPA Lastschrift',
+            'name'        => 'PAYONE Lastschrift',
             'description' => 'Wir ziehen den Betrag bequem und automatisch von Ihrem Bankkonto ein.',
         ],
         'en-GB' => [
-            'name'        => 'Payone SEPA Direct Debit',
+            'name'        => 'PAYONE Direct Debit',
             'description' => 'We\'ll automatically debit the amount from your bank account.',
         ],
     ];

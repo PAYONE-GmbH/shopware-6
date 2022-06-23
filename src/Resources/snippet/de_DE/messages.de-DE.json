@@ -41,7 +41,8 @@
         },
         "checkoutConfirmPage": {
             "defaultCardTitle": "Zahlungsinformationen",
-            "save": "Daten für zukünftige Nutzung speichern"
+            "save": "Daten für zukünftige Nutzung speichern",
+            "saveMandate": "Lastschrift-Mandat für zukünftige Nutzung speichern"
         },
         "checkoutFinishPage": {
             "mandateIdentification": "SEPA-Laschtschriftmandat"
@@ -140,6 +141,7 @@
                 "bic": "BIC: %bic%",
                 "reference": "Verwendungszweck: %reference%",
                 "holder": "Kontoinhaber: %holder%",
+                "dueDate": "Fälligkeitsdatum: Innerhalb von 14 Tagen",
                 "accountNotice": "Damit wir Ihre Zahlung schnell zuordnen können, überweisen Sie den ausstehenden Betrag bitte ausschließlich auf das obige Konto."
             }
         },

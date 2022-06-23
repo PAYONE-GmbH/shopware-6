@@ -15,7 +15,7 @@ class PayonePaydirekt extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Payone Paydirekt';
+    protected $name = 'PAYONE paydirekt';
 
     /** @var string */
     protected $description = 'Pay safe and easy with Paydirekt.';
@@ -29,12 +29,12 @@ class PayonePaydirekt extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Paydirekt',
-            'description' => 'Zahlen Sie sicher und bequem mit Paydirekt.',
+            'name'        => 'PAYONE paydirekt',
+            'description' => 'Zahlen Sie sicher und bequem mit paydirekt.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE Paydirekt',
-            'description' => 'Pay safe and easy with Paydirekt.',
+            'name'        => 'PAYONE paydirekt',
+            'description' => 'Pay safe and easy with paydirekt.',
         ],
     ];
 

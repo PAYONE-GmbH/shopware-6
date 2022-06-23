@@ -41,7 +41,8 @@
         },
         "checkoutConfirmPage": {
             "defaultCardTitle": "Payment Information",
-            "save": "Save data for future use"
+            "save": "Save data for future use",
+            "saveMandate": "Save direct debit mandate for future use"
         },
         "checkoutFinishPage": {
             "mandateIdentification": "Direct Debit Mandate"
@@ -140,6 +141,7 @@
                 "bic": "BIC: %bic%",
                 "reference": "Reference: %reference%",
                 "holder": "Account Holder: %holder%",
+                "dueDate": "Due date: Within 14 days",
                 "accountNotice": "In order for us to quickly allocate your payment, please transfer the outstanding amount exclusively to the account above."
             }
         },
