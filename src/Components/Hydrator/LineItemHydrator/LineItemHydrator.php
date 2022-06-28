@@ -174,7 +174,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         $requestLineItems['pr[' . $index . ']'] = $this->currencyPrecision->getRoundedItemAmount($lineItemEntity->getUnitPrice(), $currencyEntity);
         $requestLineItems['no[' . $index . ']'] = $quantity;
         $requestLineItems['de[' . $index . ']'] = $lineItemEntity->getLabel();
-        $requestLineItems['va[' . $index . ']'] = $this->currencyPrecision->getRoundedItemAmount($calculatedTax->getTaxRate(), $currencyEntity);
+        $requestLineItems['va[' . $index . ']'] = $this->currencyPrecision->getRoundedItemAmount($taxRate, $currencyEntity);
 
         return $requestLineItems;
     }
