@@ -69,9 +69,9 @@ class LineItemHydrator implements LineItemHydratorInterface
 
             $taxes = $lineItem->getPrice() !== null ? $lineItem->getPrice()->getCalculatedTaxes() : null;
 
-            if (null === $taxes || null === $taxes->first()) {
-                continue;
-            }
+            $taxRate = null === $taxes || null === $taxes->first()
+                ? 0.0
+                : $taxes->first()->getTaxRate();
 
             if (empty($orderLine['quantity'])) {
                 continue;
@@ -82,7 +82,7 @@ class LineItemHydrator implements LineItemHydratorInterface
                 ++$counter,
                 $lineItem,
                 $currency,
-                $taxes->first(),
+                $taxRate,
                 $orderLine['quantity']
             );
         }
@@ -111,16 +111,16 @@ class LineItemHydrator implements LineItemHydratorInterface
 
             $taxes = $lineItem->getPrice() !== null ? $lineItem->getPrice()->getCalculatedTaxes() : null;
 
-            if (null === $taxes || null === $taxes->first()) {
-                continue;
-            }
+            $taxRate = null === $taxes || null === $taxes->first()
+                ? 0.0
+                : $taxes->first()->getTaxRate();
 
             $requestLineItems = $this->getLineItemRequest(
                 $requestLineItems,
                 ++$counter,
                 $lineItem,
                 $currency,
-                $taxes->first(),
+                $taxRate,
                 $lineItem->getQuantity()
             );
         }
@@ -162,7 +162,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         int $index,
         OrderLineItemEntity $lineItemEntity,
         CurrencyEntity $currencyEntity,
-        CalculatedTax $calculatedTax,
+        float $taxRate,
         int $quantity
     ): array {
         $productNumber = is_array($lineItemEntity->getPayload()) && array_key_exists('productNumber', $lineItemEntity->getPayload())

@@ -70,7 +70,7 @@ class RequestParameterFactory
         $this->generateParameterHash($parameters);
         $parameters['key'] = hash('md5', $parameters['key']);
 
-        return array_filter($parameters);
+        return array_filter($parameters, static function ($value) { return $value !== null && $value !== ''; });
     }
 
     private function generateParameterHash(array &$parameters): void

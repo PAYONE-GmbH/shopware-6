@@ -7,10 +7,12 @@ namespace PayonePayment\Installer;
 use Doctrine\DBAL\Connection;
 use PayonePayment\PaymentMethod\PaymentMethodInterface;
 use PayonePayment\PaymentMethod\PayoneApplePay;
+use PayonePayment\PaymentMethod\PayoneBancontact;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
 use PayonePayment\PaymentMethod\PayoneEps;
 use PayonePayment\PaymentMethod\PayoneIDeal;
+use PayonePayment\PaymentMethod\PayoneOpenInvoice;
 use PayonePayment\PaymentMethod\PayonePaydirekt;
 use PayonePayment\PaymentMethod\PayonePayolutionDebit;
 use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
@@ -52,6 +54,8 @@ class PaymentMethodInstaller implements InstallerInterface
         PayonePrepayment::class            => '267699739afd4cdd9663cac0bd269da6',
         PayoneTrustly::class               => '741f1deec67d4012bd3ccce265b2e15e',
         PayoneSecureInvoice::class         => '4e8a9d3d3c6e428887573856b38c9003',
+        PayoneOpenInvoice::class           => '9024aa5a502b4544a745b6b64b486e21',
+        PayoneBancontact::class            => '32ecec740c7142c9bf51d00ea894ffad',
     ];
 
     public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
@@ -72,6 +76,8 @@ class PaymentMethodInstaller implements InstallerInterface
         PayonePrepayment::class,
         PayoneTrustly::class,
         PayoneSecureInvoice::class,
+        PayoneOpenInvoice::class,
+        PayoneBancontact::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [

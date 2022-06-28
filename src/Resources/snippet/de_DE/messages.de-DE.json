@@ -40,7 +40,9 @@
             "noEntries": "Keine SEPA-Lastschriftmandate vorhanden."
         },
         "checkoutConfirmPage": {
-            "defaultCardTitle": "Zahlungsinformationen"
+            "defaultCardTitle": "Zahlungsinformationen",
+            "save": "Daten für zukünftige Nutzung speichern",
+            "saveMandate": "Lastschrift-Mandat für zukünftige Nutzung speichern"
         },
         "checkoutFinishPage": {
             "mandateIdentification": "SEPA-Lastschriftmandat"
@@ -129,6 +131,22 @@
         },
         "secureInvoice": {
             "cardTitle": "Payone gesicherte Rechnung",
+            "birthday": {
+                "label": "Geburtsdatum"
+            },
+            "document": {
+                "clearingReference": "Referenz: %reference%",
+                "invoicingDescription": "Bitte überweisen Sie den ausstehenden Betrag auf das folgende Konto:",
+                "iban": "IBAN: %iban%",
+                "bic": "BIC: %bic%",
+                "reference": "Verwendungszweck: %reference%",
+                "holder": "Kontoinhaber: %holder%",
+                "dueDate": "Fälligkeitsdatum: Innerhalb von 14 Tagen",
+                "accountNotice": "Damit wir Ihre Zahlung schnell zuordnen können, überweisen Sie den ausstehenden Betrag bitte ausschließlich auf das obige Konto."
+            }
+        },
+        "openInvoice": {
+            "cardTitle": "Payone offene Rechnung",
             "birthday": {
                 "label": "Geburtsdatum"
             },

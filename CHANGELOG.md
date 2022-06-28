@@ -168,3 +168,36 @@ Maintenance
 * Removed cardtype type discover
 * Add dependency to GitHub pipeline
 * Add fix for Version 6.4.5.0
+
+# 3.0.0
+
+Bugfixes
+
+* Customer deletion now possible
+* Refund only from not yet refunded items possible
+* Adjustment missing dependencies when installing via store
+
+Maintenance
+
+* fix compatibility 6.4.7.0
+* drop support for 6.2
+
+# 3.1.0
+
+New Features
+ 
+* New payment method: Open Invoice
+* Add checkbox for credit card payments to save or remove payment data
+
+Bugfixes
+ 
+* remove capturemode param if completed
+* update ZeroAmountCartValidator
+* always set data protection check
+
+Maintenance
+* include line items with no tax for capture
+* add shipping information to Unzer
+
+Tested with:
+Shopware 6.4.10.0

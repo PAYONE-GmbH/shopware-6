@@ -280,6 +280,19 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <!-- Bancontact -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Bancontact\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Bancontact\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
         <!-- Paydirekt -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Paydirekt\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
@@ -313,6 +326,23 @@
         <service id="PayonePayment\Payone\RequestParameter\Builder\SecureInvoice\CustomerInformationRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <argument type="service" id="order_address.repository"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <!-- Open Invoice -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\OpenInvoice\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
+            <argument type="service" id="currency.repository"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\OpenInvoice\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
+            <argument type="service" id="currency.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>

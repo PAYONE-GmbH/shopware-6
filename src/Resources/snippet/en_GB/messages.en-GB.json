@@ -40,7 +40,9 @@
             "noEntries": "No mandates saved."
         },
         "checkoutConfirmPage": {
-            "defaultCardTitle": "Payment Information"
+            "defaultCardTitle": "Payment Information",
+            "save": "Save data for future use",
+            "saveMandate": "Save direct debit mandate for future use"
         },
         "checkoutFinishPage": {
             "mandateIdentification": "Direct Debit Mandate"
@@ -129,6 +131,22 @@
         },
         "secureInvoice": {
             "cardTitle": "Payone secure invoice",
+            "birthday": {
+                "label": "Date of birth"
+            },
+            "document": {
+                "clearingReference": "Reference: %reference%",
+                "invoicingDescription": "Please transfer the outstanding amount to the following bank account:",
+                "iban": "IBAN: %iban%",
+                "bic": "BIC: %bic%",
+                "reference": "Reference: %reference%",
+                "holder": "Account Holder: %holder%",
+                "dueDate": "Due date: Within 14 days",
+                "accountNotice": "In order for us to quickly allocate your payment, please transfer the outstanding amount exclusively to the account above."
+            }
+        },
+        "openInvoice": {
+            "cardTitle": "Payone open invoice",
             "birthday": {
                 "label": "Date of birth"
             },

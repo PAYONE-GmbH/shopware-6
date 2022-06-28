@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneIDealPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaydirektPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
@@ -133,8 +135,10 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneTrustlyPaymentHandler::class:
             case PayoneEpsPaymentHandler::class:
             case PayoneIDealPaymentHandler::class:
+            case PayoneBancontactPaymentHandler::class:
             case PayonePaydirektPaymentHandler::class:
             case PayoneSecureInvoicePaymentHandler::class:
+            case PayoneOpenInvoicePaymentHandler::class:
             case PayonePrepaymentPaymentHandler::class:
                 return true;
         }

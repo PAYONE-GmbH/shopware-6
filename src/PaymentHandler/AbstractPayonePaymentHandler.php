@@ -102,6 +102,22 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     }
 
     /**
+     * Helper function to check if the transaction is appointed and completed.
+     * Used in various payment handlers to check if the transaction is captureable.
+     *
+     * @param array $transactionData Parameters of the TX status notification
+     *
+     * @return bool True if the transaction is appointed and completed
+     */
+    final protected static function isTransactionAppointedAndCompleted(array $transactionData): bool
+    {
+        $txAction          = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $transactionStatus = isset($transactionData['transaction_status']) ? strtolower($transactionData['transaction_status']) : null;
+
+        return $txAction === TransactionStatusService::ACTION_APPOINTED && $transactionStatus === TransactionStatusService::STATUS_COMPLETED;
+    }
+
+    /**
      * Returns true if a refund / debit is generally not possible (or never in this context)
      * based on the current TX status notification. Use this method early in
      * isRefundable() to match common rules shared by all payment methods.

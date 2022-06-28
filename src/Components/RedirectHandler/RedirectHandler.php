@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\RedirectHandler;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Types;
 use LogicException;
 use RuntimeException;
 use Shopware\Core\Defaults;
@@ -66,5 +67,14 @@ class RedirectHandler
         }
 
         return (string) $url;
+    }
+
+    public function cleanup(): int
+    {
+        return (int) $this->connection->executeStatement(
+            'DELETE FROM payone_payment_redirect WHERE created_at < ?',
+            [new \DateTime('-7 day')],
+            [Types::DATETIME_MUTABLE]
+        );
     }
 }

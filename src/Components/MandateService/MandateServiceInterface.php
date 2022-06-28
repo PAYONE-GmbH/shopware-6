@@ -28,4 +28,9 @@ interface MandateServiceInterface
         string $identification,
         SalesChannelContext $context
     ): string;
+
+    public function removeAllMandatesForCustomer(
+        CustomerEntity $customer,
+        SalesChannelContext $context
+    ): void;
 }

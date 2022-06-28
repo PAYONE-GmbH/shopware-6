@@ -60,10 +60,11 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
-        $dataBag->set('truncatedCardPan', '');
-        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
-        $dataBag->set('savedPseudoCardPan', '');
-        $dataBag->set('pseudoCardPan', '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE, (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVE_CREDIT_CARD, 'on');
 
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
@@ -110,6 +111,67 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $this->assertEquals($response->getTargetUrl(), 'test-url');
     }
 
+    public function testRequestOnPayWithoutSave(): void
+    {
+        $configReader = new ConfigReaderMock([
+            'creditCardAuthorizationMethod' => 'preauthorization',
+        ]);
+
+        $client         = $this->createMock(PayoneClientInterface::class);
+        $requestFactory = $this->createMock(RequestParameterFactory::class);
+        $cardRepository = $this->createMock(CardRepositoryInterface::class);
+
+        $dataBag = new RequestDataBag();
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE, (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN, '');
+
+        $paymentHandler = new PayoneCreditCardPaymentHandler(
+            $configReader,
+            $client,
+            $this->translator,
+            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
+            $this->createMock(EntityRepositoryInterface::class),
+            new PaymentStateHandler($this->translator),
+            $cardRepository,
+            $this->getRequestStack($dataBag),
+            $requestFactory
+        );
+
+        $paymentTransaction = $this->getPaymentTransaction();
+
+        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+            [
+                'request'    => '',
+                'successurl' => 'test-url',
+            ]
+        );
+
+        $client->expects($this->once())->method('request')->willReturn(
+            [
+                'status' => '',
+                'txid'   => '',
+                'userid' => '',
+            ]
+        );
+
+        $cardRepository->expects($this->never())->method('saveCard');
+
+        $this->assertNotNull($paymentTransaction->getOrder());
+        $response = $paymentHandler->pay(
+            new AsyncPaymentTransactionStruct(
+                $paymentTransaction->getOrderTransaction(),
+                $paymentTransaction->getOrder(),
+                ''
+            ),
+            $dataBag,
+            Generator::createSalesChannelContext()
+        );
+
+        $this->assertEquals($response->getTargetUrl(), 'test-url');
+    }
+
     public function testRequestOnPayWithRedirect(): void
     {
         $configReader = new ConfigReaderMock([
@@ -121,10 +183,11 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
-        $dataBag->set('truncatedCardPan', '');
-        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
-        $dataBag->set('savedPseudoCardPan', '');
-        $dataBag->set('pseudoCardPan', '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE, (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVE_CREDIT_CARD, 'on');
 
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,
@@ -183,10 +246,10 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
 
         $dataBag = new RequestDataBag();
-        $dataBag->set('truncatedCardPan', '');
-        $dataBag->set('cardExpireDate', (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
-        $dataBag->set('savedPseudoCardPan', 'saved-pan');
-        $dataBag->set('pseudoCardPan', '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE, (new DateTimeImmutable())->add(new DateInterval('P1Y'))->format('ym'));
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN, 'saved-pan');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN, '');
 
         $paymentHandler = new PayoneCreditCardPaymentHandler(
             $configReader,

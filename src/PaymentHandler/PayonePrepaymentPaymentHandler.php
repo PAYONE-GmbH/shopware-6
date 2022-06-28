@@ -129,9 +129,8 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
         }
 
         $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
-        $txStatus = isset($transactionData['transaction_status']) ? strtolower($transactionData['transaction_status']) : null;
 
-        $isAppointed = $txAction === TransactionStatusService::ACTION_APPOINTED && $txStatus === TransactionStatusService::STATUS_COMPLETED;
+        $isAppointed = static::isTransactionAppointedAndCompleted($transactionData);
         $isUnderpaid = $txAction === TransactionStatusService::ACTION_UNDERPAID;
         $isPaid      = $txAction === TransactionStatusService::ACTION_PAID;
 
