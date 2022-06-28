@@ -45,10 +45,10 @@
             "saveMandate": "Lastschrift-Mandat für zukünftige Nutzung speichern"
         },
         "checkoutFinishPage": {
-            "mandateIdentification": "SEPA-Laschtschriftmandat"
+            "mandateIdentification": "SEPA-Lastschriftmandat"
         },
         "mandateModal": {
-            "question": "Ich erteile das SEPA-Laschtschriftmandat",
+            "question": "Ich erteile das SEPA-Lastschriftmandat",
             "cancel": "Abbruch",
             "confirm": "Absenden"
         },

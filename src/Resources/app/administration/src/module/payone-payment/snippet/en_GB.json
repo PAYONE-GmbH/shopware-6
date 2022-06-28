@@ -42,6 +42,7 @@
             },
             "orderAmount": "Order amount",
             "remainingAmount": "Remaining amount",
+            "shippingCosts": "Shipping costs",
             "descriptionHelpText": "Description help text",
             "close": "Close",
             "labelComment": "Label comment",

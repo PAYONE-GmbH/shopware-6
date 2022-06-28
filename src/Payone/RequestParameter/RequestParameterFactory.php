@@ -28,9 +28,8 @@ class RequestParameterFactory
         $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
-    public function getRequestParameter(
-        AbstractRequestParameterStruct $arguments
-    ): array {
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
+    {
         $parameters = [];
 
         foreach ($this->requestParameterBuilder as $builder) {

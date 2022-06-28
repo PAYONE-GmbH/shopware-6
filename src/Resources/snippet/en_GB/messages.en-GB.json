@@ -83,7 +83,7 @@
                 "selectInstallmentsLabel": "Please select number of installments",
                 "info": "%index%. installment: %amount% (due %date%)",
                 "numberOfInstallments": "No. of installments:",
-                "financingAmount": "Financingamount:",
+                "financingAmount": "Financing amount:",
                 "total": "Total:",
                 "interestRate": "Nominal interest:",
                 "effectiveInterestRate": "Effective interest:",
