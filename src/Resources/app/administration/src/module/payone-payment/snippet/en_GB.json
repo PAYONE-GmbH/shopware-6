@@ -97,6 +97,10 @@
             "repository": {
                 "description": "Report errors on GitHub",
                 "button": "GitHub"
+            },
+            "testdata": {
+                "description": "Create your personal test data here",
+                "button": "Test Data"
             }
         },
         "applePay": {

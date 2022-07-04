@@ -97,6 +97,10 @@
             "repository": {
                 "description": "Melden Sie Fehler und Verbesserungen auf GitHub",
                 "button": "GitHub"
+            },
+            "testdata": {
+                "description": "Erstellen Sie hier Ihre persönlichen Testdaten",
+                "button": "Testdaten"
             }
         },
         "applePay": {
