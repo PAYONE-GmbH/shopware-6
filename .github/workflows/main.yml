@@ -106,6 +106,9 @@ jobs:
           cd /tmp/shopware/dev-ops/analyze
           composer config --no-plugins allow-plugins.bamarni/composer-bin-plugin true
           composer config --no-plugins allow-plugins.phpstan/extension-installer true
+          cd /tmp/shopware/platform
+          composer config --no-plugins allow-plugins.bamarni/composer-bin-plugin true
+          composer config --no-plugins allow-plugins.phpstan/extension-installer true
           cd /tmp/shopware
           php psh.phar init
           cd /tmp/shopware/vendor/shopware/platform
