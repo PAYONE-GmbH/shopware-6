@@ -104,6 +104,8 @@ jobs:
           rm -rf /tmp/shopware/platform
           git clone --depth 1 --single-branch -b ${{ matrix.shopware-versions }} https://github.com/shopware/platform /tmp/shopware/platform
           cd /tmp/shopware
+          composer config --no-plugins allow-plugins.bamarni/composer-bin-plugin true
+          composer config --no-plugins allow-plugins.phpstan/extension-installer true
           php psh.phar init
           cd /tmp/shopware/vendor/shopware/platform
           wget https://github.com/shopware/platform/commit/0e6cbc24383f0123c01f59bd9aae0a49ce739cca.patch
