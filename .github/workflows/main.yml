@@ -85,7 +85,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium
-          tools: composer:v2
+          tools: composer:2.3.7
       - name: Check PHP Version
         run: php -v
       - name: Check Composer Version
@@ -103,12 +103,6 @@ jobs:
           printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"127.0.0.1\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"shopware\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"root\"" > /tmp/shopware/.psh.yaml.override
           rm -rf /tmp/shopware/platform
           git clone --depth 1 --single-branch -b ${{ matrix.shopware-versions }} https://github.com/shopware/platform /tmp/shopware/platform
-          cd /tmp/shopware/dev-ops/analyze
-          composer config --no-plugins allow-plugins.bamarni/composer-bin-plugin true
-          composer config --no-plugins allow-plugins.phpstan/extension-installer true
-          cd /tmp/shopware/platform
-          composer config --no-plugins allow-plugins.bamarni/composer-bin-plugin true
-          composer config --no-plugins allow-plugins.phpstan/extension-installer true
           cd /tmp/shopware
           php psh.phar init
           cd /tmp/shopware/vendor/shopware/platform
