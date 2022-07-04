@@ -192,8 +192,29 @@ Fehlerbehebungen
 * Data Protection Check wird immer aktiviert
 
 Wartung
+
 * Artikel ohne Steuern werden beim Capture berücksichtigt
 * Versandinformationen wurden bei Unzer hinzugefügt
 
 Getestet mit:
 Shopware 6.4.10.0
+
+#3.2.0
+
+Neue Funktionen
+ 
+* Neue Zahlungsart: Bancontact
+* Bankgruppen Typen für iDEAL hinzugefügt
+* Regelmäßiges automatisiertes reinigen der redirect Tabelle
+* Zahlungsziel auf den Standardrechnungen für den Rechnungskauf hinzugefügt
+ 
+Fehlerbehebung
+ 
+* Versandkosten zu einzelnen Artikeln hinzugefügt
+* Fehler in Regel zur Entfernung des gesicherten Rechnungskaufs behoben
+ 
+Wartung
+ 
+* Umbenennung der Zahlungsarten
+* PAYONE Logo ausgetauscht
+* Getestet mit 6.4.12
