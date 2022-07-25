@@ -30,7 +30,8 @@ Component.register('payone-refund-button', {
             showRefundModal: false,
             isRefundSuccessful: false,
             selection: [],
-            refundAmount: 0.0
+            refundAmount: 0.0,
+            includeShippingCosts: false
         };
     },
 
@@ -75,6 +76,29 @@ Component.register('payone-refund-button', {
             }
 
             return (this.remainingAmount > 0 && this.refundedAmount > 0) || this.transaction.customFields.payone_allow_refund;
+        },
+
+        hasRemainingRefundableShippingCosts() {
+            if (this.order.shippingCosts.totalPrice <= 0) {
+                return false;
+            }
+
+            const shippingCosts = this.order.shippingCosts.totalPrice * (10 ** this.decimalPrecision);
+
+            let refundedPositionAmount = 0;
+
+            this.order.lineItems.forEach((order_item) => {
+                if (order_item.customFields && order_item.customFields.payone_refunded_quantity
+                    && 0 < order_item.customFields.payone_refunded_quantity) {
+                    refundedPositionAmount += order_item.customFields.payone_refunded_quantity * order_item.unitPrice * (10 ** this.decimalPrecision);
+                }
+            });
+
+            if (this.refundedAmount - Math.round(refundedPositionAmount) >= shippingCosts) {
+                return false;
+            }
+
+            return true;
         }
     },
 
@@ -116,7 +140,8 @@ Component.register('payone-refund-button', {
                 salesChannel: this.order.salesChannel,
                 amount: this.refundAmount,
                 orderLines: [],
-                complete: this.refundAmount === this.maxRefundAmount
+                complete: this.refundAmount === this.maxRefundAmount,
+                includeShippingCosts: false
             };
             this.isLoading = true;
 
@@ -133,6 +158,10 @@ Component.register('payone-refund-button', {
                         request.orderLines.push(copy);
                     }
                 });
+
+                if (selection.id === 'shipping' && selection.selected && 0 < selection.quantity) {
+                    request.includeShippingCosts = true;
+                }
             });
 
             this.PayonePaymentService.refundPayment(request).then(() => {
@@ -167,24 +196,24 @@ Component.register('payone-refund-button', {
                 amount: this.maxRefundAmount,
                 orderLines: [],
                 complete: true,
+                includeShippingCosts: this.hasRemainingRefundableShippingCosts
             };
 
             this.isLoading = true;
 
-            this._populateSelectionProperty();
+            this.order.lineItems.forEach((order_item) => {
+                let quantity = order_item.quantity;
 
-            this.selection.forEach((selection) => {
-                this.order.lineItems.forEach((order_item) => {
-                    if (order_item.id === selection.id && 0 < selection.quantity) {
-                        const copy = { ...order_item },
-                            taxRate = copy.tax_rate / (10 ** this.decimalPrecision);
+                if (order_item.customFields && order_item.customFields.payone_refunded_quantity
+                    && 0 < order_item.customFields.payone_refunded_quantity) {
+                    quantity -= order_item.customFields.payone_refunded_quantity;
+                }
 
-                        copy.quantity         = selection.quantity;
-                        copy.total_amount     = copy.unit_price * copy.quantity;
-                        copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
-
-                        request.orderLines.push(copy);
-                    }
+                request.orderLines.push({
+                    id: order_item.id,
+                    quantity: quantity,
+                    unit_price: order_item.unitPrice,
+                    selected: false
                 });
             });
 
@@ -256,6 +285,15 @@ Component.register('payone-refund-button', {
                     selected: false
                 });
             });
+
+            if (this.order.shippingCosts.totalPrice > 0) {
+                this.selection.push({
+                    id: 'shipping',
+                    quantity: 1,
+                    unit_price: this.order.shippingCosts.totalPrice,
+                    selected: false
+                });
+            }
         }
     }
 });

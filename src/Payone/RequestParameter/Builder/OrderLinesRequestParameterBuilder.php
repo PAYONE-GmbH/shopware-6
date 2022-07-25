@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
+use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
@@ -29,16 +30,23 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
     /** @param FinancialTransactionStruct $arguments */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $paymentTransaction = $arguments->getPaymentTransaction();
+        $paymentTransaction   = $arguments->getPaymentTransaction();
+        $currency             = $paymentTransaction->getOrder()->getCurrency();
+        $requestData          = $arguments->getRequestData();
+        $orderLines           = $requestData->get('orderLines', []);
+        $isCompleted          = $requestData->get('complete', false);
+        $includeShippingCosts = $requestData->get('includeShippingCosts', false);
 
-        $currency   = $paymentTransaction->getOrder()->getCurrency();
-        $orderLines = $arguments->getRequestData()->get('orderLines', []);
-
-        if (empty($orderLines) || empty($currency) || empty($paymentTransaction->getOrder()->getLineItems())) {
+        if ($currency === null || $paymentTransaction->getOrder()->getLineItems() === null) {
             return [];
         }
 
-        return $this->lineItemHydrator->mapPayoneOrderLinesByRequest($currency, $paymentTransaction->getOrder()->getLineItems(), $orderLines);
+        return $this->lineItemHydrator->mapPayoneOrderLinesByRequest(
+            $currency,
+            $paymentTransaction->getOrder(),
+            $orderLines,
+            $isCompleted ? true : $includeShippingCosts
+        );
     }
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
@@ -55,6 +63,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayonePayolutionInvoicingPaymentHandler::class:
             case PayoneSecureInvoicePaymentHandler::class:
             case PayoneOpenInvoicePaymentHandler::class:
+            case PayoneBancontactPaymentHandler::class:
             case PayoneRatepayDebitPaymentHandler::class:
             case PayoneRatepayInstallmentPaymentHandler::class:
             case PayoneRatepayInvoicingPaymentHandler::class:

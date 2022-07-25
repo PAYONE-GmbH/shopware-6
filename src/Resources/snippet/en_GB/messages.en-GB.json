@@ -41,7 +41,8 @@
         },
         "checkoutConfirmPage": {
             "defaultCardTitle": "Payment Information",
-            "save": "Save data for future use"
+            "save": "Save data for future use",
+            "saveMandate": "Save direct debit mandate for future use"
         },
         "checkoutFinishPage": {
             "mandateIdentification": "Direct Debit Mandate"
@@ -82,7 +83,7 @@
                 "selectInstallmentsLabel": "Please select number of installments",
                 "info": "%index%. installment: %amount% (due %date%)",
                 "numberOfInstallments": "No. of installments:",
-                "financingAmount": "Financingamount:",
+                "financingAmount": "Financing amount:",
                 "total": "Total:",
                 "interestRate": "Nominal interest:",
                 "effectiveInterestRate": "Effective interest:",

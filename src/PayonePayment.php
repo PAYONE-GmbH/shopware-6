@@ -106,11 +106,14 @@ class PayonePayment extends Plugin
         $countryRepository = $this->container->get('country.repository');
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->container->get('currency.repository');
+        /** @var EntityRepositoryInterface $paymentMethodRepository */
+        $paymentMethodRepository = $this->container->get('payment_method.repository');
 
         return new RuleInstallerSecureInvoice(
             $ruleRepository,
             $countryRepository,
-            $currencyRepository
+            $currencyRepository,
+            $paymentMethodRepository
         );
     }
 

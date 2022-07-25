@@ -24,9 +24,11 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_SECURE_INVOICE         = 'secureInvoice';
     public const CONFIGURATION_PREFIX_OPEN_INVOICE           = 'openInvoice';
     public const CONFIGURATION_PREFIX_APPLE_PAY              = 'applePay';
+    public const CONFIGURATION_PREFIX_BANCONTACT             = 'bancontact';
     public const CONFIGURATION_PREFIX_RATEPAY_DEBIT          = 'ratepayDebit';
     public const CONFIGURATION_PREFIX_RATEPAY_INSTALLMENT    = 'ratepayInstallment';
     public const CONFIGURATION_PREFIX_RATEPAY_INVOICING      = 'ratepayInvoicing';
+
 
     public const CONFIGURATION_PREFIXES = [
         Handler\PayoneApplePayPaymentHandler::class              => self::CONFIGURATION_PREFIX_APPLE_PAY,
@@ -45,6 +47,7 @@ interface ConfigurationPrefixes
         Handler\PayoneTrustlyPaymentHandler::class               => self::CONFIGURATION_PREFIX_TRUSTLY,
         Handler\PayoneSecureInvoicePaymentHandler::class         => self::CONFIGURATION_PREFIX_SECURE_INVOICE,
         Handler\PayoneOpenInvoicePaymentHandler::class           => self::CONFIGURATION_PREFIX_OPEN_INVOICE,
+        Handler\PayoneBancontactPaymentHandler::class            => self::CONFIGURATION_PREFIX_BANCONTACT,
         Handler\PayoneRatepayDebitPaymentHandler::class          => self::CONFIGURATION_PREFIX_RATEPAY_DEBIT,
         Handler\PayoneRatepayInstallmentPaymentHandler::class    => self::CONFIGURATION_PREFIX_RATEPAY_INSTALLMENT,
         Handler\PayoneRatepayInvoicingPaymentHandler::class      => self::CONFIGURATION_PREFIX_RATEPAY_INVOICING,

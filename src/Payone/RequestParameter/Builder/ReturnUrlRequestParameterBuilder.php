@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
+use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneIDealPaymentHandler;
@@ -55,6 +56,7 @@ class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneTrustlyPaymentHandler::class:
             case PayoneEpsPaymentHandler::class:
             case PayoneIDealPaymentHandler::class:
+            case PayoneBancontactPaymentHandler::class:
             case PayonePaydirektPaymentHandler::class:
                 return true;
         }
