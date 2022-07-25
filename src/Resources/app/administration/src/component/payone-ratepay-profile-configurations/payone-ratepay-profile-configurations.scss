@@ -1,4 +1,8 @@
 .payone-ratepay-profile-configurations {
+    @media screen and (min-width: 768px) {
+        width: 50%;
+    }
+
     .payone-ratepay-profile-configuration--headline {
         font-weight: 600;
         margin-top: 20px;
