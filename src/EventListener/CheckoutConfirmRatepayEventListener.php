@@ -69,11 +69,26 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         $page    = $event->getPage();
         $context = $event->getSalesChannelContext();
 
+        if (
+            !method_exists($page, 'getPaymentMethods') ||
+            !method_exists($page, 'setPaymentMethods')
+        ) {
+            return;
+        }
+
         if ($context->getPaymentMethod()->getId() !== PayoneRatepayInstallment::UUID) {
             return;
         }
 
-        $installmentCalculator = $this->installmentService->getInstallmentCalculatorData();
+        $installmentCalculator = $this->installmentService->getInstallmentCalculatorData($context);
+        if ($installmentCalculator === null) {
+            $paymentMethods = $this->removePaymentMethods($page->getPaymentMethods(), [
+                PayoneRatepayInstallment::UUID,
+            ]);
+            $page->setPaymentMethods($paymentMethods);
+
+            return;
+        }
 
         $page->addExtension(RatepayInstallmentCalculatorData::EXTENSION_NAME, $installmentCalculator);
     }

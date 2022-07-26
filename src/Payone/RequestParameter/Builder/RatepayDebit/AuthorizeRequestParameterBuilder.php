@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\RatepayDebit;
 
 use PayonePayment\Components\Helper\OrderFetcherInterface;
-use PayonePayment\Components\Ratepay\ProfileSearch;
+use PayonePayment\Components\Ratepay\Profile;
 use PayonePayment\Components\Ratepay\ProfileServiceInterface;
-use PayonePayment\Core\Utils\AddressCompare;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use RuntimeException;
-use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -43,7 +41,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             $paymentTransaction->getOrder()->getId(),
             $salesChannelContext->getContext()
         );
-        $profile = $this->getProfileByOrder($order, PayoneRatepayDebitPaymentHandler::class);
+        $profile = $this->getProfile($order);
 
         $parameters = [
             'request'                                    => self::REQUEST_ACTION_AUTHORIZE,
@@ -51,7 +49,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
             'iban'                                       => $dataBag->get('ratepayIban'),
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-            'add_paydata[shop_id]' => $profile['shopId'],
+            'add_paydata[shop_id]' => $profile->getShopId(),
         ];
 
         $this->applyPhoneParameter($order, $parameters, $dataBag);
@@ -84,23 +82,11 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $order;
     }
 
-    protected function getProfileByOrder(OrderEntity $order, string $paymentHandler): array
+    protected function getProfile(OrderEntity $order): Profile
     {
-        $billingAddress = $this->getOrderBillingAddress($order);
-        $shippingAddress = $this->getOrderShippingAddress($order);
-
-        $profileSearch = new ProfileSearch();
-        $profileSearch->setBillingCountryCode($billingAddress->getCountry()->getIso());
-        $profileSearch->setShippingCountryCode($shippingAddress->getCountry()->getIso());
-        $profileSearch->setPaymentHandler($paymentHandler);
-        $profileSearch->setSalesChannelId($order->getSalesChannelId());
-        $profileSearch->setCurrency($order->getCurrency()->getIsoCode());
-        $profileSearch->setNeedsAllowDifferentAddress(!AddressCompare::areOrderAddressesIdentical($billingAddress, $shippingAddress));
-        $profileSearch->setTotalAmount($order->getPrice()->getTotalPrice());
-
-        $profile = $this->profileService->getProfile($profileSearch);
+        $profile = $this->profileService->getProfileByOrder($order, PayoneRatepayDebitPaymentHandler::class);
         if ($profile === null) {
-            throw new RuntimeException('missing ratepay profile');
+            throw new RuntimeException('no ratepay profile found');
         }
 
         return $profile;
@@ -108,7 +94,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     protected function applyPhoneParameter(OrderEntity $order, array &$parameters, ParameterBag $dataBag): void
     {
-        $billingAddress = $this->getOrderBillingAddress($order);
+        $billingAddress = $this->orderFetcher->getOrderBillingAddress($order);
         $submittedPhoneNumber = $dataBag->get('ratepayPhone');
 
         if (!empty($submittedPhoneNumber) && $submittedPhoneNumber !== $billingAddress->getPhoneNumber()) {
@@ -132,46 +118,5 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
                 $parameters['birthday'] = $birthday->format('Ymd');
             }
         }
-    }
-
-    protected function getOrderBillingAddress(OrderEntity $order): OrderAddressEntity
-    {
-        $orderAddresses = $order->getAddresses();
-
-        if (null === $orderAddresses) {
-            throw new RuntimeException('missing order addresses');
-        }
-
-        /** @var OrderAddressEntity $billingAddress */
-        $billingAddress = $orderAddresses->get($order->getBillingAddressId());
-
-        if (null === $billingAddress) {
-            throw new RuntimeException('missing order billing address');
-        }
-
-        return $billingAddress;
-    }
-
-    protected function getOrderShippingAddress(OrderEntity $order): OrderAddressEntity
-    {
-        $orderAddresses = $order->getAddresses();
-
-        if (null === $orderAddresses) {
-            throw new RuntimeException('missing order addresses');
-        }
-
-        $deliveries = $order->getDeliveries();
-        if ($deliveries && $deliveries->first()) {
-            $shippingAddressId = $deliveries->first()->getShippingOrderAddressId();
-
-            /** @var OrderAddressEntity $shippingAddress */
-            $shippingAddress = $orderAddresses->get($shippingAddressId);
-
-            if ($shippingAddress) {
-                return $shippingAddress;
-            }
-        }
-
-        return $this->getOrderBillingAddress($order);
     }
 }

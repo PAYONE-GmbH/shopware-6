@@ -29,6 +29,11 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="PayonePayment\EventListener\CheckoutConfirmRatepayEventListener">
+            <argument type="service" id="PayonePayment\Components\Ratepay\InstallmentService" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <service id="PayonePayment\EventListener\CheckoutConfirmPayolutionEventListener">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
 

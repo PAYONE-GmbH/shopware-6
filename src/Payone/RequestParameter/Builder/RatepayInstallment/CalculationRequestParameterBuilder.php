@@ -22,6 +22,7 @@ class CalculationRequestParameterBuilder extends GeneralTransactionRequestParame
         $dataBag         = $arguments->getRequestData();
         $currency        = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
         $cart            = $arguments->getCart();
+        $profile = $arguments->getProfile();
         $installmentType = $dataBag->get('ratepayInstallmentType');
 
         $parameters = [
@@ -31,9 +32,7 @@ class CalculationRequestParameterBuilder extends GeneralTransactionRequestParame
             'financingtype'       => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
             'amount'              => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency'            => $currency->getIsoCode(),
-
-            // ToDo: Ratepay Profile in der Administration pflegbar machen
-            'add_paydata[shop_id]'                       => 88880103,
+            'add_paydata[shop_id]'                       => $profile->getShopId(),
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
         ];
 

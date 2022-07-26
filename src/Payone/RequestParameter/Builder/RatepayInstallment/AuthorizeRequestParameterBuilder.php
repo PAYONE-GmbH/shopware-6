@@ -22,7 +22,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
             $paymentTransaction->getOrder()->getId(),
             $salesChannelContext->getContext()
         );
-        $profile = $this->getProfileByOrder($order, PayoneRatepayInstallmentPaymentHandler::class);
+        $profile = $this->getProfile($order);
 
         $parameters = [
             'request'                                    => self::REQUEST_ACTION_AUTHORIZE,
@@ -37,7 +37,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
             'add_paydata[last_installment_amount]'       => $dataBag->get('ratepayLastInstallmentAmount'),
             'add_paydata[interest_rate]'                 => $dataBag->get('ratepayInterestRate'),
             'add_paydata[amount]'                        => $dataBag->get('ratepayTotalAmount'),
-            'add_paydata[shop_id]' => $profile['shopId'],
+            'add_paydata[shop_id]' => $profile->getShopId(),
         ];
 
         $this->applyBirthdayParameter($parameters, $dataBag);

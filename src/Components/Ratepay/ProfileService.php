@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\Ratepay;
 
+use PayonePayment\Components\Helper\OrderFetcherInterface;
+use PayonePayment\Core\Utils\AddressCompare;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
@@ -12,6 +14,10 @@ use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\RatepayProfileStruct;
+use RuntimeException;
+use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
+use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ProfileService implements ProfileServiceInterface
@@ -56,17 +62,27 @@ class ProfileService implements ProfileServiceInterface
     /** @var SystemConfigService */
     private $systemConfigService;
 
+    /** @var OrderFetcherInterface */
+    private $orderFetcher;
+
+    /** @var CartService */
+    private $cartService;
+
     public function __construct(
         PayoneClientInterface $client,
         RequestParameterFactory $requestParameterFactory,
-        SystemConfigService $systemConfigService
+        SystemConfigService $systemConfigService,
+        OrderFetcherInterface $orderFetcher,
+        CartService $cartService
     ) {
         $this->client                  = $client;
         $this->requestParameterFactory = $requestParameterFactory;
         $this->systemConfigService     = $systemConfigService;
+        $this->orderFetcher = $orderFetcher;
+        $this->cartService = $cartService;
     }
 
-    public function getProfile(ProfileSearch $profileSearch): ?array
+    public function getProfile(ProfileSearch $profileSearch): ?Profile
     {
         $configMapping = $this->getConfigMappingByPaymentHandler($profileSearch->getPaymentHandler());
         $paymentKey = $configMapping['paymentKey'];
@@ -104,13 +120,71 @@ class ProfileService implements ProfileServiceInterface
                 continue;
             }
 
-            return [
-                'shopId' => $shopId,
-                'configuration' => $configuration,
-            ];
+            $profile = new Profile();
+            $profile->setShopId($shopId);
+            $profile->setConfiguration($configuration);
+
+            return $profile;
         }
 
         return null;
+    }
+
+    public function getProfileByOrder(OrderEntity $order, string $paymentHandler): ?Profile
+    {
+        $billingAddress = $this->orderFetcher->getOrderBillingAddress($order);
+        $shippingAddress = $this->orderFetcher->getOrderShippingAddress($order);
+
+        $billingCountry = $billingAddress->getCountry();
+        $shippingCountry = $shippingAddress->getCountry();
+        $currency = $order->getCurrency();
+        if ($billingCountry === null || $shippingCountry === null || $currency === null) {
+            return null;
+        }
+
+        $profileSearch = new ProfileSearch();
+        $profileSearch->setBillingCountryCode($billingCountry->getIso());
+        $profileSearch->setShippingCountryCode($shippingCountry->getIso());
+        $profileSearch->setPaymentHandler($paymentHandler);
+        $profileSearch->setSalesChannelId($order->getSalesChannelId());
+        $profileSearch->setCurrency($currency->getIsoCode());
+        $profileSearch->setNeedsAllowDifferentAddress(!AddressCompare::areOrderAddressesIdentical($billingAddress, $shippingAddress));
+        $profileSearch->setTotalAmount($order->getPrice()->getTotalPrice());
+
+        return $this->getProfile($profileSearch);
+    }
+
+    public function getProfileBySalesChannelContext(SalesChannelContext $salesChannelContext, string $paymentHandler): ?Profile
+    {
+        $customer = $salesChannelContext->getCustomer();
+        if ($customer === null) {
+            return null;
+        }
+
+        $billingAddress = $customer->getActiveBillingAddress();
+        $shippingAddress = $customer->getActiveShippingAddress();
+        if ($billingAddress === null || $shippingAddress === null) {
+            return null;
+        }
+
+        $billingCountry = $billingAddress->getCountry();
+        $shippingCountry = $shippingAddress->getCountry();
+        if ($billingCountry === null || $shippingCountry === null) {
+            return null;
+        }
+
+        $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
+
+        $profileSearch = new ProfileSearch();
+        $profileSearch->setBillingCountryCode($billingCountry->getIso());
+        $profileSearch->setShippingCountryCode($shippingCountry->getIso());
+        $profileSearch->setPaymentHandler($paymentHandler);
+        $profileSearch->setSalesChannelId($salesChannelContext->getSalesChannelId());
+        $profileSearch->setCurrency($salesChannelContext->getCurrency()->getIsoCode());
+        $profileSearch->setNeedsAllowDifferentAddress(!AddressCompare::areCustomerAddressesIdentical($billingAddress, $shippingAddress));
+        $profileSearch->setTotalAmount($cart->getPrice()->getTotalPrice());
+
+        return $this->getProfile($profileSearch);
     }
 
     public function updateProfileConfiguration(string $profilesConfigKey, ?string $salesChannelId): array
@@ -178,6 +252,6 @@ class ProfileService implements ProfileServiceInterface
             }
         }
 
-        throw new \RuntimeException('invalid payment handler');
+        throw new RuntimeException('invalid payment handler');
     }
 }

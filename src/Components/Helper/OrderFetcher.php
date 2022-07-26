@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\Helper;
 
+use RuntimeException;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -32,6 +34,47 @@ class OrderFetcher implements OrderFetcherInterface
         $criteria->addFilter(new EqualsFilter('id', $orderId));
 
         return $this->orderRepository->search($criteria, $context)->first();
+    }
+
+    public function getOrderBillingAddress(OrderEntity $order): OrderAddressEntity
+    {
+        $orderAddresses = $order->getAddresses();
+
+        if (null === $orderAddresses) {
+            throw new RuntimeException('missing order addresses');
+        }
+
+        /** @var OrderAddressEntity $billingAddress */
+        $billingAddress = $orderAddresses->get($order->getBillingAddressId());
+
+        if (null === $billingAddress) {
+            throw new RuntimeException('missing order billing address');
+        }
+
+        return $billingAddress;
+    }
+
+    public function getOrderShippingAddress(OrderEntity $order): OrderAddressEntity
+    {
+        $orderAddresses = $order->getAddresses();
+
+        if (null === $orderAddresses) {
+            throw new RuntimeException('missing order addresses');
+        }
+
+        $deliveries = $order->getDeliveries();
+        if ($deliveries && $deliveries->first()) {
+            $shippingAddressId = $deliveries->first()->getShippingOrderAddressId();
+
+            /** @var OrderAddressEntity $shippingAddress */
+            $shippingAddress = $orderAddresses->get($shippingAddressId);
+
+            if ($shippingAddress) {
+                return $shippingAddress;
+            }
+        }
+
+        return $this->getOrderBillingAddress($order);
     }
 
     private function getOrderCriteria(): Criteria

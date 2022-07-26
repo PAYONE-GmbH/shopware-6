@@ -1,5 +1,8 @@
 <div class="payone-payment ratepay-installment">
     ToDo: Add template
+    {{ dump(page.extensions.payoneRatepayInstallmentCalculator) }}
 
-    {% sw_include '@PayonePayment/storefront/payone/ratepay/ratepay-installment-plan.html.twig' %}
+    {% sw_include '@PayonePayment/storefront/payone/ratepay/ratepay-installment-plan.html.twig' with {
+        calculationResponse: page.extensions.payoneRatepayInstallmentCalculator.calculationResponse
+    } %}
 </div>

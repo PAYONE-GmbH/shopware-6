@@ -68,10 +68,19 @@
             <tag name="shopware.cart.validator"/>
         </service>
 
+        <service id="PayonePayment\Components\Ratepay\InstallmentService">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\ProfileService" />
+        </service>
+
         <service id="PayonePayment\Components\Ratepay\ProfileService">
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
         </service>
     </services>
 </container>

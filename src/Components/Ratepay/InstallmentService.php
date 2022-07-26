@@ -26,21 +26,40 @@ class InstallmentService implements InstallmentServiceInterface
     /** @var RequestParameterFactory */
     private $requestParameterFactory;
 
+    /** @var ProfileServiceInterface */
+    private $profileService;
+
     public function __construct(
         CartService $cartService,
         PayoneClientInterface $client,
-        RequestParameterFactory $requestParameterFactory
+        RequestParameterFactory $requestParameterFactory,
+        ProfileServiceInterface $profileService
     ) {
         $this->cartService             = $cartService;
         $this->client                  = $client;
         $this->requestParameterFactory = $requestParameterFactory;
+        $this->profileService = $profileService;
     }
 
-    public function getInstallmentCalculatorData(?RequestDataBag $dataBag = null): RatepayInstallmentCalculatorData
+    public function getInstallmentCalculatorData(SalesChannelContext $salesChannelContext, ?RequestDataBag $dataBag = null): ?RatepayInstallmentCalculatorData
     {
+        $profile = $this->profileService->getProfileBySalesChannelContext(
+            $salesChannelContext,
+            PayoneRatepayInstallmentPaymentHandler::class
+        );
+        if ($profile === null) {
+            return null;
+        }
+
+        $profileConfiguration = $profile->getConfiguration();
+        $allowedMonths = explode(',', $profileConfiguration['month-allowed']);
+        if (\count($allowedMonths) === 0) {
+            return null;
+        }
+
         $defaults = [
             'type'  => CalculationRequestParameterBuilder::INSTALLMENT_TYPE_TIME,
-            'value' => '', // ToDo: Get first allowed month from profile
+            'value' => $allowedMonths[0],
         ];
 
         if ($dataBag === null) {
@@ -52,24 +71,24 @@ class InstallmentService implements InstallmentServiceInterface
             $dataBag->set('ratepayInstallmentValue', $defaults['value']);
         }
 
+        $calculationResponse = $this->getCalculation($dataBag, $profile, $salesChannelContext);
+
         $data = new RatepayInstallmentCalculatorData();
         $data->assign([
-            'minimumRate'         => 0, // ToDo: Get from profile
-            'maximumRate'         => 0, // ToDo: Get from profile
-            'allowedMonths'       => [], // ToDo: Get from profile
+            'minimumRate'         => (float) $profileConfiguration['interestrate-min'],
+            'maximumRate'         => (float) $profileConfiguration['interestrate-max'],
+            'allowedMonths'       => $allowedMonths,
             'debitPayType'        => '', // ToDo: Get from profile
             'defaults'            => $defaults,
             'calculationParams'   => $dataBag->all(),
-            'calculationResponse' => [],    // ToDo: Add response here
+            'calculationResponse' => $calculationResponse,
         ]);
 
         return $data;
     }
 
-    protected function getCalculation(RequestDataBag $dataBag, SalesChannelContext $context): array
+    protected function getCalculation(RequestDataBag $dataBag, Profile $profile, SalesChannelContext $context): array
     {
-        // ToDo: Check if a calculation is stored in cart?
-
         $cart = $this->cartService->getCart($context->getToken(), $context);
 
         $calculationRequest = $this->requestParameterFactory->getRequestParameter(
@@ -77,6 +96,7 @@ class InstallmentService implements InstallmentServiceInterface
                 $cart,
                 $dataBag,
                 $context,
+                $profile,
                 PayoneRatepayInstallmentPaymentHandler::class,
                 AbstractRequestParameterBuilder::REQUEST_ACTION_RATEPAY_CALCULATION
             )

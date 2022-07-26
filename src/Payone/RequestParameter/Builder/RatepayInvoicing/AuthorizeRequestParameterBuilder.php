@@ -22,7 +22,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
             $paymentTransaction->getOrder()->getId(),
             $salesChannelContext->getContext()
         );
-        $profile = $this->getProfileByOrder($order, PayoneRatepayInvoicingPaymentHandler::class);
+        $profile = $this->getProfile($order);
 
         $parameters = [
             'request'                                    => self::REQUEST_ACTION_AUTHORIZE,
@@ -30,7 +30,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
             'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
             'telephonenumber'                            => $dataBag->get('ratepayPhone'),
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-            'add_paydata[shop_id]' => $profile['shopId'],
+            'add_paydata[shop_id]' => $profile->getShopId(),
         ];
 
         $this->applyBirthdayParameter($parameters, $dataBag);
