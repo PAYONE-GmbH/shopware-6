@@ -16,7 +16,7 @@
                 "shippingCountry": "Lieferland",
                 "minBasket": "Min. Warenkorb",
                 "maxBasket": "Max. Warenkorb",
-                "reloadConfigBtn": "Profil-Konfiguration neuladen",
+                "reloadConfigBtn": "Profil-Konfiguration neu laden",
                 "reloadConfigInfo": "(Änderungen an der Plugin-Konfiguration werden dabei zuerst gespeichert)"
             },
             "actions": {
