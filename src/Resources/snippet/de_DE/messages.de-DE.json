@@ -159,6 +159,19 @@
                 "holder": "Kontoinhaber: %holder%",
                 "accountNotice": "Damit wir Ihre Zahlung schnell zuordnen können, überweisen Sie den ausstehenden Betrag bitte ausschließlich auf das obige Konto."
             }
+        },
+        "ratepay": {
+            "debit": {
+                "iban": {
+                    "label": "IBAN"
+                },
+                "phoneNumber": {
+                    "label": "Telefonnummer"
+                },
+                "birthday": {
+                    "label": "Geburtsdatum"
+                }
+            }
         }
     },
     "error": {

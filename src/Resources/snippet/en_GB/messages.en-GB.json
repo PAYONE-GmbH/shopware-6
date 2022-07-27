@@ -159,6 +159,19 @@
                 "holder": "Account Holder: %holder%",
                 "accountNotice": "In order for us to quickly allocate your payment, please transfer the outstanding amount exclusively to the account above."
             }
+        },
+        "ratepay": {
+            "debit": {
+                "iban": {
+                    "label": "IBAN"
+                },
+                "phoneNumber": {
+                    "label": "Phone number"
+                },
+                "birthday": {
+                    "label": "Date of birth"
+                }
+            }
         }
     },
     "error": {
