@@ -1,3 +1,42 @@
 <div class="payone-payment ratepay-invoicing">
-    ToDo: Add template
+    {% block page_checkout_confirm_payone_card_title_debit_card %}
+        <div class="card-title">
+            {{ "PayonePayment.checkoutConfirmPage.defaultCardTitle" | trans }}
+        </div>
+    {% endblock %}
+
+    {% block page_checkout_confirm_payone_card_content_debit_card %}
+        <div class="card">
+            <fieldset>
+                <div class="form-row col-md-12">
+                    <div class="form-group col-md-12">
+                        <label class="form-label" for="ratepayBirthday">{{ "PayonePayment.ratepay.invoice.birthday.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
+                        <input class="form-control payone-input"
+                               id="ratepayBirthday"
+                               name="ratepayBirthday"
+                               type="date"
+                               form="confirmOrderForm"
+                               required="required"/>
+                    </div>
+                </div>
+
+                <div class="form-row col-md-12">
+                    <div class="form-group col-md-12">
+                        <label class="form-label" for="ratepayPhone">{{ "PayonePayment.ratepay.invoice.phoneNumber.label" | trans }}{% if not billingAddress.phoneNumber %}{{ "general.required"|trans|sw_sanitize }}{% endif %}</label>
+                        <input class="form-control payone-input"
+                               id="ratepayPhone"
+                               name="ratepayPhone"
+                               form="confirmOrderForm"
+                               {% if not billingAddress.phoneNumber %}required="required"{% endif %}/>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="col-md-12">
+                <p>
+                    {{ "PayonePayment.ratepay.general.consentText" |trans|sw_sanitize }}
+                </p>
+            </div>
+        </div>
+    {% endblock %}
 </div>
