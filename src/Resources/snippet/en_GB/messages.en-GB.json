@@ -159,6 +159,22 @@
                 "holder": "Account Holder: %holder%",
                 "accountNotice": "In order for us to quickly allocate your payment, please transfer the outstanding amount exclusively to the account above."
             }
+        },
+        "ratepay": {
+            "general": {
+                "consentText": "With clicking \"Submit order\" you agree to the <a href='https://www.ratepay.com/en/ratepay-terms-of-payment/' title='https://www.ratepay.com/en/ratepay-terms-of-payment/'>terms of payment of our payment partner</a> as well as to the performance of a <a href='https://www.ratepay.com/en/ratepay-data-privacy-statement/' title='https://www.ratepay.com/en/ratepay-data-privacy-statement/'>risk check by our payment partner</a>."
+            },
+            "debit": {
+                "iban": {
+                    "label": "IBAN"
+                },
+                "phoneNumber": {
+                    "label": "Phone number"
+                },
+                "birthday": {
+                    "label": "Date of birth"
+                }
+            }
         }
     },
     "error": {

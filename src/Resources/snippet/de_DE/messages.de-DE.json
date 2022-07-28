@@ -159,6 +159,22 @@
                 "holder": "Kontoinhaber: %holder%",
                 "accountNotice": "Damit wir Ihre Zahlung schnell zuordnen können, überweisen Sie den ausstehenden Betrag bitte ausschließlich auf das obige Konto."
             }
+        },
+        "ratepay": {
+            "general": {
+                "consentText": "Mit Klicken auf Zahlungspflichtig bestellen erklären Sie sich mit den <a href='https://www.ratepay.com/legal-payment-terms/' title='https://www.ratepay.com/legal-payment-terms/'>Ratepay Zahlungsbedingungen</a> sowie mit der Durchführung einer <a href='https://www.ratepay.com/legal-payment-dataprivacy/' title='https://www.ratepay.com/legal-payment-dataprivacy/'>Risikoprüfung durch Ratepay</a> einverstanden."
+            },
+            "debit": {
+                "iban": {
+                    "label": "IBAN"
+                },
+                "phoneNumber": {
+                    "label": "Telefonnummer"
+                },
+                "birthday": {
+                    "label": "Geburtsdatum"
+                }
+            }
         }
     },
     "error": {
