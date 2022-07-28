@@ -15,7 +15,7 @@ class ProfileSearch
     /** @var string */
     private $paymentHandler;
 
-    /** @var string|null */
+    /** @var null|string */
     private $salesChannelId;
 
     /** @var string */

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PayonePayment\Core\Utils;
 
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
@@ -40,7 +42,7 @@ class AddressCompare
             'zipcode',
             'city',
             'countryId',
-            'countryStateId'
+            'countryStateId',
         ];
 
         return self::areEntitiesIdentical($entity1, $entity2, $fieldsToCompare);

@@ -32,7 +32,7 @@ class RatepayCalculationStruct extends AbstractRequestParameterStruct
         $this->cart                = $cart;
         $this->requestData         = $requestData;
         $this->salesChannelContext = $salesChannelContext;
-        $this->profile = $profile;
+        $this->profile             = $profile;
         $this->paymentMethod       = $paymentMethod;
         $this->action              = $action;
     }

@@ -81,6 +81,7 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         }
 
         $installmentCalculator = $this->installmentService->getInstallmentCalculatorData($context);
+
         if ($installmentCalculator === null) {
             $paymentMethods = $this->removePaymentMethods($page->getPaymentMethods(), [
                 PayoneRatepayInstallment::UUID,

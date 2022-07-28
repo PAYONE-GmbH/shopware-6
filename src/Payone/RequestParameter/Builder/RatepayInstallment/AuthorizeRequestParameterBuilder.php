@@ -15,10 +15,10 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $dataBag = $arguments->getRequestData();
+        $dataBag             = $arguments->getRequestData();
         $salesChannelContext = $arguments->getSalesChannelContext();
         $paymentTransaction  = $arguments->getPaymentTransaction();
-        $order = $this->getOrder(
+        $order               = $this->getOrder(
             $paymentTransaction->getOrder()->getId(),
             $salesChannelContext->getContext()
         );
@@ -37,7 +37,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
             'add_paydata[last_installment_amount]'       => $dataBag->get('ratepayLastInstallmentAmount'),
             'add_paydata[interest_rate]'                 => $dataBag->get('ratepayInterestRate'),
             'add_paydata[amount]'                        => $dataBag->get('ratepayTotalAmount'),
-            'add_paydata[shop_id]' => $profile->getShopId(),
+            'add_paydata[shop_id]'                       => $profile->getShopId(),
         ];
 
         $this->applyBirthdayParameter($parameters, $dataBag);

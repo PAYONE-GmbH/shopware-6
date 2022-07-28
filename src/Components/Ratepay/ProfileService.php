@@ -22,12 +22,12 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ProfileService implements ProfileServiceInterface
 {
-    public const DEBIT_PROFILES_CONFIG_KEY = 'PayonePayment.settings.ratepayDebitProfiles';
-    public const DEBIT_PROFILE_CONFIGURATIONS_CONFIG_KEY = 'PayonePayment.settings.ratepayDebitProfileConfigurations';
-    public const INSTALLMENT_PROFILES_CONFIG_KEY = 'PayonePayment.settings.ratepayInstallmentProfiles';
+    public const DEBIT_PROFILES_CONFIG_KEY                     = 'PayonePayment.settings.ratepayDebitProfiles';
+    public const DEBIT_PROFILE_CONFIGURATIONS_CONFIG_KEY       = 'PayonePayment.settings.ratepayDebitProfileConfigurations';
+    public const INSTALLMENT_PROFILES_CONFIG_KEY               = 'PayonePayment.settings.ratepayInstallmentProfiles';
     public const INSTALLMENT_PROFILE_CONFIGURATIONS_CONFIG_KEY = 'PayonePayment.settings.ratepayInstallmentProfileConfigurations';
-    public const INVOICING_PROFILES_CONFIG_KEY = 'PayonePayment.settings.ratepayInvoicingProfiles';
-    public const INVOICING_PROFILE_CONFIGURATIONS_CONFIG_KEY = 'PayonePayment.settings.ratepayInvoicingProfileConfigurations';
+    public const INVOICING_PROFILES_CONFIG_KEY                 = 'PayonePayment.settings.ratepayInvoicingProfiles';
+    public const INVOICING_PROFILE_CONFIGURATIONS_CONFIG_KEY   = 'PayonePayment.settings.ratepayInvoicingProfileConfigurations';
 
     public const PROFILES_CONFIG_KEYS = [
         self::DEBIT_PROFILES_CONFIG_KEY,
@@ -37,18 +37,21 @@ class ProfileService implements ProfileServiceInterface
 
     public const PROFILE_CONFIG_MAPPING = [
         self::DEBIT_PROFILES_CONFIG_KEY => [
-            'paymentHandler' => PayoneRatepayDebitPaymentHandler::class,
-            'paymentKey' => 'elv',
+            'paymentHandler'           => PayoneRatepayDebitPaymentHandler::class,
+            'paymentKey'               => 'elv',
+            'profilesKey'              => self::DEBIT_PROFILES_CONFIG_KEY,
             'profileConfigurationsKey' => self::DEBIT_PROFILE_CONFIGURATIONS_CONFIG_KEY,
         ],
         self::INSTALLMENT_PROFILES_CONFIG_KEY => [
-            'paymentHandler' => PayoneRatepayInstallmentPaymentHandler::class,
-            'paymentKey' => 'installment',
+            'paymentHandler'           => PayoneRatepayInstallmentPaymentHandler::class,
+            'paymentKey'               => 'installment',
+            'profilesKey'              => self::INSTALLMENT_PROFILES_CONFIG_KEY,
             'profileConfigurationsKey' => self::INSTALLMENT_PROFILE_CONFIGURATIONS_CONFIG_KEY,
         ],
         self::INVOICING_PROFILES_CONFIG_KEY => [
-            'paymentHandler' => PayoneRatepayInvoicingPaymentHandler::class,
-            'paymentKey' => 'invoicing',
+            'paymentHandler'           => PayoneRatepayInvoicingPaymentHandler::class,
+            'paymentKey'               => 'invoicing',
+            'profilesKey'              => self::INVOICING_PROFILES_CONFIG_KEY,
             'profileConfigurationsKey' => self::INVOICING_PROFILE_CONFIGURATIONS_CONFIG_KEY,
         ],
     ];
@@ -78,19 +81,34 @@ class ProfileService implements ProfileServiceInterface
         $this->client                  = $client;
         $this->requestParameterFactory = $requestParameterFactory;
         $this->systemConfigService     = $systemConfigService;
-        $this->orderFetcher = $orderFetcher;
-        $this->cartService = $cartService;
+        $this->orderFetcher            = $orderFetcher;
+        $this->cartService             = $cartService;
+    }
+
+    public static function getConfigMappingByPaymentHandler(string $paymentHandler): array
+    {
+        foreach (self::PROFILE_CONFIG_MAPPING as $configMapping) {
+            if ($configMapping['paymentHandler'] === $paymentHandler) {
+                return $configMapping;
+            }
+        }
+
+        throw new RuntimeException('invalid payment handler');
     }
 
     public function getProfile(ProfileSearch $profileSearch): ?Profile
     {
-        $configMapping = $this->getConfigMappingByPaymentHandler($profileSearch->getPaymentHandler());
-        $paymentKey = $configMapping['paymentKey'];
+        $configMapping = self::getConfigMappingByPaymentHandler($profileSearch->getPaymentHandler());
+        $paymentKey    = $configMapping['paymentKey'];
 
         $profileConfiguration = $this->systemConfigService->get(
             $configMapping['profileConfigurationsKey'],
             $profileSearch->getSalesChannelId()
         );
+
+        if ($profileConfiguration === null) {
+            return null;
+        }
 
         foreach ($profileConfiguration as $shopId => $configuration) {
             if ($profileSearch->isNeedsAllowDifferentAddress() && $configuration['delivery-address-' . $paymentKey] !== 'yes') {
@@ -98,16 +116,19 @@ class ProfileService implements ProfileServiceInterface
             }
 
             $allowedBillingCountries = explode(',', $configuration['country-code-billing']);
+
             if (!in_array($profileSearch->getBillingCountryCode(), $allowedBillingCountries, true)) {
                 continue;
             }
 
             $allowedDeliveryCountries = explode(',', $configuration['country-code-delivery']);
+
             if (!in_array($profileSearch->getShippingCountryCode(), $allowedDeliveryCountries, true)) {
                 continue;
             }
 
             $allowedCurrencies = explode(',', $configuration['currency']);
+
             if (!in_array($profileSearch->getCurrency(), $allowedCurrencies, true)) {
                 continue;
             }
@@ -132,12 +153,13 @@ class ProfileService implements ProfileServiceInterface
 
     public function getProfileByOrder(OrderEntity $order, string $paymentHandler): ?Profile
     {
-        $billingAddress = $this->orderFetcher->getOrderBillingAddress($order);
+        $billingAddress  = $this->orderFetcher->getOrderBillingAddress($order);
         $shippingAddress = $this->orderFetcher->getOrderShippingAddress($order);
 
-        $billingCountry = $billingAddress->getCountry();
+        $billingCountry  = $billingAddress->getCountry();
         $shippingCountry = $shippingAddress->getCountry();
-        $currency = $order->getCurrency();
+        $currency        = $order->getCurrency();
+
         if ($billingCountry === null || $shippingCountry === null || $currency === null) {
             return null;
         }
@@ -157,18 +179,21 @@ class ProfileService implements ProfileServiceInterface
     public function getProfileBySalesChannelContext(SalesChannelContext $salesChannelContext, string $paymentHandler): ?Profile
     {
         $customer = $salesChannelContext->getCustomer();
+
         if ($customer === null) {
             return null;
         }
 
-        $billingAddress = $customer->getActiveBillingAddress();
+        $billingAddress  = $customer->getActiveBillingAddress();
         $shippingAddress = $customer->getActiveShippingAddress();
+
         if ($billingAddress === null || $shippingAddress === null) {
             return null;
         }
 
-        $billingCountry = $billingAddress->getCountry();
+        $billingCountry  = $billingAddress->getCountry();
         $shippingCountry = $shippingAddress->getCountry();
+
         if ($billingCountry === null || $shippingCountry === null) {
             return null;
         }
@@ -187,15 +212,16 @@ class ProfileService implements ProfileServiceInterface
         return $this->getProfile($profileSearch);
     }
 
-    public function updateProfileConfiguration(string $profilesConfigKey, ?string $salesChannelId): array
+    public function updateProfileConfiguration(string $profilesConfigKey, ?string $salesChannelId = null): array
     {
         $configUpdates = [];
-        $errors = [];
+        $errors        = [];
+
         if (isset(self::PROFILE_CONFIG_MAPPING[$profilesConfigKey])) {
             $configMapping = self::PROFILE_CONFIG_MAPPING[$profilesConfigKey];
-            $profiles = $this->systemConfigService->get($profilesConfigKey, $salesChannelId);
+            $profiles      = $this->systemConfigService->get($profilesConfigKey, $salesChannelId);
 
-            $validProfiles = [];
+            $validProfiles          = [];
             $configurationResponses = [];
             foreach ($profiles as $profile) {
                 $shopId   = (int) $profile['shopId'];
@@ -214,13 +240,14 @@ class ProfileService implements ProfileServiceInterface
                 try {
                     $response = $this->client->request($profileRequest);
                 } catch (PayoneRequestException $exception) {
-                    $profile['error'] = $exception->getResponse()['error']['ErrorMessage'];
+                    $profile['error']             = $exception->getResponse()['error']['ErrorMessage'];
                     $errors[$profilesConfigKey][] = $profile;
+
                     continue;
                 }
 
-                $configurationResponses[$shopId]  = $response['addpaydata'];
-                $validProfiles[$shopId] = $profile;
+                $configurationResponses[$shopId] = $response['addpaydata'];
+                $validProfiles[$shopId]          = $profile;
             }
 
             $validProfiles = array_values($validProfiles);
@@ -234,24 +261,13 @@ class ProfileService implements ProfileServiceInterface
                 $configurationResponses,
                 $salesChannelId
             );
-            $configUpdates[$profilesConfigKey] = $validProfiles;
+            $configUpdates[$profilesConfigKey]                         = $validProfiles;
             $configUpdates[$configMapping['profileConfigurationsKey']] = $configurationResponses;
         }
 
         return [
             'updates' => $configUpdates,
-            'errors' => $errors,
+            'errors'  => $errors,
         ];
-    }
-
-    protected function getConfigMappingByPaymentHandler(string $paymentHandler): array
-    {
-        foreach (self::PROFILE_CONFIG_MAPPING as $configMapping) {
-            if ($configMapping['paymentHandler'] === $paymentHandler) {
-                return $configMapping;
-            }
-        }
-
-        throw new RuntimeException('invalid payment handler');
     }
 }

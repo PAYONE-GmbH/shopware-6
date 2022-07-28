@@ -38,7 +38,7 @@ class InstallmentService implements InstallmentServiceInterface
         $this->cartService             = $cartService;
         $this->client                  = $client;
         $this->requestParameterFactory = $requestParameterFactory;
-        $this->profileService = $profileService;
+        $this->profileService          = $profileService;
     }
 
     public function getInstallmentCalculatorData(SalesChannelContext $salesChannelContext, ?RequestDataBag $dataBag = null): ?RatepayInstallmentCalculatorData
@@ -47,12 +47,14 @@ class InstallmentService implements InstallmentServiceInterface
             $salesChannelContext,
             PayoneRatepayInstallmentPaymentHandler::class
         );
+
         if ($profile === null) {
             return null;
         }
 
         $profileConfiguration = $profile->getConfiguration();
-        $allowedMonths = explode(',', $profileConfiguration['month-allowed']);
+        $allowedMonths        = explode(',', $profileConfiguration['month-allowed']);
+
         if (\count($allowedMonths) === 0) {
             return null;
         }

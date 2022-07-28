@@ -29,7 +29,6 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_RATEPAY_INSTALLMENT    = 'ratepayInstallment';
     public const CONFIGURATION_PREFIX_RATEPAY_INVOICING      = 'ratepayInvoicing';
 
-
     public const CONFIGURATION_PREFIXES = [
         Handler\PayoneApplePayPaymentHandler::class              => self::CONFIGURATION_PREFIX_APPLE_PAY,
         Handler\PayoneCreditCardPaymentHandler::class            => self::CONFIGURATION_PREFIX_CREDITCARD,

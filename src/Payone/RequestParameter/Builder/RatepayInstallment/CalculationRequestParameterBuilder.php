@@ -22,16 +22,16 @@ class CalculationRequestParameterBuilder extends GeneralTransactionRequestParame
         $dataBag         = $arguments->getRequestData();
         $currency        = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
         $cart            = $arguments->getCart();
-        $profile = $arguments->getProfile();
+        $profile         = $arguments->getProfile();
         $installmentType = $dataBag->get('ratepayInstallmentType');
 
         $parameters = [
-            'request'             => self::REQUEST_ACTION_GENERIC_PAYMENT,
-            'add_paydata[action]' => 'calculation',
-            'clearingtype'        => self::CLEARING_TYPE_FINANCING,
-            'financingtype'       => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
-            'amount'              => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
-            'currency'            => $currency->getIsoCode(),
+            'request'                                    => self::REQUEST_ACTION_GENERIC_PAYMENT,
+            'add_paydata[action]'                        => 'calculation',
+            'clearingtype'                               => self::CLEARING_TYPE_FINANCING,
+            'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
+            'amount'                                     => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
+            'currency'                                   => $currency->getIsoCode(),
             'add_paydata[shop_id]'                       => $profile->getShopId(),
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
         ];

@@ -29,10 +29,11 @@ class KernelEventListener implements EventSubscriberInterface
 
     public function onKernelResponse(ResponseEvent $event): void
     {
-        $route = $event->getRequest()->get('_route');
+        $route    = $event->getRequest()->get('_route');
         $response = $event->getResponse();
+
         if ($route === 'api.action.core.save.system-config.batch') {
-            $results = [];
+            $results        = [];
             $configurations = $event->getRequest()->request->all();
 
             foreach ($configurations as $salesChannelId => $configuration) {
@@ -56,6 +57,7 @@ class KernelEventListener implements EventSubscriberInterface
     protected function setResponseData(JsonResponse $response, array $updateResults): void
     {
         $data = [];
+
         if ($response->getContent()) {
             $data = json_decode($response->getContent(), true);
         }
@@ -64,16 +66,16 @@ class KernelEventListener implements EventSubscriberInterface
         foreach ($updateResults as $salesChannelId => $updateResultsBySalesChannel) {
             $salesChannelData = [
                 'updates' => [],
-                'errors' => [],
+                'errors'  => [],
             ];
 
             foreach ($updateResultsBySalesChannel as $updateResult) {
                 $salesChannelData['updates'][] = $updateResult['updates'];
-                $salesChannelData['errors'][] = $updateResult['errors'];
+                $salesChannelData['errors'][]  = $updateResult['errors'];
             }
 
             $salesChannelData['updates'] = array_merge(...$salesChannelData['updates']);
-            $salesChannelData['errors'] = array_merge(...$salesChannelData['errors']);
+            $salesChannelData['errors']  = array_merge(...$salesChannelData['errors']);
 
             $data['payoneRatepayProfilesUpdateResult'][$salesChannelId] = $salesChannelData;
         }

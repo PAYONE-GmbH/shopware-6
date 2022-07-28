@@ -63,6 +63,7 @@ class OrderFetcher implements OrderFetcherInterface
         }
 
         $deliveries = $order->getDeliveries();
+
         if ($deliveries && $deliveries->first()) {
             $shippingAddressId = $deliveries->first()->getShippingOrderAddressId();
 
