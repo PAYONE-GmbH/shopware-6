@@ -69,15 +69,6 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
 
         $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
-        try {
-            $this->validate($requestData);
-        } catch (PayoneRequestException $e) {
-            throw new SyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
-
         $request = $this->requestParameterFactory->getRequestParameter(
             new PaymentTransactionStruct(
                 $paymentTransaction,
@@ -147,19 +138,5 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
         }
 
         return static::matchesIsRefundableDefaults($transactionData, $customFields);
-    }
-
-    /**
-     * @throws PayoneRequestException
-     */
-    private function validate(RequestDataBag $dataBag): void
-    {
-        if ($dataBag->get('ratepayConsent') !== 'on') {
-            throw new PayoneRequestException('No ratepayConsent');
-        }
-
-        if ($dataBag->get('ratepayMandate') !== 'on') {
-            throw new PayoneRequestException('No ratepayMandate');
-        }
     }
 }

@@ -218,10 +218,17 @@
             <tag name="shopware.payment.method.sync" />
         </service>
 
-<!--        <service id="PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler">-->
+        <service id="PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
 
-<!--            <tag name="shopware.payment.method.sync" />-->
-<!--        </service>-->
+            <tag name="shopware.payment.method.sync" />
+        </service>
 
 <!--        <service id="PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler">-->
 

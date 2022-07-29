@@ -84,7 +84,7 @@ class ProfileServiceTest extends TestCase
         $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
 
-        $profileService = $this->getContainer()->get(ProfileService::class);
+        $profileService      = $this->getContainer()->get(ProfileService::class);
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
         $profile = $profileService->getProfileBySalesChannelContext(
@@ -103,9 +103,9 @@ class ProfileServiceTest extends TestCase
         $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
 
-        $profileSearch = $this->getValidProfileSearch(PayoneRatepayDebitPaymentHandler::class);
+        $profileSearch  = $this->getValidProfileSearch(PayoneRatepayDebitPaymentHandler::class);
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile = $profileService->getProfile($profileSearch);
+        $profile        = $profileService->getProfile($profileSearch);
 
         static::assertNotNull($profile);
         static::assertSame(88880103, $profile->getShopId());
@@ -126,7 +126,7 @@ class ProfileServiceTest extends TestCase
         $profileSearch->setBillingCountryCode('NL');
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile = $profileService->getProfile($profileSearch);
+        $profile        = $profileService->getProfile($profileSearch);
 
         static::assertNull($profile);
     }
@@ -144,7 +144,7 @@ class ProfileServiceTest extends TestCase
         $profileSearch->setShippingCountryCode('NL');
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile = $profileService->getProfile($profileSearch);
+        $profile        = $profileService->getProfile($profileSearch);
 
         static::assertNull($profile);
     }
@@ -162,7 +162,7 @@ class ProfileServiceTest extends TestCase
         $profileSearch->setCurrency('USD');
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile = $profileService->getProfile($profileSearch);
+        $profile        = $profileService->getProfile($profileSearch);
 
         static::assertNull($profile);
     }
@@ -180,7 +180,7 @@ class ProfileServiceTest extends TestCase
         $profileSearch->setTotalAmount(10);
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile = $profileService->getProfile($profileSearch);
+        $profile        = $profileService->getProfile($profileSearch);
 
         static::assertNull($profile);
     }
@@ -198,7 +198,7 @@ class ProfileServiceTest extends TestCase
         $profileSearch->setTotalAmount(100);
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile = $profileService->getProfile($profileSearch);
+        $profile        = $profileService->getProfile($profileSearch);
 
         static::assertNull($profile);
     }
@@ -213,7 +213,7 @@ class ProfileServiceTest extends TestCase
         $profileSearch = $this->getValidProfileSearch(PayoneRatepayDebitPaymentHandler::class);
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile = $profileService->getProfile($profileSearch);
+        $profile        = $profileService->getProfile($profileSearch);
 
         static::assertNull($profile);
     }
@@ -297,19 +297,10 @@ class ProfileServiceTest extends TestCase
         static::assertEmpty($configuration);
     }
 
-    protected function getRandomOrder(): ?OrderEntity
-    {
-        $orderFetcher        = $this->getContainer()->get(OrderFetcher::class);
-        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $orderId             = $this->placeRandomOrder($salesChannelContext);
-
-        return $orderFetcher->getOrderById($orderId, $salesChannelContext->getContext());
-    }
-
     protected function addFakeShippingAddress(OrderEntity $order): void
     {
         $shippingAddressId = Uuid::randomHex();
-        $shippingAddress = new OrderAddressEntity();
+        $shippingAddress   = new OrderAddressEntity();
         $shippingAddress->setId($shippingAddressId);
         $shippingAddress->setFirstName('Differs from billing address');
         $shippingAddress->setCountry($order->getAddresses()->get($order->getBillingAddressId())->getCountry());

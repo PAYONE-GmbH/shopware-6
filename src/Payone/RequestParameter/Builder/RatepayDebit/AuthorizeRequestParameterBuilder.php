@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\RatepayDebit;
 
 use PayonePayment\Components\Helper\OrderFetcherInterface;
+use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\Components\Ratepay\Profile;
 use PayonePayment\Components\Ratepay\ProfileServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
@@ -30,14 +31,19 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     /** @var EntityRepositoryInterface */
     protected $customerRepository;
 
+    /** @var LineItemHydratorInterface */
+    protected $lineItemHydrator;
+
     public function __construct(
         OrderFetcherInterface $orderFetcher,
         ProfileServiceInterface $profileService,
-        EntityRepositoryInterface $customerRepository
+        EntityRepositoryInterface $customerRepository,
+        LineItemHydratorInterface $lineItemHydrator
     ) {
         $this->orderFetcher       = $orderFetcher;
         $this->profileService     = $profileService;
         $this->customerRepository = $customerRepository;
+        $this->lineItemHydrator   = $lineItemHydrator;
     }
 
     /** @param PaymentTransactionStruct $arguments */
@@ -45,12 +51,11 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     {
         $dataBag             = $arguments->getRequestData();
         $salesChannelContext = $arguments->getSalesChannelContext();
+        $context             = $salesChannelContext->getContext();
         $paymentTransaction  = $arguments->getPaymentTransaction();
-        $order               = $this->getOrder(
-            $paymentTransaction->getOrder()->getId(),
-            $salesChannelContext->getContext()
-        );
-        $profile = $this->getProfile($order);
+        $order               = $this->getOrder($paymentTransaction->getOrder()->getId(), $context);
+        $currency            = $this->getOrderCurrency($order, $context);
+        $profile             = $this->getProfile($order, PayoneRatepayDebitPaymentHandler::class);
 
         $parameters = [
             'request'                                    => self::REQUEST_ACTION_AUTHORIZE,
@@ -61,8 +66,12 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'add_paydata[shop_id]'                       => $profile->getShopId(),
         ];
 
-        $this->applyPhoneParameter($order, $parameters, $dataBag, $salesChannelContext->getContext());
+        $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
         $this->applyBirthdayParameter($parameters, $dataBag);
+
+        if ($order->getLineItems() !== null) {
+            $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order, $context));
+        }
 
         return $parameters;
     }
@@ -91,9 +100,9 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $order;
     }
 
-    protected function getProfile(OrderEntity $order): Profile
+    protected function getProfile(OrderEntity $order, string $paymentHandler): Profile
     {
-        $profile = $this->profileService->getProfileByOrder($order, PayoneRatepayDebitPaymentHandler::class);
+        $profile = $this->profileService->getProfileByOrder($order, $paymentHandler);
 
         if ($profile === null) {
             throw new RuntimeException('no ratepay profile found');
@@ -114,17 +123,14 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             throw new RuntimeException('missing customer');
         }
 
-        $customerCustomFields = $customer->getCustomFields();
+        $customerCustomFields   = $customer->getCustomFields() ?? [];
+        $customFieldPhoneNumber = $customerCustomFields[CustomFieldInstaller::CUSTOMER_PHONE_NUMBER] ?? null;
+        $submittedPhoneNumber   = $dataBag->get('ratepayPhone');
 
-        if (!$customerCustomFields) {
-            throw new RuntimeException('missing customer custom fields');
-        }
-
-        $submittedPhoneNumber = $dataBag->get('ratepayPhone');
-
-        if (!empty($submittedPhoneNumber) && $submittedPhoneNumber !== $customerCustomFields[CustomFieldInstaller::CUSTOMER_PHONE_NUMBER]) {
+        if (!empty($submittedPhoneNumber) && $submittedPhoneNumber !== $customFieldPhoneNumber) {
             // Update the phone number that is stored at the customer
-            $customerCustomFields[CustomFieldInstaller::CUSTOMER_PHONE_NUMBER] = $submittedPhoneNumber;
+            $customFieldPhoneNumber                                            = $submittedPhoneNumber;
+            $customerCustomFields[CustomFieldInstaller::CUSTOMER_PHONE_NUMBER] = $customFieldPhoneNumber;
             $this->customerRepository->update(
                 [
                     [
@@ -136,7 +142,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             );
         }
 
-        if (!$customerCustomFields[CustomFieldInstaller::CUSTOMER_PHONE_NUMBER]) {
+        if (!$customFieldPhoneNumber) {
             throw new RuntimeException('missing phone number');
         }
 

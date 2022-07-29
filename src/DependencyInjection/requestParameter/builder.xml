@@ -372,6 +372,7 @@
             <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
             <argument type="service" id="PayonePayment\Components\Ratepay\ProfileService"/>
             <argument type="service" id="customer.repository"/>
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
 
             <tag name="payone_request_builder"/>
         </service>

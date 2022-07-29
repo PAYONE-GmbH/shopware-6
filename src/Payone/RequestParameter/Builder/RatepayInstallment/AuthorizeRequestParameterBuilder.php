@@ -22,7 +22,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
             $paymentTransaction->getOrder()->getId(),
             $salesChannelContext->getContext()
         );
-        $profile = $this->getProfile($order);
+        $profile = $this->getProfile($order, PayoneRatepayInstallmentPaymentHandler::class);
 
         $parameters = [
             'request'                                    => self::REQUEST_ACTION_AUTHORIZE,

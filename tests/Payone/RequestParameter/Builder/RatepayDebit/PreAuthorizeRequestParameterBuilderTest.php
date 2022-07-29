@@ -1,0 +1,51 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PayonePayment\Payone\RequestParameter\Builder\RatepayDebit;
+
+use DMS\PHPUnitExtensions\ArraySubset\Assert;
+use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
+use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
+use PayonePayment\Test\TestCaseBase\CheckoutTestBehavior;
+use PayonePayment\Test\TestCaseBase\ConfigurationHelper;
+use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
+
+class PreAuthorizeRequestParameterBuilderTest extends TestCase
+{
+    use CheckoutTestBehavior;
+    use ConfigurationHelper;
+
+    public function testItAddsCorrectPreAuthorizeParameters(): void
+    {
+        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
+        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+
+        $dataBag = new RequestDataBag([
+            'ratepayIban'     => 'DE81500105177147426471',
+            'ratepayPhone'    => '0123456789',
+            'ratepayBirthday' => '2000-01-01',
+        ]);
+
+        $struct     = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayDebitPaymentHandler::class);
+        $builder    = $this->getContainer()->get(PreAuthorizeRequestParameterBuilder::class);
+        $parameters = $builder->getRequestParameter($struct);
+
+        Assert::assertArraySubset(
+            [
+                'request'                                    => PreAuthorizeRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE,
+                'clearingtype'                               => PreAuthorizeRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
+                'iban'                                       => 'DE81500105177147426471',
+                'add_paydata[customer_allow_credit_inquiry]' => 'yes',
+                'add_paydata[shop_id]'                       => 88880103,
+                'telephonenumber'                            => '0123456789',
+                'birthday'                                   => '20000101',
+                'it[1]'                                      => 'goods',
+            ],
+            $parameters
+        );
+    }
+}
