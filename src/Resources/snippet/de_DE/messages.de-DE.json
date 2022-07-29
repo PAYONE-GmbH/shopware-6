@@ -159,6 +159,54 @@
                 "holder": "Kontoinhaber: %holder%",
                 "accountNotice": "Damit wir Ihre Zahlung schnell zuordnen können, überweisen Sie den ausstehenden Betrag bitte ausschließlich auf das obige Konto."
             }
+        },
+        "ratepay": {
+            "general": {
+                "consentText": "Mit Klicken auf Zahlungspflichtig bestellen erklären Sie sich mit den <a href='https://www.ratepay.com/legal-payment-terms/' title='https://www.ratepay.com/legal-payment-terms/'>Ratepay Zahlungsbedingungen</a> sowie mit der Durchführung einer <a href='https://www.ratepay.com/legal-payment-dataprivacy/' title='https://www.ratepay.com/legal-payment-dataprivacy/'>Risikoprüfung durch Ratepay</a> einverstanden."
+            },
+            "installment": {
+                "iban": {
+                    "label": "IBAN",
+                    "linkTextNoDirectDebit": "Ich möchte die Raten selbst leisten und nicht per Lastschrift bezahlen",
+                    "linkTextDirectDebit": "Ich möchte die Raten bequem per Lastschrift bezahlen"
+                },
+                "phoneNumber": {
+                    "label": "Telefonnummer"
+                },
+                "birthday": {
+                    "label": "Geburtsdatum"
+                },
+                "runtime": {
+                    "label": "Laufzeit"
+                },
+                "rate": {
+                    "label": "Ratenhöhe",
+                    "buttonText": "Rate berechnen"
+                },
+                "select": "%duration% Monate",
+                "installmentCalculation": {
+                    "title": "Ratenplan",
+                    "showCalculation": "Ratenberechnung anzeigen",
+                    "monthlyRatesText": "%numberOfRates% monatliche Raten je",
+                    "monthlyRatesDescription": "Monatlich fällige Raten",
+                    "monthlyRateText": "1. - %rangeOfRates%. monatliche Rate je",
+                    "monthlyRateDescription": "Monatlich fällige Raten",
+                    "lastRateText": "%lastRate%. monatliche Rate",
+                    "lastRateDescription": "Fälliger Teilbetrag im letzten Monat.",
+                    "totalAmountText": "Gesamtbetrag",
+                    "totalAmountDescription": "Vom Käufer zu zahlender Warenkorbbetrag, berechnet aus Warenwert, Vertragsabschlussgebühr und Zinsbetrag.",
+                    "shoppingBasketAmountText": "Warenkorbbetrag",
+                    "shoppingBasketAmountDescription": "Summe aller Produkte im Warenkorb inkl. Versand",
+                    "contractSigningFeeText": "Vertragsabschlussgebühr",
+                    "contractSigningFeeDescription": "Einmalige Servicegebühr bei Ratenzahlung",
+                    "annualPercentageRateText": "Jährlicher Prozentsatz",
+                    "annualPercentageRateDescription": "Gesamtbetrag des Kredits als effektiver Jahreszins",
+                    "debitInterestRateText": "Sollzinssatz p.a. (Fest)",
+                    "debitInterestRateDescription": "Periodischer Zinssatz",
+                    "interestAmountText": "Zinsbetrag",
+                    "interestAmountDescription": "Geldbetrag, der sich aus dem Zinssatz ergibt"
+                }
+            }
         }
     },
     "error": {

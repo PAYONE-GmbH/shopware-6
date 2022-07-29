@@ -159,6 +159,54 @@
                 "holder": "Account Holder: %holder%",
                 "accountNotice": "In order for us to quickly allocate your payment, please transfer the outstanding amount exclusively to the account above."
             }
+        },
+        "ratepay": {
+            "general": {
+                "consentText": "With clicking \"Submit order\" you agree to the <a href='https://www.ratepay.com/en/ratepay-terms-of-payment/' title='https://www.ratepay.com/en/ratepay-terms-of-payment/'>terms of payment of our payment partner</a> as well as to the performance of a <a href='https://www.ratepay.com/en/ratepay-data-privacy-statement/' title='https://www.ratepay.com/en/ratepay-data-privacy-statement/'>risk check by our payment partner</a>."
+            },
+            "installment": {
+                "iban": {
+                    "label": "IBAN",
+                    "linkTextNoDirectDebit": "I would like to make the installments myself and not pay by direct debit",
+                    "linkTextDirectDebit": "I would like to pay the installments conveniently by direct debit"
+                },
+                "phoneNumber": {
+                    "label": "Phone number"
+                },
+                "birthday": {
+                    "label": "Date of birth"
+                },
+                "runtime": {
+                    "label": "Runtime"
+                },
+                "rate": {
+                    "label": "Rate",
+                    "buttonText": "Calculate installment"
+                },
+                "select": "%duration% months",
+                "installmentCalculation": {
+                    "title": "Installment calculation",
+                    "showCalculation": "Show installment calculation",
+                    "monthlyRatesText": "%numberOfRates% monthly rates per",
+                    "monthlyRatesDescription": "Monthly installment due",
+                    "monthlyRateText": "1. - %rangeOfRates%. monthly rate per",
+                    "monthlyRateDescription": "Monthly installment due",
+                    "lastRateText": "%lastRate%. monthly rate",
+                    "lastRateDescription": "Partial amount due in the last month.",
+                    "totalAmountText": "total amount",
+                    "totalAmountDescription": "Total amount to be paid by the shopper, calculated by the shopping cart amount, contract signing fee and interest amount.",
+                    "shoppingBasketAmountText": "Shopping basket amount",
+                    "shoppingBasketAmountDescription": "Sum of all products in the basket including shipping",
+                    "contractSigningFeeText": "Contract signing fee",
+                    "contractSigningFeeDescription": "Service charge occurring one time for installment payment",
+                    "annualPercentageRateText": "Annual percentage rate",
+                    "annualPercentageRateDescription": "Total amount of the credit as annual percentage rate",
+                    "debitInterestRateText": "Debit interest rate p.a. (fixed)",
+                    "debitInterestRateDescription": "Periodic interest rate",
+                    "interestAmountText": "Interest amount",
+                    "interestAmountDescription": "Sum of money resulting from the interest rate"
+                }
+            }
         }
     },
     "error": {
