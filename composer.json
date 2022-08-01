@@ -29,7 +29,7 @@
   },
   "require-dev": {
     "dms/phpunit-arraysubset-asserts": "^0.3.0",
-    "k10r/codestyle": "^1.0",
+    "k10r/codestyle": "^2.0",
     "phpstan/phpstan": "^0.12",
     "phpstan/phpstan-phpunit": "^0.12",
     "phpunit/phpunit": "9.5.2"
