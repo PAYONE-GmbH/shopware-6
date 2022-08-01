@@ -12,8 +12,8 @@
         <div class="card">
             <fieldset>
 
-                <div class="form-row col-md-12" data-ratepay-installment-runtime="true">
-                    <div class="form-group col-md-12">
+                <div class="form-row col-md-12">
+                    <div class="form-group col-12 col-md-6">
                         <label class="form-label" for="ratepayRuntime">{{ "PayonePayment.ratepay.installment.runtime.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
 
                         {% if page.extensions.payoneRatepayInstallmentCalculator.calculationParams.ratepayInstallmentType === "time" %}
@@ -37,10 +37,8 @@
                             {% endfor %}
                         </select>
                     </div>
-                </div>
 
-                <div class="form-row col-md-12" data-ratepay-installment-rate="true">
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-12 col-md-6">
                         <label class="form-label" for="ratepayRate">{{ "PayonePayment.ratepay.installment.rate.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
                         <div class="input-group">
                             <input class="form-control payone-input"
@@ -60,6 +58,12 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div id="payone-ratepay-installment-plan">
+                    {% sw_include '@PayonePayment/storefront/payone/ratepay/ratepay-installment-plan.html.twig' with {
+                        calculationResponse: page.extensions.payoneRatepayInstallmentCalculator.calculationResponse
+                    } %}
                 </div>
 
                 <div class="form-row col-md-12">
@@ -113,12 +117,6 @@
         </div>
 
         <div class="card">
-            <div id="payone-ratepay-installment-plan">
-                {% sw_include '@PayonePayment/storefront/payone/ratepay/ratepay-installment-plan.html.twig' with {
-                    calculationResponse: page.extensions.payoneRatepayInstallmentCalculator.calculationResponse
-                } %}
-            </div>
-
             <div class="col-md-12">
                 <p>
                     {{ "PayonePayment.ratepay.general.consentText" |trans|sw_sanitize }}
