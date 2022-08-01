@@ -17,11 +17,11 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 
 class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    private const CAPTUREMODE_COMPLETED  = 'completed';
-    private const CAPTUREMODE_INCOMPLETE = 'notcompleted';
-    private const SETTLEACCOUNT_YES      = 'yes';
-    private const SETTLEACCOUNT_AUTO     = 'auto';
-    private const SETTLEACCOUNT_NO       = 'no';
+    public const CAPTUREMODE_COMPLETED  = 'completed';
+    public const CAPTUREMODE_INCOMPLETE = 'notcompleted';
+    public const SETTLEACCOUNT_YES      = 'yes';
+    public const SETTLEACCOUNT_AUTO     = 'auto';
+    public const SETTLEACCOUNT_NO       = 'no';
 
     /** @var CurrencyPrecisionInterface */
     private $currencyPrecision;

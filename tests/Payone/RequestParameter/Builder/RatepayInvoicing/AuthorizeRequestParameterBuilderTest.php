@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\RequestParameter\Builder\RatepayDebit;
+namespace PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
-use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
 use PayonePayment\Test\TestCaseBase\CheckoutTestBehavior;
 use PayonePayment\Test\TestCaseBase\ConfigurationHelper;
 use PHPUnit\Framework\TestCase;
@@ -23,15 +23,14 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     public function testItAddsCorrectAuthorizeParameters(): void
     {
         $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayInvoicingPaymentHandler::class);
 
         $dataBag = new RequestDataBag([
-            'ratepayIban'     => 'DE81500105177147426471',
             'ratepayPhone'    => '0123456789',
             'ratepayBirthday' => '2000-01-01',
         ]);
 
-        $struct     = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayDebitPaymentHandler::class);
+        $struct     = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayInvoicingPaymentHandler::class);
         $builder    = $this->getContainer()->get(AuthorizeRequestParameterBuilder::class);
         $parameters = $builder->getRequestParameter($struct);
 
@@ -39,8 +38,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             [
                 'request'                                    => AuthorizeRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE,
                 'clearingtype'                               => AuthorizeRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
-                'iban'                                       => 'DE81500105177147426471',
+                'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
                 'add_paydata[shop_id]'                       => 88880103,
                 'telephonenumber'                            => '0123456789',
@@ -54,14 +52,13 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     public function testItThrowsExceptionOnMissingPhoneNumber(): void
     {
         $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayInvoicingPaymentHandler::class);
 
         $dataBag = new RequestDataBag([
-            'ratepayIban'     => 'DE81500105177147426471',
             'ratepayBirthday' => '2000-01-01',
         ]);
 
-        $struct  = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayDebitPaymentHandler::class);
+        $struct  = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayInvoicingPaymentHandler::class);
         $builder = $this->getContainer()->get(AuthorizeRequestParameterBuilder::class);
 
         $this->expectException(\RuntimeException::class);
@@ -73,14 +70,13 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     public function testItAddsCorrectAuthorizeParametersWithSavedPhoneNumber(): void
     {
         $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayInvoicingPaymentHandler::class);
 
         $dataBag = new RequestDataBag([
-            'ratepayIban'     => 'DE81500105177147426471',
             'ratepayBirthday' => '2000-01-01',
         ]);
 
-        $struct  = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayDebitPaymentHandler::class);
+        $struct  = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayInvoicingPaymentHandler::class);
         $builder = $this->getContainer()->get(AuthorizeRequestParameterBuilder::class);
 
         // Save phone number on customer custom fields
@@ -99,8 +95,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             [
                 'request'                                    => AuthorizeRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE,
                 'clearingtype'                               => AuthorizeRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
-                'iban'                                       => 'DE81500105177147426471',
+                'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
                 'add_paydata[shop_id]'                       => 88880103,
                 'telephonenumber'                            => '0123456789',

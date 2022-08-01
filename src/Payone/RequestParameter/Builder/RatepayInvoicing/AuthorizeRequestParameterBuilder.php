@@ -17,23 +17,26 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
     {
         $dataBag             = $arguments->getRequestData();
         $salesChannelContext = $arguments->getSalesChannelContext();
+        $context             = $salesChannelContext->getContext();
         $paymentTransaction  = $arguments->getPaymentTransaction();
-        $order               = $this->getOrder(
-            $paymentTransaction->getOrder()->getId(),
-            $salesChannelContext->getContext()
-        );
-        $profile = $this->getProfile($order, PayoneRatepayInvoicingPaymentHandler::class);
+        $order               = $this->getOrder($paymentTransaction->getOrder()->getId(), $context);
+        $currency            = $this->getOrderCurrency($order, $context);
+        $profile             = $this->getProfile($order, PayoneRatepayInvoicingPaymentHandler::class);
 
         $parameters = [
             'request'                                    => self::REQUEST_ACTION_AUTHORIZE,
             'clearingtype'                               => self::CLEARING_TYPE_FINANCING,
             'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
-            'telephonenumber'                            => $dataBag->get('ratepayPhone'),
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
             'add_paydata[shop_id]'                       => $profile->getShopId(),
         ];
 
+        $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
         $this->applyBirthdayParameter($parameters, $dataBag);
+
+        if ($order->getLineItems() !== null) {
+            $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order, $context));
+        }
 
         return $parameters;
     }

@@ -50,7 +50,7 @@ class ProfileService implements ProfileServiceInterface
         ],
         self::INVOICING_PROFILES_CONFIG_KEY => [
             'paymentHandler'           => PayoneRatepayInvoicingPaymentHandler::class,
-            'paymentKey'               => 'invoicing',
+            'paymentKey'               => 'invoice',
             'profilesKey'              => self::INVOICING_PROFILES_CONFIG_KEY,
             'profileConfigurationsKey' => self::INVOICING_PROFILE_CONFIGURATIONS_CONFIG_KEY,
         ],
