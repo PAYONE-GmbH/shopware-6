@@ -392,6 +392,7 @@
         <!-- Ratepay Installment -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\AuthorizeRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
             <tag name="payone_request_builder"/>
         </service>

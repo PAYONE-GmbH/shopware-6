@@ -6,38 +6,32 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
-use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
+use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
+class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
     /** @var PayoneClientInterface */
-    private $client;
+    protected $client;
 
     /** @var TranslatorInterface */
-    private $translator;
+    protected $translator;
 
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
-
-    /** @var PaymentStateHandlerInterface */
-    private $stateHandler;
 
     /** @var RequestParameterFactory */
     private $requestParameterFactory;
@@ -48,7 +42,6 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandle
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
         EntityRepositoryInterface $lineItemRepository,
-        PaymentStateHandlerInterface $stateHandler,
         RequestStack $requestStack,
         RequestParameterFactory $requestParameterFactory
     ) {
@@ -57,25 +50,24 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandle
         $this->client                  = $client;
         $this->translator              = $translator;
         $this->dataHandler             = $dataHandler;
-        $this->stateHandler            = $stateHandler;
         $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
+    public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
     {
         $requestData = $this->fetchRequestData();
 
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
-            'paypalAuthorizationMethod',
+            'ratepayInstallmentAuthorizationMethod',
             'preauthorization'
         );
 
-        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
+        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         $request = $this->requestParameterFactory->getRequestParameter(
             new PaymentTransactionStruct(
@@ -90,42 +82,38 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandle
         try {
             $response = $this->client->request($request);
         } catch (PayoneRequestException $exception) {
-            throw new AsyncPaymentProcessException(
+            throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
         } catch (Throwable $exception) {
-            throw new AsyncPaymentProcessException(
+            throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
 
         if (empty($response['status']) || $response['status'] === 'ERROR') {
-            throw new AsyncPaymentProcessException(
+            throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, $this->getBaseCustomFields($response['status']));
+        // Prepare custom fields for the transaction
+        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
+            $this->getBaseCustomFields($response['status']),
+            [
+                CustomFieldInstaller::WORK_ORDER_ID      => $requestData->get('workorder'),
+                CustomFieldInstaller::CLEARING_REFERENCE => $response['addpaydata']['clearing_reference'],
+                CustomFieldInstaller::CAPTURE_MODE       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+                CustomFieldInstaller::CLEARING_TYPE      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+                CustomFieldInstaller::FINANCING_TYPE     => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
+            ]
+        ));
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
-
-        if (strtolower($response['status']) === 'redirect') {
-            return new RedirectResponse($response['redirecturl']);
-        }
-
-        return new RedirectResponse($request['successurl']);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
-    {
-        $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state', ''));
     }
 
     /**
@@ -134,10 +122,6 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandle
     public static function isCapturable(array $transactionData, array $customFields): bool
     {
         if (static::isNeverCapturable($transactionData, $customFields)) {
-            return false;
-        }
-
-        if (!array_key_exists(CustomFieldInstaller::AUTHORIZATION_TYPE, $customFields)) {
             return false;
         }
 

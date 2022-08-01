@@ -165,4 +165,30 @@
             </tr>
         </tbody>
     </table>
+
+    <input id="ratepayInstallmentAmount"
+           name="ratepayInstallmentAmount"
+           type="hidden"
+           form="confirmOrderForm"
+           value="{{ calculationResponse.addpaydata.rate }}"/>
+    <input id="ratepayInstallmentNumber"
+           name="ratepayInstallmentNumber"
+           type="hidden"
+           form="confirmOrderForm"
+           value="{{ attribute(calculationResponse.addpaydata, 'number-of-rates') }}"/>
+    <input id="ratepayLastInstallmentAmount"
+           name="ratepayLastInstallmentAmount"
+           type="hidden"
+           form="confirmOrderForm"
+           value="{{ attribute(calculationResponse.addpaydata, 'last-rate') }}"/>
+    <input id="ratepayInterestRate"
+           name="ratepayInterestRate"
+           type="hidden"
+           form="confirmOrderForm"
+           value="{{ attribute(calculationResponse.addpaydata, 'interest-rate') }}"/>
+    <input id="ratepayTotalAmount"
+           name="ratepayTotalAmount"
+           type="hidden"
+           form="confirmOrderForm"
+           value="{{ attribute(calculationResponse.addpaydata, 'total-amount') }}"/>
 </div>

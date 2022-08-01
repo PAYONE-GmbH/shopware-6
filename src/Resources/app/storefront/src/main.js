@@ -3,7 +3,7 @@ import PayonePaymentDebitCard from './debit-card/payone-payment.debit-card';
 import PayonePaymentPayolutionInvoicing from './payolution-invoicing/payone-payment.payolution-invoicing';
 import PayonePaymentPayolutionInstallment from './payolution-installment/payone-payment.payolution-installment';
 import PayonePaymentApplePay from "./apple-pay/payone-payment.apple-pay";
-import PayonePaymentRatepayInstallment from "./ratepay-installment/payone-payment.payolution-installment";
+import PayonePaymentRatepayInstallment from "./ratepay-installment/payone-payment.ratepay-installment";
 
 const PluginManager = window.PluginManager;
 

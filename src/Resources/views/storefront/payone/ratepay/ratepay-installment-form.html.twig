@@ -8,6 +8,7 @@
     {% endblock %}
 
     {% block page_checkout_confirm_payone_card_content_ratepay_installment_card %}
+        {% set customerCustomFields = context.customer.customFields %}
 
         <div class="card">
             <fieldset>
@@ -62,16 +63,19 @@
                     </div>
                 </div>
 
-                <div class="form-row col-md-12">
-                    <div class="form-group col-md-12">
-                        <label class="form-label" for="ratepayPhone">{{ "PayonePayment.ratepay.installment.phoneNumber.label" | trans }}{% if not billingAddress.phoneNumber %}{{ "general.required"|trans|sw_sanitize }}{% endif %}</label>
-                        <input class="form-control payone-input"
-                               id="ratepayPhone"
-                               name="ratepayPhone"
-                               form="confirmOrderForm"
-                               {% if not billingAddress.phoneNumber %}required="required"{% endif %}/>
+                {% if customerCustomFields is null or customerCustomFields['payone_customer_phone_number'] is not defined or customerCustomFields['payone_customer_phone_number'] is empty %}
+                    <div class="form-row col-md-12">
+                        <div class="form-group col-md-12">
+                            <label class="form-label" for="ratepayPhone">{{ "PayonePayment.ratepay.installment.phoneNumber.label" | trans }}{% if not billingAddress.phoneNumber %}{{ "general.required"|trans|sw_sanitize }}{% endif %}</label>
+                            <input class="form-control payone-input"
+                                   id="ratepayPhone"
+                                   name="ratepayPhone"
+                                   type="tel"
+                                   form="confirmOrderForm"
+                                   required="required"/>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
 
                 <div class="form-row col-md-12">
                     <div class="form-group col-md-12">

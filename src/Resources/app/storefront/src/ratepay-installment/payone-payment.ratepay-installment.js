@@ -56,15 +56,8 @@ export default class PayonePaymentRatepayInstallment extends Plugin {
             '_csrf_token': this.csrfToken.value
         }
 
-        if(type === 'time') {
-            requestData.ratepayInstallmentType = 'time';
-            requestData.ratepayInstallmentMonth = value;
-        }
-
-        if(type === 'rate') {
-            requestData.ratepayInstallmentType = 'rate';
-            requestData.ratepayInstallmentRate = value;
-        }
+        requestData.ratepayInstallmentType = type;
+        requestData.ratepayInstallmentValue = value;
 
         const data = JSON.stringify(requestData);
 
