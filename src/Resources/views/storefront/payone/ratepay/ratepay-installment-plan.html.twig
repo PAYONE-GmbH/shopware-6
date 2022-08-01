@@ -1,2 +1,168 @@
-Ratenplan: <br>
-{{ dump(calculationResponse) }}
+<div class="ratepay-installment-installment-calculation">
+    <div class="row">
+        <div class="col">
+            <div class="card-title">
+                {{ "PayonePayment.ratepay.installment.installmentCalculation.title" | trans }}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col d-flex justify-content-end">
+            <p>
+                <a data-toggle="collapse" href="#ratepayInstallmentCalculation" aria-expanded="false" aria-controls="ratepayInstallmentCalculation">{{ "PayonePayment.ratepay.installment.installmentCalculation.showCalculation" | trans }}</a>
+            </p>
+        </div>
+    </div>
+
+    <table class="table collapse" id="ratepayInstallmentCalculation">
+        <tbody>
+            <tr>
+                <td>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.shoppingBasketAmountText" | trans }}
+                    </p>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.shoppingBasketAmountDescription" | trans }}
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        {{ calculationResponse.addpaydata.amount|floatval|currency }}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.contractSigningFeeText" | trans }}
+                    </p>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.contractSigningFeeDescription" | trans }}
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        {{ attribute(calculationResponse.addpaydata, 'service-charge')|floatval|currency }}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.annualPercentageRateText" | trans }}
+                    </p>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.annualPercentageRateDescription" | trans }}
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        {{ attribute(calculationResponse.addpaydata, 'annual-percentage-rate')|floatval|currency }}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.debitInterestRateText" | trans }}
+                    </p>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.debitInterestRateDescription" | trans }}
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        {{ attribute(calculationResponse.addpaydata, 'interest-rate')|floatval|currency }}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.interestAmountText" | trans }}
+                    </p>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.interestAmountDescription" | trans }}
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        {{ attribute(calculationResponse.addpaydata, 'interest-amount')|floatval|currency }}
+                    </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <td>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.monthlyRatesText" | trans({
+                            '%numberOfRates%': attribute(calculationResponse.addpaydata, 'number-of-rates')
+                        }) }}
+                    </p>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.monthlyRatesDescription" | trans }}
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        {{ calculationResponse.addpaydata.rate|floatval|currency }}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.monthlyRateText" | trans({
+                            '%rangeOfRates%': attribute(calculationResponse.addpaydata, 'number-of-rates') - 1
+                        }) }}
+                    </p>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.monthlyRateDescription" | trans }}
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        {{ calculationResponse.addpaydata.rate|floatval|currency }}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.lastRateText" | trans({
+                            '%lastRate%': attribute(calculationResponse.addpaydata, 'number-of-rates')
+                        }) }}
+                    </p>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.lastRateDescription" | trans }}
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        {{ attribute(calculationResponse.addpaydata, 'last-rate')|floatval|currency }}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.totalAmountText" | trans }}
+                    </p>
+                    <p>
+                        {{ "PayonePayment.ratepay.installment.installmentCalculation.totalAmountDescription" | trans }}
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        {{ attribute(calculationResponse.addpaydata, 'total-amount')|floatval|currency }}
+                    </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
