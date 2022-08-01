@@ -94,6 +94,8 @@ jobs:
         run: php -m
       - name: Composer setup
         run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
+      - name: Update CS Fixer
+        run: composer require k10r/codestyle:"^2.0" --no-scripts
       - name: Codestyle
         run: vendor/bin/php-cs-fixer fix -v --dry-run --diff
       - name: SW-Install
