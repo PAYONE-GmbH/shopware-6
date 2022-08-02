@@ -176,6 +176,7 @@
                 }
             },
             "installment": {
+                "inputDivider": "oder",
                 "iban": {
                     "label": "IBAN",
                     "linkTextNoDirectDebit": "Ich möchte die Raten selbst leisten und nicht per Lastschrift bezahlen",
@@ -188,11 +189,13 @@
                     "label": "Geburtsdatum"
                 },
                 "runtime": {
-                    "label": "Laufzeit"
+                    "title": "Laufzeit",
+                    "label": "Anzahl der monatlichen Raten"
                 },
                 "rate": {
-                    "label": "Ratenhöhe",
-                    "buttonText": "Rate berechnen"
+                    "title": "Ratenhöhe",
+                    "label": "Höhe der monatlichen Raten",
+                    "buttonText": "Ratenplan berechnen"
                 },
                 "select": "%duration% Monate",
                 "installmentCalculation": {
