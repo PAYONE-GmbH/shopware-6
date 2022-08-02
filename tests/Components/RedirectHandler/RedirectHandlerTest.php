@@ -72,8 +72,8 @@ class RedirectHandlerTest extends TestCase
             $redirectUrl
         );
 
-        $hash = 'MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ==';
-        $query = 'SELECT url FROM payone_payment_redirect WHERE hash = ?';
+        $hash             = 'MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ==';
+        $query            = 'SELECT url FROM payone_payment_redirect WHERE hash = ?';
         $foundOriginalUrl = $this->fetchOne($connection, $query, [$hash]);
 
         static::assertSame($originalUrl, $foundOriginalUrl);
@@ -153,7 +153,7 @@ class RedirectHandlerTest extends TestCase
 
         $redirectHandler->encode('the-url-2');
 
-        $countQuery = 'SELECT COUNT(*) FROM payone_payment_redirect';
+        $countQuery    = 'SELECT COUNT(*) FROM payone_payment_redirect';
         $redirectCount = (int) $this->fetchOne($connection, $countQuery);
 
         static::assertSame(2, $redirectCount);
@@ -173,7 +173,6 @@ class RedirectHandlerTest extends TestCase
 
     private function fetchOne(Connection $connection, string $query, array $params = [])
     {
-        // Shopware >= x
         if (method_exists($connection, 'fetchOne')) {
             return $connection->fetchOne($query, $params);
         }

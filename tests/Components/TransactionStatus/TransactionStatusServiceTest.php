@@ -7,8 +7,8 @@ namespace PayonePayment\Components\TransactionStatus;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Test\Constants;
-use PayonePayment\Test\Mock\Factory\TransactionStatusWebhookHandlerFactory;
-use PayonePayment\Test\TestCaseBase\CheckoutTestBehavior;
+use PayonePayment\Test\TestCaseBase\Factory\TransactionStatusWebhookHandlerFactory;
+use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
@@ -17,7 +17,7 @@ use Shopware\Core\System\StateMachine\Transition;
 
 class TransactionStatusServiceTest extends TestCase
 {
-    use CheckoutTestBehavior;
+    use PayoneTestBehavior;
 
     /**
      * @dataProvider dataProvider

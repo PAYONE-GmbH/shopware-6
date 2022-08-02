@@ -8,15 +8,15 @@ use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
-use PayonePayment\Test\TestCaseBase\CheckoutTestBehavior;
 use PayonePayment\Test\TestCaseBase\ConfigurationHelper;
+use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class PreAuthorizeRequestParameterBuilderTest extends TestCase
 {
-    use CheckoutTestBehavior;
+    use PayoneTestBehavior;
     use ConfigurationHelper;
 
     public function testItAddsCorrectPreAuthorizeParameters(): void

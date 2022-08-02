@@ -7,8 +7,8 @@ namespace PayonePayment\Payone\Webhook\Handler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Test\Constants;
-use PayonePayment\Test\Mock\Factory\TransactionStatusWebhookHandlerFactory;
-use PayonePayment\Test\TestCaseBase\CheckoutTestBehavior;
+use PayonePayment\Test\TestCaseBase\Factory\TransactionStatusWebhookHandlerFactory;
+use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TransactionStatusWebhookHandlerTest extends TestCase
 {
-    use CheckoutTestBehavior;
+    use PayoneTestBehavior;
 
     public function testItAppointsCreditCardWithoutMapping(): void
     {
@@ -26,7 +26,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
         $stateMachineRegistry->expects($this->never())->method('transition');
 
-        $orderEntity = $this->getRandomOrder($salesChannelContext);
+        $orderEntity        = $this->getRandomOrder($salesChannelContext);
         $paymentTransaction = $this->getPaymentTransaction($orderEntity, PayoneCreditCardPaymentHandler::class);
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
@@ -71,7 +71,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
             $salesChannelContext->getContext()
         );
 
-        $orderEntity = $this->getRandomOrder($salesChannelContext);
+        $orderEntity        = $this->getRandomOrder($salesChannelContext);
         $paymentTransaction = $this->getPaymentTransaction($orderEntity, PayoneCreditCardPaymentHandler::class);
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
@@ -118,7 +118,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
             $salesChannelContext->getContext()
         );
 
-        $orderEntity = $this->getRandomOrder($salesChannelContext);
+        $orderEntity        = $this->getRandomOrder($salesChannelContext);
         $paymentTransaction = $this->getPaymentTransaction($orderEntity, PayoneCreditCardPaymentHandler::class);
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(

@@ -8,8 +8,8 @@ use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\CalculationRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
-use PayonePayment\Test\TestCaseBase\CheckoutTestBehavior;
 use PayonePayment\Test\TestCaseBase\ConfigurationHelper;
+use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -17,7 +17,7 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class InstallmentServiceTest extends TestCase
 {
-    use CheckoutTestBehavior;
+    use PayoneTestBehavior;
     use ConfigurationHelper;
 
     public function testItReturnsDefaultCalculatorData(): void

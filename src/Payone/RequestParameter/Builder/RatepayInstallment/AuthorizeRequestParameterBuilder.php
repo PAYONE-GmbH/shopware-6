@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
-use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\Components\Helper\OrderFetcherInterface;
+use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\Components\Ratepay\ProfileServiceInterface;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
@@ -40,7 +40,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
         $paymentTransaction  = $arguments->getPaymentTransaction();
         $order               = $this->getOrder($paymentTransaction->getOrder()->getId(), $context);
         $currency            = $this->getOrderCurrency($order, $context);
-        $profile = $this->getProfile($order, PayoneRatepayInstallmentPaymentHandler::class);
+        $profile             = $this->getProfile($order, PayoneRatepayInstallmentPaymentHandler::class);
 
         $parameters = [
             'request'                                    => self::REQUEST_ACTION_AUTHORIZE,
@@ -56,7 +56,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
         ];
 
         if ($dataBag->get('ratepayIban')) {
-            $parameters['iban'] = $dataBag->get('ratepayIban');
+            $parameters['iban']                       = $dataBag->get('ratepayIban');
             $parameters['add_paydata[debit_paytype]'] = 'DIRECT-DEBIT';
         } else {
             $parameters['add_paydata[debit_paytype]'] = 'BANK-TRANSFER';

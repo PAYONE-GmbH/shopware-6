@@ -8,15 +8,15 @@ use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
-use PayonePayment\Test\TestCaseBase\CheckoutTestBehavior;
 use PayonePayment\Test\TestCaseBase\ConfigurationHelper;
+use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class PreAuthorizeRequestParameterBuilderTest extends TestCase
 {
-    use CheckoutTestBehavior;
+    use PayoneTestBehavior;
     use ConfigurationHelper;
 
     public function testItAddsCorrectPreAuthorizeParameters(): void
@@ -31,14 +31,14 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $dataBag = new RequestDataBag([
-            'ratepayIban'     => 'DE81500105177147426471',
-            'ratepayPhone'    => '0123456789',
-            'ratepayBirthday' => '2000-01-01',
-            'ratepayInstallmentAmount' => '100',
-            'ratepayInstallmentNumber' => '24',
+            'ratepayIban'                  => 'DE81500105177147426471',
+            'ratepayPhone'                 => '0123456789',
+            'ratepayBirthday'              => '2000-01-01',
+            'ratepayInstallmentAmount'     => '100',
+            'ratepayInstallmentNumber'     => '24',
             'ratepayLastInstallmentAmount' => '101',
-            'ratepayInterestRate' => '10',
-            'ratepayTotalAmount' => '1000',
+            'ratepayInterestRate'          => '10',
+            'ratepayTotalAmount'           => '1000',
         ]);
 
         $struct     = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayInstallmentPaymentHandler::class);

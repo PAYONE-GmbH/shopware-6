@@ -34,8 +34,8 @@ jobs:
         run: composer -V
       - name: Check PHP Extensions
         run: php -m
-      - name: Composer dump autoload
-        run: composer dumpautoload
+      - name: Composer setup
+        run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
       - name: SW-Install
         run: |
           mkdir -p /tmp/shopware
@@ -58,9 +58,10 @@ jobs:
           php bin/console plugin:install --activate PayonePayment
       - name: PHPUnit
         run: |
-          cd /tmp/shopware
-          composer dumpautoload -d /tmp/shopware/custom/plugins/PayonePayment
-          /tmp/shopware/vendor/bin/phpunit --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
+          PROJECT_ROOT=/tmp/shopware \
+            /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit \
+            --testdox \
+            --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
   ci-current:
     runs-on: ubuntu-latest
     strategy:
@@ -117,4 +118,7 @@ jobs:
           php bin/console plugin:install --activate PayonePayment
       - name: PHPUnit
         run: |
-          /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
+          PROJECT_ROOT=/tmp/shopware \
+            /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit \
+            --testdox \
+            --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist

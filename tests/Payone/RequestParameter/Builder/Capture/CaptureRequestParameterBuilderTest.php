@@ -11,14 +11,14 @@ use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
-use PayonePayment\Test\TestCaseBase\CheckoutTestBehavior;
+use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
 class CaptureRequestParameterBuilderTest extends TestCase
 {
-    use CheckoutTestBehavior;
+    use PayoneTestBehavior;
 
     public function testItAddsCorrectFullCaptureParameters(): void
     {
@@ -26,17 +26,22 @@ class CaptureRequestParameterBuilderTest extends TestCase
             'amount' => 100,
         ]);
 
-        $struct     = $this->getFinancialTransactionStruct($dataBag, PayoneCreditCardPaymentHandler::class);
+        $struct = $this->getFinancialTransactionStruct(
+            $dataBag,
+            PayoneCreditCardPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
         $builder    = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'amount'          => 10000,
-                'currency'        => 'EUR',
-                'request'         => 'capture',
-                'sequencenumber'  => 1,
-                'txid'            => 'test-transaction-id',
+                'request'        => AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE,
+                'amount'         => 10000,
+                'currency'       => 'EUR',
+                'sequencenumber' => 1,
+                'txid'           => 'test-transaction-id',
             ],
             $parameters
         );
@@ -48,8 +53,13 @@ class CaptureRequestParameterBuilderTest extends TestCase
             'amount' => 100,
         ]);
 
-        $struct     = $this->getFinancialTransactionStruct($dataBag, PayoneCreditCardPaymentHandler::class);
-        $builder    = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
+        $struct = $this->getFinancialTransactionStruct(
+            $dataBag,
+            PayoneCreditCardPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
+        $builder      = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         $customFields = $struct->getPaymentTransaction()->getCustomFields();
 
         unset($customFields[CustomFieldInstaller::TRANSACTION_ID]);
@@ -64,8 +74,13 @@ class CaptureRequestParameterBuilderTest extends TestCase
             'amount' => 100,
         ]);
 
-        $struct     = $this->getFinancialTransactionStruct($dataBag, PayoneCreditCardPaymentHandler::class);
-        $builder    = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
+        $struct = $this->getFinancialTransactionStruct(
+            $dataBag,
+            PayoneCreditCardPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
+        $builder      = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         $customFields = $struct->getPaymentTransaction()->getCustomFields();
 
         $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] = null;
@@ -80,8 +95,13 @@ class CaptureRequestParameterBuilderTest extends TestCase
             'amount' => 100,
         ]);
 
-        $struct     = $this->getFinancialTransactionStruct($dataBag, PayoneCreditCardPaymentHandler::class);
-        $builder    = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
+        $struct = $this->getFinancialTransactionStruct(
+            $dataBag,
+            PayoneCreditCardPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
+        $builder      = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         $customFields = $struct->getPaymentTransaction()->getCustomFields();
 
         $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] = -1;
@@ -96,12 +116,17 @@ class CaptureRequestParameterBuilderTest extends TestCase
             'amount' => 100,
         ]);
 
-        $struct     = $this->getFinancialTransactionStruct($dataBag, PayoneCreditCardPaymentHandler::class);
-        $builder    = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
+        $struct = $this->getFinancialTransactionStruct(
+            $dataBag,
+            PayoneCreditCardPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
+        $builder      = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         $customFields = $struct->getPaymentTransaction()->getCustomFields();
 
         $customFields[CustomFieldInstaller::WORK_ORDER_ID] = 123;
-        $customFields[CustomFieldInstaller::CAPTURE_MODE] = CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED;
+        $customFields[CustomFieldInstaller::CAPTURE_MODE]  = CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED;
         $customFields[CustomFieldInstaller::CLEARING_TYPE] = AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC;
         $struct->getPaymentTransaction()->setCustomFields($customFields);
 
@@ -109,9 +134,9 @@ class CaptureRequestParameterBuilderTest extends TestCase
 
         Assert::assertArraySubset(
             [
-                'workorderid'          => 123,
-                'capturemode'        => CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED,
-                'clearingtype'     => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+                'workorderid'  => 123,
+                'capturemode'  => CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED,
+                'clearingtype' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
             ],
             $parameters
         );
@@ -123,8 +148,13 @@ class CaptureRequestParameterBuilderTest extends TestCase
             'amount' => 100,
         ]);
 
-        $struct     = $this->getFinancialTransactionStruct($dataBag, PayoneBancontactPaymentHandler::class);
-        $builder    = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
+        $struct = $this->getFinancialTransactionStruct(
+            $dataBag,
+            PayoneBancontactPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
+        $builder      = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         $customFields = $struct->getPaymentTransaction()->getCustomFields();
 
         $customFields[CustomFieldInstaller::CAPTURE_MODE] = CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED;
@@ -133,8 +163,8 @@ class CaptureRequestParameterBuilderTest extends TestCase
 
         Assert::assertArraySubset(
             [
-                'capturemode'        => CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED,
-                'settleaccount'        => CaptureRequestParameterBuilder::SETTLEACCOUNT_YES,
+                'capturemode'   => CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED,
+                'settleaccount' => CaptureRequestParameterBuilder::SETTLEACCOUNT_YES,
             ],
             $parameters
         );
@@ -145,8 +175,8 @@ class CaptureRequestParameterBuilderTest extends TestCase
 
         Assert::assertArraySubset(
             [
-                'capturemode'        => CaptureRequestParameterBuilder::CAPTUREMODE_INCOMPLETE,
-                'settleaccount'        => CaptureRequestParameterBuilder::SETTLEACCOUNT_NO,
+                'capturemode'   => CaptureRequestParameterBuilder::CAPTUREMODE_INCOMPLETE,
+                'settleaccount' => CaptureRequestParameterBuilder::SETTLEACCOUNT_NO,
             ],
             $parameters
         );
@@ -155,11 +185,16 @@ class CaptureRequestParameterBuilderTest extends TestCase
     public function testItAddsCaptureModeCompletedParameter(): void
     {
         $dataBag = new RequestDataBag([
-            'amount' => 100,
+            'amount'   => 100,
             'complete' => true,
         ]);
 
-        $struct     = $this->getFinancialTransactionStruct($dataBag, PayoneCreditCardPaymentHandler::class);
+        $struct = $this->getFinancialTransactionStruct(
+            $dataBag,
+            PayoneCreditCardPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
         $builder    = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         $parameters = $builder->getRequestParameter($struct);
 
@@ -169,11 +204,16 @@ class CaptureRequestParameterBuilderTest extends TestCase
     public function testItAddsCaptureModeNotCompletedParameter(): void
     {
         $dataBag = new RequestDataBag([
-            'amount' => 100,
+            'amount'   => 100,
             'complete' => false,
         ]);
 
-        $struct     = $this->getFinancialTransactionStruct($dataBag, PayoneCreditCardPaymentHandler::class);
+        $struct = $this->getFinancialTransactionStruct(
+            $dataBag,
+            PayoneCreditCardPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
         $builder    = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         $parameters = $builder->getRequestParameter($struct);
 
@@ -183,12 +223,17 @@ class CaptureRequestParameterBuilderTest extends TestCase
     public function testItAddsNullAsCaptureMode(): void
     {
         $dataBag = new RequestDataBag([
-            'amount' => 100,
+            'amount'   => 100,
             'complete' => true,
         ]);
 
-        $struct     = $this->getFinancialTransactionStruct($dataBag, PayoneSofortBankingPaymentHandler::class);
-        $builder    = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
+        $struct = $this->getFinancialTransactionStruct(
+            $dataBag,
+            PayoneSofortBankingPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
+        $builder      = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         $customFields = $struct->getPaymentTransaction()->getCustomFields();
 
         $customFields[CustomFieldInstaller::LAST_REQUEST] = AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE;

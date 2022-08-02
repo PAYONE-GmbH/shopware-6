@@ -11,8 +11,8 @@ use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
-use PayonePayment\Test\Mock\Components\ConfigReaderMock;
-use PayonePayment\Test\TestCaseBase\CheckoutTestBehavior;
+use PayonePayment\Test\TestCaseBase\Mock\ConfigReaderMock;
+use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class PayoneCreditCardPaymentHandlerTest extends TestCase
 {
-    use CheckoutTestBehavior;
+    use PayoneTestBehavior;
 
     public function testItPerformsPaymentAndReturnsCorrectRedirectUrl(): void
     {

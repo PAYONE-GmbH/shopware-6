@@ -37,10 +37,11 @@ use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachine
 use Shopware\Core\Test\TestDefaults;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoader;
 use Shopware\Storefront\Test\Page\StorefrontPageTestBehaviour;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-trait CheckoutTestBehavior
+trait PayoneTestBehavior
 {
     use IntegrationTestBehaviour;
     use StorefrontPageTestBehaviour;
@@ -112,7 +113,7 @@ trait CheckoutTestBehavior
         return $orderFetcher->getOrderById($orderId, $salesChannelContext->getContext());
     }
 
-    protected function getFinancialTransactionStruct(RequestDataBag $dataBag, string $paymentHandler): FinancialTransactionStruct
+    protected function getFinancialTransactionStruct(ParameterBag $dataBag, string $paymentHandler, string $request): FinancialTransactionStruct
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $order               = $this->getRandomOrder($salesChannelContext);
@@ -122,7 +123,7 @@ trait CheckoutTestBehavior
             $salesChannelContext->getContext(),
             $dataBag,
             $paymentHandler,
-            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+            $request
         );
     }
 
