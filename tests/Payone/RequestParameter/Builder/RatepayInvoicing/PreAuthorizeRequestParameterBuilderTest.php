@@ -12,7 +12,6 @@ use PayonePayment\Test\TestCaseBase\ConfigurationHelper;
 use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class PreAuthorizeRequestParameterBuilderTest extends TestCase
 {
@@ -21,8 +20,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
 
     public function testItAddsCorrectPreAuthorizeParameters(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayInvoicingPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayInvoicingPaymentHandler::class);
 
         $dataBag = new RequestDataBag([
             'ratepayPhone'    => '0123456789',

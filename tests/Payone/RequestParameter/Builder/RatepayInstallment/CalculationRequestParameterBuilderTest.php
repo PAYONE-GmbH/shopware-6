@@ -14,7 +14,6 @@ use PayonePayment\Test\TestCaseBase\ConfigurationHelper;
 use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class CalculationRequestParameterBuilderTest extends TestCase
 {
@@ -23,8 +22,7 @@ class CalculationRequestParameterBuilderTest extends TestCase
 
     public function testItAddsTheInstallmentCalculationRequestParametersByRate(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayInstallmentPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayInstallmentPaymentHandler::class);
 
         $struct     = $this->getRatepayCalculationStruct(CalculationRequestParameterBuilder::INSTALLMENT_TYPE_RATE, 10);
         $builder    = $this->getContainer()->get(CalculationRequestParameterBuilder::class);
@@ -48,8 +46,7 @@ class CalculationRequestParameterBuilderTest extends TestCase
 
     public function testItAddsTheInstallmentCalculationRequestParametersByTime(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayInstallmentPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayInstallmentPaymentHandler::class);
 
         $struct     = $this->getRatepayCalculationStruct(CalculationRequestParameterBuilder::INSTALLMENT_TYPE_TIME, 10);
         $builder    = $this->getContainer()->get(CalculationRequestParameterBuilder::class);

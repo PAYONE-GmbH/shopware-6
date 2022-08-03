@@ -26,8 +26,7 @@ class ProfileServiceTest extends TestCase
 
     public function testItReturnsProfileByOrder(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
 
         $profileService = $this->getContainer()->get(ProfileService::class);
         $order          = $this->getRandomOrder();
@@ -42,9 +41,8 @@ class ProfileServiceTest extends TestCase
 
     public function testItReturnsProfileByOrderWithDifferentAddresses(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $this->setValidRatepayProfiles(
-            $systemConfigService,
+            $this->getContainer(),
             PayoneRatepayDebitPaymentHandler::class,
             ['delivery-address-elv' => 'yes']
         );
@@ -63,9 +61,8 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileByOrderWithDifferentAddresses(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $this->setValidRatepayProfiles(
-            $systemConfigService,
+            $this->getContainer(),
             PayoneRatepayDebitPaymentHandler::class,
             ['delivery-address-elv' => 'no']
         );
@@ -81,8 +78,7 @@ class ProfileServiceTest extends TestCase
 
     public function testItReturnsProfileBySalesChannel(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
 
         $profileService      = $this->getContainer()->get(ProfileService::class);
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
@@ -100,8 +96,7 @@ class ProfileServiceTest extends TestCase
 
     public function testItReturnsProfileWithValidProfileSearch(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
 
         $profileSearch  = $this->getValidProfileSearch(PayoneRatepayDebitPaymentHandler::class);
         $profileService = $this->getContainer()->get(ProfileService::class);
@@ -115,9 +110,8 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileWithWrongBillingCountry(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $this->setValidRatepayProfiles(
-            $systemConfigService,
+            $this->getContainer(),
             PayoneRatepayDebitPaymentHandler::class,
             ['country-code-billing' => 'DE']
         );
@@ -133,9 +127,8 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileWithWrongShippingCountry(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $this->setValidRatepayProfiles(
-            $systemConfigService,
+            $this->getContainer(),
             PayoneRatepayDebitPaymentHandler::class,
             ['country-code-delivery' => 'DE']
         );
@@ -151,9 +144,8 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileWithWrongCurrency(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $this->setValidRatepayProfiles(
-            $systemConfigService,
+            $this->getContainer(),
             PayoneRatepayDebitPaymentHandler::class,
             ['currency' => 'EUR']
         );
@@ -169,9 +161,8 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileWithTooLowInvoiceAmount(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $this->setValidRatepayProfiles(
-            $systemConfigService,
+            $this->getContainer(),
             PayoneRatepayDebitPaymentHandler::class,
             ['tx-limit-elv-min' => '50']
         );
@@ -187,9 +178,8 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileWithTooHighInvoiceAmount(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $this->setValidRatepayProfiles(
-            $systemConfigService,
+            $this->getContainer(),
             PayoneRatepayDebitPaymentHandler::class,
             ['tx-limit-elv-max' => '50']
         );
@@ -206,7 +196,7 @@ class ProfileServiceTest extends TestCase
     public function testItNotReturnsProfileOnMissingConfiguration(): void
     {
         $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
         $configMapping = ProfileService::getConfigMappingByPaymentHandler(PayoneRatepayDebitPaymentHandler::class);
         $systemConfigService->delete($configMapping['profileConfigurationsKey']);
 
@@ -229,7 +219,7 @@ class ProfileServiceTest extends TestCase
     public function testItUpdatesProfileConfigurations(): void
     {
         $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
         $configMapping = ProfileService::getConfigMappingByPaymentHandler(PayoneRatepayDebitPaymentHandler::class);
         $systemConfigService->delete($configMapping['profileConfigurationsKey']);
 
@@ -263,7 +253,7 @@ class ProfileServiceTest extends TestCase
     public function testItReturnsErrorsWhenUpdatingProfileConfigurations(): void
     {
         $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
         $configMapping = ProfileService::getConfigMappingByPaymentHandler(PayoneRatepayDebitPaymentHandler::class);
         $systemConfigService->delete($configMapping['profileConfigurationsKey']);
 

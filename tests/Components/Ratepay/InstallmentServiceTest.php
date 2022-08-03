@@ -13,7 +13,6 @@ use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class InstallmentServiceTest extends TestCase
 {
@@ -22,12 +21,8 @@ class InstallmentServiceTest extends TestCase
 
     public function testItReturnsDefaultCalculatorData(): void
     {
-        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $installmentService  = $this->getInstallmentService();
-        $this->fillCart($salesChannelContext->getToken(), 100);
         $this->setValidRatepayProfiles(
-            $systemConfigService,
+            $this->getContainer(),
             PayoneRatepayInstallmentPaymentHandler::class,
             [
                 'interestrate-min' => '10.7',
@@ -35,6 +30,10 @@ class InstallmentServiceTest extends TestCase
                 'month-allowed'    => '1,2,3',
             ]
         );
+
+        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
+        $installmentService  = $this->getInstallmentService();
+        $this->fillCart($salesChannelContext->getToken(), 100);
 
         $calculatorData = $installmentService->getInstallmentCalculatorData($salesChannelContext);
 
@@ -54,12 +53,8 @@ class InstallmentServiceTest extends TestCase
 
     public function testItReturnsCalculatorDataByTime(): void
     {
-        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $installmentService  = $this->getInstallmentService();
-        $this->fillCart($salesChannelContext->getToken(), 100);
         $this->setValidRatepayProfiles(
-            $systemConfigService,
+            $this->getContainer(),
             PayoneRatepayInstallmentPaymentHandler::class,
             [
                 'interestrate-min' => '10.7',
@@ -67,6 +62,10 @@ class InstallmentServiceTest extends TestCase
                 'month-allowed'    => '1,2,3',
             ]
         );
+
+        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
+        $installmentService  = $this->getInstallmentService();
+        $this->fillCart($salesChannelContext->getToken(), 100);
 
         $dataBag = new RequestDataBag([
             'ratepayInstallmentType'  => CalculationRequestParameterBuilder::INSTALLMENT_TYPE_TIME,
@@ -91,12 +90,8 @@ class InstallmentServiceTest extends TestCase
 
     public function testItReturnsCalculatorDataByRate(): void
     {
-        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $installmentService  = $this->getInstallmentService();
-        $this->fillCart($salesChannelContext->getToken(), 100);
         $this->setValidRatepayProfiles(
-            $systemConfigService,
+            $this->getContainer(),
             PayoneRatepayInstallmentPaymentHandler::class,
             [
                 'interestrate-min' => '10.7',
@@ -104,6 +99,10 @@ class InstallmentServiceTest extends TestCase
                 'month-allowed'    => '1,2,3',
             ]
         );
+
+        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
+        $installmentService  = $this->getInstallmentService();
+        $this->fillCart($salesChannelContext->getToken(), 100);
 
         $dataBag = new RequestDataBag([
             'ratepayInstallmentType'  => CalculationRequestParameterBuilder::INSTALLMENT_TYPE_RATE,

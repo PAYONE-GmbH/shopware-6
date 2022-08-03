@@ -5,15 +5,35 @@ declare(strict_types=1);
 namespace PayonePayment\Test\TestCaseBase;
 
 use PayonePayment\Components\Ratepay\ProfileService;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 trait ConfigurationHelper
 {
     protected function setValidRatepayProfiles(
-        SystemConfigService $systemConfigService,
+        ContainerInterface $container,
         string $paymentHandler,
         array $configurationOverrides = []
     ): void {
+        $systemConfigService = $container->get(SystemConfigService::class);
+        $countryRepository   = $container->get('country.repository');
+
+        // Disable all countries except DE so DE is taken for the sales channel context
+        $context  = Context::createDefaultContext();
+        $criteria = new Criteria();
+        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('iso', 'DE')]));
+        $countriesToDisable = $countryRepository->searchIds($criteria, $context);
+        $countryRepository->update(array_map(static function (string $id) {
+            return [
+                'id'     => $id,
+                'active' => false,
+            ];
+        }, $countriesToDisable->getIds()), $context);
+
         $configurations = $this->getValidRatepayProfileConfigurations();
 
         if ($configurationOverrides !== []) {

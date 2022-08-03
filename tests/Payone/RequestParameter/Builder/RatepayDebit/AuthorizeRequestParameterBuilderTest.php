@@ -13,7 +13,6 @@ use PayonePayment\Test\TestCaseBase\ConfigurationHelper;
 use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class AuthorizeRequestParameterBuilderTest extends TestCase
 {
@@ -22,8 +21,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
     public function testItAddsCorrectAuthorizeParameters(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
 
         $dataBag = new RequestDataBag([
             'ratepayIban'     => 'DE81500105177147426471',
@@ -53,8 +51,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
     public function testItThrowsExceptionOnMissingPhoneNumber(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
 
         $dataBag = new RequestDataBag([
             'ratepayIban'     => 'DE81500105177147426471',
@@ -72,8 +69,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
     public function testItAddsCorrectAuthorizeParametersWithSavedPhoneNumber(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($systemConfigService, PayoneRatepayDebitPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
 
         $dataBag = new RequestDataBag([
             'ratepayIban'     => 'DE81500105177147426471',
