@@ -11,7 +11,7 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\Payone\RequestParameter\Struct\RatepayProfileStruct;
 use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Test\TestDefaults;
+use Shopware\Core\Defaults;
 
 class ProfileRequestParameterBuilderTest extends TestCase
 {
@@ -22,7 +22,7 @@ class ProfileRequestParameterBuilderTest extends TestCase
         $struct = new RatepayProfileStruct(
             88880103,
             'EUR',
-            TestDefaults::SALES_CHANNEL,
+            Defaults::SALES_CHANNEL,
             PayoneRatepayDebitPaymentHandler::class,
             AbstractRequestParameterBuilder::REQUEST_ACTION_RATEPAY_PROFILE
         );

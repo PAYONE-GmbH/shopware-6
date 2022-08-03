@@ -34,7 +34,6 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
-use Shopware\Core\Test\TestDefaults;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoader;
 use Shopware\Storefront\Test\Page\StorefrontPageTestBehaviour;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -78,7 +77,7 @@ trait PayoneTestBehavior
             'visibilities' => [
                 [
                     'id'             => $productId,
-                    'salesChannelId' => TestDefaults::SALES_CHANNEL,
+                    'salesChannelId' => Defaults::SALES_CHANNEL,
                     'visibility'     => ProductVisibilityDefinition::VISIBILITY_ALL,
                 ],
             ],
