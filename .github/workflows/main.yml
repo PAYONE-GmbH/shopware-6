@@ -14,7 +14,7 @@ jobs:
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
       mysql:
-        image: mariadb:10.5.9
+        image: mysql:5.7.38
         env:
           MYSQL_ROOT_PASSWORD: root
         ports:
@@ -34,8 +34,8 @@ jobs:
         run: composer -V
       - name: Check PHP Extensions
         run: php -m
-      - name: Composer setup
-        run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
+      - name: Composer dump autoload
+        run: composer dumpautoload
       - name: SW-Install
         run: |
           mkdir -p /tmp/shopware
@@ -59,7 +59,7 @@ jobs:
       - name: PHPUnit
         run: |
           PROJECT_ROOT=/tmp/shopware \
-            /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit \
+            /tmp/shopware/vendor/bin/phpunit \
             --testdox \
             --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
   ci-current:
@@ -73,7 +73,7 @@ jobs:
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
       mysql:
-        image: mariadb:10.5.9
+        image: mysql:5.7.38
         env:
           MYSQL_ROOT_PASSWORD: root
         ports:
