@@ -22,6 +22,7 @@ return (new TestBootstrapper())
     ->setLoadEnvFile(true)
     ->setForceInstallPlugins(true)
     ->addCallingPlugin()
+    ->setDatabaseUrl($_SERVER['TEST_DATABASE_URL'] ?? null)
     ->bootstrap()
     ->setClassLoader(require dirname(__DIR__) . '/vendor/autoload.php')
     ->getClassLoader();
