@@ -17,7 +17,7 @@ use RuntimeException;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Customer\SalesChannel\AccountService;
-use Shopware\Core\Checkout\Customer\SalesChannel\RegisterRoute;
+use Shopware\Core\Checkout\Customer\SalesChannel\AbstractRegisterRoute;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -48,7 +48,7 @@ class PaypalExpressController extends StorefrontController
     /** @var CartService */
     private $cartService;
 
-    /** @var RegisterRoute */
+    /** @var AbstractRegisterRoute */
     private $registerRoute;
 
     /** @var AccountService */
@@ -81,7 +81,7 @@ class PaypalExpressController extends StorefrontController
     public function __construct(
         PayoneClientInterface $client,
         CartService $cartService,
-        RegisterRoute $registerRoute,
+        AbstractRegisterRoute $registerRoute,
         AccountService $accountService,
         $salesChannelContextFactory,
         EntityRepositoryInterface $salutationRepository,
