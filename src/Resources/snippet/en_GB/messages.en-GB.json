@@ -176,6 +176,7 @@
                 }
             },
             "installment": {
+                "inputDivider": "or",
                 "iban": {
                     "label": "IBAN",
                     "linkTextNoDirectDebit": "I would like to make the installments myself and not pay by direct debit",
@@ -188,10 +189,12 @@
                     "label": "Date of birth"
                 },
                 "runtime": {
-                    "label": "Runtime"
+                    "title": "Runtime",
+                    "label": "Number of monthly rates"
                 },
                 "rate": {
-                    "label": "Rate",
+                    "title": "Rate amount",
+                    "label": "Amount of the monthly installment",
                     "buttonText": "Calculate installment"
                 },
                 "select": "%duration% months",

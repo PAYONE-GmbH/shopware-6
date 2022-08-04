@@ -1,20 +1,18 @@
 <div class="payone-payment ratepay-installment">
     <input type="hidden" id="payoneCsrfTokenRatepayInstallmentCalculation" value="{{ sw_csrf('frontend.payone.ratepay.installment.calculation', {'mode': 'token'}) }}">
 
-    {% block page_checkout_confirm_payone_card_title_ratepay_installment_card %}
-        <div class="card-title">
-            {{ "PayonePayment.checkoutConfirmPage.defaultCardTitle" | trans }}
-        </div>
-    {% endblock %}
-
     {% block page_checkout_confirm_payone_card_content_ratepay_installment_card %}
         {% set customerCustomFields = context.customer.customFields %}
 
         <div class="card">
             <fieldset>
 
-                <div class="form-row col-md-12">
-                    <div class="form-group col-12 col-md-6">
+                <div class="form-row">
+                    <div class="card form-group col-12 col-md-5">
+                        <div class="card-title">
+                            {{ "PayonePayment.ratepay.installment.runtime.title" | trans }}
+                        </div>
+
                         <label class="form-label" for="ratepayRuntime">{{ "PayonePayment.ratepay.installment.runtime.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
 
                         {% if page.extensions.payoneRatepayInstallmentCalculator.calculationParams.ratepayInstallmentType === "time" %}
@@ -39,7 +37,17 @@
                         </select>
                     </div>
 
-                    <div class="form-group col-12 col-md-6">
+                    <div class="form-group col-12 col-md-2 d-flex justify-content-center align-items-center">
+                        <span>
+                            {{ "PayonePayment.ratepay.installment.inputDivider" | trans }}
+                        </span>
+                    </div>
+
+                    <div class="card form-group col-12 col-md-5">
+                        <div class="card-title">
+                            {{ "PayonePayment.ratepay.installment.rate.title" | trans }}
+                        </div>
+
                         <label class="form-label" for="ratepayRate">{{ "PayonePayment.ratepay.installment.rate.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
                         <div class="input-group">
                             <input class="form-control payone-input"
@@ -67,6 +75,12 @@
                     } %}
                 </div>
 
+                {% block page_checkout_confirm_payone_card_title_ratepay_installment_card %}
+                    <div class="card-title">
+                        {{ "PayonePayment.checkoutConfirmPage.defaultCardTitle" | trans }}
+                    </div>
+                {% endblock %}
+
                 {% if customerCustomFields is null or customerCustomFields['payone_customer_phone_number'] is not defined or customerCustomFields['payone_customer_phone_number'] is empty %}
                     <div class="form-row col-md-12">
                         <div class="form-group col-md-12">
@@ -81,7 +95,7 @@
                     </div>
                 {% endif %}
 
-                <div class="form-row col-md-12">
+                <div class="form-row">
                     <div class="form-group col-md-12">
                         <label class="form-label" for="ratepayBirthday">{{ "PayonePayment.ratepay.installment.birthday.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
                         <input class="form-control payone-input"
@@ -93,7 +107,7 @@
                     </div>
                 </div>
 
-                <div class="form-row col-md-12">
+                <div class="form-row">
                     <div class="form-group col-md-12 collapse show"
                          id="ratepayIbanContainer">
                         <label class="form-label" for="ratepayIban">{{ "PayonePayment.ratepay.installment.iban.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
@@ -121,7 +135,7 @@
         </div>
 
         <div class="card">
-            <div class="col-md-12">
+            <div>
                 <p>
                     {{ "PayonePayment.ratepay.general.consentText" |trans|sw_sanitize }}
                 </p>

@@ -24,6 +24,8 @@ export default class PayonePaymentRatepayInstallment extends Plugin {
         this.ratepayIbanInput = DomAccess.querySelector(document, this.options.ratepayIbanInputSelector);
 
         this._registerEventListeners();
+
+        this._handleInstallmentRuntimeChange();
     }
 
     _registerEventListeners() {
