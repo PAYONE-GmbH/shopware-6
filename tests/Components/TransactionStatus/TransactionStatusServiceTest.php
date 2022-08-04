@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Components\TransactionStatus;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
-use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Constants;
+use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\TestCaseBase\Factory\TransactionStatusWebhookHandlerFactory;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;

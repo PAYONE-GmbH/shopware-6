@@ -6,11 +6,11 @@ namespace PayonePayment\Payone\Webhook\Processor;
 
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
+use PayonePayment\Constants;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use PayonePayment\Struct\PaymentTransaction;
-use PayonePayment\Constants;
 use PayonePayment\TestCaseBase\Factory\TransactionStatusWebhookHandlerFactory;
 use PayonePayment\TestCaseBase\Mock\ConfigReaderMock;
 use PHPUnit\Framework\TestCase;
