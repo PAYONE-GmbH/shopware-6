@@ -7,8 +7,8 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
-use PayonePayment\Test\Constants;
-use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
+use PayonePayment\Constants;
+use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\ParameterBag;
 

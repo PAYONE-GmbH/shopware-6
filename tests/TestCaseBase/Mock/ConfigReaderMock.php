@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Test\TestCaseBase\Mock;
+namespace PayonePayment\TestCaseBase\Mock;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Struct\Configuration;

@@ -10,8 +10,8 @@ use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\RatepayCalculationStruct;
-use PayonePayment\Test\TestCaseBase\ConfigurationHelper;
-use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
+use PayonePayment\TestCaseBase\ConfigurationHelper;
+use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 

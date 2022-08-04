@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Test\TestCaseBase\Factory;
+namespace PayonePayment\TestCaseBase\Factory;
 
 use PayonePayment\Components\Currency\CurrencyPrecision;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler;
-use PayonePayment\Test\TestCaseBase\Mock\ConfigReaderMock;
+use PayonePayment\TestCaseBase\Mock\ConfigReaderMock;
 use PHPUnit\Framework\MockObject\Generator;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\NullLogger;

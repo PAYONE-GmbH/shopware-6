@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Test;
+namespace PayonePayment;
 
 interface Constants
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Test\TestCaseBase;
+namespace PayonePayment\TestCaseBase;
 
 use PayonePayment\Components\Helper\OrderFetcher;
 use PayonePayment\Installer\CustomFieldInstaller;
@@ -10,7 +10,7 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
-use PayonePayment\Test\Constants;
+use PayonePayment\Constants;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;

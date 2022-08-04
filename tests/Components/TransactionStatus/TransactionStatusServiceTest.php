@@ -6,9 +6,9 @@ namespace PayonePayment\Components\TransactionStatus;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
-use PayonePayment\Test\Constants;
-use PayonePayment\Test\TestCaseBase\Factory\TransactionStatusWebhookHandlerFactory;
-use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
+use PayonePayment\Constants;
+use PayonePayment\TestCaseBase\Factory\TransactionStatusWebhookHandlerFactory;
+use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;

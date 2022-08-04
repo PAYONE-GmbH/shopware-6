@@ -8,8 +8,8 @@ use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
-use PayonePayment\Test\TestCaseBase\ConfigurationHelper;
-use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
+use PayonePayment\TestCaseBase\ConfigurationHelper;
+use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 

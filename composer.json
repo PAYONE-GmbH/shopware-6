@@ -41,7 +41,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "PayonePayment\\Test\\": "tests/"
+      "PayonePayment\\": "tests/",
+      "PayonePayment\\Test\\": "tests_legacy/"
     }
   },
   "config": {

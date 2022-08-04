@@ -7,7 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\SofortBanking;
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
-use PayonePayment\Test\TestCaseBase\PayoneTestBehavior;
+use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 

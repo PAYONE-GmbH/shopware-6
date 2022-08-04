@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Test\TestCaseBase;
+namespace PayonePayment\TestCaseBase;
 
 use PayonePayment\Components\Ratepay\ProfileService;
 use Shopware\Core\Framework\Context;
