@@ -10,6 +10,7 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use PayonePayment\Payone\RequestParameter\Struct\RatepayProfileStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
@@ -112,6 +113,19 @@ trait PayoneTestBehavior
         return $orderFetcher->getOrderById($orderId, $salesChannelContext->getContext());
     }
 
+    protected function getRatepayProfileStruct(
+        string $paymentHandler,
+        string $requestAction = AbstractRequestParameterBuilder::REQUEST_ACTION_RATEPAY_PROFILE
+    ): RatepayProfileStruct {
+        return new RatepayProfileStruct(
+            88880103,
+            'EUR',
+            Defaults::SALES_CHANNEL,
+            $paymentHandler,
+            $requestAction
+        );
+    }
+
     protected function getFinancialTransactionStruct(ParameterBag $dataBag, string $paymentHandler, string $request): FinancialTransactionStruct
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
@@ -126,8 +140,11 @@ trait PayoneTestBehavior
         );
     }
 
-    protected function getPaymentTransactionStruct(RequestDataBag $dataBag, string $paymentHandler): PaymentTransactionStruct
-    {
+    protected function getPaymentTransactionStruct(
+        RequestDataBag $dataBag,
+        string $paymentHandler,
+        string $requestAction
+    ): PaymentTransactionStruct {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $order               = $this->getRandomOrder($salesChannelContext);
 
@@ -136,7 +153,7 @@ trait PayoneTestBehavior
             $dataBag,
             $salesChannelContext,
             $paymentHandler,
-            AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
+            $requestAction
         );
     }
 

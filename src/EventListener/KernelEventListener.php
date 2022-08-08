@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\Components\Ratepay\ProfileService;
+use PayonePayment\Components\ConfigReader\ConfigReader;
+use PayonePayment\Components\Ratepay\ProfileServiceInterface;
+use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,10 +14,10 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class KernelEventListener implements EventSubscriberInterface
 {
-    /** @var ProfileService */
+    /** @var ProfileServiceInterface */
     private $profileService;
 
-    public function __construct(ProfileService $profileService)
+    public function __construct(ProfileServiceInterface $profileService)
     {
         $this->profileService = $profileService;
     }
@@ -37,10 +39,12 @@ class KernelEventListener implements EventSubscriberInterface
             $configurations = $event->getRequest()->request->all();
 
             foreach ($configurations as $salesChannelId => $configuration) {
-                foreach (ProfileService::PROFILES_CONFIG_KEYS as $configKey) {
+                foreach (PaymentHandlerGroups::RATEPAY as $ratepayHandler) {
+                    $configKey = ConfigReader::getConfigKeyByPaymentHandler($ratepayHandler, 'Profiles');
+
                     if (isset($configuration[$configKey])) {
                         $result = $this->profileService->updateProfileConfiguration(
-                            $configKey,
+                            $ratepayHandler,
                             $salesChannelId === 'null' ? null : $salesChannelId
                         );
                         $results[$salesChannelId][] = $result;

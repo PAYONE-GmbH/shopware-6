@@ -10,6 +10,9 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * @covers \PayonePayment\Components\RedirectHandler\RedirectHandler
+ */
 class RedirectHandlerTest extends TestCase
 {
     use KernelTestBehaviour;

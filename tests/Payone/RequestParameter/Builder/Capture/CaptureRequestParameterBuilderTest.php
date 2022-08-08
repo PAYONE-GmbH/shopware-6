@@ -9,6 +9,7 @@ use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
@@ -16,9 +17,51 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
+/**
+ * @covers \PayonePayment\Payone\RequestParameter\Builder\Capture\CaptureRequestParameterBuilder
+ */
 class CaptureRequestParameterBuilderTest extends TestCase
 {
     use PayoneTestBehavior;
+
+    public function testItSupportsCaptureRequest(): void
+    {
+        $struct = $this->getFinancialTransactionStruct(
+            new RequestDataBag([]),
+            PayoneCreditCardPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
+        $builder = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
+
+        static::assertTrue($builder->supports($struct));
+    }
+
+    public function testItNotSupportsRefundRequest(): void
+    {
+        $struct = $this->getFinancialTransactionStruct(
+            new RequestDataBag([]),
+            PayoneCreditCardPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_REFUND
+        );
+
+        $builder = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
+
+        static::assertFalse($builder->supports($struct));
+    }
+
+    public function testItNotSupportsPaymentRequests(): void
+    {
+        $struct = $this->getPaymentTransactionStruct(
+            new RequestDataBag([]),
+            PayoneCreditCardPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
+        );
+
+        $builder = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
+
+        static::assertFalse($builder->supports($struct));
+    }
 
     public function testItAddsCorrectFullCaptureParameters(): void
     {
@@ -180,6 +223,29 @@ class CaptureRequestParameterBuilderTest extends TestCase
             ],
             $parameters
         );
+    }
+
+    public function testItAddsCorrectParametersForRatepay(): void
+    {
+        $dataBag = new RequestDataBag([
+            'amount' => 100,
+        ]);
+
+        $struct = $this->getFinancialTransactionStruct(
+            $dataBag,
+            PayoneRatepayDebitPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
+        $builder      = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
+        $customFields = $struct->getPaymentTransaction()->getCustomFields();
+
+        $customFields[CustomFieldInstaller::USED_RATEPAY_SHOP_ID] = 88880103;
+        $struct->getPaymentTransaction()->setCustomFields($customFields);
+        $parameters = $builder->getRequestParameter($struct);
+
+        static::assertSame('yes', $parameters['settleaccount']);
+        static::assertSame(88880103, $parameters['add_paydata[shop_id]']);
     }
 
     public function testItAddsCaptureModeCompletedParameter(): void

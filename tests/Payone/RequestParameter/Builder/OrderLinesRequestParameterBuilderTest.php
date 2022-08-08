@@ -7,14 +7,76 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\Constants;
+use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
+use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
+/**
+ * @covers \PayonePayment\Payone\RequestParameter\Builder\OrderLinesRequestParameterBuilder
+ */
 class OrderLinesRequestParameterBuilderTest extends TestCase
 {
     use PayoneTestBehavior;
+
+    /**
+     * @dataProvider getValidPaymentHandler
+     * @testdox It supports payment handler $paymentHandler
+     */
+    public function testItSupportsValidPaymentMethods($paymentHandler): void
+    {
+        $struct = $this->getFinancialTransactionStruct(
+            new ParameterBag(),
+            $paymentHandler,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
+        $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
+
+        static::assertTrue($builder->supports($struct));
+    }
+
+    /**
+     * @dataProvider getInvalidPaymentHandler
+     * @testdox It not supports payment handler $paymentHandler
+     */
+    public function testItNotSupportsInvalidPaymentMethods($paymentHandler): void
+    {
+        $struct = $this->getFinancialTransactionStruct(
+            new ParameterBag(),
+            $paymentHandler,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
+        $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
+
+        static::assertFalse($builder->supports($struct));
+    }
+
+    public function testItNotSupportsPaymentRequests(): void
+    {
+        $struct = $this->getPaymentTransactionStruct(
+            new RequestDataBag([]),
+            PayonePayolutionDebitPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
+        );
+
+        $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
+
+        static::assertFalse($builder->supports($struct));
+    }
 
     public function testItAddsCorrectOrderLineParametersForFullCapture(): void
     {
@@ -190,5 +252,30 @@ class OrderLinesRequestParameterBuilderTest extends TestCase
         );
 
         static::assertArrayNotHasKey('it[2]', $parameters);
+    }
+
+    public function getValidPaymentHandler(): array
+    {
+        return [
+            [PayonePayolutionDebitPaymentHandler::class],
+            [PayonePayolutionInstallmentPaymentHandler::class],
+            [PayonePayolutionInvoicingPaymentHandler::class],
+            [PayoneSecureInvoicePaymentHandler::class],
+            [PayoneOpenInvoicePaymentHandler::class],
+            [PayoneBancontactPaymentHandler::class],
+            [PayoneRatepayDebitPaymentHandler::class],
+            [PayoneRatepayInstallmentPaymentHandler::class],
+            [PayoneRatepayInvoicingPaymentHandler::class],
+        ];
+    }
+
+    public function getInvalidPaymentHandler(): array
+    {
+        return [
+            [PayoneDebitPaymentHandler::class],
+            [PayoneCreditCardPaymentHandler::class],
+            [PayonePaypalPaymentHandler::class],
+            // ...
+        ];
     }
 }

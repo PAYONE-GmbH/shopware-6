@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\Ratepay;
 
+use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\Helper\OrderFetcher;
-use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -19,6 +19,9 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
+/**
+ * @covers \PayonePayment\Components\Ratepay\ProfileService
+ */
 class ProfileServiceTest extends TestCase
 {
     use PayoneTestBehavior;
@@ -26,12 +29,13 @@ class ProfileServiceTest extends TestCase
 
     public function testItReturnsProfileByOrder(): void
     {
-        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
+        $this->setValidRatepayProfiles($this->getContainer(), $paymentHandler);
 
         $profileService = $this->getContainer()->get(ProfileService::class);
         $order          = $this->getRandomOrder();
 
-        $profile = $profileService->getProfileByOrder($order, PayoneRatepayDebitPaymentHandler::class);
+        $profile = $profileService->getProfileByOrder($order, $paymentHandler);
 
         static::assertNotNull($profile);
         static::assertSame(88880103, $profile->getShopId());
@@ -41,9 +45,10 @@ class ProfileServiceTest extends TestCase
 
     public function testItReturnsProfileByOrderWithDifferentAddresses(): void
     {
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
         $this->setValidRatepayProfiles(
             $this->getContainer(),
-            PayoneRatepayDebitPaymentHandler::class,
+            $paymentHandler,
             ['delivery-address-elv' => 'yes']
         );
 
@@ -51,7 +56,7 @@ class ProfileServiceTest extends TestCase
         $order          = $this->getRandomOrder();
         $this->addFakeShippingAddress($order);
 
-        $profile = $profileService->getProfileByOrder($order, PayoneRatepayDebitPaymentHandler::class);
+        $profile = $profileService->getProfileByOrder($order, $paymentHandler);
 
         static::assertNotNull($profile);
         static::assertSame(88880103, $profile->getShopId());
@@ -61,9 +66,10 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileByOrderWithDifferentAddresses(): void
     {
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
         $this->setValidRatepayProfiles(
             $this->getContainer(),
-            PayoneRatepayDebitPaymentHandler::class,
+            $paymentHandler,
             ['delivery-address-elv' => 'no']
         );
 
@@ -71,22 +77,20 @@ class ProfileServiceTest extends TestCase
         $order          = $this->getRandomOrder();
         $this->addFakeShippingAddress($order);
 
-        $profile = $profileService->getProfileByOrder($order, PayoneRatepayDebitPaymentHandler::class);
+        $profile = $profileService->getProfileByOrder($order, $paymentHandler);
 
         static::assertNull($profile);
     }
 
     public function testItReturnsProfileBySalesChannel(): void
     {
-        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
+        $this->setValidRatepayProfiles($this->getContainer(), $paymentHandler);
 
         $profileService      = $this->getContainer()->get(ProfileService::class);
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
-        $profile = $profileService->getProfileBySalesChannelContext(
-            $salesChannelContext,
-            PayoneRatepayDebitPaymentHandler::class
-        );
+        $profile = $profileService->getProfileBySalesChannelContext($salesChannelContext, $paymentHandler);
 
         static::assertNotNull($profile);
         static::assertSame(88880103, $profile->getShopId());
@@ -96,9 +100,10 @@ class ProfileServiceTest extends TestCase
 
     public function testItReturnsProfileWithValidProfileSearch(): void
     {
-        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
+        $this->setValidRatepayProfiles($this->getContainer(), $paymentHandler);
 
-        $profileSearch  = $this->getValidProfileSearch(PayoneRatepayDebitPaymentHandler::class);
+        $profileSearch  = $this->getValidProfileSearch($paymentHandler);
         $profileService = $this->getContainer()->get(ProfileService::class);
         $profile        = $profileService->getProfile($profileSearch);
 
@@ -110,13 +115,14 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileWithWrongBillingCountry(): void
     {
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
         $this->setValidRatepayProfiles(
             $this->getContainer(),
-            PayoneRatepayDebitPaymentHandler::class,
+            $paymentHandler,
             ['country-code-billing' => 'DE']
         );
 
-        $profileSearch = $this->getValidProfileSearch(PayoneRatepayDebitPaymentHandler::class);
+        $profileSearch = $this->getValidProfileSearch($paymentHandler);
         $profileSearch->setBillingCountryCode('NL');
 
         $profileService = $this->getContainer()->get(ProfileService::class);
@@ -127,13 +133,14 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileWithWrongShippingCountry(): void
     {
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
         $this->setValidRatepayProfiles(
             $this->getContainer(),
-            PayoneRatepayDebitPaymentHandler::class,
+            $paymentHandler,
             ['country-code-delivery' => 'DE']
         );
 
-        $profileSearch = $this->getValidProfileSearch(PayoneRatepayDebitPaymentHandler::class);
+        $profileSearch = $this->getValidProfileSearch($paymentHandler);
         $profileSearch->setShippingCountryCode('NL');
 
         $profileService = $this->getContainer()->get(ProfileService::class);
@@ -144,13 +151,14 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileWithWrongCurrency(): void
     {
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
         $this->setValidRatepayProfiles(
             $this->getContainer(),
-            PayoneRatepayDebitPaymentHandler::class,
+            $paymentHandler,
             ['currency' => 'EUR']
         );
 
-        $profileSearch = $this->getValidProfileSearch(PayoneRatepayDebitPaymentHandler::class);
+        $profileSearch = $this->getValidProfileSearch($paymentHandler);
         $profileSearch->setCurrency('USD');
 
         $profileService = $this->getContainer()->get(ProfileService::class);
@@ -161,13 +169,14 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileWithTooLowInvoiceAmount(): void
     {
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
         $this->setValidRatepayProfiles(
             $this->getContainer(),
-            PayoneRatepayDebitPaymentHandler::class,
+            $paymentHandler,
             ['tx-limit-elv-min' => '50']
         );
 
-        $profileSearch = $this->getValidProfileSearch(PayoneRatepayDebitPaymentHandler::class);
+        $profileSearch = $this->getValidProfileSearch($paymentHandler);
         $profileSearch->setTotalAmount(10);
 
         $profileService = $this->getContainer()->get(ProfileService::class);
@@ -178,13 +187,14 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileWithTooHighInvoiceAmount(): void
     {
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
         $this->setValidRatepayProfiles(
             $this->getContainer(),
-            PayoneRatepayDebitPaymentHandler::class,
+            $paymentHandler,
             ['tx-limit-elv-max' => '50']
         );
 
-        $profileSearch = $this->getValidProfileSearch(PayoneRatepayDebitPaymentHandler::class);
+        $profileSearch = $this->getValidProfileSearch($paymentHandler);
         $profileSearch->setTotalAmount(100);
 
         $profileService = $this->getContainer()->get(ProfileService::class);
@@ -195,12 +205,14 @@ class ProfileServiceTest extends TestCase
 
     public function testItNotReturnsProfileOnMissingConfiguration(): void
     {
+        $paymentHandler      = PayoneRatepayDebitPaymentHandler::class;
         $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
-        $configMapping = ProfileService::getConfigMappingByPaymentHandler(PayoneRatepayDebitPaymentHandler::class);
-        $systemConfigService->delete($configMapping['profileConfigurationsKey']);
+        $this->setValidRatepayProfiles($this->getContainer(), $paymentHandler);
+        $systemConfigService->delete(
+            ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'ProfileConfigurations')
+        );
 
-        $profileSearch = $this->getValidProfileSearch(PayoneRatepayDebitPaymentHandler::class);
+        $profileSearch = $this->getValidProfileSearch($paymentHandler);
 
         $profileService = $this->getContainer()->get(ProfileService::class);
         $profile        = $profileService->getProfile($profileSearch);
@@ -208,20 +220,14 @@ class ProfileServiceTest extends TestCase
         static::assertNull($profile);
     }
 
-    public function testItThrowsExceptionOnInvalidPaymentHandler(): void
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('invalid payment handler');
-
-        ProfileService::getConfigMappingByPaymentHandler(PayoneDebitPaymentHandler::class);
-    }
-
     public function testItUpdatesProfileConfigurations(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
-        $configMapping = ProfileService::getConfigMappingByPaymentHandler(PayoneRatepayDebitPaymentHandler::class);
-        $systemConfigService->delete($configMapping['profileConfigurationsKey']);
+        $paymentHandler           = PayoneRatepayDebitPaymentHandler::class;
+        $profilesKey              = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles');
+        $profileConfigurationsKey = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'ProfileConfigurations');
+        $systemConfigService      = $this->getContainer()->get(SystemConfigService::class);
+        $this->setValidRatepayProfiles($this->getContainer(), $paymentHandler);
+        $systemConfigService->delete($profileConfigurationsKey);
 
         $client = $this->createMock(PayoneClientInterface::class);
         $client->expects($this->once())->method('request')->willReturn(
@@ -238,13 +244,13 @@ class ProfileServiceTest extends TestCase
             $this->getContainer()->get(CartService::class)
         );
 
-        $result = $profileService->updateProfileConfiguration($configMapping['profilesKey']);
+        $result = $profileService->updateProfileConfiguration($paymentHandler);
 
         static::assertEmpty($result['errors']);
-        static::assertIsArray($result['updates'][$configMapping['profilesKey']]);
-        static::assertIsArray($result['updates'][$configMapping['profileConfigurationsKey']]);
+        static::assertIsArray($result['updates'][$profilesKey]);
+        static::assertIsArray($result['updates'][$profileConfigurationsKey]);
 
-        $configuration = $systemConfigService->get($configMapping['profileConfigurationsKey']);
+        $configuration = $systemConfigService->get($profileConfigurationsKey);
 
         static::assertIsArray($configuration);
         static::assertArrayHasKey('88880103', $configuration);
@@ -252,10 +258,12 @@ class ProfileServiceTest extends TestCase
 
     public function testItReturnsErrorsWhenUpdatingProfileConfigurations(): void
     {
-        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
-        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
-        $configMapping = ProfileService::getConfigMappingByPaymentHandler(PayoneRatepayDebitPaymentHandler::class);
-        $systemConfigService->delete($configMapping['profileConfigurationsKey']);
+        $paymentHandler           = PayoneRatepayDebitPaymentHandler::class;
+        $profilesKey              = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles');
+        $profileConfigurationsKey = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'ProfileConfigurations');
+        $systemConfigService      = $this->getContainer()->get(SystemConfigService::class);
+        $this->setValidRatepayProfiles($this->getContainer(), $paymentHandler);
+        $systemConfigService->delete($profileConfigurationsKey);
 
         $client = $this->createMock(PayoneClientInterface::class);
         $client->expects($this->once())->method('request')->willThrowException(
@@ -274,14 +282,14 @@ class ProfileServiceTest extends TestCase
             $this->getContainer()->get(CartService::class)
         );
 
-        $result = $profileService->updateProfileConfiguration($configMapping['profilesKey']);
+        $result = $profileService->updateProfileConfiguration($paymentHandler);
 
-        static::assertEmpty($result['updates'][$configMapping['profilesKey']]);
-        static::assertEmpty($result['updates'][$configMapping['profileConfigurationsKey']]);
-        static::assertIsArray($result['errors'][$configMapping['profilesKey']]);
-        static::assertSame('Failed', $result['errors'][$configMapping['profilesKey']][0]['error']);
+        static::assertEmpty($result['updates'][$profilesKey]);
+        static::assertEmpty($result['updates'][$profileConfigurationsKey]);
+        static::assertIsArray($result['errors'][$profilesKey]);
+        static::assertSame('Failed', $result['errors'][$profilesKey][0]['error']);
 
-        $configuration = $systemConfigService->get($configMapping['profileConfigurationsKey']);
+        $configuration = $systemConfigService->get($profileConfigurationsKey);
 
         static::assertIsArray($configuration);
         static::assertEmpty($configuration);

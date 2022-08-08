@@ -14,6 +14,9 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
+/**
+ * @covers \PayonePayment\Components\Ratepay\InstallmentService
+ */
 class InstallmentServiceTest extends TestCase
 {
     use PayoneTestBehavior;

@@ -24,8 +24,7 @@
                         <select class="form-control"
                                 id="ratepayRuntime"
                                 name="ratepayRuntime"
-                                form="confirmOrderForm"
-                                required="required">
+                                form="confirmOrderForm">
                             {% for option in page.extensions.payoneRatepayInstallmentCalculator.allowedMonths %}
                                 <option value="{{ option }}"
                                         {% if option === defaultValue %}selected="selected"{% endif %}>
@@ -56,8 +55,7 @@
                                    form="confirmOrderForm"
                                    type="number"
                                    min="{{ page.extensions.payoneRatepayInstallmentCalculator.minimumRate }}"
-                                   max="{{ page.extensions.payoneRatepayInstallmentCalculator.maximumRate }}"
-                                   required="required"/>
+                                   max="{{ page.extensions.payoneRatepayInstallmentCalculator.maximumRate }}"/>
                             <div class="input-group-append">
                                 <button type="submit"
                                         id="payone-ratepay-calculate-installment-btn"

@@ -36,6 +36,7 @@ class CustomFieldInstaller implements InstallerInterface
     public const REFUNDED_QUANTITY      = 'payone_refunded_quantity';
     public const CLEARING_BANK_ACCOUNT  = 'payone_clearing_bank_account';
     public const CUSTOMER_PHONE_NUMBER  = 'payone_customer_phone_number';
+    public const USED_RATEPAY_SHOP_ID   = 'payone_used_ratepay_shop_id';
 
     public const FIELDSET_ID_ORDER_TRANSACTION = 'aacbcf9bedfb4827853b75c5fd278d3f';
     public const FIELDSET_ID_ORDER_LINE_ITEM   = '12f3f06c895e11eabc550242ac130003';
@@ -219,6 +220,12 @@ class CustomFieldInstaller implements InstallerInterface
             [
                 'id'               => '9eb83e0a6a814bb8b3a34c8877bcc094',
                 'name'             => self::CAPTURE_MODE,
+                'type'             => CustomFieldTypes::TEXT,
+                'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
+            ],
+            [
+                'id'               => '0beeb4fd0c4947afaa360cb0431c29ad',
+                'name'             => self::USED_RATEPAY_SHOP_ID,
                 'type'             => CustomFieldTypes::TEXT,
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
             ],

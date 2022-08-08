@@ -15,5 +15,5 @@ interface ProfileServiceInterface
 
     public function getProfileBySalesChannelContext(SalesChannelContext $salesChannelContext, string $paymentHandler): ?Profile;
 
-    public function updateProfileConfiguration(string $profilesConfigKey, ?string $salesChannelId = null): array;
+    public function updateProfileConfiguration(string $paymentHandler, ?string $salesChannelId = null): array;
 }

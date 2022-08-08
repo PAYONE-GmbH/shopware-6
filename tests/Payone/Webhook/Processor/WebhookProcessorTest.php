@@ -30,6 +30,9 @@ use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @covers \PayonePayment\Payone\Webhook\Processor\WebhookProcessor
+ */
 class WebhookProcessorTest extends TestCase
 {
     public function testItAppointsCreditCard(): void

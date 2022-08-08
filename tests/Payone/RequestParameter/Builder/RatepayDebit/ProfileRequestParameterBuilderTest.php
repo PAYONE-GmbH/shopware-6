@@ -8,26 +8,20 @@ use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
-use PayonePayment\Payone\RequestParameter\Struct\RatepayProfileStruct;
-use PayonePayment\TestCaseBase\PayoneTestBehavior;
+use PayonePayment\TestCaseBase\RatepayProfileParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Defaults;
 
+/**
+ * @covers \PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\ProfileRequestParameterBuilder
+ */
 class ProfileRequestParameterBuilderTest extends TestCase
 {
-    use PayoneTestBehavior;
+    use RatepayProfileParameterBuilderTestTrait;
 
     public function testItAddsCorrectProfileParameters(): void
     {
-        $struct = new RatepayProfileStruct(
-            88880103,
-            'EUR',
-            Defaults::SALES_CHANNEL,
-            PayoneRatepayDebitPaymentHandler::class,
-            AbstractRequestParameterBuilder::REQUEST_ACTION_RATEPAY_PROFILE
-        );
-
-        $builder    = $this->getContainer()->get(ProfileRequestParameterBuilder::class);
+        $struct     = $this->getRatepayProfileStruct($this->getValidPaymentHandler());
+        $builder    = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
@@ -41,5 +35,15 @@ class ProfileRequestParameterBuilderTest extends TestCase
             ],
             $parameters
         );
+    }
+
+    protected function getParameterBuilder(): string
+    {
+        return ProfileRequestParameterBuilder::class;
+    }
+
+    protected function getValidPaymentHandler(): string
+    {
+        return PayoneRatepayDebitPaymentHandler::class;
     }
 }

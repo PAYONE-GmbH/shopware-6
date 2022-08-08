@@ -9,21 +9,25 @@ use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\TestCaseBase\ConfigurationHelper;
-use PayonePayment\TestCaseBase\PayoneTestBehavior;
+use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
+/**
+ * @covers \PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\AuthorizeRequestParameterBuilder
+ */
 class AuthorizeRequestParameterBuilderTest extends TestCase
 {
-    use PayoneTestBehavior;
+    use PaymentTransactionParameterBuilderTestTrait;
     use ConfigurationHelper;
 
     public function testItAddsCorrectAuthorizeParametersWithIban(): void
     {
         $this->setValidRatepayProfiles(
             $this->getContainer(),
-            PayoneRatepayInstallmentPaymentHandler::class,
+            $this->getValidPaymentHandler(),
             [
                 'tx-limit-installment-min' => '10',
             ]
@@ -40,14 +44,19 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             'ratepayTotalAmount'           => '1000',
         ]);
 
-        $struct     = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayInstallmentPaymentHandler::class);
-        $builder    = $this->getContainer()->get(AuthorizeRequestParameterBuilder::class);
+        $struct = $this->getPaymentTransactionStruct(
+            $dataBag,
+            $this->getValidPaymentHandler(),
+            $this->getValidRequestAction()
+        );
+
+        $builder    = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'                                    => AuthorizeRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE,
-                'clearingtype'                               => AuthorizeRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'request'                                    => $this->getValidRequestAction(),
+                'clearingtype'                               => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
                 'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
                 'iban'                                       => 'DE81500105177147426471',
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
@@ -70,7 +79,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     {
         $this->setValidRatepayProfiles(
             $this->getContainer(),
-            PayoneRatepayInstallmentPaymentHandler::class,
+            $this->getValidPaymentHandler(),
             [
                 'tx-limit-installment-min' => '10',
             ]
@@ -86,8 +95,13 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             'ratepayTotalAmount'           => '1000',
         ]);
 
-        $struct     = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayInstallmentPaymentHandler::class);
-        $builder    = $this->getContainer()->get(AuthorizeRequestParameterBuilder::class);
+        $struct = $this->getPaymentTransactionStruct(
+            $dataBag,
+            $this->getValidPaymentHandler(),
+            $this->getValidRequestAction()
+        );
+
+        $builder    = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         static::assertArrayNotHasKey('iban', $parameters);
@@ -98,7 +112,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     {
         $this->setValidRatepayProfiles(
             $this->getContainer(),
-            PayoneRatepayInstallmentPaymentHandler::class,
+            $this->getValidPaymentHandler(),
             [
                 'tx-limit-installment-min' => '10',
             ]
@@ -114,8 +128,13 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             'ratepayTotalAmount'           => '1000',
         ]);
 
-        $struct  = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayInstallmentPaymentHandler::class);
-        $builder = $this->getContainer()->get(AuthorizeRequestParameterBuilder::class);
+        $struct = $this->getPaymentTransactionStruct(
+            $dataBag,
+            $this->getValidPaymentHandler(),
+            $this->getValidRequestAction()
+        );
+
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('missing phone number');
@@ -127,7 +146,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     {
         $this->setValidRatepayProfiles(
             $this->getContainer(),
-            PayoneRatepayInstallmentPaymentHandler::class,
+            $this->getValidPaymentHandler(),
             [
                 'tx-limit-installment-min' => '10',
             ]
@@ -143,8 +162,13 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             'ratepayTotalAmount'           => '1000',
         ]);
 
-        $struct  = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayInstallmentPaymentHandler::class);
-        $builder = $this->getContainer()->get(AuthorizeRequestParameterBuilder::class);
+        $struct = $this->getPaymentTransactionStruct(
+            $dataBag,
+            $this->getValidPaymentHandler(),
+            $this->getValidRequestAction()
+        );
+
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
 
         // Save phone number on customer custom fields
         $this->getContainer()->get('customer.repository')->update([
@@ -160,8 +184,8 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
         Assert::assertArraySubset(
             [
-                'request'                                    => AuthorizeRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE,
-                'clearingtype'                               => AuthorizeRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'request'                                    => $this->getValidRequestAction(),
+                'clearingtype'                               => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
                 'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
                 'iban'                                       => 'DE81500105177147426471',
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
@@ -178,5 +202,20 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             ],
             $parameters
         );
+    }
+
+    protected function getParameterBuilder(): string
+    {
+        return AuthorizeRequestParameterBuilder::class;
+    }
+
+    protected function getValidPaymentHandler(): string
+    {
+        return PayoneRatepayInstallmentPaymentHandler::class;
+    }
+
+    protected function getValidRequestAction(): string
+    {
+        return AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE;
     }
 }

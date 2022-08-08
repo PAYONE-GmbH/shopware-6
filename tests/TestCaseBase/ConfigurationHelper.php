@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\TestCaseBase;
 
-use PayonePayment\Components\Ratepay\ProfileService;
+use PayonePayment\Components\ConfigReader\ConfigReader;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -14,6 +14,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 trait ConfigurationHelper
 {
+    protected function setPayoneConfig(
+        ContainerInterface $container,
+        string $configKey,
+        string $configValue
+    ): void {
+        $systemConfigService = $container->get(SystemConfigService::class);
+        $systemConfigService->set('PayonePayment.settings.' . $configKey, $configValue);
+    }
+
     protected function setValidRatepayProfiles(
         ContainerInterface $container,
         string $paymentHandler,
@@ -42,9 +51,14 @@ trait ConfigurationHelper
             }
         }
 
-        $configMapping = ProfileService::getConfigMappingByPaymentHandler($paymentHandler);
-        $systemConfigService->set($configMapping['profilesKey'], $this->getValidRatepayProfiles());
-        $systemConfigService->set($configMapping['profileConfigurationsKey'], $configurations);
+        $systemConfigService->set(
+            ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles'),
+            $this->getValidRatepayProfiles()
+        );
+        $systemConfigService->set(
+            ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'ProfileConfigurations'),
+            $configurations
+        );
     }
 
     protected function getValidRatepayProfiles(): array

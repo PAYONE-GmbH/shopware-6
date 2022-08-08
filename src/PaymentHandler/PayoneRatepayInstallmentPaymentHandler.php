@@ -100,15 +100,19 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandle
             );
         }
 
+        // It differs depending on the authorization method
+        $clearingReference = $response['addpaydata']['clearing_reference'] ?? $response['clearing']['Reference'];
+
         // Prepare custom fields for the transaction
         $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
             $this->getBaseCustomFields($response['status']),
             [
-                CustomFieldInstaller::WORK_ORDER_ID      => $requestData->get('workorder'),
-                CustomFieldInstaller::CLEARING_REFERENCE => $response['addpaydata']['clearing_reference'],
-                CustomFieldInstaller::CAPTURE_MODE       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-                CustomFieldInstaller::CLEARING_TYPE      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                CustomFieldInstaller::FINANCING_TYPE     => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
+                CustomFieldInstaller::WORK_ORDER_ID        => $requestData->get('workorder'),
+                CustomFieldInstaller::CLEARING_REFERENCE   => $clearingReference,
+                CustomFieldInstaller::CAPTURE_MODE         => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+                CustomFieldInstaller::CLEARING_TYPE        => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+                CustomFieldInstaller::FINANCING_TYPE       => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
+                CustomFieldInstaller::USED_RATEPAY_SHOP_ID => $request['add_paydata[shop_id]'],
             ]
         ));
 

@@ -8,21 +8,25 @@ use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\TestCaseBase\ConfigurationHelper;
-use PayonePayment\TestCaseBase\PayoneTestBehavior;
+use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
+/**
+ * @covers \PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\PreAuthorizeRequestParameterBuilder
+ */
 class PreAuthorizeRequestParameterBuilderTest extends TestCase
 {
-    use PayoneTestBehavior;
+    use PaymentTransactionParameterBuilderTestTrait;
     use ConfigurationHelper;
 
     public function testItAddsCorrectPreAuthorizeParameters(): void
     {
         $this->setValidRatepayProfiles(
             $this->getContainer(),
-            PayoneRatepayInstallmentPaymentHandler::class,
+            $this->getValidPaymentHandler(),
             [
                 'tx-limit-installment-min' => '10',
             ]
@@ -39,14 +43,19 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
             'ratepayTotalAmount'           => '1000',
         ]);
 
-        $struct     = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayInstallmentPaymentHandler::class);
-        $builder    = $this->getContainer()->get(PreAuthorizeRequestParameterBuilder::class);
+        $struct = $this->getPaymentTransactionStruct(
+            $dataBag,
+            $this->getValidPaymentHandler(),
+            $this->getValidRequestAction()
+        );
+
+        $builder    = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'                                    => AuthorizeRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE,
-                'clearingtype'                               => AuthorizeRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'request'                                    => $this->getValidRequestAction(),
+                'clearingtype'                               => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
                 'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
                 'iban'                                       => 'DE81500105177147426471',
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
@@ -63,5 +72,20 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
             ],
             $parameters
         );
+    }
+
+    protected function getParameterBuilder(): string
+    {
+        return PreAuthorizeRequestParameterBuilder::class;
+    }
+
+    protected function getValidPaymentHandler(): string
+    {
+        return PayoneRatepayInstallmentPaymentHandler::class;
+    }
+
+    protected function getValidRequestAction(): string
+    {
+        return AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE;
     }
 }

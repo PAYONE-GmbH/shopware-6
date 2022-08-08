@@ -15,6 +15,9 @@ use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMa
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
 
+/**
+ * @covers \PayonePayment\Components\TransactionStatus\TransactionStatusService
+ */
 class TransactionStatusServiceTest extends TestCase
 {
     use PayoneTestBehavior;

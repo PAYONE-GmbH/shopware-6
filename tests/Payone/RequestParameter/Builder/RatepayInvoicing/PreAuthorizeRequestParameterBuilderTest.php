@@ -8,33 +8,42 @@ use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\TestCaseBase\ConfigurationHelper;
-use PayonePayment\TestCaseBase\PayoneTestBehavior;
+use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
+/**
+ * @covers \PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing\PreAuthorizeRequestParameterBuilder
+ */
 class PreAuthorizeRequestParameterBuilderTest extends TestCase
 {
-    use PayoneTestBehavior;
+    use PaymentTransactionParameterBuilderTestTrait;
     use ConfigurationHelper;
 
     public function testItAddsCorrectPreAuthorizeParameters(): void
     {
-        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayInvoicingPaymentHandler::class);
+        $this->setValidRatepayProfiles($this->getContainer(), $this->getValidPaymentHandler());
 
         $dataBag = new RequestDataBag([
             'ratepayPhone'    => '0123456789',
             'ratepayBirthday' => '2000-01-01',
         ]);
 
-        $struct     = $this->getPaymentTransactionStruct($dataBag, PayoneRatepayInvoicingPaymentHandler::class);
-        $builder    = $this->getContainer()->get(PreAuthorizeRequestParameterBuilder::class);
+        $struct = $this->getPaymentTransactionStruct(
+            $dataBag,
+            $this->getValidPaymentHandler(),
+            $this->getValidRequestAction()
+        );
+
+        $builder    = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'                                    => PreAuthorizeRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE,
-                'clearingtype'                               => PreAuthorizeRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'request'                                    => $this->getValidRequestAction(),
+                'clearingtype'                               => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
                 'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
                 'add_paydata[shop_id]'                       => 88880103,
@@ -44,5 +53,20 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
             ],
             $parameters
         );
+    }
+
+    protected function getParameterBuilder(): string
+    {
+        return PreAuthorizeRequestParameterBuilder::class;
+    }
+
+    protected function getValidPaymentHandler(): string
+    {
+        return PayoneRatepayInvoicingPaymentHandler::class;
+    }
+
+    protected function getValidRequestAction(): string
+    {
+        return AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE;
     }
 }

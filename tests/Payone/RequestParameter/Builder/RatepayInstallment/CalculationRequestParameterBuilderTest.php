@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment;
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\Ratepay\ProfileService;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
+use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\RatepayCalculationStruct;
@@ -15,10 +16,67 @@ use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
+/**
+ * @covers \PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\CalculationRequestParameterBuilder
+ */
 class CalculationRequestParameterBuilderTest extends TestCase
 {
     use PayoneTestBehavior;
     use ConfigurationHelper;
+
+    public function testItSupportsValidCalculationRequest(): void
+    {
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayInstallmentPaymentHandler::class);
+
+        $struct  = $this->getRatepayCalculationStruct(CalculationRequestParameterBuilder::INSTALLMENT_TYPE_RATE, 10);
+        $builder = $this->getContainer()->get(CalculationRequestParameterBuilder::class);
+
+        static::assertTrue($builder->supports($struct));
+    }
+
+    public function testItNotSupportsInvalidRequestAction(): void
+    {
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayInstallmentPaymentHandler::class);
+
+        $struct = $this->getRatepayCalculationStruct(
+            CalculationRequestParameterBuilder::INSTALLMENT_TYPE_RATE,
+            10,
+            PayoneRatepayInstallmentPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_RATEPAY_PROFILE
+        );
+
+        $builder = $this->getContainer()->get(CalculationRequestParameterBuilder::class);
+
+        static::assertFalse($builder->supports($struct));
+    }
+
+    public function testItNotSupportsInvalidPaymentMethod(): void
+    {
+        $this->setValidRatepayProfiles($this->getContainer(), PayoneRatepayDebitPaymentHandler::class);
+
+        $struct = $this->getRatepayCalculationStruct(
+            CalculationRequestParameterBuilder::INSTALLMENT_TYPE_RATE,
+            10,
+            PayoneRatepayDebitPaymentHandler::class,
+        );
+
+        $builder = $this->getContainer()->get(CalculationRequestParameterBuilder::class);
+
+        static::assertFalse($builder->supports($struct));
+    }
+
+    public function testItNotSupportsFinancialRequest(): void
+    {
+        $struct = $this->getFinancialTransactionStruct(
+            new RequestDataBag([]),
+            PayoneRatepayInstallmentPaymentHandler::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+        );
+
+        $builder = $this->getContainer()->get(CalculationRequestParameterBuilder::class);
+
+        static::assertFalse($builder->supports($struct));
+    }
 
     public function testItAddsTheInstallmentCalculationRequestParametersByRate(): void
     {
@@ -68,13 +126,17 @@ class CalculationRequestParameterBuilderTest extends TestCase
         );
     }
 
-    protected function getRatepayCalculationStruct(string $installmentType, int $installmentValue): RatepayCalculationStruct
-    {
+    protected function getRatepayCalculationStruct(
+        string $installmentType,
+        int $installmentValue,
+        string $paymentHandler = PayoneRatepayInstallmentPaymentHandler::class,
+        string $requestAction = AbstractRequestParameterBuilder::REQUEST_ACTION_RATEPAY_CALCULATION
+    ): RatepayCalculationStruct {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $cart                = $this->fillCart($salesChannelContext->getToken(), 100);
         $profile             = $this->getContainer()->get(ProfileService::class)->getProfileBySalesChannelContext(
             $salesChannelContext,
-            PayoneRatepayInstallmentPaymentHandler::class
+            $paymentHandler
         );
 
         $dataBag = new RequestDataBag([
@@ -87,8 +149,8 @@ class CalculationRequestParameterBuilderTest extends TestCase
             $dataBag,
             $salesChannelContext,
             $profile,
-            PayoneRatepayInstallmentPaymentHandler::class,
-            AbstractRequestParameterBuilder::REQUEST_ACTION_RATEPAY_CALCULATION
+            $paymentHandler,
+            $requestAction
         );
     }
 }

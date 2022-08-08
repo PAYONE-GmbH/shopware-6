@@ -7,13 +7,16 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Debit;
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
-use PayonePayment\TestCaseBase\PayoneTestBehavior;
+use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
+/**
+ * @covers \PayonePayment\Payone\RequestParameter\Builder\Debit\AuthorizeRequestParameterBuilder
+ */
 class AuthorizeRequestParameterBuilderTest extends TestCase
 {
-    use PayoneTestBehavior;
+    use PaymentTransactionParameterBuilderTestTrait;
 
     public function testItAddsCorrectAuthorizeParameters(): void
     {
@@ -23,19 +26,39 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             'accountOwner' => 'Max Mustermann',
         ]);
 
-        $struct     = $this->getPaymentTransactionStruct($dataBag, PayoneDebitPaymentHandler::class);
-        $builder    = $this->getContainer()->get(AuthorizeRequestParameterBuilder::class);
+        $struct = $this->getPaymentTransactionStruct(
+            $dataBag,
+            $this->getValidPaymentHandler(),
+            $this->getValidRequestAction()
+        );
+
+        $builder    = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
                 'clearingtype'      => AbstractRequestParameterBuilder::CLEARING_TYPE_DEBIT,
-                'request'           => AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE,
+                'request'           => $this->getValidRequestAction(),
                 'iban'              => 'DE61500105178278794285',
                 'bic'               => 'Test123',
                 'bankaccountholder' => 'Max Mustermann',
             ],
             $parameters
         );
+    }
+
+    protected function getParameterBuilder(): string
+    {
+        return AuthorizeRequestParameterBuilder::class;
+    }
+
+    protected function getValidPaymentHandler(): string
+    {
+        return PayoneDebitPaymentHandler::class;
+    }
+
+    protected function getValidRequestAction(): string
+    {
+        return AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE;
     }
 }

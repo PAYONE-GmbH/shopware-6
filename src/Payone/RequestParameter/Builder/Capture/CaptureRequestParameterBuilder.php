@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Capture;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
@@ -81,6 +82,11 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         if ($arguments->getPaymentMethod() === PayoneBancontactPaymentHandler::class) {
             $isCompleted                 = $parameters['capturemode'] === self::CAPTUREMODE_COMPLETED;
             $parameters['settleaccount'] = $isCompleted ? self::SETTLEACCOUNT_YES : self::SETTLEACCOUNT_NO;
+        }
+
+        if (in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::RATEPAY)) {
+            $parameters['settleaccount']        = 'yes';
+            $parameters['add_paydata[shop_id]'] = $customFields[CustomFieldInstaller::USED_RATEPAY_SHOP_ID];
         }
 
         return $parameters;

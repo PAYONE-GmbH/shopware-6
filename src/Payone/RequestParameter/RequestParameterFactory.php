@@ -30,16 +30,15 @@ class RequestParameterFactory
 
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $parameters = [];
+        $collectedParameters = [];
 
         foreach ($this->requestParameterBuilder as $builder) {
             if ($builder->supports($arguments) === true) {
-                $parameters = array_merge(
-                    $parameters,
-                    $builder->getRequestParameter($arguments)
-                );
+                $collectedParameters[] = $builder->getRequestParameter($arguments);
             }
         }
+
+        $parameters = array_merge(...$collectedParameters);
 
         if (empty($parameters)) {
             throw new RuntimeException('No valid request parameter builder found');
