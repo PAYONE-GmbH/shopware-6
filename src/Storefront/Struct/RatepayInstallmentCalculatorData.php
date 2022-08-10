@@ -19,9 +19,6 @@ class RatepayInstallmentCalculatorData extends Struct
     /** @var array */
     protected $allowedMonths = [];
 
-    /** @var string */
-    protected $debitPayType;
-
     /** @var array */
     protected $defaults = [];
 
@@ -44,11 +41,6 @@ class RatepayInstallmentCalculatorData extends Struct
     public function getAllowedMonths(): array
     {
         return $this->allowedMonths;
-    }
-
-    public function getDebitPayType(): string
-    {
-        return $this->debitPayType;
     }
 
     public function getDefaults(): array

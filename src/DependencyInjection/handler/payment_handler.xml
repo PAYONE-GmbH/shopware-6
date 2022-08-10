@@ -226,6 +226,7 @@
             <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService" />
 
             <tag name="shopware.payment.method.sync" />
         </service>
@@ -238,6 +239,7 @@
             <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService" />
 
             <tag name="shopware.payment.method.sync" />
         </service>
@@ -250,6 +252,7 @@
             <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService" />
 
             <tag name="shopware.payment.method.sync" />
         </service>

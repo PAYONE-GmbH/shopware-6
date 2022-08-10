@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Storefront\Controller\Ratepay;
 
-use PayonePayment\Components\Ratepay\InstallmentServiceInterface;
+use PayonePayment\Components\Ratepay\Installment\InstallmentServiceInterface;
 use RuntimeException;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;

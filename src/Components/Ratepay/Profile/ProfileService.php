@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\Ratepay;
+namespace PayonePayment\Components\Ratepay\Profile;
 
 use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\Helper\OrderFetcherInterface;

@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
+use PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -73,8 +74,17 @@ class PayoneRatepayInvoicingPaymentHandlerTest extends TestCase
             ])
         );
 
+        $deviceFingerprintService = $this->createMock(DeviceFingerprintService::class);
+        $deviceFingerprintService->expects($this->once())->method('deleteDeviceIdentToken');
+
         $dataBag            = new RequestDataBag([]);
-        $paymentHandler     = $this->getPaymentHandler($client, $dataHandler, $requestFactory, $dataBag);
+        $paymentHandler     = $this->getPaymentHandler(
+            $client,
+            $dataHandler,
+            $requestFactory,
+            $deviceFingerprintService,
+            $dataBag
+        );
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
             PayoneRatepayInvoicingPaymentHandler::class
@@ -135,8 +145,17 @@ class PayoneRatepayInvoicingPaymentHandlerTest extends TestCase
             ])
         );
 
+        $deviceFingerprintService = $this->createMock(DeviceFingerprintService::class);
+        $deviceFingerprintService->expects($this->once())->method('deleteDeviceIdentToken');
+
         $dataBag            = new RequestDataBag([]);
-        $paymentHandler     = $this->getPaymentHandler($client, $dataHandler, $requestFactory, $dataBag);
+        $paymentHandler     = $this->getPaymentHandler(
+            $client,
+            $dataHandler,
+            $requestFactory,
+            $deviceFingerprintService,
+            $dataBag
+        );
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
             PayoneRatepayInvoicingPaymentHandler::class
@@ -149,6 +168,7 @@ class PayoneRatepayInvoicingPaymentHandlerTest extends TestCase
         PayoneClientInterface $client,
         TransactionDataHandlerInterface $dataHandler,
         RequestParameterFactory $requestFactory,
+        DeviceFingerprintService $deviceFingerprintService,
         RequestDataBag $dataBag
     ): PayoneRatepayInvoicingPaymentHandler {
         return new PayoneRatepayInvoicingPaymentHandler(
@@ -158,7 +178,8 @@ class PayoneRatepayInvoicingPaymentHandlerTest extends TestCase
             $dataHandler,
             $this->getContainer()->get('order_line_item.repository'),
             $this->getRequestStack($dataBag),
-            $requestFactory
+            $requestFactory,
+            $deviceFingerprintService
         );
     }
 

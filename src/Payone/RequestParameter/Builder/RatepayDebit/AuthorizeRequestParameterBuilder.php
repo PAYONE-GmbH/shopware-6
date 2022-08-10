@@ -6,8 +6,9 @@ namespace PayonePayment\Payone\RequestParameter\Builder\RatepayDebit;
 
 use PayonePayment\Components\Helper\OrderFetcherInterface;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
-use PayonePayment\Components\Ratepay\Profile;
-use PayonePayment\Components\Ratepay\ProfileServiceInterface;
+use PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintServiceInterface;
+use PayonePayment\Components\Ratepay\Profile\Profile;
+use PayonePayment\Components\Ratepay\Profile\ProfileServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
@@ -28,6 +29,9 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     /** @var ProfileServiceInterface */
     protected $profileService;
 
+    /** @var DeviceFingerprintServiceInterface */
+    protected $deviceFingerprintService;
+
     /** @var EntityRepositoryInterface */
     protected $customerRepository;
 
@@ -37,13 +41,15 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     public function __construct(
         OrderFetcherInterface $orderFetcher,
         ProfileServiceInterface $profileService,
+        DeviceFingerprintServiceInterface $deviceFingerprintService,
         EntityRepositoryInterface $customerRepository,
         LineItemHydratorInterface $lineItemHydrator
     ) {
-        $this->orderFetcher       = $orderFetcher;
-        $this->profileService     = $profileService;
-        $this->customerRepository = $customerRepository;
-        $this->lineItemHydrator   = $lineItemHydrator;
+        $this->orderFetcher             = $orderFetcher;
+        $this->profileService           = $profileService;
+        $this->deviceFingerprintService = $deviceFingerprintService;
+        $this->customerRepository       = $customerRepository;
+        $this->lineItemHydrator         = $lineItemHydrator;
     }
 
     /** @param PaymentTransactionStruct $arguments */
@@ -64,6 +70,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'iban'                                       => $dataBag->get('ratepayIban'),
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
             'add_paydata[shop_id]'                       => $profile->getShopId(),
+            'add_paydata[device_token]'                  => $this->deviceFingerprintService->getDeviceIdentToken(),
         ];
 
         $this->applyPhoneParameter($order, $parameters, $dataBag, $context);

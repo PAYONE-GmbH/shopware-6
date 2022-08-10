@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\RatepayDebit;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
+use PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -13,6 +14,7 @@ use PayonePayment\TestCaseBase\ConfigurationHelper;
 use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * @covers \PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\PreAuthorizeRequestParameterBuilder
@@ -25,6 +27,10 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
     public function testItAddsCorrectPreAuthorizeParameters(): void
     {
         $this->setValidRatepayProfiles($this->getContainer(), $this->getValidPaymentHandler());
+        $this->getContainer()->get(SessionInterface::class)->set(
+            DeviceFingerprintService::SESSION_VAR_NAME,
+            'the-device-ident-token'
+        );
 
         $dataBag = new RequestDataBag([
             'ratepayIban'     => 'DE81500105177147426471',
@@ -49,6 +55,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
                 'iban'                                       => 'DE81500105177147426471',
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
                 'add_paydata[shop_id]'                       => 88880103,
+                'add_paydata[device_token]'                  => 'the-device-ident-token',
                 'telephonenumber'                            => '0123456789',
                 'birthday'                                   => '20000101',
                 'it[1]'                                      => LineItemHydrator::TYPE_GOODS,

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\Ratepay;
+namespace PayonePayment\Components\Ratepay\Installment;
 
 use PayonePayment\Storefront\Struct\RatepayInstallmentCalculatorData;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;

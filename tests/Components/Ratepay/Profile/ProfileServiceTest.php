@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\Ratepay;
+namespace PayonePayment\Components\Ratepay\Profile;
 
 use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\Helper\OrderFetcher;
@@ -20,7 +20,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 /**
- * @covers \PayonePayment\Components\Ratepay\ProfileService
+ * @covers \PayonePayment\Components\Ratepay\Profile\ProfileService
  */
 class ProfileServiceTest extends TestCase
 {

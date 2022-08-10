@@ -30,7 +30,9 @@
         </service>
 
         <service id="PayonePayment\EventListener\CheckoutConfirmRatepayEventListener">
-            <argument type="service" id="PayonePayment\Components\Ratepay\InstallmentService" />
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\Installment\InstallmentService" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService" />
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -93,7 +95,7 @@
         </service>
 
         <service id="PayonePayment\EventListener\KernelEventListener">
-            <argument type="service" id="PayonePayment\Components\Ratepay\ProfileService" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\Profile\ProfileService" />
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Struct;
 
-use PayonePayment\Components\Ratepay\Profile;
+use PayonePayment\Components\Ratepay\Profile\Profile;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\CartTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\RequestDataTrait;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\SalesChannelContextTrait;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\Components\Ratepay\ProfileServiceInterface;
+use PayonePayment\Components\Ratepay\Profile\ProfileServiceInterface;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\TestCaseBase\ConfigurationHelper;
 use PHPUnit\Framework\TestCase;

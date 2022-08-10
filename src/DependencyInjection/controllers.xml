@@ -107,7 +107,7 @@
         </service>
 
         <service id="PayonePayment\Storefront\Controller\Ratepay\RatepayController">
-            <argument type="service" id="PayonePayment\Components\Ratepay\InstallmentService" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\Installment\InstallmentService" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

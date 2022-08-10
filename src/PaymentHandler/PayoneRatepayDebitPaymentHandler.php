@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
+use PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintServiceInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -36,6 +37,9 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
     /** @var RequestParameterFactory */
     private $requestParameterFactory;
 
+    /** @var DeviceFingerprintServiceInterface */
+    private $deviceFingerprintService;
+
     public function __construct(
         ConfigReaderInterface $configReader,
         PayoneClientInterface $client,
@@ -43,14 +47,16 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
         TransactionDataHandlerInterface $dataHandler,
         EntityRepositoryInterface $lineItemRepository,
         RequestStack $requestStack,
-        RequestParameterFactory $requestParameterFactory
+        RequestParameterFactory $requestParameterFactory,
+        DeviceFingerprintServiceInterface $deviceFingerprintService
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client                  = $client;
-        $this->translator              = $translator;
-        $this->dataHandler             = $dataHandler;
-        $this->requestParameterFactory = $requestParameterFactory;
+        $this->client                   = $client;
+        $this->translator               = $translator;
+        $this->dataHandler              = $dataHandler;
+        $this->requestParameterFactory  = $requestParameterFactory;
+        $this->deviceFingerprintService = $deviceFingerprintService;
     }
 
     /**
@@ -82,11 +88,13 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
         try {
             $response = $this->client->request($request);
         } catch (PayoneRequestException $exception) {
+            $this->deviceFingerprintService->deleteDeviceIdentToken();
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
         } catch (Throwable $exception) {
+            $this->deviceFingerprintService->deleteDeviceIdentToken();
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -94,6 +102,7 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
         }
 
         if (empty($response['status']) || $response['status'] === 'ERROR') {
+            $this->deviceFingerprintService->deleteDeviceIdentToken();
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -118,6 +127,7 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
+        $this->deviceFingerprintService->deleteDeviceIdentToken();
     }
 
     /**

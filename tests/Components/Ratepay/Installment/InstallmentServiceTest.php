@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\Ratepay;
+namespace PayonePayment\Components\Ratepay\Installment;
 
+use PayonePayment\Components\Ratepay\Profile\ProfileService;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\CalculationRequestParameterBuilder;
@@ -15,7 +16,7 @@ use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
 /**
- * @covers \PayonePayment\Components\Ratepay\InstallmentService
+ * @covers \PayonePayment\Components\Ratepay\Installment\InstallmentService
  */
 class InstallmentServiceTest extends TestCase
 {

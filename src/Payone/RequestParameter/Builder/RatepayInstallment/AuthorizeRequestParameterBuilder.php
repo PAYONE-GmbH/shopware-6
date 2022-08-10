@@ -7,7 +7,8 @@ namespace PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\Helper\OrderFetcherInterface;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
-use PayonePayment\Components\Ratepay\ProfileServiceInterface;
+use PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintServiceInterface;
+use PayonePayment\Components\Ratepay\Profile\ProfileServiceInterface;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\AuthorizeRequestParameterBuilder as RatepayDebitAuthorizeRequestParameterBuilder;
@@ -23,11 +24,18 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
     public function __construct(
         OrderFetcherInterface $orderFetcher,
         ProfileServiceInterface $profileService,
+        DeviceFingerprintServiceInterface $deviceFingerprintService,
         EntityRepositoryInterface $customerRepository,
         LineItemHydratorInterface $lineItemHydrator,
         CurrencyPrecisionInterface $currencyPrecision
     ) {
-        parent::__construct($orderFetcher, $profileService, $customerRepository, $lineItemHydrator);
+        parent::__construct(
+            $orderFetcher,
+            $profileService,
+            $deviceFingerprintService,
+            $customerRepository,
+            $lineItemHydrator
+        );
         $this->currencyPrecision = $currencyPrecision;
     }
 
@@ -53,6 +61,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
             'add_paydata[interest_rate]'                 => $this->currencyPrecision->getRoundedTotalAmount((float) $dataBag->get('ratepayInterestRate'), $currency),
             'add_paydata[amount]'                        => $this->currencyPrecision->getRoundedTotalAmount((float) $dataBag->get('ratepayTotalAmount'), $currency),
             'add_paydata[shop_id]'                       => $profile->getShopId(),
+            'add_paydata[device_token]'                  => $this->deviceFingerprintService->getDeviceIdentToken(),
         ];
 
         if ($dataBag->get('ratepayIban')) {

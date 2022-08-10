@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Components\Ratepay;
+namespace PayonePayment\Components\Ratepay\Installment;
 
+use PayonePayment\Components\Ratepay\Profile\Profile;
+use PayonePayment\Components\Ratepay\Profile\ProfileServiceInterface;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -80,7 +82,6 @@ class InstallmentService implements InstallmentServiceInterface
             'minimumRate'         => (float) $profileConfiguration['interestrate-min'],
             'maximumRate'         => (float) $profileConfiguration['interestrate-max'],
             'allowedMonths'       => $allowedMonths,
-            'debitPayType'        => '', // ToDo: Get from profile
             'defaults'            => $defaults,
             'calculationParams'   => $dataBag->all(),
             'calculationResponse' => $calculationResponse,
