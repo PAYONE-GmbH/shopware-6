@@ -42,7 +42,7 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $salesChannelContext->getCustomer()->getActiveBillingAddress()->setCompany('the-company');
 
-        $event = new CheckoutConfirmPageLoadedEvent($page, $salesChannelContext, new Request());
+        $event    = new CheckoutConfirmPageLoadedEvent($page, $salesChannelContext, new Request());
         $listener = $this->getContainer()->get(CheckoutConfirmRatepayEventListener::class);
 
         $listener->hidePaymentMethodsForCompanies($event);
@@ -59,7 +59,7 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $salesChannelContext->getCustomer()->getActiveBillingAddress()->setCompany('the-company');
 
-        $event = new AccountEditOrderPageLoadedEvent($page, $salesChannelContext, new Request());
+        $event    = new AccountEditOrderPageLoadedEvent($page, $salesChannelContext, new Request());
         $listener = $this->getContainer()->get(CheckoutConfirmRatepayEventListener::class);
 
         $listener->hidePaymentMethodsForCompanies($event);
@@ -76,7 +76,7 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $salesChannelContext->getCustomer()->getActiveBillingAddress()->setCompany('the-company');
 
-        $event = new AccountPaymentMethodPageLoadedEvent($page, $salesChannelContext, new Request());
+        $event    = new AccountPaymentMethodPageLoadedEvent($page, $salesChannelContext, new Request());
         $listener = $this->getContainer()->get(CheckoutConfirmRatepayEventListener::class);
 
         $listener->hidePaymentMethodsForCompanies($event);

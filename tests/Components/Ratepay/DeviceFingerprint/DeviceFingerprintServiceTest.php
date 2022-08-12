@@ -17,9 +17,9 @@ class DeviceFingerprintServiceTest extends TestCase
 
     public function testItReturnsNewDeviceIdentTokenAndSetsItToSession(): void
     {
-        $session = $this->getContainer()->get(SessionInterface::class);
+        $session                  = $this->getContainer()->get(SessionInterface::class);
         $deviceFingerprintService = new DeviceFingerprintService($session);
-        $token = $deviceFingerprintService->getDeviceIdentToken();
+        $token                    = $deviceFingerprintService->getDeviceIdentToken();
 
         static::assertSame($token, $session->get(DeviceFingerprintService::SESSION_VAR_NAME));
     }
@@ -30,7 +30,7 @@ class DeviceFingerprintServiceTest extends TestCase
         $session->set(DeviceFingerprintService::SESSION_VAR_NAME, 'the-device-ident-token');
 
         $deviceFingerprintService = new DeviceFingerprintService($session);
-        $token = $deviceFingerprintService->getDeviceIdentToken();
+        $token                    = $deviceFingerprintService->getDeviceIdentToken();
 
         static::assertSame('the-device-ident-token', $token);
     }
@@ -48,7 +48,7 @@ class DeviceFingerprintServiceTest extends TestCase
 
     public function testItReturnsTrueIfDeviceIdentTokenIsAlreadyGenerated(): void
     {
-        $session = $this->getContainer()->get(SessionInterface::class);
+        $session                  = $this->getContainer()->get(SessionInterface::class);
         $deviceFingerprintService = new DeviceFingerprintService($session);
         $deviceFingerprintService->getDeviceIdentToken();
 
@@ -57,7 +57,7 @@ class DeviceFingerprintServiceTest extends TestCase
 
     public function testItReturnsFalseIfDeviceIdentTokenIsNotAlreadyGenerated(): void
     {
-        $session = $this->getContainer()->get(SessionInterface::class);
+        $session                  = $this->getContainer()->get(SessionInterface::class);
         $deviceFingerprintService = new DeviceFingerprintService($session);
 
         static::assertFalse($deviceFingerprintService->isDeviceIdentTokenAlreadyGenerated());
@@ -65,10 +65,10 @@ class DeviceFingerprintServiceTest extends TestCase
 
     public function testItReturnsDeviceIdentSnippet(): void
     {
-        $session = $this->getContainer()->get(SessionInterface::class);
+        $session                  = $this->getContainer()->get(SessionInterface::class);
         $deviceFingerprintService = new DeviceFingerprintService($session);
-        $token = $deviceFingerprintService->getDeviceIdentToken();
-        $snippet = $deviceFingerprintService->getDeviceIdentSnippet('ratepay', $token);
+        $token                    = $deviceFingerprintService->getDeviceIdentToken();
+        $snippet                  = $deviceFingerprintService->getDeviceIdentSnippet('ratepay', $token);
 
         static::assertSame(
             '<script language="JavaScript">var di = {"v":"ratepay","t":"' . $token . '","l":"Checkout"};</script><script type="text/javascript" src="//d.ratepay.com/ratepay/di.js"></script>

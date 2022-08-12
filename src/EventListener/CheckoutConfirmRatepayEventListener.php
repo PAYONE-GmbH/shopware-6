@@ -41,7 +41,7 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         InstallmentServiceInterface $installmentService,
         DeviceFingerprintServiceInterface $deviceFingerprintService
     ) {
-        $this->systemConfigService = $systemConfigService;
+        $this->systemConfigService      = $systemConfigService;
         $this->installmentService       = $installmentService;
         $this->deviceFingerprintService = $deviceFingerprintService;
     }
@@ -160,7 +160,7 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
             ) ?? 'ratepay';
 
             $deviceIdentToken = $this->deviceFingerprintService->getDeviceIdentToken();
-            $snippet = $this->deviceFingerprintService->getDeviceIdentSnippet($snippetId, $deviceIdentToken);
+            $snippet          = $this->deviceFingerprintService->getDeviceIdentSnippet($snippetId, $deviceIdentToken);
 
             $extension = new RatepayDeviceFingerprintData();
             $extension->setSnippet($snippet);

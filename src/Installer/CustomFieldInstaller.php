@@ -226,7 +226,7 @@ class CustomFieldInstaller implements InstallerInterface
             [
                 'id'               => '0beeb4fd0c4947afaa360cb0431c29ad',
                 'name'             => self::USED_RATEPAY_SHOP_ID,
-                'type'             => CustomFieldTypes::TEXT,
+                'type'             => CustomFieldTypes::INT,
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
             ],
             [

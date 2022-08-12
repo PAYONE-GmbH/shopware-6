@@ -79,7 +79,7 @@ class SettingsController extends AbstractController
             $criteria      = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', $paymentClass));
             $paymentMethod = $paymentMethodRepository->search($criteria, $context)->first();
 
-            if (!$paymentMethod || !$paymentMethod->getActive()) {
+            if (!$paymentMethod || !$paymentMethod->getActive() || in_array($paymentMethod->getHandlerIdentifier(), Handler\PaymentHandlerGroups::RATEPAY, true)) {
                 continue;
             }
 
@@ -435,95 +435,6 @@ class SettingsController extends AbstractController
                     'zip'          => '12345',
                     'city'         => 'Test',
                     'ip'           => '127.0.0.1',
-                ];
-
-            case Handler\PayoneRatepayDebitPaymentHandler::class:
-                return [
-                    'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-                    'add_paydata[shop_id]'                       => 88880103,
-                    'amount'                                     => 374187,
-                    'birthday'                                   => '20000101',
-                    'city'                                       => 'Test',
-                    'clearingtype'                               => Handler\AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                    'country'                                    => 'DE',
-                    'currency'                                   => 'EUR',
-                    'de[1]'                                      => 'Aerodynamic Aluminum Square Root Beer',
-                    'email'                                      => 'test@example.com',
-                    'financingtype'                              => Handler\AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
-                    'firstname'                                  => 'Test',
-                    'iban'                                       => 'DE58500105173153769754',
-                    'id[1]'                                      => 'fb29b34165f44f239cd78f26adb93d3b',
-                    'it[1]'                                      => 'goods',
-                    'lastname'                                   => 'Test',
-                    'mode'                                       => 'test',
-                    'no[1]'                                      => 1,
-                    'pr[1]'                                      => 374187,
-                    'reference'                                  => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
-                    'request'                                    => 'preauthorization',
-                    'salutation'                                 => 'Mr.',
-                    'street'                                     => 'Teststraße 12',
-                    'telephonenumber'                            => '0123456789',
-                    'va[1]'                                      => 700,
-                    'zip'                                        => '12345',
-                ];
-
-            case Handler\PayoneRatepayInstallmentPaymentHandler::class:
-                return [
-                    'request'                                    => 'preauthorization',
-                    'clearingtype'                               => Handler\AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                    'financingtype'                              => Handler\AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
-                    'add_paydata[shop_id]'                       => 88880103,
-                    'add_paydata[debit_paytype]'                 => 'DIRECT-DEBIT',
-                    'add_paydata[installment_amount]'            => 500,
-                    'add_paydata[installment_number]'            => 12,
-                    'add_paydata[last_installment_amount]'       => 4000,
-                    'add_paydata[interest_rate]'                 => 100,
-                    'add_paydata[amount]'                        => 100,
-                    'iban'                                       => 'DE74500105173548289612',
-                    'amount'                                     => 10000,
-                    'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-                    'currency'                                   => 'EUR',
-                    'reference'                                  => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
-                    'email'                                      => 'test@example.com',
-                    'birthday'                                   => '19900505',
-                    'telephonenumber'                            => '+4915121231231',
-                    'firstname'                                  => 'Test',
-                    'lastname'                                   => 'Test',
-                    'country'                                    => 'DE',
-                    'street'                                     => 'teststreet 2',
-                    'zip'                                        => '12345',
-                    'city'                                       => 'Test',
-                    'it[1]'                                      => 'goods',
-                    'id[1]'                                      => '5013210425384',
-                    'pr[1]'                                      => 10000,
-                    'de[1]'                                      => 'Test product',
-                    'no[1]'                                      => 1,
-                ];
-
-            case Handler\PayoneRatepayInvoicingPaymentHandler::class:
-                return [
-                    'request'                                    => 'preauthorization',
-                    'clearingtype'                               => Handler\AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                    'financingtype'                              => Handler\AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
-                    'add_paydata[shop_id]'                       => 88880103,
-                    'amount'                                     => 10000,
-                    'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-                    'currency'                                   => 'EUR',
-                    'reference'                                  => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
-                    'email'                                      => 'test@example.com',
-                    'birthday'                                   => '19900505',
-                    'telephonenumber'                            => '+4915121231231',
-                    'firstname'                                  => 'Test',
-                    'lastname'                                   => 'Test',
-                    'country'                                    => 'DE',
-                    'street'                                     => 'teststreet 2',
-                    'zip'                                        => '12345',
-                    'city'                                       => 'Test',
-                    'it[1]'                                      => 'goods',
-                    'id[1]'                                      => '5013210425384',
-                    'pr[1]'                                      => 10000,
-                    'de[1]'                                      => 'Test product',
-                    'no[1]'                                      => 1,
                 ];
 
             default:

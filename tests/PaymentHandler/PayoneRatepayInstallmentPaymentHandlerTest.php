@@ -77,8 +77,8 @@ class PayoneRatepayInstallmentPaymentHandlerTest extends TestCase
         $deviceFingerprintService = $this->createMock(DeviceFingerprintService::class);
         $deviceFingerprintService->expects($this->once())->method('deleteDeviceIdentToken');
 
-        $dataBag            = new RequestDataBag([]);
-        $paymentHandler     = $this->getPaymentHandler(
+        $dataBag        = new RequestDataBag([]);
+        $paymentHandler = $this->getPaymentHandler(
             $client,
             $dataHandler,
             $requestFactory,
@@ -148,8 +148,8 @@ class PayoneRatepayInstallmentPaymentHandlerTest extends TestCase
         $deviceFingerprintService = $this->createMock(DeviceFingerprintService::class);
         $deviceFingerprintService->expects($this->once())->method('deleteDeviceIdentToken');
 
-        $dataBag            = new RequestDataBag([]);
-        $paymentHandler     = $this->getPaymentHandler(
+        $dataBag        = new RequestDataBag([]);
+        $paymentHandler = $this->getPaymentHandler(
             $client,
             $dataHandler,
             $requestFactory,
