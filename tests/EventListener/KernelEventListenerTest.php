@@ -27,7 +27,7 @@ class KernelEventListenerTest extends TestCase
         $event = new ResponseEvent(
             $this->createMock(Kernel::class),
             $this->getValidRequest(),
-            HttpKernelInterface::MAIN_REQUEST,
+            defined(HttpKernelInterface::class . '::MAIN_REQUEST') ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::MASTER_REQUEST,
             new Response()
         );
 
@@ -50,7 +50,7 @@ class KernelEventListenerTest extends TestCase
         $event = new ResponseEvent(
             $this->createMock(Kernel::class),
             $this->getValidRequest(),
-            HttpKernelInterface::MAIN_REQUEST,
+            defined(HttpKernelInterface::class . '::MAIN_REQUEST') ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::MASTER_REQUEST,
             $response
         );
 
@@ -85,7 +85,7 @@ class KernelEventListenerTest extends TestCase
         $event = new ResponseEvent(
             $this->createMock(Kernel::class),
             $this->getRequestWithWrongRoute(),
-            HttpKernelInterface::MAIN_REQUEST,
+            defined(HttpKernelInterface::class . '::MAIN_REQUEST') ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::MASTER_REQUEST,
             new Response()
         );
 
@@ -101,7 +101,7 @@ class KernelEventListenerTest extends TestCase
         $event = new ResponseEvent(
             $this->createMock(Kernel::class),
             $this->getRequestWithMissingConfigurations(),
-            HttpKernelInterface::MAIN_REQUEST,
+            defined(HttpKernelInterface::class . '::MAIN_REQUEST') ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::MASTER_REQUEST,
             new Response()
         );
 
