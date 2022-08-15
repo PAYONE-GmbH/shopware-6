@@ -65,9 +65,9 @@ jobs:
           php bin/console plugin:install --activate PayonePayment
       - name: PHPUnit
         run: |
-          PROJECT_ROOT=/tmp/shopware \
-            TEST_DATABASE_URL="mysql://root:root@127.0.0.1:3306/shopware" \
-            /tmp/shopware/vendor/bin/phpunit \
+          cd /tmp/shopware
+          composer dumpautoload -d /tmp/shopware/custom/plugins/PayonePayment
+          /tmp/shopware/vendor/bin/phpunit \
             --testdox \
             --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit-legacy.xml.dist
   ci-current:
