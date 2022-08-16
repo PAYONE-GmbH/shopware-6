@@ -22,7 +22,6 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -30,8 +29,6 @@ use Symfony\Component\Translation\Translator;
 
 class PayonePaypalPaymentHandlerTest extends TestCase
 {
-    use KernelTestBehaviour;
-
     /** @var Translator */
     private $translator;
 
@@ -39,9 +36,7 @@ class PayonePaypalPaymentHandlerTest extends TestCase
     {
         parent::setUp();
 
-        /** @var Translator $translator */
-        $translator       = $this->getContainer()->get('translator');
-        $this->translator = $translator;
+        $this->translator = $this->createMock(Translator::class);
     }
 
     public function testRequestOnPay(): void
