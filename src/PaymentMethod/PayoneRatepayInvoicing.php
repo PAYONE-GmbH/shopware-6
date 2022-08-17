@@ -39,5 +39,5 @@ class PayoneRatepayInvoicing extends AbstractPaymentMethod
     ];
 
     /** @var int */
-    protected $position = 132;
+    protected $position = 130;
 }

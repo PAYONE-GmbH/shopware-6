@@ -20,7 +20,7 @@
                 "reloadConfigInfo": "(Plugin Configuration Changes will be saved first)"
             },
             "actions": {
-                "addShop": "Add Shop"
+                "addShop": "Add Shop-ID"
             },
             "errors": {
                 "existingShopId": "The entered shop-id already exists."

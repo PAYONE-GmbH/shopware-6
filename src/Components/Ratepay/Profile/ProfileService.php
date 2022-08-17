@@ -188,6 +188,13 @@ class ProfileService implements ProfileServiceInterface
             $shopId   = (int) $profile['shopId'];
             $currency = $profile['currency'];
 
+            if ($shopId === 0 || empty($currency)) {
+                $profile['error']             = 'Shop ID or Currency missing';
+                $errors[$profilesConfigKey][] = $profile;
+
+                continue;
+            }
+
             $profileRequest = $this->requestParameterFactory->getRequestParameter(
                 new RatepayProfileStruct(
                     $shopId,

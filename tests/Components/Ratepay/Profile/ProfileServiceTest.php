@@ -256,7 +256,7 @@ class ProfileServiceTest extends TestCase
         static::assertArrayHasKey('88880103', $configuration);
     }
 
-    public function testItReturnsErrorsWhenUpdatingProfileConfigurations(): void
+    public function testItReturnsApiErrorsWhenUpdatingProfileConfigurations(): void
     {
         $paymentHandler           = PayoneRatepayDebitPaymentHandler::class;
         $profilesKey              = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles');
@@ -288,6 +288,59 @@ class ProfileServiceTest extends TestCase
         static::assertEmpty($result['updates'][$profileConfigurationsKey]);
         static::assertIsArray($result['errors'][$profilesKey]);
         static::assertSame('Failed', $result['errors'][$profilesKey][0]['error']);
+
+        $configuration = $systemConfigService->get($profileConfigurationsKey);
+
+        static::assertIsArray($configuration);
+        static::assertEmpty($configuration);
+    }
+
+    public function testItReturnsPreValidationErrorsWhenUpdatingProfileConfigurations(): void
+    {
+        $paymentHandler           = PayoneRatepayDebitPaymentHandler::class;
+        $profilesKey              = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles');
+        $profileConfigurationsKey = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'ProfileConfigurations');
+        $systemConfigService      = $this->getContainer()->get(SystemConfigService::class);
+        $systemConfigService->set($profilesKey, [
+            [
+                'shopId'   => null,
+                'currency' => 'EUR',
+            ],
+            [
+                'shopId'   => '88880103',
+                'currency' => null,
+            ],
+            [
+                'shopId'   => '',
+                'currency' => 'EUR',
+            ],
+            [
+                'shopId'   => '88880103',
+                'currency' => '',
+            ],
+        ]);
+
+        $client = $this->createMock(PayoneClientInterface::class);
+        $client->expects($this->never())->method('request');
+
+        $profileService = new ProfileService(
+            $client,
+            $this->getContainer()->get(RequestParameterFactory::class),
+            $this->getContainer()->get(SystemConfigService::class),
+            $this->getContainer()->get(OrderFetcher::class),
+            $this->getContainer()->get(CartService::class)
+        );
+
+        $result = $profileService->updateProfileConfiguration($paymentHandler);
+
+        static::assertEmpty($result['updates'][$profilesKey]);
+        static::assertEmpty($result['updates'][$profileConfigurationsKey]);
+        static::assertIsArray($result['errors'][$profilesKey]);
+        static::assertCount(4, $result['errors'][$profilesKey]);
+        static::assertSame('Shop ID or Currency missing', $result['errors'][$profilesKey][0]['error']);
+        static::assertSame('Shop ID or Currency missing', $result['errors'][$profilesKey][1]['error']);
+        static::assertSame('Shop ID or Currency missing', $result['errors'][$profilesKey][2]['error']);
+        static::assertSame('Shop ID or Currency missing', $result['errors'][$profilesKey][3]['error']);
 
         $configuration = $systemConfigService->get($profileConfigurationsKey);
 

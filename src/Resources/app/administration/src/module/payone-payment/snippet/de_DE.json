@@ -20,7 +20,7 @@
                 "reloadConfigInfo": "(Änderungen an der Plugin-Konfiguration werden dabei zuerst gespeichert)"
             },
             "actions": {
-                "addShop": "Shop hinzufügen"
+                "addShop": "Shop-ID hinzufügen"
             },
             "errors": {
                 "existingShopId": "Die eingegebene ShopId existiert bereits."

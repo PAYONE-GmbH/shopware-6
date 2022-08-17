@@ -39,5 +39,5 @@ class PayoneRatepayDebit extends AbstractPaymentMethod
     ];
 
     /** @var int */
-    protected $position = 130;
+    protected $position = 131;
 }

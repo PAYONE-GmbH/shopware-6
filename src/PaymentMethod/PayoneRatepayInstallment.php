@@ -39,5 +39,5 @@ class PayoneRatepayInstallment extends AbstractPaymentMethod
     ];
 
     /** @var int */
-    protected $position = 131;
+    protected $position = 132;
 }

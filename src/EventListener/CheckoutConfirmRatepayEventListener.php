@@ -7,11 +7,11 @@ namespace PayonePayment\EventListener;
 use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintServiceInterface;
 use PayonePayment\Components\Ratepay\Installment\InstallmentServiceInterface;
+use PayonePayment\Components\Ratepay\Profile\ProfileServiceInterface;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
+use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
-use PayonePayment\PaymentMethod\PayoneRatepayDebit;
 use PayonePayment\PaymentMethod\PayoneRatepayInstallment;
-use PayonePayment\PaymentMethod\PayoneRatepayInvoicing;
 use PayonePayment\Storefront\Struct\RatepayDeviceFingerprintData;
 use PayonePayment\Storefront\Struct\RatepayInstallmentCalculatorData;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
@@ -36,14 +36,19 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
     /** @var DeviceFingerprintServiceInterface */
     protected $deviceFingerprintService;
 
+    /** @var ProfileServiceInterface */
+    protected $profileService;
+
     public function __construct(
         SystemConfigService $systemConfigService,
         InstallmentServiceInterface $installmentService,
-        DeviceFingerprintServiceInterface $deviceFingerprintService
+        DeviceFingerprintServiceInterface $deviceFingerprintService,
+        ProfileServiceInterface $profileService
     ) {
         $this->systemConfigService      = $systemConfigService;
         $this->installmentService       = $installmentService;
         $this->deviceFingerprintService = $deviceFingerprintService;
+        $this->profileService           = $profileService;
     }
 
     public static function getSubscribedEvents(): array
@@ -51,10 +56,12 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         return [
             CheckoutConfirmPageLoadedEvent::class => [
                 ['hidePaymentMethodsForCompanies'],
+                ['hidePaymentMethodsByProfiles'],
                 ['addPayonePageData'],
             ],
             AccountEditOrderPageLoadedEvent::class => [
                 ['hidePaymentMethodsForCompanies'],
+                ['hidePaymentMethodsByProfiles'],
                 ['addPayonePageData'],
             ],
             AccountPaymentMethodPageLoadedEvent::class => 'hidePaymentMethodsForCompanies',
@@ -76,11 +83,34 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
             return;
         }
 
-        $paymentMethods = $this->removePaymentMethods($page->getPaymentMethods(), [
-            PayoneRatepayDebit::UUID,
-            PayoneRatepayInstallment::UUID,
-            PayoneRatepayInvoicing::UUID,
-        ]);
+        $paymentMethods = $this->removePaymentMethods($page->getPaymentMethods(), PaymentHandlerGroups::RATEPAY);
+
+        $page->setPaymentMethods($paymentMethods);
+    }
+
+    public function hidePaymentMethodsByProfiles(PageLoadedEvent $event): void
+    {
+        $page = $event->getPage();
+
+        if (
+            !method_exists($page, 'getPaymentMethods') ||
+            !method_exists($page, 'setPaymentMethods')
+        ) {
+            return;
+        }
+
+        $paymentMethods = $page->getPaymentMethods();
+
+        foreach (PaymentHandlerGroups::RATEPAY as $ratepayPaymentHandler) {
+            $profile = $this->profileService->getProfileBySalesChannelContext(
+                $event->getSalesChannelContext(),
+                $ratepayPaymentHandler
+            );
+
+            if (!$profile) {
+                $paymentMethods = $this->removePaymentMethods($paymentMethods, [$ratepayPaymentHandler]);
+            }
+        }
 
         $page->setPaymentMethods($paymentMethods);
     }
@@ -99,11 +129,11 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         }
     }
 
-    protected function removePaymentMethods(PaymentMethodCollection $paymentMethods, array $paymentMethodIds): PaymentMethodCollection
+    protected function removePaymentMethods(PaymentMethodCollection $paymentMethods, array $paymentHandler): PaymentMethodCollection
     {
         return $paymentMethods->filter(
-            static function (PaymentMethodEntity $paymentMethod) use ($paymentMethodIds) {
-                return !in_array($paymentMethod->getId(), $paymentMethodIds, true);
+            static function (PaymentMethodEntity $paymentMethod) use ($paymentHandler) {
+                return !in_array($paymentMethod->getHandlerIdentifier(), $paymentHandler, true);
             }
         );
     }
@@ -138,7 +168,7 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
 
         if ($installmentCalculator === null) {
             $paymentMethods = $this->removePaymentMethods($page->getPaymentMethods(), [
-                PayoneRatepayInstallment::UUID,
+                PayoneRatepayInstallmentPaymentHandler::class,
             ]);
             $page->setPaymentMethods($paymentMethods);
 

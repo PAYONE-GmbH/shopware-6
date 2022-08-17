@@ -33,6 +33,7 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="PayonePayment\Components\Ratepay\Installment\InstallmentService" />
             <argument type="service" id="PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\Profile\ProfileService" />
             <tag name="kernel.event_subscriber"/>
         </service>
 
