@@ -2949,15 +2949,6 @@
             </options>
         </input-field>
 
-        <input-field>
-            <name>ratepayDebitDeviceFingerprintSnippetId</name>
-            <label>Device Fingerprint Snippet ID</label>
-            <label lang="de-DE">Device Fingerprint Snippet ID</label>
-            <disabled>true</disabled>
-            <helpText>Please configure the Snippet ID in the configuration of the payment method "PAYONE Ratepay Open Invoice".</helpText>
-            <helpText lang="de-DE">Bitte konfigurieren Sie die Ratepay übergreifende Snippet ID bei der Zahlungsart "PAYONE Ratepay Rechnungskauf"</helpText>
-        </input-field>
-
         <component name="payone-ratepay-profiles">
             <name>ratepayDebitProfiles</name>
         </component>
@@ -3019,15 +3010,6 @@
                     <name lang="de-DE">Autorisierung</name>
                 </option>
             </options>
-        </input-field>
-
-        <input-field>
-            <name>ratepayInstallmentDeviceFingerprintSnippetId</name>
-            <label>Device Fingerprint Snippet ID</label>
-            <label lang="de-DE">Device Fingerprint Snippet ID</label>
-            <disabled>true</disabled>
-            <helpText>Please configure the Snippet ID in the configuration of the payment method "PAYONE Ratepay Open Invoice".</helpText>
-            <helpText lang="de-DE">Bitte konfigurieren Sie die Ratepay übergreifende Snippet ID bei der Zahlungsart "PAYONE Ratepay Rechnungskauf"</helpText>
         </input-field>
 
         <component name="payone-ratepay-profiles">
