@@ -10,7 +10,8 @@ export default class PayonePaymentRatepayInstallment extends Plugin {
         calculateInstallmentBtnSelector: '#payone-ratepay-calculate-installment-btn',
         ratepayInstallmentPlanContainerSelector: '#payone-ratepay-installment-plan',
         ratepayIbanContainerSelector: '#ratepayIbanContainer',
-        ratepayIbanInputSelector: '#ratepayIban'
+        ratepayIbanInputSelector: '#ratepayIban',
+        ratepayInstallmentTableSelector: '#ratepayInstallmentTable'
     }
 
     init() {
@@ -18,6 +19,7 @@ export default class PayonePaymentRatepayInstallment extends Plugin {
 
         this._client = new HttpClient();
 
+        this.ratepayRateInput = DomAccess.querySelector(document, this.options.ratepayRateInputSelector);
         this.calculateInstallmentBtn = DomAccess.querySelector(document, this.options.calculateInstallmentBtnSelector);
         this.ratepayRuntimeInput = DomAccess.querySelector(document, this.options.ratepayRuntimeInputSelector);
         this.ratepayIbanContainer = DomAccess.querySelector(document, this.options.ratepayIbanContainerSelector);
@@ -42,7 +44,7 @@ export default class PayonePaymentRatepayInstallment extends Plugin {
     }
 
     _handleCalculateInstallmentButtonClick() {
-        const value = DomAccess.querySelector(document, this.options.ratepayRateInputSelector).value;
+        const value = this.ratepayRateInput.value;
 
         this._sendRequest('rate', value);
     }
@@ -68,9 +70,18 @@ export default class PayonePaymentRatepayInstallment extends Plugin {
     }
 
     _handleCalculationCallback(response) {
+        this._replaceCalculationContent(response);
+    }
+
+    _replaceCalculationContent(response){
         const ratepayInstallmentPlanContainer = DomAccess.querySelector(document, this.options.ratepayInstallmentPlanContainerSelector);
 
         ratepayInstallmentPlanContainer.innerHTML = response;
+
+        this.ratepayInstallmentTable = DomAccess.querySelector(document, this.options.ratepayInstallmentTableSelector);
+
+        this.ratepayRuntimeInput.value = this.ratepayInstallmentTable.dataset.ratepayNumberOfRates;
+        this.ratepayRateInput.value = this.ratepayInstallmentTable.dataset.ratepayRate;
     }
 
     _handleOpenedIbanContainer() {
