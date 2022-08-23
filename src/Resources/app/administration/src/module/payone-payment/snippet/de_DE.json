@@ -23,7 +23,8 @@
                 "addShop": "Shop-ID hinzufügen"
             },
             "errors": {
-                "existingShopId": "Die eingegebene ShopId existiert bereits."
+                "existingShopId": "Die eingegebene ShopId existiert bereits.",
+                "emptyInputs": "Bitte füllen Sie alle Eingabefelder aus."
             }
         },
         "capture": {
