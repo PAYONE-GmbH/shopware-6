@@ -93,7 +93,13 @@ Component.register('payone-ratepay-profiles', {
             }
         },
 
-        onInlineEditCancel() {
+        onInlineEditCancel(currentItem) {
+            this.profiles.forEach(function(item, index, array) {
+                if(item.id === currentItem.id) {
+                    array.splice(index, 1);
+                }
+            });
+
             this.$emit('item-cancel');
         },
 
@@ -130,14 +136,18 @@ Component.register('payone-ratepay-profiles', {
         },
 
         createNewLineItem() {
-            const newId = Utils.createId();
+            const lastIdx = this.profiles.length - 1;
 
-            this.profiles.push({'id': newId, 'shopId': '', 'currency': '' });
+            if(this.profiles[lastIdx].shopId !== "") {
+                const newId = Utils.createId();
 
-            this.$nextTick(() => {
-                this.$refs.shopIdsDataGrid.currentInlineEditId = newId;
-                this.$refs.shopIdsDataGrid.enableInlineEdit();
-            });
+                this.profiles.push({'id': newId, 'shopId': '', 'currency': '' });
+
+                this.$nextTick(() => {
+                    this.$refs.shopIdsDataGrid.currentInlineEditId = newId;
+                    this.$refs.shopIdsDataGrid.enableInlineEdit();
+                });
+            }
         },
 
         onDeleteSelectedItem(itemToDelete) {
