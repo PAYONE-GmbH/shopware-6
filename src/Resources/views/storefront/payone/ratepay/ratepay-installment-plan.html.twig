@@ -95,7 +95,10 @@
         </tbody>
     </table>
 
-    <table class="table">
+    <table class="table"
+           id="ratepayInstallmentTable"
+           data-ratepay-number-of-rates="{{ attribute(calculationResponse.addpaydata, 'number-of-rates') }}"
+           data-ratepay-rate="{{ calculationResponse.addpaydata.rate|floatval|currency }}">
         <tbody>
             <tr>
                 <td>
