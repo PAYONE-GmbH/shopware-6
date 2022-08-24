@@ -23,7 +23,8 @@
                 "addShop": "Add Shop-ID"
             },
             "errors": {
-                "existingShopId": "The entered shop-id already exists."
+                "existingShopId": "The entered shop-id already exists.",
+                "emptyInputs": "Please fill all input fields."
             }
         },
         "capture": {

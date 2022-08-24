@@ -24,7 +24,8 @@ Component.register('payone-ratepay-profiles', {
         return {
             selectedItems: {},
             newItem: null,
-            showAlert: false,
+            showDuplicateAlert: false,
+            showEmptyAlert: false,
             profiles: this.value,
         };
     },
@@ -97,22 +98,32 @@ Component.register('payone-ratepay-profiles', {
         },
 
         onInlineEditSave(currentItem) {
-          let shopIdExists = false;
-            this.profiles.forEach(function(item) {
-                if(item.id !== currentItem.id && item.shopId === currentItem.shopId) {
-                    shopIdExists = true;
+            if(currentItem.id !== "" && currentItem.currency !== "") {
+                this.showEmptyAlert = false;
+                let shopIdExists = false;
+                this.profiles.forEach(function(item) {
+                    if(item.id !== currentItem.id && item.shopId === currentItem.shopId) {
+                        shopIdExists = true;
+                    }
+                });
+
+                if(shopIdExists) {
+                  this.showDuplicateAlert = true;
+
+                  this.$nextTick(() => {
+                    this.$refs.shopIdsDataGrid.currentInlineEditId = currentItem.id;
+                    this.$refs.shopIdsDataGrid.enableInlineEdit();
+                  });
+                } else {
+                  this.showDuplicateAlert = false;
                 }
-            });
-
-            if(shopIdExists) {
-              this.showAlert = true;
-
-              this.$nextTick(() => {
-                this.$refs.shopIdsDataGrid.currentInlineEditId = currentItem.id;
-                this.$refs.shopIdsDataGrid.enableInlineEdit();
-              });
             } else {
-              this.showAlert = false;
+                this.showEmptyAlert = true;
+
+                this.$nextTick(() => {
+                    this.$refs.shopIdsDataGrid.currentInlineEditId = currentItem.id;
+                    this.$refs.shopIdsDataGrid.enableInlineEdit();
+                });
             }
 
             this.$emit('update-list', this.profiles);

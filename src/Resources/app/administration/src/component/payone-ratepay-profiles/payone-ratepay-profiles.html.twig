@@ -65,8 +65,12 @@
                 {% endblock %}
 
                 {% block payone_ratepay_shop_ids_error %}
-                    <sw-alert v-if="showAlert" variant="error">
+                    <sw-alert v-if="showDuplicateAlert" variant="error">
                         {{ $tc('payone-payment.general.errors.existingShopId') }}
+                    </sw-alert>
+
+                    <sw-alert v-if="showEmptyAlert" variant="error">
+                        {{ $tc('payone-payment.general.errors.emptyInputs') }}
                     </sw-alert>
                 {% endblock %}
         </sw-container>
