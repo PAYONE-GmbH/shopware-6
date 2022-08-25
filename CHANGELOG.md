@@ -201,3 +201,23 @@ Maintenance
 
 Tested with:
 Shopware 6.4.10.0
+
+#3.2.0
+
+New Features
+ 
+* New payment method: Bancontact
+* Added bankgrouptypes for iDEAL
+* Add scheduled task to clean up redirect table
+* Add due date for invoice on standard invoice
+ 
+Bugfixes
+ 
+* added shipping costs to line items
+* fixed removal of secure invoice
+ 
+Maintenance
+ 
+* Changed renaming of payment methods
+* Changed PAYONE Logo
+* tested with 6.4.12
