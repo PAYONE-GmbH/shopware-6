@@ -91,12 +91,16 @@
                 "button": "Dokumentation"
             },
             "support": {
-                "description": "Kontaktieren Sie unseren technischen Support",
+                "description": "Kontaktieren Sie unseren Support",
                 "button": "Technischer Support"
             },
             "repository": {
-                "description": "Melden Sie Fehler und Verbesserungen auf GitHub",
+                "description": "Melden Sie Fehler und Verbesserungen",
                 "button": "GitHub"
+            },
+            "testdata": {
+                "description": "Erstellen Sie hier Ihre persönlichen Testdaten",
+                "button": "Testdaten"
             }
         },
         "applePay": {
