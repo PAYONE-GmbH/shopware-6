@@ -94,17 +94,19 @@ Component.register('payone-ratepay-profiles', {
         },
 
         onInlineEditCancel(currentItem) {
-            this.profiles.forEach(function(item, index, array) {
-                if(item.id === currentItem.id) {
-                    array.splice(index, 1);
-                }
-            });
+            if(currentItem.shopId === "" && currentItem.currency === "") {
+                this.profiles.forEach(function(item, index, array) {
+                    if(item.id === currentItem.id) {
+                        array.splice(index, 1);
+                    }
+                });
+            }
 
             this.$emit('item-cancel');
         },
 
         onInlineEditSave(currentItem) {
-            if(currentItem.id !== "" && currentItem.currency !== "") {
+            if(currentItem.shopId !== "" && currentItem.currency !== "") {
                 this.showEmptyAlert = false;
                 let shopIdExists = false;
                 this.profiles.forEach(function(item) {
