@@ -67,7 +67,7 @@
                 @modal-close="isSupportModalOpen = false"
                 :title="$tc('payone-payment.supportModal.title')"
                 class="payone-feedback sw-modal--large">
-            <sw-container columns="1fr 1fr 1fr">
+            <sw-container columns="1fr 1fr 1fr 1fr">
                 <div class="payone-feedback__col">
                     <div class="payone-feedback__icon">
                         <sw-icon name="default-documentation-file" large="true"></sw-icon>
@@ -117,6 +117,23 @@
                             :isLoading="false"
                             link="https://github.com/PAYONE-GmbH/shopware-6">
                         {{ $tc('payone-payment.supportModal.repository.button') }}
+                    </sw-button>
+                </div>
+                <div class="payone-feedback__col">
+                    <div class="payone-feedback__icon">
+                        <sw-icon name="default-lock-fingerprint" large="true"></sw-icon>
+                    </div>
+                    <p class="payone-feedback__desc">
+                        {{ $tc('payone-payment.supportModal.testdata.description') }}
+                    </p>
+                    <sw-button
+                            :disabled="false"
+                            variant="primary"
+                            :square="false"
+                            :block="false"
+                            :isLoading="false"
+                            link="https://www.payone.com/DE-de/kampagne/ecom-testaccount">
+                        {{ $tc('payone-payment.supportModal.testdata.button') }}
                     </sw-button>
                 </div>
             </sw-container>
