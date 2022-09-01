@@ -138,18 +138,29 @@ Component.register('payone-ratepay-profiles', {
         },
 
         createNewLineItem() {
-            const lastIdx = this.profiles.length - 1;
+            let emptyProfilesList = false;
 
-            if(this.profiles[lastIdx].shopId !== "") {
-                const newId = Utils.createId();
+            emptyProfilesList = this.profiles.length === 0;
 
-                this.profiles.push({'id': newId, 'shopId': '', 'currency': '' });
-
-                this.$nextTick(() => {
-                    this.$refs.shopIdsDataGrid.currentInlineEditId = newId;
-                    this.$refs.shopIdsDataGrid.enableInlineEdit();
-                });
+            if(emptyProfilesList) {
+                this.createLine();
+                return;
             }
+
+            if(this.profiles[this.profiles.length - 1].shopId !== "") {
+                this.createLine();
+            }
+        },
+
+        createLine() {
+            const newId = Utils.createId();
+
+            this.profiles.push({'id': newId, 'shopId': '', 'currency': '' });
+
+            this.$nextTick(() => {
+                this.$refs.shopIdsDataGrid.currentInlineEditId = newId;
+                this.$refs.shopIdsDataGrid.enableInlineEdit();
+            });
         },
 
         onDeleteSelectedItem(itemToDelete) {
