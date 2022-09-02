@@ -226,11 +226,11 @@ trait PayoneTestBehavior
         return $lineItemCollection;
     }
 
-    protected function getRequestStack(RequestDataBag $dataBag): RequestStack
+    protected function getRequestStack(RequestDataBag $dataBag, array $attributes = []): RequestStack
     {
         $stack = new RequestStack();
 
-        $request = new Request([], $dataBag->all());
+        $request = new Request([], $dataBag->all(), $attributes);
         $stack->push($request);
 
         return $stack;

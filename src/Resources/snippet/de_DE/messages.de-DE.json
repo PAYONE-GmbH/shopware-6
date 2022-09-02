@@ -233,6 +233,11 @@
     },
     "error": {
         "VIOLATION::PAYONE_BIRTHDAY_NOT_VALID": "Für diese Zahlung müssen Sie mindestens 18 Jahre alt sein.",
-        "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "Die ausgewählte Zahlungsweise ist nicht verfügbar."
+        "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "Die ausgewählte Zahlungsweise ist nicht verfügbar.",
+        "VIOLATION::PAYONE_INVALID_COUNTRY_CODE_ERROR": "Das Land der IBAN ist ungültig.",
+        "VIOLATION::PAYONE_INVALID_CHARACTERS_ERROR": "Die IBAN enthält ungültige Zeichen.",
+        "VIOLATION::PAYONE_CHECKSUM_FAILED_ERROR": "Die Prüfziffer der IBAN ist ungültig",
+        "VIOLATION::PAYONE_INVALID_FORMAT_ERROR": "Bitte geben Sie eine gültige IBAN ein.",
+        "VIOLATION::PAYONE_NOT_SUPPORTED_COUNTRY_CODE_ERROR": "Das eingegeben Land der IBAN ist ungültig."
     }
 }

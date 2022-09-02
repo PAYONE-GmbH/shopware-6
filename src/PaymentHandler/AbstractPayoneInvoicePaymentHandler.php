@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
+use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -19,6 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -122,6 +124,17 @@ abstract class AbstractPayoneInvoicePaymentHandler extends AbstractPayonePayment
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
+    }
+
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    {
+        $definitions = parent::getValidationDefinitions($salesChannelContext);
+
+        if (!$this->customerHasCompanyAddress($salesChannelContext)) {
+            $definitions['payoneInvoiceBirthday'] = [new NotBlank(), new Birthday(['value' => $this->getMinimumDate()])];
+        }
+
+        return $definitions;
     }
 
     /**

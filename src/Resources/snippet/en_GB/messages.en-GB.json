@@ -233,6 +233,11 @@
     },
     "error": {
         "VIOLATION::PAYONE_BIRTHDAY_NOT_VALID": "For this payment you must be over 18 years old.",
-        "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "The selected payment method is not available."
+        "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "The selected payment method is not available.",
+        "VIOLATION::PAYONE_INVALID_COUNTRY_CODE_ERROR": "The country of the IBAN is not valid.",
+        "VIOLATION::PAYONE_INVALID_CHARACTERS_ERROR": "The IBAN contains invalid characters.",
+        "VIOLATION::PAYONE_CHECKSUM_FAILED_ERROR": "The check digits of the IBAN are invalid.",
+        "VIOLATION::PAYONE_INVALID_FORMAT_ERROR": "Please provide a valid IBAN.",
+        "VIOLATION::PAYONE_NOT_SUPPORTED_COUNTRY_CODE_ERROR": "The country of the IBAN is not valid."
     }
 }

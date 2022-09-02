@@ -64,7 +64,7 @@
 
         <service id="PayonePayment\EventListener\OrderValidationEventListener">
             <argument type="service" id="request_stack" />
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
