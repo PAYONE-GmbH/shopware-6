@@ -94,7 +94,7 @@ class CalculationRequestParameterBuilderTest extends TestCase
                 'add_paydata[action]'                        => 'calculation',
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
                 'add_paydata[calculation_type]'              => 'calculation-by-rate',
-                'add_paydata[rate]'                          => 10,
+                'add_paydata[rate]'                          => 1000,
                 'amount'                                     => 10000,
                 'currency'                                   => 'EUR',
             ],

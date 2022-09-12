@@ -38,7 +38,10 @@ class CalculationRequestParameterBuilder extends GeneralTransactionRequestParame
 
         if ($installmentType === self::INSTALLMENT_TYPE_RATE) {
             $parameters['add_paydata[calculation_type]'] = 'calculation-by-rate';
-            $parameters['add_paydata[rate]']             = $dataBag->get('ratepayInstallmentValue');
+            $parameters['add_paydata[rate]']             = $this->currencyPrecision->getRoundedTotalAmount(
+                (float) $dataBag->get('ratepayInstallmentValue'),
+                $currency
+            );
         } elseif ($installmentType === self::INSTALLMENT_TYPE_TIME) {
             $parameters['add_paydata[calculation_type]'] = 'calculation-by-time';
             $parameters['add_paydata[month]']            = $dataBag->get('ratepayInstallmentValue');
