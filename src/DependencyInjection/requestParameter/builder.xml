@@ -450,6 +450,9 @@
         <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\AuthorizeRequestParameterBuilder" autowire="true">
             <tag name="payone_request_builder"/>
         </service>
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\FinancingTypeParameterBuilder">
+            <tag name="payone_request_builder"/>
+        </service>
 
         <!-- Capture -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Capture\CaptureRequestParameterBuilder"

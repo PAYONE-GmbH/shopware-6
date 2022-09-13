@@ -12,8 +12,6 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    use FinancingTypeTrait;
-
     private LineItemHydratorInterface $lineItemHydrator;
 
     public function __construct(LineItemHydratorInterface $lineItemHydrator)
@@ -31,7 +29,6 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $parameter = [
             'request'                          => $arguments->getAction(),
             'clearingtype'                     => self::CLEARING_TYPE_FINANCING,
-            'financingtype'                    => $this->getFinancingType($arguments->getPaymentMethod()),
             'add_paydata[authorization_token]' => $dataBag->get('payoneKlarnaAuthorizationToken'),
         ];
 

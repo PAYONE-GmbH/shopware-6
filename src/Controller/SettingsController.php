@@ -88,7 +88,7 @@ class SettingsController extends AbstractController
 
             try {
                 $parameters  = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
-                $testRequest = $this->requestFactory->getRequestParameter(new TestCredentialsStruct($parameters, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST));
+                $testRequest = $this->requestFactory->getRequestParameter(new TestCredentialsStruct($parameters, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST, $paymentClass));
 
                 $this->client->request($testRequest);
             } catch (PayoneRequestException $e) {
@@ -440,10 +440,11 @@ class SettingsController extends AbstractController
                     'ip'           => '127.0.0.1',
                 ];
             case Handler\PayoneKlarnaInvoicePaymentHandler::class:
+            case Handler\PayoneKlarnaDirectDebitPaymentHandler::class:
+            case Handler\PayoneKlarnaInstalmentPaymentHandler::class:
                 return [
                     'request'             => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
                     'clearingtype'        => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                    'financingtype'       => 'KIV',
                     'amount'              => 100,
                     'country'             => 'DE',
                     'currency'            => 'EUR',

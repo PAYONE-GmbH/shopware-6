@@ -15,8 +15,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 class CreateSessionRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    use FinancingTypeTrait;
-
     private CartService $cartService;
     private LineItemHydratorInterface $lineItemHydrator;
     private CurrencyPrecisionInterface $currencyPrecision;
@@ -62,7 +60,6 @@ class CreateSessionRequestParameterBuilder extends AbstractRequestParameterBuild
             'request'             => self::REQUEST_ACTION_GENERIC_PAYMENT,
             'add_paydata[action]' => 'start_session',
             'clearingtype'        => self::CLEARING_TYPE_FINANCING,
-            'financingtype'       => $this->getFinancingType($arguments->getPaymentMethod()),
             'amount'              => $this->currencyPrecision->getRoundedTotalAmount($totalAmount, $salesChannelContext->getCurrency()),
             'currency'            => $currencyCode,
         ];
