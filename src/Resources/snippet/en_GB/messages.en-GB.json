@@ -162,7 +162,7 @@
         },
         "ratepay": {
             "general": {
-                "consentText": "With clicking \"Submit order\" you agree to the <a href='https://www.ratepay.com/en/ratepay-terms-of-payment/' title='https://www.ratepay.com/en/ratepay-terms-of-payment/'>terms of payment of our payment partner</a> as well as to the performance of a <a href='https://www.ratepay.com/en/ratepay-data-privacy-statement/' title='https://www.ratepay.com/en/ratepay-data-privacy-statement/'>risk check by our payment partner</a>."
+                "consentText": "With clicking \"Submit order\" you agree to the <a href='https://www.ratepay.com/en/ratepay-terms-of-payment/' title='https://www.ratepay.com/en/ratepay-terms-of-payment/' target='_blank'>terms of payment of our payment partner</a> as well as to the performance of a <a href='https://www.ratepay.com/en/ratepay-data-privacy-statement/' title='https://www.ratepay.com/en/ratepay-data-privacy-statement/' target='_blank'>risk check by our payment partner</a>."
             },
             "debit": {
                 "iban": {
@@ -201,6 +201,7 @@
                 "installmentCalculation": {
                     "title": "Installment calculation",
                     "showCalculation": "Show installment calculation",
+                    "hideCalculation": "Hide installment calculation",
                     "monthlyRatesText": "%numberOfRates% monthly rates per",
                     "monthlyRatesDescription": "Monthly installment due",
                     "monthlyRateText": "1. - %rangeOfRates%. monthly rate per",
