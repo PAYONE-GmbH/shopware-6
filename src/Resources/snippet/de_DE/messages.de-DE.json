@@ -162,7 +162,7 @@
         },
         "ratepay": {
             "general": {
-                "consentText": "Mit Klicken auf Zahlungspflichtig bestellen erklären Sie sich mit den <a href='https://www.ratepay.com/legal-payment-terms/' title='https://www.ratepay.com/legal-payment-terms/' target='_blank'>Ratepay Zahlungsbedingungen</a> sowie mit der Durchführung einer <a href='https://www.ratepay.com/legal-payment-dataprivacy/' title='https://www.ratepay.com/legal-payment-dataprivacy/' target='_blank'>Risikoprüfung durch Ratepay</a> einverstanden."
+                "consentText": "Mit Klicken auf Zahlungspflichtig bestellen erklären Sie sich mit den <a href=\"https://www.ratepay.com/legal-payment-terms/\" title=\"https://www.ratepay.com/legal-payment-terms/\" target=\"_blank\">Ratepay Zahlungsbedingungen</a> sowie mit der Durchführung einer <a href=\"https://www.ratepay.com/legal-payment-dataprivacy/\" title=\"https://www.ratepay.com/legal-payment-dataprivacy/\" target=\"_blank\">Risikoprüfung durch Ratepay</a> einverstanden."
             },
             "debit": {
                 "iban": {
@@ -201,7 +201,7 @@
                 "installmentCalculation": {
                     "title": "Ratenplan",
                     "showCalculation": "Ratenberechnung anzeigen",
-                    "hideCalculation": "Ratenberechnung nicht anzeigen",
+                    "hideCalculation": "Ratenberechnung ausblenden",
                     "monthlyRatesText": "%numberOfRates% monatliche Raten je",
                     "monthlyRatesDescription": "Monatlich fällige Raten",
                     "monthlyRateText": "1. - %rangeOfRates%. monatliche Rate je",
