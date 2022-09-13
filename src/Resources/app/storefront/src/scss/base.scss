@@ -96,6 +96,26 @@ apple-pay-button {
 
 
 .payone-payment.ratepay-installment {
+    .show-calculation-btn {
+        .show-calculation {
+            display: none;
+        }
+
+        .hide-calculation {
+            display: block;
+        }
+
+        &.collapsed {
+            .show-calculation {
+                display: block;
+            }
+
+            .hide-calculation {
+                display: none;
+            }
+        }
+    }
+
     .payone-ratepay-installment-iban-toggle {
         .payone-ratepay-collapsed-text {
             display: none;
