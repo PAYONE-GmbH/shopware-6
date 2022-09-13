@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PayonePayment\Storefront\Struct;
 
 class CheckoutKlarnaSessionData
 {
-
     private string $clientToken;
     private string $workOrderId;
     private string $paymentMethodIdentifier;
@@ -15,12 +16,11 @@ class CheckoutKlarnaSessionData
         string $workOrderId,
         string $paymentMethodIdentifier,
         string $cartHash
-    )
-    {
-        $this->clientToken = $clientToken;
-        $this->workOrderId = $workOrderId;
+    ) {
+        $this->clientToken             = $clientToken;
+        $this->workOrderId             = $workOrderId;
         $this->paymentMethodIdentifier = $paymentMethodIdentifier;
-        $this->cartHash = $cartHash;
+        $this->cartHash                = $cartHash;
     }
 
     public function getClientToken(): string

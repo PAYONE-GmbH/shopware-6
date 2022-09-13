@@ -28,6 +28,8 @@ use Throwable;
 
 class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
+    /** @var CartHasherInterface */
+    protected $cartHasher;
     /** @var PayoneClientInterface */
     private $client;
 
@@ -36,9 +38,6 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
 
     /** @var TransactionDataHandlerInterface */
     private $dataHandler;
-
-    /** @var CartHasherInterface */
-    protected $cartHasher;
 
     /** @var RequestParameterFactory */
     private $requestParameterFactory;

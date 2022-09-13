@@ -12,9 +12,9 @@ use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
 use PayonePayment\PaymentMethod\PayoneEps;
 use PayonePayment\PaymentMethod\PayoneIDeal;
+use PayonePayment\PaymentMethod\PayoneKlarnaDirectDebit;
 use PayonePayment\PaymentMethod\PayoneKlarnaInstalment;
 use PayonePayment\PaymentMethod\PayoneKlarnaInvoice;
-use PayonePayment\PaymentMethod\PayoneKlarnaDirectDebit;
 use PayonePayment\PaymentMethod\PayoneOpenInvoice;
 use PayonePayment\PaymentMethod\PayonePaydirekt;
 use PayonePayment\PaymentMethod\PayonePayolutionDebit;
@@ -95,7 +95,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneRatepayInvoicing::class,
         PayoneKlarnaInvoice::class,
         PayoneKlarnaDirectDebit::class,
-        PayoneKlarnaInstalment::class
+        PayoneKlarnaInstalment::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [

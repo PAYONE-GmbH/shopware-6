@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\Klarna;
 
-
+use PayonePayment\PaymentHandler\PayoneKlarnaDirectDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneKlarnaInstalmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneKlarnaInvoicePaymentHandler;
-use PayonePayment\PaymentHandler\PayoneKlarnaDirectDebitPaymentHandler;
 
 trait FinancingTypeTrait
 {

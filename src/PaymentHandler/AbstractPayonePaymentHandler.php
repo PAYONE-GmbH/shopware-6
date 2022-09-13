@@ -69,6 +69,43 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     }
 
     /**
+     * @param AsyncPaymentTransactionStruct|SyncPaymentTransactionStruct $paymentTransaction
+     */
+    public function validateCartHash(
+        RequestDataBag $requestDataBag,
+        $paymentTransaction,
+        SalesChannelContext $salesChannelContext,
+        string $exceptionClass = null
+    ): void {
+        $missingPropertyMessage = 'please create protected property `%s` of type %s on class ' . get_class($this);
+
+        if (!property_exists($this, 'cartHasher')) {
+            throw new \RuntimeException(sprintf($missingPropertyMessage, 'cartHasher', CartHasherInterface::class));
+        }
+
+        if (!property_exists($this, 'translator')) {
+            throw new \RuntimeException(sprintf($missingPropertyMessage, 'translator', TranslatorInterface::class));
+        }
+
+        $cartHash          = (string) $requestDataBag->get('carthash');
+        $transactionEntity = $paymentTransaction->getOrderTransaction();
+
+        if (!$this->cartHasher->validate($paymentTransaction->getOrder(), $cartHash, $salesChannelContext)) {
+            if (!$exceptionClass) {
+                if ($this instanceof SynchronousPaymentHandlerInterface) {
+                    $exceptionClass = SyncPaymentProcessException::class;
+                } elseif ($this instanceof AsynchronousPaymentHandlerInterface) {
+                    $exceptionClass = AsyncPaymentProcessException::class;
+                }
+            }
+            throw new $exceptionClass(
+                $transactionEntity->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
+    }
+
+    /**
      * Returns true if a capture is generally not possible (or never in this context)
      * based on the current TX status notification. Use this method early in
      * isCapturable() to match common rules shared by all payment methods.
@@ -281,44 +318,5 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         }
 
         return !empty($billingAddress->getCompany());
-    }
-
-    /**
-     * @param RequestDataBag $requestDataBag
-     * @param SyncPaymentTransactionStruct|AsyncPaymentTransactionStruct $paymentTransaction
-     * @param SalesChannelContext $salesChannelContext
-     */
-    public function validateCartHash(
-        RequestDataBag $requestDataBag,
-        $paymentTransaction,
-        SalesChannelContext $salesChannelContext,
-        string $exceptionClass = null
-    ): void
-    {
-        $missingPropertyMessage = 'please create protected property `%s` of type %s on class ' . get_class($this);
-        if (!property_exists($this, 'cartHasher')) {
-            throw new \RuntimeException(sprintf($missingPropertyMessage, 'cartHasher', CartHasherInterface::class));
-        }
-
-        if (!property_exists($this, 'translator')) {
-            throw new \RuntimeException(sprintf($missingPropertyMessage, 'translator', TranslatorInterface::class));
-        }
-
-        $cartHash = (string)$requestDataBag->get('carthash');
-        $transactionEntity = $paymentTransaction->getOrderTransaction();
-
-        if (!$this->cartHasher->validate($paymentTransaction->getOrder(), $cartHash, $salesChannelContext)) {
-            if (!$exceptionClass) {
-                if ($this instanceof SynchronousPaymentHandlerInterface) {
-                    $exceptionClass = SyncPaymentProcessException::class;
-                } else if ($this instanceof AsynchronousPaymentHandlerInterface) {
-                    $exceptionClass = AsyncPaymentProcessException::class;
-                }
-            }
-            throw new $exceptionClass(
-                $transactionEntity->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
     }
 }

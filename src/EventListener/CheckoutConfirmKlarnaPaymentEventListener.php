@@ -4,23 +4,10 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
-use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
-use PayonePayment\Payone\RequestParameter\Struct\KlarnaCreateSessionStruct;
-use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
-use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
-use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
-use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
-use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterface
 {
@@ -31,12 +18,7 @@ class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterf
         ];
     }
 
-    private function isKlarnaPaymentMethod(PaymentMethodEntity $currentPaymentMethod): bool
-    {
-        return is_subclass_of($currentPaymentMethod->getHandlerIdentifier(), AbstractKlarnaPaymentHandler::class);
-    }
-
-    public function onHandlePaymentMethodRouteRequest(HandlePaymentMethodRouteRequestEvent $event)
+    public function onHandlePaymentMethodRouteRequest(HandlePaymentMethodRouteRequestEvent $event): void
     {
         if (!$this->isKlarnaPaymentMethod($event->getSalesChannelContext()->getPaymentMethod())) {
             return;
@@ -50,5 +32,10 @@ class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterf
                 $event->getStoreApiRequest()->request->set($key, $event->getStorefrontRequest()->request->get($key));
             }
         }
+    }
+
+    private function isKlarnaPaymentMethod(PaymentMethodEntity $currentPaymentMethod): bool
+    {
+        return is_subclass_of($currentPaymentMethod->getHandlerIdentifier(), AbstractKlarnaPaymentHandler::class);
     }
 }

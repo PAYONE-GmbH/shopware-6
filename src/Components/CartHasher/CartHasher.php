@@ -57,6 +57,22 @@ class CartHasher implements CartHasherInterface
         return hash_equals($expected, $cartHash);
     }
 
+    public function getCriteriaForOrder(string $orderId = null): Criteria
+    {
+        $criteria = (new Criteria())
+            ->addAssociation('lineItems')
+            ->addAssociation('currency')
+            ->addAssociation('paymentMethod')
+            ->addAssociation('shippingMethod')
+            ->addAssociation('customer');
+
+        if ($orderId) {
+            $criteria->setIds([$orderId]);
+        }
+
+        return $criteria;
+    }
+
     /**
      * @param Cart|OrderEntity $entity
      */
@@ -82,8 +98,8 @@ class CartHasher implements CartHasherInterface
                 }
 
                 $detail = [
-                    'id' => $lineItem->getReferencedId() ?? '',
-                    'type' => $lineItem->getType(),
+                    'id'       => $lineItem->getReferencedId() ?? '',
+                    'type'     => $lineItem->getType(),
                     'quantity' => $lineItem->getQuantity(),
                 ];
 
@@ -95,8 +111,8 @@ class CartHasher implements CartHasherInterface
             }
         }
 
-        $hashData['currency'] = $context->getCurrency()->getId();
-        $hashData['paymentMethod'] = $context->getPaymentMethod()->getId();
+        $hashData['currency']       = $context->getCurrency()->getId();
+        $hashData['paymentMethod']  = $context->getPaymentMethod()->getId();
         $hashData['shippingMethod'] = $context->getShippingMethod()->getId();
 
         if (null === $context->getCustomer()) {
@@ -107,21 +123,21 @@ class CartHasher implements CartHasherInterface
 
         if (null !== $billingAddress) {
             $hashData['address'] = [
-                'salutation' => $billingAddress->getSalutationId(),
-                'title' => $billingAddress->getTitle(),
-                'firstname' => $billingAddress->getFirstName(),
-                'lastname' => $billingAddress->getLastName(),
-                'street' => $billingAddress->getStreet(),
+                'salutation'      => $billingAddress->getSalutationId(),
+                'title'           => $billingAddress->getTitle(),
+                'firstname'       => $billingAddress->getFirstName(),
+                'lastname'        => $billingAddress->getLastName(),
+                'street'          => $billingAddress->getStreet(),
                 'addressaddition' => $billingAddress->getAdditionalAddressLine1(),
-                'zip' => $billingAddress->getZipcode(),
-                'city' => $billingAddress->getCity(),
-                'country' => $billingAddress->getCountryId(),
+                'zip'             => $billingAddress->getZipcode(),
+                'city'            => $billingAddress->getCity(),
+                'country'         => $billingAddress->getCountryId(),
             ];
         }
 
         $hashData['customer'] = [
             'language' => $context->getCustomer()->getLanguageId(),
-            'email' => $context->getCustomer()->getEmail(),
+            'email'    => $context->getCustomer()->getEmail(),
         ];
 
         if (null !== $context->getCustomer()->getBirthday()) {
@@ -146,21 +162,5 @@ class CartHasher implements CartHasherInterface
         }
 
         return hash_hmac('sha256', $json, $secret);
-    }
-
-    public function getCriteriaForOrder(string $orderId = null): Criteria
-    {
-        $criteria = (new Criteria())
-            ->addAssociation('lineItems')
-            ->addAssociation('currency')
-            ->addAssociation('paymentMethod')
-            ->addAssociation('shippingMethod')
-            ->addAssociation('customer');
-
-        if ($orderId) {
-            $criteria->setIds([$orderId]);
-        }
-
-        return $criteria;
     }
 }

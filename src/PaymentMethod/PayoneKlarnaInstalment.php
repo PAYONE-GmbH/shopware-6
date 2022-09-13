@@ -37,5 +37,4 @@ class PayoneKlarnaInstalment extends AbstractPayoneKlarna
 
     /** @var int */
     protected $position = 150;
-
 }

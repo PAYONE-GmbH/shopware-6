@@ -67,7 +67,7 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
     }
 
     /**
-     * @param PaymentTransactionStruct|PayolutionAdditionalActionStruct|ManageMandateStruct|KlarnaCreateSessionStruct $arguments
+     * @param KlarnaCreateSessionStruct|ManageMandateStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments
      */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {

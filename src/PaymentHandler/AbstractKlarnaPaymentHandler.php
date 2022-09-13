@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
@@ -16,8 +18,6 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -31,10 +31,10 @@ use Throwable;
 abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
     protected TranslatorInterface $translator;
+    protected CartHasherInterface $cartHasher;
     private RequestParameterFactory $requestParameterFactory;
     private PayoneClientInterface $client;
     private TransactionDataHandler $dataHandler;
-    protected CartHasherInterface $cartHasher;
     private PaymentStateHandlerInterface $stateHandler;
 
     public function __construct(
@@ -47,16 +47,15 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
         TransactionDataHandler $dataHandler,
         CartHasherInterface $cartHasher,
         PaymentStateHandlerInterface $stateHandler
-    )
-    {
-        $this->configReader = $configReader;
-        $this->lineItemRepository = $lineItemRepository;
-        $this->requestStack = $requestStack;
-        $this->translator = $translator;
+    ) {
+        $this->configReader            = $configReader;
+        $this->lineItemRepository      = $lineItemRepository;
+        $this->requestStack            = $requestStack;
+        $this->translator              = $translator;
         $this->requestParameterFactory = $requestParameterFactory;
-        $this->client = $client;
-        $this->dataHandler = $dataHandler;
-        $this->cartHasher = $cartHasher;
+        $this->client                  = $client;
+        $this->dataHandler             = $dataHandler;
+        $this->cartHasher              = $cartHasher;
         parent::__construct($configReader, $lineItemRepository, $requestStack);
         $this->stateHandler = $stateHandler;
     }
@@ -128,25 +127,7 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
 
     public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
     {
-        $this->stateHandler->handleStateResponse($transaction, (string)$request->query->get('state'));
-    }
-
-    private function filterRequestDataBag(RequestDataBag $dataBag): RequestDataBag
-    {
-        $dataBag = clone $dataBag; // prevent modifying the original object
-        $allowedParameters = [
-            'workorder',
-            'payonePaymentMethod',
-            'payoneKlarnaAuthorizationToken',
-            'carthash'
-        ];
-        foreach ($dataBag->keys() as $key) {
-            if (!in_array($key, $allowedParameters)) {
-                $dataBag->remove($key);
-            }
-        }
-
-        return $dataBag;
+        $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
     }
 
     /**
@@ -176,5 +157,23 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
     protected function getConfigKeyPrefix(): string
     {
         return ConfigurationPrefixes::CONFIGURATION_PREFIXES[get_class($this)];
+    }
+
+    private function filterRequestDataBag(RequestDataBag $dataBag): RequestDataBag
+    {
+        $dataBag           = clone $dataBag; // prevent modifying the original object
+        $allowedParameters = [
+            'workorder',
+            'payonePaymentMethod',
+            'payoneKlarnaAuthorizationToken',
+            'carthash',
+        ];
+        foreach ($dataBag->keys() as $key) {
+            if (!in_array($key, $allowedParameters)) {
+                $dataBag->remove($key);
+            }
+        }
+
+        return $dataBag;
     }
 }

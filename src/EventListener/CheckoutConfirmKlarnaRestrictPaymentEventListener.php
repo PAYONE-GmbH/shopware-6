@@ -17,27 +17,25 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmKlarnaRestrictPaymentEventListener implements EventSubscriberInterface
 {
-    private const ALLOWED_COUNTRIES = ['AT', 'DK', 'FI', 'DE', 'NL', 'NO', 'SE', 'CH'];
+    private const ALLOWED_COUNTRIES     = ['AT', 'DK', 'FI', 'DE', 'NL', 'NO', 'SE', 'CH'];
     private const ALLOWED_B2B_COUNTRIES = ['FI', 'DE', 'NO', 'SE'];
-    private const ALLOWED_CURRENCIES = ['EUR', 'DKK', 'NOK', 'SEK' . 'CHF'];
-
+    private const ALLOWED_CURRENCIES    = ['EUR', 'DKK', 'NOK', 'SEK' . 'CHF'];
 
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'hidePaymentMethod',
+            CheckoutConfirmPageLoadedEvent::class      => 'hidePaymentMethod',
             AccountPaymentMethodPageLoadedEvent::class => 'hidePaymentMethod',
-            AccountEditOrderPageLoadedEvent::class => 'hidePaymentMethod',
+            AccountEditOrderPageLoadedEvent::class     => 'hidePaymentMethod',
         ];
     }
 
     /**
-     * @param CheckoutConfirmPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|AccountEditOrderPageLoadedEvent $event
-     * @return void
+     * @param AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
      */
-    public function hidePaymentMethod(PageLoadedEvent $event)
+    public function hidePaymentMethod(PageLoadedEvent $event): void
     {
-        $context = $event->getSalesChannelContext();
+        $context  = $event->getSalesChannelContext();
         $customer = $context->getCustomer();
 
         $billingAddress = $customer ? $customer->getActiveBillingAddress() : null;

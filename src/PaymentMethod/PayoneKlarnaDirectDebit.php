@@ -37,5 +37,4 @@ class PayoneKlarnaDirectDebit extends AbstractPayoneKlarna
 
     /** @var int */
     protected $position = 140;
-
 }

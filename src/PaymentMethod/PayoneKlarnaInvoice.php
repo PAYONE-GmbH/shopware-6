@@ -37,5 +37,4 @@ class PayoneKlarnaInvoice extends AbstractPayoneKlarna
 
     /** @var int */
     protected $position = 130;
-
 }

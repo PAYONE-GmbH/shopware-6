@@ -15,7 +15,6 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
@@ -25,8 +24,8 @@ use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 class LineItemHydrator implements LineItemHydratorInterface
 {
     /** @see https://docs.payone.com/display/public/PLATFORM/it%5Bn%5D+-+definition */
-    public const TYPE_GOODS = 'goods';
-    public const TYPE_VOUCHER = 'voucher';
+    public const TYPE_GOODS    = 'goods';
+    public const TYPE_VOUCHER  = 'voucher';
     public const TYPE_SHIPMENT = 'shipment';
     public const TYPE_HANDLING = 'handling';
 
@@ -38,7 +37,7 @@ class LineItemHydrator implements LineItemHydratorInterface
 
     public function __construct(CurrencyPrecisionInterface $currencyPrecision, EntityRepositoryInterface $shipmentRepository)
     {
-        $this->currencyPrecision = $currencyPrecision;
+        $this->currencyPrecision  = $currencyPrecision;
         $this->shipmentRepository = $shipmentRepository;
     }
 
@@ -47,8 +46,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         OrderEntity $order,
         array $requestLines,
         bool $includeShippingCosts
-    ): array
-    {
+    ): array {
         $orderLineItems = $order->getLineItems();
 
         if ($orderLineItems === null) {
@@ -56,7 +54,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         }
 
         $requestLineItems = [];
-        $counter = 0;
+        $counter          = 0;
 
         foreach ($requestLines as $orderLine) {
             if (!array_key_exists('id', $orderLine)) {
@@ -106,9 +104,8 @@ class LineItemHydrator implements LineItemHydratorInterface
 
     public function mapCartLines(Cart $cart, SalesChannelContext $salesChannelContext): array
     {
-
         $requestLineItems = [];
-        $counter = 0;
+        $counter          = 0;
 
         foreach ($cart->getLineItems() as $lineItem) {
             //if ($this->isCustomizedProduct($lineItem)) { // TODO verify if this is required
@@ -148,8 +145,8 @@ class LineItemHydrator implements LineItemHydratorInterface
     public function mapOrderLines(CurrencyEntity $currency, OrderEntity $order, Context $context): array
     {
         $lineItemCollection = $order->getLineItems();
-        $requestLineItems = [];
-        $counter = 0;
+        $requestLineItems   = [];
+        $counter            = 0;
 
         if ($lineItemCollection === null) {
             return [];
@@ -212,12 +209,7 @@ class LineItemHydrator implements LineItemHydratorInterface
     }
 
     /**
-     * @param array $requestLineItems
-     * @param int $index
      * @param LineItem|OrderLineItemEntity $lineItemEntity
-     * @param CurrencyEntity $currencyEntity
-     * @param float $taxRate
-     * @param int $quantity
      */
     private function addLineItemRequest(
         array &$requestLineItems,
@@ -226,8 +218,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         CurrencyEntity $currencyEntity,
         float $taxRate,
         int $quantity
-    )
-    {
+    ): void {
         $productNumber = is_array($lineItemEntity->getPayload()) && array_key_exists('productNumber', $lineItemEntity->getPayload())
             ? $lineItemEntity->getPayload()['productNumber']
             : $lineItemEntity->getIdentifier();
@@ -246,11 +237,7 @@ class LineItemHydrator implements LineItemHydratorInterface
     }
 
     /**
-     * @param array $requestLineItems
-     * @param int $index
-     * @param OrderDeliveryCollection|DeliveryCollection $deliveryCollection
-     * @param CurrencyEntity $currencyEntity
-     * @param Context|null $context
+     * @param DeliveryCollection|OrderDeliveryCollection $deliveryCollection
      */
     private function addShippingItems(
         array &$requestLineItems,
@@ -259,8 +246,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         CurrencyEntity $currencyEntity,
         string $languageId,
         ?Context $context = null
-    ): void
-    {
+    ): void {
         if ($context === null) {
             $context = Context::createDefaultContext();
         }
@@ -298,7 +284,7 @@ class LineItemHydrator implements LineItemHydratorInterface
                 $requestLineItems,
                 $index,
                 self::TYPE_SHIPMENT,
-                (string)($index + 1),
+                (string) ($index + 1),
                 $shippingMethod->getName(),
                 $shipmentPosition->getPrice(),
                 1,
@@ -318,9 +304,8 @@ class LineItemHydrator implements LineItemHydratorInterface
         int $itemQty,
         float $itemTaxRate,
         CurrencyEntity $currency
-    )
-    {
-        $index++;
+    ): void {
+        ++$index;
         $requestLineItems['it[' . $index . ']'] = $itemType;
         $requestLineItems['id[' . $index . ']'] = $itemNumber;
         $requestLineItems['pr[' . $index . ']'] = $this->currencyPrecision->getRoundedItemAmount($itemPrice, $currency);
