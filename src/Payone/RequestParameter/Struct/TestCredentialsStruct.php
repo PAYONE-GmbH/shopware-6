@@ -12,7 +12,7 @@ class TestCredentialsStruct extends AbstractRequestParameterStruct
     public function __construct(
         array $parameters,
         string $action = '',
-        string $paymentMethodClass = null
+        string $paymentMethodClass = ''
     ) {
         $this->parameters    = $parameters;
         $this->action        = $action;

@@ -6,10 +6,25 @@ namespace PayonePayment\Storefront\Struct;
 
 class CheckoutKlarnaSessionData
 {
-    private string $clientToken;
-    private string $workOrderId;
-    private string $paymentMethodIdentifier;
-    private string $cartHash;
+    /**
+     * @var string
+     */
+    private $clientToken;
+
+    /**
+     * @var string
+     */
+    private $workOrderId;
+
+    /**
+     * @var string
+     */
+    private $paymentMethodIdentifier;
+
+    /**
+     * @var string
+     */
+    private $cartHash;
 
     public function __construct(
         string $clientToken,
@@ -43,7 +58,7 @@ class CheckoutKlarnaSessionData
         return $this->cartHash;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return get_object_vars($this);
     }

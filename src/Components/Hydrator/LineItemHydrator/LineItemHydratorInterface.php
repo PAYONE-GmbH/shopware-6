@@ -21,5 +21,5 @@ interface LineItemHydratorInterface
 
     public function mapOrderLines(CurrencyEntity $currency, OrderEntity $order, Context $context): array;
 
-    public function mapCartLines(Cart $cart, SalesChannelContext $salesChannelContext);
+    public function mapCartLines(Cart $cart, SalesChannelContext $salesChannelContext): array;
 }

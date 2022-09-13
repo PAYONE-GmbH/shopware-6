@@ -12,7 +12,10 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    private LineItemHydratorInterface $lineItemHydrator;
+    /**
+     * @var LineItemHydratorInterface
+     */
+    private $lineItemHydrator;
 
     public function __construct(LineItemHydratorInterface $lineItemHydrator)
     {
