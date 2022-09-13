@@ -37,15 +37,17 @@ class KlarnaSessionService implements KlarnaSessionServiceInterface
 
     public function createKlarnaSession(SalesChannelContext $salesChannelContext, string $orderId = null): CheckoutKlarnaSessionData
     {
-        $orderCriteria = $this->cartHasher->getCriteriaForOrder($orderId);
-        $order         = $this->orderEntityRepository->search($orderCriteria, $salesChannelContext->getContext())->first();
+        if ($orderId) {
+            $orderCriteria = $this->cartHasher->getCriteriaForOrder($orderId);
+            $order         = $this->orderEntityRepository->search($orderCriteria, $salesChannelContext->getContext())->first();
+        }
 
         $cartHash = $this->cartHasher->generate(
             $order ?? $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext),
             $salesChannelContext
         );
 
-        $struct        = new KlarnaCreateSessionStruct($salesChannelContext, $order);
+        $struct        = new KlarnaCreateSessionStruct($salesChannelContext, $order ?? null);
         $requestParams = $this->requestParameterFactory->getRequestParameter($struct);
         $response      = $this->payoneClient->request($requestParams);
 
