@@ -74,13 +74,13 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $addressRepository = $this->getContainer()->get('order_address.repository');
-        $order = $struct->getPaymentTransaction()->getOrder();
+        $order             = $struct->getPaymentTransaction()->getOrder();
         $addressRepository->update([
             [
-                'id' => $order->getBillingAddressId(),
+                'id'      => $order->getBillingAddressId(),
                 'company' => 'the-company',
-                'vatId' => 'the-vatid',
-            ]
+                'vatId'   => 'the-vatid',
+            ],
         ], Context::createDefaultContext());
 
         $builder    = $this->getContainer()->get($this->getParameterBuilder());
@@ -122,13 +122,13 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $orderCustomerRepository = $this->getContainer()->get('order_customer.repository');
-        $order = $struct->getPaymentTransaction()->getOrder();
+        $order                   = $struct->getPaymentTransaction()->getOrder();
         $orderCustomerRepository->update([
             [
-                'id' => $order->getOrderCustomer()->getId(),
+                'id'      => $order->getOrderCustomer()->getId(),
                 'company' => 'the-company',
-                'vatIds' => ['the-vatid'],
-            ]
+                'vatIds'  => ['the-vatid'],
+            ],
         ], Context::createDefaultContext());
 
         $builder    = $this->getContainer()->get($this->getParameterBuilder());
@@ -170,13 +170,13 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $addressRepository = $this->getContainer()->get('order_address.repository');
-        $order = $struct->getPaymentTransaction()->getOrder();
+        $order             = $struct->getPaymentTransaction()->getOrder();
         $addressRepository->update([
             [
-                'id' => $order->getBillingAddressId(),
+                'id'      => $order->getBillingAddressId(),
                 'company' => 'the-company',
-                'vatId' => 'the-vatid',
-            ]
+                'vatId'   => 'the-vatid',
+            ],
         ], Context::createDefaultContext());
 
         $builder    = $this->getContainer()->get($this->getParameterBuilder());
