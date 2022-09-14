@@ -12,6 +12,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -31,6 +32,10 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     public const PAYONE_FINANCING_PYS = 'PYS';
     public const PAYONE_FINANCING_PYD = 'PYD';
 
+    public const PAYONE_FINANCING_RPV = 'RPV';
+    public const PAYONE_FINANCING_RPS = 'RPS';
+    public const PAYONE_FINANCING_RPD = 'RPD';
+
     /** @var ConfigReaderInterface */
     protected $configReader;
 
@@ -48,6 +53,11 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         $this->configReader       = $configReader;
         $this->lineItemRepository = $lineItemRepository;
         $this->requestStack       = $requestStack;
+    }
+
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    {
+        return [];
     }
 
     /**
@@ -241,5 +251,27 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         }
 
         return new RequestDataBag($request->request->all());
+    }
+
+    protected function getMinimumDate(): \DateTimeInterface
+    {
+        return (new \DateTime())->modify('-18 years')->setTime(0, 0);
+    }
+
+    protected function customerHasCompanyAddress(SalesChannelContext $salesChannelContext): bool
+    {
+        $customer = $salesChannelContext->getCustomer();
+
+        if (null === $customer) {
+            return false;
+        }
+
+        $billingAddress = $customer->getActiveBillingAddress();
+
+        if (null === $billingAddress) {
+            return false;
+        }
+
+        return !empty($billingAddress->getCompany());
     }
 }

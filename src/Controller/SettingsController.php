@@ -79,7 +79,7 @@ class SettingsController extends AbstractController
             $criteria      = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', $paymentClass));
             $paymentMethod = $paymentMethodRepository->search($criteria, $context)->first();
 
-            if (!$paymentMethod || !$paymentMethod->getActive()) {
+            if (!$paymentMethod || !$paymentMethod->getActive() || in_array($paymentMethod->getHandlerIdentifier(), Handler\PaymentHandlerGroups::RATEPAY, true)) {
                 continue;
             }
 
@@ -384,7 +384,7 @@ class SettingsController extends AbstractController
                     'businessrelation' => 'b2c',
                 ];
 
-                case Handler\PayoneOpenInvoicePaymentHandler::class:
+            case Handler\PayoneOpenInvoicePaymentHandler::class:
                 return [
                     'request'          => 'preauthorization',
                     'clearingtype'     => 'rec',

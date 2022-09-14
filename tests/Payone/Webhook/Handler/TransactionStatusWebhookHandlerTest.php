@@ -2,109 +2,41 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Test\Payone\Webhook\Handler;
+namespace PayonePayment\Payone\Webhook\Handler;
 
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\Constants;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
-use PayonePayment\Struct\PaymentTransaction;
-use PayonePayment\Test\Constants;
-use PayonePayment\Test\Mock\Factory\TransactionStatusWebhookHandlerFactory;
-use PHPUnit\Framework\MockObject\MockObject;
+use PayonePayment\TestCaseBase\Factory\TransactionStatusWebhookHandlerFactory;
+use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
-use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Checkout\Test\Cart\Common\Generator;
-use Shopware\Core\Defaults;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Pricing\CashRoundingConfig;
-use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
-use Shopware\Core\System\Currency\CurrencyEntity;
-use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @covers \PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler
+ */
 class TransactionStatusWebhookHandlerTest extends TestCase
 {
-    use KernelTestBehaviour;
+    use PayoneTestBehavior;
 
-    /** @var MockObject&OrderTransactionStateHandler */
-    private $transactionStateHandler;
-
-    protected function setUp(): void
+    public function testItAppointsCreditCardWithoutMapping(): void
     {
-        $this->transactionStateHandler = $this->createMock(OrderTransactionStateHandler::class);
-    }
-
-    public function testCreditcardAppointedWithoutMapping(): void
-    {
-        $context             = Context::createDefaultContext();
-        $salesChannelContext = Generator::createSalesChannelContext($context);
-        $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
+        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
         $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
         $stateMachineRegistry->expects($this->never())->method('transition');
 
-        $orderTransactionEntity = new OrderTransactionEntity();
-        $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
-
-        $currency = new CurrencyEntity();
-        $currency->setId(Constants::CURRENCY_ID);
-
-        if (method_exists($currency, 'setDecimalPrecision')) {
-            $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
-        } else {
-            $currency->setItemRounding(
-                new CashRoundingConfig(
-                    Constants::CURRENCY_DECIMAL_PRECISION,
-                    Constants::ROUNDING_INTERVAL,
-                    true)
-            );
-
-            $currency->setTotalRounding(
-                new CashRoundingConfig(
-                    Constants::CURRENCY_DECIMAL_PRECISION,
-                    Constants::ROUNDING_INTERVAL,
-                    true)
-            );
-        }
-
-        $orderEntity = new OrderEntity();
-        $orderEntity->setId(Constants::ORDER_ID);
-        $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
-        $orderEntity->setAmountTotal(100);
-        $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
-        $orderEntity->setCurrency($currency);
-
-        $paymentMethodEntity = new PaymentMethodEntity();
-        $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);
-        $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
-
-        $orderTransactionEntity->setOrder($orderEntity);
-
-        $customFields = [
-            CustomFieldInstaller::TRANSACTION_ID     => Constants::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER    => 0,
-            CustomFieldInstaller::LAST_REQUEST       => 'authorization',
-            CustomFieldInstaller::AUTHORIZATION_TYPE => 'authorization',
-        ];
-        $orderTransactionEntity->setCustomFields($customFields);
-
-        $stateMachineState = new StateMachineStateEntity();
-        $stateMachineState->setTechnicalName('');
-        $orderTransactionEntity->setStateMachineState($stateMachineState);
+        $orderEntity        = $this->getRandomOrder($salesChannelContext);
+        $paymentTransaction = $this->getPaymentTransaction($orderEntity, PayoneCreditCardPaymentHandler::class);
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
             $stateMachineRegistry,
             [],
-            $orderTransactionEntity
+            $paymentTransaction->getOrderTransaction()
         );
-
-        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
         $transactionData = [
             'txid'           => Constants::PAYONE_TRANSACTION_ID,
@@ -127,11 +59,9 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         );
     }
 
-    public function testCreditcardAppointedWithMapping(): void
+    public function testItAppointsCreditCardWithMapping(): void
     {
-        $context             = Context::createDefaultContext();
-        $salesChannelContext = Generator::createSalesChannelContext($context);
-        $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
+        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
         $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
         $stateMachineRegistry->expects($this->once())->method('transition')->with(
@@ -141,67 +71,19 @@ class TransactionStatusWebhookHandlerTest extends TestCase
                 'paid',
                 'stateId'
             ),
-            $context
+            $salesChannelContext->getContext()
         );
 
-        $orderTransactionEntity = new OrderTransactionEntity();
-        $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
-
-        $currency = new CurrencyEntity();
-        $currency->setId(Constants::CURRENCY_ID);
-
-        if (method_exists($currency, 'setDecimalPrecision')) {
-            $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
-        } else {
-            $currency->setItemRounding(
-                new CashRoundingConfig(
-                    Constants::CURRENCY_DECIMAL_PRECISION,
-                    Constants::ROUNDING_INTERVAL,
-                    true)
-            );
-
-            $currency->setTotalRounding(
-                new CashRoundingConfig(
-                    Constants::CURRENCY_DECIMAL_PRECISION,
-                    Constants::ROUNDING_INTERVAL,
-                    true)
-            );
-        }
-
-        $orderEntity = new OrderEntity();
-        $orderEntity->setId(Constants::ORDER_ID);
-        $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
-        $orderEntity->setAmountTotal(100);
-        $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
-        $orderEntity->setCurrency($currency);
-
-        $paymentMethodEntity = new PaymentMethodEntity();
-        $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);
-        $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
-
-        $orderTransactionEntity->setOrder($orderEntity);
-
-        $customFields = [
-            CustomFieldInstaller::TRANSACTION_ID     => Constants::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER    => 0,
-            CustomFieldInstaller::LAST_REQUEST       => 'authorization',
-            CustomFieldInstaller::AUTHORIZATION_TYPE => 'authorization',
-        ];
-        $orderTransactionEntity->setCustomFields($customFields);
-
-        $stateMachineState = new StateMachineStateEntity();
-        $stateMachineState->setTechnicalName('');
-        $orderTransactionEntity->setStateMachineState($stateMachineState);
+        $orderEntity        = $this->getRandomOrder($salesChannelContext);
+        $paymentTransaction = $this->getPaymentTransaction($orderEntity, PayoneCreditCardPaymentHandler::class);
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
             $stateMachineRegistry,
             [
                 'paymentStatusAppointed' => 'paid',
             ],
-            $orderTransactionEntity
+            $paymentTransaction->getOrderTransaction()
         );
-
-        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
         $transactionData = [
             'txid'           => Constants::PAYONE_TRANSACTION_ID,
@@ -224,11 +106,9 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         );
     }
 
-    public function testCreditcardAppointedWithSpecificMapping(): void
+    public function testItAppointsCreditCardWithSpecificMapping(): void
     {
-        $context             = Context::createDefaultContext();
-        $salesChannelContext = Generator::createSalesChannelContext($context);
-        $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
+        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
         $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
         $stateMachineRegistry->expects($this->once())->method('transition')->with(
@@ -238,67 +118,19 @@ class TransactionStatusWebhookHandlerTest extends TestCase
                 'paid',
                 'stateId'
             ),
-            $context
+            $salesChannelContext->getContext()
         );
 
-        $orderTransactionEntity = new OrderTransactionEntity();
-        $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
-
-        $currency = new CurrencyEntity();
-        $currency->setId(Constants::CURRENCY_ID);
-
-        if (method_exists($currency, 'setDecimalPrecision')) {
-            $currency->setDecimalPrecision(Constants::CURRENCY_DECIMAL_PRECISION);
-        } else {
-            $currency->setItemRounding(
-                new CashRoundingConfig(
-                    Constants::CURRENCY_DECIMAL_PRECISION,
-                    Constants::ROUNDING_INTERVAL,
-                    true)
-            );
-
-            $currency->setTotalRounding(
-                new CashRoundingConfig(
-                    Constants::CURRENCY_DECIMAL_PRECISION,
-                    Constants::ROUNDING_INTERVAL,
-                    true)
-            );
-        }
-
-        $orderEntity = new OrderEntity();
-        $orderEntity->setId(Constants::ORDER_ID);
-        $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
-        $orderEntity->setAmountTotal(100);
-        $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
-        $orderEntity->setCurrency($currency);
-
-        $paymentMethodEntity = new PaymentMethodEntity();
-        $paymentMethodEntity->setHandlerIdentifier(PayoneCreditCardPaymentHandler::class);
-        $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
-
-        $orderTransactionEntity->setOrder($orderEntity);
-
-        $customFields = [
-            CustomFieldInstaller::TRANSACTION_ID     => Constants::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER    => 0,
-            CustomFieldInstaller::LAST_REQUEST       => 'authorization',
-            CustomFieldInstaller::AUTHORIZATION_TYPE => 'authorization',
-        ];
-        $orderTransactionEntity->setCustomFields($customFields);
-
-        $stateMachineState = new StateMachineStateEntity();
-        $stateMachineState->setTechnicalName('');
-        $orderTransactionEntity->setStateMachineState($stateMachineState);
+        $orderEntity        = $this->getRandomOrder($salesChannelContext);
+        $paymentTransaction = $this->getPaymentTransaction($orderEntity, PayoneCreditCardPaymentHandler::class);
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
             $stateMachineRegistry,
             [
                 'creditCardPaymentStatusAppointed' => 'paid',
             ],
-            $orderTransactionEntity
+            $paymentTransaction->getOrderTransaction()
         );
-
-        $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
         $transactionData = [
             'txid'           => Constants::PAYONE_TRANSACTION_ID,

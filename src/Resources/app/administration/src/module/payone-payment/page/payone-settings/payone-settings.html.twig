@@ -180,6 +180,13 @@
                             v-bind="getElementBind(getBind(element, config))"
                             v-model="config[element.name]"
                         />
+
+                        <div v-if="element.name.includes('ProfileConfigurations')">
+                            <button class="sw-button payone-config-reaload__btn"
+                                    @click="onSave">{{ $tc('payone-payment.general.label.reloadConfigBtn') }}</button>
+                            <p class="payone-config-reaload__info">{{ $tc('payone-payment.general.label.reloadConfigInfo') }}</p>
+                        </div>
+
                     </div>
                 </template>
 

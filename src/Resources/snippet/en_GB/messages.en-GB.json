@@ -159,10 +159,86 @@
                 "holder": "Account Holder: %holder%",
                 "accountNotice": "In order for us to quickly allocate your payment, please transfer the outstanding amount exclusively to the account above."
             }
+        },
+        "ratepay": {
+            "general": {
+                "consentText": "With clicking \"Submit order\" you agree to the <a href=\"https://www.ratepay.com/en/ratepay-terms-of-payment/\" title=\"https://www.ratepay.com/en/ratepay-terms-of-payment/\" target=\"_blank\">terms of payment of our payment partner</a> as well as to the performance of a <a href=\"https://www.ratepay.com/en/ratepay-data-privacy-statement/\" title=\"https://www.ratepay.com/en/ratepay-data-privacy-statement/\" target=\"_blank\">risk check by our payment partner</a>."
+            },
+            "debit": {
+                "iban": {
+                    "label": "IBAN"
+                },
+                "phoneNumber": {
+                    "label": "Phone number"
+                },
+                "birthday": {
+                    "label": "Date of birth"
+                }
+            },
+            "installment": {
+                "inputDivider": "or",
+                "iban": {
+                    "label": "IBAN",
+                    "linkTextNoDirectDebit": "I would like to make the installments myself and not pay by direct debit",
+                    "linkTextDirectDebit": "I would like to pay the installments conveniently by direct debit"
+                },
+                "phoneNumber": {
+                    "label": "Phone number"
+                },
+                "birthday": {
+                    "label": "Date of birth"
+                },
+                "runtime": {
+                    "title": "Runtime",
+                    "label": "Number of monthly rates"
+                },
+                "rate": {
+                    "title": "Rate amount",
+                    "label": "Amount of the monthly installment",
+                    "buttonText": "Calculate installment"
+                },
+                "select": "%duration% months",
+                "installmentCalculation": {
+                    "title": "Installment calculation",
+                    "showCalculation": "Show installment calculation",
+                    "hideCalculation": "Hide installment calculation",
+                    "monthlyRatesText": "%numberOfRates% monthly rates per",
+                    "monthlyRatesDescription": "Monthly installment due",
+                    "monthlyRateText": "1. - %rangeOfRates%. monthly rate per",
+                    "monthlyRateDescription": "Monthly installment due",
+                    "lastRateText": "%lastRate%. monthly rate",
+                    "lastRateDescription": "Partial amount due in the last month.",
+                    "totalAmountText": "total amount",
+                    "totalAmountDescription": "Total amount to be paid by the shopper, calculated by the shopping cart amount, contract signing fee and interest amount.",
+                    "shoppingBasketAmountText": "Shopping basket amount",
+                    "shoppingBasketAmountDescription": "Sum of all products in the basket including shipping",
+                    "contractSigningFeeText": "Contract signing fee",
+                    "contractSigningFeeDescription": "Service charge occurring one time for installment payment",
+                    "annualPercentageRateText": "Annual percentage rate",
+                    "annualPercentageRateDescription": "Total amount of the credit as annual percentage rate",
+                    "debitInterestRateText": "Debit interest rate p.a. (fixed)",
+                    "debitInterestRateDescription": "Periodic interest rate",
+                    "interestAmountText": "Interest amount",
+                    "interestAmountDescription": "Sum of money resulting from the interest rate"
+                }
+            },
+            "invoice": {
+                "birthday": {
+                    "label": "Date of birth"
+                },
+                "phoneNumber": {
+                    "label": "Phone number"
+                }
+            }
         }
     },
     "error": {
         "VIOLATION::PAYONE_BIRTHDAY_NOT_VALID": "For this payment you must be over 18 years old.",
-        "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "The selected payment method is not available."
+        "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "The selected payment method is not available.",
+        "VIOLATION::PAYONE_INVALID_COUNTRY_CODE_ERROR": "The country of the IBAN is not valid.",
+        "VIOLATION::PAYONE_INVALID_CHARACTERS_ERROR": "The IBAN contains invalid characters.",
+        "VIOLATION::PAYONE_CHECKSUM_FAILED_ERROR": "The check digits of the IBAN are invalid.",
+        "VIOLATION::PAYONE_INVALID_FORMAT_ERROR": "Please provide a valid IBAN.",
+        "VIOLATION::PAYONE_NOT_SUPPORTED_COUNTRY_CODE_ERROR": "The country of the IBAN is not valid."
     }
 }

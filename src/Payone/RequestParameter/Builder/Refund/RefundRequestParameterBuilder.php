@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Refund;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
@@ -62,6 +63,11 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
             }
 
             $parameters['iban'] = $firstTransaction['request']['iban'];
+        }
+
+        if (in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::RATEPAY)) {
+            $parameters['settleaccount']        = 'yes';
+            $parameters['add_paydata[shop_id]'] = $customFields[CustomFieldInstaller::USED_RATEPAY_SHOP_ID];
         }
 
         return $parameters;

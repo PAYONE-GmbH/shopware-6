@@ -3,7 +3,29 @@
         "title": "PAYONE",
         "general": {
             "mainMenuItemGeneral": "PAYONE",
-            "descriptionTextModule": "Settings for PAYONE"
+            "descriptionTextModule": "Settings for PAYONE",
+            "headlines": {
+                "ratepayProfiles": "Profile",
+                "ratepayProfileConfigurations": "Profil-Konfigurationen"
+            },
+            "label": {
+                "shopId": "Shop-ID",
+                "currency": "Currency",
+                "error": "Status",
+                "invoiceCountry": "Invoice Country",
+                "shippingCountry": "Shipping Country",
+                "minBasket": "Min. Basket",
+                "maxBasket": "Max. Basket",
+                "reloadConfigBtn": "Reload Profile Configuration",
+                "reloadConfigInfo": "(Plugin Configuration Changes will be saved first)"
+            },
+            "actions": {
+                "addShop": "Add Shop-ID"
+            },
+            "errors": {
+                "existingShopId": "The entered shop-id already exists.",
+                "emptyInputs": "Please fill all input fields."
+            }
         },
         "capture": {
             "buttonTitle": "Capture",
@@ -60,6 +82,9 @@
             "titleError": "Error",
             "labelShowSpecificStatusMapping": "Display state mapping configuration",
             "helpTextShowSpecificStatusMapping": "If not configured the general status mapping config will be applied.",
+            "messageSaveError": {
+                "ratepayProfilesUpdateFailed": "At least one Ratepay profile could not be saved successfully, please check your configuration."
+            },
             "messageTestSuccess": "The API credentials were verified successfully.",
             "messageTestNoTestedPayments": "No payment methods were tested during the check because none of the PAYONE payment methods are activated. Please activate at least one PAYONE payment method under Settings --> Shop --> Payment.",
             "messageTestError": {
@@ -80,7 +105,10 @@
                 "paydirekt": "The API credentials for PAYONE paydirekt are not valid.",
                 "trustly": "The API credentials for PAYONE Trustly are not valid.",
                 "applePay": "The API credentials for PAYONE Apple Pay are not valid.",
-                "bancontact": "The API credentials for PAYONE Bancontact payment are not valid."
+                "bancontact": "The API credentials for PAYONE Bancontact payment are not valid.",
+                "ratepayDebit": "The API credentials for PAYONE Ratepay Direct Debit payment are not valid.",
+                "ratepayInstallment": "The API credentials for PAYONE Ratepay Installments payment are not valid.",
+                "ratepayInvoicing": "The API credentials for PAYONE Ratepay Open Invoice payment are not valid."
             }
         },
         "supportModal": {

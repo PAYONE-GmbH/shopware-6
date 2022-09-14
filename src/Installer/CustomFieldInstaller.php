@@ -35,10 +35,13 @@ class CustomFieldInstaller implements InstallerInterface
     public const CAPTURED_QUANTITY      = 'payone_captured_quantity';
     public const REFUNDED_QUANTITY      = 'payone_refunded_quantity';
     public const CLEARING_BANK_ACCOUNT  = 'payone_clearing_bank_account';
+    public const CUSTOMER_PHONE_NUMBER  = 'payone_customer_phone_number';
+    public const USED_RATEPAY_SHOP_ID   = 'payone_used_ratepay_shop_id';
 
     public const FIELDSET_ID_ORDER_TRANSACTION = 'aacbcf9bedfb4827853b75c5fd278d3f';
     public const FIELDSET_ID_ORDER_LINE_ITEM   = '12f3f06c895e11eabc550242ac130003';
     public const FIELDSET_ID_PAYMENT_METHOD    = 'ed39626e94fd4dfe9d81976fdbcdb06c';
+    public const FIELDSET_ID_CUSTOMER          = '8e4a0b8f7eb04272ad874f3b22cf4935';
 
     /** @var EntityRepositoryInterface */
     private $customFieldRepository;
@@ -98,6 +101,21 @@ class CustomFieldInstaller implements InstallerInterface
                 'relation' => [
                     'id'         => '0f2e6036750a4eb98ffe7155be89a5a6',
                     'entityName' => 'order_line_item',
+                ],
+            ],
+            [
+                'id'     => self::FIELDSET_ID_CUSTOMER,
+                'name'   => 'customer_payone_payment',
+                'config' => [
+                    'label' => [
+                        'en-GB' => 'PAYONE',
+                        'de-DE' => 'PAYONE',
+                    ],
+                    'translated' => true,
+                ],
+                'relation' => [
+                    'id'         => '4b23593512f848d8ba360985de234a1b',
+                    'entityName' => 'customer',
                 ],
             ],
         ];
@@ -206,6 +224,12 @@ class CustomFieldInstaller implements InstallerInterface
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
             ],
             [
+                'id'               => '0beeb4fd0c4947afaa360cb0431c29ad',
+                'name'             => self::USED_RATEPAY_SHOP_ID,
+                'type'             => CustomFieldTypes::INT,
+                'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
+            ],
+            [
                 'id'               => 'e3583a4c893611eabc550242ac130003',
                 'name'             => self::CAPTURED_QUANTITY,
                 'type'             => CustomFieldTypes::INT,
@@ -222,6 +246,25 @@ class CustomFieldInstaller implements InstallerInterface
                 'name'             => self::CLEARING_BANK_ACCOUNT,
                 'type'             => CustomFieldTypes::JSON,
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_TRANSACTION,
+            ],
+            [
+                'id'               => 'e56cc871e9784c3b91dd755511dc0221',
+                'name'             => self::CUSTOMER_PHONE_NUMBER,
+                'type'             => CustomFieldTypes::TEXT,
+                'customFieldSetId' => self::FIELDSET_ID_CUSTOMER,
+                'config'           => [
+                    'componentName'   => 'sw-field',
+                    'customFieldType' => CustomFieldTypes::TEXT,
+                    'type'            => CustomFieldTypes::TEXT,
+                    'label'           => [
+                        'en-GB' => 'Phone Number',
+                        'de-DE' => 'Telefonnummer',
+                    ],
+                    'helpText' => [
+                        'en-GB' => 'Will be asked for some PAYONE payment methods in the checkout and stored in this field after the first time. After that, the saved phone number is always used and it is no longer requested.',
+                        'de-DE' => 'Wird bei manchen PAYONE Zahlungsarten im Checkout abgefragt und nach dem ersten mal in diesem Feld gespeichert. Danach wird immer die gespeicherte Telefonnummer verwendet und sie wird nicht mehr abgefragt.',
+                    ],
+                ],
             ],
         ];
     }
@@ -284,6 +327,7 @@ class CustomFieldInstaller implements InstallerInterface
             'type'             => $customField['type'],
             'active'           => true,
             'customFieldSetId' => $customField['customFieldSetId'],
+            'config'           => $customField['config'] ?? [],
         ];
 
         $this->customFieldRepository->upsert([$data], $context);

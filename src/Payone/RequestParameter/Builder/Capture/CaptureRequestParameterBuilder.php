@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Capture;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
@@ -17,11 +18,11 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 
 class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    private const CAPTUREMODE_COMPLETED  = 'completed';
-    private const CAPTUREMODE_INCOMPLETE = 'notcompleted';
-    private const SETTLEACCOUNT_YES      = 'yes';
-    private const SETTLEACCOUNT_AUTO     = 'auto';
-    private const SETTLEACCOUNT_NO       = 'no';
+    public const CAPTUREMODE_COMPLETED  = 'completed';
+    public const CAPTUREMODE_INCOMPLETE = 'notcompleted';
+    public const SETTLEACCOUNT_YES      = 'yes';
+    public const SETTLEACCOUNT_AUTO     = 'auto';
+    public const SETTLEACCOUNT_NO       = 'no';
 
     /** @var CurrencyPrecisionInterface */
     private $currencyPrecision;
@@ -81,6 +82,11 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         if ($arguments->getPaymentMethod() === PayoneBancontactPaymentHandler::class) {
             $isCompleted                 = $parameters['capturemode'] === self::CAPTUREMODE_COMPLETED;
             $parameters['settleaccount'] = $isCompleted ? self::SETTLEACCOUNT_YES : self::SETTLEACCOUNT_NO;
+        }
+
+        if (in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::RATEPAY)) {
+            $parameters['settleaccount']        = 'yes';
+            $parameters['add_paydata[shop_id]'] = $customFields[CustomFieldInstaller::USED_RATEPAY_SHOP_ID];
         }
 
         return $parameters;
