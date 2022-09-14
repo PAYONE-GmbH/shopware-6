@@ -102,29 +102,21 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         /** @var OrderAddressEntity $billingAddress */
         $billingAddress = $orderAddresses->get($order->getBillingAddressId());
 
-        if (!empty($billingAddress->getCompany()) && !empty($billingAddress->getVatId())) {
-            $parameters['add_paydata[b2b]'] = 'yes';
-            $parameters['add_paydata[company_uid]'] = $billingAddress->getVatId();
-
-            return;
-        }
-
         /** @var OrderCustomerEntity $orderCustomer */
         $orderCustomer = $order->getOrderCustomer();
 
-        if (empty($orderCustomer->getCompany()) && empty($billingAddress->getCompany())) {
-            return;
-        }
-
-        if (method_exists($orderCustomer, 'getVatIds') === false) {
-            return;
-        }
-
-        $vatIds = $orderCustomer->getVatIds();
-
-        if (empty($vatIds) === false) {
+        if ($billingAddress->getCompany() || $orderCustomer->getCompany()) {
             $parameters['add_paydata[b2b]'] = 'yes';
-            $parameters['add_paydata[company_uid]'] = $vatIds[0];
+
+            if ($billingAddress->getVatId()) {
+                $parameters['add_paydata[company_uid]'] = $billingAddress->getVatId();
+            } elseif (method_exists($orderCustomer, 'getVatIds')) {
+                $vatIds = $orderCustomer->getVatIds();
+
+                if ($vatIds && count($vatIds) > 0) {
+                    $parameters['add_paydata[company_uid]'] = $orderCustomer->getVatIds()[0];
+                }
+            }
         }
     }
 }

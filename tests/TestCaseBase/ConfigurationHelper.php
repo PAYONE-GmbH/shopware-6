@@ -14,10 +14,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 trait ConfigurationHelper
 {
+    /**
+     * @param null|array|bool|float|int|string $configValue
+     */
     protected function setPayoneConfig(
         ContainerInterface $container,
         string $configKey,
-        string $configValue
+        $configValue
     ): void {
         $systemConfigService = $container->get(SystemConfigService::class);
         $systemConfigService->set('PayonePayment.settings.' . $configKey, $configValue);
