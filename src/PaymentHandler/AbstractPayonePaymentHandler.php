@@ -5,15 +5,23 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use LogicException;
+use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
+use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
+use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * A base class for payment handlers which implements common processing
@@ -273,5 +281,44 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         }
 
         return !empty($billingAddress->getCompany());
+    }
+
+    /**
+     * @param RequestDataBag $requestDataBag
+     * @param SyncPaymentTransactionStruct|AsyncPaymentTransactionStruct $paymentTransaction
+     * @param SalesChannelContext $salesChannelContext
+     */
+    public function validateCartHash(
+        RequestDataBag $requestDataBag,
+        $paymentTransaction,
+        SalesChannelContext $salesChannelContext,
+        string $exceptionClass = null
+    ): void
+    {
+        $missingPropertyMessage = 'please create protected property `%s` of type %s on class ' . get_class($this);
+        if (!property_exists($this, 'cartHasher')) {
+            throw new \RuntimeException(sprintf($missingPropertyMessage, 'cartHasher', CartHasherInterface::class));
+        }
+
+        if (!property_exists($this, 'translator')) {
+            throw new \RuntimeException(sprintf($missingPropertyMessage, 'translator', TranslatorInterface::class));
+        }
+
+        $cartHash = (string)$requestDataBag->get('carthash');
+        $transactionEntity = $paymentTransaction->getOrderTransaction();
+
+        if (!$this->cartHasher->validate($paymentTransaction->getOrder(), $cartHash, $salesChannelContext)) {
+            if (!$exceptionClass) {
+                if ($this instanceof SynchronousPaymentHandlerInterface) {
+                    $exceptionClass = SyncPaymentProcessException::class;
+                } else if ($this instanceof AsynchronousPaymentHandlerInterface) {
+                    $exceptionClass = AsyncPaymentProcessException::class;
+                }
+            }
+            throw new $exceptionClass(
+                $transactionEntity->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
     }
 }

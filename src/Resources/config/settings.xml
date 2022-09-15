@@ -3020,4 +3020,460 @@
             <name>ratepayInstallmentProfileConfigurations</name>
         </component>
     </card>
+
+    <card>
+        <title>PAYONE Klarna Rechnung</title> <!-- do not add EN translation -->
+        <title lang="de-DE">PAYONE Klarna Rechnung</title>
+        <name>payment_klarna_invoice</name>
+
+        <input-field>
+            <name>klarnaInvoiceMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>klarnaInvoiceAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>klarnaInvoicePortalId</name>
+            <label>Portal ID</label>
+            <helpText>You need an ID to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen eine ID zu einem separates Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>klarnaInvoicePortalKey</name>
+            <label>Key</label>
+            <helpText>You need a key to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoiceAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Defines the authorization method for this payment method.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>klarnaInvoiceProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusAppointed</name>
+            <label>Transition for APPOINTED</label>
+            <label lang="de-DE">Statuswechsel für APPOINTED</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusCapture</name>
+            <label>Transition for CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusPartialCapture</name>
+            <label>Transition for PARTIAL_CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusPaid</name>
+            <label>Transition for PAID</label>
+            <label lang="de-DE">Statuswechsel für PAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusUnderpaid</name>
+            <label>Transition for UNDERPAID</label>
+            <label lang="de-DE">Statuswechsel für UNDERPAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusCancelation</name>
+            <label>Transition for CANCELLATION</label>
+            <label lang="de-DE">Statuswechsel für CANCELLATION</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusRefund</name>
+            <label>Transition for REFUND</label>
+            <label lang="de-DE">Statuswechsel für REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusPartialRefund</name>
+            <label>Transition for PARTIAL_REFUND</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusDebit</name>
+            <label>Transition for DEBIT</label>
+            <label lang="de-DE">Statuswechsel für DEBIT</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusReminder</name>
+            <label>Transition for REMINDER</label>
+            <label lang="de-DE">Statuswechsel für REMINDER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusVauthorization</name>
+            <label>Transition for VAuthorization</label>
+            <label lang="de-DE">Statuswechsel für VAuthorization</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusVsettlement</name>
+            <label>Transition for VSettlement</label>
+            <label lang="de-DE">Statuswechsel für VSettlement</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusTransfer</name>
+            <label>Transition for TRANSFER</label>
+            <label lang="de-DE">Statuswechsel für TRANSFER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusInvoice</name>
+            <label>Transition for INVOICE</label>
+            <label lang="de-DE">Statuswechsel für INVOICE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInvoicePaymentStatusFailed</name>
+            <label>Transition for FAILED</label>
+            <label lang="de-DE">Statuswechsel für FAILED</label>
+        </input-field>
+    </card>
+
+    <card>
+        <title>PAYONE Klarna Sofort bezahlen</title> <!-- do not add EN translation -->
+        <title lang="de-DE">PAYONE Klarna Sofort bezahlen</title>
+        <name>payment_klarna_direct_debit</name>
+
+        <input-field>
+            <name>klarnaDirectDebitMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>klarnaDirectDebitAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>klarnaDirectDebitPortalId</name>
+            <label>Portal ID</label>
+            <helpText>You need an ID to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen eine ID zu einem separates Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>klarnaDirectDebitPortalKey</name>
+            <label>Key</label>
+            <helpText>You need a key to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Defines the authorization method for this payment method.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>klarnaDirectDebitProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusAppointed</name>
+            <label>Transition for APPOINTED</label>
+            <label lang="de-DE">Statuswechsel für APPOINTED</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusCapture</name>
+            <label>Transition for CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusPartialCapture</name>
+            <label>Transition for PARTIAL_CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusPaid</name>
+            <label>Transition for PAID</label>
+            <label lang="de-DE">Statuswechsel für PAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusUnderpaid</name>
+            <label>Transition for UNDERPAID</label>
+            <label lang="de-DE">Statuswechsel für UNDERPAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusCancelation</name>
+            <label>Transition for CANCELLATION</label>
+            <label lang="de-DE">Statuswechsel für CANCELLATION</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusRefund</name>
+            <label>Transition for REFUND</label>
+            <label lang="de-DE">Statuswechsel für REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusPartialRefund</name>
+            <label>Transition for PARTIAL_REFUND</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusDebit</name>
+            <label>Transition for DEBIT</label>
+            <label lang="de-DE">Statuswechsel für DEBIT</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusReminder</name>
+            <label>Transition for REMINDER</label>
+            <label lang="de-DE">Statuswechsel für REMINDER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusVauthorization</name>
+            <label>Transition for VAuthorization</label>
+            <label lang="de-DE">Statuswechsel für VAuthorization</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusVsettlement</name>
+            <label>Transition for VSettlement</label>
+            <label lang="de-DE">Statuswechsel für VSettlement</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusTransfer</name>
+            <label>Transition for TRANSFER</label>
+            <label lang="de-DE">Statuswechsel für TRANSFER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusInvoice</name>
+            <label>Transition for INVOICE</label>
+            <label lang="de-DE">Statuswechsel für INVOICE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaDirectDebitPaymentStatusFailed</name>
+            <label>Transition for FAILED</label>
+            <label lang="de-DE">Statuswechsel für FAILED</label>
+        </input-field>
+    </card>
+
+    <card>
+        <title>PAYONE Klarna Ratenkauf</title> <!-- do not add EN translation -->
+        <title lang="de-DE">PAYONE Klarna Ratenkauf</title>
+        <name>payment_klarna_instalment</name>
+
+        <input-field>
+            <name>klarnaInstalmentMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>klarnaInstalmentAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>klarnaInstalmentPortalId</name>
+            <label>Portal ID</label>
+            <helpText>You need an ID to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen eine ID zu einem separates Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>klarnaInstalmentPortalKey</name>
+            <label>Key</label>
+            <helpText>You need a key to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Defines the authorization method for this payment method.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>klarnaInstalmentProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusAppointed</name>
+            <label>Transition for APPOINTED</label>
+            <label lang="de-DE">Statuswechsel für APPOINTED</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusCapture</name>
+            <label>Transition for CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusPartialCapture</name>
+            <label>Transition for PARTIAL_CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusPaid</name>
+            <label>Transition for PAID</label>
+            <label lang="de-DE">Statuswechsel für PAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusUnderpaid</name>
+            <label>Transition for UNDERPAID</label>
+            <label lang="de-DE">Statuswechsel für UNDERPAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusCancelation</name>
+            <label>Transition for CANCELLATION</label>
+            <label lang="de-DE">Statuswechsel für CANCELLATION</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusRefund</name>
+            <label>Transition for REFUND</label>
+            <label lang="de-DE">Statuswechsel für REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusPartialRefund</name>
+            <label>Transition for PARTIAL_REFUND</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusDebit</name>
+            <label>Transition for DEBIT</label>
+            <label lang="de-DE">Statuswechsel für DEBIT</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusReminder</name>
+            <label>Transition for REMINDER</label>
+            <label lang="de-DE">Statuswechsel für REMINDER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusVauthorization</name>
+            <label>Transition for VAuthorization</label>
+            <label lang="de-DE">Statuswechsel für VAuthorization</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusVsettlement</name>
+            <label>Transition for VSettlement</label>
+            <label lang="de-DE">Statuswechsel für VSettlement</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusTransfer</name>
+            <label>Transition for TRANSFER</label>
+            <label lang="de-DE">Statuswechsel für TRANSFER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusInvoice</name>
+            <label>Transition for INVOICE</label>
+            <label lang="de-DE">Statuswechsel für INVOICE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>klarnaInstalmentPaymentStatusFailed</name>
+            <label>Transition for FAILED</label>
+            <label lang="de-DE">Statuswechsel für FAILED</label>
+        </input-field>
+    </card>
 </config>

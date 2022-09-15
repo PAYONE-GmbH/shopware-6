@@ -1,0 +1,8 @@
+<div class="payone-payment payone-payment--klarna" data-payone-payment-klarna data-payone-payment-klarna-options='{
+    "clientToken": "{{ page.extensions.payone.klarnaClientToken }}",
+    "paymentMethodCategory": "{{ page.extensions.payone.klarnaPaymentMethodCategory }}",
+    "selectorContainer": "#payone-payment--klarna__container"
+}'>
+    <div id="payone-payment--klarna__container"></div>
+    <input type="hidden" name="payoneKlarnaAuthorizationToken" form="confirmOrderForm"/>
+</div>

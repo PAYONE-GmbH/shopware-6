@@ -1,91 +1,93 @@
 <?php
 
-declare(strict_types=1);
-
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
-use PayonePayment\Components\Validator\Birthday;
-use PayonePayment\Components\Validator\PaymentMethod;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
+use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
+use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
-class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
+abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var PayoneClientInterface */
-    private $client;
-
-    /** @var TranslatorInterface */
-    private $translator;
-
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
-
-    /** @var CartHasherInterface */
-    protected $cartHasher;
-
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    protected TranslatorInterface $translator;
+    private RequestParameterFactory $requestParameterFactory;
+    private PayoneClientInterface $client;
+    private TransactionDataHandler $dataHandler;
+    protected CartHasherInterface $cartHasher;
+    private PaymentStateHandlerInterface $stateHandler;
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        PayoneClientInterface $client,
-        TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
-        EntityRepositoryInterface $lineItemRepository,
-        CartHasherInterface $cartHasher,
+        EntityRepository $lineItemRepository,
         RequestStack $requestStack,
-        RequestParameterFactory $requestParameterFactory
-    ) {
-        parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->client                  = $client;
-        $this->translator              = $translator;
-        $this->dataHandler             = $dataHandler;
-        $this->cartHasher              = $cartHasher;
+        TranslatorInterface $translator,
+        RequestParameterFactory $requestParameterFactory,
+        PayoneClientInterface $client,
+        TransactionDataHandler $dataHandler,
+        CartHasherInterface $cartHasher,
+        PaymentStateHandlerInterface $stateHandler
+    )
+    {
+        $this->configReader = $configReader;
+        $this->lineItemRepository = $lineItemRepository;
+        $this->requestStack = $requestStack;
+        $this->translator = $translator;
         $this->requestParameterFactory = $requestParameterFactory;
+        $this->client = $client;
+        $this->dataHandler = $dataHandler;
+        $this->cartHasher = $cartHasher;
+        parent::__construct($configReader, $lineItemRepository, $requestStack);
+        $this->stateHandler = $stateHandler;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
+    public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
     {
-        $requestData = $this->fetchRequestData();
-
         $this->validateCartHash($dataBag, $transaction, $salesChannelContext);
 
-        // Get configured authorization method
+        $authToken = $dataBag->get('payoneKlarnaAuthorizationToken');
+
+        if (!$authToken) {
+            throw new SyncPaymentProcessException(
+                $transaction->getOrderTransaction()->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
+
+        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
+
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
-            'payolutionInstallmentAuthorizationMethod',
-            'authorization'
+            $this->getConfigKeyPrefix() . 'AuthorizationMethod',
+            AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE
         );
-
-        $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
         $request = $this->requestParameterFactory->getRequestParameter(
             new PaymentTransactionStruct(
                 $paymentTransaction,
-                $requestData,
+                $this->filterRequestDataBag($dataBag),
                 $salesChannelContext,
-                __CLASS__,
+                get_class($this),
                 $authorizationMethod
             )
         );
@@ -114,30 +116,37 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
         $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
             $this->getBaseCustomFields($response['status']),
             [
-                CustomFieldInstaller::WORK_ORDER_ID      => $requestData->get('workorder'),
-                CustomFieldInstaller::CLEARING_REFERENCE => $response['clearing']['Reference'],
-                CustomFieldInstaller::CAPTURE_MODE       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-                CustomFieldInstaller::CLEARING_TYPE      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                CustomFieldInstaller::FINANCING_TYPE     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
+                CustomFieldInstaller::CLEARING_TYPE => static::PAYONE_CLEARING_FNC,
             ]
         ));
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
+
+        return new RedirectResponse($response['redirecturl']);
     }
 
-    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
     {
-        $definitions = parent::getValidationDefinitions($salesChannelContext);
+        $this->stateHandler->handleStateResponse($transaction, (string)$request->query->get('state'));
+    }
 
-        $definitions['payolutionConsent']  = [new NotBlank()];
-        $definitions['payolutionBirthday'] = [new NotBlank(), new Birthday(['value' => $this->getMinimumDate()])];
-
-        if ($this->customerHasCompanyAddress($salesChannelContext)) {
-            $definitions['payonePaymentMethod'] = [new PaymentMethod(['value' => $salesChannelContext->getPaymentMethod()])];
+    private function filterRequestDataBag(RequestDataBag $dataBag): RequestDataBag
+    {
+        $dataBag = clone $dataBag; // prevent modifying the original object
+        $allowedParameters = [
+            'workorder',
+            'payonePaymentMethod',
+            'payoneKlarnaAuthorizationToken',
+            'carthash'
+        ];
+        foreach ($dataBag->keys() as $key) {
+            if (!in_array($key, $allowedParameters)) {
+                $dataBag->remove($key);
+            }
         }
 
-        return $definitions;
+        return $dataBag;
     }
 
     /**
@@ -162,5 +171,10 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
         }
 
         return static::matchesIsRefundableDefaults($transactionData, $customFields);
+    }
+
+    protected function getConfigKeyPrefix(): string
+    {
+        return ConfigurationPrefixes::CONFIGURATION_PREFIXES[get_class($this)];
     }
 }

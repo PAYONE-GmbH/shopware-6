@@ -108,7 +108,8 @@
                 "bancontact": "The API credentials for PAYONE Bancontact payment are not valid.",
                 "ratepayDebit": "The API credentials for PAYONE Ratepay Direct Debit payment are not valid.",
                 "ratepayInstallment": "The API credentials for PAYONE Ratepay Installments payment are not valid.",
-                "ratepayInvoicing": "The API credentials for PAYONE Ratepay Open Invoice payment are not valid."
+                "ratepayInvoicing": "The API credentials for PAYONE Ratepay Open Invoice payment are not valid.",
+                "klarnaInvoice": "The API credentials for PAYONE Klarna Invoice are not valid."
             }
         },
         "supportModal": {

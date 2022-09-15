@@ -37,5 +37,6 @@
         <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler">
             <argument type="service" id="translator" />
         </service>
+        <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface" alias="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler"/>
     </services>
 </container>

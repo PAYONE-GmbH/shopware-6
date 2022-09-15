@@ -52,6 +52,9 @@ Component.register('payone-settings', {
                 'payment_ratepay_debit': true,
                 'payment_ratepay_installment': true,
                 'payment_ratepay_invoicing': true,
+                'payment_klarna_invoice': true,
+                'payment_klarna_direct_debit': true,
+                'payment_klarna_instalment': true,
             },
         };
     },
@@ -121,6 +124,9 @@ Component.register('payone-settings', {
                 'ratepayDebit',
                 'ratepayInstallment',
                 'ratepayInvoicing',
+                'klarnaInvoice',
+                'klarnaDirectDebit',
+                'klarnaInstalment',
             ];
         },
 
@@ -245,6 +251,13 @@ Component.register('payone-settings', {
                                 title: this.$tc('payone-payment.settingsForm.titleError'),
                                 message: this.$tc('payone-payment.settingsForm.messageTestError.' + key)
                             });
+                            let message = errors[key];
+                            if (typeof message === 'string') {
+                                this.createNotificationError({
+                                    title: this.$tc('payone-payment.settingsForm.titleError'),
+                                    message: message
+                                });
+                            }
                         }
                     }
                 }

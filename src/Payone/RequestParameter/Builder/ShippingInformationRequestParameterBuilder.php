@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneKlarnaInstalmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneKlarnaInvoicePaymentHandler;
+use PayonePayment\PaymentHandler\PayoneKlarnaDirectDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaydirektPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
@@ -11,6 +15,7 @@ use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
+use PayonePayment\Payone\RequestParameter\Struct\KlarnaCreateSessionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class ShippingInformationRequestParameterBuilder extends AbstractRequestParameterBuilder

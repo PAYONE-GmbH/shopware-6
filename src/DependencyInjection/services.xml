@@ -26,6 +26,7 @@
         <service id="PayonePayment\Components\CartHasher\CartHasher">
             <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
         </service>
+        <service id="PayonePayment\Components\CartHasher\CartHasherInterface" alias="PayonePayment\Components\CartHasher\CartHasher" />
 
         <service id="PayonePayment\Components\ConfigReader\ConfigReader">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
@@ -46,6 +47,7 @@
         </service>
 
         <service id="PayonePayment\Components\Currency\CurrencyPrecision" />
+        <service id="PayonePayment\Components\Currency\CurrencyPrecisionInterface" alias="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
         <service id="PayonePayment\Components\Helper\OrderFetcher">
             <argument type="service" id="order.repository" />
@@ -54,6 +56,7 @@
         <service id="PayonePayment\Payone\Client\PayoneClient">
             <argument type="service" id="PayonePayment\Util\Logger" />
         </service>
+        <service id="PayonePayment\Payone\Client\PayoneClientInterface" alias="PayonePayment\Payone\Client\PayoneClient"/>
 
         <service id="PayonePayment\Util\Logger" class="Monolog\Logger">
             <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>

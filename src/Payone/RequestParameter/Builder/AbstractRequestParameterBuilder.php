@@ -72,4 +72,17 @@ abstract class AbstractRequestParameterBuilder
 
         return $currency;
     }
+
+    /**
+     * throws an exception if the given $method does not exist on the given $object
+     * @param $object
+     * @param string $method
+     */
+    protected function validateMethod($object, string $method)
+    {
+        if (!method_exists($object, $method)) {
+            // there is no function to get the salesChannelContext. Without it the builder is not able to get the customer data
+            throw new \RuntimeException('method `getSalesChannelContext` does not exist on ' . get_class($object));
+        }
+    }
 }

@@ -8,6 +8,7 @@ use DateInterval;
 use DateTimeImmutable;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler as Handler;
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -86,10 +87,13 @@ class SettingsController extends AbstractController
             ++$testCount;
 
             try {
-                $parameters  = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
+                $parameters = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
                 $testRequest = $this->requestFactory->getRequestParameter(new TestCredentialsStruct($parameters, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST));
 
                 $this->client->request($testRequest);
+
+            } catch (PayoneRequestException $e) {
+                $errors[$configurationPrefix] = $e->getResponse()['error']['ErrorMessage'];
             } catch (Throwable $exception) {
                 $errors[$configurationPrefix] = true;
             }
@@ -407,7 +411,7 @@ class SettingsController extends AbstractController
                 return [
                     'request'                             => 'genericpayment',
                     'clearingtype'                        => 'wlt',
-                    'wallettype'                          => 'PDT',
+                    'financingtype'                       => 'POV',
                     'amount'                              => 10000,
                     'currency'                            => 'EUR',
                     'reference'                           => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
@@ -435,6 +439,21 @@ class SettingsController extends AbstractController
                     'zip'          => '12345',
                     'city'         => 'Test',
                     'ip'           => '127.0.0.1',
+                ];
+            case Handler\PayoneKlarnaInvoicePaymentHandler::class:
+                return [
+                    'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
+                    'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                    'financingtype' => 'KIV',
+                    'amount' => 100,
+                    'country' => 'DE',
+                    'currency' => 'EUR',
+                    'add_paydata[action]' => 'start_session',
+                    'it[1]'                                      => 'goods',
+                    'id[1]'                                      => '5013210425384',
+                    'pr[1]'                                      => 100,
+                    'de[1]'                                      => 'Test product',
+                    'no[1]'                                      => 1,
                 ];
 
             default:

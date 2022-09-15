@@ -7,5 +7,7 @@
             <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
             <argument type="service" id="shipping_method.repository"/>
         </service>
+        <service id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"
+                 alias="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator" />
     </services>
 </container>
