@@ -218,3 +218,16 @@ Wartung
 * Umbenennung der Zahlungsarten
 * PAYONE Logo ausgetauscht
 * Getestet mit 6.4.12
+
+#3.2.0
+
+Neue Funktionen
+
+* Neue Zahlungsart: Ratepay Rechnungskauf
+* Neue Zahlungsart: Ratepay Lastschrift
+* Neue Zahlungsart: Ratepay Ratenkauf
+
+Wartung
+
+* Sales Landingpage ins Backend integriert
+* Getestet mit 6.4.14 

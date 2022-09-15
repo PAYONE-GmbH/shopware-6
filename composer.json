@@ -2,7 +2,7 @@
   "name": "payone-gmbh/shopware-6",
   "type": "shopware-platform-plugin",
   "description": "PAYONE Payment Plugin",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "license": "MIT",
   "authors": [
     {
@@ -11,9 +11,9 @@
       "homepage": "https://www.payone.com"
     },
     {
-      "name": "Kellerkinder GmbH",
-      "email": "hallo@kellerkinder.de",
-      "homepage": "https://www.kellerkinder.de",
+      "name": "Interlutions GmbH",
+      "email": "info@interlutions.de",
+      "homepage": "https://www.interlutions.de",
       "role": "Contributor"
     }
   ],
