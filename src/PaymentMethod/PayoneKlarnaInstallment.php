@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentMethod;
 
 use PayonePayment\Installer\PaymentMethodInstaller;
-use PayonePayment\PaymentHandler\PayoneKlarnaInstalmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneKlarnaInstallmentPaymentHandler;
 
-class PayoneKlarnaInstalment extends AbstractPayoneKlarna
+class PayoneKlarnaInstallment extends AbstractPayoneKlarna
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
@@ -21,7 +21,7 @@ class PayoneKlarnaInstalment extends AbstractPayoneKlarna
     protected $description = 'Pay with Klarna installments.';
 
     /** @var string */
-    protected $paymentHandler = PayoneKlarnaInstalmentPaymentHandler::class;
+    protected $paymentHandler = PayoneKlarnaInstallmentPaymentHandler::class;
 
     /** @var array */
     protected $translations = [

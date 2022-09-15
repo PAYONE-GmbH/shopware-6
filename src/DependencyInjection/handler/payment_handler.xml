@@ -269,7 +269,7 @@
         <service id="PayonePayment\PaymentHandler\PayoneKlarnaDirectDebitPaymentHandler" autowire="true">
             <tag name="shopware.payment.method.async"/>
         </service>
-        <service id="PayonePayment\PaymentHandler\PayoneKlarnaInstalmentPaymentHandler" autowire="true">
+        <service id="PayonePayment\PaymentHandler\PayoneKlarnaInstallmentPaymentHandler" autowire="true">
             <tag name="shopware.payment.method.async"/>
         </service>
 

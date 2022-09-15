@@ -6,7 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Klarna;
 
 use PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneKlarnaDirectDebitPaymentHandler;
-use PayonePayment\PaymentHandler\PayoneKlarnaInstalmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneKlarnaInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneKlarnaInvoicePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
@@ -23,7 +23,7 @@ class FinancingTypeParameterBuilder extends AbstractRequestParameterBuilder
                 $type = 'KIV';
 
                 break;
-            case PayoneKlarnaInstalmentPaymentHandler::class:
+            case PayoneKlarnaInstallmentPaymentHandler::class:
                 $type = 'KIS';
 
                 break;

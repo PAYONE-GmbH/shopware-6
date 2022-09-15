@@ -54,7 +54,7 @@ Component.register('payone-settings', {
                 'payment_ratepay_invoicing': true,
                 'payment_klarna_invoice': true,
                 'payment_klarna_direct_debit': true,
-                'payment_klarna_instalment': true,
+                'payment_klarna_installment': true,
             },
         };
     },
@@ -126,7 +126,7 @@ Component.register('payone-settings', {
                 'ratepayInvoicing',
                 'klarnaInvoice',
                 'klarnaDirectDebit',
-                'klarnaInstalment',
+                'klarnaInstallment',
             ];
         },
 

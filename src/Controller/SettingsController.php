@@ -441,7 +441,7 @@ class SettingsController extends AbstractController
                 ];
             case Handler\PayoneKlarnaInvoicePaymentHandler::class:
             case Handler\PayoneKlarnaDirectDebitPaymentHandler::class:
-            case Handler\PayoneKlarnaInstalmentPaymentHandler::class:
+            case Handler\PayoneKlarnaInstallmentPaymentHandler::class:
                 return [
                     'request'             => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
                     'clearingtype'        => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,

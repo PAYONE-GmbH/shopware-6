@@ -30,7 +30,7 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_RATEPAY_INVOICING      = 'ratepayInvoicing';
     public const CONFIGURATION_PREFIX_KLARNA_INVOICE         = 'klarnaInvoice';
     public const CONFIGURATION_PREFIX_KLARNA_DIRECT_DEBIT    = 'klarnaDirectDebit';
-    public const CONFIGURATION_PREFIX_KLARNA_INSTALMENT      = 'klarnaInstalment';
+    public const CONFIGURATION_PREFIX_KLARNA_INSTALLMENT      = 'klarnaInstallment';
 
     public const CONFIGURATION_PREFIXES = [
         Handler\PayoneApplePayPaymentHandler::class              => self::CONFIGURATION_PREFIX_APPLE_PAY,
@@ -55,6 +55,6 @@ interface ConfigurationPrefixes
         Handler\PayoneRatepayInvoicingPaymentHandler::class      => self::CONFIGURATION_PREFIX_RATEPAY_INVOICING,
         Handler\PayoneKlarnaInvoicePaymentHandler::class         => self::CONFIGURATION_PREFIX_KLARNA_INVOICE,
         Handler\PayoneKlarnaDirectDebitPaymentHandler::class     => self::CONFIGURATION_PREFIX_KLARNA_DIRECT_DEBIT,
-        Handler\PayoneKlarnaInstalmentPaymentHandler::class      => self::CONFIGURATION_PREFIX_KLARNA_INSTALMENT,
+        Handler\PayoneKlarnaInstallmentPaymentHandler::class      => self::CONFIGURATION_PREFIX_KLARNA_INSTALLMENT,
     ];
 }
