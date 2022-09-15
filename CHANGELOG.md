@@ -221,3 +221,16 @@ Maintenance
 * Changed renaming of payment methods
 * Changed PAYONE Logo
 * tested with 6.4.12
+
+#3.3.0
+
+New Features
+
+* New payment method: Ratepay Open Invoice
+* New payment method: Ratepay Direct Debit
+* New payment method: Ratepay Installments
+
+Maintenance
+
+* Integrate a sales landingpage in backend
+* Tested with version 6.4.14
