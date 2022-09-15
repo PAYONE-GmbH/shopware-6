@@ -15,7 +15,7 @@ class PayoneKlarnaInstallment extends AbstractPayoneKlarna
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'PAYONE Klarna Ratenkauf';
+    protected $name = 'PAYONE Klarna Ratenkauf'; // do not replace this by an english wording. (this is the product name)
 
     /** @var string */
     protected $description = 'Pay with Klarna installments.';
@@ -26,11 +26,11 @@ class PayoneKlarnaInstallment extends AbstractPayoneKlarna
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            // do not add de_DE translation for the name.
+            // do not add de_DE translation for the name. (this::$name is the product name)
             'description' => 'Zahle mit dem Klarna Ratenkauf.',
         ],
         'en-GB' => [
-            // do not add en_GB translation for the name.
+            // do not add de_DE translation for the name. (this::$name is the product name)
             'description' => 'Pay with Klarna installments.',
         ],
     ];

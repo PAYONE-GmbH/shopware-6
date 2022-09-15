@@ -15,7 +15,7 @@ class PayoneKlarnaDirectDebit extends AbstractPayoneKlarna
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'PAYONE Klarna Sofort bezahlen';
+    protected $name = 'PAYONE Klarna Sofort bezahlen'; // do not replace this by an english wording. (this is the product name)
 
     /** @var string */
     protected $description = 'Pay with Klarna direct debit.';
@@ -26,11 +26,11 @@ class PayoneKlarnaDirectDebit extends AbstractPayoneKlarna
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            // do not add de_DE translation for the name.
+            // do not add de_DE translation for the name. (this::$name is the product name)
             'description' => 'Zahle mit der Klarna Lastschrift.',
         ],
         'en-GB' => [
-            // do not add en_GB translation for the name.
+            // do not add de_DE translation for the name. (this::$name is the product name)
             'description' => 'Pay with Klarna direct debit.',
         ],
     ];
