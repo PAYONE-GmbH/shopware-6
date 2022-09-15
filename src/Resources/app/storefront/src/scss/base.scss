@@ -154,8 +154,8 @@ $payone-klarna-background: #f0eeeb; // this is the background color from the wid
     margin-bottom: 1rem;
 
     &.has-element-loader {
-        min-height: 250px;
         background: $payone-klarna-background;
+        min-height: 250px;
     }
 
     .confirmKlarnaUsage__container {
@@ -171,5 +171,15 @@ $payone-klarna-background: #f0eeeb; // this is the background color from the wid
 
     iframe {
         max-width: none !important;
+    }
+
+    .message-container {
+        display: none;
+    }
+
+    &.has-error {
+        .message-container {
+            display: block;
+        }
     }
 }

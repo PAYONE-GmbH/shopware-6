@@ -5,6 +5,10 @@
     "selectorConfirmKlarnaUsageContainerId": "confirmKlarnaUsage__container",
     "selectorConfirmKlarnaUsageId": "confirmKlarnaUsage"
 }'>
+    <div class="message-container">
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with { type: "danger", content: 'PayonePayment.errorMessages.canNotInitKlarna'|trans  } %}
+    </div>
+
     <div id="confirmKlarnaUsage__container" class="confirmKlarnaUsage__container">
         <p>{{ 'PayonePayment.klarna.klarnaUsageConfirm.text' | trans }}</p>
         <button id="confirmKlarnaUsage" class="btn btn-light">{{ 'PayonePayment.klarna.klarnaUsageConfirm.buttonText' | trans }}</button>

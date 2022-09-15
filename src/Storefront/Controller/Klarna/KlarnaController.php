@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @RouteScope(scopes={"storefront"})
@@ -22,14 +21,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class KlarnaController extends StorefrontController
 {
     private KlarnaSessionServiceInterface $klarnaSessionService;
-    private TranslatorInterface $translator;
 
-    public function __construct(
-        KlarnaSessionServiceInterface $klarnaSessionService,
-        TranslatorInterface $translator
-    ) {
+    public function __construct(KlarnaSessionServiceInterface $klarnaSessionService)
+    {
         $this->klarnaSessionService = $klarnaSessionService;
-        $this->translator           = $translator;
     }
 
     /**
@@ -45,8 +40,8 @@ class KlarnaController extends StorefrontController
             $data['status'] = true;
         } catch (PayoneRequestException $e) {
             $data = [
-                'status' => false,
-                'errors' => $this->translator->trans('PayonePayment.errorMessages.canNotInitKlarna'),
+                'status'  => false,
+                'message' => $e->getMessage(),
             ];
         }
 

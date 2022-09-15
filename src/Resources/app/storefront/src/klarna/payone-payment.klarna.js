@@ -1,6 +1,7 @@
 import Plugin from 'src/plugin-system/plugin.class';
 import HttpClient from 'src/service/http-client.service';
 import ElementLoadingIndicatorUtil from 'src/utility/loading-indicator/element-loading-indicator.util';
+import ButtonLoadingIndicator from 'src/utility/loading-indicator/button-loading-indicator.util';
 
 export default class PayonePaymentKlarna extends Plugin {
     static options = {
@@ -52,15 +53,21 @@ export default class PayonePaymentKlarna extends Plugin {
             data['orderId'] = locationMatch[1];
         }
 
-        client.post(url, JSON.stringify(data), (sessionStruct) => {
-            this.sessionStruct = JSON.parse(sessionStruct);
-            document.getElementById('payoneCartHash').value = this.sessionStruct.cartHash;
-            document.getElementById('payoneWorkOrder').value = this.sessionStruct.workOrderId;
-            window.klarnaAsyncCallback = this._initKlarnaWidget.bind(this);
+        client.post(url, JSON.stringify(data), (response) => {
+            this.sessionStruct = JSON.parse(response);
 
-            const scriptTag = document.createElement("script");
-            scriptTag.src = "https://x.klarnacdn.net/kp/lib/v1/api.js";
-            document.body.appendChild(scriptTag);
+            if (this.sessionStruct.status) {
+                document.getElementById('payoneCartHash').value = this.sessionStruct.cartHash;
+                document.getElementById('payoneWorkOrder').value = this.sessionStruct.workOrderId;
+                window.klarnaAsyncCallback = this._initKlarnaWidget.bind(this);
+
+                const scriptTag = document.createElement("script");
+                scriptTag.src = "https://x.klarnacdn.net/kp/lib/v1/api.js";
+                document.body.appendChild(scriptTag);
+            } else {
+                ElementLoadingIndicatorUtil.remove(this.el);
+                this.el.classList.add('has-error');
+            }
         });
     }
 
@@ -73,7 +80,6 @@ export default class PayonePaymentKlarna extends Plugin {
             container: this.options.selectorContainer,
             payment_method_category: this.sessionStruct.paymentMethodIdentifier
         }, (res) => {
-            console.debug(res);
             this.confirmFormSubmit.disabled = false;
             ElementLoadingIndicatorUtil.remove(this.el);
         });
@@ -125,10 +131,15 @@ export default class PayonePaymentKlarna extends Plugin {
         Klarna.Payments.authorize({
             payment_method_category: this.sessionStruct.paymentMethodIdentifier
         }, {}, (res) => {
-            console.log(res);
             if (res.approved && res.authorization_token) {
                 document.querySelector(this.options.selectorTokenInput).value = res.authorization_token;
                 this.orderForm.submit();
+            } else if(res.show_form) {
+                // user has cancelled the payment
+                (new ButtonLoadingIndicator(this.confirmFormSubmit)).remove();
+            } else if(!res.show_form) {
+                // payment has been declined
+                window.location.href = window.location.href;
             }
         });
     }
