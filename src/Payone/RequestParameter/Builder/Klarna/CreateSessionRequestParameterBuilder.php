@@ -15,21 +15,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 class CreateSessionRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /**
-     * @var CartService
-     */
+    /** @var CartService */
     private $cartService;
-    /**
-     * @var LineItemHydratorInterface
-     */
+    /** @var LineItemHydratorInterface */
     private $lineItemHydrator;
-    /**
-     * @var CurrencyPrecisionInterface
-     */
+    /** @var CurrencyPrecisionInterface */
     private $currencyPrecision;
-    /**
-     * @var EntityRepository
-     */
+    /** @var EntityRepository */
     private $orderRepository;
 
     public function __construct(

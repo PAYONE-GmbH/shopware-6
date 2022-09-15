@@ -67,7 +67,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneRatepayInvoicing::class      => '240dcc8bf5fc409c9dcf840698c082aa',
         PayoneKlarnaInvoice::class         => 'c4cd059611cc4d049187d8d955ec1f91',
         PayoneKlarnaDirectDebit::class     => '31af2cbeda5242bfbfe4531e203f8a42',
-        PayoneKlarnaInstallment::class      => 'a18ffddd4baf4948b8c9f9d3d8abd2d4',
+        PayoneKlarnaInstallment::class     => 'a18ffddd4baf4948b8c9f9d3d8abd2d4',
     ];
 
     public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';

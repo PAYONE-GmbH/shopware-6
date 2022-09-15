@@ -13,9 +13,7 @@ class KlarnaCreateSessionStruct extends AbstractRequestParameterStruct
 {
     use SalesChannelContextTrait;
 
-    /**
-     * @var OrderEntity|null
-     */
+    /** @var null|OrderEntity */
     private $orderEntity;
 
     public function __construct(

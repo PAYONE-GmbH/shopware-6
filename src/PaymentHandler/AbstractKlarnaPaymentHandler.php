@@ -30,29 +30,17 @@ use Throwable;
 
 abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /**
-     * @var TranslatorInterface
-     */
+    /** @var TranslatorInterface */
     protected $translator;
-    /**
-     * @var CartHasherInterface
-     */
+    /** @var CartHasherInterface */
     protected $cartHasher;
-    /**
-     * @var RequestParameterFactory
-     */
+    /** @var RequestParameterFactory */
     private $requestParameterFactory;
-    /**
-     * @var PayoneClientInterface
-     */
+    /** @var PayoneClientInterface */
     private $client;
-    /**
-     * @var TransactionDataHandler
-     */
+    /** @var TransactionDataHandler */
     private $dataHandler;
-    /**
-     * @var PaymentStateHandlerInterface
-     */
+    /** @var PaymentStateHandlerInterface */
     private $stateHandler;
 
     public function __construct(

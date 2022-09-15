@@ -6,24 +6,16 @@ namespace PayonePayment\Storefront\Struct;
 
 class CheckoutKlarnaSessionData
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $clientToken;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $workOrderId;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $paymentMethodIdentifier;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $cartHash;
 
     public function __construct(

@@ -15,25 +15,15 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class KlarnaSessionService implements KlarnaSessionServiceInterface
 {
-    /**
-     * @var RequestParameterFactory
-     */
+    /** @var RequestParameterFactory */
     private $requestParameterFactory;
-    /**
-     * @var PayoneClientInterface
-     */
+    /** @var PayoneClientInterface */
     private $payoneClient;
-    /**
-     * @var CartService
-     */
+    /** @var CartService */
     private $cartService;
-    /**
-     * @var CartHasherInterface
-     */
+    /** @var CartHasherInterface */
     private $cartHasher;
-    /**
-     * @var EntityRepository
-     */
+    /** @var EntityRepository */
     private $orderEntityRepository;
 
     public function __construct(

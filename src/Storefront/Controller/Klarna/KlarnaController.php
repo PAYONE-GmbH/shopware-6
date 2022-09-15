@@ -20,9 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class KlarnaController extends StorefrontController
 {
-    /**
-     * @var KlarnaSessionServiceInterface
-     */
+    /** @var KlarnaSessionServiceInterface */
     private $klarnaSessionService;
 
     public function __construct(KlarnaSessionServiceInterface $klarnaSessionService)
