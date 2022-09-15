@@ -24,78 +24,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterface
 {
-
-    private PayoneClientInterface $client;
-    private RequestParameterFactory $requestFactory;
-    private CartHasherInterface $cartHasher;
-    private CartService $cartService;
-    private SessionInterface $session;
-    private TranslatorInterface $translator;
-
-    public function __construct(
-        PayoneClientInterface $client,
-        RequestParameterFactory $requestFactory,
-        CartHasherInterface $cartHasher,
-        CartService $cartService,
-        SessionInterface $session,
-        TranslatorInterface $translator
-    )
-    {
-        $this->client = $client;
-        $this->requestFactory = $requestFactory;
-        $this->cartHasher = $cartHasher;
-        $this->cartService = $cartService;
-        $this->session = $session;
-        $this->translator = $translator;
-    }
-
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => ['initiateSession', -20],
-            AccountEditOrderPageLoadedEvent::class => ['initiateSession', -20],
             HandlePaymentMethodRouteRequestEvent::class => 'onHandlePaymentMethodRouteRequest',
         ];
-    }
-
-    /**
-     * @param AccountEditOrderPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
-     */
-    public function initiateSession($event): void
-    {
-        $currentPaymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
-        if (!$this->isKlarnaPaymentMethod($currentPaymentMethod)) {
-            return;
-        }
-
-        $order = $event instanceof AccountEditOrderPageLoadedEvent ? $event->getPage()->getOrder() : null;
-        $struct = new KlarnaCreateSessionStruct($event->getSalesChannelContext(), $order);
-        $requestParams = $this->requestFactory->getRequestParameter($struct);
-
-        try {
-            $salesChannelContext = $event->getSalesChannelContext();
-
-            $response = $this->client->request($requestParams);
-            $payoneExtension = $event->getPage()->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
-            $payoneExtension->assign([
-                'workOrderId' => $response['workorderid'],
-                'klarnaClientToken' => $response['addpaydata']['client_token'],
-                'klarnaPaymentMethodCategory' => $response['addpaydata']['payment_method_category_identifier'],
-                'cartHash' => $this->cartHasher->generate(
-                    $order ?? $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext),
-                    $salesChannelContext
-                )
-            ]);
-        } catch (PayoneRequestException $e) {
-            $this->session->getFlashBag()->add(
-                'danger',
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-            $this->session->getFlashBag()->add(
-                'danger',
-                $this->translator->trans('PayonePayment.errorMessages.canNotInitKlarna')
-            );
-        }
     }
 
     private function isKlarnaPaymentMethod(PaymentMethodEntity $currentPaymentMethod): bool

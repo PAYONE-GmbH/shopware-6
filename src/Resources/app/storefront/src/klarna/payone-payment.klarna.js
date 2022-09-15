@@ -1,38 +1,82 @@
 import Plugin from 'src/plugin-system/plugin.class';
-import DomAccess from 'src/helper/dom-access.helper';
+import HttpClient from 'src/service/http-client.service';
+import ElementLoadingIndicatorUtil from 'src/utility/loading-indicator/element-loading-indicator.util';
 
 export default class PayonePaymentKlarna extends Plugin {
     static options = {
         clientToken: null,
         paymentMethodCategory: null,
+
         selectorContainer: null,
-        selectorTokenInput: 'input[name="payoneKlarnaAuthorizationToken"]',
-        selectorFormId: 'confirmOrderForm'
+        selectorTokenInput: null,
+        selectorFormId: null,
+        selectorConfirmKlarnaUsageContainerId: null,
+        selectorConfirmKlarnaUsageId: null
     };
-    static orderForm;
+
+    static orderForm = null;
+    static confirmFormSubmit = null;
+    static confirmKlarnaUsageContainer = null;
+    static confirmKlarnaUsageButton = null;
+    static klarnaUsageConfirmed = false;
+    static sessionStruct = null;
 
     init() {
-        window.klarnaAsyncCallback = this.initKlarnaWidget.bind(this);
-
-        const scriptTag = document.createElement("script");
-        scriptTag.src = "https://x.klarnacdn.net/kp/lib/v1/api.js";
-        document.body.appendChild(scriptTag);
-
         this.orderForm = document.getElementById(this.options.selectorFormId);
+        this.confirmFormSubmit = document.getElementById('confirmFormSubmit');
+        this.confirmFormSubmit = this.confirmFormSubmit ? this.confirmFormSubmit : this.orderForm.querySelector('[type=submit]'); // fallback for update-payment page
+        this.confirmFormSubmit.disabled = true;
+
+        this.confirmKlarnaUsageContainer = document.getElementById(this.options.selectorConfirmKlarnaUsageContainerId);
+        this.confirmKlarnaUsageButton = document.getElementById(this.options.selectorConfirmKlarnaUsageId);
+
         this._registerEventListeners();
     }
 
-    initKlarnaWidget() {
+    _confirmKlarnaUsage() {
+        this.klarnaUsageConfirmed = true;
+        this.confirmKlarnaUsageContainer.remove();
+        ElementLoadingIndicatorUtil.create(this.el);
+
+        const client = new HttpClient(window.accessKey, window.contextToken);
+        let url = '/payone/klarna/create-session';
+
+        let data = {};
+        if (window.csrf.enabled && window.csrf.mode === 'twig') {
+            data['_csrf_token'] = this.options.csrfToken;
+        }
+
+        let locationMatch = window.location.href.match(/account\/order\/edit\/([A-Za-z0-9]+)/);
+        if (locationMatch && locationMatch.length === 2) {
+            // payment get updated
+            data['orderId'] = locationMatch[1];
+        }
+
+        client.post(url, JSON.stringify(data), (sessionStruct) => {
+            this.sessionStruct = JSON.parse(sessionStruct);
+            document.getElementById('payoneCartHash').value = this.sessionStruct.cartHash;
+            document.getElementById('payoneWorkOrder').value = this.sessionStruct.workOrderId;
+            window.klarnaAsyncCallback = this._initKlarnaWidget.bind(this);
+
+            const scriptTag = document.createElement("script");
+            scriptTag.src = "https://x.klarnacdn.net/kp/lib/v1/api.js";
+            document.body.appendChild(scriptTag);
+        });
+    }
+
+    _initKlarnaWidget() {
         Klarna.Payments.init({
-            client_token: this.options.clientToken
-        })
+            client_token: this.sessionStruct.clientToken
+        });
 
         Klarna.Payments.load({
             container: this.options.selectorContainer,
-            payment_method_category: this.options.paymentMethodCategory
-        }, function (res) {
+            payment_method_category: this.sessionStruct.paymentMethodIdentifier
+        }, (res) => {
             console.debug(res);
-        })
+            this.confirmFormSubmit.disabled = false;
+            ElementLoadingIndicatorUtil.remove(this.el);
+        });
     }
 
     completePayment(response) {
@@ -65,13 +109,21 @@ export default class PayonePaymentKlarna extends Plugin {
         if (this.orderForm) {
             this.orderForm.addEventListener('submit', this._handleOrderSubmit.bind(this));
         }
+
+        if (this.confirmKlarnaUsageButton) {
+            this.confirmKlarnaUsageButton.addEventListener('click', this._confirmKlarnaUsage.bind(this));
+        }
     }
 
     _handleOrderSubmit(event) {
         event.preventDefault();
 
+        if (!this.klarnaUsageConfirmed || !this.sessionStruct) {
+            return;
+        }
+
         Klarna.Payments.authorize({
-            payment_method_category: this.options.paymentMethodCategory
+            payment_method_category: this.sessionStruct.paymentMethodIdentifier
         }, {}, (res) => {
             console.log(res);
             if (res.approved && res.authorization_token) {

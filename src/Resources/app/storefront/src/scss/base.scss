@@ -36,6 +36,7 @@ apple-pay-button {
     .card-logo-container {
         padding-left: 10px;
     }
+
     #card-logo {
         display: block;
         height: calc(4em - #{$payone-logo-gutter});
@@ -144,5 +145,31 @@ apple-pay-button {
                 }
             }
         }
+    }
+}
+
+$payone-klarna-background: #f0eeeb; // this is the background color from the widget
+
+.payone-payment--klarna {
+    margin-bottom: 1rem;
+
+    &.has-element-loader {
+        min-height: 250px;
+        background: $payone-klarna-background;
+    }
+
+    .confirmKlarnaUsage__container {
+        background: $payone-klarna-background;
+        padding: 1rem;
+
+        button {
+            display: block;
+            margin-left: auto;
+            margin-right: 0;
+        }
+    }
+
+    iframe {
+        max-width: none !important;
     }
 }

@@ -89,5 +89,14 @@
         <service id="PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService">
             <argument type="service" id="Symfony\Component\HttpFoundation\Session\SessionInterface"/>
         </service>
+
+        <service id="PayonePayment\Components\KlarnaSessionService\KlarnaSessionService">
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClientInterface" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasherInterface" />
+            <argument type="service" id="order.repository" />
+        </service>
+        <service id="PayonePayment\Components\KlarnaSessionService\KlarnaSessionServiceInterface" alias="PayonePayment\Components\KlarnaSessionService\KlarnaSessionService"/>
     </services>
 </container>
