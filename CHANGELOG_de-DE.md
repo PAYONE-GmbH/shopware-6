@@ -199,7 +199,7 @@ Wartung
 Getestet mit:
 Shopware 6.4.10.0
 
-#3.2.0
+# 3.2.0
 
 Neue Funktionen
  
@@ -219,7 +219,7 @@ Wartung
 * PAYONE Logo ausgetauscht
 * Getestet mit 6.4.12
 
-#3.2.0
+# 3.3.0
 
 Neue Funktionen
 
