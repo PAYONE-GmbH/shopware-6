@@ -68,7 +68,7 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
 
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
     {
-        $this->validateCartHash($dataBag, $transaction, $salesChannelContext);
+        $this->cartHasher->validateRequest($dataBag, $transaction, $salesChannelContext);
 
         $authToken = $dataBag->get('payoneKlarnaAuthorizationToken');
 

@@ -29,7 +29,7 @@ class KlarnaController extends StorefrontController
     }
 
     /**
-     * @Route("/payone/klarna/create-session", name="frontend.payone.klarna.create-session", defaults={"methods": {"POST"}, "csrf_protected": false, "XmlHttpRequest": true})
+     * @Route("/payone/klarna/create-session", name="frontend.payone.klarna.create-session", methods={"POST"}, defaults={"csrf_protected": false, "XmlHttpRequest": true})
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {

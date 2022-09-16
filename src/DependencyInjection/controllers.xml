@@ -126,7 +126,7 @@
 
         <service id="PayonePayment\Storefront\Controller\Klarna\KlarnaController">
             <argument type="service" id="PayonePayment\Components\KlarnaSessionService\KlarnaSessionServiceInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\Adapter\Translation\Translator"/>
+            <argument type="service" id="translator"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

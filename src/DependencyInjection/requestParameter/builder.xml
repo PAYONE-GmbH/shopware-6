@@ -441,13 +441,14 @@
 
         <!-- Klarna -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\CreateSessionRequestParameterBuilder">
-            <argument type="service" key="$cartService" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
-            <argument type="service" key="$currencyPrecision" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
-            <argument type="service" key="$orderRepository" id="order.repository"/>
-            <argument type="service" key="$lineItemHydrator" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
             <tag name="payone_request_builder"/>
         </service>
-        <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\AuthorizeRequestParameterBuilder" autowire="true">
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\AuthorizeRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
             <tag name="payone_request_builder"/>
         </service>
         <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\FinancingTypeParameterBuilder">

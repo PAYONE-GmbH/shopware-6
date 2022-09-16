@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\Klarna;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
+use PayonePayment\Components\Helper\OrderFetcherInterface;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
-use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\KlarnaCreateSessionStruct;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
-class CreateSessionRequestParameterBuilder extends AbstractRequestParameterBuilder
+class CreateSessionRequestParameterBuilder extends AbstractKlarnaParameterBuilder
 {
     /** @var CartService */
     private $cartService;
@@ -21,19 +19,19 @@ class CreateSessionRequestParameterBuilder extends AbstractRequestParameterBuild
     private $lineItemHydrator;
     /** @var CurrencyPrecisionInterface */
     private $currencyPrecision;
-    /** @var EntityRepository */
-    private $orderRepository;
+    /** @var OrderFetcherInterface */
+    private $orderFetcher;
 
     public function __construct(
         CartService $cartService,
         LineItemHydratorInterface $lineItemHydrator,
         CurrencyPrecisionInterface $currencyPrecision,
-        EntityRepository $orderRepository
+        OrderFetcherInterface $orderFetcher
     ) {
         $this->cartService       = $cartService;
         $this->lineItemHydrator  = $lineItemHydrator;
         $this->currencyPrecision = $currencyPrecision;
-        $this->orderRepository   = $orderRepository;
+        $this->orderFetcher      = $orderFetcher;
     }
 
     /**
@@ -44,12 +42,8 @@ class CreateSessionRequestParameterBuilder extends AbstractRequestParameterBuild
         $salesChannelContext = $arguments->getSalesChannelContext();
 
         if ($order = $arguments->getOrderEntity()) {
-            $context             = $salesChannelContext->getContext();
-            $orderSearchCriteria = (new Criteria([$order->getId()]))
-                ->addAssociation('currency')
-                ->addAssociation('lineItems')
-                ->addAssociation('deliveries');
-            $order        = $this->orderRepository->search($orderSearchCriteria, $context)->first();
+            $context      = $salesChannelContext->getContext();
+            $order        = $this->orderFetcher->getOrderById($order->getId(), $salesChannelContext->getContext()); // make sure, all required associations are loaded
             $totalAmount  = $order->getPrice()->getTotalPrice();
             $currencyCode = $order->getCurrency()->getIsoCode();
             $lineItems    = $this->lineItemHydrator->mapOrderLines($order->getCurrency(), $order, $context);
@@ -73,6 +67,6 @@ class CreateSessionRequestParameterBuilder extends AbstractRequestParameterBuild
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        return $arguments instanceof KlarnaCreateSessionStruct;
+        return parent::supports($arguments) && $arguments instanceof KlarnaCreateSessionStruct;
     }
 }

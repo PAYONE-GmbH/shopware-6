@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\Klarna;
 
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
-use PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler;
-use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
-class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
+class AuthorizeRequestParameterBuilder extends AbstractKlarnaParameterBuilder
 {
     /** @var LineItemHydratorInterface */
     private $lineItemHydrator;
@@ -41,7 +39,6 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        return $arguments instanceof PaymentTransactionStruct &&
-            is_subclass_of($arguments->getPaymentMethod(), AbstractKlarnaPaymentHandler::class);
+        return parent::supports($arguments) && $arguments instanceof PaymentTransactionStruct;
     }
 }

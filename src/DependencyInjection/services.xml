@@ -25,8 +25,9 @@
 
         <service id="PayonePayment\Components\CartHasher\CartHasher">
             <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
+            <argument type="service" id="translator"/>
         </service>
-        <service id="PayonePayment\Components\CartHasher\CartHasherInterface" alias="PayonePayment\Components\CartHasher\CartHasher" />
+        <service id="PayonePayment\Components\CartHasher\CartHasherInterface" alias="PayonePayment\Components\CartHasher\CartHasher"/>
 
         <service id="PayonePayment\Components\ConfigReader\ConfigReader">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
@@ -52,6 +53,7 @@
         <service id="PayonePayment\Components\Helper\OrderFetcher">
             <argument type="service" id="order.repository" />
         </service>
+        <service id="PayonePayment\Components\Helper\OrderFetcherInterface" alias="PayonePayment\Components\Helper\OrderFetcher"/>
 
         <service id="PayonePayment\Payone\Client\PayoneClient">
             <argument type="service" id="PayonePayment\Util\Logger" />

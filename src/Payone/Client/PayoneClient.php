@@ -23,7 +23,6 @@ class PayoneClient implements PayoneClientInterface
      */
     public function request(array $parameters, bool $json = true): array
     {
-        //xdebug_break();
         $curl = curl_init();
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

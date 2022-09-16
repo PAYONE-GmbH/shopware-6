@@ -68,7 +68,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
     {
         $requestData = $this->fetchRequestData();
 
-        $this->validateCartHash($dataBag, $transaction, $salesChannelContext);
+        $this->cartHasher->validateRequest($dataBag, $transaction, $salesChannelContext);
 
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(

@@ -9,10 +9,18 @@ use LogicException;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
+use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\Struct;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CartHasher implements CartHasherInterface
 {
@@ -23,10 +31,15 @@ class CartHasher implements CartHasherInterface
 
     /** @var CurrencyPrecisionInterface */
     private $currencyPrecision;
+    /** @var TranslatorInterface */
+    private $translator;
 
-    public function __construct(CurrencyPrecisionInterface $currencyPrecision)
-    {
+    public function __construct(
+        CurrencyPrecisionInterface $currencyPrecision,
+        TranslatorInterface $translator
+    ) {
         $this->currencyPrecision = $currencyPrecision;
+        $this->translator        = $translator;
     }
 
     /**
@@ -55,6 +68,34 @@ class CartHasher implements CartHasherInterface
         $expected = $this->generateHash($hashData);
 
         return hash_equals($expected, $cartHash);
+    }
+
+    /**
+     * @param AsyncPaymentTransactionStruct|SyncPaymentTransactionStruct $paymentTransaction
+     */
+    public function validateRequest(
+        RequestDataBag $requestDataBag,
+        $paymentTransaction,
+        SalesChannelContext $salesChannelContext,
+        string $exceptionClass = null
+    ): void {
+        $cartHash          = (string) $requestDataBag->get('carthash');
+        $transactionEntity = $paymentTransaction->getOrderTransaction();
+
+        if (!$this->validate($paymentTransaction->getOrder(), $cartHash, $salesChannelContext)) {
+            $paymentHandler = $transactionEntity->getPaymentMethod();
+
+            if (is_subclass_of($paymentHandler, SynchronousPaymentHandlerInterface::class)) {
+                $exceptionClass = SyncPaymentProcessException::class;
+            } elseif (is_subclass_of($paymentHandler, AsynchronousPaymentHandlerInterface::class)) {
+                $exceptionClass = AsyncPaymentProcessException::class;
+            }
+
+            throw new $exceptionClass(
+                $transactionEntity->getId(),
+                $this->translator->trans('PayonePayment.errorMessages.genericError')
+            );
+        }
     }
 
     public function getCriteriaForOrder(string $orderId = null): Criteria

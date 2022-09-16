@@ -410,7 +410,7 @@ class SettingsController extends AbstractController
                 return [
                     'request'                             => 'genericpayment',
                     'clearingtype'                        => 'wlt',
-                    'financingtype'                       => 'POV',
+                    'wallettype'                          => 'PDT',
                     'amount'                              => 10000,
                     'currency'                            => 'EUR',
                     'reference'                           => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
