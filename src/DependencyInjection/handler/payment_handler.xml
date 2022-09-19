@@ -3,12 +3,6 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <defaults>
-            <bind key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
-            <bind key="$lineItemRepository" type="service" id="order_line_item.repository" />
-            <bind key="$requestStack" type="service" id="request_stack" />
-        </defaults>
-
         <service id="PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
@@ -263,13 +257,40 @@
             <tag name="shopware.payment.method.sync" />
         </service>
 
-        <service id="PayonePayment\PaymentHandler\PayoneKlarnaInvoicePaymentHandler" autowire="true">
+        <service id="PayonePayment\PaymentHandler\PayoneKlarnaInvoicePaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasherInterface" />
+            <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface" />
             <tag name="shopware.payment.method.async"/>
         </service>
-        <service id="PayonePayment\PaymentHandler\PayoneKlarnaDirectDebitPaymentHandler" autowire="true">
+        <service id="PayonePayment\PaymentHandler\PayoneKlarnaDirectDebitPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasherInterface" />
+            <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface" />
             <tag name="shopware.payment.method.async"/>
         </service>
-        <service id="PayonePayment\PaymentHandler\PayoneKlarnaInstallmentPaymentHandler" autowire="true">
+        <service id="PayonePayment\PaymentHandler\PayoneKlarnaInstallmentPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasherInterface" />
+            <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface" />
             <tag name="shopware.payment.method.async"/>
         </service>
 
