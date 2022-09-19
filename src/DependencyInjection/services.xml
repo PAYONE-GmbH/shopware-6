@@ -25,7 +25,6 @@
 
         <service id="PayonePayment\Components\CartHasher\CartHasher">
             <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
-            <argument type="service" id="translator"/>
         </service>
         <service id="PayonePayment\Components\CartHasher\CartHasherInterface" alias="PayonePayment\Components\CartHasher\CartHasher"/>
 

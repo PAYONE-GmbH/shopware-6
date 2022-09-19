@@ -102,12 +102,14 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
         } catch (PayoneRequestException $exception) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
-                $exception->getResponse()['error']['CustomerMessage']
+                $exception->getResponse()['error']['CustomerMessage'],
+                $exception
             );
         } catch (Throwable $exception) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
+                $this->translator->trans('PayonePayment.errorMessages.genericError'),
+                $exception
             );
         }
 
