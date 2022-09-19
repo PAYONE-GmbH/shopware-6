@@ -143,10 +143,6 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             }
         }
 
-        if (null !== $salesChannelContext->getCustomer() && !$saveCreditCard) {
-            $this->cardRepository->removeAllCardsForCustomer($salesChannelContext->getCustomer(), $salesChannelContext->getContext());
-        }
-
         if (strtolower($response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);
         }
