@@ -6,7 +6,8 @@ namespace PayonePayment\TestCaseBase;
 
 use PayonePayment\Components\Helper\OrderFetcher;
 use PayonePayment\Constants;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
@@ -169,13 +170,15 @@ trait PayoneTestBehavior
         $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
         $orderTransactionEntity->setOrder($orderEntity);
 
-        $customFields = [
-            CustomFieldInstaller::TRANSACTION_ID     => Constants::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER    => 0,
-            CustomFieldInstaller::LAST_REQUEST       => 'authorization',
-            CustomFieldInstaller::AUTHORIZATION_TYPE => 'authorization',
-        ];
-        $orderTransactionEntity->setCustomFields($customFields);
+        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
+        $payoneTransactionData->setTransactionId(Constants::PAYONE_TRANSACTION_ID);
+        $payoneTransactionData->setSequenceNumber(0);
+        $payoneTransactionData->setLastRequest('authorization');
+        $payoneTransactionData->setAuthorizationType('authorization');
+        $orderTransactionEntity->addExtension(
+            PayonePaymentOrderTransactionExtension::NAME,
+            $payoneTransactionData
+        );
 
         $stateMachineState = new StateMachineStateEntity();
         $stateMachineState->setTechnicalName('');

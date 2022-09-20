@@ -89,7 +89,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         if (in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::RATEPAY)) {
             $parameters['settleaccount']        = 'yes';
-            $parameters['add_paydata[shop_id]'] = $customFields[CustomFieldInstaller::USED_RATEPAY_SHOP_ID];
+            $parameters['add_paydata[shop_id]'] = $transactionData->getUsedRatepayShopId();
         }
 
         return $parameters;
@@ -111,12 +111,12 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
     /** @param FinancialTransactionStruct $arguments */
     private function getCaptureMode(AbstractRequestParameterStruct $arguments): ?string
     {
-        $isCompleted  = $arguments->getRequestData()->get('complete', false);
-        $customFields = $arguments->getPaymentTransaction()->getCustomFields();
+        $isCompleted     = $arguments->getRequestData()->get('complete', false);
+        $transactionData = $arguments->getPaymentTransaction()->getPayoneTransactionData();
 
         if ($isCompleted === true
-            && array_key_exists(CustomFieldInstaller::LAST_REQUEST, $customFields)
-            && $customFields[CustomFieldInstaller::LAST_REQUEST] === AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE
+            && array_key_exists('lastRequest', $transactionData)
+            && $transactionData['lastRequest'] === AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE
             && in_array($arguments->getPaymentMethod(), [PayoneSofortBankingPaymentHandler::class, PayoneTrustlyPaymentHandler::class])) {
             return null;
         }

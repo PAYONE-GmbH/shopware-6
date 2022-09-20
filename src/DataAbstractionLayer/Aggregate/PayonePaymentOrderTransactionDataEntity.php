@@ -51,6 +51,8 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
     protected $captureMode;
     /** @var null|array */
     protected $clearingBankAccount;
+    /** @var null|string */
+    protected $usedRatepayShopId;
 
     public function setTransactionId(string $value): void
     {
@@ -250,6 +252,16 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
     public function getClearingBankAccount(): ?array
     {
         return $this->clearingBankAccount;
+    }
+
+    public function getUsedRatepayShopId(): ?string
+    {
+        return $this->usedRatepayShopId;
+    }
+
+    public function setUsedRatepayShopId(string $usedRatepayShopId): void
+    {
+        $this->usedRatepayShopId = $usedRatepayShopId;
     }
 
     public function jsonSerialize(): array

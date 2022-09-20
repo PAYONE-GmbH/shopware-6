@@ -41,6 +41,7 @@ class Migration1638289341AddOrderTransActionDataTable extends MigrationStep
             `financing_type` VARCHAR(255) NULL,
             `capture_mode` VARCHAR(255) NULL,
             `clearing_bank_account` JSON NULL,
+            `used_ratepay_shop_id` VARCHAR(255) NULL,
             `created_at` DATETIME(3) NOT NULL,
             `updated_at` DATETIME(3) NULL,
             PRIMARY KEY (`id`, `order_transaction_version_id`),

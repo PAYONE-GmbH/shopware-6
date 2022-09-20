@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\Refund;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
-use PayonePayment\Installer\CustomFieldInstaller;
-use PayonePayment\PaymentHandler\PaymentHandlerGroups;
-use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
+use PayonePayment\PaymentHandler\PaymentHandlerGroups;
+use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
@@ -68,8 +67,8 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
         ];
 
         if ($arguments->getPaymentMethod() === PayoneDebitPaymentHandler::class) {
-            $transactionData  = $customFields[CustomFieldInstaller::TRANSACTION_DATA];
-            $firstTransaction = reset($transactionData);
+            $transactions     = $transactionData->getTransactionData();
+            $firstTransaction = reset($transactions);
 
             if (!array_key_exists('request', $firstTransaction) || !array_key_exists('iban', $firstTransaction['request'])) {
                 return $parameters;
@@ -80,7 +79,7 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         if (in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::RATEPAY)) {
             $parameters['settleaccount']        = 'yes';
-            $parameters['add_paydata[shop_id]'] = $customFields[CustomFieldInstaller::USED_RATEPAY_SHOP_ID];
+            $parameters['add_paydata[shop_id]'] = $transactionData->getUsedRatepayShopId();
         }
 
         return $parameters;

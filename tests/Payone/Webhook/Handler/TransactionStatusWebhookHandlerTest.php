@@ -7,8 +7,6 @@ namespace PayonePayment\Payone\Webhook\Handler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Constants;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
-use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
-use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\TestCaseBase\Factory\TransactionStatusWebhookHandlerFactory;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;

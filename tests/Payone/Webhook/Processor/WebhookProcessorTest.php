@@ -7,7 +7,8 @@ namespace PayonePayment\Payone\Webhook\Processor;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Constants;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use PayonePayment\Struct\PaymentTransaction;
@@ -176,13 +177,15 @@ class WebhookProcessorTest extends TestCase
 
         $orderTransactionEntity->setOrder($orderEntity);
 
-        $customFields = [
-            CustomFieldInstaller::TRANSACTION_ID     => Constants::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER    => 0,
-            CustomFieldInstaller::LAST_REQUEST       => 'authorization',
-            CustomFieldInstaller::AUTHORIZATION_TYPE => 'authorization',
-        ];
-        $orderTransactionEntity->setCustomFields($customFields);
+        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
+        $payoneTransactionData->setTransactionId(Constants::PAYONE_TRANSACTION_ID);
+        $payoneTransactionData->setSequenceNumber(0);
+        $payoneTransactionData->setLastRequest('authorization');
+        $payoneTransactionData->setAuthorizationType('authorization');
+        $orderTransactionEntity->addExtension(
+            PayonePaymentOrderTransactionExtension::NAME,
+            $payoneTransactionData
+        );
 
         $stateMachineState = new StateMachineStateEntity();
         $stateMachineState->setTechnicalName('');
@@ -210,7 +213,7 @@ class WebhookProcessorTest extends TestCase
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
         $transactionDataHandler->expects($this->once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
-        $transactionDataHandler->expects($this->once())->method('getCustomFieldsFromWebhook')->willReturn($transactionData);
+        $transactionDataHandler->expects($this->once())->method('getTransactionDataFromWebhook')->willReturn($transactionData);
 
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
             $transactionStatusService,
