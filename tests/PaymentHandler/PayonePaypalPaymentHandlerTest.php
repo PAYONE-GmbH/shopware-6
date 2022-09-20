@@ -2,80 +2,39 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Test\PaymentHandler;
+namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\Currency\CurrencyPrecision;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
-use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
-use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
-use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
-use PayonePayment\Test\Constants;
-use PayonePayment\Test\Mock\Components\ConfigReaderMock;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
+use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\TestCaseBase\Mock\ConfigReaderMock;
+use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Checkout\Test\Cart\Common\Generator;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Translation\Translator;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
+/**
+ * @covers \PayonePayment\PaymentHandler\PayonePaypalPaymentHandler
+ */
 class PayonePaypalPaymentHandlerTest extends TestCase
 {
-    use KernelTestBehaviour;
+    use PayoneTestBehavior;
 
-    /** @var Translator */
-    private $translator;
-
-    protected function setUp(): void
+    public function testItPerformsPaymentAndReturnsCorrectRedirectUrl(): void
     {
-        parent::setUp();
+        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
+        $dataBag             = new RequestDataBag();
 
-        /** @var Translator $translator */
-        $translator       = $this->getContainer()->get('translator');
-        $this->translator = $translator;
-    }
-
-    public function testRequestOnPay(): void
-    {
-        $configReader = new ConfigReaderMock([
-            'paypalAuthorizationMethod' => 'authorization',
-        ]);
-
-        $client         = $this->createMock(PayoneClientInterface::class);
-        $requestFactory = $this->createMock(RequestParameterFactory::class);
-        $dataBag        = new RequestDataBag();
-
-        $paymentHandler = new PayonePaypalPaymentHandler(
-            $configReader,
-            $client,
-            $this->translator,
-            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
-            $this->createMock(EntityRepositoryInterface::class),
-            new PaymentStateHandler($this->translator),
-            $this->getRequestStack($dataBag),
-            $requestFactory
-        );
-
-        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
-            [
-                'request'    => '',
-                'successurl' => 'test-url',
-            ]
-        );
-
-        $paymentTransaction = $this->getPaymentTransaction();
-        $dataBag            = new RequestDataBag();
-
+        $client = $this->createMock(PayoneClientInterface::class);
         $client->expects($this->once())->method('request')->willReturn(
             [
                 'status' => 'test-status',
@@ -84,54 +43,61 @@ class PayonePaypalPaymentHandlerTest extends TestCase
             ]
         );
 
-        $response = $paymentHandler->pay(
+        $requestFactory = $this->createMock(RequestParameterFactory::class);
+        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+            [
+                'request'    => '',
+                'successurl' => 'test-url',
+            ]
+        );
+
+        $paymentHandler     = $this->getPaymentHandler($client, $dataBag, $requestFactory);
+        $paymentTransaction = $this->getPaymentTransaction(
+            $this->getRandomOrder($salesChannelContext),
+            PayonePaypalPaymentHandler::class
+        );
+
+        $response = $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
+
+        static::assertSame('test-url', $response->getTargetUrl());
+    }
+
+    private function getPaymentHandler(
+        PayoneClientInterface $client,
+        RequestDataBag $dataBag,
+        RequestParameterFactory $requestFactory
+    ): PayonePaypalPaymentHandler {
+        $translator   = $this->getContainer()->get('translator');
+        $configReader = new ConfigReaderMock([
+            'paypalAuthorizationMethod' => 'authorization',
+        ]);
+
+        return new PayonePaypalPaymentHandler(
+            $configReader,
+            $client,
+            $translator,
+            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
+            $this->createMock(EntityRepositoryInterface::class),
+            new PaymentStateHandler($translator),
+            $this->getRequestStack($dataBag),
+            $requestFactory
+        );
+    }
+
+    private function performPayment(
+        PayonePaypalPaymentHandler $paymentHandler,
+        PaymentTransaction $paymentTransaction,
+        RequestDataBag $dataBag,
+        SalesChannelContext $salesChannelContext
+    ): RedirectResponse {
+        return $paymentHandler->pay(
             new AsyncPaymentTransactionStruct(
                 $paymentTransaction->getOrderTransaction(),
                 $paymentTransaction->getOrder(),
                 ''
             ),
             $dataBag,
-            Generator::createSalesChannelContext()
+            $salesChannelContext
         );
-
-        $this->assertEquals($response->getTargetUrl(), 'test-url');
-    }
-
-    protected function getPaymentTransaction(): PaymentTransaction
-    {
-        $orderTransactionEntity = new OrderTransactionEntity();
-        $orderTransactionEntity->setId(Constants::ORDER_TRANSACTION_ID);
-
-        $orderEntity = new OrderEntity();
-        $orderEntity->setId(Constants::ORDER_ID);
-        $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
-        $orderEntity->setAmountTotal(100);
-        $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
-
-        $paymentMethodEntity = new PaymentMethodEntity();
-        $paymentMethodEntity->setHandlerIdentifier(PayonePaypalPaymentHandler::class);
-        $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
-
-        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
-        $payoneTransactionData->setTransactionId(Constants::PAYONE_TRANSACTION_ID);
-        $payoneTransactionData->setSequenceNumber(0);
-
-        $orderTransactionEntity->setOrder($orderEntity);
-        $orderTransactionEntity->addExtension(
-            PayonePaymentOrderTransactionExtension::NAME,
-            $payoneTransactionData
-        );
-
-        return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
-    }
-
-    private function getRequestStack(RequestDataBag $dataBag): RequestStack
-    {
-        $stack = new RequestStack();
-
-        $request = new Request([], $dataBag->all());
-        $stack->push($request);
-
-        return $stack;
     }
 }

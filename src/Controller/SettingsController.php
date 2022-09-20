@@ -79,7 +79,7 @@ class SettingsController extends AbstractController
             $criteria      = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', $paymentClass));
             $paymentMethod = $paymentMethodRepository->search($criteria, $context)->first();
 
-            if (!$paymentMethod || !$paymentMethod->getActive()) {
+            if (!$paymentMethod || !$paymentMethod->getActive() || in_array($paymentMethod->getHandlerIdentifier(), Handler\PaymentHandlerGroups::RATEPAY, true)) {
                 continue;
             }
 
@@ -251,6 +251,22 @@ class SettingsController extends AbstractController
                     'successurl'             => 'https://www.payone.com',
                 ];
 
+            case Handler\PayoneBancontactPaymentHandler::class:
+                return [
+                    'request'                => 'preauthorization',
+                    'clearingtype'           => 'sb',
+                    'onlinebanktransfertype' => 'BCT',
+                    'bankcountry'            => 'BE',
+                    'amount'                 => 100,
+                    'currency'               => 'EUR',
+                    'reference'              => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'lastname'               => 'Test',
+                    'country'                => 'BE',
+                    'successurl'             => 'https://www.payone.com',
+                    'errorurl'               => 'https://www.payone.com',
+                    'backurl'                => 'https://www.payone.com',
+                ];
+
             case Handler\PayonePayolutionInvoicingPaymentHandler::class:
                 return [
                     'request'                   => 'genericpayment',
@@ -353,6 +369,25 @@ class SettingsController extends AbstractController
                     'request'          => 'preauthorization',
                     'clearingtype'     => 'rec',
                     'financingtype'    => 'POV',
+                    'amount'           => 10000,
+                    'currency'         => 'EUR',
+                    'reference'        => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'birthday'         => '19900505',
+                    'firstname'        => 'Test',
+                    'lastname'         => 'Test',
+                    'country'          => 'DE',
+                    'email'            => 'test@example.com',
+                    'street'           => 'teststreet 2',
+                    'zip'              => '12345',
+                    'city'             => 'Test',
+                    'ip'               => '127.0.0.1',
+                    'businessrelation' => 'b2c',
+                ];
+
+            case Handler\PayoneOpenInvoicePaymentHandler::class:
+                return [
+                    'request'          => 'preauthorization',
+                    'clearingtype'     => 'rec',
                     'amount'           => 10000,
                     'currency'         => 'EUR',
                     'reference'        => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),

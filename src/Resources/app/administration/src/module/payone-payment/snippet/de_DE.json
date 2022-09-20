@@ -3,7 +3,29 @@
         "title": "PAYONE",
         "general": {
             "mainMenuItemGeneral": "PAYONE",
-            "descriptionTextModule": "Einstellungen für PAYONE"
+            "descriptionTextModule": "Einstellungen für PAYONE",
+            "headlines": {
+                "ratepayProfiles": "Profile",
+                "ratepayProfileConfigurations": "Profil-Konfigurationen"
+            },
+            "label": {
+                "shopId": "Shop-ID",
+                "currency": "Währung",
+                "error": "Status",
+                "invoiceCountry": "Rechnungsland",
+                "shippingCountry": "Lieferland",
+                "minBasket": "Min. Warenkorb",
+                "maxBasket": "Max. Warenkorb",
+                "reloadConfigBtn": "Profil-Konfiguration neu laden",
+                "reloadConfigInfo": "(Änderungen an der Plugin-Konfiguration werden dabei zuerst gespeichert)"
+            },
+            "actions": {
+                "addShop": "Shop-ID hinzufügen"
+            },
+            "errors": {
+                "existingShopId": "Die eingegebene ShopId existiert bereits.",
+                "emptyInputs": "Bitte füllen Sie alle Eingabefelder aus."
+            }
         },
         "capture": {
             "buttonTitle": "Capture",
@@ -43,6 +65,7 @@
             "close": "Schließen",
             "orderAmount": "Bestellungswert",
             "remainingAmount": "Ausstehender Wert",
+            "shippingCosts": "Versandkosten",
             "labelComment": "Label comment",
             "descriptionHelpText": "Description help text",
             "columns": {
@@ -59,25 +82,33 @@
             "titleError": "Fehler",
             "labelShowSpecificStatusMapping": "Statusmappingkonfiguration einblenden",
             "helpTextShowSpecificStatusMapping": "Sie können für jede Zahlungsart ein spezifisches Statusmapping konfigurieren. Existiert eine solche Konfiguration nicht, wird auf die allgemeine Konfiguration zurückgegriffen.",
+            "messageSaveError": {
+                "ratepayProfilesUpdateFailed": "Mindestens ein Ratepay Profil konnte nicht erfolgreich gespeichert werden, bitte prüfen Sie Ihre Konfiguration."
+            },
             "messageTestSuccess": "Die API-Zugangsdaten wurden erfolgreich validiert.",
             "messageTestNoTestedPayments": "Bei der Prüfung wurden keine Zahlarten getestet, weil keine der PAYONE Zahlarten aktiviert ist. Bitte aktivieren Sie mindestens eine PAYONE Zahlart unter Einstellungen --> Shop --> Zahlungsarten.",
             "messageTestError": {
                 "general": "Die API-Zugangsdaten konnten nicht validiert werden.",
-                "creditCard": "Die API-Zugangsdaten für Kreditkarte sind nicht korrekt.",
-                "prepayment": "Die API-Zugangsdaten für Vorkasse sind nicht korrekt.",
-                "debit": "Die API-Zugangsdaten für Lastschrift sind nicht korrekt.",
-                "paypalExpress": "Die API-Zugangsdaten für PayPal Express sind nicht korrekt.",
-                "paypal": "Die API-Zugangsdaten für PayPal sind nicht korrekt.",
-                "payolutionInstallment": "Die API-Zugangsdaten für Paysafe Pay Later Ratenzahlung sind nicht korrekt.",
-                "payolutionInvoicing": "Die API-Zugangsdaten für Paysafe Pay Later Rechnungskauf sind nicht korrekt.",
-                "payolutionDebit": "Die API-Zugangsdaten für Paysafe Pay Later Lastschrift sind nicht korrekt.",
-                "sofort": "Die API-Zugangsdaten für SOFORT sind nicht korrekt.",
-                "eps": "Die API-Zugangsdaten für EPS sind nicht korrekt.",
-                "iDeal": "Die API-Zugangsdaten für iDEAL sind nicht korrekt.",
-                "secureInvoice": "Die API-Zugangsdaten für den gesicherten Rechnungskauf sind nicht korrekt.",
-                "paydirekt": "Die API-Zugangsdaten für Paydirekt sind nicht korrekt.",
-                "trustly": "Die API-Zugangsdaten für Trustly sind nicht korrekt.",
-                "applePay": "Die API-Zugangsdaten für ApplePay sind nicht korrekt."
+                "creditCard": "Die API-Zugangsdaten für PAYONE Kreditkarte sind nicht korrekt.",
+                "prepayment": "Die API-Zugangsdaten für PAYONE Vorkasse sind nicht korrekt.",
+                "debit": "Die API-Zugangsdaten für PAYONE Lastschrift sind nicht korrekt.",
+                "paypalExpress": "Die API-Zugangsdaten für PAYONE PayPal Express sind nicht korrekt.",
+                "paypal": "Die API-Zugangsdaten für PAYONE PayPal sind nicht korrekt.",
+                "payolutionInstallment": "Die API-Zugangsdaten für PAYONE Unzer Ratenkauf sind nicht korrekt.",
+                "payolutionInvoicing": "Die API-Zugangsdaten für PAYONE Unzer Rechnungskauf sind nicht korrekt.",
+                "payolutionDebit": "Die API-Zugangsdaten für PAYONE Unzer Lastschrift sind nicht korrekt.",
+                "sofort": "Die API-Zugangsdaten für PAYONE Sofort Überweisung sind nicht korrekt.",
+                "eps": "Die API-Zugangsdaten für PAYONE eps Überweisung sind nicht korrekt.",
+                "iDeal": "Die API-Zugangsdaten für PAYONE iDEAL sind nicht korrekt.",
+                "secureInvoice": "Die API-Zugangsdaten für PAYONE Gesicherter Rechnungskauf sind nicht korrekt.",
+                "openInvoice": "Die API-Zugangsdaten für PAYONE Rechnungskauf sind nicht korrekt.",
+                "paydirekt": "Die API-Zugangsdaten für PAYONE paydirekt sind nicht korrekt.",
+                "trustly": "Die API-Zugangsdaten für PAYONE Trustly sind nicht korrekt.",
+                "applePay": "Die API-Zugangsdaten für PAYONE Apple Pay sind nicht korrekt.",
+                "bancontact": "Die API-Zugangsdaten für PAYONE Bancontact sind nicht korrekt.",
+                "ratepayDebit": "Die API-Zugangsdaten für PAYONE Ratepay Lastschrift sind nicht korrekt.",
+                "ratepayInstallment": "Die API-Zugangsdaten für PAYONE Ratepay Ratenzahlung sind nicht korrekt.",
+                "ratepayInvoicing": "Die API-Zugangsdaten für PAYONE Ratepay Rechnungskauf sind nicht korrekt."
             }
         },
         "supportModal": {
@@ -88,12 +119,16 @@
                 "button": "Dokumentation"
             },
             "support": {
-                "description": "Kontaktieren Sie unseren technischen Support",
+                "description": "Kontaktieren Sie unseren Support",
                 "button": "Technischer Support"
             },
             "repository": {
-                "description": "Melden Sie Fehler und Verbesserungen auf GitHub",
+                "description": "Melden Sie Fehler und Verbesserungen",
                 "button": "GitHub"
+            },
+            "testdata": {
+                "description": "Erstellen Sie hier Ihre persönlichen Testdaten",
+                "button": "Testdaten"
             }
         },
         "applePay": {

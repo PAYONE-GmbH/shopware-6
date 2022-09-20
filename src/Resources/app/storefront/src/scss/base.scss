@@ -93,3 +93,56 @@ apple-pay-button {
         font-size: 0.8rem;
     }
 }
+
+
+.payone-payment.ratepay-installment {
+    .show-calculation-btn {
+        .show-calculation {
+            display: none;
+        }
+
+        .hide-calculation {
+            display: block;
+        }
+
+        &.collapsed {
+            .show-calculation {
+                display: block;
+            }
+
+            .hide-calculation {
+                display: none;
+            }
+        }
+    }
+
+    .payone-ratepay-installment-iban-toggle {
+        .payone-ratepay-collapsed-text {
+            display: none;
+        }
+
+        .payone-ratepay-open-text {
+            display: block;
+        }
+
+        &.collapsed {
+            .payone-ratepay-collapsed-text {
+                display: block;
+            }
+
+            .payone-ratepay-open-text {
+                display: none;
+            }
+        }
+    }
+
+    .ratepay-installment-installment-calculation {
+        table {
+            tr {
+                td:last-child {
+                    text-align: right;
+                }
+            }
+        }
+    }
+}

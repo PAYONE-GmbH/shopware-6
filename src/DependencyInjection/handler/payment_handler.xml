@@ -119,6 +119,19 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
+        <service id="PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
         <service id="PayonePayment\PaymentHandler\PayoneEpsPaymentHandler">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="order_line_item.repository" />
@@ -182,6 +195,18 @@
             <tag name="shopware.payment.method.sync" />
         </service>
 
+        <service id="PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+
+            <tag name="shopware.payment.method.sync" />
+        </service>
+
         <service id="PayonePayment\PaymentHandler\PayoneApplePayPaymentHandler">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
@@ -189,6 +214,45 @@
             <argument type="service" id="order_line_item.repository" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler"/>
+
+            <tag name="shopware.payment.method.sync" />
+        </service>
+
+        <service id="PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService" />
+
+            <tag name="shopware.payment.method.sync" />
+        </service>
+
+        <service id="PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService" />
+
+            <tag name="shopware.payment.method.sync" />
+        </service>
+
+        <service id="PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService" />
 
             <tag name="shopware.payment.method.sync" />
         </service>

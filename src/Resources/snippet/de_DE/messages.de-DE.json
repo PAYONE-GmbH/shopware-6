@@ -40,13 +40,15 @@
             "noEntries": "Keine SEPA-Lastschriftmandate vorhanden."
         },
         "checkoutConfirmPage": {
-            "defaultCardTitle": "Zahlungsinformationen"
+            "defaultCardTitle": "Zahlungsinformationen",
+            "save": "Daten für zukünftige Nutzung speichern",
+            "saveMandate": "Lastschrift-Mandat für zukünftige Nutzung speichern"
         },
         "checkoutFinishPage": {
-            "mandateIdentification": "SEPA-Laschtschriftmandat"
+            "mandateIdentification": "SEPA-Lastschriftmandat"
         },
         "mandateModal": {
-            "question": "Ich erteile das SEPA-Laschtschriftmandat",
+            "question": "Ich erteile das SEPA-Lastschriftmandat",
             "cancel": "Abbruch",
             "confirm": "Absenden"
         },
@@ -139,12 +141,104 @@
                 "bic": "BIC: %bic%",
                 "reference": "Verwendungszweck: %reference%",
                 "holder": "Kontoinhaber: %holder%",
+                "dueDate": "Fälligkeitsdatum: Innerhalb von 14 Tagen",
                 "accountNotice": "Damit wir Ihre Zahlung schnell zuordnen können, überweisen Sie den ausstehenden Betrag bitte ausschließlich auf das obige Konto."
+            }
+        },
+        "openInvoice": {
+            "cardTitle": "Payone offene Rechnung",
+            "birthday": {
+                "label": "Geburtsdatum"
+            },
+            "document": {
+                "clearingReference": "Referenz: %reference%",
+                "invoicingDescription": "Bitte überweisen Sie den ausstehenden Betrag auf das folgende Konto:",
+                "iban": "IBAN: %iban%",
+                "bic": "BIC: %bic%",
+                "reference": "Verwendungszweck: %reference%",
+                "holder": "Kontoinhaber: %holder%",
+                "accountNotice": "Damit wir Ihre Zahlung schnell zuordnen können, überweisen Sie den ausstehenden Betrag bitte ausschließlich auf das obige Konto."
+            }
+        },
+        "ratepay": {
+            "general": {
+                "consentText": "Mit Klicken auf Zahlungspflichtig bestellen erklären Sie sich mit den <a href=\"https://www.ratepay.com/legal-payment-terms/\" title=\"https://www.ratepay.com/legal-payment-terms/\" target=\"_blank\">Ratepay Zahlungsbedingungen</a> sowie mit der Durchführung einer <a href=\"https://www.ratepay.com/legal-payment-dataprivacy/\" title=\"https://www.ratepay.com/legal-payment-dataprivacy/\" target=\"_blank\">Risikoprüfung durch Ratepay</a> einverstanden."
+            },
+            "debit": {
+                "iban": {
+                    "label": "IBAN"
+                },
+                "phoneNumber": {
+                    "label": "Telefonnummer"
+                },
+                "birthday": {
+                    "label": "Geburtsdatum"
+                }
+            },
+            "installment": {
+                "inputDivider": "oder",
+                "iban": {
+                    "label": "IBAN",
+                    "linkTextNoDirectDebit": "Ich möchte die Raten selbst leisten und nicht per Lastschrift bezahlen",
+                    "linkTextDirectDebit": "Ich möchte die Raten bequem per Lastschrift bezahlen"
+                },
+                "phoneNumber": {
+                    "label": "Telefonnummer"
+                },
+                "birthday": {
+                    "label": "Geburtsdatum"
+                },
+                "runtime": {
+                    "title": "Laufzeit",
+                    "label": "Anzahl der monatlichen Raten"
+                },
+                "rate": {
+                    "title": "Ratenhöhe",
+                    "label": "Höhe der monatlichen Raten",
+                    "buttonText": "Ratenplan berechnen"
+                },
+                "select": "%duration% Monate",
+                "installmentCalculation": {
+                    "title": "Ratenplan",
+                    "showCalculation": "Ratenberechnung anzeigen",
+                    "hideCalculation": "Ratenberechnung ausblenden",
+                    "monthlyRatesText": "%numberOfRates% monatliche Raten je",
+                    "monthlyRatesDescription": "Monatlich fällige Raten",
+                    "monthlyRateText": "1. - %rangeOfRates%. monatliche Rate je",
+                    "monthlyRateDescription": "Monatlich fällige Raten",
+                    "lastRateText": "%lastRate%. monatliche Rate",
+                    "lastRateDescription": "Fälliger Teilbetrag im letzten Monat.",
+                    "totalAmountText": "Gesamtbetrag",
+                    "totalAmountDescription": "Vom Käufer zu zahlender Warenkorbbetrag, berechnet aus Warenwert, Vertragsabschlussgebühr und Zinsbetrag.",
+                    "shoppingBasketAmountText": "Warenkorbbetrag",
+                    "shoppingBasketAmountDescription": "Summe aller Produkte im Warenkorb inkl. Versand",
+                    "contractSigningFeeText": "Vertragsabschlussgebühr",
+                    "contractSigningFeeDescription": "Einmalige Servicegebühr bei Ratenzahlung",
+                    "annualPercentageRateText": "Jährlicher Prozentsatz",
+                    "annualPercentageRateDescription": "Gesamtbetrag des Kredits als effektiver Jahreszins",
+                    "debitInterestRateText": "Sollzinssatz p.a. (Fest)",
+                    "debitInterestRateDescription": "Periodischer Zinssatz",
+                    "interestAmountText": "Zinsbetrag",
+                    "interestAmountDescription": "Geldbetrag, der sich aus dem Zinssatz ergibt"
+                }
+            },
+            "invoice": {
+                "birthday": {
+                    "label": "Geburtsdatum"
+                },
+                "phoneNumber": {
+                    "label": "Telefonnummer"
+                }
             }
         }
     },
     "error": {
         "VIOLATION::PAYONE_BIRTHDAY_NOT_VALID": "Für diese Zahlung müssen Sie mindestens 18 Jahre alt sein.",
-        "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "Die ausgewählte Zahlungsweise ist nicht verfügbar."
+        "VIOLATION::PAYONE_INVALID_PAYMENT_METHOD": "Die ausgewählte Zahlungsweise ist nicht verfügbar.",
+        "VIOLATION::PAYONE_INVALID_COUNTRY_CODE_ERROR": "Das Land der IBAN ist ungültig.",
+        "VIOLATION::PAYONE_INVALID_CHARACTERS_ERROR": "Die IBAN enthält ungültige Zeichen.",
+        "VIOLATION::PAYONE_CHECKSUM_FAILED_ERROR": "Die Prüfziffer der IBAN ist ungültig",
+        "VIOLATION::PAYONE_INVALID_FORMAT_ERROR": "Bitte geben Sie eine gültige IBAN ein.",
+        "VIOLATION::PAYONE_NOT_SUPPORTED_COUNTRY_CODE_ERROR": "Das eingegeben Land der IBAN ist ungültig."
     }
 }

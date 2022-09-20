@@ -28,19 +28,17 @@ class RequestParameterFactory
         $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
-    public function getRequestParameter(
-        AbstractRequestParameterStruct $arguments
-    ): array {
-        $parameters = [];
+    public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
+    {
+        $collectedParameters = [];
 
         foreach ($this->requestParameterBuilder as $builder) {
             if ($builder->supports($arguments) === true) {
-                $parameters = array_merge(
-                    $parameters,
-                    $builder->getRequestParameter($arguments)
-                );
+                $collectedParameters[] = $builder->getRequestParameter($arguments);
             }
         }
+
+        $parameters = array_merge(...$collectedParameters);
 
         if (empty($parameters)) {
             throw new RuntimeException('No valid request parameter builder found');
@@ -71,7 +69,7 @@ class RequestParameterFactory
         $this->generateParameterHash($parameters);
         $parameters['key'] = hash('md5', $parameters['key']);
 
-        return array_filter($parameters);
+        return array_filter($parameters, static function ($value) { return $value !== null && $value !== ''; });
     }
 
     private function generateParameterHash(array &$parameters): void

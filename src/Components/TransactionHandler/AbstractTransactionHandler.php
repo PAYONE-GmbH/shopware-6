@@ -204,6 +204,7 @@ abstract class AbstractTransactionHandler
         $criteria->addAssociation('order');
         $criteria->addAssociation('order.currency');
         $criteria->addAssociation('order.lineItems');
+        $criteria->addAssociation('order.deliveries');
         $criteria->addAssociation('paymentMethod');
 
         return $this->transactionRepository->search($criteria, $this->context)->first();

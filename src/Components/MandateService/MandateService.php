@@ -108,6 +108,17 @@ class MandateService implements MandateServiceInterface
         return (string) $response['data'];
     }
 
+    public function removeAllMandatesForCustomer(CustomerEntity $customer, SalesChannelContext $context): void
+    {
+        $mandates = $this->getMandates($customer, $context);
+
+        $ids = array_map(static function ($item) {
+            return ['id' => $item];
+        }, array_values($mandates->getIds()));
+
+        $this->mandateRepository->delete($ids, $context->getContext());
+    }
+
     protected function getExistingMandate(
         CustomerEntity $customer,
         string $identification,

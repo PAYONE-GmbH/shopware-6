@@ -14,7 +14,7 @@ Component.register('payone-settings', {
 
     inject: [ 'PayonePaymentSettingsService' ],
 
-       data() {
+    data() {
         return {
             isLoading: false,
             isTesting: false,
@@ -46,6 +46,12 @@ Component.register('payone-settings', {
                 'payment_prepayment': true,
                 'payment_trustly': true,
                 'payment_secure_invoice': true,
+                'payment_open_invoice': true,
+                'payment_apple_pay': true,
+                'payment_bancontact': true,
+                'payment_ratepay_debit': true,
+                'payment_ratepay_installment': true,
+                'payment_ratepay_invoicing': true,
             },
         };
     },
@@ -109,7 +115,12 @@ Component.register('payone-settings', {
                 'prepayment',
                 'trustly',
                 'secureInvoice',
+                'openInvoice',
                 'applePay',
+                'bancontact',
+                'ratepayDebit',
+                'ratepayInstallment',
+                'ratepayInvoicing',
             ];
         },
 
@@ -190,7 +201,9 @@ Component.register('payone-settings', {
 
             this.isSaveSuccessful = false;
             this.isLoading = true;
-            this.$refs.systemConfig.saveAll().then(() => {
+            this.$refs.systemConfig.saveAll().then((response) => {
+                this.handleRatepayProfileUpdates(response);
+
                 this.isLoading = false;
                 this.isSaveSuccessful = true;
             }).catch(() => {
@@ -324,5 +337,25 @@ Component.register('payone-settings', {
 
             return bind;
         },
+
+        handleRatepayProfileUpdates(response) {
+            const salesChannelId = this.$refs.systemConfig.currentSalesChannelId;
+
+            if (response.payoneRatepayProfilesUpdateResult && response.payoneRatepayProfilesUpdateResult[salesChannelId]) {
+                const resultBySalesChannel = response.payoneRatepayProfilesUpdateResult[salesChannelId];
+
+                this.$root.$emit(
+                  'payone-ratepay-profiles-update-result',
+                  resultBySalesChannel
+                );
+
+                if (!Array.isArray(resultBySalesChannel.errors)) {
+                    this.createNotificationError({
+                        title: this.$tc('payone-payment.settingsForm.titleError'),
+                        message: this.$tc('payone-payment.settingsForm.messageSaveError.ratepayProfilesUpdateFailed')
+                    });
+                }
+            }
+        }
     }
 });

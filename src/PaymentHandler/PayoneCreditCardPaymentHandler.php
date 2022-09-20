@@ -29,6 +29,12 @@ use Throwable;
 
 class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
+    public const REQUEST_PARAM_SAVE_CREDIT_CARD      = 'saveCreditCard';
+    public const REQUEST_PARAM_PSEUDO_CARD_PAN       = 'pseudoCardPan';
+    public const REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN = 'savedPseudoCardPan';
+    public const REQUEST_PARAM_CARD_EXPIRE_DATE      = 'cardExpireDate';
+    public const REQUEST_PARAM_TRUNCATED_CARD_PAN    = 'truncatedCardPan';
+
     /** @var PayoneClientInterface */
     protected $client;
 
@@ -115,15 +121,16 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());
         }
 
-        $truncatedCardPan   = $requestData->get('truncatedCardPan');
-        $cardExpireDate     = $requestData->get('cardExpireDate');
-        $savedPseudoCardPan = $requestData->get('savedPseudoCardPan');
-        $pseudoCardPan      = $requestData->get('pseudoCardPan');
+        $truncatedCardPan   = $requestData->get(self::REQUEST_PARAM_TRUNCATED_CARD_PAN);
+        $cardExpireDate     = $requestData->get(self::REQUEST_PARAM_CARD_EXPIRE_DATE);
+        $savedPseudoCardPan = $requestData->get(self::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN);
+        $pseudoCardPan      = $requestData->get(self::REQUEST_PARAM_PSEUDO_CARD_PAN);
+        $saveCreditCard     = $requestData->get(self::REQUEST_PARAM_SAVE_CREDIT_CARD) === 'on';
 
         if (empty($savedPseudoCardPan)) {
             $expiresAt = DateTime::createFromFormat('ym', $cardExpireDate);
 
-            if (!empty($expiresAt) && null !== $salesChannelContext->getCustomer()) {
+            if (!empty($expiresAt) && null !== $salesChannelContext->getCustomer() && $saveCreditCard) {
                 $this->cardRepository->saveCard(
                     $salesChannelContext->getCustomer(),
                     $truncatedCardPan,
@@ -132,6 +139,10 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
                     $salesChannelContext->getContext()
                 );
             }
+        }
+
+        if (null !== $salesChannelContext->getCustomer() && !$saveCreditCard) {
+            $this->cardRepository->removeAllCardsForCustomer($salesChannelContext->getCustomer(), $salesChannelContext->getContext());
         }
 
         if (strtolower($response['status']) === 'redirect') {

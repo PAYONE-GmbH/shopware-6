@@ -7,7 +7,6 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
-use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -142,14 +141,7 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
             return false;
         }
 
-        $txAction          = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
-        $transactionStatus = isset($transactionData['transaction_status']) ? strtolower($transactionData['transaction_status']) : null;
-
-        if ($txAction === TransactionStatusService::ACTION_APPOINTED && $transactionStatus === TransactionStatusService::STATUS_COMPLETED) {
-            return true;
-        }
-
-        return static::matchesIsCapturableDefaults($transactionData);
+        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData);
     }
 
     /**

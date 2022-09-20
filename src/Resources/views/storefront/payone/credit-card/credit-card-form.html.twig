@@ -8,15 +8,15 @@
     {% block page_checkout_confirm_payone_card_content_credit_card %}
         <div class="card">
             <fieldset>
-                <input type="hidden" name="pseudoCardPan" id="pseudocardpan" form="confirmOrderForm">
-                <input type="hidden" name="truncatedCardPan" id="truncatedcardpan" form="confirmOrderForm">
-                <input type="hidden" name="cardExpireDate" id="cardexpiredate" form="confirmOrderForm">
+                <input type="hidden" name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN') }}" id="pseudocardpan" form="confirmOrderForm">
+                <input type="hidden" name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN') }}" id="truncatedcardpan" form="confirmOrderForm">
+                <input type="hidden" name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE') }}" id="cardexpiredate" form="confirmOrderForm">
 
                 {% if page.extensions.payone.savedCards.total > 0 %}
                     <div class="form-row col-md-12">
                         <div class="form-group col-md-6">
                             <label class="form-label" for="savedPseudoCardPan">{{ "PayonePayment.creditCard.savedCards" | trans }}</label>
-                            <select class="form-control" id="savedpseudocardpan" name="savedPseudoCardPan" form="confirmOrderForm">
+                            <select class="form-control" id="savedpseudocardpan" name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN') }}" form="confirmOrderForm">
                                 <option value="">{{ "PayonePayment.creditCard.newCard" | trans }}</option>
 
                                 {% for card in page.extensions.payone.savedCards %}
@@ -60,6 +60,22 @@
                         <span class="form-control iframe" id="cardexpireyear"></span>
                     </div>
                 </div>
+
+                {% if context.customer and not context.customer.guest %}
+                    <div class="form-row col-md-12">
+                        <div class="form-group col-md-6">
+                            <input type="checkbox"
+                                   name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVE_CREDIT_CARD') }}"
+                                   id="saveCreditCard"
+                                   form="confirmOrderForm"
+                                   {% if page.extensions.payone.savedCards.total > 0 %}
+                                    checked="checked"
+                                   {% endif %}
+                                   />
+                            <label class="form-label" for="saveCreditCard">{{ "PayonePayment.checkoutConfirmPage.save" | trans }}</label>
+                        </div>
+                    </div>
+                {% endif %}
 
                 <div class="form-row col-md-12">
                     <div class="form-group col-md-12" >

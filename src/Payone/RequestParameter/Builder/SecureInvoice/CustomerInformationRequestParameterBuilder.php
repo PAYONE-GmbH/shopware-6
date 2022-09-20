@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\SecureInvoice;
 
 use DateTime;
+use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -50,8 +51,8 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
             return $parameters;
         }
 
-        if (!empty($dataBag->get('secureInvoiceBirthday'))) {
-            $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('secureInvoiceBirthday'));
+        if (!empty($dataBag->get('payoneInvoiceBirthday'))) {
+            $birthday = DateTime::createFromFormat('Y-m-d', $dataBag->get('payoneInvoiceBirthday'));
 
             if (!empty($birthday)) {
                 $parameters['birthday'] = $birthday->format('Ymd');
@@ -67,9 +68,7 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
             return false;
         }
 
-        $paymentMethod = $arguments->getPaymentMethod();
-
-        return $paymentMethod === PayoneSecureInvoicePaymentHandler::class;
+        return in_array($arguments->getPaymentMethod(), [PayoneSecureInvoicePaymentHandler::class, PayoneOpenInvoicePaymentHandler::class], true);
     }
 
     private function getBillingAddress(OrderEntity $order, Context $context): OrderAddressEntity

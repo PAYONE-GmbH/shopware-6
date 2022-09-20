@@ -89,6 +89,17 @@ class CardRepository implements CardRepositoryInterface
         return $this->cardRepository->search($criteria, $context);
     }
 
+    public function removeAllCardsForCustomer(CustomerEntity $customer, Context $context): void
+    {
+        $cards = $this->getCards($customer, $context);
+
+        $ids = array_map(static function ($item) {
+            return ['id' => $item];
+        }, array_values($cards->getIds()));
+
+        $this->cardRepository->delete($ids, $context);
+    }
+
     protected function getExistingCard(
         CustomerEntity $customer,
         string $pseudoCardPan,

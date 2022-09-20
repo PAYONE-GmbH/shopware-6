@@ -19,7 +19,21 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="PayonePayment\EventListener\CheckoutConfirmDebitEventListener">
+            <argument type="service" id="PayonePayment\StoreApi\Route\MandateRoute" />
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <service id="PayonePayment\EventListener\CheckoutConfirmPaypalExpressEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmRatepayEventListener">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\Installment\InstallmentService" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\Profile\ProfileService" />
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -50,7 +64,7 @@
 
         <service id="PayonePayment\EventListener\OrderValidationEventListener">
             <argument type="service" id="request_stack" />
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
@@ -78,6 +92,11 @@
 
         <service id="PayonePayment\EventListener\PaypalExpressAddressValidationEventListener">
             <argument type="service" id="request_stack"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\KernelEventListener">
+            <argument type="service" id="PayonePayment\Components\Ratepay\Profile\ProfileService" />
             <tag name="kernel.event_subscriber"/>
         </service>
 

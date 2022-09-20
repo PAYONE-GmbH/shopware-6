@@ -1,0 +1,150 @@
+<div class="payone-payment ratepay-installment">
+    {% block page_checkout_confirm_payone_ratepay_installment_device_fingerprint %}
+        {% if page.extensions.payoneRatepayDeviceFingerprint.snippet %}
+            {{ page.extensions.payoneRatepayDeviceFingerprint.snippet|raw }}
+        {% endif %}
+    {% endblock %}
+
+    <input type="hidden" id="payoneCsrfTokenRatepayInstallmentCalculation" value="{{ sw_csrf('frontend.payone.ratepay.installment.calculation', {'mode': 'token'}) }}">
+
+    {% block page_checkout_confirm_payone_card_content_ratepay_installment_card %}
+        {% set customerCustomFields = context.customer.customFields %}
+
+        <div class="card">
+            <fieldset>
+
+                <div class="form-row">
+                    <div class="card form-group col-12 col-md-5">
+                        <div class="card-title">
+                            {{ "PayonePayment.ratepay.installment.runtime.title" | trans }}
+                        </div>
+
+                        <label class="form-label" for="ratepayRuntime">{{ "PayonePayment.ratepay.installment.runtime.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
+
+                        {% if page.extensions.payoneRatepayInstallmentCalculator.calculationParams.ratepayInstallmentType === "time" %}
+                            {% set defaultValue = page.extensions.payoneRatepayInstallmentCalculator.calculationParams.ratepayInstallmentValue %}
+                        {% else %}
+                            {% set defaultValue = page.extensions.payoneRatepayInstallmentCalculator.allowedMonths|first %}
+                        {% endif %}
+
+                        <select class="form-control"
+                                id="ratepayRuntime"
+                                name="ratepayRuntime"
+                                form="confirmOrderForm">
+                            {% for option in page.extensions.payoneRatepayInstallmentCalculator.allowedMonths %}
+                                <option value="{{ option }}"
+                                        {% if option === defaultValue %}selected="selected"{% endif %}>
+                                    {{ "PayonePayment.ratepay.installment.select" | trans({
+                                        '%duration%': option
+                                    }) }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group col-12 col-md-2 d-flex justify-content-center align-items-center">
+                        <span>
+                            {{ "PayonePayment.ratepay.installment.inputDivider" | trans }}
+                        </span>
+                    </div>
+
+                    <div class="card form-group col-12 col-md-5">
+                        <div class="card-title">
+                            {{ "PayonePayment.ratepay.installment.rate.title" | trans }}
+                        </div>
+
+                        <label class="form-label" for="ratepayRate">{{ "PayonePayment.ratepay.installment.rate.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
+                        <div class="input-group">
+                            <input class="form-control payone-input"
+                                   id="ratepayRate"
+                                   name="ratepayRate"
+                                   form="confirmOrderForm"
+                                   type="number"
+                                   step="0.01"/>
+                            <div class="input-group-append">
+                                <button type="submit"
+                                        id="payone-ratepay-calculate-installment-btn"
+                                        class="btn btn-primary">
+                                    {{ "PayonePayment.ratepay.installment.rate.buttonText" | trans }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="payone-ratepay-installment-plan">
+                    {% sw_include '@PayonePayment/storefront/payone/ratepay/ratepay-installment-plan.html.twig' with {
+                        calculationResponse: page.extensions.payoneRatepayInstallmentCalculator.calculationResponse
+                    } %}
+                </div>
+
+                {% block page_checkout_confirm_payone_card_title_ratepay_installment_card %}
+                    <div class="card-title">
+                        {{ "PayonePayment.checkoutConfirmPage.defaultCardTitle" | trans }}
+                    </div>
+                {% endblock %}
+
+                {% if customerCustomFields is null or customerCustomFields['payone_customer_phone_number'] is not defined or customerCustomFields['payone_customer_phone_number'] is empty %}
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label class="form-label" for="ratepayPhone">{{ "PayonePayment.ratepay.installment.phoneNumber.label" | trans }}{% if not billingAddress.phoneNumber %}{{ "general.required"|trans|sw_sanitize }}{% endif %}</label>
+                            <input class="form-control payone-input"
+                                   id="ratepayPhone"
+                                   name="ratepayPhone"
+                                   type="tel"
+                                   form="confirmOrderForm"
+                                   required="required"/>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label class="form-label" for="ratepayBirthday">{{ "PayonePayment.ratepay.installment.birthday.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
+                        <input class="form-control payone-input"
+                               id="ratepayBirthday"
+                               name="ratepayBirthday"
+                               type="date"
+                               form="confirmOrderForm"
+                               required="required"/>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-12 collapse show"
+                         id="ratepayIbanContainer">
+                        <label class="form-label" for="ratepayIban">{{ "PayonePayment.ratepay.installment.iban.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
+                        <input class="form-control payone-input"
+                               id="ratepayIban"
+                               name="ratepayIban"
+                               form="confirmOrderForm"
+                               required="required"/>
+                    </div>
+                    <a class="payone-ratepay-installment-iban-toggle"
+                       id="ratepayIbanCollapseTrigger"
+                       data-toggle="collapse"
+                       href="#ratepayIbanContainer"
+                       aria-expanded="true"
+                       aria-controls="ratepayIbanContainer">
+                        <span class="payone-ratepay-collapsed-text">
+                            {{ "PayonePayment.ratepay.installment.iban.linkTextDirectDebit" | trans }}
+                        </span>
+                        <span class="payone-ratepay-open-text">
+                            {{ "PayonePayment.ratepay.installment.iban.linkTextNoDirectDebit" | trans }}
+                        </span>
+                    </a>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="card">
+            <div>
+                <p>
+                    {{ "PayonePayment.ratepay.general.consentText" |trans|raw }}
+                </p>
+            </div>
+        </div>
+    {% endblock %}
+
+    <div id="payone-configuration" data-is-payone-ratepay-installment="true" data-calculation-url="/payone/ratepay/installment/calculation"></div>
+</div>

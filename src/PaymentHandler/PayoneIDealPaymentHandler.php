@@ -42,7 +42,9 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
         'ING_BANK',
         'KNAB_BANK',
         'VAN_LANSCHOT_BANKIERS',
-        'MONEYOU',
+        'HANDELSBANKEN',
+        'FRIESLAND_BANK',
+        'REVOLUT',
     ];
 
     /** @var PayoneClientInterface */

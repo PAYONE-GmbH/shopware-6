@@ -78,6 +78,29 @@ Component.register('payone-capture-button', {
 
             return returnValue;
         },
+
+        hasRemainingShippingCosts() {
+            if (this.order.shippingCosts.totalPrice <= 0) {
+                return false;
+            }
+
+            const shippingCosts = this.order.shippingCosts.totalPrice * (10 ** this.decimalPrecision);
+
+            let capturedPositionAmount = 0;
+
+            this.order.lineItems.forEach((order_item) => {
+                if (order_item.customFields && order_item.customFields.payone_captured_quantity
+                    && 0 < order_item.customFields.payone_captured_quantity) {
+                    capturedPositionAmount += order_item.customFields.payone_captured_quantity * order_item.unitPrice * (10 ** this.decimalPrecision);
+                }
+            });
+
+            if (this.capturedAmount - Math.round(capturedPositionAmount) >= shippingCosts) {
+                return false;
+            }
+
+            return true;
+        }
     },
 
     data() {
@@ -87,7 +110,8 @@ Component.register('payone-capture-button', {
             showCaptureModal: false,
             isCaptureSuccessful: false,
             selection: [],
-            captureAmount: 0.0
+            captureAmount: 0.0,
+            includeShippingCosts: false
         };
     },
 
@@ -129,7 +153,8 @@ Component.register('payone-capture-button', {
                 salesChannel: this.order.salesChannel,
                 amount: this.captureAmount,
                 orderLines: [],
-                complete: this.captureAmount === this.remainingAmount
+                complete: this.captureAmount === this.remainingAmount,
+                includeShippingCosts: false
             };
 
             this.isLoading = true;
@@ -147,6 +172,10 @@ Component.register('payone-capture-button', {
                         request.orderLines.push(copy);
                     }
                 });
+
+                if (selection.id === 'shipping' && selection.selected && 0 < selection.quantity) {
+                    request.includeShippingCosts = true;
+                }
             });
 
             if (this.remainingAmount < (request.amount * (10 ** this.decimalPrecision))) {
@@ -163,25 +192,25 @@ Component.register('payone-capture-button', {
                 salesChannel: this.order.salesChannel,
                 amount: this.remainingAmount / (10 ** this.decimalPrecision),
                 orderLines: [],
-                complete: true
+                complete: true,
+                includeShippingCosts: this.hasRemainingShippingCosts
             };
 
             this.isLoading = true;
 
-            this._populateSelectionProperty();
+            this.order.lineItems.forEach((order_item) => {
+                let quantity = order_item.quantity;
 
-            this.selection.forEach((selection) => {
-                this.order.lineItems.forEach((order_item) => {
-                    if (order_item.id === selection.id && 0 < selection.quantity) {
-                        const copy = { ...order_item },
-                            taxRate = copy.tax_rate / (10 ** this.decimalPrecision);
+                if (order_item.customFields && order_item.customFields.payone_captured_quantity
+                    && 0 < order_item.customFields.payone_captured_quantity) {
+                    quantity -= order_item.customFields.payone_captured_quantity;
+                }
 
-                        copy.quantity         = selection.quantity;
-                        copy.total_amount     = copy.unit_price * copy.quantity;
-                        copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
-
-                        request.orderLines.push(copy);
-                    }
+                request.orderLines.push({
+                    id: order_item.id,
+                    quantity: quantity,
+                    unit_price: order_item.unitPrice,
+                    selected: false
                 });
             });
 
@@ -257,6 +286,15 @@ Component.register('payone-capture-button', {
                     selected: false
                 });
             });
+
+            if (this.order.shippingCosts.totalPrice > 0) {
+                this.selection.push({
+                    id: 'shipping',
+                    quantity: 1,
+                    unit_price: this.order.shippingCosts.totalPrice,
+                    selected: false
+                });
+            }
         }
     }
 });
