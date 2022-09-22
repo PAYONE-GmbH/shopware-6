@@ -231,12 +231,6 @@
                     "label": "Telefonnummer"
                 }
             }
-        },
-        "klarna": {
-            "klarnaUsageConfirm": {
-                "text": "Damit Sie Klarna verwenden können, müssen wir Ihre Daten an Klarna senden. Falls Sie das nicht wünschen, wählen Sie bitte eine andere Bezahlmethode",
-                "buttonText": "Datenübertragung an Klarna bestätigen"
-            }
         }
     },
     "error": {

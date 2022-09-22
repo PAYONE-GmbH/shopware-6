@@ -148,38 +148,10 @@ apple-pay-button {
     }
 }
 
-$payone-klarna-background: #f0eeeb; // this is the background color from the widget
-
 .payone-payment--klarna {
     margin-bottom: 1rem;
 
-    &.has-element-loader {
-        background: $payone-klarna-background;
-        min-height: 250px;
-    }
-
-    .confirmKlarnaUsage__container {
-        background: $payone-klarna-background;
-        padding: 1rem;
-
-        button {
-            display: block;
-            margin-left: auto;
-            margin-right: 0;
-        }
-    }
-
     iframe {
         max-width: none !important;
-    }
-
-    .message-container {
-        display: none;
-    }
-
-    &.has-error {
-        .message-container {
-            display: block;
-        }
     }
 }

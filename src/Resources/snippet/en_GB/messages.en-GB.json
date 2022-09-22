@@ -231,12 +231,6 @@
                     "label": "Phone number"
                 }
             }
-        },
-        "klarna": {
-            "klarnaUsageConfirm": {
-                "text": "By selecting this payment method we will send personal data to Klarna. Please confirm. If you don't want to share your data with Klarna, please select a different payment method.",
-                "buttonText": "Confirm sending data to Klarna"
-            }
         }
     },
     "error": {

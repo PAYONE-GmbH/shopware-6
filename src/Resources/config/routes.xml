@@ -20,8 +20,6 @@
 
     <import resource="@PayonePayment/Storefront/Controller/Ratepay/RatepayController.php" type="annotation"/>
 
-    <import resource="@PayonePayment/Storefront/Controller/Klarna/KlarnaController.php" type="annotation"/>
-
     <!-- Store-Api routes -->
     <import resource="@PayonePayment/StoreApi/Route/CardRoute.php" type="annotation" />
     <import resource="@PayonePayment/StoreApi/Route/MandateRoute.php" type="annotation" />

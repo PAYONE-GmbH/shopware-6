@@ -1,18 +1,12 @@
 <div class="payone-payment payone-payment--klarna" data-payone-payment-klarna data-payone-payment-klarna-options='{
+    "clientToken": "{{ page.extensions.payone.klarnaSessionStruct.clientToken }}",
+    "paymentMethodIdentifier": "{{ page.extensions.payone.klarnaSessionStruct.paymentMethodIdentifier }}",
+    "sessionStruct": {{ page.extensions.payone.klarnaSessionStruct|json_encode() }},
+    "sessionStruct": {{ page.extensions.payone.klarnaSessionStruct|json_encode() }},
     "selectorContainer": "#payone-payment--klarna__container",
     "selectorTokenInput": "input[name=payoneKlarnaAuthorizationToken]",
-    "selectorFormId": "confirmOrderForm",
-    "selectorConfirmKlarnaUsageContainerId": "confirmKlarnaUsage__container",
-    "selectorConfirmKlarnaUsageId": "confirmKlarnaUsage"
+    "selectorFormId": "confirmOrderForm"
 }'>
-    <div class="message-container">
-        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with { type: "danger", content: 'PayonePayment.errorMessages.canNotInitKlarna'|trans  } %}
-    </div>
-
-    <div id="confirmKlarnaUsage__container" class="confirmKlarnaUsage__container">
-        <p>{{ 'PayonePayment.klarna.klarnaUsageConfirm.text' | trans }}</p>
-        <button id="confirmKlarnaUsage" class="btn btn-light">{{ 'PayonePayment.klarna.klarnaUsageConfirm.buttonText' | trans }}</button>
-    </div>
     <div id="payone-payment--klarna__container"></div>
     <input type="hidden" name="payoneKlarnaAuthorizationToken" form="confirmOrderForm"/>
 </div>
