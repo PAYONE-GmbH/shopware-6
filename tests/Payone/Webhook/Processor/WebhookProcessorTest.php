@@ -177,11 +177,11 @@ class WebhookProcessorTest extends TestCase
 
         $orderTransactionEntity->setOrder($orderEntity);
 
-        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
-        $payoneTransactionData->setTransactionId(Constants::PAYONE_TRANSACTION_ID);
-        $payoneTransactionData->setSequenceNumber(0);
-        $payoneTransactionData->setLastRequest('authorization');
-        $payoneTransactionData->setAuthorizationType('authorization');
+        $payoneTransactionData                    = new PayonePaymentOrderTransactionDataEntity();
+        $payoneTransactionData->transactionId     = Constants::PAYONE_TRANSACTION_ID;
+        $payoneTransactionData->sequenceNumber    = 0;
+        $payoneTransactionData->lastRequest       = 'authorization';
+        $payoneTransactionData->authorizationType = 'authorization';
         $orderTransactionEntity->addExtension(
             PayonePaymentOrderTransactionExtension::NAME,
             $payoneTransactionData

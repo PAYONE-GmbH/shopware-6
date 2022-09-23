@@ -102,7 +102,7 @@ class ProfileService implements ProfileServiceInterface
             }
 
             $profile = new Profile();
-            $profile->setShopId($shopId);
+            $profile->setShopId((string) $shopId);
             $profile->setConfiguration($configuration);
 
             return $profile;
@@ -185,10 +185,10 @@ class ProfileService implements ProfileServiceInterface
         $validProfiles          = [];
         $configurationResponses = [];
         foreach ($profiles as $profile) {
-            $shopId   = (int) $profile['shopId'];
+            $shopId   = $profile['shopId'];
             $currency = $profile['currency'];
 
-            if ($shopId === 0 || empty($currency)) {
+            if (empty($shopId) || empty($currency)) {
                 $profile['error']             = 'Shop ID or Currency missing';
                 $errors[$profilesConfigKey][] = $profile;
 

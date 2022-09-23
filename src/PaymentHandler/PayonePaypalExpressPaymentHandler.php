@@ -108,9 +108,8 @@ class PayonePaypalExpressPaymentHandler extends AbstractPayonePaymentHandler imp
         }
 
         $data = $this->preparePayoneOrderTransactionData($request, $response, [
-                'workOrderId' => $requestData->get('workorder'),
-            ]
-        );
+            'workOrderId' => $requestData->get('workorder'),
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
 

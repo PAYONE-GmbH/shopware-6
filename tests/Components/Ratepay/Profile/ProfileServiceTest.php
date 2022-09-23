@@ -38,7 +38,7 @@ class ProfileServiceTest extends TestCase
         $profile = $profileService->getProfileByOrder($order, $paymentHandler);
 
         static::assertNotNull($profile);
-        static::assertSame(88880103, $profile->getShopId());
+        static::assertSame('88880103', $profile->getShopId());
         static::assertIsArray($profile->getConfiguration());
         static::assertNotEmpty($profile->getConfiguration());
     }
@@ -59,7 +59,7 @@ class ProfileServiceTest extends TestCase
         $profile = $profileService->getProfileByOrder($order, $paymentHandler);
 
         static::assertNotNull($profile);
-        static::assertSame(88880103, $profile->getShopId());
+        static::assertSame('88880103', $profile->getShopId());
         static::assertIsArray($profile->getConfiguration());
         static::assertNotEmpty($profile->getConfiguration());
     }
@@ -93,7 +93,7 @@ class ProfileServiceTest extends TestCase
         $profile = $profileService->getProfileBySalesChannelContext($salesChannelContext, $paymentHandler);
 
         static::assertNotNull($profile);
-        static::assertSame(88880103, $profile->getShopId());
+        static::assertSame('88880103', $profile->getShopId());
         static::assertIsArray($profile->getConfiguration());
         static::assertNotEmpty($profile->getConfiguration());
     }
@@ -108,7 +108,7 @@ class ProfileServiceTest extends TestCase
         $profile        = $profileService->getProfile($profileSearch);
 
         static::assertNotNull($profile);
-        static::assertSame(88880103, $profile->getShopId());
+        static::assertSame('88880103', $profile->getShopId());
         static::assertIsArray($profile->getConfiguration());
         static::assertNotEmpty($profile->getConfiguration());
     }

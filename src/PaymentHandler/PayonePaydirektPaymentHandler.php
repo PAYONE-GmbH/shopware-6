@@ -106,7 +106,6 @@ class PayonePaydirektPaymentHandler extends AbstractPayonePaymentHandler impleme
             );
         }
 
-        // Prepare custom fields for the transaction
         $data = $this->preparePayoneOrderTransactionData($request, $response);
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
 

@@ -6,18 +6,18 @@ namespace PayonePayment\Components\Ratepay\Profile;
 
 class Profile
 {
-    /** @var int */
+    /** @var string */
     private $shopId;
 
     /** @var array */
     private $configuration;
 
-    public function getShopId(): int
+    public function getShopId(): string
     {
         return $this->shopId;
     }
 
-    public function setShopId(int $shopId): void
+    public function setShopId(string $shopId): void
     {
         $this->shopId = $shopId;
     }

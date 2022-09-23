@@ -114,7 +114,7 @@
                 {% endblock %}
             {% endif %}
 
-            {% if order.transactions.first.customFields.payone_clearing_bank_account.Bic %}
+            {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Bic %}
                 {% block document_payment_payone_secure_invoice_due_date %}
                     <br>
                     {{ 'PayonePayment.secureInvoice.document.dueDate' | trans }}

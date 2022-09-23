@@ -21,7 +21,8 @@ class PayonePaymentOrderTransactionExtension extends EntityExtension
                 self::NAME,
                 'id',
                 'order_transaction_id',
-                PayonePaymentOrderTransactionDataDefinition::class)
+                PayonePaymentOrderTransactionDataDefinition::class
+            )
         );
     }
 

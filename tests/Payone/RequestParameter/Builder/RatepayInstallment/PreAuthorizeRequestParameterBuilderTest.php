@@ -65,7 +65,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
                 'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
                 'iban'                                       => 'DE81500105177147426471',
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-                'add_paydata[shop_id]'                       => 88880103,
+                'add_paydata[shop_id]'                       => '88880103',
                 'add_paydata[device_token]'                  => 'the-device-ident-token',
                 'add_paydata[installment_amount]'            => 10000,
                 'add_paydata[installment_number]'            => 24,

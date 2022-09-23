@@ -118,13 +118,12 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
         }
 
         $data = $this->preparePayoneOrderTransactionData($request, $response, [
-                'workOrderId'       => $requestData->get('workorder'),
-                'clearingReference' => $response['clearing']['Reference'],
-                'captureMode'       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-                'clearingType'      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                'financingType'     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
-            ]
-        );
+            'workOrderId'       => $requestData->get('workorder'),
+            'clearingReference' => $response['clearing']['Reference'],
+            'captureMode'       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+            'clearingType'      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+            'financingType'     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
     }

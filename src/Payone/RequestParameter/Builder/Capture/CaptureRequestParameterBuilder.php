@@ -89,7 +89,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         if (in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::RATEPAY)) {
             $parameters['settleaccount']        = 'yes';
-            $parameters['add_paydata[shop_id]'] = $transactionData->getUsedRatepayShopId();
+            $parameters['add_paydata[shop_id]'] = $transactionData->getAdditionalData()['used_ratepay_shop_id'] ?? null;
         }
 
         return $parameters;

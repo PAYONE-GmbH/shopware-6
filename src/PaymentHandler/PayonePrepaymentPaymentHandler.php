@@ -95,19 +95,18 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
         }
 
         $data = $this->preparePayoneOrderTransactionData($request, $response, [
-                'workOrderId'  => $requestData->get('workorder'),
-                'clearingType' => self::PAYONE_CLEARING_VOR,
-                // Store clearing bank account information as custom field of the transaction in order to
-                // use this data for payment instructions of an invoice or similar.
-                // See: https://docs.payone.com/display/public/PLATFORM/How+to+use+JSON-Responses#HowtouseJSON-Responses-JSON,Clearing-Data
-                'clearingBankAccount' => array_merge(array_filter($response['clearing']['BankAccount'] ?? []), [
-                    // The PAYONE transaction ID acts as intended purpose of the transfer.
-                    // We add this field explicitly here to make clear that the transaction ID is used
-                    // as payment reference in context of the prepayment.
-                    'Reference' => (string) $response['txid'],
-                ]),
-            ]
-        );
+            'workOrderId'  => $requestData->get('workorder'),
+            'clearingType' => self::PAYONE_CLEARING_VOR,
+            // Store clearing bank account information as custom field of the transaction in order to
+            // use this data for payment instructions of an invoice or similar.
+            // See: https://docs.payone.com/display/public/PLATFORM/How+to+use+JSON-Responses#HowtouseJSON-Responses-JSON,Clearing-Data
+            'clearingBankAccount' => array_merge(array_filter($response['clearing']['BankAccount'] ?? []), [
+                // The PAYONE transaction ID acts as intended purpose of the transfer.
+                // We add this field explicitly here to make clear that the transaction ID is used
+                // as payment reference in context of the prepayment.
+                'Reference' => (string) $response['txid'],
+            ]),
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
     }

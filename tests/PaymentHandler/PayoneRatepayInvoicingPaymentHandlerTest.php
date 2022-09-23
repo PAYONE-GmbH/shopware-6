@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService;
@@ -24,7 +25,7 @@ class PayoneRatepayInvoicingPaymentHandlerTest extends TestCase
 {
     use PayoneTestBehavior;
 
-    public function testItPerformsPaymentWithAuthorizationAndSavesCorrectTransactionCustomFields(): void
+    public function testItPerformsPaymentWithAuthorizationAndSavesCorrectTransactionData(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
@@ -34,7 +35,7 @@ class PayoneRatepayInvoicingPaymentHandlerTest extends TestCase
                 'request'              => AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE,
                 'clearingtype'         => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
                 'financingtype'        => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
-                'add_paydata[shop_id]' => 88880103,
+                'add_paydata[shop_id]' => '88880103',
             ]
         );
 
@@ -54,24 +55,30 @@ class PayoneRatepayInvoicingPaymentHandlerTest extends TestCase
         $dataHandler->expects($this->once())->method('saveTransactionData')->with(
             $this->anything(),
             $this->anything(),
-            $this->equalTo([
-                'payone_authorization_type'   => 'authorization',
-                'payone_last_request'         => 'authorization',
-                'payone_transaction_id'       => '123456789',
-                'payone_sequence_number'      => -1,
-                'payone_user_id'              => '987654321',
-                'payone_transaction_state'    => 'APPROVED',
-                'payone_allow_capture'        => false,
-                'payone_captured_amount'      => 0,
-                'payone_allow_refund'         => false,
-                'payone_refunded_amount'      => 0,
-                'payone_work_order_id'        => null,
-                'payone_clearing_reference'   => 'DN123',
-                'payone_capture_mode'         => 'completed',
-                'payone_clearing_type'        => 'fnc',
-                'payone_financing_type'       => 'RPV',
-                'payone_used_ratepay_shop_id' => 88880103,
-            ])
+            $this->callback(static function ($transactionData) {
+                Assert::assertArraySubset(
+                    [
+                        'authorizationType' => 'authorization',
+                        'lastRequest'       => 'authorization',
+                        'transactionId'     => '123456789',
+                        'sequenceNumber'    => -1,
+                        'userId'            => '987654321',
+                        'transactionState'  => 'APPROVED',
+                        'workOrderId'       => null,
+                        'clearingReference' => 'DN123',
+                        'captureMode'       => 'completed',
+                        'clearingType'      => 'fnc',
+                        'financingType'     => 'RPV',
+                        'additionalData'    => ['used_ratepay_shop_id' => '88880103'],
+                    ],
+                    $transactionData
+                );
+
+                static::assertArrayHasKey('request', array_values($transactionData['transactionData'])[0]);
+                static::assertArrayHasKey('response', array_values($transactionData['transactionData'])[0]);
+
+                return true;
+            })
         );
 
         $deviceFingerprintService = $this->createMock(DeviceFingerprintService::class);
@@ -93,7 +100,7 @@ class PayoneRatepayInvoicingPaymentHandlerTest extends TestCase
         $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
     }
 
-    public function testItPerformsPaymentWithPreAuthorizationAndSavesCorrectTransactionCustomFields(): void
+    public function testItPerformsPaymentWithPreAuthorizationAndSavesCorrectTransactionData(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
@@ -103,7 +110,7 @@ class PayoneRatepayInvoicingPaymentHandlerTest extends TestCase
                 'request'              => AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE,
                 'clearingtype'         => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
                 'financingtype'        => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
-                'add_paydata[shop_id]' => 88880103,
+                'add_paydata[shop_id]' => '88880103',
             ]
         );
 
@@ -125,24 +132,30 @@ class PayoneRatepayInvoicingPaymentHandlerTest extends TestCase
         $dataHandler->expects($this->once())->method('saveTransactionData')->with(
             $this->anything(),
             $this->anything(),
-            $this->equalTo([
-                'payone_authorization_type'   => 'preauthorization',
-                'payone_last_request'         => 'preauthorization',
-                'payone_transaction_id'       => '123456789',
-                'payone_sequence_number'      => -1,
-                'payone_user_id'              => '987654321',
-                'payone_transaction_state'    => 'APPROVED',
-                'payone_allow_capture'        => false,
-                'payone_captured_amount'      => 0,
-                'payone_allow_refund'         => false,
-                'payone_refunded_amount'      => 0,
-                'payone_work_order_id'        => null,
-                'payone_clearing_reference'   => 'DN123',
-                'payone_capture_mode'         => 'completed',
-                'payone_clearing_type'        => 'fnc',
-                'payone_financing_type'       => 'RPV',
-                'payone_used_ratepay_shop_id' => 88880103,
-            ])
+            $this->callback(static function ($transactionData) {
+                Assert::assertArraySubset(
+                    [
+                        'authorizationType' => 'preauthorization',
+                        'lastRequest'       => 'preauthorization',
+                        'transactionId'     => '123456789',
+                        'sequenceNumber'    => -1,
+                        'userId'            => '987654321',
+                        'transactionState'  => 'APPROVED',
+                        'workOrderId'       => null,
+                        'clearingReference' => 'DN123',
+                        'captureMode'       => 'completed',
+                        'clearingType'      => 'fnc',
+                        'financingType'     => 'RPV',
+                        'additionalData'    => ['used_ratepay_shop_id' => '88880103'],
+                    ],
+                    $transactionData
+                );
+
+                static::assertArrayHasKey('request', array_values($transactionData['transactionData'])[0]);
+                static::assertArrayHasKey('response', array_values($transactionData['transactionData'])[0]);
+
+                return true;
+            })
         );
 
         $deviceFingerprintService = $this->createMock(DeviceFingerprintService::class);

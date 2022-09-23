@@ -89,6 +89,9 @@ class PayonePayment extends Plugin
             $connection->executeStatement('DROP TABLE payone_payment_card');
             $connection->executeStatement('DROP TABLE payone_payment_redirect');
             $connection->executeStatement('DROP TABLE payone_payment_mandate');
+            $connection->executeStatement('DROP TABLE payone_payment_notification_forward');
+            $connection->executeStatement('DROP TABLE payone_payment_notification_target');
+            $connection->executeStatement('DROP TABLE payone_payment_order_transaction_data');
 
             return;
         }
@@ -100,6 +103,12 @@ class PayonePayment extends Plugin
             $connection->exec('DROP TABLE payone_payment_redirect');
             /** @noinspection PhpDeprecationInspection */
             $connection->exec('DROP TABLE payone_payment_mandate');
+            /** @noinspection PhpDeprecationInspection */
+            $connection->exec('DROP TABLE payone_payment_notification_forward');
+            /** @noinspection PhpDeprecationInspection */
+            $connection->exec('DROP TABLE payone_payment_notification_target');
+            /** @noinspection PhpDeprecationInspection */
+            $connection->exec('DROP TABLE payone_payment_order_transaction_data');
         }
     }
 

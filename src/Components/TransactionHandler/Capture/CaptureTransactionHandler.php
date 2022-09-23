@@ -112,7 +112,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
     }
 
     /**
-     * Updates transaction custom fields that contain clearing bank account data.
+     * Updates transaction extension fields that contain clearing bank account data.
      * Payment methods like invoice or secure invoice get these data through the response of a capture request.
      * These clearing data is used during invoice generation.
      *

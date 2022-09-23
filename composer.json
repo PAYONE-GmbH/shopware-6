@@ -23,9 +23,9 @@
     "ext-curl": "*",
     "ext-json": "*",
     "sinergi/browser-detector": "^6.1",
-    "shopware/core": ">= 6.3",
-    "shopware/administration": ">= 6.3",
-    "shopware/storefront": ">= 6.3"
+    "shopware/core": ">= 6.4",
+    "shopware/administration": ">= 6.4",
+    "shopware/storefront": ">= 6.4"
   },
   "require-dev": {
     "dms/phpunit-arraysubset-asserts": "^0.3.0",
@@ -41,8 +41,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "PayonePayment\\": "tests/",
-      "PayonePayment\\Test\\": "tests_legacy/"
+      "PayonePayment\\": "tests/"
     }
   },
   "config": {

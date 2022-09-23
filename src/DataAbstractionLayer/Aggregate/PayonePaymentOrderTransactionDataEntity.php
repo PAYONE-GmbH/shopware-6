@@ -11,53 +11,28 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 class PayonePaymentOrderTransactionDataEntity extends Entity
 {
     use EntityIdTrait;
-    /** @var string */
-    protected $transactionId;
-    /** @var string */
-    protected $orderTransactionId;
-    /** @var OrderTransactionEntity */
-    protected $orderTransaction;
-    /** @var null|array */
-    protected $transactionData;
-    /** @var null|int */
-    protected $sequenceNumber;
-    /** @var null|string */
-    protected $transactionState;
-    /** @var null|string */
-    protected $userId;
-    /** @var null|string */
-    protected $lastRequest;
-    /** @var null|bool */
-    protected $allowCapture;
-    /** @var null|int */
-    protected $capturedAmount;
-    /** @var null|bool */
-    protected $allowRefund;
-    /** @var null|int */
-    protected $refundedAmount;
-    /** @var null|string */
-    protected $mandateIdentification;
-    /** @var null|string */
-    protected $authorizationType;
-    /** @var null|string */
-    protected $workOrderId;
-    /** @var null|string */
-    protected $clearingReference;
-    /** @var null|string */
-    protected $clearingType;
-    /** @var null|string */
-    protected $financingType;
-    /** @var null|string */
-    protected $captureMode;
-    /** @var null|array */
-    protected $clearingBankAccount;
-    /** @var null|string */
-    protected $usedRatepayShopId;
 
-    public function setTransactionId(string $value): void
-    {
-        $this->transactionId = $value;
-    }
+    protected string $transactionId;
+    protected string $orderTransactionId;
+    protected ?OrderTransactionEntity $orderTransaction = null;
+    protected ?array $transactionData                   = null;
+    protected ?int $sequenceNumber                      = null;
+    protected ?string $transactionState                 = null;
+    protected ?string $userId                           = null;
+    protected ?string $lastRequest                      = null;
+    protected ?bool $allowCapture                       = null;
+    protected ?int $capturedAmount                      = null;
+    protected ?bool $allowRefund                        = null;
+    protected ?int $refundedAmount                      = null;
+    protected ?string $mandateIdentification            = null;
+    protected ?string $authorizationType                = null;
+    protected ?string $workOrderId                      = null;
+    protected ?string $clearingReference                = null;
+    protected ?string $clearingType                     = null;
+    protected ?string $financingType                    = null;
+    protected ?string $captureMode                      = null;
+    protected ?array $clearingBankAccount               = null;
+    protected ?array $additionalData                    = null;
 
     public function getTransactionId(): string
     {
@@ -69,24 +44,9 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
         return $this->orderTransactionId;
     }
 
-    public function setOrderTransactionId(string $orderTransactionId): void
-    {
-        $this->orderTransactionId = $orderTransactionId;
-    }
-
-    public function getOrderTransaction(): OrderTransactionEntity
+    public function getOrderTransaction(): ?OrderTransactionEntity
     {
         return $this->orderTransaction;
-    }
-
-    public function setOrderTransaction(OrderTransactionEntity $orderTransaction): void
-    {
-        $this->orderTransaction = $orderTransaction;
-    }
-
-    public function setTransactionData(?array $value): void
-    {
-        $this->transactionData = $value;
     }
 
     public function getTransactionData(): ?array
@@ -94,19 +54,9 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
         return $this->transactionData;
     }
 
-    public function setSequenceNumber(?int $value): void
-    {
-        $this->sequenceNumber = $value;
-    }
-
     public function getSequenceNumber(): ?int
     {
         return $this->sequenceNumber;
-    }
-
-    public function setTransactionState(?string $value): void
-    {
-        $this->transactionState = $value;
     }
 
     public function getTransactionState(): ?string
@@ -114,19 +64,9 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
         return $this->transactionState;
     }
 
-    public function setUserId(?string $value): void
-    {
-        $this->userId = $value;
-    }
-
     public function getUserId(): ?string
     {
         return $this->userId;
-    }
-
-    public function setLastRequest(?string $value): void
-    {
-        $this->lastRequest = $value;
     }
 
     public function getLastRequest(): ?string
@@ -134,19 +74,9 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
         return $this->lastRequest;
     }
 
-    public function setAllowCapture(?bool $value): void
-    {
-        $this->allowCapture = $value;
-    }
-
     public function getAllowCapture(): ?bool
     {
         return $this->allowCapture;
-    }
-
-    public function setCapturedAmount(?int $value): void
-    {
-        $this->capturedAmount = $value;
     }
 
     public function getCapturedAmount(): ?int
@@ -154,19 +84,9 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
         return $this->capturedAmount;
     }
 
-    public function setAllowRefund(?bool $value): void
-    {
-        $this->allowRefund = $value;
-    }
-
     public function getAllowRefund(): ?bool
     {
         return $this->allowRefund;
-    }
-
-    public function setRefundedAmount(?int $value): void
-    {
-        $this->refundedAmount = $value;
     }
 
     public function getRefundedAmount(): ?int
@@ -174,19 +94,9 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
         return $this->refundedAmount;
     }
 
-    public function setMandateIdentification(?string $value): void
-    {
-        $this->mandateIdentification = $value;
-    }
-
     public function getMandateIdentification(): ?string
     {
         return $this->mandateIdentification;
-    }
-
-    public function setAuthorizationType(?string $value): void
-    {
-        $this->authorizationType = $value;
     }
 
     public function getAuthorizationType(): ?string
@@ -194,19 +104,9 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
         return $this->authorizationType;
     }
 
-    public function setWorkOrderId(?string $value): void
-    {
-        $this->workOrderId = $value;
-    }
-
     public function getWorkOrderId(): ?string
     {
         return $this->workOrderId;
-    }
-
-    public function setClearingReference(?string $value): void
-    {
-        $this->clearingReference = $value;
     }
 
     public function getClearingReference(): ?string
@@ -214,19 +114,9 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
         return $this->clearingReference;
     }
 
-    public function setClearingType(?string $value): void
-    {
-        $this->clearingType = $value;
-    }
-
     public function getClearingType(): ?string
     {
         return $this->clearingType;
-    }
-
-    public function setFinancingType(?string $value): void
-    {
-        $this->financingType = $value;
     }
 
     public function getFinancingType(): ?string
@@ -234,19 +124,9 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
         return $this->financingType;
     }
 
-    public function setCaptureMode(?string $value): void
-    {
-        $this->captureMode = $value;
-    }
-
     public function getCaptureMode(): ?string
     {
         return $this->captureMode;
-    }
-
-    public function setClearingBankAccount(?array $value): void
-    {
-        $this->clearingBankAccount = $value;
     }
 
     public function getClearingBankAccount(): ?array
@@ -254,38 +134,8 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
         return $this->clearingBankAccount;
     }
 
-    public function getUsedRatepayShopId(): ?string
+    public function getAdditionalData(): array
     {
-        return $this->usedRatepayShopId;
-    }
-
-    public function setUsedRatepayShopId(string $usedRatepayShopId): void
-    {
-        $this->usedRatepayShopId = $usedRatepayShopId;
-    }
-
-    public function jsonSerialize(): array
-    {
-        return [
-            'id'                    => $this->id,
-            'transactionId'         => $this->transactionId,
-            'transactionData'       => $this->transactionData,
-            'sequenceNumber'        => $this->sequenceNumber,
-            'transactionState'      => $this->transactionState,
-            'userId'                => $this->userId,
-            'lastRequest'           => $this->lastRequest,
-            'allowCapture'          => $this->allowCapture,
-            'capturedAmount'        => $this->capturedAmount,
-            'allowRefund'           => $this->allowRefund,
-            'refundedAmount'        => $this->refundedAmount,
-            'mandateIdentification' => $this->mandateIdentification,
-            'authorizationType'     => $this->authorizationType,
-            'workOrderId'           => $this->workOrderId,
-            'clearingReference'     => $this->clearingReference,
-            'clearingType'          => $this->clearingType,
-            'financingType'         => $this->financingType,
-            'captureMode'           => $this->captureMode,
-            'clearingBankAccount'   => $this->clearingBankAccount,
-        ];
+        return $this->additionalData ?? [];
     }
 }

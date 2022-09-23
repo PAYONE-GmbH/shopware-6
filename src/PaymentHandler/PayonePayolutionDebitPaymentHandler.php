@@ -132,15 +132,13 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
             );
         }
 
-        // Prepare custom fields for the transaction
         $data = $this->preparePayoneOrderTransactionData($request, $response, [
-                'workOrderId'       => $requestData->get('workorder'),
-                'clearingReference' => $response['addpaydata']['clearing_reference'],
-                'captureMode'       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-                'clearingType'      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                'financingType'     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYD,
-            ]
-        );
+            'workOrderId'       => $requestData->get('workorder'),
+            'clearingReference' => $response['addpaydata']['clearing_reference'],
+            'captureMode'       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+            'clearingType'      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+            'financingType'     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYD,
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
     }

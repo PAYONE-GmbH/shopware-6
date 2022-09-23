@@ -60,7 +60,7 @@ class PayonePaymentOrderTransactionDataDefinition extends EntityDefinition
                 new StringField('financing_type', 'financingType', 255),
                 new StringField('capture_mode', 'captureMode', 255),
                 new JsonField('clearing_bank_account', 'clearingBankAccount', [], null),
-                new StringField('used_ratepay_shop_id', 'usedRatepayShopId', 255),
+                new JsonField('additional_data', 'additionalData', [], null),
 
                 new OneToOneAssociationField('orderTransaction', 'order_transaction_id', 'id', OrderTransactionDefinition::class, false),
             ]

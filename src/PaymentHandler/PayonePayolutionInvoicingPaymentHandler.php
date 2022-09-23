@@ -103,13 +103,12 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandl
         }
 
         $data = $this->preparePayoneOrderTransactionData($request, $response, [
-                'workOrderId'       => $requestData->get('workorder'),
-                'clearingReference' => $response['addpaydata']['clearing_reference'],
-                'captureMode'       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-                'clearingType'      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                'financingType'     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYV,
-            ]
-        );
+            'workOrderId'       => $requestData->get('workorder'),
+            'clearingReference' => $response['addpaydata']['clearing_reference'],
+            'captureMode'       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+            'clearingType'      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+            'financingType'     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYV,
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
     }

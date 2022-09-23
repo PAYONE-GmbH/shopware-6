@@ -30,7 +30,7 @@ class ProfileRequestParameterBuilderTest extends TestCase
                 'clearingtype'         => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
                 'financingtype'        => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
                 'add_paydata[action]'  => 'profile',
-                'add_paydata[shop_id]' => 88880103,
+                'add_paydata[shop_id]' => '88880103',
                 'currency'             => 'EUR',
             ],
             $parameters

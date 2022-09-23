@@ -119,7 +119,7 @@ trait PayoneTestBehavior
         string $requestAction = AbstractRequestParameterBuilder::REQUEST_ACTION_RATEPAY_PROFILE
     ): RatepayProfileStruct {
         return new RatepayProfileStruct(
-            88880103,
+            '88880103',
             'EUR',
             Defaults::SALES_CHANNEL,
             $paymentHandler,
@@ -170,11 +170,11 @@ trait PayoneTestBehavior
         $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
         $orderTransactionEntity->setOrder($orderEntity);
 
-        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
-        $payoneTransactionData->setTransactionId(Constants::PAYONE_TRANSACTION_ID);
-        $payoneTransactionData->setSequenceNumber(0);
-        $payoneTransactionData->setLastRequest('authorization');
-        $payoneTransactionData->setAuthorizationType('authorization');
+        $payoneTransactionData                    = new PayonePaymentOrderTransactionDataEntity();
+        $payoneTransactionData->transactionId     = Constants::PAYONE_TRANSACTION_ID;
+        $payoneTransactionData->sequenceNumber    = 0;
+        $payoneTransactionData->lastRequest       = 'authorization';
+        $payoneTransactionData->authorizationType = 'authorization';
         $orderTransactionEntity->addExtension(
             PayonePaymentOrderTransactionExtension::NAME,
             $payoneTransactionData

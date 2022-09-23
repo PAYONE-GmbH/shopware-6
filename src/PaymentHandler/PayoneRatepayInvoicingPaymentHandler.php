@@ -113,16 +113,14 @@ class PayoneRatepayInvoicingPaymentHandler extends AbstractPayonePaymentHandler 
         // It differs depending on the authorization method
         $clearingReference = $response['addpaydata']['clearing_reference'] ?? $response['clearing']['Reference'];
 
-        // Prepare custom fields for the transaction
         $data = $this->preparePayoneOrderTransactionData($request, $response, [
-                'workOrderId'       => $requestData->get('workorder'),
-                'clearingReference' => $clearingReference,
-                'captureMode'       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-                'clearingType'      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                'financingType'     => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
-                'usedRatepayShopId' => $request['add_paydata[shop_id]'],
-            ]
-        );
+            'workOrderId'       => $requestData->get('workorder'),
+            'clearingReference' => $clearingReference,
+            'captureMode'       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+            'clearingType'      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+            'financingType'     => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
+            'additionalData'    => ['used_ratepay_shop_id' => $request['add_paydata[shop_id]']],
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->deviceFingerprintService->deleteDeviceIdentToken();

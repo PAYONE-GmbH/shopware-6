@@ -19,7 +19,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
         $sql = 'INSERT INTO `payone_payment_order_transaction_data`
                 (id, order_transaction_id, order_transaction_version_id, transaction_id, transaction_data, sequence_number, transaction_state, user_id, last_request,
                 allow_capture, allow_refund, captured_amount, refunded_amount, mandate_identification, authorization_type, work_order_id,
-                clearing_reference, clearing_type, financing_type, capture_mode, clearing_bank_account, created_at)
+                clearing_reference, clearing_type, financing_type, capture_mode, clearing_bank_account, additional_data, created_at)
                 SELECT UNHEX(LOWER(CONCAT(
                     LPAD(HEX(FLOOR(RAND() * 0xffff)), 4, \'0\'),
                     LPAD(HEX(FLOOR(RAND() * 0xffff)), 4, \'0\'),
@@ -39,8 +39,8 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
                     JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_transaction_state\')) as transaction_state,
                     JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_user_id\')) as user_id,
                     JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_last_request\')) as last_request,
-                    JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_allow_capture\')) as allow_capture,
-                    JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_allow_refund\')) as allow_refund,
+                    JSON_EXTRACT(custom_fields, \'$.payone_allow_capture\') = true as allow_capture,
+                    JSON_EXTRACT(custom_fields, \'$.payone_allow_refund\') = true as allow_refund,
                     IFNULL(CAST(JSON_EXTRACT(custom_fields, \'$.payone_captured_amount\') as SIGNED), 0) as captured_amount,
                     IFNULL(CAST(JSON_EXTRACT(custom_fields, \'$.payone_refunded_amount\') as SIGNED), 0) as refunded_amount,
                     JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_mandate_identification\')) as mandate_identification,
@@ -51,6 +51,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
                     JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_financing_type\')) as financing_type,
                     JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_capture_mode\')) as capture_mode,
                     JSON_EXTRACT(custom_fields, \'$.payone_clearing_bank_account\') as clearing_bank_account,
+                    JSON_OBJECT(\'used_ratepay_shop_id\', JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_used_ratepay_shop_id\'))) as additional_data,
                     NOW()
                     FROM order_transaction WHERE custom_fields IS NOT NULL AND JSON_CONTAINS_PATH(custom_fields, \'one\', \'$.payone_transaction_id\') = 1;
 ';
@@ -90,7 +91,8 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
             \'$.payone_clearing_type\',
             \'$.payone_financing_type\',
             \'$.payone_capture_mode\',
-            \'$.payone_clearing_bank_account\'
+            \'$.payone_clearing_bank_account\',
+            \'$.payone_used_ratepay_shop_id\'
         )
         WHERE custom_fields IS NOT NULL AND JSON_CONTAINS_PATH(custom_fields, \'one\', \'$.payone_transaction_id\') = 1;';
 
