@@ -13,6 +13,7 @@ use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\PageLoadedEvent;
+use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmKlarnaRestrictPaymentEventListener implements EventSubscriberInterface
@@ -41,7 +42,8 @@ class CheckoutConfirmKlarnaRestrictPaymentEventListener implements EventSubscrib
         $billingAddress = $customer ? $customer->getActiveBillingAddress() : null;
 
         if ($this->isCurrencyAllowed($context->getCurrency()->getIsoCode()) &&
-            (!$billingAddress || $this->isAddressAllowed($billingAddress))
+            (!$billingAddress || $this->isAddressAllowed($billingAddress)) &&
+            !$this->hasCustomProducts($event)
         ) {
             return;
         }
@@ -61,6 +63,32 @@ class CheckoutConfirmKlarnaRestrictPaymentEventListener implements EventSubscrib
     private function isCurrencyAllowed(string $currencyCode): bool
     {
         return in_array($currencyCode, self::ALLOWED_CURRENCIES);
+    }
+
+    /**
+     * @param AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
+     */
+    private function hasCustomProducts(PageLoadedEvent $event): bool
+    {
+        // PAYOSWXP-50: we also added this check cause the SwagCustomProducts extension does have a few issues, which
+        // makes it very expensive to fix them in the Payone extension. So we exclude the payment method
+        // if there are any "custom product" within the order/cart
+
+        if ($event instanceof CheckoutConfirmPageLoadedEvent) {
+            foreach ($event->getPage()->getCart()->getLineItems() as $item) {
+                if ($item->getType() === CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE) {
+                    return true;
+                }
+            }
+        } elseif ($event instanceof AccountEditOrderPageLoadedEvent) {
+            foreach ($event->getPage()->getOrder()->getLineItems() as $item) {
+                if ($item->getType() === CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private function removeKlarnaMethods(PaymentMethodCollection $paymentMethodCollection): PaymentMethodCollection
