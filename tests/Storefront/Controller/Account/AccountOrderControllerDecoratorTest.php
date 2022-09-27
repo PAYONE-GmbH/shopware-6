@@ -34,17 +34,17 @@ class AccountOrderControllerDecoratorTest extends TestCase
     public function testItRedirectsFromEditOrderPageToOverviewPageOnRatepayOrder(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $order               = $this->getRandomOrder($salesChannelContext);
-        $paymentTransaction  = $this->getPaymentTransaction($order, PayoneRatepayDebitPaymentHandler::class);
+        $order = $this->getRandomOrder($salesChannelContext);
+        $paymentTransaction = $this->getPaymentTransaction($order, PayoneRatepayDebitPaymentHandler::class);
         $order->setTransactions(new OrderTransactionCollection([$paymentTransaction->getOrderTransaction()]));
 
         $orderRepository = $this->createMock(EntityRepositoryInterface::class);
-        $orderRepository->expects($this->once())->method('search')->willReturn(
+        $orderRepository->expects(static::once())->method('search')->willReturn(
             $this->getEntitySearchResult($order, $salesChannelContext)
         );
 
         $decoratedController = $this->createMock(AccountOrderController::class);
-        $decoratedController->expects($this->never())->method('editOrder');
+        $decoratedController->expects(static::never())->method('editOrder');
 
         $controller = new AccountOrderControllerDecorator(
             $decoratedController,
@@ -60,21 +60,21 @@ class AccountOrderControllerDecoratorTest extends TestCase
     public function testItNotRedirectsFromEditOrderPageToOverviewPageOnOtherPaymentMethodThanRatepay(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $order               = $this->getRandomOrder($salesChannelContext);
-        $paymentTransaction  = $this->getPaymentTransaction($order, PayoneDebitPaymentHandler::class);
+        $order = $this->getRandomOrder($salesChannelContext);
+        $paymentTransaction = $this->getPaymentTransaction($order, PayoneDebitPaymentHandler::class);
         $order->setTransactions(new OrderTransactionCollection([$paymentTransaction->getOrderTransaction()]));
 
         $orderRepository = $this->createMock(EntityRepositoryInterface::class);
-        $orderRepository->expects($this->once())->method('search')->willReturn(
+        $orderRepository->expects(static::once())->method('search')->willReturn(
             $this->getEntitySearchResult($order, $salesChannelContext)
         );
 
-        $request             = new Request();
+        $request = new Request();
         $decoratedController = $this->createMock(AccountOrderController::class);
-        $decoratedController->expects($this->once())->method('editOrder')->with(
-            $this->equalTo($order->getId()),
-            $this->equalTo($request),
-            $this->equalTo($salesChannelContext)
+        $decoratedController->expects(static::once())->method('editOrder')->with(
+            static::equalTo($order->getId()),
+            static::equalTo($request),
+            static::equalTo($salesChannelContext)
         );
 
         $controller = new AccountOrderControllerDecorator(
@@ -91,17 +91,17 @@ class AccountOrderControllerDecoratorTest extends TestCase
     public function testItRedirectsFromUpdateOrderRequestToOverviewPageOnRatepayOrder(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $order               = $this->getRandomOrder($salesChannelContext);
-        $paymentTransaction  = $this->getPaymentTransaction($order, PayoneRatepayDebitPaymentHandler::class);
+        $order = $this->getRandomOrder($salesChannelContext);
+        $paymentTransaction = $this->getPaymentTransaction($order, PayoneRatepayDebitPaymentHandler::class);
         $order->setTransactions(new OrderTransactionCollection([$paymentTransaction->getOrderTransaction()]));
 
         $orderRepository = $this->createMock(EntityRepositoryInterface::class);
-        $orderRepository->expects($this->once())->method('search')->willReturn(
+        $orderRepository->expects(static::once())->method('search')->willReturn(
             $this->getEntitySearchResult($order, $salesChannelContext)
         );
 
         $decoratedController = $this->createMock(AccountOrderController::class);
-        $decoratedController->expects($this->never())->method('updateOrder');
+        $decoratedController->expects(static::never())->method('updateOrder');
 
         $controller = new AccountOrderControllerDecorator(
             $decoratedController,
@@ -117,21 +117,21 @@ class AccountOrderControllerDecoratorTest extends TestCase
     public function testItNotRedirectsFromUpdateOrderRequestToOverviewPageOnOtherPaymentMethodThanRatepay(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $order               = $this->getRandomOrder($salesChannelContext);
-        $paymentTransaction  = $this->getPaymentTransaction($order, PayoneDebitPaymentHandler::class);
+        $order = $this->getRandomOrder($salesChannelContext);
+        $paymentTransaction = $this->getPaymentTransaction($order, PayoneDebitPaymentHandler::class);
         $order->setTransactions(new OrderTransactionCollection([$paymentTransaction->getOrderTransaction()]));
 
         $orderRepository = $this->createMock(EntityRepositoryInterface::class);
-        $orderRepository->expects($this->once())->method('search')->willReturn(
+        $orderRepository->expects(static::once())->method('search')->willReturn(
             $this->getEntitySearchResult($order, $salesChannelContext)
         );
 
-        $request             = new Request();
+        $request = new Request();
         $decoratedController = $this->createMock(AccountOrderController::class);
-        $decoratedController->expects($this->once())->method('updateOrder')->with(
-            $this->equalTo($order->getId()),
-            $this->equalTo($request),
-            $this->equalTo($salesChannelContext)
+        $decoratedController->expects(static::once())->method('updateOrder')->with(
+            static::equalTo($order->getId()),
+            static::equalTo($request),
+            static::equalTo($salesChannelContext)
         );
 
         $controller = new AccountOrderControllerDecorator(
@@ -148,30 +148,30 @@ class AccountOrderControllerDecoratorTest extends TestCase
     public function testItCallsParentFunctions(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $request             = new Request();
-        $orderId             = Uuid::randomHex();
+        $request = new Request();
+        $orderId = Uuid::randomHex();
 
         $decoratedController = $this->createMock(AccountOrderController::class);
-        $decoratedController->expects($this->once())->method('orderOverview')->with(
-            $this->equalTo($request),
-            $this->equalTo($salesChannelContext)
+        $decoratedController->expects(static::once())->method('orderOverview')->with(
+            static::equalTo($request),
+            static::equalTo($salesChannelContext)
         );
-        $decoratedController->expects($this->once())->method('cancelOrder')->with(
-            $this->equalTo($request),
-            $this->equalTo($salesChannelContext)
+        $decoratedController->expects(static::once())->method('cancelOrder')->with(
+            static::equalTo($request),
+            static::equalTo($salesChannelContext)
         );
-        $decoratedController->expects($this->once())->method('orderSingleOverview')->with(
-            $this->equalTo($request),
-            $this->equalTo($salesChannelContext)
+        $decoratedController->expects(static::once())->method('orderSingleOverview')->with(
+            static::equalTo($request),
+            static::equalTo($salesChannelContext)
         );
-        $decoratedController->expects($this->once())->method('ajaxOrderDetail')->with(
-            $this->equalTo($request),
-            $this->equalTo($salesChannelContext)
+        $decoratedController->expects(static::once())->method('ajaxOrderDetail')->with(
+            static::equalTo($request),
+            static::equalTo($salesChannelContext)
         );
-        $decoratedController->expects($this->once())->method('orderChangePayment')->with(
-            $this->equalTo($orderId),
-            $this->equalTo($request),
-            $this->equalTo($salesChannelContext)
+        $decoratedController->expects(static::once())->method('orderChangePayment')->with(
+            static::equalTo($orderId),
+            static::equalTo($request),
+            static::equalTo($salesChannelContext)
         );
 
         $controller = new AccountOrderControllerDecorator(

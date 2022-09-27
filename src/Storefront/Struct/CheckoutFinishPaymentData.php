@@ -11,8 +11,7 @@ class CheckoutFinishPaymentData extends Struct
 {
     public const EXTENSION_NAME = 'payone';
 
-    /** @var null|PayonePaymentMandateEntity */
-    protected $mandate;
+    protected ?PayonePaymentMandateEntity $mandate = null;
 
     public function getMandate(): ?PayonePaymentMandateEntity
     {

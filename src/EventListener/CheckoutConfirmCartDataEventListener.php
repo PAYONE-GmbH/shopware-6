@@ -25,29 +25,29 @@ use Symfony\Component\Process\Exception\LogicException;
 
 class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
 {
-    /** @var OrderConverter */
-    private $orderConverter;
+    private OrderConverter $orderConverter;
 
-    /** @var OrderFetcherInterface */
-    private $orderFetcher;
+    private OrderFetcherInterface $orderFetcher;
 
     public function __construct(
         OrderConverter $orderConverter,
         OrderFetcherInterface $orderFetcher
     ) {
         $this->orderConverter = $orderConverter;
-        $this->orderFetcher   = $orderFetcher;
+        $this->orderFetcher = $orderFetcher;
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class  => 'addCartData',
+            CheckoutConfirmPageLoadedEvent::class => 'addCartData',
             AccountEditOrderPageLoadedEvent::class => 'addCartData',
         ];
     }
 
-    /** @param AccountEditOrderPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event */
+    /**
+     * @param AccountEditOrderPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
+     */
     public function addCartData(PageLoadedEvent $event): void
     {
         $page = $event->getPage();
@@ -56,7 +56,7 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
             $cart = $event->getPage()->getCart();
         } else {
             $order = $event->getPage()->getOrder();
-            $cart  = $this->convertCartFromOrder($order, $event->getContext());
+            $cart = $this->convertCartFromOrder($order, $event->getContext());
         }
 
         $this->hidePayonePaymentMethodsOnZeroAmountCart($page, $cart, $event->getSalesChannelContext());
@@ -67,20 +67,22 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
             $payoneData = new CheckoutConfirmPaymentData();
         }
 
-        /** @var null|CheckoutCartPaymentData $extension */
+        /** @var CheckoutCartPaymentData|null $extension */
         $extension = $page->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
 
-        if (null !== $extension && null !== $payoneData) {
+        if ($extension !== null && $payoneData !== null) {
             $payoneData->assign([
                 'workOrderId' => $extension->getWorkorderId(),
-                'cartHash'    => $extension->getCartHash(),
+                'cartHash' => $extension->getCartHash(),
             ]);
         }
 
         $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
     }
 
-    /** @param AccountEditOrderPage|CheckoutConfirmPage $page */
+    /**
+     * @param AccountEditOrderPage|CheckoutConfirmPage $page
+     */
     private function hidePayonePaymentMethodsOnZeroAmountCart(Page $page, Cart $cart, SalesChannelContext $salesChannelContext): void
     {
         $totalAmount = (int) round($cart->getPrice()->getTotalPrice() * (10 ** $salesChannelContext->getCurrency()->getDecimalPrecision()));
@@ -102,7 +104,7 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
     {
         $order = $this->orderFetcher->getOrderById($orderEntity->getId(), $context);
 
-        if (null === $order) {
+        if ($order === null) {
             throw new LogicException('could not find order via id');
         }
 

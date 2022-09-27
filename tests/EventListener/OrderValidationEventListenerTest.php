@@ -26,7 +26,7 @@ class OrderValidationEventListenerTest extends TestCase
     public function testItAddsValidationDefinitions(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = new RequestDataBag();
+        $dataBag = new RequestDataBag();
 
         $event = new BuildValidationEvent(new DataValidationDefinition(), $dataBag, $salesChannelContext->getContext());
 
@@ -35,21 +35,21 @@ class OrderValidationEventListenerTest extends TestCase
         ]);
 
         $definitions = [
-            'iban'     => [new NotBlank(), new Iban()],
+            'iban' => [new NotBlank(), new Iban()],
             'birthday' => [new NotBlank(), new Birthday(['value' => (new \DateTime())->modify('-18 years')->setTime(0, 0)])],
-            'sub'      => new DataValidationDefinition(),
+            'sub' => new DataValidationDefinition(),
         ];
 
         $paymentHandler = $this->createMock(AbstractPayonePaymentHandler::class);
-        $paymentHandler->expects($this->once())->method('getValidationDefinitions')->willReturn($definitions);
+        $paymentHandler->expects(static::once())->method('getValidationDefinitions')->willReturn($definitions);
 
         $paymentHandlerRegistry = $this->createMock(PaymentHandlerRegistry::class);
-        $paymentHandlerRegistry->expects($this->once())->method('getHandler')->willReturn($paymentHandler);
+        $paymentHandlerRegistry->expects(static::once())->method('getHandler')->willReturn($paymentHandler);
 
         $listener = new OrderValidationEventListener($requestStack, $paymentHandlerRegistry);
         $listener->validateOrderData($event);
 
-        $properties     = $event->getDefinition()->getProperties();
+        $properties = $event->getDefinition()->getProperties();
         $subDefinitions = $event->getDefinition()->getSubDefinitions();
 
         static::assertArrayHasKey('iban', $properties);

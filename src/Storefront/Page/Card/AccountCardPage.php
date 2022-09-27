@@ -9,8 +9,7 @@ use Shopware\Storefront\Page\Page;
 
 class AccountCardPage extends Page
 {
-    /** @var EntitySearchResult */
-    protected $cards;
+    protected EntitySearchResult $cards;
 
     public function getCards(): EntitySearchResult
     {

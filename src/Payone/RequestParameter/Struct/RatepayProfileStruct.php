@@ -6,14 +6,11 @@ namespace PayonePayment\Payone\RequestParameter\Struct;
 
 class RatepayProfileStruct extends AbstractRequestParameterStruct
 {
-    /** @var string */
-    protected $shopId;
+    protected string $shopId;
 
-    /** @var string */
-    protected $currency;
+    protected string $currency;
 
-    /** @var string */
-    protected $salesChannelId;
+    protected string $salesChannelId;
 
     public function __construct(
         string $shopId,
@@ -22,11 +19,11 @@ class RatepayProfileStruct extends AbstractRequestParameterStruct
         string $paymentMethod,
         string $action = ''
     ) {
-        $this->shopId         = $shopId;
-        $this->currency       = $currency;
+        $this->shopId = $shopId;
+        $this->currency = $currency;
         $this->salesChannelId = $salesChannelId;
-        $this->paymentMethod  = $paymentMethod;
-        $this->action         = $action;
+        $this->paymentMethod = $paymentMethod;
+        $this->action = $action;
     }
 
     public function getShopId(): string

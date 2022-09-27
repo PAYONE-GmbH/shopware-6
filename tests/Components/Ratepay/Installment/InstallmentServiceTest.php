@@ -31,12 +31,12 @@ class InstallmentServiceTest extends TestCase
             [
                 'interestrate-min' => '10.7',
                 'interestrate-max' => '100.9',
-                'month-allowed'    => '1,2,3',
+                'month-allowed' => '1,2,3',
             ]
         );
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $installmentService  = $this->getInstallmentService();
+        $installmentService = $this->getInstallmentService();
         $this->fillCart($salesChannelContext->getToken(), 100);
 
         $calculatorData = $installmentService->getInstallmentCalculatorData($salesChannelContext);
@@ -63,16 +63,16 @@ class InstallmentServiceTest extends TestCase
             [
                 'interestrate-min' => '10.7',
                 'interestrate-max' => '100.9',
-                'month-allowed'    => '1,2,3',
+                'month-allowed' => '1,2,3',
             ]
         );
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $installmentService  = $this->getInstallmentService();
+        $installmentService = $this->getInstallmentService();
         $this->fillCart($salesChannelContext->getToken(), 100);
 
         $dataBag = new RequestDataBag([
-            'ratepayInstallmentType'  => CalculationRequestParameterBuilder::INSTALLMENT_TYPE_TIME,
+            'ratepayInstallmentType' => CalculationRequestParameterBuilder::INSTALLMENT_TYPE_TIME,
             'ratepayInstallmentValue' => 3,
         ]);
 
@@ -100,16 +100,16 @@ class InstallmentServiceTest extends TestCase
             [
                 'interestrate-min' => '10.7',
                 'interestrate-max' => '100.9',
-                'month-allowed'    => '1,2,3',
+                'month-allowed' => '1,2,3',
             ]
         );
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $installmentService  = $this->getInstallmentService();
+        $installmentService = $this->getInstallmentService();
         $this->fillCart($salesChannelContext->getToken(), 100);
 
         $dataBag = new RequestDataBag([
-            'ratepayInstallmentType'  => CalculationRequestParameterBuilder::INSTALLMENT_TYPE_RATE,
+            'ratepayInstallmentType' => CalculationRequestParameterBuilder::INSTALLMENT_TYPE_RATE,
             'ratepayInstallmentValue' => 20,
         ]);
 
@@ -132,7 +132,7 @@ class InstallmentServiceTest extends TestCase
     protected function getInstallmentService(): InstallmentService
     {
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects($this->once())->method('request')->willReturn($this->getCalculationResponse());
+        $client->expects(static::once())->method('request')->willReturn($this->getCalculationResponse());
 
         return new InstallmentService(
             $this->getContainer()->get(CartService::class),
@@ -147,18 +147,18 @@ class InstallmentServiceTest extends TestCase
         return [
             'addpaydata' => [
                 'annual-percentage-rate' => '14.02',
-                'interest-amount'        => '19.76',
-                'amount'                 => '1581.32',
-                'number-of-rates'        => '3',
-                'rate'                   => '533.7',
-                'payment-firstday'       => '2',
-                'interest-rate'          => '13.7',
+                'interest-amount' => '19.76',
+                'amount' => '1581.32',
+                'number-of-rates' => '3',
+                'rate' => '533.7',
+                'payment-firstday' => '2',
+                'interest-rate' => '13.7',
                 'monthly-debit-interest' => '1.08',
-                'last-rate'              => '533.68',
-                'service-charge'         => '0',
-                'total-amount'           => '1601.08',
+                'last-rate' => '533.68',
+                'service-charge' => '0',
+                'total-amount' => '1601.08',
             ],
-            'status'      => 'OK',
+            'status' => 'OK',
             'workorderid' => 'WX1A1VEYXLLESEZD',
         ];
     }

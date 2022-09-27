@@ -12,24 +12,26 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParameterBuilder
 {
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $dataBag             = $arguments->getRequestData();
+        $dataBag = $arguments->getRequestData();
         $salesChannelContext = $arguments->getSalesChannelContext();
-        $context             = $salesChannelContext->getContext();
-        $paymentTransaction  = $arguments->getPaymentTransaction();
-        $order               = $this->getOrder($paymentTransaction->getOrder()->getId(), $context);
-        $currency            = $this->getOrderCurrency($order, $context);
-        $profile             = $this->getProfile($order, PayoneRatepayInvoicingPaymentHandler::class);
+        $context = $salesChannelContext->getContext();
+        $paymentTransaction = $arguments->getPaymentTransaction();
+        $order = $this->getOrder($paymentTransaction->getOrder()->getId(), $context);
+        $currency = $this->getOrderCurrency($order, $context);
+        $profile = $this->getProfile($order, PayoneRatepayInvoicingPaymentHandler::class);
 
         $parameters = [
-            'request'                                    => self::REQUEST_ACTION_AUTHORIZE,
-            'clearingtype'                               => self::CLEARING_TYPE_FINANCING,
-            'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
+            'request' => self::REQUEST_ACTION_AUTHORIZE,
+            'clearingtype' => self::CLEARING_TYPE_FINANCING,
+            'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-            'add_paydata[shop_id]'                       => $profile->getShopId(),
-            'add_paydata[device_token]'                  => $this->deviceFingerprintService->getDeviceIdentToken(),
+            'add_paydata[shop_id]' => $profile->getShopId(),
+            'add_paydata[device_token]' => $this->deviceFingerprintService->getDeviceIdentToken(),
         ];
 
         $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
@@ -49,7 +51,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayoneRatepayInvoicingPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }

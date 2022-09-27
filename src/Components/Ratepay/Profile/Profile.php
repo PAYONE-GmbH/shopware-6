@@ -6,11 +6,9 @@ namespace PayonePayment\Components\Ratepay\Profile;
 
 class Profile
 {
-    /** @var string */
-    private $shopId;
+    private string $shopId;
 
-    /** @var array */
-    private $configuration;
+    private array $configuration;
 
     public function getShopId(): string
     {

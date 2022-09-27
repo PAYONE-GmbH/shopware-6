@@ -69,6 +69,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
             $connection->commit();
         } catch (\Throwable $e) {
             $connection->rollBack();
+
             throw new \RuntimeException('An error occurred while migrating payone custom field values');
         }
 
@@ -109,6 +110,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
             $connection->commit();
         } catch (\Throwable $e) {
             $connection->rollBack();
+
             throw new \RuntimeException('An error occurred while unsetting payone custom field values');
         }
     }

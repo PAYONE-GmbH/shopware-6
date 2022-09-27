@@ -27,14 +27,14 @@ class KernelEventListenerTest extends TestCase
         $event = new ResponseEvent(
             $this->createMock(Kernel::class),
             $this->getValidRequest(),
-            defined(HttpKernelInterface::class . '::MAIN_REQUEST') ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::MASTER_REQUEST,
+            \defined(HttpKernelInterface::class . '::MAIN_REQUEST') ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::MASTER_REQUEST,
             new Response()
         );
 
         $profileService = $this->createMock(ProfileServiceInterface::class);
-        $profileService->expects($this->once())->method('updateProfileConfiguration')->with(
-            $this->equalTo(PayoneRatepayDebitPaymentHandler::class),
-            $this->isNull()
+        $profileService->expects(static::once())->method('updateProfileConfiguration')->with(
+            static::equalTo(PayoneRatepayDebitPaymentHandler::class),
+            static::isNull()
         );
 
         $listener = new KernelEventListener($profileService);
@@ -50,22 +50,22 @@ class KernelEventListenerTest extends TestCase
         $event = new ResponseEvent(
             $this->createMock(Kernel::class),
             $this->getValidRequest(),
-            defined(HttpKernelInterface::class . '::MAIN_REQUEST') ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::MASTER_REQUEST,
+            \defined(HttpKernelInterface::class . '::MAIN_REQUEST') ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::MASTER_REQUEST,
             $response
         );
 
         $updates = [
-            'PayonePayment.settings.ratepayDebitProfiles'              => $this->getValidRatepayProfiles(),
+            'PayonePayment.settings.ratepayDebitProfiles' => $this->getValidRatepayProfiles(),
             'PayonePayment.settings.ratepayDebitProfileConfigurations' => $this->getValidRatepayProfileConfigurations(),
         ];
 
         $profileService = $this->createMock(ProfileServiceInterface::class);
-        $profileService->expects($this->once())->method('updateProfileConfiguration')->with(
-            $this->equalTo(PayoneRatepayDebitPaymentHandler::class),
-            $this->isNull()
+        $profileService->expects(static::once())->method('updateProfileConfiguration')->with(
+            static::equalTo(PayoneRatepayDebitPaymentHandler::class),
+            static::isNull()
         )->willReturn([
             'updates' => $updates,
-            'errors'  => [],
+            'errors' => [],
         ]);
 
         $listener = new KernelEventListener($profileService);
@@ -85,12 +85,12 @@ class KernelEventListenerTest extends TestCase
         $event = new ResponseEvent(
             $this->createMock(Kernel::class),
             $this->getRequestWithWrongRoute(),
-            defined(HttpKernelInterface::class . '::MAIN_REQUEST') ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::MASTER_REQUEST,
+            \defined(HttpKernelInterface::class . '::MAIN_REQUEST') ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::MASTER_REQUEST,
             new Response()
         );
 
         $profileService = $this->createMock(ProfileServiceInterface::class);
-        $profileService->expects($this->never())->method('updateProfileConfiguration');
+        $profileService->expects(static::never())->method('updateProfileConfiguration');
 
         $listener = new KernelEventListener($profileService);
         $listener->onKernelResponse($event);
@@ -101,12 +101,12 @@ class KernelEventListenerTest extends TestCase
         $event = new ResponseEvent(
             $this->createMock(Kernel::class),
             $this->getRequestWithMissingConfigurations(),
-            defined(HttpKernelInterface::class . '::MAIN_REQUEST') ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::MASTER_REQUEST,
+            \defined(HttpKernelInterface::class . '::MAIN_REQUEST') ? HttpKernelInterface::MAIN_REQUEST : HttpKernelInterface::MASTER_REQUEST,
             new Response()
         );
 
         $profileService = $this->createMock(ProfileServiceInterface::class);
-        $profileService->expects($this->never())->method('updateProfileConfiguration');
+        $profileService->expects(static::never())->method('updateProfileConfiguration');
 
         $listener = new KernelEventListener($profileService);
         $listener->onKernelResponse($event);

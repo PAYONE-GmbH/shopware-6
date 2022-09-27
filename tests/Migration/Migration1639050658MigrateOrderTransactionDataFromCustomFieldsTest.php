@@ -23,8 +23,8 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
     public function testItMigratesCustomFieldsToEntityExtensionWithAllFieldsFilled(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $order               = $this->getRandomOrder($salesChannelContext);
-        $orderTransaction    = $order->getTransactions()->first();
+        $order = $this->getRandomOrder($salesChannelContext);
+        $orderTransaction = $order->getTransactions()->first();
 
         $customFields = [
             'payone_transaction_id' => 'the-transaction-id',
@@ -39,7 +39,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
         $orderTransactionRepository->update(
             [
                 [
-                    'id'           => $orderTransaction->getId(),
+                    'id' => $orderTransaction->getId(),
                     'customFields' => $customFields,
                 ],
             ],
@@ -47,7 +47,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
         );
 
         $connection = $this->getContainer()->get(Connection::class);
-        $migration  = new Migration1639050658MigrateOrderTransactionDataFromCustomFields();
+        $migration = new Migration1639050658MigrateOrderTransactionDataFromCustomFields();
 
         $migration->update($connection);
 
@@ -60,7 +60,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
             static::assertSame($mapping[3], $payoneTransactionData->{$mapping[2]}());
         }
 
-        $orderTransaction             = $this->getOrderTransaction($orderTransaction->getId(), $salesChannelContext->getContext());
+        $orderTransaction = $this->getOrderTransaction($orderTransaction->getId(), $salesChannelContext->getContext());
         $orderTransactionCustomFields = $orderTransaction->getCustomFields();
 
         static::assertArrayNotHasKey('payone_transaction_id', $orderTransactionCustomFields);
@@ -76,24 +76,24 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
      */
     public function testItMigratesCustomFieldsToEntityExtensionWithSpecificFieldFilled(
         string $customFieldKey,
-               $customFieldValue,
+        $customFieldValue,
         string $extensionGetter,
-               $expectedExtensionValue
+        $expectedExtensionValue
     ): void {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $order               = $this->getRandomOrder($salesChannelContext);
-        $orderTransaction    = $order->getTransactions()->first();
+        $order = $this->getRandomOrder($salesChannelContext);
+        $orderTransaction = $order->getTransactions()->first();
 
         $customFields = [
             'payone_transaction_id' => 'the-transaction-id',
-            $customFieldKey         => $customFieldValue,
+            $customFieldKey => $customFieldValue,
         ];
 
         $orderTransactionRepository = $this->getContainer()->get('order_transaction.repository');
         $orderTransactionRepository->update(
             [
                 [
-                    'id'           => $orderTransaction->getId(),
+                    'id' => $orderTransaction->getId(),
                     'customFields' => $customFields,
                 ],
             ],
@@ -101,7 +101,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
         );
 
         $connection = $this->getContainer()->get(Connection::class);
-        $migration  = new Migration1639050658MigrateOrderTransactionDataFromCustomFields();
+        $migration = new Migration1639050658MigrateOrderTransactionDataFromCustomFields();
 
         $migration->update($connection);
 
@@ -111,7 +111,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
         static::assertSame('the-transaction-id', $payoneTransactionData->getTransactionId());
         static::assertSame($expectedExtensionValue, $payoneTransactionData->$extensionGetter());
 
-        $orderTransaction             = $this->getOrderTransaction($orderTransaction->getId(), $salesChannelContext->getContext());
+        $orderTransaction = $this->getOrderTransaction($orderTransaction->getId(), $salesChannelContext->getContext());
         $orderTransactionCustomFields = $orderTransaction->getCustomFields();
 
         static::assertArrayNotHasKey('payone_transaction_id', $orderTransactionCustomFields);
@@ -121,8 +121,8 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
     public function testItNotCreatesExtensionWithoutPayoneTransactionId(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $order               = $this->getRandomOrder($salesChannelContext);
-        $orderTransaction    = $order->getTransactions()->first();
+        $order = $this->getRandomOrder($salesChannelContext);
+        $orderTransaction = $order->getTransactions()->first();
 
         $customFields = [
             'some-field' => 'some-value',
@@ -132,7 +132,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
         $orderTransactionRepository->update(
             [
                 [
-                    'id'           => $orderTransaction->getId(),
+                    'id' => $orderTransaction->getId(),
                     'customFields' => $customFields,
                 ],
             ],
@@ -140,7 +140,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
         );
 
         $connection = $this->getContainer()->get(Connection::class);
-        $migration  = new Migration1639050658MigrateOrderTransactionDataFromCustomFields();
+        $migration = new Migration1639050658MigrateOrderTransactionDataFromCustomFields();
 
         $migration->update($connection);
 
@@ -148,7 +148,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
 
         static::assertNull($payoneTransactionData);
 
-        $orderTransaction             = $this->getOrderTransaction($orderTransaction->getId(), $salesChannelContext->getContext());
+        $orderTransaction = $this->getOrderTransaction($orderTransaction->getId(), $salesChannelContext->getContext());
         $orderTransactionCustomFields = $orderTransaction->getCustomFields();
 
         static::assertArrayHasKey('some-field', $orderTransactionCustomFields);
@@ -188,7 +188,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
         $criteria->addFilter(new EqualsFilter('orderTransactionId', $orderTransaction->getId()));
 
         $result = $payoneTransactionDataRepository->search($criteria, $context);
-        /** @var null|PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        /** @var PayonePaymentOrderTransactionDataEntity|null $payoneTransactionData */
         return $result->first();
     }
 
@@ -199,7 +199,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
         $criteria = new Criteria([$orderTransactionId]);
 
         $result = $orderTransactionRepository->search($criteria, $context);
-        /** @var null|OrderTransactionEntity $orderTransaction */
+        /** @var OrderTransactionEntity|null $orderTransaction */
         return $result->first();
     }
 }

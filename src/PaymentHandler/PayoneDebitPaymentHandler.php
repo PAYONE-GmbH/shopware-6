@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use DateTime;
-use LogicException;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\MandateService\MandateServiceInterface;
@@ -23,26 +21,20 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
     public const REQUEST_PARAM_SAVE_MANDATE = 'saveMandate';
 
-    /** @var PayoneClientInterface */
-    protected $client;
+    protected PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    protected $translator;
+    protected TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
-    /** @var MandateServiceInterface */
-    private $mandateService;
+    private MandateServiceInterface $mandateService;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -56,10 +48,10 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client                  = $client;
-        $this->translator              = $translator;
-        $this->dataHandler             = $dataHandler;
-        $this->mandateService          = $mandateService;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
+        $this->mandateService = $mandateService;
         $this->requestParameterFactory = $requestParameterFactory;
     }
 
@@ -96,38 +88,40 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
 
-        $data = $this->preparePayoneOrderTransactionData($request, $response,
+        $data = $this->preparePayoneOrderTransactionData(
+            $request,
+            $response,
             [
-                'transactionState'      => AbstractPayonePaymentHandler::PAYONE_STATE_PENDING,
+                'transactionState' => AbstractPayonePaymentHandler::PAYONE_STATE_PENDING,
                 'mandateIdentification' => $response['mandate']['Identification'],
             ]
         );
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
 
-        $date = DateTime::createFromFormat('Ymd', $response['mandate']['DateOfSignature']);
+        $date = \DateTime::createFromFormat('Ymd', $response['mandate']['DateOfSignature']);
 
         if (empty($date)) {
-            throw new LogicException('could not parse sepa mandate signature date');
+            throw new \LogicException('could not parse sepa mandate signature date');
         }
 
         $saveMandate = $requestData->get(self::REQUEST_PARAM_SAVE_MANDATE) === 'on';
 
-        if (null !== $salesChannelContext->getCustomer() && $saveMandate) {
+        if ($salesChannelContext->getCustomer() !== null && $saveMandate) {
             $this->mandateService->saveMandate(
                 $salesChannelContext->getCustomer(),
                 $response['mandate']['Identification'],
                 $date,
                 $salesChannelContext
             );
-        } elseif (null !== $salesChannelContext->getCustomer() && !$saveMandate) {
+        } elseif ($salesChannelContext->getCustomer() !== null && !$saveMandate) {
             $this->mandateService->removeAllMandatesForCustomer(
                 $salesChannelContext->getCustomer(),
                 $salesChannelContext

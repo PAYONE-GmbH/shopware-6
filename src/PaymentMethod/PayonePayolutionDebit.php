@@ -11,33 +11,26 @@ class PayonePayolutionDebit extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Unzer Lastschrift';
+    protected string $name = 'PAYONE Unzer Lastschrift';
 
-    /** @var string */
-    protected $description = 'SEPA Direct Debit by Paysafe Pay Later.';
+    protected string $description = 'SEPA Direct Debit by Paysafe Pay Later.';
 
-    /** @var string */
-    protected $paymentHandler = PayonePayolutionDebitPaymentHandler::class;
+    protected string $paymentHandler = PayonePayolutionDebitPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template = '@Storefront/storefront/payone/payolution/payolution-debit-form.html.twig';
+    protected ?string $template = '@Storefront/storefront/payone/payolution/payolution-debit-form.html.twig';
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Unzer Lastschrift',
+            'name' => 'PAYONE Unzer Lastschrift',
             'description' => 'Gesicherte Lastschrift von Paysafe Pay Later.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE Unzer Lastschrift',
+            'name' => 'PAYONE Unzer Lastschrift',
             'description' => 'SEPA Direct Debit by Paysafe Pay Later.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 107;
+    protected int $position = 107;
 }

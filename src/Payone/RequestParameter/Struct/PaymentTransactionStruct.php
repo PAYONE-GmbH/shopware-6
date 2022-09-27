@@ -22,12 +22,12 @@ class PaymentTransactionStruct extends AbstractRequestParameterStruct
         RequestDataBag $requestData,
         SalesChannelContext $salesChannelContext,
         string $paymentMethod,
-        string $action = '')
-    {
-        $this->paymentTransaction  = $paymentTransaction;
-        $this->requestData         = $requestData;
+        string $action = ''
+    ) {
+        $this->paymentTransaction = $paymentTransaction;
+        $this->requestData = $requestData;
         $this->salesChannelContext = $salesChannelContext;
-        $this->paymentMethod       = $paymentMethod;
-        $this->action              = $action;
+        $this->paymentMethod = $paymentMethod;
+        $this->action = $action;
     }
 }

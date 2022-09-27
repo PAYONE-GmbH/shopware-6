@@ -21,21 +21,16 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 abstract class AbstractPayoneInvoicePaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -48,9 +43,9 @@ abstract class AbstractPayoneInvoicePaymentHandler extends AbstractPayonePayment
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client                  = $client;
-        $this->translator              = $translator;
-        $this->dataHandler             = $dataHandler;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
         $this->requestParameterFactory = $requestParameterFactory;
     }
 
@@ -87,7 +82,7 @@ abstract class AbstractPayoneInvoicePaymentHandler extends AbstractPayonePayment
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')

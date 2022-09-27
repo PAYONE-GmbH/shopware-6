@@ -8,8 +8,7 @@ use PayonePayment\Struct\PaymentTransaction;
 
 trait TransactionTrait
 {
-    /** @var PaymentTransaction */
-    protected $paymentTransaction;
+    protected PaymentTransaction $paymentTransaction;
 
     public function getPaymentTransaction(): PaymentTransaction
     {

@@ -15,7 +15,7 @@ trait RatepayProfileParameterBuilderTestTrait
 
     public function testItSupportsValidProfileRequest(): void
     {
-        $struct  = $this->getRatepayProfileStruct($this->getValidPaymentHandler());
+        $struct = $this->getRatepayProfileStruct($this->getValidPaymentHandler());
         $builder = $this->getContainer()->get($this->getParameterBuilder());
 
         TestCase::assertTrue($builder->supports($struct));
@@ -35,7 +35,7 @@ trait RatepayProfileParameterBuilderTestTrait
 
     public function testItNotSupportsInvalidPaymentMethod(): void
     {
-        $struct  = $this->getRatepayProfileStruct(PayoneDebitPaymentHandler::class);
+        $struct = $this->getRatepayProfileStruct(PayoneDebitPaymentHandler::class);
         $builder = $this->getContainer()->get($this->getParameterBuilder());
 
         TestCase::assertFalse($builder->supports($struct));

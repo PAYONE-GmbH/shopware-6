@@ -36,9 +36,9 @@ class CheckoutConfirmTrustlyEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hideTrustlyForDisallowedCountryCustomers',
+            CheckoutConfirmPageLoadedEvent::class => 'hideTrustlyForDisallowedCountryCustomers',
             AccountPaymentMethodPageLoadedEvent::class => 'hideTrustlyForDisallowedCountryCustomers',
-            AccountEditOrderPageLoadedEvent::class     => 'hideTrustlyForDisallowedCountryCustomers',
+            AccountEditOrderPageLoadedEvent::class => 'hideTrustlyForDisallowedCountryCustomers',
         ];
     }
 
@@ -50,8 +50,8 @@ class CheckoutConfirmTrustlyEventListener implements EventSubscriberInterface
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
         if (
-            $this->isEuroCurrency($event->getSalesChannelContext()) &&
-            $this->isAllowedCountryCustomer($event->getSalesChannelContext())
+            $this->isEuroCurrency($event->getSalesChannelContext())
+            && $this->isAllowedCountryCustomer($event->getSalesChannelContext())
         ) {
             return;
         }
@@ -76,17 +76,17 @@ class CheckoutConfirmTrustlyEventListener implements EventSubscriberInterface
     {
         $customer = $context->getCustomer();
 
-        if (null === $customer) {
+        if ($customer === null) {
             return false;
         }
 
         $billingAddress = $customer->getActiveBillingAddress();
 
-        if (null === $billingAddress || null === $billingAddress->getCountry()) {
+        if ($billingAddress === null || $billingAddress->getCountry() === null) {
             return false;
         }
 
-        return in_array($billingAddress->getCountry()->getIso(), self::ALLOWED_BANK_COUNTRIES, true);
+        return \in_array($billingAddress->getCountry()->getIso(), self::ALLOWED_BANK_COUNTRIES, true);
     }
 
     private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection

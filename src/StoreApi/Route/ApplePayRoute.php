@@ -21,7 +21,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Throwable;
 
 /**
  * @RouteScope(scopes={"store-api"})
@@ -31,23 +30,17 @@ class ApplePayRoute extends AbstractApplePayRoute
 {
     public const CERT_FOLDER = '/config/apple-pay-cert/';
 
-    /** @var Client */
-    private $httpClient;
+    private Client $httpClient;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
-    /** @var string */
-    private $kernelDirectory;
+    private string $kernelDirectory;
 
     public function __construct(
         Client $httpClient,
@@ -57,12 +50,12 @@ class ApplePayRoute extends AbstractApplePayRoute
         ConfigReaderInterface $configReader,
         string $kernelDirectory
     ) {
-        $this->httpClient              = $httpClient;
-        $this->logger                  = $logger;
+        $this->httpClient = $httpClient;
+        $this->logger = $logger;
         $this->requestParameterFactory = $requestParameterFactory;
-        $this->client                  = $client;
-        $this->configReader            = $configReader;
-        $this->kernelDirectory         = $kernelDirectory;
+        $this->client = $client;
+        $this->configReader = $configReader;
+        $this->kernelDirectory = $kernelDirectory;
     }
 
     public function getDecorated(): AbstractCardRoute
@@ -75,35 +68,38 @@ class ApplePayRoute extends AbstractApplePayRoute
      */
     public function validateMerchant(Request $request, SalesChannelContext $context): Response
     {
-        $configuration      = $this->configReader->read($context->getSalesChannel()->getId());
-        $validationUrl      = $request->get('validationUrl', 'https://apple-pay-gateway.apple.com/paymentservices/paymentSession');
+        $configuration = $this->configReader->read($context->getSalesChannel()->getId());
+        $validationUrl = $request->get('validationUrl', 'https://apple-pay-gateway.apple.com/paymentservices/paymentSession');
         $merchantIdCertPath = $this->kernelDirectory . self::CERT_FOLDER . 'merchant_id.pem';
-        $merchantIdKeyPath  = $this->kernelDirectory . self::CERT_FOLDER . 'merchant_id.key';
+        $merchantIdKeyPath = $this->kernelDirectory . self::CERT_FOLDER . 'merchant_id.key';
 
         $passPhrase = $configuration->get('applePayCertPassphrase');
 
         $body = [
             'merchantIdentifier' => $configuration->get('applePayMerchantName'),
-            'displayName'        => $configuration->get('applePayDisplayName'),
-            'initiative'         => 'web',
-            'initiativeContext'  => $request->getHttpHost(),
+            'displayName' => $configuration->get('applePayDisplayName'),
+            'initiative' => 'web',
+            'initiativeContext' => $request->getHttpHost(),
         ];
 
         if (!file_exists($merchantIdCertPath) || !file_exists($merchantIdKeyPath)) {
             $this->logger->error('ApplePay MerchantValidation Cert files missing.', [$merchantIdCertPath, $merchantIdKeyPath]);
+
             throw new FileNotFoundException();
         }
 
         try {
-            $response = $this->httpClient->request('POST', $validationUrl,
+            $response = $this->httpClient->request(
+                'POST',
+                $validationUrl,
                 [
-                    'json'        => $body,
-                    'cert'        => (empty($passPhrase)) ? $merchantIdCertPath : [$merchantIdCertPath, $passPhrase],
-                    'ssl_key'     => $merchantIdKeyPath,
+                    'json' => $body,
+                    'cert' => (empty($passPhrase)) ? $merchantIdCertPath : [$merchantIdCertPath, $passPhrase],
+                    'ssl_key' => $merchantIdKeyPath,
                     'http_errors' => false,
                 ]
             );
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('ApplePay merchant validation failed.', ['body' => $body, 'message' => $e->getMessage(), 'url' => $validationUrl]);
 
             return new Response(null, 500);
@@ -128,12 +124,12 @@ class ApplePayRoute extends AbstractApplePayRoute
     public function process(Request $request, SalesChannelContext $context): Response
     {
         $salesChannelId = $context->getSalesChannel()->getId();
-        $configuration  = $this->configReader->read($salesChannelId);
-        $token          = $request->get('token');
+        $configuration = $this->configReader->read($salesChannelId);
+        $token = $request->get('token');
 
         $authorizationMethod = $configuration->getString('applePayAuthorizationMethod', 'preauthorization');
 
-        $request = $this->requestParameterFactory->getRequestParameter(
+        $payoneRequest = $this->requestParameterFactory->getRequestParameter(
             new ApplePayTransactionStruct(
                 new RequestDataBag($token),
                 $context,
@@ -144,8 +140,8 @@ class ApplePayRoute extends AbstractApplePayRoute
         );
 
         try {
-            $response = $this->client->request($request);
-        } catch (Throwable $exception) {
+            $response = $this->client->request($payoneRequest);
+        } catch (\Throwable $exception) {
             return new JsonResponse([], 402);
         }
 

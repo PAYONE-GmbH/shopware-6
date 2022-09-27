@@ -22,7 +22,7 @@ class CheckoutConfirmPaydirektEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hidePaydirektForNonDeCustomers',
+            CheckoutConfirmPageLoadedEvent::class => 'hidePaydirektForNonDeCustomers',
             AccountPaymentMethodPageLoadedEvent::class => 'hidePaydirektForNonDeCustomers',
         ];
     }
@@ -35,8 +35,8 @@ class CheckoutConfirmPaydirektEventListener implements EventSubscriberInterface
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
         if (
-            $this->isCurrency($event->getSalesChannelContext(), 'EUR') &&
-            $this->isBillingAddressFromCountry($event->getSalesChannelContext(), 'DE')
+            $this->isCurrency($event->getSalesChannelContext(), 'EUR')
+            && $this->isBillingAddressFromCountry($event->getSalesChannelContext(), 'DE')
         ) {
             return;
         }

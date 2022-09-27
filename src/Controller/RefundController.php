@@ -15,8 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RefundController extends AbstractController
 {
-    /** @var RefundTransactionHandlerInterface */
-    private $refundHandler;
+    private RefundTransactionHandlerInterface $refundHandler;
 
     public function __construct(RefundTransactionHandlerInterface $refundHandler)
     {

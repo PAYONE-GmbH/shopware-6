@@ -74,16 +74,16 @@ class RefundRequestParameterBuilderTest extends TestCase
             AbstractRequestParameterBuilder::REQUEST_ACTION_REFUND
         );
 
-        $builder    = $this->getContainer()->get(RefundRequestParameterBuilder::class);
+        $builder = $this->getContainer()->get(RefundRequestParameterBuilder::class);
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'        => AbstractRequestParameterBuilder::REQUEST_ACTION_DEBIT,
-                'amount'         => -10000,
-                'currency'       => 'EUR',
+                'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_DEBIT,
+                'amount' => -10000,
+                'currency' => 'EUR',
                 'sequencenumber' => 1,
-                'txid'           => 'test-transaction-id',
+                'txid' => 'test-transaction-id',
             ],
             $parameters
         );
@@ -122,7 +122,7 @@ class RefundRequestParameterBuilderTest extends TestCase
 
         $builder = $this->getContainer()->get(RefundRequestParameterBuilder::class);
         /** @var PayonePaymentOrderTransactionDataEntity $extension */
-        $extension                = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+        $extension = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
         $extension->transactionId = '';
         $struct->getPaymentTransaction()->getOrderTransaction()->addExtension(PayonePaymentOrderTransactionExtension::NAME, $extension);
 
@@ -144,7 +144,7 @@ class RefundRequestParameterBuilderTest extends TestCase
 
         $builder = $this->getContainer()->get(RefundRequestParameterBuilder::class);
         /** @var PayonePaymentOrderTransactionDataEntity $extension */
-        $extension                 = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+        $extension = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
         $extension->sequenceNumber = null;
         $struct->getPaymentTransaction()->getOrderTransaction()->addExtension(PayonePaymentOrderTransactionExtension::NAME, $extension);
 
@@ -166,7 +166,7 @@ class RefundRequestParameterBuilderTest extends TestCase
 
         $builder = $this->getContainer()->get(RefundRequestParameterBuilder::class);
         /** @var PayonePaymentOrderTransactionDataEntity $extension */
-        $extension                  = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+        $extension = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
         $extension->transactionData = [
             [
                 'request' => [
@@ -202,7 +202,7 @@ class RefundRequestParameterBuilderTest extends TestCase
 
         $builder = $this->getContainer()->get(RefundRequestParameterBuilder::class);
         /** @var PayonePaymentOrderTransactionDataEntity $extension */
-        $extension                 = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+        $extension = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
         $extension->additionalData = ['used_ratepay_shop_id' => '88880103'];
         $struct->getPaymentTransaction()->getOrderTransaction()->addExtension(PayonePaymentOrderTransactionExtension::NAME, $extension);
 

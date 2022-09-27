@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Processor;
 
-use Exception;
-use IteratorAggregate;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
@@ -16,30 +14,30 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WebhookProcessor implements WebhookProcessorInterface
 {
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
-    /** @var WebhookHandlerInterface[] */
-    private $handlers;
+    /**
+     * @var WebhookHandlerInterface[]
+     */
+    private array $handlers;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        IteratorAggregate $handlers,
+        \IteratorAggregate $handlers,
         LoggerInterface $logger
     ) {
         $this->configReader = $configReader;
-        $this->handlers     = iterator_to_array($handlers);
-        $this->logger       = $logger;
+        $this->handlers = iterator_to_array($handlers);
+        $this->logger = $logger;
     }
 
     public function process(SalesChannelContext $salesChannelContext, Request $request): Response
     {
         $data = $request->request->all();
 
-        $config     = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $config = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $storedKeys = [hash('md5', $config->getString('portalKey'))];
 
         foreach (ConfigurationPrefixes::CONFIGURATION_PREFIXES as $prefix) {
@@ -52,7 +50,7 @@ class WebhookProcessor implements WebhookProcessorInterface
             $storedKeys[] = hash('md5', $key);
         }
 
-        if (!isset($data['key']) || !in_array($data['key'], $storedKeys)) {
+        if (!isset($data['key']) || !\in_array($data['key'], $storedKeys, true)) {
             $this->logger->error('Received webhook without known portal key', $data);
 
             return new Response(WebhookHandlerInterface::RESPONSE_TSNOTOK);
@@ -62,7 +60,7 @@ class WebhookProcessor implements WebhookProcessorInterface
 
         foreach ($this->handlers as $handler) {
             if (!$handler->supports($salesChannelContext, $data)) {
-                $this->logger->debug(sprintf('Skipping webhook handler %s', get_class($handler)), $data);
+                $this->logger->debug(sprintf('Skipping webhook handler %s', \get_class($handler)), $data);
 
                 continue;
             }
@@ -70,13 +68,13 @@ class WebhookProcessor implements WebhookProcessorInterface
             try {
                 $handler->process($salesChannelContext, $request);
 
-                $this->logger->info(sprintf('Processed webhook handler %s', get_class($handler)), $data);
-            } catch (Exception $exception) {
-                $this->logger->error(sprintf('Error during processing of webhook handler %s', get_class($handler)), [
+                $this->logger->info(sprintf('Processed webhook handler %s', \get_class($handler)), $data);
+            } catch (\Exception $exception) {
+                $this->logger->error(sprintf('Error during processing of webhook handler %s', \get_class($handler)), [
                     'message' => $exception->getMessage(),
-                    'file'    => $exception->getFile(),
-                    'line'    => $exception->getLine(),
-                    'data'    => $data,
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                    'data' => $data,
                 ]);
 
                 $response = WebhookHandlerInterface::RESPONSE_TSNOTOK;

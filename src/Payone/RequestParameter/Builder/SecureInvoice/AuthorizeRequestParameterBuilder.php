@@ -13,31 +13,31 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var LineItemHydratorInterface */
-    protected $lineItemHydrator;
+    protected LineItemHydratorInterface $lineItemHydrator;
 
-    /** @var EntityRepositoryInterface */
-    protected $currencyRepository;
+    protected EntityRepositoryInterface $currencyRepository;
 
     public function __construct(LineItemHydratorInterface $lineItemHydrator, EntityRepositoryInterface $currencyRepository)
     {
-        $this->lineItemHydrator   = $lineItemHydrator;
+        $this->lineItemHydrator = $lineItemHydrator;
         $this->currencyRepository = $currencyRepository;
     }
 
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $paymentTransaction  = $arguments->getPaymentTransaction();
+        $paymentTransaction = $arguments->getPaymentTransaction();
         $salesChannelContext = $arguments->getSalesChannelContext();
-        $context             = $salesChannelContext->getContext();
-        $order               = $paymentTransaction->getOrder();
-        $currency            = $this->getOrderCurrency($order, $context);
+        $context = $salesChannelContext->getContext();
+        $order = $paymentTransaction->getOrder();
+        $currency = $this->getOrderCurrency($order, $context);
 
         $parameters = [
-            'clearingtype'    => self::CLEARING_TYPE_INVOICE,
+            'clearingtype' => self::CLEARING_TYPE_INVOICE,
             'clearingsubtype' => 'POV',
-            'request'         => self::REQUEST_ACTION_AUTHORIZE,
+            'request' => self::REQUEST_ACTION_AUTHORIZE,
         ];
 
         if ($order->getLineItems() !== null) {
@@ -54,7 +54,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayoneSecureInvoicePaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }

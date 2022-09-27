@@ -83,14 +83,14 @@ class OrderLinesRequestParameterBuilderTest extends TestCase
         $dataBag = new ParameterBag();
 
         $dataBag->add([
-            'amount'     => 100,
+            'amount' => 100,
             'orderLines' => [
                 [
-                    'id'       => Constants::LINE_ITEM_ID . '0',
+                    'id' => Constants::LINE_ITEM_ID . '0',
                     'quantity' => Constants::LINE_ITEM_QUANTITY,
                 ],
                 [
-                    'id'       => Constants::LINE_ITEM_ID . '1',
+                    'id' => Constants::LINE_ITEM_ID . '1',
                     'quantity' => Constants::LINE_ITEM_QUANTITY,
                 ],
             ],
@@ -131,10 +131,10 @@ class OrderLinesRequestParameterBuilderTest extends TestCase
         $dataBag = new ParameterBag();
 
         $dataBag->add([
-            'amount'     => 100,
+            'amount' => 100,
             'orderLines' => [
                 [
-                    'id'       => Constants::LINE_ITEM_ID . '0',
+                    'id' => Constants::LINE_ITEM_ID . '0',
                     'quantity' => Constants::LINE_ITEM_QUANTITY,
                 ],
             ],
@@ -171,14 +171,14 @@ class OrderLinesRequestParameterBuilderTest extends TestCase
         $dataBag = new ParameterBag();
 
         $dataBag->add([
-            'amount'     => 100,
+            'amount' => 100,
             'orderLines' => [
                 [
-                    'id'       => Constants::LINE_ITEM_ID . '0',
+                    'id' => Constants::LINE_ITEM_ID . '0',
                     'quantity' => Constants::LINE_ITEM_QUANTITY,
                 ],
                 [
-                    'id'       => Constants::LINE_ITEM_ID . '1',
+                    'id' => Constants::LINE_ITEM_ID . '1',
                     'quantity' => Constants::LINE_ITEM_QUANTITY,
                 ],
             ],
@@ -219,10 +219,10 @@ class OrderLinesRequestParameterBuilderTest extends TestCase
         $dataBag = new ParameterBag();
 
         $dataBag->add([
-            'amount'     => 100,
+            'amount' => 100,
             'orderLines' => [
                 [
-                    'id'       => Constants::LINE_ITEM_ID . '0',
+                    'id' => Constants::LINE_ITEM_ID . '0',
                     'quantity' => Constants::LINE_ITEM_QUANTITY,
                 ],
             ],

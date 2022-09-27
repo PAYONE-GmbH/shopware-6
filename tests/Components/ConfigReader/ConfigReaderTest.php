@@ -30,11 +30,11 @@ class ConfigReaderTest extends TestCase
     public function testItReturnsCorrectConfiguration(): void
     {
         $systemConfigService = $this->createMock(SystemConfigService::class);
-        $systemConfigService->expects($this->once())->method('getDomain')->willReturn([
+        $systemConfigService->expects(static::once())->method('getDomain')->willReturn([
             'PayonePayment.settings.myTestConfig' => 'the-value',
         ]);
 
-        $configReader  = new ConfigReader($systemConfigService);
+        $configReader = new ConfigReader($systemConfigService);
         $configuration = $configReader->read();
 
         static::assertSame('the-value', $configuration->get('myTestConfig'));

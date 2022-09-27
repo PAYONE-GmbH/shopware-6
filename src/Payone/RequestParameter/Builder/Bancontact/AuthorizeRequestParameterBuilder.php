@@ -11,16 +11,18 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         $dataBag = $arguments->getRequestData();
 
         return [
-            'clearingtype'           => self::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
+            'clearingtype' => self::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
             'onlinebanktransfertype' => 'BCT',
-            'bankcountry'            => 'BE',
-            'request'                => self::REQUEST_ACTION_AUTHORIZE,
+            'bankcountry' => 'BE',
+            'request' => self::REQUEST_ACTION_AUTHORIZE,
         ];
     }
 
@@ -31,7 +33,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayoneBancontactPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }

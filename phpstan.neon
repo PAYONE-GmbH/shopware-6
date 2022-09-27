@@ -1,12 +1,18 @@
 includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
-    level: max
-    reportUnmatchedIgnoredErrors: false
+    phpVersion: 70400
+    level: 8
+    tmpDir: var/cache/phpstan
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingIterableValueType: false
-    ignoreErrors:
-        - '#Access to constant CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE(.*)#'
-    excludes_analyse:
-        - tests/Bootstrap.php
+    checkGenericClassInNonGenericObjectType: false
+    reportUnmatchedIgnoredErrors: false
+
+    paths:
+        - src
+
+    bootstrapFiles:
+        - bin/static-analyze-autoloader.php

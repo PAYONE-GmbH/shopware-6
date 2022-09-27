@@ -23,24 +23,18 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var PayoneClientInterface */
-    protected $client;
+    protected PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    protected $translator;
+    protected TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
-    /** @var DeviceFingerprintServiceInterface */
-    private $deviceFingerprintService;
+    private DeviceFingerprintServiceInterface $deviceFingerprintService;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -54,10 +48,10 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client                   = $client;
-        $this->translator               = $translator;
-        $this->dataHandler              = $dataHandler;
-        $this->requestParameterFactory  = $requestParameterFactory;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
+        $this->requestParameterFactory = $requestParameterFactory;
         $this->deviceFingerprintService = $deviceFingerprintService;
     }
 
@@ -91,12 +85,14 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
             $response = $this->client->request($request);
         } catch (PayoneRequestException $exception) {
             $this->deviceFingerprintService->deleteDeviceIdentToken();
+
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->deviceFingerprintService->deleteDeviceIdentToken();
+
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -105,6 +101,7 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
 
         if (empty($response['status']) || $response['status'] === 'ERROR') {
             $this->deviceFingerprintService->deleteDeviceIdentToken();
+
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -115,12 +112,12 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
         $clearingReference = $response['addpaydata']['clearing_reference'] ?? $response['clearing']['Reference'];
 
         $data = $this->preparePayoneOrderTransactionData($request, $response, [
-            'workOrderId'       => $requestData->get('workorder'),
+            'workOrderId' => $requestData->get('workorder'),
             'clearingReference' => $clearingReference,
-            'captureMode'       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-            'clearingType'      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-            'financingType'     => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
-            'additionalData'    => ['used_ratepay_shop_id' => $request['add_paydata[shop_id]']],
+            'captureMode' => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+            'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+            'financingType' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
+            'additionalData' => ['used_ratepay_shop_id' => $request['add_paydata[shop_id]']],
         ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
@@ -131,7 +128,7 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
     {
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
-        $definitions['ratepayIban']     = [new NotBlank(), new Iban()];
+        $definitions['ratepayIban'] = [new NotBlank(), new Iban()];
         $definitions['ratepayBirthday'] = [new NotBlank(), new Birthday(['value' => $this->getMinimumDate()])];
 
         return $definitions;

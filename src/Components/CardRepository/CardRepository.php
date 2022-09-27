@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\CardRepository;
 
-use DateTime;
 use PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
@@ -17,8 +16,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class CardRepository implements CardRepositoryInterface
 {
-    /** @var EntityRepositoryInterface */
-    private $cardRepository;
+    private EntityRepositoryInterface $cardRepository;
 
     public function __construct(EntityRepositoryInterface $cardRepository)
     {
@@ -29,7 +27,7 @@ class CardRepository implements CardRepositoryInterface
         CustomerEntity $customer,
         string $truncatedCardPan,
         string $pseudoCardPan,
-        DateTime $expiresAt,
+        \DateTime $expiresAt,
         Context $context
     ): void {
         $card = $this->getExistingCard(
@@ -42,11 +40,11 @@ class CardRepository implements CardRepositoryInterface
         $expiresAt->modify('last day of this month');
 
         $data = [
-            'id'               => null === $card ? Uuid::randomHex() : $card->getId(),
-            'pseudoCardPan'    => $pseudoCardPan,
+            'id' => $card === null ? Uuid::randomHex() : $card->getId(),
+            'pseudoCardPan' => $pseudoCardPan,
             'truncatedCardPan' => $truncatedCardPan,
-            'expiresAt'        => $expiresAt,
-            'customerId'       => $customer->getId(),
+            'expiresAt' => $expiresAt,
+            'customerId' => $customer->getId(),
         ];
 
         $this->cardRepository->upsert([$data], $context);
@@ -63,7 +61,7 @@ class CardRepository implements CardRepositoryInterface
             $context
         );
 
-        if (null === $card) {
+        if ($card === null) {
             return;
         }
 

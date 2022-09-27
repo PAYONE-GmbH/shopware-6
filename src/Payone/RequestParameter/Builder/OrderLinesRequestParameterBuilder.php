@@ -19,22 +19,23 @@ use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 
 class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var LineItemHydratorInterface */
-    private $lineItemHydrator;
+    private LineItemHydratorInterface $lineItemHydrator;
 
     public function __construct(LineItemHydratorInterface $lineItemHydrator)
     {
         $this->lineItemHydrator = $lineItemHydrator;
     }
 
-    /** @param FinancialTransactionStruct $arguments */
+    /**
+     * @param FinancialTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $paymentTransaction   = $arguments->getPaymentTransaction();
-        $currency             = $paymentTransaction->getOrder()->getCurrency();
-        $requestData          = $arguments->getRequestData();
-        $orderLines           = $requestData->get('orderLines', []);
-        $isCompleted          = $requestData->get('complete', false);
+        $paymentTransaction = $arguments->getPaymentTransaction();
+        $currency = $paymentTransaction->getOrder()->getCurrency();
+        $requestData = $arguments->getRequestData();
+        $orderLines = $requestData->get('orderLines', []);
+        $isCompleted = $requestData->get('complete', false);
         $includeShippingCosts = $requestData->get('includeShippingCosts', false);
 
         if ($currency === null || $paymentTransaction->getOrder()->getLineItems() === null) {

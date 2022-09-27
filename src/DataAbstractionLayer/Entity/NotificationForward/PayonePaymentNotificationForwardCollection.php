@@ -11,9 +11,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  * @method void                                        set(string $key, PayonePaymentNotificationForwardEntity $entity)
  * @method PayonePaymentNotificationForwardEntity[]    getIterator()
  * @method PayonePaymentNotificationForwardEntity[]    getElements()
- * @method null|PayonePaymentNotificationForwardEntity get(string $key)
- * @method null|PayonePaymentNotificationForwardEntity first()
- * @method null|PayonePaymentNotificationForwardEntity last()
+ * @method PayonePaymentNotificationForwardEntity|null get(string $key)
+ * @method PayonePaymentNotificationForwardEntity|null first()
+ * @method PayonePaymentNotificationForwardEntity|null last()
  */
 class PayonePaymentNotificationForwardCollection extends EntityCollection
 {

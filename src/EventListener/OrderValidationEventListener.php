@@ -16,15 +16,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class OrderValidationEventListener implements EventSubscriberInterface
 {
-    /** @var RequestStack */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /** @var PaymentHandlerRegistry */
-    private $paymentHandlerRegistry;
+    private PaymentHandlerRegistry $paymentHandlerRegistry;
 
     public function __construct(RequestStack $requestStack, PaymentHandlerRegistry $paymentHandlerRegistry)
     {
-        $this->requestStack           = $requestStack;
+        $this->requestStack = $requestStack;
         $this->paymentHandlerRegistry = $paymentHandlerRegistry;
     }
 
@@ -39,13 +37,13 @@ class OrderValidationEventListener implements EventSubscriberInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        if (null === $request) {
+        if ($request === null) {
             return;
         }
 
-        $salesChannelContext      = $this->getSalesChannelContextFromRequest($request);
+        $salesChannelContext = $this->getSalesChannelContextFromRequest($request);
         $paymentHandlerIdentifier = $salesChannelContext->getPaymentMethod()->getHandlerIdentifier();
-        $paymentHandler           = $this->paymentHandlerRegistry->getHandler($paymentHandlerIdentifier);
+        $paymentHandler = $this->paymentHandlerRegistry->getHandler($paymentHandlerIdentifier);
 
         if ($paymentHandler instanceof AbstractPayonePaymentHandler) {
             $validationDefinitions = $paymentHandler->getValidationDefinitions($salesChannelContext);
@@ -67,7 +65,7 @@ class OrderValidationEventListener implements EventSubscriberInterface
             if ($constraints instanceof DataValidationDefinition) {
                 $parent->addSub($key, $constraints);
             } else {
-                call_user_func_array([$parent, 'add'], array_merge([$key], $constraints));
+                \call_user_func_array([$parent, 'add'], array_merge([$key], $constraints));
             }
         }
     }

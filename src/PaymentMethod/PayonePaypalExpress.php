@@ -11,33 +11,26 @@ class PayonePaypalExpress extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Paypal Express';
+    protected string $name = 'PAYONE Paypal Express';
 
-    /** @var string */
-    protected $description = 'Pay easily and secure with PayPal Express.';
+    protected string $description = 'Pay easily and secure with PayPal Express.';
 
-    /** @var string */
-    protected $paymentHandler = PayonePaypalExpressPaymentHandler::class;
+    protected string $paymentHandler = PayonePaypalExpressPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template;
+    protected ?string $template = null;
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE PayPal Express',
+            'name' => 'PAYONE PayPal Express',
             'description' => 'Zahlen Sie sicher und bequem mit PayPal Express.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE PayPal Express',
+            'name' => 'PAYONE PayPal Express',
             'description' => 'Pay easily and secure with PayPal Express.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 103;
+    protected int $position = 103;
 }

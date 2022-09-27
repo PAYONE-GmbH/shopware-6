@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\Validator;
 
-use DateTime;
-use DateTimeInterface;
 use Symfony\Component\Validator\Constraints\AbstractComparisonValidator;
 
 class BirthdayValidator extends AbstractComparisonValidator
 {
     /**
      * @param string            $value1
-     * @param DateTimeInterface $value2
+     * @param \DateTimeInterface $value2
      *
      * @return bool true if value1 is lower than value2, false otherwise
      */
@@ -22,7 +20,7 @@ class BirthdayValidator extends AbstractComparisonValidator
             return false;
         }
 
-        $birthday = DateTime::createFromFormat('Y-m-d', $value1);
+        $birthday = \DateTime::createFromFormat('Y-m-d', $value1);
 
         return $birthday < $value2;
     }

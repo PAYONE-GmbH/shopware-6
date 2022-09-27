@@ -17,23 +17,24 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 
 class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var CurrencyPrecisionInterface */
-    private $currencyPrecision;
+    private CurrencyPrecisionInterface $currencyPrecision;
 
     public function __construct(CurrencyPrecisionInterface $currencyPrecision)
     {
         $this->currencyPrecision = $currencyPrecision;
     }
 
-    /** @param FinancialTransactionStruct $arguments */
+    /**
+     * @param FinancialTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         $totalAmount = $arguments->getRequestData()->get('amount');
-        $order       = $arguments->getPaymentTransaction()->getOrder();
-        /** @var null|PayonePaymentOrderTransactionDataEntity $transactionData */
+        $order = $arguments->getPaymentTransaction()->getOrder();
+        /** @var PayonePaymentOrderTransactionDataEntity|null $transactionData */
         $transactionData = $arguments->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        if (null === $transactionData) {
+        if ($transactionData === null) {
             throw new InvalidOrderException($order->getId());
         }
 
@@ -45,7 +46,7 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
             throw new InvalidOrderException($order->getId());
         }
 
-        if (null === $transactionData->getSequenceNumber()) {
+        if ($transactionData->getSequenceNumber() === null) {
             throw new InvalidOrderException($order->getId());
         }
 
@@ -59,26 +60,27 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
         $currency = $order->getCurrency();
 
         $parameters = [
-            'request'        => self::REQUEST_ACTION_DEBIT,
-            'txid'           => $transactionData->getTransactionId(),
+            'request' => self::REQUEST_ACTION_DEBIT,
+            'txid' => $transactionData->getTransactionId(),
             'sequencenumber' => $transactionData->getSequenceNumber() + 1,
-            'amount'         => -1 * $this->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
-            'currency'       => $currency->getIsoCode(),
+            'amount' => -1 * $this->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
+            'currency' => $currency->getIsoCode(),
         ];
 
         if ($arguments->getPaymentMethod() === PayoneDebitPaymentHandler::class) {
-            $transactions     = $transactionData->getTransactionData();
-            $firstTransaction = reset($transactions);
+            $transactions = $transactionData->getTransactionData();
 
-            if (!array_key_exists('request', $firstTransaction) || !array_key_exists('iban', $firstTransaction['request'])) {
-                return $parameters;
+            if ($transactions) {
+                $firstTransaction = reset($transactions);
+
+                if (\array_key_exists('request', $firstTransaction) && \array_key_exists('iban', $firstTransaction['request'])) {
+                    $parameters['iban'] = $firstTransaction['request']['iban'];
+                }
             }
-
-            $parameters['iban'] = $firstTransaction['request']['iban'];
         }
 
-        if (in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::RATEPAY)) {
-            $parameters['settleaccount']        = 'yes';
+        if (\in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::RATEPAY, true)) {
+            $parameters['settleaccount'] = 'yes';
             $parameters['add_paydata[shop_id]'] = $transactionData->getAdditionalData()['used_ratepay_shop_id'] ?? null;
         }
 

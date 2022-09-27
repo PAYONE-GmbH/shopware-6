@@ -11,33 +11,26 @@ class PayoneRatepayInstallment extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Ratepay Installments';
+    protected string $name = 'PAYONE Ratepay Installments';
 
-    /** @var string */
-    protected $description = 'Pay with Ratepay Installments';
+    protected string $description = 'Pay with Ratepay Installments';
 
-    /** @var string */
-    protected $paymentHandler = PayoneRatepayInstallmentPaymentHandler::class;
+    protected string $paymentHandler = PayoneRatepayInstallmentPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template = '@Storefront/storefront/payone/ratepay/ratepay-installment-form.html.twig';
+    protected ?string $template = '@Storefront/storefront/payone/ratepay/ratepay-installment-form.html.twig';
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Ratepay Ratenkauf',
+            'name' => 'PAYONE Ratepay Ratenkauf',
             'description' => 'Zahle mit Ratepay Ratenkauf',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE Ratepay Installments',
+            'name' => 'PAYONE Ratepay Installments',
             'description' => 'Pay with Ratepay Installments',
         ],
     ];
 
-    /** @var int */
-    protected $position = 132;
+    protected int $position = 132;
 }

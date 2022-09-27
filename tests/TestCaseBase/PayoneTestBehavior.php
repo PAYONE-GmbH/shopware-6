@@ -64,23 +64,23 @@ trait PayoneTestBehavior
         $productId = Uuid::randomHex();
 
         $product = [
-            'id'            => $productId,
-            'name'          => 'Test product',
+            'id' => $productId,
+            'name' => 'Test product',
             'productNumber' => '123456789',
-            'stock'         => 1,
-            'price'         => [
+            'stock' => 1,
+            'price' => [
                 ['currencyId' => Defaults::CURRENCY, 'gross' => $price, 'net' => $price, 'linked' => false],
             ],
             'manufacturer' => ['id' => $productId, 'name' => 'shopware AG'],
-            'tax'          => ['id' => $productId, 'name' => 'testTaxRate', 'taxRate' => 0],
-            'categories'   => [
+            'tax' => ['id' => $productId, 'name' => 'testTaxRate', 'taxRate' => 0],
+            'categories' => [
                 ['id' => $productId, 'name' => 'Test category'],
             ],
             'visibilities' => [
                 [
-                    'id'             => $productId,
+                    'id' => $productId,
                     'salesChannelId' => Defaults::SALES_CHANNEL,
-                    'visibility'     => ProductVisibilityDefinition::VISIBILITY_ALL,
+                    'visibility' => ProductVisibilityDefinition::VISIBILITY_ALL,
                 ],
             ],
         ];
@@ -109,7 +109,7 @@ trait PayoneTestBehavior
         }
 
         $orderFetcher = $this->getContainer()->get(OrderFetcher::class);
-        $orderId      = $this->placeRandomOrder($salesChannelContext);
+        $orderId = $this->placeRandomOrder($salesChannelContext);
 
         return $orderFetcher->getOrderById($orderId, $salesChannelContext->getContext());
     }
@@ -130,7 +130,7 @@ trait PayoneTestBehavior
     protected function getFinancialTransactionStruct(ParameterBag $dataBag, string $paymentHandler, string $request): FinancialTransactionStruct
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $order               = $this->getRandomOrder($salesChannelContext);
+        $order = $this->getRandomOrder($salesChannelContext);
 
         return new FinancialTransactionStruct(
             $this->getPaymentTransaction($order, $paymentHandler),
@@ -147,7 +147,7 @@ trait PayoneTestBehavior
         string $requestAction
     ): PaymentTransactionStruct {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $order               = $this->getRandomOrder($salesChannelContext);
+        $order = $this->getRandomOrder($salesChannelContext);
 
         return new PaymentTransactionStruct(
             $this->getPaymentTransaction($order, $paymentHandler),
@@ -170,10 +170,10 @@ trait PayoneTestBehavior
         $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
         $orderTransactionEntity->setOrder($orderEntity);
 
-        $payoneTransactionData                    = new PayonePaymentOrderTransactionDataEntity();
-        $payoneTransactionData->transactionId     = Constants::PAYONE_TRANSACTION_ID;
-        $payoneTransactionData->sequenceNumber    = 0;
-        $payoneTransactionData->lastRequest       = 'authorization';
+        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
+        $payoneTransactionData->transactionId = Constants::PAYONE_TRANSACTION_ID;
+        $payoneTransactionData->sequenceNumber = 0;
+        $payoneTransactionData->lastRequest = 'authorization';
         $payoneTransactionData->authorizationType = 'authorization';
         $orderTransactionEntity->addExtension(
             PayonePaymentOrderTransactionExtension::NAME,

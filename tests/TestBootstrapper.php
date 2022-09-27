@@ -6,8 +6,6 @@ namespace Shopware\Core;
 
 use Composer\Autoload\ClassLoader;
 use Doctrine\DBAL\Connection;
-use function is_dir;
-use function is_file;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelLifecycleManager;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -16,6 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\HttpKernel\KernelInterface;
+use function is_dir;
+use function is_file;
 
 class TestBootstrapper
 {
@@ -35,7 +35,9 @@ class TestBootstrapper
 
     private ?OutputInterface $output = null;
 
-    /** @var string[] */
+    /**
+     * @var string[]
+     */
     private array $activePlugins = [];
 
     public function bootstrap(): TestBootstrapper
@@ -116,7 +118,7 @@ class TestBootstrapper
 
         $dbUrlParts = parse_url($_SERVER['DATABASE_URL'] ?? '') ?: [];
 
-        $testToken          = getenv('TEST_TOKEN');
+        $testToken = getenv('TEST_TOKEN');
         $dbUrlParts['path'] = ($dbUrlParts['path'] ?? 'root') . '_' . ($testToken ?: 'test');
 
         $auth = isset($dbUrlParts['user']) ? ($dbUrlParts['user'] . (isset($dbUrlParts['pass']) ? (':' . $dbUrlParts['pass']) : '') . '@') : '';
@@ -161,14 +163,14 @@ class TestBootstrapper
     }
 
     /**
-     * @param null|string $pathToComposerJson The composer.json to determine the plugin name. In most cases it's possible to find it automatically.
+     * @param string|null $pathToComposerJson The composer.json to determine the plugin name. In most cases it's possible to find it automatically.
      *
      * Adds the calling plugin to the plugin list that is installed and activated
      */
     public function addCallingPlugin(?string $pathToComposerJson = null): TestBootstrapper
     {
         if (!$pathToComposerJson) {
-            $trace      = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
+            $trace = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS);
             $callerFile = $trace[0]['file'];
 
             $dir = \dirname($callerFile);
@@ -188,14 +190,14 @@ class TestBootstrapper
             throw new \RuntimeException('Could not auto detect plugin name via composer.json. Path: ' . $pathToComposerJson);
         }
 
-        $composer  = json_decode((string) file_get_contents($pathToComposerJson), true);
+        $composer = json_decode((string) file_get_contents($pathToComposerJson), true);
         $baseClass = $composer['extra']['shopware-plugin-class'] ?? '';
 
         if ($baseClass === '') {
             throw new \RuntimeException('composer.json does not contain `extra.shopware-plugin-class`. Path: ' . $pathToComposerJson);
         }
 
-        $parts      = explode('\\', $baseClass);
+        $parts = explode('\\', $baseClass);
         $pluginName = end($parts);
 
         $this->addActivePlugins($pluginName);
@@ -299,9 +301,9 @@ class TestBootstrapper
             new ArrayInput(
                 [
                     '--create-database' => true,
-                    '--force'           => true,
-                    '--drop-database'   => true,
-                    '--basic-setup'     => true,
+                    '--force' => true,
+                    '--drop-database' => true,
+                    '--basic-setup' => true,
                     '--no-assign-theme' => true,
                 ],
                 $installCommand->getDefinition()
@@ -319,19 +321,19 @@ class TestBootstrapper
 
     private function installPlugins(): void
     {
-        $application    = new Application($this->getKernel());
+        $application = new Application($this->getKernel());
         $refreshCommand = $application->find('plugin:refresh');
         $refreshCommand->run(new ArrayInput([], $refreshCommand->getDefinition()), $this->getOutput());
 
         $kernel = KernelLifecycleManager::bootKernel();
 
-        $application    = new Application($kernel);
+        $application = new Application($kernel);
         $installCommand = $application->find('plugin:install');
 
         $args = [
-            '--activate'  => true,
+            '--activate' => true,
             '--reinstall' => true,
-            'plugins'     => $this->activePlugins,
+            'plugins' => $this->activePlugins,
         ];
 
         $returnCode = $installCommand->run(

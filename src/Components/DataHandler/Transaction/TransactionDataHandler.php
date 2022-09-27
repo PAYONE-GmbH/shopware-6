@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\DataHandler\Transaction;
 
-use DateTime;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Struct\PaymentTransaction;
-use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -19,16 +17,14 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class TransactionDataHandler implements TransactionDataHandlerInterface
 {
-    /** @var EntityRepositoryInterface */
-    private $transactionRepository;
+    private EntityRepositoryInterface $transactionRepository;
 
-    /** @var CurrencyPrecisionInterface */
-    private $currencyPrecision;
+    private CurrencyPrecisionInterface $currencyPrecision;
 
     public function __construct(EntityRepositoryInterface $transactionRepository, CurrencyPrecisionInterface $currencyPrecision)
     {
         $this->transactionRepository = $transactionRepository;
-        $this->currencyPrecision     = $currencyPrecision;
+        $this->currencyPrecision = $currencyPrecision;
     }
 
     public function getPaymentTransactionByPayoneTransactionId(Context $context, int $payoneTransactionId): ?PaymentTransaction
@@ -40,10 +36,10 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             ->addAssociation('order')
             ->addAssociation('order.currency');
 
-        /** @var null|OrderTransactionEntity $transaction */
+        /** @var OrderTransactionEntity|null $transaction */
         $transaction = $this->transactionRepository->search($criteria, $context)->first();
 
-        if (null === $transaction || null === $transaction->getOrder()) {
+        if ($transaction === null || $transaction->getOrder() === null) {
             return null;
         }
 
@@ -54,7 +50,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
     {
         /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
         $payoneTransactionData = $paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
-        $key                   = (new DateTime())->format(DATE_ATOM);
+        $key = (new \DateTime())->format(\DATE_ATOM);
 
         $newTransactionData = [
             'id' => $payoneTransactionData->getId(),
@@ -62,8 +58,8 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
         $currentSequenceNumber = $payoneTransactionData->getSequenceNumber();
 
-        $newTransactionData['sequenceNumber']    = max((int) $transactionData['sequencenumber'], $currentSequenceNumber);
-        $newTransactionData['transactionState']  = strtolower($transactionData['txaction']);
+        $newTransactionData['sequenceNumber'] = max((int) $transactionData['sequencenumber'], $currentSequenceNumber);
+        $newTransactionData['transactionState'] = strtolower($transactionData['txaction']);
         $newTransactionData['authorizationType'] = $payoneTransactionData->getAuthorizationType();
 
         $newTransactionData['transactionData'] = array_merge(
@@ -79,7 +75,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             $newTransactionData['allowRefund'] = $this->shouldAllowRefund($paymentTransaction, $transactionData);
         }
 
-        if (in_array($newTransactionData['transactionState'], [TransactionStatusService::ACTION_PAID, TransactionStatusService::ACTION_COMPLETED])) {
+        if (\in_array($newTransactionData['transactionState'], [TransactionStatusService::ACTION_PAID, TransactionStatusService::ACTION_COMPLETED], true)) {
             $newTransactionData['capturedAmount'] = $this->getCapturedAmount($paymentTransaction, $transactionData);
         }
 
@@ -89,14 +85,14 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
     public function saveTransactionData(PaymentTransaction $transaction, Context $context, array $data): void
     {
         $this->transactionRepository->upsert([[
-           'id'                                         => $transaction->getOrderTransaction()->getId(),
-           PayonePaymentOrderTransactionExtension::NAME => $data,
+            'id' => $transaction->getOrderTransaction()->getId(),
+            PayonePaymentOrderTransactionExtension::NAME => $data,
         ]], $context);
     }
 
     public function logResponse(PaymentTransaction $transaction, Context $context, array $data): void
     {
-        $key = (new DateTime())->format(DATE_ATOM);
+        $key = (new \DateTime())->format(\DATE_ATOM);
 
         $newTransactionData = [
             'transactionData' => [
@@ -104,10 +100,10 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             ],
         ];
 
-        /** @var null|PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        /** @var PayonePaymentOrderTransactionDataEntity|null $payoneTransactionData */
         $payoneTransactionData = $transaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        if (null !== $payoneTransactionData) {
+        if ($payoneTransactionData !== null) {
             $newTransactionData = [
                 'id' => $payoneTransactionData->getId(),
             ];
@@ -119,28 +115,28 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         }
 
         $this->transactionRepository->update([[
-            'id'                                         => $transaction->getOrderTransaction()->getId(),
+            'id' => $transaction->getOrderTransaction()->getId(),
             PayonePaymentOrderTransactionExtension::NAME => $newTransactionData,
         ]], $context);
     }
 
     public function incrementSequenceNumber(PaymentTransaction $transaction, array &$transactionData): void
     {
-        /** @var null|PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        /** @var PayonePaymentOrderTransactionDataEntity|null $payoneTransactionData */
         $payoneTransactionData = $transaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        if (null === $payoneTransactionData) {
+        if ($payoneTransactionData === null) {
             return;
         }
 
-        $transactionData['id']             = $payoneTransactionData->getId();
+        $transactionData['id'] = $payoneTransactionData->getId();
         $transactionData['sequenceNumber'] = $payoneTransactionData->getSequenceNumber() + 1;
     }
 
     public function saveTransactionState(string $stateId, PaymentTransaction $transaction, Context $context): void
     {
         $update = [
-            'id'      => $transaction->getOrderTransaction()->getId(),
+            'id' => $transaction->getOrderTransaction()->getId(),
             'stateId' => $stateId,
         ];
 
@@ -162,13 +158,13 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
 
         // The following TX actions do not affect any capturable or refundable state
-        return in_array($txAction, [
+        return \in_array($txAction, [
             TransactionStatusService::ACTION_TRANSFER,
             TransactionStatusService::ACTION_REMINDER,
             TransactionStatusService::ACTION_INVOICE,
             TransactionStatusService::ACTION_VAUTHORIZATION,
             TransactionStatusService::ACTION_VSETTLEMENT,
-        ]);
+        ], true);
     }
 
     /**
@@ -191,7 +187,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
     {
         $handlerClass = $this->getHandlerIdentifier($paymentTransaction);
 
-        if (!$handlerClass) {
+        if (!$handlerClass || !class_exists($handlerClass)) {
             return false;
         }
 
@@ -218,7 +214,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
     {
         $handlerClass = $this->getHandlerIdentifier($paymentTransaction);
 
-        if (!$handlerClass) {
+        if (!$handlerClass || !class_exists($handlerClass)) {
             return false;
         }
 
@@ -228,12 +224,12 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
     private function getCapturedAmount(PaymentTransaction $paymentTransaction, array $transactionData): int
     {
         $currency = $paymentTransaction->getOrder()->getCurrency();
-        /** @var null|PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        /** @var PayonePaymentOrderTransactionDataEntity|null $payoneTransactionData */
         $payoneTransactionData = $paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
         $currentCapturedAmount = 0;
-        $receivable            = 0;
+        $receivable = 0;
 
-        if (!$currency || null === $payoneTransactionData) {
+        if (!$currency || $payoneTransactionData === null) {
             return 0;
         }
 
@@ -241,7 +237,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             $currentCapturedAmount = $payoneTransactionData->getCapturedAmount();
         }
 
-        if (array_key_exists('receivable', $transactionData)) {
+        if (\array_key_exists('receivable', $transactionData)) {
             $receivable = $this->currencyPrecision->getRoundedTotalAmount((float) $transactionData['receivable'], $currency);
         }
 
@@ -259,7 +255,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $handlerClass = $paymentMethodEntity->getHandlerIdentifier();
 
         if (!class_exists($handlerClass)) {
-            throw new RuntimeException(sprintf('The handler class %s for payment method %s does not exist.', $paymentMethodEntity->getName(), $handlerClass));
+            throw new \RuntimeException(sprintf('The handler class %s for payment method %s does not exist.', $paymentMethodEntity->getName(), $handlerClass));
         }
 
         return $handlerClass;

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\DataAbstractionLayer\Entity\Mandate;
 
-use DateTimeInterface;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
@@ -13,17 +12,13 @@ class PayonePaymentMandateEntity extends Entity
 {
     use EntityIdTrait;
 
-    /** @var string */
-    protected $identification;
+    protected string $identification;
 
-    /** @var DateTimeInterface */
-    protected $signatureDate;
+    protected \DateTimeInterface $signatureDate;
 
-    /** @var null|CustomerEntity */
-    protected $customer;
+    protected ?CustomerEntity $customer = null;
 
-    /** @var string */
-    protected $customerId;
+    protected string $customerId;
 
     public function getIdentification(): string
     {
@@ -35,12 +30,12 @@ class PayonePaymentMandateEntity extends Entity
         $this->identification = $identification;
     }
 
-    public function getSignatureDate(): DateTimeInterface
+    public function getSignatureDate(): \DateTimeInterface
     {
         return $this->signatureDate;
     }
 
-    public function setSignatureDate(DateTimeInterface $signatureDate): void
+    public function setSignatureDate(\DateTimeInterface $signatureDate): void
     {
         $this->signatureDate = $signatureDate;
     }

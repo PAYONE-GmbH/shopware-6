@@ -23,8 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class MandateRoute extends AbstractMandateRoute
 {
-    /** @var MandateServiceInterface */
-    private $mandateService;
+    private MandateServiceInterface $mandateService;
 
     public function __construct(MandateServiceInterface $mandateService)
     {
@@ -44,7 +43,7 @@ class MandateRoute extends AbstractMandateRoute
     {
         $customer = $context->getCustomer();
 
-        if (null === $customer) {
+        if ($customer === null) {
             throw new CustomerNotLoggedInException();
         }
 
@@ -59,7 +58,7 @@ class MandateRoute extends AbstractMandateRoute
      */
     public function getFile(string $mandateId, SalesChannelContext $context): Response
     {
-        if (null === $context->getCustomer()) {
+        if ($context->getCustomer() === null) {
             throw new CustomerNotLoggedInException();
         }
 
@@ -69,7 +68,7 @@ class MandateRoute extends AbstractMandateRoute
             return new Response(null, 404);
         }
 
-        $response = new Response($content ?? '');
+        $response = new Response($content);
 
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,

@@ -13,26 +13,46 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
     use EntityIdTrait;
 
     protected string $transactionId;
+
     protected string $orderTransactionId;
+
     protected ?OrderTransactionEntity $orderTransaction = null;
-    protected ?array $transactionData                   = null;
-    protected ?int $sequenceNumber                      = null;
-    protected ?string $transactionState                 = null;
-    protected ?string $userId                           = null;
-    protected ?string $lastRequest                      = null;
-    protected ?bool $allowCapture                       = null;
-    protected ?int $capturedAmount                      = null;
-    protected ?bool $allowRefund                        = null;
-    protected ?int $refundedAmount                      = null;
-    protected ?string $mandateIdentification            = null;
-    protected ?string $authorizationType                = null;
-    protected ?string $workOrderId                      = null;
-    protected ?string $clearingReference                = null;
-    protected ?string $clearingType                     = null;
-    protected ?string $financingType                    = null;
-    protected ?string $captureMode                      = null;
-    protected ?array $clearingBankAccount               = null;
-    protected ?array $additionalData                    = null;
+
+    protected ?array $transactionData = null;
+
+    protected ?int $sequenceNumber = null;
+
+    protected ?string $transactionState = null;
+
+    protected ?string $userId = null;
+
+    protected ?string $lastRequest = null;
+
+    protected ?bool $allowCapture = null;
+
+    protected ?int $capturedAmount = null;
+
+    protected ?bool $allowRefund = null;
+
+    protected ?int $refundedAmount = null;
+
+    protected ?string $mandateIdentification = null;
+
+    protected ?string $authorizationType = null;
+
+    protected ?string $workOrderId = null;
+
+    protected ?string $clearingReference = null;
+
+    protected ?string $clearingType = null;
+
+    protected ?string $financingType = null;
+
+    protected ?string $captureMode = null;
+
+    protected ?array $clearingBankAccount = null;
+
+    protected ?array $additionalData = null;
 
     public function getTransactionId(): string
     {

@@ -9,8 +9,7 @@ use Shopware\Storefront\Page\Page;
 
 class AccountMandatePage extends Page
 {
-    /** @var EntitySearchResult */
-    protected $mandates;
+    protected EntitySearchResult $mandates;
 
     public function getMandates(): EntitySearchResult
     {

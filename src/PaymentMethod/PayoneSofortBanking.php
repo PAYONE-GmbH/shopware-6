@@ -14,33 +14,26 @@ class PayoneSofortBanking extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Sofort';
+    protected string $name = 'PAYONE Sofort';
 
-    /** @var string */
-    protected $description = 'Wire the amount instantly with your online banking credentials.';
+    protected string $description = 'Wire the amount instantly with your online banking credentials.';
 
-    /** @var string */
-    protected $paymentHandler = PayoneSofortBankingPaymentHandler::class;
+    protected string $paymentHandler = PayoneSofortBankingPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template;
+    protected ?string $template = null;
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Sofort Überweisung',
+            'name' => 'PAYONE Sofort Überweisung',
             'description' => 'Überweisen Sie schnell und sicher mit Ihren Online Banking Zugangsdaten.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE Sofort',
+            'name' => 'PAYONE Sofort',
             'description' => 'Wire the amount instantly with your online banking credentials.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 106;
+    protected int $position = 106;
 }

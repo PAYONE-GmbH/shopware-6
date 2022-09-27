@@ -239,6 +239,8 @@ Maintenance
 
 Maintenance
 
+* drop support for 6.3
+* general code improvements
 * customFields on orderTransaction for storing payone transaction data have been replaced by an entity extension
 
 ### Read transaction data ###

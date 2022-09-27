@@ -30,21 +30,21 @@ class PayoneRatepayInstallmentPaymentHandlerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
         $requestFactory = $this->createMock(RequestParameterFactory::class);
-        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+        $requestFactory->expects(static::once())->method('getRequestParameter')->willReturn(
             [
-                'request'              => AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE,
-                'clearingtype'         => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'        => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
+                'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE,
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
                 'add_paydata[shop_id]' => '88880103',
             ]
         );
 
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects($this->once())->method('request')->willReturn(
+        $client->expects(static::once())->method('request')->willReturn(
             [
-                'status'   => 'APPROVED',
-                'txid'     => '123456789',
-                'userid'   => '987654321',
+                'status' => 'APPROVED',
+                'txid' => '123456789',
+                'userid' => '987654321',
                 'clearing' => [
                     'Reference' => 'DN123',
                 ],
@@ -52,24 +52,24 @@ class PayoneRatepayInstallmentPaymentHandlerTest extends TestCase
         );
 
         $dataHandler = $this->createMock(TransactionDataHandlerInterface::class);
-        $dataHandler->expects($this->once())->method('saveTransactionData')->with(
-            $this->anything(),
-            $this->anything(),
-            $this->callback(static function ($transactionData) {
+        $dataHandler->expects(static::once())->method('saveTransactionData')->with(
+            static::anything(),
+            static::anything(),
+            static::callback(static function ($transactionData) {
                 Assert::assertArraySubset(
                     [
                         'authorizationType' => 'authorization',
-                        'lastRequest'       => 'authorization',
-                        'transactionId'     => '123456789',
-                        'sequenceNumber'    => -1,
-                        'userId'            => '987654321',
-                        'transactionState'  => 'APPROVED',
-                        'workOrderId'       => null,
+                        'lastRequest' => 'authorization',
+                        'transactionId' => '123456789',
+                        'sequenceNumber' => -1,
+                        'userId' => '987654321',
+                        'transactionState' => 'APPROVED',
+                        'workOrderId' => null,
                         'clearingReference' => 'DN123',
-                        'captureMode'       => 'completed',
-                        'clearingType'      => 'fnc',
-                        'financingType'     => 'RPS',
-                        'additionalData'    => ['used_ratepay_shop_id' => '88880103'],
+                        'captureMode' => 'completed',
+                        'clearingType' => 'fnc',
+                        'financingType' => 'RPS',
+                        'additionalData' => ['used_ratepay_shop_id' => '88880103'],
                     ],
                     $transactionData
                 );
@@ -82,9 +82,9 @@ class PayoneRatepayInstallmentPaymentHandlerTest extends TestCase
         );
 
         $deviceFingerprintService = $this->createMock(DeviceFingerprintService::class);
-        $deviceFingerprintService->expects($this->once())->method('deleteDeviceIdentToken');
+        $deviceFingerprintService->expects(static::once())->method('deleteDeviceIdentToken');
 
-        $dataBag        = new RequestDataBag([]);
+        $dataBag = new RequestDataBag([]);
         $paymentHandler = $this->getPaymentHandler(
             $client,
             $dataHandler,
@@ -105,48 +105,48 @@ class PayoneRatepayInstallmentPaymentHandlerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
         $requestFactory = $this->createMock(RequestParameterFactory::class);
-        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+        $requestFactory->expects(static::once())->method('getRequestParameter')->willReturn(
             [
-                'request'              => AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE,
-                'clearingtype'         => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'        => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
+                'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE,
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
                 'add_paydata[shop_id]' => '88880103',
             ]
         );
 
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects($this->once())->method('request')->willReturn(
+        $client->expects(static::once())->method('request')->willReturn(
             [
-                'status'     => 'APPROVED',
-                'txid'       => '123456789',
-                'userid'     => '987654321',
+                'status' => 'APPROVED',
+                'txid' => '123456789',
+                'userid' => '987654321',
                 'addpaydata' => [
-                    'workorderid'        => 'ABC123',
-                    'reservation_txid'   => '123ABC',
+                    'workorderid' => 'ABC123',
+                    'reservation_txid' => '123ABC',
                     'clearing_reference' => 'DN123',
                 ],
             ]
         );
 
         $dataHandler = $this->createMock(TransactionDataHandlerInterface::class);
-        $dataHandler->expects($this->once())->method('saveTransactionData')->with(
-            $this->anything(),
-            $this->anything(),
-            $this->callback(static function ($transactionData) {
+        $dataHandler->expects(static::once())->method('saveTransactionData')->with(
+            static::anything(),
+            static::anything(),
+            static::callback(static function ($transactionData) {
                 Assert::assertArraySubset(
                     [
                         'authorizationType' => 'preauthorization',
-                        'lastRequest'       => 'preauthorization',
-                        'transactionId'     => '123456789',
-                        'sequenceNumber'    => -1,
-                        'userId'            => '987654321',
-                        'transactionState'  => 'APPROVED',
-                        'workOrderId'       => null,
+                        'lastRequest' => 'preauthorization',
+                        'transactionId' => '123456789',
+                        'sequenceNumber' => -1,
+                        'userId' => '987654321',
+                        'transactionState' => 'APPROVED',
+                        'workOrderId' => null,
                         'clearingReference' => 'DN123',
-                        'captureMode'       => 'completed',
-                        'clearingType'      => 'fnc',
-                        'financingType'     => 'RPS',
-                        'additionalData'    => ['used_ratepay_shop_id' => '88880103'],
+                        'captureMode' => 'completed',
+                        'clearingType' => 'fnc',
+                        'financingType' => 'RPS',
+                        'additionalData' => ['used_ratepay_shop_id' => '88880103'],
                     ],
                     $transactionData
                 );
@@ -159,9 +159,9 @@ class PayoneRatepayInstallmentPaymentHandlerTest extends TestCase
         );
 
         $deviceFingerprintService = $this->createMock(DeviceFingerprintService::class);
-        $deviceFingerprintService->expects($this->once())->method('deleteDeviceIdentToken');
+        $deviceFingerprintService->expects(static::once())->method('deleteDeviceIdentToken');
 
-        $dataBag        = new RequestDataBag([]);
+        $dataBag = new RequestDataBag([]);
         $paymentHandler = $this->getPaymentHandler(
             $client,
             $dataHandler,
