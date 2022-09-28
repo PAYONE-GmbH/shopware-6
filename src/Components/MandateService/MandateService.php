@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\MandateService;
 
-use DateTime;
 use PayonePayment\DataAbstractionLayer\Entity\Mandate\PayonePaymentMandateEntity;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
-use RuntimeException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -20,18 +18,14 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
-use Throwable;
 
 class MandateService implements MandateServiceInterface
 {
-    /** @var EntityRepositoryInterface */
-    private $mandateRepository;
+    private EntityRepositoryInterface $mandateRepository;
 
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var RequestParameterFactory */
-    private $requestFactory;
+    private RequestParameterFactory $requestFactory;
 
     public function __construct(
         EntityRepositoryInterface $mandateRepository,
@@ -39,8 +33,8 @@ class MandateService implements MandateServiceInterface
         RequestParameterFactory $requestFactory
     ) {
         $this->mandateRepository = $mandateRepository;
-        $this->client            = $client;
-        $this->requestFactory    = $requestFactory;
+        $this->client = $client;
+        $this->requestFactory = $requestFactory;
     }
 
     public function getMandates(CustomerEntity $customer, SalesChannelContext $context): EntitySearchResult
@@ -57,7 +51,7 @@ class MandateService implements MandateServiceInterface
     public function saveMandate(
         CustomerEntity $customer,
         string $identification,
-        DateTime $signatureDate,
+        \DateTime $signatureDate,
         SalesChannelContext $context
     ): void {
         $mandate = $this->getExistingMandate(
@@ -67,10 +61,10 @@ class MandateService implements MandateServiceInterface
         );
 
         $data = [
-            'id'             => null === $mandate ? Uuid::randomHex() : $mandate->getId(),
+            'id' => $mandate === null ? Uuid::randomHex() : $mandate->getId(),
             'identification' => $identification,
-            'signatureDate'  => $signatureDate,
-            'customerId'     => $customer->getId(),
+            'signatureDate' => $signatureDate,
+            'customerId' => $customer->getId(),
         ];
 
         $this->mandateRepository->upsert([$data], $context->getContext());
@@ -87,7 +81,7 @@ class MandateService implements MandateServiceInterface
             $context->getContext()
         );
 
-        if (null === $mandate) {
+        if ($mandate === null) {
             throw new FileNotFoundException('mandate not found');
         }
 
@@ -101,8 +95,8 @@ class MandateService implements MandateServiceInterface
 
         try {
             $response = $this->client->request($request, false);
-        } catch (Throwable $exception) {
-            throw new RuntimeException('mandate not found');
+        } catch (\Throwable $exception) {
+            throw new \RuntimeException('mandate not found');
         }
 
         return (string) $response['data'];

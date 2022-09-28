@@ -38,7 +38,7 @@ class WebhookProcessorTest extends TestCase
 {
     public function testItAppointsCreditCard(): void
     {
-        $context             = Context::createDefaultContext();
+        $context = Context::createDefaultContext();
         $salesChannelContext = Generator::createSalesChannelContext($context);
         $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
 
@@ -59,7 +59,7 @@ class WebhookProcessorTest extends TestCase
 
     public function testItPartialCapturesCreditCard(): void
     {
-        $context             = Context::createDefaultContext();
+        $context = Context::createDefaultContext();
         $salesChannelContext = Generator::createSalesChannelContext($context);
         $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
 
@@ -81,7 +81,7 @@ class WebhookProcessorTest extends TestCase
 
     public function testItFullCapturesCreditCard(): void
     {
-        $context             = Context::createDefaultContext();
+        $context = Context::createDefaultContext();
         $salesChannelContext = Generator::createSalesChannelContext($context);
         $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
 
@@ -104,7 +104,7 @@ class WebhookProcessorTest extends TestCase
 
     public function testItProcessesPaidCreditCard(): void
     {
-        $context             = Context::createDefaultContext();
+        $context = Context::createDefaultContext();
         $salesChannelContext = Generator::createSalesChannelContext($context);
         $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
 
@@ -125,12 +125,12 @@ class WebhookProcessorTest extends TestCase
 
     protected function getWebhookProcessor(string $transition, array $transactionData): WebhookProcessorInterface
     {
-        $context             = Context::createDefaultContext();
+        $context = Context::createDefaultContext();
         $salesChannelContext = Generator::createSalesChannelContext($context);
         $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
 
         $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
-        $stateMachineRegistry->expects($this->once())->method('transition')->with(
+        $stateMachineRegistry->expects(static::once())->method('transition')->with(
             new Transition(
                 OrderTransactionDefinition::ENTITY_NAME,
                 Constants::ORDER_TRANSACTION_ID,
@@ -150,14 +150,16 @@ class WebhookProcessorTest extends TestCase
                 new CashRoundingConfig(
                     Constants::CURRENCY_DECIMAL_PRECISION,
                     Constants::ROUNDING_INTERVAL,
-                    true)
+                    true
+                )
             );
 
             $currency->setTotalRounding(
                 new CashRoundingConfig(
                     Constants::CURRENCY_DECIMAL_PRECISION,
                     Constants::ROUNDING_INTERVAL,
-                    true)
+                    true
+                )
             );
         }
 
@@ -177,11 +179,14 @@ class WebhookProcessorTest extends TestCase
 
         $orderTransactionEntity->setOrder($orderEntity);
 
-        $payoneTransactionData                    = new PayonePaymentOrderTransactionDataEntity();
-        $payoneTransactionData->transactionId     = Constants::PAYONE_TRANSACTION_ID;
-        $payoneTransactionData->sequenceNumber    = 0;
-        $payoneTransactionData->lastRequest       = 'authorization';
-        $payoneTransactionData->authorizationType = 'authorization';
+        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
+        $payoneTransactionData->assign([
+            'transactionId' => Constants::PAYONE_TRANSACTION_ID,
+            'sequenceNumber' => 0,
+            'lastRequest' => 'authorization',
+            'authorizationType' => 'authorization',
+        ]);
+
         $orderTransactionEntity->addExtension(
             PayonePaymentOrderTransactionExtension::NAME,
             $payoneTransactionData
@@ -192,15 +197,15 @@ class WebhookProcessorTest extends TestCase
         $orderTransactionEntity->setStateMachineState($stateMachineState);
 
         $configuration = [
-            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_APPOINTED)       => StateMachineTransitionActions::ACTION_REOPEN,
-            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_CANCELATION)     => StateMachineTransitionActions::ACTION_CANCEL,
-            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_FAILED)          => StateMachineTransitionActions::ACTION_CANCEL,
-            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_DEBIT)           => StateMachineTransitionActions::ACTION_REFUND,
-            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_PARTIAL_DEBIT)   => StateMachineTransitionActions::ACTION_REFUND_PARTIALLY,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_APPOINTED) => StateMachineTransitionActions::ACTION_REOPEN,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_CANCELATION) => StateMachineTransitionActions::ACTION_CANCEL,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_FAILED) => StateMachineTransitionActions::ACTION_CANCEL,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_DEBIT) => StateMachineTransitionActions::ACTION_REFUND,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_PARTIAL_DEBIT) => StateMachineTransitionActions::ACTION_REFUND_PARTIALLY,
             TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_PARTIAL_CAPTURE) => StateMachineTransitionActions::ACTION_PAID_PARTIALLY,
-            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_CAPTURE)         => StateMachineTransitionActions::ACTION_PAID,
-            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_PAID)            => StateMachineTransitionActions::ACTION_PAID,
-            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_COMPLETED)       => StateMachineTransitionActions::ACTION_PAID,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_CAPTURE) => StateMachineTransitionActions::ACTION_PAID,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_PAID) => StateMachineTransitionActions::ACTION_PAID,
+            TransactionStatusService::STATUS_PREFIX . ucfirst(TransactionStatusService::ACTION_COMPLETED) => StateMachineTransitionActions::ACTION_PAID,
         ];
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
@@ -212,8 +217,8 @@ class WebhookProcessorTest extends TestCase
         $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
-        $transactionDataHandler->expects($this->once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
-        $transactionDataHandler->expects($this->once())->method('getTransactionDataFromWebhook')->willReturn($transactionData);
+        $transactionDataHandler->expects(static::once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
+        $transactionDataHandler->expects(static::once())->method('getTransactionDataFromWebhook')->willReturn($transactionData);
 
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
             $transactionStatusService,

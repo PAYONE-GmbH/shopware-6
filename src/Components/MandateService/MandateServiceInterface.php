@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\MandateService;
 
-use DateTime;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -19,7 +18,7 @@ interface MandateServiceInterface
     public function saveMandate(
         CustomerEntity $customer,
         string $identification,
-        DateTime $signatureDate,
+        \DateTime $signatureDate,
         SalesChannelContext $context
     ): void;
 

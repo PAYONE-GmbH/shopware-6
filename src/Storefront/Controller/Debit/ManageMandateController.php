@@ -15,22 +15,19 @@ use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Throwable;
 
 class ManageMandateController extends StorefrontController
 {
-    /** @var RequestParameterFactory */
-    private $requestFactory;
+    private RequestParameterFactory $requestFactory;
 
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
     public function __construct(
         RequestParameterFactory $mandateRequestFactory,
         PayoneClientInterface $client
     ) {
         $this->requestFactory = $mandateRequestFactory;
-        $this->client         = $client;
+        $this->client = $client;
     }
 
     /**
@@ -62,7 +59,7 @@ class ManageMandateController extends StorefrontController
             $response = [
                 'error' => $exception->getResponse()['error']['CustomerMessage'],
             ];
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $response = [
                 'error' => $this->trans('PayonePayment.errorMessages.genericError'),
             ];

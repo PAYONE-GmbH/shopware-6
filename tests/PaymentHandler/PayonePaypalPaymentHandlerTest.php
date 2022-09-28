@@ -29,26 +29,26 @@ class PayonePaypalPaymentHandlerTest extends TestCase
     public function testItPerformsPaymentAndReturnsCorrectRedirectUrl(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = new RequestDataBag();
+        $dataBag = new RequestDataBag();
 
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects($this->once())->method('request')->willReturn(
+        $client->expects(static::once())->method('request')->willReturn(
             [
                 'status' => 'test-status',
-                'txid'   => '',
+                'txid' => '',
                 'userid' => '',
             ]
         );
 
         $requestFactory = $this->createMock(RequestParameterFactory::class);
-        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+        $requestFactory->expects(static::once())->method('getRequestParameter')->willReturn(
             [
-                'request'    => '',
+                'request' => '',
                 'successurl' => 'test-url',
             ]
         );
 
-        $paymentHandler     = $this->getPaymentHandler($client, $dataBag, $requestFactory);
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $requestFactory);
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
             PayonePaypalPaymentHandler::class
@@ -64,7 +64,7 @@ class PayonePaypalPaymentHandlerTest extends TestCase
         RequestDataBag $dataBag,
         RequestParameterFactory $requestFactory
     ): PayonePaypalPaymentHandler {
-        $translator   = $this->getContainer()->get('translator');
+        $translator = $this->getContainer()->get('translator');
         $configReader = new ConfigReaderMock([
             'paypalAuthorizationMethod' => 'authorization',
         ]);

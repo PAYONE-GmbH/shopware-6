@@ -23,8 +23,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class RefundTransactionHandler extends AbstractTransactionHandler implements RefundTransactionHandlerInterface
 {
-    /** @var TransactionStatusServiceInterface */
-    private $transactionStatusService;
+    private TransactionStatusServiceInterface $transactionStatusService;
 
     public function __construct(
         RequestParameterFactory $requestFactory,
@@ -35,13 +34,13 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         EntityRepositoryInterface $lineItemRepository,
         CurrencyPrecisionInterface $currencyPrecision
     ) {
-        $this->requestFactory           = $requestFactory;
-        $this->client                   = $client;
-        $this->dataHandler              = $dataHandler;
+        $this->requestFactory = $requestFactory;
+        $this->client = $client;
+        $this->dataHandler = $dataHandler;
         $this->transactionStatusService = $transactionStatusService;
-        $this->transactionRepository    = $transactionRepository;
-        $this->lineItemRepository       = $lineItemRepository;
-        $this->currencyPrecision        = $currencyPrecision;
+        $this->transactionRepository = $transactionRepository;
+        $this->lineItemRepository = $lineItemRepository;
+        $this->currencyPrecision = $currencyPrecision;
     }
 
     /**

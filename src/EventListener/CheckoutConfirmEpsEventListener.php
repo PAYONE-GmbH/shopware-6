@@ -22,9 +22,9 @@ class CheckoutConfirmEpsEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hideEpsForNonAtCustomers',
+            CheckoutConfirmPageLoadedEvent::class => 'hideEpsForNonAtCustomers',
             AccountPaymentMethodPageLoadedEvent::class => 'hideEpsForNonAtCustomers',
-            AccountEditOrderPageLoadedEvent::class     => 'hideEpsForNonAtCustomers',
+            AccountEditOrderPageLoadedEvent::class => 'hideEpsForNonAtCustomers',
         ];
     }
 
@@ -36,8 +36,8 @@ class CheckoutConfirmEpsEventListener implements EventSubscriberInterface
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
         if (
-            $this->isEuroCurrency($event->getSalesChannelContext()) &&
-            $this->isAtCustomer($event->getSalesChannelContext())
+            $this->isEuroCurrency($event->getSalesChannelContext())
+            && $this->isAtCustomer($event->getSalesChannelContext())
         ) {
             return;
         }
@@ -63,13 +63,13 @@ class CheckoutConfirmEpsEventListener implements EventSubscriberInterface
     {
         $customer = $context->getCustomer();
 
-        if (null === $customer) {
+        if ($customer === null) {
             return false;
         }
 
         $billingAddress = $customer->getActiveBillingAddress();
 
-        if (null === $billingAddress || null === $billingAddress->getCountry()) {
+        if ($billingAddress === null || $billingAddress->getCountry() === null) {
             return false;
         }
 

@@ -10,7 +10,9 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class PreAuthorizeRequestParameterBuilder extends AuthorizeRequestParameterBuilder
 {
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return array_merge(parent::getRequestParameter($arguments), [
@@ -25,7 +27,7 @@ class PreAuthorizeRequestParameterBuilder extends AuthorizeRequestParameterBuild
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayoneSecureInvoicePaymentHandler::class && $action === self::REQUEST_ACTION_PREAUTHORIZE;
     }

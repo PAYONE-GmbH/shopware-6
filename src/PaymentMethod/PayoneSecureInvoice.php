@@ -9,37 +9,30 @@ use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 
 class PayoneSecureInvoice extends AbstractPaymentMethod
 {
-    public const UUID                 = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
+    public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
     public const BUSINESSRELATION_B2B = 'b2b';
     public const BUSINESSRELATION_B2C = 'b2c';
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Secure Invoice';
+    protected string $name = 'PAYONE Secure Invoice';
 
-    /** @var string */
-    protected $description = 'Secure invoice payment.';
+    protected string $description = 'Secure invoice payment.';
 
-    /** @var string */
-    protected $paymentHandler = PayoneSecureInvoicePaymentHandler::class;
+    protected string $paymentHandler = PayoneSecureInvoicePaymentHandler::class;
 
-    /** @var null|string */
-    protected $template = '@Storefront/storefront/payone/secure-invoice/secure-invoice.html.twig';
+    protected ?string $template = '@Storefront/storefront/payone/secure-invoice/secure-invoice.html.twig';
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Gesicherter Rechnungskauf',
+            'name' => 'PAYONE Gesicherter Rechnungskauf',
             'description' => 'Abgesichert bezahlen per Rechnung.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE Secure Invoice',
+            'name' => 'PAYONE Secure Invoice',
             'description' => 'Secure pay by invoice. After reception of goods.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 114;
+    protected int $position = 114;
 }

@@ -16,8 +16,7 @@ class CheckoutDetailsStruct extends AbstractRequestParameterStruct
     use CartTrait;
     use WorkOrderIdTrait;
 
-    /** @var string */
-    protected $returnUrl;
+    protected string $returnUrl;
 
     public function __construct(
         Cart $cart,
@@ -27,12 +26,12 @@ class CheckoutDetailsStruct extends AbstractRequestParameterStruct
         string $returnUrl = '',
         string $workorderId = ''
     ) {
-        $this->cart                = $cart;
+        $this->cart = $cart;
         $this->salesChannelContext = $salesChannelContext;
-        $this->paymentMethod       = $paymentMethod;
-        $this->action              = $action;
-        $this->returnUrl           = $returnUrl;
-        $this->workorderId         = $workorderId;
+        $this->paymentMethod = $paymentMethod;
+        $this->action = $action;
+        $this->returnUrl = $returnUrl;
+        $this->workorderId = $workorderId;
     }
 
     public function getReturnUrl(): string

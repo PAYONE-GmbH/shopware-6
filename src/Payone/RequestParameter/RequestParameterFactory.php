@@ -7,7 +7,6 @@ namespace PayonePayment\Payone\RequestParameter;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
-use RuntimeException;
 
 class RequestParameterFactory
 {
@@ -20,8 +19,10 @@ class RequestParameterFactory
         'solution_version',
     ];
 
-    /** @var iterable<AbstractRequestParameterBuilder> */
-    private $requestParameterBuilder;
+    /**
+     * @var iterable<AbstractRequestParameterBuilder>
+     */
+    private iterable $requestParameterBuilder;
 
     public function __construct(iterable $requestParameterBuilder)
     {
@@ -41,7 +42,7 @@ class RequestParameterFactory
         $parameters = array_merge(...$collectedParameters);
 
         if (empty($parameters)) {
-            throw new RuntimeException('No valid request parameter builder found');
+            throw new \RuntimeException('No valid request parameter builder found');
         }
 
         $parameters = $this->createRequest($parameters);
@@ -60,7 +61,7 @@ class RequestParameterFactory
 
     private function createRequest(array $parameters): array
     {
-        ksort($parameters, SORT_NATURAL | SORT_FLAG_CASE);
+        ksort($parameters, \SORT_NATURAL | \SORT_FLAG_CASE);
 
         if (empty($parameters['key'])) {
             return $parameters;
@@ -69,7 +70,9 @@ class RequestParameterFactory
         $this->generateParameterHash($parameters);
         $parameters['key'] = hash('md5', $parameters['key']);
 
-        return array_filter($parameters, static function ($value) { return $value !== null && $value !== ''; });
+        return array_filter($parameters, static function ($value) {
+            return $value !== null && $value !== '';
+        });
     }
 
     private function generateParameterHash(array &$parameters): void

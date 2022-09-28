@@ -236,6 +236,8 @@ Wartung
 
 Wartung
 
+* Unterstützung für 6.3 entfernt
+* Allgemeine Code Optimierungen
 * Die Transaktionsdaten wurden von den customFields in eine EntityExtension verlagert
 
 ### Lesen der Transaktionsdaten ###

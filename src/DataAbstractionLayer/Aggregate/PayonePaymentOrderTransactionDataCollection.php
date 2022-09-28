@@ -11,9 +11,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  * @method void                                         set(string $key, PayonePaymentOrderTransactionDataEntity $entity)
  * @method PayonePaymentOrderTransactionDataEntity[]    getIterator()
  * @method PayonePaymentOrderTransactionDataEntity[]    getElements()
- * @method null|PayonePaymentOrderTransactionDataEntity get(string $key)
- * @method null|PayonePaymentOrderTransactionDataEntity first()
- * @method null|PayonePaymentOrderTransactionDataEntity last()
+ * @method PayonePaymentOrderTransactionDataEntity|null get(string $key)
+ * @method PayonePaymentOrderTransactionDataEntity|null first()
+ * @method PayonePaymentOrderTransactionDataEntity|null last()
  */
 class PayonePaymentOrderTransactionDataCollection extends EntityCollection
 {

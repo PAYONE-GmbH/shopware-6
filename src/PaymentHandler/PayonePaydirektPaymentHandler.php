@@ -23,24 +23,18 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 class PayonePaydirektPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
-    /** @var PaymentStateHandlerInterface */
-    private $stateHandler;
+    private PaymentStateHandlerInterface $stateHandler;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -54,10 +48,10 @@ class PayonePaydirektPaymentHandler extends AbstractPayonePaymentHandler impleme
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client                  = $client;
-        $this->translator              = $translator;
-        $this->dataHandler             = $dataHandler;
-        $this->stateHandler            = $stateHandler;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
+        $this->stateHandler = $stateHandler;
         $this->requestParameterFactory = $requestParameterFactory;
     }
 
@@ -92,7 +86,7 @@ class PayonePaydirektPaymentHandler extends AbstractPayonePaymentHandler impleme
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')

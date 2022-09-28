@@ -26,45 +26,40 @@ use Shopware\Core\System\StateMachine\Transition;
 
 class TransactionStatusService implements TransactionStatusServiceInterface
 {
-    public const ACTION_APPOINTED       = 'appointed';
-    public const ACTION_PAID            = 'paid';
-    public const ACTION_CAPTURE         = 'capture';
+    public const ACTION_APPOINTED = 'appointed';
+    public const ACTION_PAID = 'paid';
+    public const ACTION_CAPTURE = 'capture';
     public const ACTION_PARTIAL_CAPTURE = 'partialCapture';
-    public const ACTION_COMPLETED       = 'completed';
-    public const ACTION_DEBIT           = 'debit';
-    public const ACTION_PARTIAL_DEBIT   = 'partialDebit';
-    public const ACTION_CANCELATION     = 'cancelation';
-    public const ACTION_FAILED          = 'failed';
-    public const ACTION_REDIRECT        = 'redirect';
-    public const ACTION_INVOICE         = 'invoice';
-    public const ACTION_UNDERPAID       = 'underpaid';
-    public const ACTION_TRANSFER        = 'transfer';
-    public const ACTION_REMINDER        = 'reminder';
-    public const ACTION_VAUTHORIZATION  = 'vauthorization';
-    public const ACTION_VSETTLEMENT     = 'vsettlement';
+    public const ACTION_COMPLETED = 'completed';
+    public const ACTION_DEBIT = 'debit';
+    public const ACTION_PARTIAL_DEBIT = 'partialDebit';
+    public const ACTION_CANCELATION = 'cancelation';
+    public const ACTION_FAILED = 'failed';
+    public const ACTION_REDIRECT = 'redirect';
+    public const ACTION_INVOICE = 'invoice';
+    public const ACTION_UNDERPAID = 'underpaid';
+    public const ACTION_TRANSFER = 'transfer';
+    public const ACTION_REMINDER = 'reminder';
+    public const ACTION_VAUTHORIZATION = 'vauthorization';
+    public const ACTION_VSETTLEMENT = 'vsettlement';
 
-    public const STATUS_PREFIX    = 'paymentStatus';
+    public const STATUS_PREFIX = 'paymentStatus';
     public const STATUS_COMPLETED = 'completed';
 
-    public const AUTHORIZATION_TYPE_AUTHORIZATION    = 'authorization';
+    public const AUTHORIZATION_TYPE_AUTHORIZATION = 'authorization';
     public const AUTHORIZATION_TYPE_PREAUTHORIZATION = 'preauthorization';
 
     public const TRANSACTION_TYPE_GT = 'GT';
 
-    /** @var StateMachineRegistry */
-    private $stateMachineRegistry;
+    private StateMachineRegistry $stateMachineRegistry;
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
-    /** @var EntityRepositoryInterface */
-    private $transactionRepository;
+    private EntityRepositoryInterface $transactionRepository;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /** @var CurrencyPrecisionInterface */
-    private $currencyPrecision;
+    private CurrencyPrecisionInterface $currencyPrecision;
 
     public function __construct(
         StateMachineRegistry $stateMachineRegistry,
@@ -73,11 +68,11 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         LoggerInterface $logger,
         CurrencyPrecisionInterface $currencyPrecision
     ) {
-        $this->stateMachineRegistry  = $stateMachineRegistry;
-        $this->configReader          = $configReader;
+        $this->stateMachineRegistry = $stateMachineRegistry;
+        $this->configReader = $configReader;
         $this->transactionRepository = $transactionRepository;
-        $this->logger                = $logger;
-        $this->currencyPrecision     = $currencyPrecision;
+        $this->logger = $logger;
+        $this->currencyPrecision = $currencyPrecision;
     }
 
     public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, PaymentTransaction $paymentTransaction, array $transactionData): void
@@ -86,12 +81,12 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return;
         }
 
-        $configuration    = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $currency         = $paymentTransaction->getOrder()->getCurrency();
+        $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $currency = $paymentTransaction->getOrder()->getCurrency();
         $orderTransaction = $paymentTransaction->getOrderTransaction();
-        $paymentMethod    = $orderTransaction->getPaymentMethod();
+        $paymentMethod = $orderTransaction->getPaymentMethod();
 
-        if (null === $currency) {
+        if ($currency === null) {
             return;
         }
 
@@ -105,17 +100,18 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
         $transitionName = $configuration->getString($configurationKey);
 
-        if (null !== $paymentMethod) {
+        if ($paymentMethod !== null) {
             $configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentMethod->getHandlerIdentifier()];
             /** @var string $transitionName */
             $transitionName = $configuration->getByPrefix($configurationKey, $configurationPrefix, $configuration->getString($configurationKey));
         }
 
         if (empty($transitionName)) {
-            $this->logger->info('No status transition configured',
+            $this->logger->info(
+                'No status transition configured',
                 [
                     'configurationKey' => $configurationKey,
-                    'paymentMethod'    => (null !== $paymentMethod) ? $paymentMethod->getHandlerIdentifier() : 'unknown',
+                    'paymentMethod' => ($paymentMethod !== null) ? $paymentMethod->getHandlerIdentifier() : 'unknown',
                 ]
             );
 
@@ -134,7 +130,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     {
         $transactionCriteria = (new Criteria([$transactionId]))
             ->addAssociation('stateMachineState');
-        /** @var null|OrderTransactionEntity $transaction */
+        /** @var OrderTransactionEntity|null $transaction */
         $transaction = $this->transactionRepository->search($transactionCriteria, $context)->first();
 
         if ($transaction === null || $transaction->getStateMachineState() === null) {
@@ -164,27 +160,27 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPartialPaid(array $transactionData, CurrencyEntity $currency): bool
     {
-        if (!in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE, self::ACTION_INVOICE], true)) {
+        if (!\in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE, self::ACTION_INVOICE], true)) {
             return false;
         }
 
-        if (array_key_exists('transactiontype', $transactionData) && $transactionData['transactiontype'] === TransactionStatusService::TRANSACTION_TYPE_GT) {
+        if (\array_key_exists('transactiontype', $transactionData) && $transactionData['transactiontype'] === TransactionStatusService::TRANSACTION_TYPE_GT) {
             return false;
         }
 
         $precision = $this->currencyPrecision->getTotalRoundingPrecision($currency);
 
-        if (array_key_exists('receivable', $transactionData) && (int) round(((float) $transactionData['receivable'] * (10 ** $precision))) === 0) {
+        if (\array_key_exists('receivable', $transactionData) && (int) round((float) $transactionData['receivable'] * (10 ** $precision)) === 0) {
             return false;
         }
 
-        if (array_key_exists('price', $transactionData) && array_key_exists('receivable', $transactionData) &&
-            (int) round(((float) $transactionData['receivable'] * (10 ** $precision))) === (int) round(((float) $transactionData['price'] * (10 ** $precision)))) {
+        if (\array_key_exists('price', $transactionData) && \array_key_exists('receivable', $transactionData)
+            && (int) round((float) $transactionData['receivable'] * (10 ** $precision)) === (int) round((float) $transactionData['price'] * (10 ** $precision))) {
             return false;
         }
 
-        if (array_key_exists('price', $transactionData) && array_key_exists('invoice_grossamount', $transactionData) &&
-            (int) round(((float) $transactionData['invoice_grossamount'] * (10 ** $precision))) === (int) round(((float) $transactionData['price'] * (10 ** $precision)))) {
+        if (\array_key_exists('price', $transactionData) && \array_key_exists('invoice_grossamount', $transactionData)
+            && (int) round((float) $transactionData['invoice_grossamount'] * (10 ** $precision)) === (int) round((float) $transactionData['price'] * (10 ** $precision))) {
             return false;
         }
 
@@ -199,15 +195,15 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if (!array_key_exists('receivable', $transactionData)) {
+        if (!\array_key_exists('receivable', $transactionData)) {
             return false;
         }
 
-        if (array_key_exists('transactiontype', $transactionData) && $transactionData['transactiontype'] !== self::TRANSACTION_TYPE_GT) {
+        if (\array_key_exists('transactiontype', $transactionData) && $transactionData['transactiontype'] !== self::TRANSACTION_TYPE_GT) {
             return false;
         }
 
-        if ((int) round(((float) $transactionData['receivable'] * (10 ** $precision))) === 0) {
+        if ((int) round((float) $transactionData['receivable'] * (10 ** $precision)) === 0) {
             return false;
         }
 
@@ -216,15 +212,15 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isAsyncCancelled(PaymentTransaction $paymentTransaction, array $transactionData): bool
     {
-        /** @var null|PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        /** @var PayonePaymentOrderTransactionDataEntity|null $payoneTransactionData */
         $payoneTransactionData = $paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        if (null === $payoneTransactionData || empty($payoneTransactionData->getTransactionData())) {
+        if ($payoneTransactionData === null || empty($payoneTransactionData->getTransactionData())) {
             return false;
         }
 
         $payoneTransactionDataHistory = $payoneTransactionData->getTransactionData();
-        $firstTransaction             = $payoneTransactionDataHistory[array_key_first($payoneTransactionDataHistory)];
+        $firstTransaction = $payoneTransactionDataHistory[array_key_first($payoneTransactionDataHistory)];
 
         if ($this->isFailedRedirect($firstTransaction, $transactionData)) {
             return true;
@@ -235,10 +231,9 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isFailedRedirect(array $firstTransaction, array $transactionData): bool
     {
-        return
-            array_key_exists('response', $firstTransaction) &&
-            array_key_exists('status', $firstTransaction['response']) &&
-            $firstTransaction['response']['status'] === strtoupper(self::ACTION_REDIRECT) &&
-            strtolower($transactionData['txaction']) === self::ACTION_FAILED;
+        return \array_key_exists('response', $firstTransaction)
+            && \array_key_exists('status', $firstTransaction['response'])
+            && $firstTransaction['response']['status'] === strtoupper(self::ACTION_REDIRECT)
+            && strtolower($transactionData['txaction']) === self::ACTION_FAILED;
     }
 }

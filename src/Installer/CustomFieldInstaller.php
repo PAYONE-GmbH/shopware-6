@@ -15,36 +15,32 @@ use Shopware\Core\System\CustomField\CustomFieldTypes;
 
 class CustomFieldInstaller implements InstallerInterface
 {
-    public const CAPTURED_QUANTITY     = 'payone_captured_quantity';
-    public const REFUNDED_QUANTITY     = 'payone_refunded_quantity';
+    public const CAPTURED_QUANTITY = 'payone_captured_quantity';
+    public const REFUNDED_QUANTITY = 'payone_refunded_quantity';
     public const CUSTOMER_PHONE_NUMBER = 'payone_customer_phone_number';
 
     public const FIELDSET_ID_ORDER_TRANSACTION = 'aacbcf9bedfb4827853b75c5fd278d3f';
-    public const FIELDSET_ID_ORDER_LINE_ITEM   = '12f3f06c895e11eabc550242ac130003';
-    public const FIELDSET_ID_PAYMENT_METHOD    = 'ed39626e94fd4dfe9d81976fdbcdb06c';
-    public const FIELDSET_ID_CUSTOMER          = '8e4a0b8f7eb04272ad874f3b22cf4935';
+    public const FIELDSET_ID_ORDER_LINE_ITEM = '12f3f06c895e11eabc550242ac130003';
+    public const FIELDSET_ID_PAYMENT_METHOD = 'ed39626e94fd4dfe9d81976fdbcdb06c';
+    public const FIELDSET_ID_CUSTOMER = '8e4a0b8f7eb04272ad874f3b22cf4935';
 
-    /** @var EntityRepositoryInterface */
-    private $customFieldRepository;
+    private EntityRepositoryInterface $customFieldRepository;
 
-    /** @var EntityRepositoryInterface */
-    private $customFieldSetRepository;
+    private EntityRepositoryInterface $customFieldSetRepository;
 
-    /** @var array */
-    private $customFields;
+    private array $customFields;
 
-    /** @var array */
-    private $customFieldSets;
+    private array $customFieldSets;
 
     public function __construct(EntityRepositoryInterface $customFieldSetRepository, EntityRepositoryInterface $customFieldRepository)
     {
         $this->customFieldSetRepository = $customFieldSetRepository;
-        $this->customFieldRepository    = $customFieldRepository;
+        $this->customFieldRepository = $customFieldRepository;
 
         $this->customFieldSets = [
             [
-                'id'     => self::FIELDSET_ID_PAYMENT_METHOD,
-                'name'   => 'payment_method_payone_payment',
+                'id' => self::FIELDSET_ID_PAYMENT_METHOD,
+                'name' => 'payment_method_payone_payment',
                 'config' => [
                     'label' => [
                         'en-GB' => 'PAYONE',
@@ -52,13 +48,13 @@ class CustomFieldInstaller implements InstallerInterface
                     ],
                 ],
                 'relation' => [
-                    'id'         => '5dfd8e25dbbb41e880eeba3c7108d108',
+                    'id' => '5dfd8e25dbbb41e880eeba3c7108d108',
                     'entityName' => 'payment_method',
                 ],
             ],
             [
-                'id'     => self::FIELDSET_ID_ORDER_LINE_ITEM,
-                'name'   => 'order_line_item_payone_payment',
+                'id' => self::FIELDSET_ID_ORDER_LINE_ITEM,
+                'name' => 'order_line_item_payone_payment',
                 'config' => [
                     'label' => [
                         'en-GB' => 'PAYONE',
@@ -66,13 +62,13 @@ class CustomFieldInstaller implements InstallerInterface
                     ],
                 ],
                 'relation' => [
-                    'id'         => '0f2e6036750a4eb98ffe7155be89a5a6',
+                    'id' => '0f2e6036750a4eb98ffe7155be89a5a6',
                     'entityName' => 'order_line_item',
                 ],
             ],
             [
-                'id'     => self::FIELDSET_ID_CUSTOMER,
-                'name'   => 'customer_payone_payment',
+                'id' => self::FIELDSET_ID_CUSTOMER,
+                'name' => 'customer_payone_payment',
                 'config' => [
                     'label' => [
                         'en-GB' => 'PAYONE',
@@ -81,35 +77,35 @@ class CustomFieldInstaller implements InstallerInterface
                     'translated' => true,
                 ],
                 'relation' => [
-                    'id'         => '4b23593512f848d8ba360985de234a1b',
+                    'id' => '4b23593512f848d8ba360985de234a1b',
                     'entityName' => 'customer',
                 ],
             ],
         ];
 
         $this->customFields = [
-             [
-                'id'               => 'e3583a4c893611eabc550242ac130003',
-                'name'             => self::CAPTURED_QUANTITY,
-                'type'             => CustomFieldTypes::INT,
+            [
+                'id' => 'e3583a4c893611eabc550242ac130003',
+                'name' => self::CAPTURED_QUANTITY,
+                'type' => CustomFieldTypes::INT,
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_LINE_ITEM,
             ],
             [
-                'id'               => 'dd44a406893611eabc550242ac130003',
-                'name'             => self::REFUNDED_QUANTITY,
-                'type'             => CustomFieldTypes::INT,
+                'id' => 'dd44a406893611eabc550242ac130003',
+                'name' => self::REFUNDED_QUANTITY,
+                'type' => CustomFieldTypes::INT,
                 'customFieldSetId' => self::FIELDSET_ID_ORDER_LINE_ITEM,
             ],
             [
-                'id'               => 'e56cc871e9784c3b91dd755511dc0221',
-                'name'             => self::CUSTOMER_PHONE_NUMBER,
-                'type'             => CustomFieldTypes::TEXT,
+                'id' => 'e56cc871e9784c3b91dd755511dc0221',
+                'name' => self::CUSTOMER_PHONE_NUMBER,
+                'type' => CustomFieldTypes::TEXT,
                 'customFieldSetId' => self::FIELDSET_ID_CUSTOMER,
-                'config'           => [
-                    'componentName'   => 'sw-field',
+                'config' => [
+                    'componentName' => 'sw-field',
                     'customFieldType' => CustomFieldTypes::TEXT,
-                    'type'            => CustomFieldTypes::TEXT,
-                    'label'           => [
+                    'type' => CustomFieldTypes::TEXT,
+                    'label' => [
                         'en-GB' => 'Phone Number',
                         'de-DE' => 'Telefonnummer',
                     ],
@@ -180,12 +176,12 @@ class CustomFieldInstaller implements InstallerInterface
     private function upsertCustomField(array $customField, Context $context): void
     {
         $data = [
-            'id'               => $customField['id'],
-            'name'             => $customField['name'],
-            'type'             => $customField['type'],
-            'active'           => true,
+            'id' => $customField['id'],
+            'name' => $customField['name'],
+            'type' => $customField['type'],
+            'active' => true,
             'customFieldSetId' => $customField['customFieldSetId'],
-            'config'           => $customField['config'] ?? [],
+            'config' => $customField['config'] ?? [],
         ];
 
         $this->customFieldRepository->upsert([$data], $context);
@@ -194,10 +190,10 @@ class CustomFieldInstaller implements InstallerInterface
     private function deactivateCustomField(array $customField, Context $context): void
     {
         $data = [
-            'id'               => $customField['id'],
-            'name'             => $customField['name'],
-            'type'             => $customField['type'],
-            'active'           => false,
+            'id' => $customField['id'],
+            'name' => $customField['name'],
+            'type' => $customField['type'],
+            'active' => false,
             'customFieldSetId' => $customField['customFieldSetId'],
         ];
 
@@ -207,13 +203,13 @@ class CustomFieldInstaller implements InstallerInterface
     private function upsertCustomFieldSet(array $customFieldSet, Context $context): void
     {
         $data = [
-            'id'        => $customFieldSet['id'],
-            'name'      => $customFieldSet['name'],
-            'config'    => $customFieldSet['config'],
-            'active'    => true,
+            'id' => $customFieldSet['id'],
+            'name' => $customFieldSet['name'],
+            'config' => $customFieldSet['config'],
+            'active' => true,
             'relations' => [
                 [
-                    'id'         => $customFieldSet['relation']['id'],
+                    'id' => $customFieldSet['relation']['id'],
                     'entityName' => $customFieldSet['relation']['entityName'],
                 ],
             ],
@@ -230,13 +226,13 @@ class CustomFieldInstaller implements InstallerInterface
     private function deactivateCustomFieldSet(array $customFieldSet, Context $context): void
     {
         $data = [
-            'id'        => $customFieldSet['id'],
-            'name'      => $customFieldSet['name'],
-            'config'    => $customFieldSet['config'],
-            'active'    => false,
+            'id' => $customFieldSet['id'],
+            'name' => $customFieldSet['name'],
+            'config' => $customFieldSet['config'],
+            'active' => false,
             'relations' => [
                 [
-                    'id'         => $customFieldSet['relation']['id'],
+                    'id' => $customFieldSet['relation']['id'],
                     'entityName' => $customFieldSet['relation']['entityName'],
                 ],
             ],

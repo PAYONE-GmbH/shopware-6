@@ -14,18 +14,20 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $dataBag            = $arguments->getRequestData();
+        $dataBag = $arguments->getRequestData();
         $paymentTransaction = $arguments->getPaymentTransaction();
-        $iban               = $this->validateIbanRequestParameter($dataBag, $paymentTransaction);
+        $iban = $this->validateIbanRequestParameter($dataBag, $paymentTransaction);
 
         return [
-            'clearingtype'           => self::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
+            'clearingtype' => self::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
             'onlinebanktransfertype' => 'TRL',
-            'iban'                   => $iban,
-            'request'                => self::REQUEST_ACTION_AUTHORIZE,
+            'iban' => $iban,
+            'request' => self::REQUEST_ACTION_AUTHORIZE,
         ];
     }
 
@@ -36,7 +38,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayoneTrustlyPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }
@@ -45,7 +47,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     {
         $iban = $dataBag->get('iban');
 
-        if (empty($iban) || !is_string($iban)) {
+        if (empty($iban) || !\is_string($iban)) {
             throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'Missing iban parameter.');
         }
 

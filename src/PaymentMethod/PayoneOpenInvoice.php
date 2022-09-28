@@ -11,33 +11,26 @@ class PayoneOpenInvoice extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Invoice';
+    protected string $name = 'PAYONE Invoice';
 
-    /** @var string */
-    protected $description = 'Open invoice payment.';
+    protected string $description = 'Open invoice payment.';
 
-    /** @var string */
-    protected $paymentHandler = PayoneOpenInvoicePaymentHandler::class;
+    protected string $paymentHandler = PayoneOpenInvoicePaymentHandler::class;
 
-    /** @var null|string */
-    protected $template = '@Storefront/storefront/payone/open-invoice/open-invoice.html.twig';
+    protected ?string $template = '@Storefront/storefront/payone/open-invoice/open-invoice.html.twig';
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Rechnungskauf',
+            'name' => 'PAYONE Rechnungskauf',
             'description' => 'Bezahlen per Rechnung.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE Invoice',
+            'name' => 'PAYONE Invoice',
             'description' => 'Pay by invoice.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 115;
+    protected int $position = 115;
 }

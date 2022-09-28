@@ -27,11 +27,11 @@ class PayolutionAdditionalActionStruct extends AbstractRequestParameterStruct
         string $action = '',
         string $workorderId = ''
     ) {
-        $this->cart                = $cart;
-        $this->requestData         = $requestData;
+        $this->cart = $cart;
+        $this->requestData = $requestData;
         $this->salesChannelContext = $salesChannelContext;
-        $this->paymentMethod       = $paymentMethod;
-        $this->action              = $action;
-        $this->workorderId         = $workorderId;
+        $this->paymentMethod = $paymentMethod;
+        $this->action = $action;
+        $this->workorderId = $workorderId;
     }
 }

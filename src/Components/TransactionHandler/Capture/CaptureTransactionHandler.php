@@ -23,8 +23,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class CaptureTransactionHandler extends AbstractTransactionHandler implements CaptureTransactionHandlerInterface
 {
-    /** @var TransactionStatusServiceInterface */
-    private $transactionStatusService;
+    private TransactionStatusServiceInterface $transactionStatusService;
 
     public function __construct(
         RequestParameterFactory $requestFactory,
@@ -35,13 +34,13 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         EntityRepositoryInterface $lineItemRepository,
         CurrencyPrecisionInterface $currencyPrecision
     ) {
-        $this->requestFactory           = $requestFactory;
-        $this->client                   = $client;
-        $this->dataHandler              = $dataHandler;
+        $this->requestFactory = $requestFactory;
+        $this->client = $client;
+        $this->dataHandler = $dataHandler;
         $this->transactionStatusService = $transactionStatusService;
-        $this->transactionRepository    = $transactionRepository;
-        $this->lineItemRepository       = $lineItemRepository;
-        $this->currencyPrecision        = $currencyPrecision;
+        $this->transactionRepository = $transactionRepository;
+        $this->lineItemRepository = $lineItemRepository;
+        $this->currencyPrecision = $currencyPrecision;
     }
 
     /**
@@ -61,7 +60,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
 
         /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
         $payoneTransactionData = $this->paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
-        $clearingType          = $payoneTransactionData->getClearingBankAccount();
+        $clearingType = $payoneTransactionData->getClearingBankAccount();
 
         // Filter payment methods that do not allow changing transaction status at this point
         if ($clearingType !== 'vor') {
@@ -124,15 +123,17 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
         $payoneTransactionData = $this->paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        if (null !== $payoneTransactionData->getClearingBankAccount()) {
+        if ($payoneTransactionData->getClearingBankAccount() !== null) {
             $currentClearingBankAccountData = $payoneTransactionData->getClearingBankAccount();
         }
         $newClearingBankAccountData = $payoneResponse['clearing']['BankAccount'] ?? null;
 
         if (!empty($newClearingBankAccountData)) {
-            $this->dataHandler->saveTransactionData($this->paymentTransaction, $this->context,
+            $this->dataHandler->saveTransactionData(
+                $this->paymentTransaction,
+                $this->context,
                 [
-                    'id'                  => $payoneTransactionData->getId(),
+                    'id' => $payoneTransactionData->getId(),
                     'clearingBankAccount' => array_merge(
                         $currentClearingBankAccountData,
                         $newClearingBankAccountData

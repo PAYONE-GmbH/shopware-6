@@ -19,8 +19,7 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var RedirectHandler */
-    protected $redirectHandler;
+    protected RedirectHandler $redirectHandler;
 
     public function __construct(
         RedirectHandler $redirectHandler
@@ -28,15 +27,17 @@ class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
         $this->redirectHandler = $redirectHandler;
     }
 
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         $paymentTransaction = $arguments->getPaymentTransaction();
 
         return [
             'successurl' => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=success'),
-            'errorurl'   => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=error'),
-            'backurl'    => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=cancel'),
+            'errorurl' => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=error'),
+            'backurl' => $this->encodeUrl($paymentTransaction->getReturnUrl() . '&state=cancel'),
         ];
     }
 

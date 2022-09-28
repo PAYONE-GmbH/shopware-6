@@ -13,21 +13,18 @@ class AccountMandatePageLoadedEvent extends NestedEvent
 {
     public const NAME = 'account-payone-mandate.page.loaded';
 
-    /** @var AccountMandatePage */
-    protected $page;
+    protected AccountMandatePage $page;
 
-    /** @var SalesChannelContext */
-    protected $context;
+    protected SalesChannelContext $context;
 
-    /** @var Request */
-    protected $request;
+    protected Request $request;
 
     public function __construct(
         AccountMandatePage $page,
         SalesChannelContext $context,
         Request $request
     ) {
-        $this->page    = $page;
+        $this->page = $page;
         $this->context = $context;
         $this->request = $request;
     }

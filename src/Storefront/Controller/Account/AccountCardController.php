@@ -13,20 +13,17 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Throwable;
 
 class AccountCardController extends StorefrontController
 {
-    /** @var AccountCardPageLoader */
-    private $accountCardPageLoader;
+    private AccountCardPageLoader $accountCardPageLoader;
 
-    /** @var AbstractCardRoute */
-    private $cardRoute;
+    private AbstractCardRoute $cardRoute;
 
     public function __construct(AccountCardPageLoader $accountCardPageLoader, AbstractCardRoute $cardRoute)
     {
         $this->accountCardPageLoader = $accountCardPageLoader;
-        $this->cardRoute             = $cardRoute;
+        $this->cardRoute = $cardRoute;
     }
 
     /**
@@ -48,7 +45,7 @@ class AccountCardController extends StorefrontController
     {
         try {
             $this->cardRoute->delete($request->get('pseudoCardPan'), $context);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->addFlash('danger', $this->trans('PayonePayment.cardPage.error'));
 
             return $this->forwardToRoute('frontend.account.payone.card.page');

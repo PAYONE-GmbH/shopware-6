@@ -16,13 +16,13 @@ trait ChecksBillingAddressCountry
     {
         $customer = $context->getCustomer();
 
-        if (null === $customer) {
+        if ($customer === null) {
             return false;
         }
 
         $billingAddress = $customer->getActiveBillingAddress();
 
-        if (null === $billingAddress || $billingAddress->getCountry() === null) {
+        if ($billingAddress === null || $billingAddress->getCountry() === null) {
             return false;
         }
 

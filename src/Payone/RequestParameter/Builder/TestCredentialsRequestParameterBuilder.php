@@ -9,7 +9,9 @@ use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 
 class TestCredentialsRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @param TestCredentialsStruct $arguments */
+    /**
+     * @param TestCredentialsStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return $arguments->getParameters();

@@ -15,16 +15,16 @@ class GetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionReques
     {
         /** @var CheckoutDetailsStruct $arguments */
         $currency = $this->getOrderCurrency(null, $arguments->getSalesChannelContext()->getContext());
-        $cart     = $arguments->getCart();
+        $cart = $arguments->getCart();
 
         return [
-            'request'             => self::REQUEST_ACTION_GENERIC_PAYMENT,
-            'clearingtype'        => self::CLEARING_TYPE_WALLET,
-            'wallettype'          => 'PPE',
+            'request' => self::REQUEST_ACTION_GENERIC_PAYMENT,
+            'clearingtype' => self::CLEARING_TYPE_WALLET,
+            'wallettype' => 'PPE',
             'add_paydata[action]' => 'getexpresscheckoutdetails',
-            'amount'              => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
-            'currency'            => $currency->getIsoCode(),
-            'workorderid'         => $arguments->getWorkorderId(),
+            'amount' => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
+            'currency' => $currency->getIsoCode(),
+            'workorderid' => $arguments->getWorkorderId(),
         ];
     }
 
@@ -35,7 +35,7 @@ class GetCheckoutDetailsRequestParameterBuilder extends GeneralTransactionReques
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayonePaypalExpressPaymentHandler::class && $action === self::REQUEST_ACTION_GET_EXPRESS_CHECKOUT_DETAILS;
     }

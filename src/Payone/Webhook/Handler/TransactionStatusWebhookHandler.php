@@ -13,14 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TransactionStatusWebhookHandler implements WebhookHandlerInterface
 {
-    /** @var TransactionStatusServiceInterface */
-    private $transactionStatusService;
+    private TransactionStatusServiceInterface $transactionStatusService;
 
-    /** @var TransactionDataHandlerInterface */
-    private $transactionDataHandler;
+    private TransactionDataHandlerInterface $transactionDataHandler;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
     public function __construct(
         TransactionStatusServiceInterface $transactionStatusService,
@@ -28,13 +25,13 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
         LoggerInterface $logger
     ) {
         $this->transactionStatusService = $transactionStatusService;
-        $this->transactionDataHandler   = $transactionDataHandler;
-        $this->logger                   = $logger;
+        $this->transactionDataHandler = $transactionDataHandler;
+        $this->logger = $logger;
     }
 
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool
     {
-        if (array_key_exists('txaction', $data)) {
+        if (\array_key_exists('txaction', $data)) {
             return true;
         }
 
@@ -48,13 +45,13 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
     {
         $data = $request->request->all();
 
-        /** @var null|PaymentTransaction $paymentTransaction */
+        /** @var PaymentTransaction|null $paymentTransaction */
         $paymentTransaction = $this->transactionDataHandler->getPaymentTransactionByPayoneTransactionId(
             $salesChannelContext->getContext(),
             (int) $data['txid']
         );
 
-        if (null === $paymentTransaction) {
+        if ($paymentTransaction === null) {
             $this->logger->warning(sprintf('Could not get transaction for id %s', (int) $data['txid']));
 
             return;
@@ -72,7 +69,7 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
     private function utf8EncodeRecursive(array $transactionData): array
     {
         foreach ($transactionData as &$transactionValue) {
-            if (is_array($transactionValue)) {
+            if (\is_array($transactionValue)) {
                 $transactionValue = $this->utf8EncodeRecursive($transactionValue);
 
                 continue;

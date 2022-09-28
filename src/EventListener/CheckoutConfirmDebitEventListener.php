@@ -15,8 +15,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
 {
-    /** @var AbstractMandateRoute */
-    private $mandateRoute;
+    private AbstractMandateRoute $mandateRoute;
 
     public function __construct(AbstractMandateRoute $mandateRoute)
     {
@@ -26,14 +25,14 @@ class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class  => 'addPayonePageData',
+            CheckoutConfirmPageLoadedEvent::class => 'addPayonePageData',
             AccountEditOrderPageLoadedEvent::class => 'addPayonePageData',
         ];
     }
 
     public function addPayonePageData(PageLoadedEvent $event): void
     {
-        $page    = $event->getPage();
+        $page = $event->getPage();
         $context = $event->getSalesChannelContext();
 
         if ($context->getPaymentMethod()->getId() !== PayoneDebit::UUID) {
@@ -42,7 +41,7 @@ class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
 
         $savedMandates = null;
 
-        if (null !== $context->getCustomer()) {
+        if ($context->getCustomer() !== null) {
             $savedMandates = $this->mandateRoute->load($context)->getSearchResult();
         }
 
@@ -50,7 +49,7 @@ class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
             ? $page->getExtension(CheckoutCartPaymentData::EXTENSION_NAME)
             : new CheckoutConfirmPaymentData();
 
-        if (null !== $payoneData) {
+        if ($payoneData !== null) {
             $payoneData->assign([
                 'savedMandates' => $savedMandates,
             ]);

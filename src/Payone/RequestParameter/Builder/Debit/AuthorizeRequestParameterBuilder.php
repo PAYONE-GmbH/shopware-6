@@ -11,14 +11,16 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'clearingtype'      => self::CLEARING_TYPE_DEBIT,
-            'request'           => self::REQUEST_ACTION_AUTHORIZE,
-            'iban'              => $arguments->getRequestData()->get('iban', ''),
-            'bic'               => $arguments->getRequestData()->get('bic', ''),
+            'clearingtype' => self::CLEARING_TYPE_DEBIT,
+            'request' => self::REQUEST_ACTION_AUTHORIZE,
+            'iban' => $arguments->getRequestData()->get('iban', ''),
+            'bic' => $arguments->getRequestData()->get('bic', ''),
             'bankaccountholder' => $arguments->getRequestData()->get('accountOwner', ''),
         ];
     }
@@ -30,7 +32,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayoneDebitPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }

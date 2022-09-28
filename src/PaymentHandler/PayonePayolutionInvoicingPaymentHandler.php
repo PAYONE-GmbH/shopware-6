@@ -22,21 +22,16 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -49,9 +44,9 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandl
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client                  = $client;
-        $this->translator              = $translator;
-        $this->dataHandler             = $dataHandler;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
         $this->requestParameterFactory = $requestParameterFactory;
     }
 
@@ -88,7 +83,7 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandl
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -103,11 +98,11 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandl
         }
 
         $data = $this->preparePayoneOrderTransactionData($request, $response, [
-            'workOrderId'       => $requestData->get('workorder'),
+            'workOrderId' => $requestData->get('workorder'),
             'clearingReference' => $response['addpaydata']['clearing_reference'],
-            'captureMode'       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-            'clearingType'      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-            'financingType'     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYV,
+            'captureMode' => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+            'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+            'financingType' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYV,
         ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
@@ -117,7 +112,7 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractPayonePaymentHandl
     {
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
-        $definitions['payolutionConsent']  = [new NotBlank()];
+        $definitions['payolutionConsent'] = [new NotBlank()];
         $definitions['payolutionBirthday'] = [new NotBlank(), new Birthday(['value' => $this->getMinimumDate()])];
 
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());

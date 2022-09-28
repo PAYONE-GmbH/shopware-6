@@ -21,8 +21,7 @@ class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
 {
     use RemovesPaymentMethod;
 
-    /** @var string */
-    private $kernelDirectory;
+    private string $kernelDirectory;
 
     public function __construct(string $kernelDirectory)
     {
@@ -32,9 +31,9 @@ class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hideApplePayForNonSafariUsers',
+            CheckoutConfirmPageLoadedEvent::class => 'hideApplePayForNonSafariUsers',
             AccountPaymentMethodPageLoadedEvent::class => 'hideApplePayForNonSafariUsers',
-            AccountEditOrderPageLoadedEvent::class     => 'hideApplePayForNonSafariUsers',
+            AccountEditOrderPageLoadedEvent::class => 'hideApplePayForNonSafariUsers',
         ];
     }
 
@@ -45,7 +44,7 @@ class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
     {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
-        $request   = $event->getRequest();
+        $request = $event->getRequest();
         $userAgent = $request->server->get('HTTP_USER_AGENT');
 
         $browser = (new Browser($userAgent))->getName();

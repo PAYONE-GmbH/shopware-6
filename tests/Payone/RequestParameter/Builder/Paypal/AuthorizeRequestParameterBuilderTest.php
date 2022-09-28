@@ -26,14 +26,14 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             $this->getValidRequestAction()
         );
 
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
                 'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_WALLET,
-                'request'      => $this->getValidRequestAction(),
-                'wallettype'   => 'PPE',
+                'request' => $this->getValidRequestAction(),
+                'wallettype' => 'PPE',
             ],
             $parameters
         );

@@ -18,8 +18,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
 {
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
     public function __construct(ConfigReaderInterface $configReader)
     {
@@ -29,9 +28,9 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hidePaymentMethodsForCompanies',
+            CheckoutConfirmPageLoadedEvent::class => 'hidePaymentMethodsForCompanies',
             AccountPaymentMethodPageLoadedEvent::class => 'hidePaymentMethodsForCompanies',
-            AccountEditOrderPageLoadedEvent::class     => 'hidePaymentMethodsForCompanies',
+            AccountEditOrderPageLoadedEvent::class => 'hidePaymentMethodsForCompanies',
         ];
     }
 
@@ -40,8 +39,8 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
         $page = $event->getPage();
 
         if (
-            !method_exists($page, 'getPaymentMethods') ||
-            !method_exists($page, 'setPaymentMethods')
+            !method_exists($page, 'getPaymentMethods')
+            || !method_exists($page, 'setPaymentMethods')
         ) {
             return;
         }
@@ -74,13 +73,13 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
     {
         $customer = $context->getCustomer();
 
-        if (null === $customer) {
+        if ($customer === null) {
             return false;
         }
 
         $billingAddress = $customer->getActiveBillingAddress();
 
-        if (null === $billingAddress) {
+        if ($billingAddress === null) {
             return false;
         }
 

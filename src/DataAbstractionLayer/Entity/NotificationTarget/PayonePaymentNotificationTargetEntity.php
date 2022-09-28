@@ -11,20 +11,15 @@ class PayonePaymentNotificationTargetEntity extends Entity
 {
     use EntityIdTrait;
 
-    /** @var string */
-    protected $url;
+    protected string $url;
 
-    /** @var bool */
-    protected $isBasicAuth = false;
+    protected bool $isBasicAuth = false;
 
-    /** @var string */
-    protected $txactions;
+    protected string $txactions;
 
-    /** @var null|string */
-    protected $username;
+    protected ?string $username = null;
 
-    /** @var null|string */
-    protected $password;
+    protected ?string $password = null;
 
     public function getUrl(): string
     {

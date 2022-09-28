@@ -8,8 +8,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class DeviceFingerprintService implements DeviceFingerprintServiceInterface
 {
-    /** @var SessionInterface */
-    protected $session;
+    protected SessionInterface $session;
 
     public function __construct(SessionInterface $session)
     {
@@ -29,7 +28,7 @@ class DeviceFingerprintService implements DeviceFingerprintServiceInterface
             $token = $sessionValue;
         } else {
             $sessionId = $this->session->get('sessionId');
-            $token     = md5($sessionId . '_' . microtime());
+            $token = md5($sessionId . '_' . microtime());
             $this->session->set(self::SESSION_VAR_NAME, $token);
         }
 

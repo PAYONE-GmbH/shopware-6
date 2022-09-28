@@ -23,7 +23,7 @@ class RequestParameterFactoryTest extends TestCase
     {
         $factory = new RequestParameterFactory([
             $this->getSupportedParameterBuilder([
-                'key'   => 'value',
+                'key' => 'value',
                 'key-1' => 'value-1',
                 'key-2' => 'value-2',
             ]),
@@ -38,7 +38,7 @@ class RequestParameterFactoryTest extends TestCase
 
         Assert::assertArraySubset(
             [
-                'key'   => hash('md5', 'value'),
+                'key' => hash('md5', 'value'),
                 'key-1' => 'value-1',
                 'key-2' => 'other-value',
                 'key-3' => 'value-3',
@@ -89,8 +89,8 @@ class RequestParameterFactoryTest extends TestCase
     {
         $factory = new RequestParameterFactory([
             $this->getSupportedParameterBuilder([
-                'aid'   => 123,
-                'key'   => 'value',
+                'aid' => 123,
+                'key' => 'value',
                 'key-1' => 'value-1',
             ]),
         ]);
@@ -104,7 +104,7 @@ class RequestParameterFactoryTest extends TestCase
 
         Assert::assertArraySubset(
             [
-                'key'   => hash('md5', 'value'),
+                'key' => hash('md5', 'value'),
                 'key-1' => 'value-1',
             ],
             $parameters
@@ -116,8 +116,8 @@ class RequestParameterFactoryTest extends TestCase
     protected function getSupportedParameterBuilder(array $parameters): AbstractRequestParameterBuilder
     {
         $builder = $this->createMock(AbstractRequestParameterBuilder::class);
-        $builder->expects($this->once())->method('supports')->willReturn(true);
-        $builder->expects($this->once())->method('getRequestParameter')->willReturn($parameters);
+        $builder->expects(static::once())->method('supports')->willReturn(true);
+        $builder->expects(static::once())->method('getRequestParameter')->willReturn($parameters);
 
         return $builder;
     }
@@ -125,8 +125,8 @@ class RequestParameterFactoryTest extends TestCase
     protected function getNotSupportedParameterBuilder(): AbstractRequestParameterBuilder
     {
         $builder = $this->createMock(AbstractRequestParameterBuilder::class);
-        $builder->expects($this->once())->method('supports')->willReturn(false);
-        $builder->expects($this->never())->method('getRequestParameter');
+        $builder->expects(static::once())->method('supports')->willReturn(false);
+        $builder->expects(static::never())->method('getRequestParameter');
 
         return $builder;
     }

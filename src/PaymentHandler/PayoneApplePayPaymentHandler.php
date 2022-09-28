@@ -19,14 +19,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var PayoneClientInterface */
-    protected $client;
+    protected PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    protected $translator;
+    protected TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -38,8 +35,8 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client      = $client;
-        $this->translator  = $translator;
+        $this->client = $client;
+        $this->translator = $translator;
         $this->dataHandler = $dataHandler;
     }
 
@@ -51,9 +48,9 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
         $requestData = $this->fetchRequestData();
 
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $response      = json_decode($requestData->get('response', '{}'), true);
+        $response = json_decode($requestData->get('response', '{}'), true);
 
-        if (null === $response || !array_key_exists('status', $response) || !array_key_exists('txid', $response)) {
+        if ($response === null || !\array_key_exists('status', $response) || !\array_key_exists('txid', $response)) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')

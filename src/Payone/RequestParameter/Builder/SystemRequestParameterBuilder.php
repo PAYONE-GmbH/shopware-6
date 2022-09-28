@@ -16,29 +16,25 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use PayonePayment\PayonePayment;
-use RuntimeException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Plugin\PluginService;
 
 class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var PluginService */
-    private $pluginService;
+    private PluginService $pluginService;
 
-    /** @var string */
-    private $shopwareVersion;
+    private string $shopwareVersion;
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
     public function __construct(
         PluginService $pluginService,
         string $shopwareVersion,
         ConfigReaderInterface $configReader
     ) {
-        $this->pluginService   = $pluginService;
+        $this->pluginService = $pluginService;
         $this->shopwareVersion = $shopwareVersion;
-        $this->configReader    = $configReader;
+        $this->configReader = $configReader;
     }
 
     /**
@@ -46,32 +42,32 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
      */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $context        = $this->getContext($arguments);
+        $context = $this->getContext($arguments);
         $salesChannelId = $this->getSalesChannelId($arguments);
 
-        $paymentMethod       = $arguments->getPaymentMethod();
-        $configuration       = $this->configReader->read($salesChannelId);
+        $paymentMethod = $arguments->getPaymentMethod();
+        $configuration = $this->configReader->read($salesChannelId);
         $configurationPrefix = ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentMethod];
 
-        $accountId  = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_ACCOUNT_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_ACCOUNT_ID));
+        $accountId = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_ACCOUNT_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_ACCOUNT_ID));
         $merchantId = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_MERCHANT_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_MERCHANT_ID));
-        $portalId   = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_PORTAL_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_ID));
-        $portalKey  = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY));
+        $portalId = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_PORTAL_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_ID));
+        $portalKey = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY));
 
         $plugin = $this->pluginService->getPluginByName(PayonePayment::PLUGIN_NAME, $context);
 
         return [
-            'aid'                => $accountId,
-            'mid'                => $merchantId,
-            'portalid'           => $portalId,
-            'key'                => $portalKey,
-            'api_version'        => '3.10',
-            'mode'               => $configuration->get('transactionMode'),
-            'encoding'           => 'UTF-8',
-            'integrator_name'    => 'shopware6',
+            'aid' => $accountId,
+            'mid' => $merchantId,
+            'portalid' => $portalId,
+            'key' => $portalKey,
+            'api_version' => '3.10',
+            'mode' => $configuration->get('transactionMode'),
+            'encoding' => 'UTF-8',
+            'integrator_name' => 'shopware6',
             'integrator_version' => $this->shopwareVersion,
-            'solution_name'      => 'kellerkinder',
-            'solution_version'   => $plugin->getVersion(),
+            'solution_name' => 'kellerkinder',
+            'solution_version' => $plugin->getVersion(),
         ];
     }
 
@@ -107,6 +103,6 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
             return $arguments->getSalesChannelId();
         }
 
-        throw new RuntimeException('missing sales channel id');
+        throw new \RuntimeException('missing sales channel id');
     }
 }

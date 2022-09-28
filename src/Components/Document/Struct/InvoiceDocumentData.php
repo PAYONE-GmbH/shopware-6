@@ -10,11 +10,9 @@ class InvoiceDocumentData extends Struct
 {
     public const EXTENSION_NAME = 'payone_document';
 
-    /** @var string */
-    protected $iban = '';
+    protected string $iban = '';
 
-    /** @var string */
-    protected $bic = '';
+    protected string $bic = '';
 
     public function getIban(): string
     {

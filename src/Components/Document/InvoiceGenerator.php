@@ -14,16 +14,14 @@ use Shopware\Core\Framework\Context;
 
 class InvoiceGenerator implements DocumentGeneratorInterface
 {
-    /** @var DocumentGeneratorInterface */
-    private $decoratedService;
+    private DocumentGeneratorInterface $decoratedService;
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
     public function __construct(DocumentGeneratorInterface $decoratedService, ConfigReaderInterface $configReader)
     {
         $this->decoratedService = $decoratedService;
-        $this->configReader     = $configReader;
+        $this->configReader = $configReader;
     }
 
     /**
@@ -60,7 +58,7 @@ class InvoiceGenerator implements DocumentGeneratorInterface
 
     private function isPayoneInstallmentPaymentMethod(OrderEntity $order): bool
     {
-        if (null !== $order->getTransactions()) {
+        if ($order->getTransactions() !== null) {
             foreach ($order->getTransactions() as $transaction) {
                 if ($transaction->getPaymentMethodId() === PayonePayolutionInvoicing::UUID) {
                     return true;
@@ -76,7 +74,7 @@ class InvoiceGenerator implements DocumentGeneratorInterface
         $configuration = $this->configReader->read($order->getSalesChannelId());
 
         $iban = $configuration->get('payolutionInvoicingIban');
-        $bic  = $configuration->get('payolutionInvoicingBic');
+        $bic = $configuration->get('payolutionInvoicingBic');
 
         if (empty($iban) || empty($bic)) {
             return;
@@ -85,7 +83,7 @@ class InvoiceGenerator implements DocumentGeneratorInterface
         $extension = new InvoiceDocumentData();
         $extension->assign([
             'iban' => $iban,
-            'bic'  => $bic,
+            'bic' => $bic,
         ]);
 
         $order->addExtension(InvoiceDocumentData::EXTENSION_NAME, $extension);

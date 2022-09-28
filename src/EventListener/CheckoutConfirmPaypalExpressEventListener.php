@@ -18,13 +18,15 @@ class CheckoutConfirmPaypalExpressEventListener implements EventSubscriberInterf
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hideInternalPaymentMethods',
+            CheckoutConfirmPageLoadedEvent::class => 'hideInternalPaymentMethods',
             AccountPaymentMethodPageLoadedEvent::class => 'hideInternalPaymentMethods',
-            AccountEditOrderPageLoadedEvent::class     => 'hideInternalPaymentMethods',
+            AccountEditOrderPageLoadedEvent::class => 'hideInternalPaymentMethods',
         ];
     }
 
-    /** @param AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event */
+    /**
+     * @param AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
+     */
     public function hideInternalPaymentMethods(PageLoadedEvent $event): void
     {
         $page = $event->getPage();
@@ -55,7 +57,7 @@ class CheckoutConfirmPaypalExpressEventListener implements EventSubscriberInterf
                     return true;
                 }
 
-                return !in_array($paymentMethod->getId(), $internalPaymentMethods, true);
+                return !\in_array($paymentMethod->getId(), $internalPaymentMethods, true);
             }
         );
     }

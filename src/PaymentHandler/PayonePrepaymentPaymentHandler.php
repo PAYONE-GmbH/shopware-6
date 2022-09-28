@@ -21,21 +21,16 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -49,9 +44,9 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
         $this->requestParameterFactory = $requestParameterFactory;
-        $this->client                  = $client;
-        $this->translator              = $translator;
-        $this->dataHandler             = $dataHandler;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
     }
 
     /**
@@ -80,7 +75,7 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -95,7 +90,7 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
         }
 
         $data = $this->preparePayoneOrderTransactionData($request, $response, [
-            'workOrderId'  => $requestData->get('workorder'),
+            'workOrderId' => $requestData->get('workorder'),
             'clearingType' => self::PAYONE_CLEARING_VOR,
             // Store clearing bank account information as custom field of the transaction in order to
             // use this data for payment instructions of an invoice or similar.
@@ -124,7 +119,7 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
 
         $isAppointed = static::isTransactionAppointedAndCompleted($transactionData);
         $isUnderpaid = $txAction === TransactionStatusService::ACTION_UNDERPAID;
-        $isPaid      = $txAction === TransactionStatusService::ACTION_PAID;
+        $isPaid = $txAction === TransactionStatusService::ACTION_PAID;
 
         if ($isAppointed || $isUnderpaid || $isPaid) {
             return true;

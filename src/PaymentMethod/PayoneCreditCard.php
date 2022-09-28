@@ -11,33 +11,26 @@ class PayoneCreditCard extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Credit Card';
+    protected string $name = 'PAYONE Credit Card';
 
-    /** @var string */
-    protected $description = 'Use your credit card to safely pay through our PCI DSS certified payment provider. After your order, you may be redirected to your bank to authorize the payment.';
+    protected string $description = 'Use your credit card to safely pay through our PCI DSS certified payment provider. After your order, you may be redirected to your bank to authorize the payment.';
 
-    /** @var string */
-    protected $paymentHandler = PayoneCreditCardPaymentHandler::class;
+    protected string $paymentHandler = PayoneCreditCardPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template = '@Storefront/storefront/payone/credit-card/credit-card-form.html.twig';
+    protected ?string $template = '@Storefront/storefront/payone/credit-card/credit-card-form.html.twig';
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Kreditkarte',
+            'name' => 'PAYONE Kreditkarte',
             'description' => 'Zahlen Sie sicher mit Ihrer Kreditkarte über unseren PCI DSS zertifizierten Zahlungsprovider. Nach der Bestellung werden Sie ggf. auf eine Seite Ihrer Bank weitergeleitet, um die Zahlung zu autorisieren.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE Credit Card',
+            'name' => 'PAYONE Credit Card',
             'description' => 'Use your credit card to safely pay through our PCI DSS certified payment provider. After your order, you may be redirected to your bank to authorize the payment.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 100;
+    protected int $position = 100;
 }

@@ -21,17 +21,15 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutFinishEventListener implements EventSubscriberInterface
 {
-    /** @var EntityRepositoryInterface */
-    private $mandateRepository;
+    private EntityRepositoryInterface $mandateRepository;
 
-    /** @var EntityRepositoryInterface */
-    private $orderTransactionRepository;
+    private EntityRepositoryInterface $orderTransactionRepository;
 
     public function __construct(
         EntityRepositoryInterface $mandateRepository,
         EntityRepositoryInterface $orderTransactionRepository
     ) {
-        $this->mandateRepository          = $mandateRepository;
+        $this->mandateRepository = $mandateRepository;
         $this->orderTransactionRepository = $orderTransactionRepository;
     }
 
@@ -45,7 +43,7 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
     public function onCheckoutFinish(CheckoutFinishPageLoadedEvent $event): void
     {
         $salesChannelContext = $event->getSalesChannelContext();
-        $context             = $salesChannelContext->getContext();
+        $context = $salesChannelContext->getContext();
 
         if (!$this->isPayonePayment($salesChannelContext->getPaymentMethod())) {
             return;
@@ -56,7 +54,7 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
             $context
         );
 
-        if (null === $mandateIdentification) {
+        if ($mandateIdentification === null) {
             return;
         }
 
@@ -75,12 +73,12 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
 
     protected function hasDirectDebitPayment(?string $mandateIdentification): bool
     {
-        return null !== $mandateIdentification;
+        return $mandateIdentification !== null;
     }
 
     private function isPayonePayment(PaymentMethodEntity $paymentMethod): bool
     {
-        return in_array($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS);
+        return \in_array($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS, true);
     }
 
     private function getMandate(string $mandateIdentification, Context $context): ?PayonePaymentMandateEntity
@@ -100,10 +98,10 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
         $transactions = $this->orderTransactionRepository->search($criteria, $context);
 
         foreach ($transactions as $transaction) {
-            /** @var null|PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+            /** @var PayonePaymentOrderTransactionDataEntity|null $payoneTransactionData */
             $payoneTransactionData = $transaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-            if (null !== $payoneTransactionData && !empty($payoneTransactionData->getMandateIdentification())) {
+            if ($payoneTransactionData !== null && !empty($payoneTransactionData->getMandateIdentification())) {
                 return $payoneTransactionData->getMandateIdentification();
             }
         }

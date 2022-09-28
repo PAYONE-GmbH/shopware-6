@@ -11,33 +11,26 @@ class PayoneEps extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE eps';
+    protected string $name = 'PAYONE eps';
 
-    /** @var string */
-    protected $description = 'Wire the amount instantly with your online banking credentials.';
+    protected string $description = 'Wire the amount instantly with your online banking credentials.';
 
-    /** @var string */
-    protected $paymentHandler = PayoneEpsPaymentHandler::class;
+    protected string $paymentHandler = PayoneEpsPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template = '@Storefront/storefront/payone/eps/eps-form.html.twig';
+    protected ?string $template = '@Storefront/storefront/payone/eps/eps-form.html.twig';
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE eps Überweisung',
+            'name' => 'PAYONE eps Überweisung',
             'description' => 'Überweisen Sie schnell und sicher mit Ihren Online Banking Zugangsdaten.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE eps',
+            'name' => 'PAYONE eps',
             'description' => 'Wire the amount instantly with your online banking credentials.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 113;
+    protected int $position = 113;
 }

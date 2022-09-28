@@ -19,21 +19,16 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var PayoneClientInterface */
-    protected $client;
+    protected PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    protected $translator;
+    protected TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -46,9 +41,9 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client                  = $client;
-        $this->translator              = $translator;
-        $this->dataHandler             = $dataHandler;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
         $this->requestParameterFactory = $requestParameterFactory;
     }
 
@@ -118,7 +113,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -133,11 +128,11 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
         }
 
         $data = $this->preparePayoneOrderTransactionData($request, $response, [
-            'workOrderId'       => $requestData->get('workorder'),
+            'workOrderId' => $requestData->get('workorder'),
             'clearingReference' => $response['addpaydata']['clearing_reference'],
-            'captureMode'       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-            'clearingType'      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-            'financingType'     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYD,
+            'captureMode' => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+            'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+            'financingType' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYD,
         ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);

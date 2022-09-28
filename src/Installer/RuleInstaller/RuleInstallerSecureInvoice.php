@@ -33,23 +33,19 @@ class RuleInstallerSecureInvoice implements InstallerInterface
         'EUR',
     ];
 
-    private const RULE_ID                          = 'bf54529febf323ec7d27256b178207f5';
-    private const CONDITION_ID_AND                 = 'f37b1995a4714d0a88249c3e3aa52794';
-    private const CONDITION_ID_COUNTRY             = '23a2158b05a93ddd4a0799074846607c';
-    private const CONDITION_ID_CURRENCY            = '6099e1e292f737aa31c126a73339c92e';
+    private const RULE_ID = 'bf54529febf323ec7d27256b178207f5';
+    private const CONDITION_ID_AND = 'f37b1995a4714d0a88249c3e3aa52794';
+    private const CONDITION_ID_COUNTRY = '23a2158b05a93ddd4a0799074846607c';
+    private const CONDITION_ID_CURRENCY = '6099e1e292f737aa31c126a73339c92e';
     private const CONDITION_ID_DIFFERENT_ADDRESSES = 'f1a5251ffcd09b5dc0befc059dfad9c1';
 
-    /** @var EntityRepositoryInterface */
-    private $ruleRepository;
+    private EntityRepositoryInterface $ruleRepository;
 
-    /** @var EntityRepositoryInterface */
-    private $countryRepository;
+    private EntityRepositoryInterface $countryRepository;
 
-    /** @var EntityRepositoryInterface */
-    private $currencyRepository;
+    private EntityRepositoryInterface $currencyRepository;
 
-    /** @var EntityRepositoryInterface */
-    private $paymentMethodRepository;
+    private EntityRepositoryInterface $paymentMethodRepository;
 
     public function __construct(
         EntityRepositoryInterface $ruleRepository,
@@ -57,9 +53,9 @@ class RuleInstallerSecureInvoice implements InstallerInterface
         EntityRepositoryInterface $currencyRepository,
         EntityRepositoryInterface $paymentMethodRepository
     ) {
-        $this->ruleRepository          = $ruleRepository;
-        $this->countryRepository       = $countryRepository;
-        $this->currencyRepository      = $currencyRepository;
+        $this->ruleRepository = $ruleRepository;
+        $this->countryRepository = $countryRepository;
+        $this->currencyRepository = $currencyRepository;
         $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
@@ -89,34 +85,34 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     private function upsertAvailabilityRule(Context $context): void
     {
         $data = [
-            'id'          => self::RULE_ID,
-            'name'        => 'Payone secure invoice',
-            'priority'    => 1,
+            'id' => self::RULE_ID,
+            'name' => 'Payone secure invoice',
+            'priority' => 1,
             'description' => 'Determines whether or not Payone secure invoice payment is available.',
-            'conditions'  => [
+            'conditions' => [
                 [
-                    'id'       => self::CONDITION_ID_AND,
-                    'type'     => (new AndRule())->getName(),
+                    'id' => self::CONDITION_ID_AND,
+                    'type' => (new AndRule())->getName(),
                     'children' => [
                         [
-                            'id'    => self::CONDITION_ID_COUNTRY,
-                            'type'  => (new BillingCountryRule())->getName(),
+                            'id' => self::CONDITION_ID_COUNTRY,
+                            'type' => (new BillingCountryRule())->getName(),
                             'value' => [
-                                'operator'   => BillingCountryRule::OPERATOR_EQ,
+                                'operator' => BillingCountryRule::OPERATOR_EQ,
                                 'countryIds' => $this->getCountryIds($context),
                             ],
                         ],
                         [
-                            'id'    => self::CONDITION_ID_CURRENCY,
-                            'type'  => (new CurrencyRule())->getName(),
+                            'id' => self::CONDITION_ID_CURRENCY,
+                            'type' => (new CurrencyRule())->getName(),
                             'value' => [
-                                'operator'    => CurrencyRule::OPERATOR_EQ,
+                                'operator' => CurrencyRule::OPERATOR_EQ,
                                 'currencyIds' => $this->getCurrencyIds($context),
                             ],
                         ],
                         [
-                            'id'    => self::CONDITION_ID_DIFFERENT_ADDRESSES,
-                            'type'  => (new DifferentAddressesRule())->getName(),
+                            'id' => self::CONDITION_ID_DIFFERENT_ADDRESSES,
+                            'type' => (new DifferentAddressesRule())->getName(),
                             'value' => [
                                 'isDifferent' => false,
                             ],
@@ -141,7 +137,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     {
         // Remove rule from payment methods first
         $update = [
-            'id'                 => PayoneSecureInvoice::UUID,
+            'id' => PayoneSecureInvoice::UUID,
             'availabilityRuleId' => null,
         ];
 
@@ -174,7 +170,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
 
         $countryIds = $this->countryRepository->searchIds($criteria, $context)->getIds();
 
-        if (count($countryIds) === 0) {
+        if (\count($countryIds) === 0) {
             // if country does not exist, enter invalid uuid so rule always fails. empty is not allowed
             return [Uuid::randomHex()];
         }
@@ -191,7 +187,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
 
         $currencyIds = $this->currencyRepository->searchIds($criteria, $context)->getIds();
 
-        if (count($currencyIds) === 0) {
+        if (\count($currencyIds) === 0) {
             // if currency does not exist, enter invalid uuid so rule always fails. empty is not allowed
             return [Uuid::randomHex()];
         }
