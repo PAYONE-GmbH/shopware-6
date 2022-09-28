@@ -186,7 +186,9 @@ class RefundRequestParameterBuilderTest extends TestCase
 
         static::assertSame('DE61500105178278794285', $parameters['iban']);
 
-        $extension->transactionData = [[]];
+        $extension->assign([
+            'transactionData' => [[]],
+        ]);
         $struct->getPaymentTransaction()->getOrderTransaction()->addExtension(PayonePaymentOrderTransactionExtension::NAME, $extension);
 
         $parameters = $builder->getRequestParameter($struct);

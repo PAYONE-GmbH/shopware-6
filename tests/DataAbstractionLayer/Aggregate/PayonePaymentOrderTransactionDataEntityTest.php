@@ -16,14 +16,18 @@ class PayonePaymentOrderTransactionDataEntityTest extends TestCase
     public function testItSetsAndReturnsTransactionId(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->transactionId = 'the-transaction-id';
+        $entity->assign([
+            'transactionId' => 'the-transaction-id',
+        ]);
         static::assertSame('the-transaction-id', $entity->getTransactionId());
     }
 
     public function testItSetsAndReturnsOrderTransactionId(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->orderTransactionId = 'the-order-transaction-id';
+        $entity->assign([
+            'orderTransactionId' => 'the-order-transaction-id',
+        ]);
         static::assertSame('the-order-transaction-id', $entity->getOrderTransactionId());
     }
 
@@ -31,7 +35,9 @@ class PayonePaymentOrderTransactionDataEntityTest extends TestCase
     {
         $orderTransaction = new OrderTransactionEntity();
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->orderTransaction = $orderTransaction;
+        $entity->assign([
+            'orderTransaction' => $orderTransaction,
+        ]);
         static::assertSame($orderTransaction, $entity->getOrderTransaction());
     }
 
@@ -39,112 +45,144 @@ class PayonePaymentOrderTransactionDataEntityTest extends TestCase
     {
         $transactionData = ['the-key' => 'the-value'];
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->transactionData = $transactionData;
+        $entity->assign([
+            'transactionData' => $transactionData,
+        ]);
         static::assertSame($transactionData, $entity->getTransactionData());
     }
 
     public function testItSetsAndReturnsSequenceNumber(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->sequenceNumber = 0;
+        $entity->assign([
+            'sequenceNumber' => 0,
+        ]);
         static::assertSame(0, $entity->getSequenceNumber());
     }
 
     public function testItSetsAndReturnsTransactionState(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->transactionState = 'the-transaction-state';
+        $entity->assign([
+            'transactionState' => 'the-transaction-state',
+        ]);
         static::assertSame('the-transaction-state', $entity->getTransactionState());
     }
 
     public function testItSetsAndReturnsUserId(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->userId = 'the-user-id';
+        $entity->assign([
+            'userId' => 'the-user-id',
+        ]);
         static::assertSame('the-user-id', $entity->getUserId());
     }
 
     public function testItSetsAndReturnsLastRequest(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->lastRequest = 'the-last-request';
+        $entity->assign([
+            'lastRequest' => 'the-last-request',
+        ]);
         static::assertSame('the-last-request', $entity->getLastRequest());
     }
 
     public function testItSetsAndReturnsAllowCapture(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->allowCapture = true;
+        $entity->assign([
+            'allowCapture' => true,
+        ]);
         static::assertTrue($entity->getAllowCapture());
     }
 
     public function testItSetsAndReturnsAllowRefund(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->allowRefund = true;
+        $entity->assign([
+            'allowRefund' => true,
+        ]);
         static::assertTrue($entity->getAllowRefund());
     }
 
     public function testItSetsAndReturnsCapturedAmount(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->capturedAmount = 1;
+        $entity->assign([
+            'capturedAmount' => 1,
+        ]);
         static::assertSame(1, $entity->getCapturedAmount());
     }
 
     public function testItSetsAndReturnsRefundedAmount(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->refundedAmount = 1;
+        $entity->assign([
+            'refundedAmount' => 1,
+        ]);
         static::assertSame(1, $entity->getRefundedAmount());
     }
 
     public function testItSetsAndReturnsMandateIdentification(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->mandateIdentification = 'the-mandate-identification';
+        $entity->assign([
+            'mandateIdentification' => 'the-mandate-identification',
+        ]);
         static::assertSame('the-mandate-identification', $entity->getMandateIdentification());
     }
 
     public function testItSetsAndReturnsAuthorizationType(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->authorizationType = 'the-authorization-type';
+        $entity->assign([
+            'authorizationType' => 'the-authorization-type',
+        ]);
         static::assertSame('the-authorization-type', $entity->getAuthorizationType());
     }
 
     public function testItSetsAndReturnsWorkOrderId(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->workOrderId = 'the-work-order-id';
+        $entity->assign([
+            'workOrderId' => 'the-work-order-id',
+        ]);
         static::assertSame('the-work-order-id', $entity->getWorkOrderId());
     }
 
     public function testItSetsAndReturnsClearingReference(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->clearingReference = 'the-clearing-reference';
+        $entity->assign([
+            'clearingReference' => 'the-clearing-reference',
+        ]);
         static::assertSame('the-clearing-reference', $entity->getClearingReference());
     }
 
     public function testItSetsAndReturnsClearingType(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->clearingType = 'the-clearing-type';
+        $entity->assign([
+            'clearingType' => 'the-clearing-type',
+        ]);
         static::assertSame('the-clearing-type', $entity->getClearingType());
     }
 
     public function testItSetsAndReturnsFinancingType(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->financingType = 'the-financing-type';
+        $entity->assign([
+            'financingType' => 'the-financing-type',
+        ]);
         static::assertSame('the-financing-type', $entity->getFinancingType());
     }
 
     public function testItSetsAndReturnsCaptureMode(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->captureMode = 'the-capture-mode';
+        $entity->assign([
+            'captureMode' => 'the-capture-mode',
+        ]);
         static::assertSame('the-capture-mode', $entity->getCaptureMode());
     }
 
@@ -152,7 +190,9 @@ class PayonePaymentOrderTransactionDataEntityTest extends TestCase
     {
         $clearingBankAccount = ['the-key' => 'the-value'];
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->clearingBankAccount = $clearingBankAccount;
+        $entity->assign([
+            'clearingBankAccount' => $clearingBankAccount,
+        ]);
         static::assertSame($clearingBankAccount, $entity->getClearingBankAccount());
     }
 
@@ -163,7 +203,9 @@ class PayonePaymentOrderTransactionDataEntityTest extends TestCase
 
         static::assertSame([], $entity->getAdditionalData());
 
-        $entity->additionalData = $additionalData;
+        $entity->assign([
+            'additionalData' => $additionalData,
+        ]);
         static::assertSame($additionalData, $entity->getAdditionalData());
     }
 
@@ -193,9 +235,7 @@ class PayonePaymentOrderTransactionDataEntityTest extends TestCase
         ];
 
         $entity = new PayonePaymentOrderTransactionDataEntity();
-        foreach ($entityData as $key => $value) {
-            $entity->{$key} = $value;
-        }
+        $entity->assign($entityData);
 
         Assert::assertArraySubset($entityData, $entity->jsonSerialize());
     }

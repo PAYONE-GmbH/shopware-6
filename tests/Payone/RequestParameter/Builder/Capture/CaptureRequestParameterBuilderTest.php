@@ -149,7 +149,9 @@ class CaptureRequestParameterBuilderTest extends TestCase
         $builder = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         /** @var PayonePaymentOrderTransactionDataEntity $extension */
         $extension = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
-        $extension->sequenceNumber = -1;
+        $extension->assign([
+            'sequenceNumber' => -1,
+        ]);
         $struct->getPaymentTransaction()->getOrderTransaction()->addExtension(PayonePaymentOrderTransactionExtension::NAME, $extension);
 
         $this->expectException(InvalidOrderException::class);
@@ -220,7 +222,9 @@ class CaptureRequestParameterBuilderTest extends TestCase
             $parameters
         );
 
-        $extension->captureMode = CaptureRequestParameterBuilder::CAPTUREMODE_INCOMPLETE;
+        $extension->assign([
+            'captureMode' => CaptureRequestParameterBuilder::CAPTUREMODE_INCOMPLETE,
+        ]);
         $struct->getPaymentTransaction()->getOrderTransaction()->addExtension(PayonePaymentOrderTransactionExtension::NAME, $extension);
 
         $parameters = $builder->getRequestParameter($struct);
