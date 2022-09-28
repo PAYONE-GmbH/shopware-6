@@ -20,56 +20,6 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
 {
     use PayoneTestBehavior;
 
-    public function testItMigratesCustomFieldsToEntityExtensionWithAllFieldsFilled(): void
-    {
-        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $order = $this->getRandomOrder($salesChannelContext);
-        $orderTransaction = $order->getTransactions()->first();
-
-        $customFields = [
-            'payone_transaction_id' => 'the-transaction-id',
-        ];
-
-        $customFieldExtensionMapping = $this->customFieldExtensionMapping();
-        foreach ($customFieldExtensionMapping as $mapping) {
-            $customFields[$mapping[0]] = $mapping[1];
-        }
-
-        $orderTransactionRepository = $this->getContainer()->get('order_transaction.repository');
-        $orderTransactionRepository->update(
-            [
-                [
-                    'id' => $orderTransaction->getId(),
-                    'customFields' => $customFields,
-                ],
-            ],
-            $salesChannelContext->getContext()
-        );
-
-        $connection = $this->getContainer()->get(Connection::class);
-        $migration = new Migration1639050658MigrateOrderTransactionDataFromCustomFields();
-
-        $migration->update($connection);
-
-        $payoneTransactionData = $this->getExtension($orderTransaction, $salesChannelContext->getContext());
-
-        static::assertNotNull($payoneTransactionData);
-        static::assertSame('the-transaction-id', $payoneTransactionData->getTransactionId());
-
-        foreach ($customFieldExtensionMapping as $mapping) {
-            static::assertSame($mapping[3], $payoneTransactionData->{$mapping[2]}());
-        }
-
-        $orderTransaction = $this->getOrderTransaction($orderTransaction->getId(), $salesChannelContext->getContext());
-        $orderTransactionCustomFields = $orderTransaction->getCustomFields();
-
-        static::assertArrayNotHasKey('payone_transaction_id', $orderTransactionCustomFields);
-
-        foreach ($customFieldExtensionMapping as $mapping) {
-            static::assertArrayNotHasKey($mapping[0], $orderTransactionCustomFields);
-        }
-    }
-
     /**
      * @dataProvider customFieldExtensionMapping
      * @testdox It migrates the custom field $customFieldKey to entity extension
@@ -163,7 +113,13 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
             ['payone_user_id', 'the-user-id', 'getUserId', 'the-user-id'],
             ['payone_last_request', 'the-last-request', 'getLastRequest', 'the-last-request'],
             ['payone_allow_capture', true, 'getAllowCapture', true],
+            ['payone_allow_capture', '1', 'getAllowCapture', true],
+            ['payone_allow_capture', false, 'getAllowCapture', false],
+            ['payone_allow_capture', '0', 'getAllowCapture', false],
             ['payone_allow_refund', true, 'getAllowRefund', true],
+            ['payone_allow_refund', '1', 'getAllowRefund', true],
+            ['payone_allow_refund', false, 'getAllowRefund', false],
+            ['payone_allow_refund', '0', 'getAllowRefund', false],
             ['payone_captured_amount', 0, 'getCapturedAmount', 0],
             ['payone_refunded_amount', 0, 'getCapturedAmount', 0], // Test if the default value of payone_captured_amount works
             ['payone_refunded_amount', 0, 'getRefundedAmount', 0],

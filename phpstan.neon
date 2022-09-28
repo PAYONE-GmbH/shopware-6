@@ -23,5 +23,5 @@ parameters:
 
     ignoreErrors:
         -   # This only occurs in Shopware < 6.4.4.0
-            message: "#Strict comparison using === between string and null will always evaluate to false.#"
-            path: Payone/RequestParameter/Builder/CustomerRequestParameterBuilder.php
+            message: "#Strict comparison using === between string and null will always evaluate to false#"
+            path: src/Payone/RequestParameter/Builder/CustomerRequestParameterBuilder.php
