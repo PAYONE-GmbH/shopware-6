@@ -171,10 +171,13 @@ trait PayoneTestBehavior
         $orderTransactionEntity->setOrder($orderEntity);
 
         $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
-        $payoneTransactionData->transactionId = Constants::PAYONE_TRANSACTION_ID;
-        $payoneTransactionData->sequenceNumber = 0;
-        $payoneTransactionData->lastRequest = 'authorization';
-        $payoneTransactionData->authorizationType = 'authorization';
+        $payoneTransactionData->assign([
+            'transactionId' => Constants::PAYONE_TRANSACTION_ID,
+            'sequenceNumber' => 0,
+            'lastRequest' => 'authorization',
+            'authorizationType' => 'authorization',
+        ]);
+
         $orderTransactionEntity->addExtension(
             PayonePaymentOrderTransactionExtension::NAME,
             $payoneTransactionData

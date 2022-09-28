@@ -125,7 +125,9 @@ class CaptureRequestParameterBuilderTest extends TestCase
         $builder = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         /** @var PayonePaymentOrderTransactionDataEntity $extension */
         $extension = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
-        $extension->sequenceNumber = null;
+        $extension->assign([
+            'sequenceNumber' => null,
+        ]);
         $struct->getPaymentTransaction()->getOrderTransaction()->addExtension(PayonePaymentOrderTransactionExtension::NAME, $extension);
 
         $this->expectException(InvalidOrderException::class);
@@ -169,9 +171,11 @@ class CaptureRequestParameterBuilderTest extends TestCase
         $builder = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         /** @var PayonePaymentOrderTransactionDataEntity $extension */
         $extension = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
-        $extension->workOrderId = '123';
-        $extension->captureMode = CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED;
-        $extension->clearingType = AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC;
+        $extension->assign([
+            'workOrderId' => '123',
+            'captureMode' => CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED,
+            'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+        ]);
         $struct->getPaymentTransaction()->getOrderTransaction()->addExtension(PayonePaymentOrderTransactionExtension::NAME, $extension);
 
         $parameters = $builder->getRequestParameter($struct);
@@ -201,7 +205,9 @@ class CaptureRequestParameterBuilderTest extends TestCase
         $builder = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         /** @var PayonePaymentOrderTransactionDataEntity $extension */
         $extension = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
-        $extension->captureMode = CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED;
+        $extension->assign([
+            'captureMode' => CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED,
+        ]);
         $struct->getPaymentTransaction()->getOrderTransaction()->addExtension(PayonePaymentOrderTransactionExtension::NAME, $extension);
 
         $parameters = $builder->getRequestParameter($struct);
@@ -243,7 +249,9 @@ class CaptureRequestParameterBuilderTest extends TestCase
         $builder = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         /** @var PayonePaymentOrderTransactionDataEntity $extension */
         $extension = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
-        $extension->additionalData = ['used_ratepay_shop_id' => '88880103'];
+        $extension->assign([
+            'additionalData' => ['used_ratepay_shop_id' => '88880103'],
+        ]);
         $struct->getPaymentTransaction()->getOrderTransaction()->addExtension(PayonePaymentOrderTransactionExtension::NAME, $extension);
 
         $parameters = $builder->getRequestParameter($struct);
