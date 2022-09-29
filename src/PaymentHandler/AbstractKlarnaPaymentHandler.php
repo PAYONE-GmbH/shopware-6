@@ -7,6 +7,7 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
@@ -18,7 +19,7 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -38,7 +39,7 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
     private $requestParameterFactory;
     /** @var PayoneClientInterface */
     private $client;
-    /** @var TransactionDataHandler */
+    /** @var TransactionDataHandlerInterface */
     private $dataHandler;
     /** @var PaymentStateHandlerInterface */
     private $stateHandler;
@@ -50,7 +51,7 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
         TranslatorInterface $translator,
         RequestParameterFactory $requestParameterFactory,
         PayoneClientInterface $client,
-        TransactionDataHandler $dataHandler,
+        TransactionDataHandlerInterface $dataHandler,
         CartHasherInterface $cartHasher,
         PaymentStateHandlerInterface $stateHandler
     ) {
@@ -73,7 +74,7 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
         $authToken = $dataBag->get('payoneKlarnaAuthorizationToken');
 
         if (!$authToken) {
-            throw new SyncPaymentProcessException(
+            throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
@@ -100,21 +101,21 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
         try {
             $response = $this->client->request($request);
         } catch (PayoneRequestException $exception) {
-            throw new SyncPaymentProcessException(
+            throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage'],
                 $exception
             );
         } catch (Throwable $exception) {
-            throw new SyncPaymentProcessException(
+            throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError'),
                 $exception
             );
         }
 
-        if (empty($response['status']) || $response['status'] === 'ERROR') {
-            throw new SyncPaymentProcessException(
+        if (empty($response['status']) || $response['status'] !== 'OK') {
+            throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
