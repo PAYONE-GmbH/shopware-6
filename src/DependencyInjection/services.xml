@@ -31,6 +31,7 @@
         <service id="PayonePayment\Components\ConfigReader\ConfigReader">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
         </service>
+        <service id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" alias="PayonePayment\Components\ConfigReader\ConfigReader"/>
 
         <service id="PayonePayment\Components\MandateService\MandateService">
             <argument type="service" id="payone_payment_mandate.repository" />
