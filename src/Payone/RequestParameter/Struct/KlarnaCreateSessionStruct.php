@@ -18,11 +18,12 @@ class KlarnaCreateSessionStruct extends AbstractRequestParameterStruct
 
     public function __construct(
         SalesChannelContext $salesChannelContext,
+        string $paymentMethodHandler,
         OrderEntity $orderEntity = null
     ) {
         $this->action              = AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT;
         $this->salesChannelContext = $salesChannelContext;
-        $this->paymentMethod       = $salesChannelContext->getPaymentMethod()->getHandlerIdentifier();
+        $this->paymentMethod       = $paymentMethodHandler;
         $this->orderEntity         = $orderEntity;
     }
 

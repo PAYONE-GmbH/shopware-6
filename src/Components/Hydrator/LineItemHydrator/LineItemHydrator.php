@@ -32,6 +32,13 @@ class LineItemHydrator implements LineItemHydratorInterface
     public const TYPE_SHIPMENT = 'shipment';
     public const TYPE_HANDLING = 'handling';
 
+    public const PAYONE_ARRAY_KEY_TYPE     = 'it';
+    public const PAYONE_ARRAY_KEY_NUMBER   = 'id';
+    public const PAYONE_ARRAY_KEY_PRICE    = 'pr';
+    public const PAYONE_ARRAY_KEY_QTY      = 'no';
+    public const PAYONE_ARRAY_KEY_NAME     = 'de';
+    public const PAYONE_ARRAY_KEY_TAX_RATE = 'va';
+
     /** @var CurrencyPrecisionInterface */
     private $currencyPrecision;
 
@@ -181,7 +188,15 @@ class LineItemHydrator implements LineItemHydratorInterface
     ): array {
         $productNumber = is_array($lineItemEntity->getPayload()) && array_key_exists('productNumber', $lineItemEntity->getPayload())
             ? $lineItemEntity->getPayload()['productNumber']
-            : $lineItemEntity->getIdentifier();
+            : null;
+
+        if (!$productNumber) {
+            if ($lineItemEntity instanceof LineItem) {
+                $productNumber = $lineItemEntity->getId();
+            } elseif ($lineItemEntity instanceof OrderLineItemEntity) {
+                $productNumber = $lineItemEntity->getIdentifier();
+            }
+        }
 
         $taxes = $lineItemEntity->getPrice() !== null ? $lineItemEntity->getPrice()->getCalculatedTaxes() : null;
 
@@ -300,12 +315,12 @@ class LineItemHydrator implements LineItemHydratorInterface
         float $itemTaxRate
     ): array {
         return [
-            'it' => $itemType,
-            'id' => $itemNumber,
-            'pr' => $itemPrice,
-            'no' => $itemQty,
-            'de' => $itemName,
-            'va' => $itemTaxRate,
+            self::PAYONE_ARRAY_KEY_TYPE     => $itemType,
+            self::PAYONE_ARRAY_KEY_NUMBER   => $itemNumber,
+            self::PAYONE_ARRAY_KEY_PRICE    => $itemPrice,
+            self::PAYONE_ARRAY_KEY_QTY      => $itemQty,
+            self::PAYONE_ARRAY_KEY_NAME     => $itemName,
+            self::PAYONE_ARRAY_KEY_TAX_RATE => $itemTaxRate,
         ];
     }
 }

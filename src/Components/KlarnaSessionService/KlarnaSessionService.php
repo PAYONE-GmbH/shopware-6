@@ -52,7 +52,7 @@ class KlarnaSessionService implements KlarnaSessionServiceInterface
             $salesChannelContext
         );
 
-        $struct        = new KlarnaCreateSessionStruct($salesChannelContext, $order ?? null);
+        $struct        = new KlarnaCreateSessionStruct($salesChannelContext, $salesChannelContext->getPaymentMethod()->getHandlerIdentifier(), $order ?? null);
         $requestParams = $this->requestParameterFactory->getRequestParameter($struct);
         $response      = $this->payoneClient->request($requestParams);
 
