@@ -4,21 +4,17 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\PayolutionInstallment;
 
-use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\PayolutionDebit\AuthorizeRequestParameterBuilder as PayolutionDebitAuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestParameterBuilder
 {
     /** @param PaymentTransactionStruct $arguments */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $dataBag             = $arguments->getRequestData();
-        $salesChannelContext = $arguments->getSalesChannelContext();
-        $paymentTransaction  = $arguments->getPaymentTransaction();
+        $dataBag = $arguments->getRequestData();
 
         $parameters = [
             'clearingtype'                      => self::CLEARING_TYPE_FINANCING,
@@ -31,10 +27,6 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
         ];
 
         $this->applyBirthdayParameter($parameters, $dataBag);
-
-        if ($this->transferCompanyData($salesChannelContext)) {
-            $this->provideCompanyParams($paymentTransaction->getOrder()->getId(), $parameters, $salesChannelContext->getContext());
-        }
 
         return $parameters;
     }
@@ -49,12 +41,5 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
         $action        = $arguments->getAction();
 
         return $paymentMethod === PayonePayolutionInstallmentPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
-    }
-
-    protected function transferCompanyData(SalesChannelContext $context): bool
-    {
-        $configuration = $this->configReader->read($context->getSalesChannel()->getId());
-
-        return !empty($configuration->get(ConfigInstaller::CONFIG_FIELD_PAYOLUTION_INSTALLMENT_TRANSFER_COMPANY_DATA));
     }
 }

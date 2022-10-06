@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\PayolutionInstallment;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
-use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
@@ -89,89 +88,6 @@ class PreCheckRequestParameterBuilderTest extends TestCase
             ],
             $parameters
         );
-    }
-
-    public function testItAddsCorrectCompanyParametersByBillingAddress(): void
-    {
-        $this->setPayoneConfig(
-            $this->getContainer(),
-            ConfigInstaller::CONFIG_FIELD_PAYOLUTION_INSTALLMENT_TRANSFER_COMPANY_DATA,
-            true
-        );
-
-        $struct = $this->getPayolutionAdditionalActionStruct();
-        $struct->getSalesChannelContext()->getCustomer()->getActiveBillingAddress()->setCompany('the-company');
-
-        $builder    = $this->getContainer()->get(PreCheckRequestParameterBuilder::class);
-        $parameters = $builder->getRequestParameter($struct);
-
-        Assert::assertArraySubset(
-            [
-                'request'                   => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
-                'clearingtype'              => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'             => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
-                'add_paydata[action]'       => 'pre_check',
-                'add_paydata[payment_type]' => 'Payolution-Installment',
-                'amount'                    => 10000,
-                'currency'                  => 'EUR',
-                'workorderid'               => '',
-                'birthday'                  => '20000101',
-                'add_paydata[b2b]'          => 'yes',
-            ],
-            $parameters
-        );
-    }
-
-    public function testItAddsCorrectCompanyParametersByCustomer(): void
-    {
-        $this->setPayoneConfig(
-            $this->getContainer(),
-            ConfigInstaller::CONFIG_FIELD_PAYOLUTION_INSTALLMENT_TRANSFER_COMPANY_DATA,
-            true
-        );
-
-        $struct = $this->getPayolutionAdditionalActionStruct();
-        $struct->getSalesChannelContext()->getCustomer()->setCompany('the-company');
-        $struct->getSalesChannelContext()->getCustomer()->setVatIds(['the-vatid']);
-
-        $builder    = $this->getContainer()->get(PreCheckRequestParameterBuilder::class);
-        $parameters = $builder->getRequestParameter($struct);
-
-        Assert::assertArraySubset(
-            [
-                'request'                   => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
-                'clearingtype'              => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'             => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
-                'add_paydata[action]'       => 'pre_check',
-                'add_paydata[payment_type]' => 'Payolution-Installment',
-                'amount'                    => 10000,
-                'currency'                  => 'EUR',
-                'workorderid'               => '',
-                'birthday'                  => '20000101',
-                'add_paydata[b2b]'          => 'yes',
-                'add_paydata[company_uid]'  => 'the-vatid',
-            ],
-            $parameters
-        );
-    }
-
-    public function testItNotAddsCompanyParametersOnDeactivatedConfiguration(): void
-    {
-        $this->setPayoneConfig(
-            $this->getContainer(),
-            ConfigInstaller::CONFIG_FIELD_PAYOLUTION_INSTALLMENT_TRANSFER_COMPANY_DATA,
-            false
-        );
-
-        $struct = $this->getPayolutionAdditionalActionStruct();
-        $struct->getSalesChannelContext()->getCustomer()->setCompany('the-company');
-        $struct->getSalesChannelContext()->getCustomer()->setVatIds(['the-vatid']);
-
-        $builder    = $this->getContainer()->get(PreCheckRequestParameterBuilder::class);
-        $parameters = $builder->getRequestParameter($struct);
-
-        static::assertArrayNotHasKey('add_paydata[b2b]', $parameters);
-        static::assertArrayNotHasKey('add_paydata[company_uid]', $parameters);
     }
 
     protected function getPayolutionAdditionalActionStruct(

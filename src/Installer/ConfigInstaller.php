@@ -15,15 +15,13 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigInstaller implements InstallerInterface
 {
-    public const CONFIG_FIELD_ACCOUNT_ID                                   = 'accountId';
-    public const CONFIG_FIELD_MERCHANT_ID                                  = 'merchantId';
-    public const CONFIG_FIELD_PORTAL_ID                                    = 'portalId';
-    public const CONFIG_FIELD_PORTAL_KEY                                   = 'portalKey';
-    public const CONFIG_FIELD_PAYOLUTION_DEBIT_TRANSFER_COMPANY_DATA       = 'payolutionDebitTransferCompanyData';
-    public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_TRANSFER_COMPANY_DATA = 'payolutionInstallmentTransferCompanyData';
-    public const CONFIG_FIELD_PAYOLUTION_INVOICING_TRANSFER_COMPANY_DATA   = 'payolutionInvoicingTransferCompanyData';
-    public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_NAME          = 'payolutionInstallmentChannelName';
-    public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_PASSWORD      = 'payolutionInstallmentChannelPassword';
+    public const CONFIG_FIELD_ACCOUNT_ID                                 = 'accountId';
+    public const CONFIG_FIELD_MERCHANT_ID                                = 'merchantId';
+    public const CONFIG_FIELD_PORTAL_ID                                  = 'portalId';
+    public const CONFIG_FIELD_PORTAL_KEY                                 = 'portalKey';
+    public const CONFIG_FIELD_PAYOLUTION_INVOICING_TRANSFER_COMPANY_DATA = 'payolutionInvoicingTransferCompanyData';
+    public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_NAME        = 'payolutionInstallmentChannelName';
+    public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_PASSWORD    = 'payolutionInstallmentChannelPassword';
 
     private const STATE_MACHINE_TRANSITION_ACTION_PAY           = 'pay';
     private const STATE_MACHINE_TRANSITION_ACTION_PAY_PARTIALLY = 'pay_partially';
