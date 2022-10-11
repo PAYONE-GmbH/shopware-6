@@ -25,6 +25,7 @@ use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Country\CountryEntity;
+use Shopware\Core\System\SalesChannel\Context\AbstractSalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher;
@@ -48,7 +49,7 @@ class PaypalExpressController extends StorefrontController
 
     private AccountService $accountService;
 
-    private SalesChannelContextFactory $salesChannelContextFactory;
+    private AbstractSalesChannelContextFactory $salesChannelContextFactory;
 
     private EntityRepositoryInterface $salutationRepository;
 
@@ -70,7 +71,7 @@ class PaypalExpressController extends StorefrontController
         CartService $cartService,
         AbstractRegisterRoute $registerRoute,
         AccountService $accountService,
-        $salesChannelContextFactory,
+        AbstractSalesChannelContextFactory $salesChannelContextFactory,
         EntityRepositoryInterface $salutationRepository,
         EntityRepositoryInterface $countryRepository,
         SalesChannelContextSwitcher $salesChannelContextSwitcher,
