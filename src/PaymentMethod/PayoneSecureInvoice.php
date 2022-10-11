@@ -17,7 +17,7 @@ class PayoneSecureInvoice extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Payone Secure Invoice';
+    protected $name = 'PAYONE Secure Invoice';
 
     /** @var string */
     protected $description = 'Secure invoice payment.';
@@ -31,11 +31,11 @@ class PayoneSecureInvoice extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'Payone gesicherter Rechnungskauf',
+            'name'        => 'PAYONE Gesicherter Rechnungskauf',
             'description' => 'Abgesichert bezahlen per Rechnung.',
         ],
         'en-GB' => [
-            'name'        => 'Payone secure invoice',
+            'name'        => 'PAYONE Secure Invoice',
             'description' => 'Secure pay by invoice. After reception of goods.',
         ],
     ];

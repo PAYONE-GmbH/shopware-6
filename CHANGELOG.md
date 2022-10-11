@@ -181,3 +181,56 @@ Maintenance
 
 * fix compatibility 6.4.7.0
 * drop support for 6.2
+
+# 3.1.0
+
+New Features
+ 
+* New payment method: Open Invoice
+* Add checkbox for credit card payments to save or remove payment data
+
+Bugfixes
+ 
+* remove capturemode param if completed
+* update ZeroAmountCartValidator
+* always set data protection check
+
+Maintenance
+* include line items with no tax for capture
+* add shipping information to Unzer
+
+Tested with:
+Shopware 6.4.10.0
+
+#3.2.0
+
+New Features
+ 
+* New payment method: Bancontact
+* Added bankgrouptypes for iDEAL
+* Add scheduled task to clean up redirect table
+* Add due date for invoice on standard invoice
+ 
+Bugfixes
+ 
+* added shipping costs to line items
+* fixed removal of secure invoice
+ 
+Maintenance
+ 
+* Changed renaming of payment methods
+* Changed PAYONE Logo
+* tested with 6.4.12
+
+#3.3.0
+
+New Features
+
+* New payment method: Ratepay Open Invoice
+* New payment method: Ratepay Direct Debit
+* New payment method: Ratepay Installments
+
+Maintenance
+
+* Integrate a sales landingpage in backend
+* Tested with version 6.4.14

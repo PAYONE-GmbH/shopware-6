@@ -1,6 +1,13 @@
 name: Tests
 
-on: [ push, pull_request, workflow_dispatch ]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
   ci-legacy:
@@ -14,7 +21,7 @@ jobs:
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
       mysql:
-        image: mariadb:10.5.9
+        image: mysql:5.7.38
         env:
           MYSQL_ROOT_PASSWORD: root
         ports:
@@ -60,7 +67,9 @@ jobs:
         run: |
           cd /tmp/shopware
           composer dumpautoload -d /tmp/shopware/custom/plugins/PayonePayment
-          /tmp/shopware/vendor/bin/phpunit --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
+          /tmp/shopware/vendor/bin/phpunit \
+            --testdox \
+            --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit-legacy.xml.dist
   ci-current:
     runs-on: ubuntu-latest
     strategy:
@@ -68,11 +77,11 @@ jobs:
       fail-fast: false
       matrix:
         php-versions: [ '7.4' ]
-        shopware-versions: [ 'v6.4.0.0', 'v6.4.1.0', 'v6.4.2.0', 'v6.4.3.0', 'v6.4.4.0', 'v6.4.5.0', 'v6.4.6.0', 'v6.4.7.0' ]
+        shopware-versions: [ 'v6.4.0.0', 'v6.4.1.0', 'v6.4.2.0', 'v6.4.3.0', 'v6.4.4.0', 'v6.4.5.0', 'v6.4.6.0', 'v6.4.7.0', 'v6.4.8.0', 'v6.4.9.0', 'v6.4.10.0', 'v6.4.11.0', 'v6.4.12.0' ]
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
       mysql:
-        image: mariadb:10.5.9
+        image: mysql:5.7.38
         env:
           MYSQL_ROOT_PASSWORD: root
         ports:
@@ -85,7 +94,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium
-          tools: composer:v2
+          tools: composer:2.1.5
       - name: Check PHP Version
         run: php -v
       - name: Check Composer Version
@@ -101,9 +110,13 @@ jobs:
           mkdir -p /tmp/shopware
           git clone --depth 1 --single-branch -b ${{ matrix.shopware-versions }} https://github.com/shopware/development /tmp/shopware
           printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"127.0.0.1\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"shopware\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"root\"" > /tmp/shopware/.psh.yaml.override
+          rm -rf /tmp/shopware/platform
+          git clone --depth 1 --single-branch -b ${{ matrix.shopware-versions }} https://github.com/shopware/platform /tmp/shopware/platform
           cd /tmp/shopware
           php psh.phar init
-          composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader --no-scripts
+          cd /tmp/shopware/vendor/shopware/platform
+          wget https://github.com/shopware/platform/commit/0e6cbc24383f0123c01f59bd9aae0a49ce739cca.patch
+          patch -p1 -N < 0e6cbc24383f0123c01f59bd9aae0a49ce739cca.patch || true
       - name: Install plugin
         run: |
           mkdir -p /tmp/shopware/custom/plugins/PayonePayment
@@ -113,4 +126,8 @@ jobs:
           php bin/console plugin:install --activate PayonePayment
       - name: PHPUnit
         run: |
-          /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
+          PROJECT_ROOT=/tmp/shopware \
+            TEST_DATABASE_URL="mysql://root:root@127.0.0.1:3306/shopware" \
+            /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit \
+            --testdox \
+            --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist

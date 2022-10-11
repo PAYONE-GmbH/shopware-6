@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\ConfigReader;
 
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Struct\Configuration;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
@@ -17,6 +18,11 @@ class ConfigReader implements ConfigReaderInterface
     public function __construct(SystemConfigService $systemConfigService)
     {
         $this->systemConfigService = $systemConfigService;
+    }
+
+    public static function getConfigKeyByPaymentHandler(string $paymentHandler, string $configuration): string
+    {
+        return self::SYSTEM_CONFIG_DOMAIN . ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentHandler] . $configuration;
     }
 
     public function read(?string $salesChannelId = null, bool $fallback = true): Configuration

@@ -7,7 +7,8 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
-use PayonePayment\Components\TransactionStatus\TransactionStatusService;
+use PayonePayment\Components\Validator\Birthday;
+use PayonePayment\Components\Validator\PaymentMethod;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -21,6 +22,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -131,6 +133,20 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
         $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
     }
 
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    {
+        $definitions = parent::getValidationDefinitions($salesChannelContext);
+
+        $definitions['payolutionConsent']  = [new NotBlank()];
+        $definitions['payolutionBirthday'] = [new NotBlank(), new Birthday(['value' => $this->getMinimumDate()])];
+
+        if ($this->customerHasCompanyAddress($salesChannelContext)) {
+            $definitions['payonePaymentMethod'] = [new PaymentMethod(['value' => $salesChannelContext->getPaymentMethod()])];
+        }
+
+        return $definitions;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -140,14 +156,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
             return false;
         }
 
-        $txAction          = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
-        $transactionStatus = isset($transactionData['transaction_status']) ? strtolower($transactionData['transaction_status']) : null;
-
-        if ($txAction === TransactionStatusService::ACTION_APPOINTED && $transactionStatus === TransactionStatusService::STATUS_COMPLETED) {
-            return true;
-        }
-
-        return static::matchesIsCapturableDefaults($transactionData, $customFields);
+        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData, $customFields);
     }
 
     /**

@@ -12,6 +12,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -31,6 +32,10 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     public const PAYONE_FINANCING_PYS = 'PYS';
     public const PAYONE_FINANCING_PYD = 'PYD';
 
+    public const PAYONE_FINANCING_RPV = 'RPV';
+    public const PAYONE_FINANCING_RPS = 'RPS';
+    public const PAYONE_FINANCING_RPD = 'RPD';
+
     /** @var ConfigReaderInterface */
     protected $configReader;
 
@@ -48,6 +53,11 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         $this->configReader       = $configReader;
         $this->lineItemRepository = $lineItemRepository;
         $this->requestStack       = $requestStack;
+    }
+
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    {
+        return [];
     }
 
     /**
@@ -99,6 +109,22 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         }
 
         return false;
+    }
+
+    /**
+     * Helper function to check if the transaction is appointed and completed.
+     * Used in various payment handlers to check if the transaction is captureable.
+     *
+     * @param array $transactionData Parameters of the TX status notification
+     *
+     * @return bool True if the transaction is appointed and completed
+     */
+    final protected static function isTransactionAppointedAndCompleted(array $transactionData): bool
+    {
+        $txAction          = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $transactionStatus = isset($transactionData['transaction_status']) ? strtolower($transactionData['transaction_status']) : null;
+
+        return $txAction === TransactionStatusService::ACTION_APPOINTED && $transactionStatus === TransactionStatusService::STATUS_COMPLETED;
     }
 
     /**
@@ -225,5 +251,27 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         }
 
         return new RequestDataBag($request->request->all());
+    }
+
+    protected function getMinimumDate(): \DateTimeInterface
+    {
+        return (new \DateTime())->modify('-18 years')->setTime(0, 0);
+    }
+
+    protected function customerHasCompanyAddress(SalesChannelContext $salesChannelContext): bool
+    {
+        $customer = $salesChannelContext->getCustomer();
+
+        if (null === $customer) {
+            return false;
+        }
+
+        $billingAddress = $customer->getActiveBillingAddress();
+
+        if (null === $billingAddress) {
+            return false;
+        }
+
+        return !empty($billingAddress->getCompany());
     }
 }

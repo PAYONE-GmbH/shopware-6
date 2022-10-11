@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneIDealPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaydirektPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
@@ -15,6 +17,9 @@ use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePrepaymentPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
@@ -133,9 +138,14 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneTrustlyPaymentHandler::class:
             case PayoneEpsPaymentHandler::class:
             case PayoneIDealPaymentHandler::class:
+            case PayoneBancontactPaymentHandler::class:
             case PayonePaydirektPaymentHandler::class:
             case PayoneSecureInvoicePaymentHandler::class:
+            case PayoneOpenInvoicePaymentHandler::class:
             case PayonePrepaymentPaymentHandler::class:
+            case PayoneRatepayDebitPaymentHandler::class:
+            case PayoneRatepayInstallmentPaymentHandler::class:
+            case PayoneRatepayInvoicingPaymentHandler::class:
                 return true;
         }
 

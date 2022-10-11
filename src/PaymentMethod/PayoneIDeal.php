@@ -15,7 +15,7 @@ class PayoneIDeal extends AbstractPaymentMethod
     protected $id = self::UUID;
 
     /** @var string */
-    protected $name = 'Payone iDeal';
+    protected $name = 'PAYONE iDEAL';
 
     /** @var string */
     protected $description = 'Wire the amount instantly with your online banking credentials.';
@@ -29,11 +29,11 @@ class PayoneIDeal extends AbstractPaymentMethod
     /** @var array */
     protected $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE iDeal',
+            'name'        => 'PAYONE iDEAL',
             'description' => 'Überweisen Sie schnell und sicher mit Ihren Online Banking Zugangsdaten.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE iDeal',
+            'name'        => 'PAYONE iDEAL',
             'description' => 'Wire the amount instantly with your online banking credentials.',
         ],
     ];

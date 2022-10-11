@@ -82,12 +82,8 @@
         {% endif %}
     {% endif %}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayoneSecureInvoice::UUID') == order.transactions.first.paymentMethod.id %}
+    {% if constant('PayonePayment\\PaymentMethod\\PayoneSecureInvoice::UUID') == order.transactions.first.paymentMethod.id or constant('PayonePayment\\PaymentMethod\\PayoneOpenInvoice::UUID') == order.transactions.first.paymentMethod.id %}
         {% block document_payment_payone_secure_invoice_clearing_reference %}
-            {% if order.transactions.first.customFields.payone_clearing_bank_account.Reference %}
-                <br>
-                {{ 'PayonePayment.secureInvoice.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_bank_account.Reference}) }}<br>
-            {% endif %}
         {% endblock %}
 
         {% if order.transactions.first.customFields.payone_clearing_bank_account.Iban %}
@@ -118,6 +114,14 @@
                     {{ 'PayonePayment.secureInvoice.document.reference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_bank_account.Reference}) }}
                 {% endblock %}
             {% endif %}
+
+            {% if order.transactions.first.customFields.payone_clearing_bank_account.Bic %}
+                {% block document_payment_payone_secure_invoice_due_date %}
+                    <br>
+                    {{ 'PayonePayment.secureInvoice.document.dueDate' | trans }}
+                {% endblock %}
+            {% endif %}
+
             <br><br><strong><em>{{ 'PayonePayment.secureInvoice.document.accountNotice' | trans }}</em></strong><br>
         {% endif %}
     {% endif %}

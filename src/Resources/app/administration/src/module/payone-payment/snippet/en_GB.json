@@ -3,7 +3,29 @@
         "title": "PAYONE",
         "general": {
             "mainMenuItemGeneral": "PAYONE",
-            "descriptionTextModule": "Settings for PAYONE"
+            "descriptionTextModule": "Settings for PAYONE",
+            "headlines": {
+                "ratepayProfiles": "Profile",
+                "ratepayProfileConfigurations": "Profil-Konfigurationen"
+            },
+            "label": {
+                "shopId": "Shop-ID",
+                "currency": "Currency",
+                "error": "Status",
+                "invoiceCountry": "Invoice Country",
+                "shippingCountry": "Shipping Country",
+                "minBasket": "Min. Basket",
+                "maxBasket": "Max. Basket",
+                "reloadConfigBtn": "Reload Profile Configuration",
+                "reloadConfigInfo": "(Plugin Configuration Changes will be saved first)"
+            },
+            "actions": {
+                "addShop": "Add Shop-ID"
+            },
+            "errors": {
+                "existingShopId": "The entered shop-id already exists.",
+                "emptyInputs": "Please fill all input fields."
+            }
         },
         "capture": {
             "buttonTitle": "Capture",
@@ -42,6 +64,7 @@
             },
             "orderAmount": "Order amount",
             "remainingAmount": "Remaining amount",
+            "shippingCosts": "Shipping costs",
             "descriptionHelpText": "Description help text",
             "close": "Close",
             "labelComment": "Label comment",
@@ -59,25 +82,33 @@
             "titleError": "Error",
             "labelShowSpecificStatusMapping": "Display state mapping configuration",
             "helpTextShowSpecificStatusMapping": "If not configured the general status mapping config will be applied.",
+            "messageSaveError": {
+                "ratepayProfilesUpdateFailed": "At least one Ratepay profile could not be saved successfully, please check your configuration."
+            },
             "messageTestSuccess": "The API credentials were verified successfully.",
             "messageTestNoTestedPayments": "No payment methods were tested during the check because none of the PAYONE payment methods are activated. Please activate at least one PAYONE payment method under Settings --> Shop --> Payment.",
             "messageTestError": {
                 "general": "The API credentials could not be verified successfully.",
-                "creditCard": "The API credentials for Credit Card are not valid.",
-                "prepayment": "The API credentials for Prepayment are not valid.",
-                "debit": "The API credentials for Debit are not valid.",
-                "paypalExpress": "The API credentials for PayPal Express are not valid.",
-                "paypal": "The API credentials for PayPal are not valid.",
-                "payolutionInstallment": "The API credentials for Paysafe Pay Later Installment are not valid.",
-                "payolutionInvoicing": "The API credentials for Paysafe Pay Later Invoicing are not valid.",
-                "payolutionDebit": "The API credentials for Paysafe Pay Later Debit are not valid.",
-                "sofort": "The API credentials for SOFORT are not valid.",
-                "eps": "The API credentials for EPS are not valid.",
-                "iDeal": "The API credentials for iDEAL are not valid.",
-                "secureInvoice": "The API credentials for secure invoice payment are not valid.",
-                "paydirekt": "The API credentials for Paydirekt payment are not valid.",
-                "trustly": "The API credentials for Trustly payment are not valid.",
-                "applePay": "The API credentials for ApplePay payment are not valid."
+                "creditCard": "The API credentials for PAYONE Credit Card are not valid.",
+                "prepayment": "The API credentials for PAYONE Prepayment are not valid.",
+                "debit": "The API credentials for PAYONE Direct Debit are not valid.",
+                "paypalExpress": "The API credentials for PAYONE PayPal Express are not valid.",
+                "paypal": "The API credentials for PAYONE PayPal are not valid.",
+                "payolutionInstallment": "The API credentials for PAYONE Unzer Ratenkauf are not valid.",
+                "payolutionInvoicing": "The API credentials for PAYONE Unzer Rechnungskauf are not valid.",
+                "payolutionDebit": "The API credentials for PAYONE Unzer Lastschrift are not valid.",
+                "sofort": "The API credentials for PAYONE Sofort are not valid.",
+                "eps": "The API credentials for PAYONE eps are not valid.",
+                "iDeal": "The API credentials for PAYONE iDEAL are not valid.",
+                "secureInvoice": "The API credentials for PAYONE Secure Invoice are not valid.",
+                "openInvoice": "The API credentials for PAYONE Invoice are not valid.",
+                "paydirekt": "The API credentials for PAYONE paydirekt are not valid.",
+                "trustly": "The API credentials for PAYONE Trustly are not valid.",
+                "applePay": "The API credentials for PAYONE Apple Pay are not valid.",
+                "bancontact": "The API credentials for PAYONE Bancontact payment are not valid.",
+                "ratepayDebit": "The API credentials for PAYONE Ratepay Direct Debit payment are not valid.",
+                "ratepayInstallment": "The API credentials for PAYONE Ratepay Installments payment are not valid.",
+                "ratepayInvoicing": "The API credentials for PAYONE Ratepay Open Invoice payment are not valid."
             }
         },
         "supportModal": {
@@ -94,6 +125,10 @@
             "repository": {
                 "description": "Report errors on GitHub",
                 "button": "GitHub"
+            },
+            "testdata": {
+                "description": "Create your personal test data here",
+                "button": "Test Data"
             }
         },
         "applePay": {

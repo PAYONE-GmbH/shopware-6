@@ -63,6 +63,18 @@ Component.register('payone-order-items', {
                 });
             });
 
+            if (this.order.shippingCosts.totalPrice > 0) {
+                data.push({
+                    id: 'shipping',
+                    product: this.$tc('payone-payment.modal.shippingCosts'),
+                    quantity: 1,
+                    disabled: false,
+                    selected: false,
+                    price: this.$options.filters.currency(this.order.shippingCosts.totalPrice, this.order.currency.shortName, this.order.decimal_precision),
+                    orderItem: {}
+                });
+            }
+
             return data;
         },
 

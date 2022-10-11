@@ -8,30 +8,47 @@ use Exception;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 
 class LineItemHydrator implements LineItemHydratorInterface
 {
-    public const TYPE_GOODS   = 'goods';
-    public const TYPE_VOUCHER = 'voucher';
+    /** @see https://docs.payone.com/display/public/PLATFORM/it%5Bn%5D+-+definition */
+    public const TYPE_GOODS    = 'goods';
+    public const TYPE_VOUCHER  = 'voucher';
+    public const TYPE_SHIPMENT = 'shipment';
+    public const TYPE_HANDLING = 'handling';
 
     /** @var CurrencyPrecisionInterface */
     private $currencyPrecision;
 
-    public function __construct(CurrencyPrecisionInterface $currencyPrecision)
+    /** @var EntityRepositoryInterface */
+    private $shipmentRepository;
+
+    public function __construct(CurrencyPrecisionInterface $currencyPrecision, EntityRepositoryInterface $shipmentRepository)
     {
-        $this->currencyPrecision = $currencyPrecision;
+        $this->currencyPrecision  = $currencyPrecision;
+        $this->shipmentRepository = $shipmentRepository;
     }
 
     public function mapPayoneOrderLinesByRequest(
         CurrencyEntity $currency,
-        OrderLineItemCollection $orderLineItems,
-        array $requestLines
+        OrderEntity $order,
+        array $requestLines,
+        bool $includeShippingCosts
     ): array {
+        $orderLineItems = $order->getLineItems();
+
+        if ($orderLineItems === null) {
+            return [];
+        }
+
         $requestLineItems = [];
         $counter          = 0;
 
@@ -52,31 +69,41 @@ class LineItemHydrator implements LineItemHydratorInterface
 
             $taxes = $lineItem->getPrice() !== null ? $lineItem->getPrice()->getCalculatedTaxes() : null;
 
-            if (null === $taxes || null === $taxes->first()) {
+            $taxRate = null === $taxes || null === $taxes->first()
+                ? 0.0
+                : $taxes->first()->getTaxRate();
+
+            if (empty($orderLine['quantity'])) {
                 continue;
             }
 
-            $requestLineItems = array_merge(
+            $requestLineItems = $this->getLineItemRequest(
                 $requestLineItems,
-                $this->getLineItemRequest(
-                    ++$counter,
-                    $lineItem,
-                    $currency,
-                    $taxes->first(),
-                    $orderLine['quantity']
-                )
+                ++$counter,
+                $lineItem,
+                $currency,
+                $taxRate,
+                $orderLine['quantity']
             );
         }
 
-        return $requestLineItems;
+        if ($includeShippingCosts !== true) {
+            return $requestLineItems;
+        }
+
+        return $this->addShippingItems($requestLineItems, $counter, $order, $currency);
     }
 
-    public function mapOrderLines(CurrencyEntity $currency, OrderLineItemCollection $lineItemCollection): array
+    public function mapOrderLines(CurrencyEntity $currency, OrderEntity $order, Context $context): array
     {
-        $requestLineItems = [];
-        $counter          = 0;
+        $lineItemCollection = $order->getLineItems();
+        $requestLineItems   = [];
+        $counter            = 0;
 
-        /** @var OrderLineItemEntity $lineItem */
+        if ($lineItemCollection === null) {
+            return [];
+        }
+
         foreach ($lineItemCollection as $lineItem) {
             if ($this->isCustomizedProduct($lineItem)) {
                 continue;
@@ -84,23 +111,21 @@ class LineItemHydrator implements LineItemHydratorInterface
 
             $taxes = $lineItem->getPrice() !== null ? $lineItem->getPrice()->getCalculatedTaxes() : null;
 
-            if (null === $taxes || null === $taxes->first()) {
-                continue;
-            }
+            $taxRate = null === $taxes || null === $taxes->first()
+                ? 0.0
+                : $taxes->first()->getTaxRate();
 
-            $requestLineItems = array_merge(
+            $requestLineItems = $this->getLineItemRequest(
                 $requestLineItems,
-                $this->getLineItemRequest(
-                    ++$counter,
-                    $lineItem,
-                    $currency,
-                    $taxes->first(),
-                    $lineItem->getQuantity()
-                )
+                ++$counter,
+                $lineItem,
+                $currency,
+                $taxRate,
+                $lineItem->getQuantity()
             );
         }
 
-        return $requestLineItems;
+        return $this->addShippingItems($requestLineItems, $counter, $order, $currency, $context);
     }
 
     protected function mapItemType(?string $itemType): string
@@ -132,19 +157,82 @@ class LineItemHydrator implements LineItemHydratorInterface
         return false;
     }
 
-    private function getLineItemRequest(int $index, OrderLineItemEntity $lineItemEntity, CurrencyEntity $currencyEntity, CalculatedTax $calculatedTax, int $quantity): array
-    {
+    private function getLineItemRequest(
+        array $requestLineItems,
+        int $index,
+        OrderLineItemEntity $lineItemEntity,
+        CurrencyEntity $currencyEntity,
+        float $taxRate,
+        int $quantity
+    ): array {
         $productNumber = is_array($lineItemEntity->getPayload()) && array_key_exists('productNumber', $lineItemEntity->getPayload())
             ? $lineItemEntity->getPayload()['productNumber']
             : $lineItemEntity->getIdentifier();
 
-        return [
-            'it[' . $index . ']' => $this->mapItemType($lineItemEntity->getType()),
-            'id[' . $index . ']' => $productNumber,
-            'pr[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($lineItemEntity->getUnitPrice(), $currencyEntity),
-            'no[' . $index . ']' => $quantity,
-            'de[' . $index . ']' => $lineItemEntity->getLabel(),
-            'va[' . $index . ']' => $this->currencyPrecision->getRoundedItemAmount($calculatedTax->getTaxRate(), $currencyEntity),
-        ];
+        $requestLineItems['it[' . $index . ']'] = $this->mapItemType($lineItemEntity->getType());
+        $requestLineItems['id[' . $index . ']'] = $productNumber;
+        $requestLineItems['pr[' . $index . ']'] = $this->currencyPrecision->getRoundedItemAmount($lineItemEntity->getUnitPrice(), $currencyEntity);
+        $requestLineItems['no[' . $index . ']'] = $quantity;
+        $requestLineItems['de[' . $index . ']'] = $lineItemEntity->getLabel();
+        $requestLineItems['va[' . $index . ']'] = $this->currencyPrecision->getRoundedItemAmount($taxRate, $currencyEntity);
+
+        return $requestLineItems;
+    }
+
+    private function addShippingItems(
+        array $requestLineItems,
+        int $index,
+        OrderEntity $order,
+        CurrencyEntity $currencyEntity,
+        ?Context $context = null
+    ): array {
+        if ($context === null) {
+            $context = Context::createDefaultContext();
+        }
+
+        if ($order->getDeliveries() === null) {
+            return $requestLineItems;
+        }
+
+        $deliveryEntity = $order->getDeliveries()->first();
+
+        if ($deliveryEntity === null) {
+            return $requestLineItems;
+        }
+
+        $shippingCosts = $deliveryEntity->getShippingCosts();
+
+        if ($shippingCosts->getCalculatedTaxes()->count() <= 0
+            || $this->currencyPrecision->getRoundedItemAmount($shippingCosts->getTotalPrice(), $currencyEntity) <= 0) {
+            return $requestLineItems;
+        }
+
+        $languages = $context->getLanguageIdChain();
+
+        if (!in_array($order->getLanguageId(), $languages, true)) {
+            array_splice($languages, 0, 0, $order->getLanguageId());
+
+            $context->assign(['languageIdChain' => $languages]);
+        }
+
+        $shippingMethod = $this->shipmentRepository->search(new Criteria([$deliveryEntity->getShippingMethodId()]), $context)->first();
+
+        if ($shippingMethod === null) {
+            return $requestLineItems;
+        }
+
+        foreach ($shippingCosts->getCalculatedTaxes() as $shipmentPosition) {
+            /** @var CalculatedTax $shipmentPosition */
+            ++$index;
+
+            $requestLineItems['it[' . $index . ']'] = self::TYPE_SHIPMENT;
+            $requestLineItems['id[' . $index . ']'] = $index;
+            $requestLineItems['pr[' . $index . ']'] = $this->currencyPrecision->getRoundedItemAmount($shipmentPosition->getPrice(), $currencyEntity);
+            $requestLineItems['no[' . $index . ']'] = 1;
+            $requestLineItems['de[' . $index . ']'] = $shippingMethod->getName();
+            $requestLineItems['va[' . $index . ']'] = $this->currencyPrecision->getRoundedItemAmount($shipmentPosition->getTaxRate(), $currencyEntity);
+        }
+
+        return $requestLineItems;
     }
 }

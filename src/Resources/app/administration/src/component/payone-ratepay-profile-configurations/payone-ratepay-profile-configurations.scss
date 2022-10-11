@@ -1,0 +1,18 @@
+.payone-ratepay-profile-configurations {
+    margin-top: 20px;
+
+    @media screen and (min-width: 768px) {
+        width: 50%;
+    }
+
+    .payone-ratepay-profile-configuration--headline {
+        font-weight: 600;
+        margin-top: 20px;
+    }
+
+    .sw-description-list {
+        dt {
+            text-align: right;
+        }
+    }
+}

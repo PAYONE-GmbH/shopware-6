@@ -13,6 +13,7 @@
         <import resource="hydrator.xml" />
         <import resource="listeners.xml" />
         <import resource="pages.xml" />
+        <import resource="scheduled_tasks.xml" />
         <import resource="webhooks.xml"/>
         <import resource="requestParameter/*.xml"/>
     </imports>
@@ -65,6 +66,25 @@
 
         <service id="PayonePayment\Components\CartValidator\ZeroAmountCartValidator">
             <tag name="shopware.cart.validator"/>
+        </service>
+
+        <service id="PayonePayment\Components\Ratepay\Installment\InstallmentService">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="PayonePayment\Components\Ratepay\Profile\ProfileService" />
+        </service>
+
+        <service id="PayonePayment\Components\Ratepay\Profile\ProfileService">
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+        </service>
+
+        <service id="PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService">
+            <argument type="service" id="Symfony\Component\HttpFoundation\Session\SessionInterface"/>
         </service>
     </services>
 </container>
