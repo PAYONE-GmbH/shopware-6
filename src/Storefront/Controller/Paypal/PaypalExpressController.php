@@ -26,7 +26,6 @@ use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\Context\AbstractSalesChannelContextFactory;
-use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -63,9 +62,6 @@ class PaypalExpressController extends StorefrontController
 
     private RequestParameterFactory $requestParameterFactory;
 
-    /**
-     * @param SalesChannelContextFactory $salesChannelContextFactory
-     */
     public function __construct(
         PayoneClientInterface $client,
         CartService $cartService,
