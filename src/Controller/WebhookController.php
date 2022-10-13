@@ -19,23 +19,20 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class WebhookController extends StorefrontController
 {
-    /** @var WebhookProcessorInterface */
-    private $webhookProcessor;
+    private WebhookProcessorInterface $webhookProcessor;
 
-    /** @var EntityRepositoryInterface */
-    private $notificationForwardRepository;
+    private EntityRepositoryInterface $notificationForwardRepository;
 
-    /** @var MessageBusInterface */
-    private $messageBus;
+    private MessageBusInterface $messageBus;
 
     public function __construct(
         WebhookProcessorInterface $webhookProcessor,
         EntityRepositoryInterface $notificationForwardRepository,
         MessageBusInterface $messageBus
     ) {
-        $this->webhookProcessor              = $webhookProcessor;
+        $this->webhookProcessor = $webhookProcessor;
         $this->notificationForwardRepository = $notificationForwardRepository;
-        $this->messageBus                    = $messageBus;
+        $this->messageBus = $messageBus;
     }
 
     /**
@@ -54,7 +51,7 @@ class WebhookController extends StorefrontController
      */
     public function reQueueForward(Request $request, Context $context): Response
     {
-        $id    = $request->get('notificationForwardId');
+        $id = $request->get('notificationForwardId');
         $newId = Uuid::randomHex();
 
         $this->notificationForwardRepository->clone($id, $context, $newId);

@@ -10,14 +10,16 @@ use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
 
 class GetFileRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @param GetFileStruct $arguments */
+    /**
+     * @param GetFileStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'request'        => self::REQUEST_ACTION_GET_FILE,
+            'request' => self::REQUEST_ACTION_GET_FILE,
             'file_reference' => $arguments->getIdentification(),
-            'file_type'      => 'SEPA_MANDATE',
-            'file_format'    => 'PDF',
+            'file_type' => 'SEPA_MANDATE',
+            'file_format' => 'PDF',
         ];
     }
 

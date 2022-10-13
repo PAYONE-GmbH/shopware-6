@@ -3,20 +3,20 @@
 {% block document_payment_shipping_inner %}
     {{ parent() }}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInstallment::UUID') == order.transactions.first.paymentMethod.id %}
+    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInstallment::UUID') == order.transactions.last.paymentMethod.id %}
         {% block document_payment_payone_installment_clearing_reference %}
-            {% if order.transactions.first.customFields.payone_clearing_reference %}
+            {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference %}
                 <br>
-                {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_reference}) }}<br>
+                {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference}) }}<br>
             {% endif %}
         {% endblock %}
     {% endif %}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.first.paymentMethod.id %}
+    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.last.paymentMethod.id %}
         {% block document_payment_payone_invoicing_clearing_reference %}
-            {% if order.transactions.first.customFields.payone_clearing_reference %}
+            {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference %}
                 <br>
-                {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_reference}) }}<br>
+                {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference}) }}<br>
             {% endif %}
         {% endblock %}
 
@@ -33,89 +33,88 @@
         {% endif %}
     {% endif %}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionDebit::UUID') == order.transactions.first.paymentMethod.id %}
+    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionDebit::UUID') == order.transactions.last.paymentMethod.id %}
         {% block document_payment_payone_debit_clearing_reference %}
-            {% if order.transactions.first.customFields.payone_clearing_reference %}
+            {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference %}
                 <br>
-                {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_reference}) }}<br>
+                {{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference}) }}<br>
             {% endif %}
         {% endblock %}
     {% endif %}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePrepayment::UUID') == order.transactions.first.paymentMethod.id %}
+    {% if constant('PayonePayment\\PaymentMethod\\PayonePrepayment::UUID') == order.transactions.last.paymentMethod.id %}
         {% block document_payment_payone_prepayment_clearing_reference %}
-            {% if order.transactions.first.customFields.payone_clearing_bank_account.Reference %}
+            {% if order.transactions.last.payonePaymentOrderTransactionData.clearingBankAccount.Reference %}
                 <br>
-                {{ 'PayonePayment.prepayment.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_bank_account.Reference}) }}<br>
+                {{ 'PayonePayment.prepayment.document.clearingReference' | trans({'%reference%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Reference}) }}<br>
             {% endif %}
         {% endblock %}
 
-        {% if order.transactions.first.customFields.payone_clearing_bank_account.Iban %}
+        {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Iban %}
             <br>
             <strong>{{ 'PayonePayment.prepayment.document.invoicingDescription' | trans }}</strong><br>
-            {% if order.transactions.first.customFields.payone_clearing_bank_account.Bic %}
+            {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.BankAccountHolder %}
                 {% block document_payment_payone_prepayment_holder %}
                     <br>
-                    {{ 'PayonePayment.prepayment.document.holder' | trans({'%holder%': order.transactions.first.customFields.payone_clearing_bank_account.BankAccountHolder}) }}
+                    {{ 'PayonePayment.prepayment.document.holder' | trans({'%holder%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.BankAccountHolder}) }}
                 {% endblock %}
             {% endif %}
 
             {% block document_payment_payone_prepayment_iban %}
                 <br>
-                {{ 'PayonePayment.prepayment.document.iban' | trans({'%iban%': order.transactions.first.customFields.payone_clearing_bank_account.Iban}) }}
+                {{ 'PayonePayment.prepayment.document.iban' | trans({'%iban%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Iban}) }}
             {% endblock %}
 
-            {% if order.transactions.first.customFields.payone_clearing_bank_account.Bic %}
+            {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Bic %}
                 {% block document_payment_payone_prepayment_bic %}
                     <br>
-                    {{ 'PayonePayment.prepayment.document.bic' | trans({'%bic%': order.transactions.first.customFields.payone_clearing_bank_account.Bic}) }}
+                    {{ 'PayonePayment.prepayment.document.bic' | trans({'%bic%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Bic}) }}
                 {% endblock %}
             {% endif %}
 
-            {% if order.transactions.first.customFields.payone_clearing_bank_account.Reference %}
+            {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Reference %}
                 {% block document_payment_payone_prepayment_reference %}
                     <br>
-                    {{ 'PayonePayment.prepayment.document.reference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_bank_account.Reference}) }}
+                    {{ 'PayonePayment.prepayment.document.reference' | trans({'%reference%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Reference}) }}
                 {% endblock %}
             {% endif %}
             <br><br><strong><em>{{ 'PayonePayment.prepayment.document.accountNotice' | trans }}</em></strong><br>
         {% endif %}
     {% endif %}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayoneSecureInvoice::UUID') == order.transactions.first.paymentMethod.id or constant('PayonePayment\\PaymentMethod\\PayoneOpenInvoice::UUID') == order.transactions.first.paymentMethod.id %}
-        {% block document_payment_payone_secure_invoice_clearing_reference %}
+    {% if constant('PayonePayment\\PaymentMethod\\PayoneSecureInvoice::UUID') == order.transactions.last.paymentMethod.id or constant('PayonePayment\\PaymentMethod\\PayoneOpenInvoice::UUID') == order.transactions.last.paymentMethod.id %}        {% block document_payment_payone_secure_invoice_clearing_reference %}
         {% endblock %}
 
-        {% if order.transactions.first.customFields.payone_clearing_bank_account.Iban %}
+        {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Iban %}
             <br>
             <strong>{{ 'PayonePayment.secureInvoice.document.invoicingDescription' | trans }}</strong><br>
-            {% if order.transactions.first.customFields.payone_clearing_bank_account.Bic %}
+            {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.BankAccountHolder %}
                 {% block document_payment_payone_secure_invoice_holder %}
                     <br>
-                    {{ 'PayonePayment.secureInvoice.document.holder' | trans({'%holder%': order.transactions.first.customFields.payone_clearing_bank_account.BankAccountHolder}) }}
+                    {{ 'PayonePayment.secureInvoice.document.holder' | trans({'%holder%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.BankAccountHolder}) }}
                 {% endblock %}
             {% endif %}
 
             {% block document_payment_payone_secure_invoice_iban %}
                 <br>
-                {{ 'PayonePayment.secureInvoice.document.iban' | trans({'%iban%': order.transactions.first.customFields.payone_clearing_bank_account.Iban}) }}
+                {{ 'PayonePayment.secureInvoice.document.iban' | trans({'%iban%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Iban}) }}
             {% endblock %}
 
-            {% if order.transactions.first.customFields.payone_clearing_bank_account.Bic %}
+            {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Bic %}
                 {% block document_payment_payone_secure_invoice_bic %}
                     <br>
-                    {{ 'PayonePayment.secureInvoice.document.bic' | trans({'%bic%': order.transactions.first.customFields.payone_clearing_bank_account.Bic}) }}
+                    {{ 'PayonePayment.secureInvoice.document.bic' | trans({'%bic%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Bic}) }}
                 {% endblock %}
             {% endif %}
 
-            {% if order.transactions.first.customFields.payone_clearing_bank_account.Reference %}
+            {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Reference %}
                 {% block document_payment_payone_secure_invoice_reference %}
                     <br>
-                    {{ 'PayonePayment.secureInvoice.document.reference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_bank_account.Reference}) }}
+                    {{ 'PayonePayment.secureInvoice.document.reference' | trans({'%reference%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Reference}) }}
                 {% endblock %}
             {% endif %}
 
-            {% if order.transactions.first.customFields.payone_clearing_bank_account.Bic %}
+            {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Bic %}
                 {% block document_payment_payone_secure_invoice_due_date %}
                     <br>
                     {{ 'PayonePayment.secureInvoice.document.dueDate' | trans }}
@@ -130,17 +129,17 @@
 {% block document_footer_bank_name %}
     {{ parent() }}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.first.paymentMethod.id %}
+    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.last.paymentMethod.id %}
         {% block document_payment_payone_invoicing_footer_clearing_reference %}
-            {% if order.transactions.first.customFields.payone_clearing_reference %}
-                <li>{{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.first.customFields.payone_clearing_reference}) }}</li>
+            {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference %}
+                <li>{{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference}) }}</li>
             {% endif %}
         {% endblock %}
     {% endif %}
 {% endblock %}
 
 {% block document_footer_bank_iban %}
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.first.paymentMethod.id %}
+    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.last.paymentMethod.id %}
         {% if order.extensions.payone_document %}
             {% block document_payment_payone_invoicing_footer_iban %}
                 <li>{{ 'PayonePayment.payolution.document.iban' | trans({'%iban%': order.extensions.payone_document.iban}) }}</li>
@@ -154,7 +153,7 @@
 {% endblock %}
 
 {% block document_footer_bank_bic %}
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.first.paymentMethod.id %}
+    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.last.paymentMethod.id %}
         {% if order.extensions.payone_document %}
             {% block document_payment_payone_invoicing_footer_bic %}
                 <li>{{ 'PayonePayment.payolution.document.bic' | trans({'%bic%': order.extensions.payone_document.bic}) }}</li>

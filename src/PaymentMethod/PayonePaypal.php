@@ -11,33 +11,26 @@ class PayonePaypal extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE PayPal';
+    protected string $name = 'PAYONE PayPal';
 
-    /** @var string */
-    protected $description = 'Pay easily and secure with PayPal.';
+    protected string $description = 'Pay easily and secure with PayPal.';
 
-    /** @var string */
-    protected $paymentHandler = PayonePaypalPaymentHandler::class;
+    protected string $paymentHandler = PayonePaypalPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template;
+    protected ?string $template = null;
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE PayPal',
+            'name' => 'PAYONE PayPal',
             'description' => 'Zahlen Sie sicher und bequem mit PayPal.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE PayPal',
+            'name' => 'PAYONE PayPal',
             'description' => 'Pay easily and secure with PayPal.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 102;
+    protected int $position = 102;
 }

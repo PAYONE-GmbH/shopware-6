@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\Helper;
 
-use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
@@ -16,8 +15,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class OrderFetcher implements OrderFetcherInterface
 {
-    /** @var EntityRepositoryInterface */
-    private $orderRepository;
+    private EntityRepositoryInterface $orderRepository;
 
     public function __construct(EntityRepositoryInterface $orderRepository)
     {
@@ -40,15 +38,15 @@ class OrderFetcher implements OrderFetcherInterface
     {
         $orderAddresses = $order->getAddresses();
 
-        if (null === $orderAddresses) {
-            throw new RuntimeException('missing order addresses');
+        if ($orderAddresses === null) {
+            throw new \RuntimeException('missing order addresses');
         }
 
-        /** @var OrderAddressEntity $billingAddress */
+        /** @var OrderAddressEntity|null $billingAddress */
         $billingAddress = $orderAddresses->get($order->getBillingAddressId());
 
-        if (null === $billingAddress) {
-            throw new RuntimeException('missing order billing address');
+        if ($billingAddress === null) {
+            throw new \RuntimeException('missing order billing address');
         }
 
         return $billingAddress;
@@ -58,8 +56,8 @@ class OrderFetcher implements OrderFetcherInterface
     {
         $orderAddresses = $order->getAddresses();
 
-        if (null === $orderAddresses) {
-            throw new RuntimeException('missing order addresses');
+        if ($orderAddresses === null) {
+            throw new \RuntimeException('missing order addresses');
         }
 
         $deliveries = $order->getDeliveries();
@@ -67,7 +65,7 @@ class OrderFetcher implements OrderFetcherInterface
         if ($deliveries && $deliveries->first()) {
             $shippingAddressId = $deliveries->first()->getShippingOrderAddressId();
 
-            /** @var OrderAddressEntity $shippingAddress */
+            /** @var OrderAddressEntity|null $shippingAddress */
             $shippingAddress = $orderAddresses->get($shippingAddressId);
 
             if ($shippingAddress) {

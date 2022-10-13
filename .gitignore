@@ -9,6 +9,7 @@
 # unit/style/etc.
 /.php_cs.cache
 /.phpunit.result.cache
+/var
 
 # e2e
 /cypress

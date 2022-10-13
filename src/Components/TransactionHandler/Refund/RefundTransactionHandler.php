@@ -8,10 +8,13 @@ use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
@@ -20,8 +23,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class RefundTransactionHandler extends AbstractTransactionHandler implements RefundTransactionHandlerInterface
 {
-    /** @var TransactionStatusServiceInterface */
-    private $transactionStatusService;
+    private TransactionStatusServiceInterface $transactionStatusService;
 
     public function __construct(
         RequestParameterFactory $requestFactory,
@@ -32,13 +34,13 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         EntityRepositoryInterface $lineItemRepository,
         CurrencyPrecisionInterface $currencyPrecision
     ) {
-        $this->requestFactory           = $requestFactory;
-        $this->client                   = $client;
-        $this->dataHandler              = $dataHandler;
+        $this->requestFactory = $requestFactory;
+        $this->client = $client;
+        $this->dataHandler = $dataHandler;
         $this->transactionStatusService = $transactionStatusService;
-        $this->transactionRepository    = $transactionRepository;
-        $this->lineItemRepository       = $lineItemRepository;
-        $this->currencyPrecision        = $currencyPrecision;
+        $this->transactionRepository = $transactionRepository;
+        $this->lineItemRepository = $lineItemRepository;
+        $this->currencyPrecision = $currencyPrecision;
     }
 
     /**
@@ -71,9 +73,12 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         return $requestResponse;
     }
 
-    protected function getAmountCustomField(): string
+    protected function getAmount(OrderTransactionEntity $transaction): int
     {
-        return CustomFieldInstaller::REFUNDED_AMOUNT;
+        /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        $payoneTransactionData = $transaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+
+        return (int) $payoneTransactionData->getRefundedAmount();
     }
 
     protected function getQuantityCustomField(): string
@@ -81,8 +86,13 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         return CustomFieldInstaller::REFUNDED_QUANTITY;
     }
 
-    protected function getAllowCustomField(): string
+    protected function getAllowPropertyName(): string
     {
-        return CustomFieldInstaller::ALLOW_REFUND;
+        return 'allowRefund';
+    }
+
+    protected function getAmountPropertyName(): string
+    {
+        return 'refundedAmount';
     }
 }

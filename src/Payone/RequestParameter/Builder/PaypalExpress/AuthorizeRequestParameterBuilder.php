@@ -18,7 +18,7 @@ class AuthorizeRequestParameterBuilder extends PaypalAuthorizeRequestParameterBu
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayonePaypalExpressPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }

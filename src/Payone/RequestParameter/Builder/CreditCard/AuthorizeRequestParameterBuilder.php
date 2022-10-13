@@ -11,10 +11,12 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $pseudoCardPan      = $arguments->getRequestData()->get('pseudoCardPan');
+        $pseudoCardPan = $arguments->getRequestData()->get('pseudoCardPan');
         $savedPseudoCardPan = $arguments->getRequestData()->get('savedPseudoCardPan');
 
         if (!empty($savedPseudoCardPan)) {
@@ -22,8 +24,8 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         return [
-            'clearingtype'  => self::CLEARING_TYPE_CREDIT_CARD,
-            'request'       => self::REQUEST_ACTION_AUTHORIZE,
+            'clearingtype' => self::CLEARING_TYPE_CREDIT_CARD,
+            'request' => self::REQUEST_ACTION_AUTHORIZE,
             'pseudocardpan' => $pseudoCardPan,
         ];
     }
@@ -35,7 +37,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayoneCreditCardPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }

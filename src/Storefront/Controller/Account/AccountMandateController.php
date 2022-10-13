@@ -12,20 +12,17 @@ use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Throwable;
 
 class AccountMandateController extends StorefrontController
 {
-    /** @var AccountMandatePageLoader */
-    private $accountMandatePageLoader;
+    private AccountMandatePageLoader $accountMandatePageLoader;
 
-    /** @var AbstractMandateRoute */
-    private $mandateRoute;
+    private AbstractMandateRoute $mandateRoute;
 
     public function __construct(AccountMandatePageLoader $accountMandatePageLoader, AbstractMandateRoute $mandateRoute)
     {
         $this->accountMandatePageLoader = $accountMandatePageLoader;
-        $this->mandateRoute             = $mandateRoute;
+        $this->mandateRoute = $mandateRoute;
     }
 
     /**
@@ -47,7 +44,7 @@ class AccountMandateController extends StorefrontController
     {
         try {
             $response = $this->mandateRoute->getFile($request->get('mandate'), $context);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->addFlash('danger', $this->trans('PayonePayment.mandatePage.error'));
 
             return $this->forwardToRoute('frontend.account.payone.mandate.page');

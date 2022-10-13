@@ -15,7 +15,6 @@ use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use RuntimeException;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -23,20 +22,15 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var OrderFetcherInterface */
-    protected $orderFetcher;
+    protected OrderFetcherInterface $orderFetcher;
 
-    /** @var ProfileServiceInterface */
-    protected $profileService;
+    protected ProfileServiceInterface $profileService;
 
-    /** @var DeviceFingerprintServiceInterface */
-    protected $deviceFingerprintService;
+    protected DeviceFingerprintServiceInterface $deviceFingerprintService;
 
-    /** @var EntityRepositoryInterface */
-    protected $customerRepository;
+    protected EntityRepositoryInterface $customerRepository;
 
-    /** @var LineItemHydratorInterface */
-    protected $lineItemHydrator;
+    protected LineItemHydratorInterface $lineItemHydrator;
 
     public function __construct(
         OrderFetcherInterface $orderFetcher,
@@ -45,32 +39,34 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         EntityRepositoryInterface $customerRepository,
         LineItemHydratorInterface $lineItemHydrator
     ) {
-        $this->orderFetcher             = $orderFetcher;
-        $this->profileService           = $profileService;
+        $this->orderFetcher = $orderFetcher;
+        $this->profileService = $profileService;
         $this->deviceFingerprintService = $deviceFingerprintService;
-        $this->customerRepository       = $customerRepository;
-        $this->lineItemHydrator         = $lineItemHydrator;
+        $this->customerRepository = $customerRepository;
+        $this->lineItemHydrator = $lineItemHydrator;
     }
 
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $dataBag             = $arguments->getRequestData();
+        $dataBag = $arguments->getRequestData();
         $salesChannelContext = $arguments->getSalesChannelContext();
-        $context             = $salesChannelContext->getContext();
-        $paymentTransaction  = $arguments->getPaymentTransaction();
-        $order               = $this->getOrder($paymentTransaction->getOrder()->getId(), $context);
-        $currency            = $this->getOrderCurrency($order, $context);
-        $profile             = $this->getProfile($order, PayoneRatepayDebitPaymentHandler::class);
+        $context = $salesChannelContext->getContext();
+        $paymentTransaction = $arguments->getPaymentTransaction();
+        $order = $this->getOrder($paymentTransaction->getOrder()->getId(), $context);
+        $currency = $this->getOrderCurrency($order, $context);
+        $profile = $this->getProfile($order, PayoneRatepayDebitPaymentHandler::class);
 
         $parameters = [
-            'request'                                    => self::REQUEST_ACTION_AUTHORIZE,
-            'clearingtype'                               => self::CLEARING_TYPE_FINANCING,
-            'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
-            'iban'                                       => $dataBag->get('ratepayIban'),
+            'request' => self::REQUEST_ACTION_AUTHORIZE,
+            'clearingtype' => self::CLEARING_TYPE_FINANCING,
+            'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
+            'iban' => $dataBag->get('ratepayIban'),
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-            'add_paydata[shop_id]'                       => $profile->getShopId(),
-            'add_paydata[device_token]'                  => $this->deviceFingerprintService->getDeviceIdentToken(),
+            'add_paydata[shop_id]' => $profile->getShopId(),
+            'add_paydata[device_token]' => $this->deviceFingerprintService->getDeviceIdentToken(),
         ];
 
         $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
@@ -90,7 +86,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayoneRatepayDebitPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }
@@ -100,8 +96,8 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         // Load order to make sure all associations are set
         $order = $this->orderFetcher->getOrderById($orderId, $context);
 
-        if (null === $order) {
-            throw new RuntimeException('missing order');
+        if ($order === null) {
+            throw new \RuntimeException('missing order');
         }
 
         return $order;
@@ -112,7 +108,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $profile = $this->profileService->getProfileByOrder($order, $paymentHandler);
 
         if ($profile === null) {
-            throw new RuntimeException('no ratepay profile found');
+            throw new \RuntimeException('no ratepay profile found');
         }
 
         return $profile;
@@ -121,27 +117,27 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     protected function applyPhoneParameter(OrderEntity $order, array &$parameters, ParameterBag $dataBag, Context $context): void
     {
         if (!$order->getOrderCustomer()) {
-            throw new RuntimeException('missing order customer');
+            throw new \RuntimeException('missing order customer');
         }
 
         $customer = $order->getOrderCustomer()->getCustomer();
 
         if (!$customer) {
-            throw new RuntimeException('missing customer');
+            throw new \RuntimeException('missing customer');
         }
 
-        $customerCustomFields   = $customer->getCustomFields() ?? [];
+        $customerCustomFields = $customer->getCustomFields() ?? [];
         $customFieldPhoneNumber = $customerCustomFields[CustomFieldInstaller::CUSTOMER_PHONE_NUMBER] ?? null;
-        $submittedPhoneNumber   = $dataBag->get('ratepayPhone');
+        $submittedPhoneNumber = $dataBag->get('ratepayPhone');
 
         if (!empty($submittedPhoneNumber) && $submittedPhoneNumber !== $customFieldPhoneNumber) {
             // Update the phone number that is stored at the customer
-            $customFieldPhoneNumber                                            = $submittedPhoneNumber;
+            $customFieldPhoneNumber = $submittedPhoneNumber;
             $customerCustomFields[CustomFieldInstaller::CUSTOMER_PHONE_NUMBER] = $customFieldPhoneNumber;
             $this->customerRepository->update(
                 [
                     [
-                        'id'           => $customer->getId(),
+                        'id' => $customer->getId(),
                         'customFields' => $customerCustomFields,
                     ],
                 ],
@@ -150,7 +146,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if (!$customFieldPhoneNumber) {
-            throw new RuntimeException('missing phone number');
+            throw new \RuntimeException('missing phone number');
         }
 
         $parameters['telephonenumber'] = $customerCustomFields[CustomFieldInstaller::CUSTOMER_PHONE_NUMBER];

@@ -11,21 +11,23 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestParameterBuilder
 {
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $dataBag             = $arguments->getRequestData();
+        $dataBag = $arguments->getRequestData();
         $salesChannelContext = $arguments->getSalesChannelContext();
-        $paymentTransaction  = $arguments->getPaymentTransaction();
+        $paymentTransaction = $arguments->getPaymentTransaction();
 
         $parameters = [
-            'clearingtype'                      => self::CLEARING_TYPE_FINANCING,
-            'financingtype'                     => 'PYS',
-            'request'                           => self::REQUEST_ACTION_AUTHORIZE,
+            'clearingtype' => self::CLEARING_TYPE_FINANCING,
+            'financingtype' => 'PYS',
+            'request' => self::REQUEST_ACTION_AUTHORIZE,
             'add_paydata[installment_duration]' => (int) $dataBag->get('payolutionInstallmentDuration'),
-            'iban'                              => $dataBag->get('payolutionIban'),
-            'bic'                               => $dataBag->get('payolutionBic'),
-            'bankaccountholder'                 => $dataBag->get('payolutionAccountOwner'),
+            'iban' => $dataBag->get('payolutionIban'),
+            'bic' => $dataBag->get('payolutionBic'),
+            'bankaccountholder' => $dataBag->get('payolutionAccountOwner'),
         ];
 
         $this->applyBirthdayParameter($parameters, $dataBag);
@@ -44,7 +46,7 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayonePayolutionInstallmentPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }

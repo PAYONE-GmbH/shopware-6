@@ -10,15 +10,17 @@ use PayonePayment\Payone\RequestParameter\Struct\ManageMandateStruct;
 
 class ManageMandateRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @param ManageMandateStruct $arguments */
+    /**
+     * @param ManageMandateStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'request'      => self::REQUEST_ACTION_MANAGE_MANDATE,
+            'request' => self::REQUEST_ACTION_MANAGE_MANDATE,
             'clearingtype' => self::CLEARING_TYPE_DEBIT,
-            'iban'         => $arguments->getIban(),
-            'bic'          => $arguments->getBic(),
-            'currency'     => $arguments->getSalesChannelContext()->getCurrency()->getIsoCode(),
+            'iban' => $arguments->getIban(),
+            'bic' => $arguments->getBic(),
+            'currency' => $arguments->getSalesChannelContext()->getCurrency()->getIsoCode(),
         ];
     }
 

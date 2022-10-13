@@ -15,8 +15,7 @@ class FinancialTransactionStruct extends AbstractRequestParameterStruct
     use TransactionTrait;
     use RequestDataTrait;
 
-    /** @var Context */
-    protected $context;
+    protected Context $context;
 
     public function __construct(
         PaymentTransaction $paymentTransaction,
@@ -26,10 +25,10 @@ class FinancialTransactionStruct extends AbstractRequestParameterStruct
         string $action
     ) {
         $this->paymentTransaction = $paymentTransaction;
-        $this->context            = $context;
-        $this->requestData        = $requestData;
-        $this->paymentMethod      = $paymentMethod;
-        $this->action             = $action;
+        $this->context = $context;
+        $this->requestData = $requestData;
+        $this->paymentMethod = $paymentMethod;
+        $this->action = $action;
     }
 
     public function getContext(): Context

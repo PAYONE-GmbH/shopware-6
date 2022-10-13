@@ -11,33 +11,26 @@ class PayoneApplePay extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Apple Pay';
+    protected string $name = 'PAYONE Apple Pay';
 
-    /** @var string */
-    protected $description = 'Apple Pay is a mobile payment system providing straightforward payment on Apple devices';
+    protected string $description = 'Apple Pay is a mobile payment system providing straightforward payment on Apple devices';
 
-    /** @var string */
-    protected $paymentHandler = PayoneApplePayPaymentHandler::class;
+    protected string $paymentHandler = PayoneApplePayPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template = null;
+    protected ?string $template = null;
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Apple Pay',
+            'name' => 'PAYONE Apple Pay',
             'description' => 'Apple Pay ist ein mobiles Zahlungssystem, welches die bequeme Zahlung auf Endgeräten von Apple ermöglicht.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE Apple Pay',
+            'name' => 'PAYONE Apple Pay',
             'description' => 'Apple Pay is a mobile payment system providing straightforward payment on Apple devices',
         ],
     ];
 
-    /** @var int */
-    protected $position = 100;
+    protected int $position = 100;
 }

@@ -30,13 +30,13 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
     public function testItPerformsPaymentAndReturnsCorrectRedirectUrl(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = $this->getDataBag();
+        $dataBag = $this->getDataBag();
 
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects($this->once())->method('request')->willReturn(
+        $client->expects(static::once())->method('request')->willReturn(
             [
                 'status' => '',
-                'txid'   => '',
+                'txid' => '',
                 'userid' => '',
             ]
         );
@@ -44,14 +44,14 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
 
         $requestFactory = $this->createMock(RequestParameterFactory::class);
-        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+        $requestFactory->expects(static::once())->method('getRequestParameter')->willReturn(
             [
-                'request'    => '',
+                'request' => '',
                 'successurl' => 'test-url',
             ]
         );
 
-        $paymentHandler     = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory);
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory);
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
             PayoneCreditCardPaymentHandler::class
@@ -65,31 +65,31 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
     public function testItPerformsPaymentAndSavesCard(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = $this->getDataBag([
+        $dataBag = $this->getDataBag([
             PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVE_CREDIT_CARD => 'on',
         ]);
 
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects($this->once())->method('request')->willReturn(
+        $client->expects(static::once())->method('request')->willReturn(
             [
                 'status' => '',
-                'txid'   => '',
+                'txid' => '',
                 'userid' => '',
             ]
         );
 
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
-        $cardRepository->expects($this->once())->method('saveCard');
+        $cardRepository->expects(static::once())->method('saveCard');
 
         $requestFactory = $this->createMock(RequestParameterFactory::class);
-        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+        $requestFactory->expects(static::once())->method('getRequestParameter')->willReturn(
             [
-                'request'    => '',
+                'request' => '',
                 'successurl' => 'test-url',
             ]
         );
 
-        $paymentHandler     = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory);
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory);
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
             PayoneCreditCardPaymentHandler::class
@@ -101,29 +101,29 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
     public function testItPerformsPaymentAndNotSavesCard(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = $this->getDataBag();
+        $dataBag = $this->getDataBag();
 
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects($this->once())->method('request')->willReturn(
+        $client->expects(static::once())->method('request')->willReturn(
             [
                 'status' => '',
-                'txid'   => '',
+                'txid' => '',
                 'userid' => '',
             ]
         );
 
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
-        $cardRepository->expects($this->never())->method('saveCard');
+        $cardRepository->expects(static::never())->method('saveCard');
 
         $requestFactory = $this->createMock(RequestParameterFactory::class);
-        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+        $requestFactory->expects(static::once())->method('getRequestParameter')->willReturn(
             [
-                'request'    => '',
+                'request' => '',
                 'successurl' => 'test-url',
             ]
         );
 
-        $paymentHandler     = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory);
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory);
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
             PayoneCreditCardPaymentHandler::class
@@ -135,14 +135,14 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
     public function testItPerformsPaymentWithRedirect(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = $this->getDataBag();
+        $dataBag = $this->getDataBag();
 
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects($this->once())->method('request')->willReturn(
+        $client->expects(static::once())->method('request')->willReturn(
             [
-                'status'      => 'redirect',
-                'txid'        => '',
-                'userid'      => '',
+                'status' => 'redirect',
+                'txid' => '',
+                'userid' => '',
                 'redirecturl' => 'redirect-url',
             ]
         );
@@ -150,14 +150,14 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
 
         $requestFactory = $this->createMock(RequestParameterFactory::class);
-        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+        $requestFactory->expects(static::once())->method('getRequestParameter')->willReturn(
             [
-                'request'    => '',
+                'request' => '',
                 'successurl' => 'test-url',
             ]
         );
 
-        $paymentHandler     = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory);
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory);
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
             PayoneCreditCardPaymentHandler::class
@@ -171,31 +171,31 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
     public function testItPerformsPaymentWithSavedCard(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = $this->getDataBag([
+        $dataBag = $this->getDataBag([
             PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN => 'saved-pan',
         ]);
 
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects($this->once())->method('request')->willReturn(
+        $client->expects(static::once())->method('request')->willReturn(
             [
                 'status' => '',
-                'txid'   => '',
+                'txid' => '',
                 'userid' => '',
             ]
         );
 
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
-        $cardRepository->expects($this->never())->method('saveCard');
+        $cardRepository->expects(static::never())->method('saveCard');
 
         $requestFactory = $this->createMock(RequestParameterFactory::class);
-        $requestFactory->expects($this->once())->method('getRequestParameter')->willReturn(
+        $requestFactory->expects(static::once())->method('getRequestParameter')->willReturn(
             [
-                'request'    => '',
+                'request' => '',
                 'successurl' => 'test-url',
             ]
         );
 
-        $paymentHandler     = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory);
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory);
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
             PayoneCreditCardPaymentHandler::class
@@ -230,7 +230,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         CardRepositoryInterface $cardRepository,
         RequestParameterFactory $requestFactory
     ): PayoneCreditCardPaymentHandler {
-        $translator   = $this->getContainer()->get('translator');
+        $translator = $this->getContainer()->get('translator');
         $configReader = new ConfigReaderMock([
             'creditCardAuthorizationMethod' => 'preauthorization',
         ]);

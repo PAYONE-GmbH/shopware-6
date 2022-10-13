@@ -49,7 +49,7 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $salesChannelContext->getCustomer()->getActiveBillingAddress()->setCompany('the-company');
 
-        $event    = new CheckoutConfirmPageLoadedEvent($page, $salesChannelContext, new Request());
+        $event = new CheckoutConfirmPageLoadedEvent($page, $salesChannelContext, new Request());
         $listener = $this->getContainer()->get(CheckoutConfirmRatepayEventListener::class);
 
         $listener->hidePaymentMethodsForCompanies($event);
@@ -66,7 +66,7 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $salesChannelContext->getCustomer()->getActiveBillingAddress()->setCompany('the-company');
 
-        $event    = new AccountEditOrderPageLoadedEvent($page, $salesChannelContext, new Request());
+        $event = new AccountEditOrderPageLoadedEvent($page, $salesChannelContext, new Request());
         $listener = $this->getContainer()->get(CheckoutConfirmRatepayEventListener::class);
 
         $listener->hidePaymentMethodsForCompanies($event);
@@ -83,7 +83,7 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $salesChannelContext->getCustomer()->getActiveBillingAddress()->setCompany('the-company');
 
-        $event    = new AccountPaymentMethodPageLoadedEvent($page, $salesChannelContext, new Request());
+        $event = new AccountPaymentMethodPageLoadedEvent($page, $salesChannelContext, new Request());
         $listener = $this->getContainer()->get(CheckoutConfirmRatepayEventListener::class);
 
         $listener->hidePaymentMethodsForCompanies($event);
@@ -117,7 +117,7 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $this->fillCart($salesChannelContext->getToken(), $cartValue);
 
-        $event    = new CheckoutConfirmPageLoadedEvent($page, $salesChannelContext, new Request());
+        $event = new CheckoutConfirmPageLoadedEvent($page, $salesChannelContext, new Request());
         $listener = $this->getContainer()->get(CheckoutConfirmRatepayEventListener::class);
 
         $listener->hidePaymentMethodsByProfiles($event);
@@ -141,7 +141,7 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $calculatorData->assign(['minimumRate' => 0.0]);
 
         $installmentService = $this->createMock(InstallmentService::class);
-        $installmentService->expects($this->once())->method('getInstallmentCalculatorData')->willReturn($calculatorData);
+        $installmentService->expects(static::once())->method('getInstallmentCalculatorData')->willReturn($calculatorData);
 
         $listener = new CheckoutConfirmRatepayEventListener(
             $this->getContainer()->get(SystemConfigService::class),
@@ -169,7 +169,7 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $calculatorData->assign(['minimumRate' => 0.0]);
 
         $installmentService = $this->createMock(InstallmentService::class);
-        $installmentService->expects($this->once())->method('getInstallmentCalculatorData')->willReturn($calculatorData);
+        $installmentService->expects(static::once())->method('getInstallmentCalculatorData')->willReturn($calculatorData);
 
         $listener = new CheckoutConfirmRatepayEventListener(
             $this->getContainer()->get(SystemConfigService::class),
@@ -194,7 +194,7 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $salesChannelContext->getPaymentMethod()->setId(PayoneRatepayInstallment::UUID);
 
         $installmentService = $this->createMock(InstallmentService::class);
-        $installmentService->expects($this->once())->method('getInstallmentCalculatorData')->willReturn(null);
+        $installmentService->expects(static::once())->method('getInstallmentCalculatorData')->willReturn(null);
 
         $listener = new CheckoutConfirmRatepayEventListener(
             $this->getContainer()->get(SystemConfigService::class),

@@ -7,7 +7,6 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -22,21 +21,16 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -50,9 +44,9 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
         $this->requestParameterFactory = $requestParameterFactory;
-        $this->client                  = $client;
-        $this->translator              = $translator;
-        $this->dataHandler             = $dataHandler;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
     }
 
     /**
@@ -81,7 +75,7 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -95,36 +89,29 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
-            $this->getBaseCustomFields($response['status']),
-            [
-                // Set clearing type explicitly
-                CustomFieldInstaller::CLEARING_TYPE => static::PAYONE_CLEARING_VOR,
-
-                // Store clearing bank account information as custom field of the transaction in order to
-                // use this data for payment instructions of an invoice or similar.
-                // See: https://docs.payone.com/display/public/PLATFORM/How+to+use+JSON-Responses#HowtouseJSON-Responses-JSON,Clearing-Data
-                CustomFieldInstaller::CLEARING_BANK_ACCOUNT => array_merge(array_filter($response['clearing']['BankAccount'] ?? []), [
-                    // The PAYONE transaction ID acts as intended purpose of the transfer.
-                    // We add this field explicitly here to make clear that the transaction ID is used
-                    // as payment reference in context of the prepayment.
-                    'Reference' => (string) $response['txid'],
-                ]),
-            ]
-        ));
+        $data = $this->preparePayoneOrderTransactionData($request, $response, [
+            'workOrderId' => $requestData->get('workorder'),
+            'clearingType' => self::PAYONE_CLEARING_VOR,
+            // Store clearing bank account information as custom field of the transaction in order to
+            // use this data for payment instructions of an invoice or similar.
+            // See: https://docs.payone.com/display/public/PLATFORM/How+to+use+JSON-Responses#HowtouseJSON-Responses-JSON,Clearing-Data
+            'clearingBankAccount' => array_merge(array_filter($response['clearing']['BankAccount'] ?? []), [
+                // The PAYONE transaction ID acts as intended purpose of the transfer.
+                // We add this field explicitly here to make clear that the transaction ID is used
+                // as payment reference in context of the prepayment.
+                'Reference' => (string) $response['txid'],
+            ]),
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function isCapturable(array $transactionData, array $customFields): bool
+    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        // Prepayment is always pre-authorization
-
-        if (static::isNeverCapturable($transactionData, $customFields)) {
+        if (static::isNeverCapturable($payoneTransActionData)) {
             return false;
         }
 
@@ -132,24 +119,24 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
 
         $isAppointed = static::isTransactionAppointedAndCompleted($transactionData);
         $isUnderpaid = $txAction === TransactionStatusService::ACTION_UNDERPAID;
-        $isPaid      = $txAction === TransactionStatusService::ACTION_PAID;
+        $isPaid = $txAction === TransactionStatusService::ACTION_PAID;
 
         if ($isAppointed || $isUnderpaid || $isPaid) {
             return true;
         }
 
-        return static::matchesIsCapturableDefaults($transactionData, $customFields);
+        return static::matchesIsCapturableDefaults($transactionData);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function isRefundable(array $transactionData, array $customFields): bool
+    public static function isRefundable(array $transactionData): bool
     {
-        if (static::isNeverRefundable($transactionData, $customFields)) {
+        if (static::isNeverRefundable($transactionData)) {
             return false;
         }
 
-        return static::matchesIsRefundableDefaults($transactionData, $customFields);
+        return static::matchesIsRefundableDefaults($transactionData);
     }
 }

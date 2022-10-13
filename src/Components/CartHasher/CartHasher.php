@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\CartHasher;
 
-use Exception;
-use LogicException;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -20,8 +18,7 @@ class CartHasher implements CartHasherInterface
         OrderEntity::class,
     ];
 
-    /** @var CurrencyPrecisionInterface */
-    private $currencyPrecision;
+    private CurrencyPrecisionInterface $currencyPrecision;
 
     public function __construct(CurrencyPrecisionInterface $currencyPrecision)
     {
@@ -33,8 +30,8 @@ class CartHasher implements CartHasherInterface
      */
     public function generate(Struct $entity, SalesChannelContext $context): string
     {
-        if (!in_array(get_class($entity), self::VALID_TYPES, true)) {
-            throw new LogicException('unsupported struct type during hash creation or validation');
+        if (!\in_array(\get_class($entity), self::VALID_TYPES, true)) {
+            throw new \LogicException('unsupported struct type during hash creation or validation');
         }
 
         $hashData = $this->getHashData($entity, $context);
@@ -47,8 +44,8 @@ class CartHasher implements CartHasherInterface
      */
     public function validate(Struct $entity, string $cartHash, SalesChannelContext $context): bool
     {
-        if (!in_array(get_class($entity), self::VALID_TYPES, true)) {
-            throw new LogicException('unsupported struct type during hash creation or validation');
+        if (!\in_array(\get_class($entity), self::VALID_TYPES, true)) {
+            throw new \LogicException('unsupported struct type during hash creation or validation');
         }
         $hashData = $this->getHashData($entity, $context);
         $expected = $this->generateHash($hashData);
@@ -67,26 +64,25 @@ class CartHasher implements CartHasherInterface
             return $hashData;
         }
 
-        if (null !== $entity->getLineItems()) {
+        if ($entity->getLineItems() !== null) {
             foreach ($entity->getLineItems() as $lineItem) {
                 try {
-                    if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector') &&
-                        CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItem->getType() &&
-                        /** @phpstan-ignore-next-line */
-                        null === $lineItem->getParentId()) {
+                    if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector')
+                        && $lineItem->getType() === CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE
+                        && (!method_exists($lineItem, 'getParentId') || $lineItem->getParentId() === null)) {
                         continue;
                     }
-                } catch (Exception $exception) {
+                } catch (\Exception $exception) {
                     // Catch class not found if SwagCustomizedProducts plugin is not installed
                 }
 
                 $detail = [
-                    'id'       => $lineItem->getReferencedId() ?? '',
-                    'type'     => $lineItem->getType(),
+                    'id' => $lineItem->getReferencedId() ?? '',
+                    'type' => $lineItem->getType(),
                     'quantity' => $lineItem->getQuantity(),
                 ];
 
-                if (null !== $lineItem->getPrice()) {
+                if ($lineItem->getPrice() !== null) {
                     $detail['price'] = $this->currencyPrecision->getRoundedItemAmount($lineItem->getPrice()->getTotalPrice(), $context->getCurrency());
                 }
 
@@ -94,37 +90,37 @@ class CartHasher implements CartHasherInterface
             }
         }
 
-        $hashData['currency']       = $context->getCurrency()->getId();
-        $hashData['paymentMethod']  = $context->getPaymentMethod()->getId();
+        $hashData['currency'] = $context->getCurrency()->getId();
+        $hashData['paymentMethod'] = $context->getPaymentMethod()->getId();
         $hashData['shippingMethod'] = $context->getShippingMethod()->getId();
 
-        if (null === $context->getCustomer()) {
+        if ($context->getCustomer() === null) {
             return $hashData;
         }
 
         $billingAddress = $context->getCustomer()->getActiveBillingAddress();
 
-        if (null !== $billingAddress) {
+        if ($billingAddress !== null) {
             $hashData['address'] = [
-                'salutation'      => $billingAddress->getSalutationId(),
-                'title'           => $billingAddress->getTitle(),
-                'firstname'       => $billingAddress->getFirstName(),
-                'lastname'        => $billingAddress->getLastName(),
-                'street'          => $billingAddress->getStreet(),
+                'salutation' => $billingAddress->getSalutationId(),
+                'title' => $billingAddress->getTitle(),
+                'firstname' => $billingAddress->getFirstName(),
+                'lastname' => $billingAddress->getLastName(),
+                'street' => $billingAddress->getStreet(),
                 'addressaddition' => $billingAddress->getAdditionalAddressLine1(),
-                'zip'             => $billingAddress->getZipcode(),
-                'city'            => $billingAddress->getCity(),
-                'country'         => $billingAddress->getCountryId(),
+                'zip' => $billingAddress->getZipcode(),
+                'city' => $billingAddress->getCity(),
+                'country' => $billingAddress->getCountryId(),
             ];
         }
 
         $hashData['customer'] = [
             'language' => $context->getCustomer()->getLanguageId(),
-            'email'    => $context->getCustomer()->getEmail(),
+            'email' => $context->getCustomer()->getEmail(),
         ];
 
-        if (null !== $context->getCustomer()->getBirthday()) {
-            $hashData['birthday'] = $context->getCustomer()->getBirthday()->format(DATE_W3C);
+        if ($context->getCustomer()->getBirthday() !== null) {
+            $hashData['birthday'] = $context->getCustomer()->getBirthday()->format(\DATE_W3C);
         }
 
         return $hashData;
@@ -132,16 +128,16 @@ class CartHasher implements CartHasherInterface
 
     private function generateHash(array $hashData): string
     {
-        $json = json_encode($hashData, JSON_PRESERVE_ZERO_FRACTION);
+        $json = json_encode($hashData, \JSON_PRESERVE_ZERO_FRACTION);
 
         if (empty($json)) {
-            throw new LogicException('could not generate hash');
+            throw new \LogicException('could not generate hash');
         }
 
         $secret = getenv('APP_SECRET');
 
         if (empty($secret)) {
-            throw new LogicException('empty app secret');
+            throw new \LogicException('empty app secret');
         }
 
         return hash_hmac('sha256', $json, $secret);

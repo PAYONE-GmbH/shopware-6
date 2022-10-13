@@ -6,7 +6,8 @@ namespace PayonePayment\TestCaseBase;
 
 use PayonePayment\Components\Helper\OrderFetcher;
 use PayonePayment\Constants;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
@@ -63,23 +64,23 @@ trait PayoneTestBehavior
         $productId = Uuid::randomHex();
 
         $product = [
-            'id'            => $productId,
-            'name'          => 'Test product',
+            'id' => $productId,
+            'name' => 'Test product',
             'productNumber' => '123456789',
-            'stock'         => 1,
-            'price'         => [
+            'stock' => 1,
+            'price' => [
                 ['currencyId' => Defaults::CURRENCY, 'gross' => $price, 'net' => $price, 'linked' => false],
             ],
             'manufacturer' => ['id' => $productId, 'name' => 'shopware AG'],
-            'tax'          => ['id' => $productId, 'name' => 'testTaxRate', 'taxRate' => 0],
-            'categories'   => [
+            'tax' => ['id' => $productId, 'name' => 'testTaxRate', 'taxRate' => 0],
+            'categories' => [
                 ['id' => $productId, 'name' => 'Test category'],
             ],
             'visibilities' => [
                 [
-                    'id'             => $productId,
+                    'id' => $productId,
                     'salesChannelId' => Defaults::SALES_CHANNEL,
-                    'visibility'     => ProductVisibilityDefinition::VISIBILITY_ALL,
+                    'visibility' => ProductVisibilityDefinition::VISIBILITY_ALL,
                 ],
             ],
         ];
@@ -108,7 +109,7 @@ trait PayoneTestBehavior
         }
 
         $orderFetcher = $this->getContainer()->get(OrderFetcher::class);
-        $orderId      = $this->placeRandomOrder($salesChannelContext);
+        $orderId = $this->placeRandomOrder($salesChannelContext);
 
         return $orderFetcher->getOrderById($orderId, $salesChannelContext->getContext());
     }
@@ -118,7 +119,7 @@ trait PayoneTestBehavior
         string $requestAction = AbstractRequestParameterBuilder::REQUEST_ACTION_RATEPAY_PROFILE
     ): RatepayProfileStruct {
         return new RatepayProfileStruct(
-            88880103,
+            '88880103',
             'EUR',
             Defaults::SALES_CHANNEL,
             $paymentHandler,
@@ -129,7 +130,7 @@ trait PayoneTestBehavior
     protected function getFinancialTransactionStruct(ParameterBag $dataBag, string $paymentHandler, string $request): FinancialTransactionStruct
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $order               = $this->getRandomOrder($salesChannelContext);
+        $order = $this->getRandomOrder($salesChannelContext);
 
         return new FinancialTransactionStruct(
             $this->getPaymentTransaction($order, $paymentHandler),
@@ -146,7 +147,7 @@ trait PayoneTestBehavior
         string $requestAction
     ): PaymentTransactionStruct {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $order               = $this->getRandomOrder($salesChannelContext);
+        $order = $this->getRandomOrder($salesChannelContext);
 
         return new PaymentTransactionStruct(
             $this->getPaymentTransaction($order, $paymentHandler),
@@ -169,13 +170,18 @@ trait PayoneTestBehavior
         $orderTransactionEntity->setPaymentMethod($paymentMethodEntity);
         $orderTransactionEntity->setOrder($orderEntity);
 
-        $customFields = [
-            CustomFieldInstaller::TRANSACTION_ID     => Constants::PAYONE_TRANSACTION_ID,
-            CustomFieldInstaller::SEQUENCE_NUMBER    => 0,
-            CustomFieldInstaller::LAST_REQUEST       => 'authorization',
-            CustomFieldInstaller::AUTHORIZATION_TYPE => 'authorization',
-        ];
-        $orderTransactionEntity->setCustomFields($customFields);
+        $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
+        $payoneTransactionData->assign([
+            'transactionId' => Constants::PAYONE_TRANSACTION_ID,
+            'sequenceNumber' => 0,
+            'lastRequest' => 'authorization',
+            'authorizationType' => 'authorization',
+        ]);
+
+        $orderTransactionEntity->addExtension(
+            PayonePaymentOrderTransactionExtension::NAME,
+            $payoneTransactionData
+        );
 
         $stateMachineState = new StateMachineStateEntity();
         $stateMachineState->setTechnicalName('');

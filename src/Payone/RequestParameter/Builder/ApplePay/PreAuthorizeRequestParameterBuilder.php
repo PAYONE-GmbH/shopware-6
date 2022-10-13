@@ -9,7 +9,9 @@ use PayonePayment\Payone\RequestParameter\Struct\ApplePayTransactionStruct;
 
 class PreAuthorizeRequestParameterBuilder extends AuthorizeRequestParameterBuilder
 {
-    /** @param ApplePayTransactionStruct $arguments */
+    /**
+     * @param ApplePayTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return array_merge(parent::getRequestParameter($arguments), [

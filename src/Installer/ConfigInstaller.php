@@ -15,60 +15,59 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigInstaller implements InstallerInterface
 {
-    public const CONFIG_FIELD_ACCOUNT_ID                              = 'accountId';
-    public const CONFIG_FIELD_MERCHANT_ID                             = 'merchantId';
-    public const CONFIG_FIELD_PORTAL_ID                               = 'portalId';
-    public const CONFIG_FIELD_PORTAL_KEY                              = 'portalKey';
-    public const CONFIG_FIELD_PAYOLUTION_DEBIT_TRANSFER_COMPANY_DATA  = 'payolutionDebitTransferCompanyData';
-    public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_NAME     = 'payolutionInstallmentChannelName';
+    public const CONFIG_FIELD_ACCOUNT_ID = 'accountId';
+    public const CONFIG_FIELD_MERCHANT_ID = 'merchantId';
+    public const CONFIG_FIELD_PORTAL_ID = 'portalId';
+    public const CONFIG_FIELD_PORTAL_KEY = 'portalKey';
+    public const CONFIG_FIELD_PAYOLUTION_DEBIT_TRANSFER_COMPANY_DATA = 'payolutionDebitTransferCompanyData';
+    public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_NAME = 'payolutionInstallmentChannelName';
     public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_PASSWORD = 'payolutionInstallmentChannelPassword';
 
-    private const STATE_MACHINE_TRANSITION_ACTION_PAY           = 'pay';
+    private const STATE_MACHINE_TRANSITION_ACTION_PAY = 'pay';
     private const STATE_MACHINE_TRANSITION_ACTION_PAY_PARTIALLY = 'pay_partially';
 
     private const DEFAULT_VALUES = [
         'transactionMode' => 'test',
 
         // Default authorization modes for payment methods
-        'creditCardAuthorizationMethod'            => 'preauthorization',
-        'debitAuthorizationMethod'                 => 'authorization',
-        'payolutionDebitAuthorizationMethod'       => 'preauthorization',
+        'creditCardAuthorizationMethod' => 'preauthorization',
+        'debitAuthorizationMethod' => 'authorization',
+        'payolutionDebitAuthorizationMethod' => 'preauthorization',
         'payolutionInstallmentAuthorizationMethod' => 'authorization',
-        'payolutionInvoicingAuthorizationMethod'   => 'preauthorization',
-        'paypalAuthorizationMethod'                => 'preauthorization',
-        'paypalExpressAuthorizationMethod'         => 'preauthorization',
-        'sofortAuthorizationMethod'                => 'authorization',
-        'secureInvoiceAuthorizationMethod'         => 'preauthorization',
+        'payolutionInvoicingAuthorizationMethod' => 'preauthorization',
+        'paypalAuthorizationMethod' => 'preauthorization',
+        'paypalExpressAuthorizationMethod' => 'preauthorization',
+        'sofortAuthorizationMethod' => 'authorization',
+        'secureInvoiceAuthorizationMethod' => 'preauthorization',
 
         // Default payment status mapping
-        'paymentStatusAppointed'      => StateMachineTransitionActions::ACTION_REOPEN,
-        'paymentStatusCapture'        => StateMachineTransitionActions::ACTION_PAID,
+        'paymentStatusAppointed' => StateMachineTransitionActions::ACTION_REOPEN,
+        'paymentStatusCapture' => StateMachineTransitionActions::ACTION_PAID,
         'paymentStatusPartialCapture' => StateMachineTransitionActions::ACTION_PAID_PARTIALLY,
-        'paymentStatusPaid'           => StateMachineTransitionActions::ACTION_PAID,
-        'paymentStatusUnderpaid'      => StateMachineTransitionActions::ACTION_PAID_PARTIALLY,
-        'paymentStatusCancelation'    => StateMachineTransitionActions::ACTION_CANCEL,
-        'paymentStatusRefund'         => StateMachineTransitionActions::ACTION_REFUND,
-        'paymentStatusPartialRefund'  => StateMachineTransitionActions::ACTION_REFUND_PARTIALLY,
-        'paymentStatusDebit'          => StateMachineTransitionActions::ACTION_PAID,
-        'paymentStatusReminder'       => StateMachineTransitionActions::ACTION_REMIND,
+        'paymentStatusPaid' => StateMachineTransitionActions::ACTION_PAID,
+        'paymentStatusUnderpaid' => StateMachineTransitionActions::ACTION_PAID_PARTIALLY,
+        'paymentStatusCancelation' => StateMachineTransitionActions::ACTION_CANCEL,
+        'paymentStatusRefund' => StateMachineTransitionActions::ACTION_REFUND,
+        'paymentStatusPartialRefund' => StateMachineTransitionActions::ACTION_REFUND_PARTIALLY,
+        'paymentStatusDebit' => StateMachineTransitionActions::ACTION_PAID,
+        'paymentStatusReminder' => StateMachineTransitionActions::ACTION_REMIND,
         'paymentStatusVauthorization' => '',
-        'paymentStatusVsettlement'    => '',
-        'paymentStatusTransfer'       => StateMachineTransitionActions::ACTION_CANCEL,
-        'paymentStatusInvoice'        => StateMachineTransitionActions::ACTION_PAID,
-        'paymentStatusFailed'         => StateMachineTransitionActions::ACTION_CANCEL,
+        'paymentStatusVsettlement' => '',
+        'paymentStatusTransfer' => StateMachineTransitionActions::ACTION_CANCEL,
+        'paymentStatusInvoice' => StateMachineTransitionActions::ACTION_PAID,
+        'paymentStatusFailed' => StateMachineTransitionActions::ACTION_CANCEL,
     ];
 
     private const UPDATE_VALUES = [ // Updated for 6.2
-        'paymentStatusCapture'        => [self::STATE_MACHINE_TRANSITION_ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
+        'paymentStatusCapture' => [self::STATE_MACHINE_TRANSITION_ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
         'paymentStatusPartialCapture' => [self::STATE_MACHINE_TRANSITION_ACTION_PAY_PARTIALLY => StateMachineTransitionActions::ACTION_PAID_PARTIALLY],
-        'paymentStatusPaid'           => [self::STATE_MACHINE_TRANSITION_ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
-        'paymentStatusUnderpaid'      => [self::STATE_MACHINE_TRANSITION_ACTION_PAY_PARTIALLY => StateMachineTransitionActions::ACTION_PAID_PARTIALLY],
-        'paymentStatusDebit'          => [self::STATE_MACHINE_TRANSITION_ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
-        'paymentStatusInvoice'        => [self::STATE_MACHINE_TRANSITION_ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
+        'paymentStatusPaid' => [self::STATE_MACHINE_TRANSITION_ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
+        'paymentStatusUnderpaid' => [self::STATE_MACHINE_TRANSITION_ACTION_PAY_PARTIALLY => StateMachineTransitionActions::ACTION_PAID_PARTIALLY],
+        'paymentStatusDebit' => [self::STATE_MACHINE_TRANSITION_ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
+        'paymentStatusInvoice' => [self::STATE_MACHINE_TRANSITION_ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
     ];
 
-    /** @var SystemConfigService */
-    private $systemConfigService;
+    private SystemConfigService $systemConfigService;
 
     public function __construct(SystemConfigService $systemConfigService)
     {
@@ -80,10 +79,6 @@ class ConfigInstaller implements InstallerInterface
      */
     public function install(InstallContext $context): void
     {
-        if (empty(self::DEFAULT_VALUES)) {
-            return;
-        }
-
         $this->setDefaultValues($context->getContext());
     }
 
@@ -92,10 +87,6 @@ class ConfigInstaller implements InstallerInterface
      */
     public function update(UpdateContext $context): void
     {
-        if (empty(self::DEFAULT_VALUES)) {
-            return;
-        }
-
         $this->setDefaultValues($context->getContext());
     }
 

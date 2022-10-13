@@ -20,18 +20,18 @@ class ProfileRequestParameterBuilderTest extends TestCase
 
     public function testItAddsCorrectProfileParameters(): void
     {
-        $struct     = $this->getRatepayProfileStruct($this->getValidPaymentHandler());
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $struct = $this->getRatepayProfileStruct($this->getValidPaymentHandler());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'              => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
-                'clearingtype'         => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'        => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
-                'add_paydata[action]'  => 'profile',
-                'add_paydata[shop_id]' => 88880103,
-                'currency'             => 'EUR',
+                'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
+                'add_paydata[action]' => 'profile',
+                'add_paydata[shop_id]' => '88880103',
+                'currency' => 'EUR',
             ],
             $parameters
         );

@@ -4,36 +4,30 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use PayonePayment\Installer\CustomFieldInstaller;
-
 class PayoneOpenInvoicePaymentHandler extends AbstractPayoneInvoicePaymentHandler
 {
     /**
      * {@inheritdoc}
      */
-    public static function isCapturable(array $transactionData, array $customFields): bool
+    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        if (static::isNeverCapturable($transactionData, $customFields)) {
+        if (static::isNeverCapturable($payoneTransActionData)) {
             return false;
         }
 
-        if (!array_key_exists(CustomFieldInstaller::AUTHORIZATION_TYPE, $customFields)) {
-            return false;
-        }
-
-        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData, $customFields);
+        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function isRefundable(array $transactionData, array $customFields): bool
+    public static function isRefundable(array $transactionData): bool
     {
-        if (static::isNeverRefundable($transactionData, $customFields)) {
+        if (static::isNeverRefundable($transactionData)) {
             return false;
         }
 
-        return static::matchesIsRefundableDefaults($transactionData, $customFields);
+        return static::matchesIsRefundableDefaults($transactionData);
     }
 
     /**

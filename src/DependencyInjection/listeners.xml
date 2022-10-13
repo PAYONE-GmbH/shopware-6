@@ -99,5 +99,9 @@
             <argument type="service" id="PayonePayment\Components\Ratepay\Profile\ProfileService" />
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="PayonePayment\EventListener\DocumentOrderEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>

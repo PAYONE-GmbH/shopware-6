@@ -9,7 +9,6 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Components\Validator\PaymentMethod;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -24,24 +23,18 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
-    /** @var CartHasherInterface */
-    private $cartHasher;
+    private CartHasherInterface $cartHasher;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -55,10 +48,10 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client                  = $client;
-        $this->translator              = $translator;
-        $this->dataHandler             = $dataHandler;
-        $this->cartHasher              = $cartHasher;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
+        $this->cartHasher = $cartHasher;
         $this->requestParameterFactory = $requestParameterFactory;
     }
 
@@ -104,7 +97,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -118,26 +111,22 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
-            $this->getBaseCustomFields($response['status']),
-            [
-                CustomFieldInstaller::WORK_ORDER_ID      => $requestData->get('workorder'),
-                CustomFieldInstaller::CLEARING_REFERENCE => $response['clearing']['Reference'],
-                CustomFieldInstaller::CAPTURE_MODE       => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-                CustomFieldInstaller::CLEARING_TYPE      => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                CustomFieldInstaller::FINANCING_TYPE     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
-            ]
-        ));
+        $data = $this->preparePayoneOrderTransactionData($request, $response, [
+            'workOrderId' => $requestData->get('workorder'),
+            'clearingReference' => $response['clearing']['Reference'],
+            'captureMode' => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+            'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+            'financingType' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
     }
 
     public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
     {
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
-        $definitions['payolutionConsent']  = [new NotBlank()];
+        $definitions['payolutionConsent'] = [new NotBlank()];
         $definitions['payolutionBirthday'] = [new NotBlank(), new Birthday(['value' => $this->getMinimumDate()])];
 
         if ($this->customerHasCompanyAddress($salesChannelContext)) {
@@ -150,24 +139,24 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
     /**
      * {@inheritdoc}
      */
-    public static function isCapturable(array $transactionData, array $customFields): bool
+    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        if (static::isNeverCapturable($transactionData, $customFields)) {
+        if (static::isNeverCapturable($payoneTransActionData)) {
             return false;
         }
 
-        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData, $customFields);
+        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function isRefundable(array $transactionData, array $customFields): bool
+    public static function isRefundable(array $transactionData): bool
     {
-        if (static::isNeverRefundable($transactionData, $customFields)) {
+        if (static::isNeverRefundable($transactionData)) {
             return false;
         }
 
-        return static::matchesIsRefundableDefaults($transactionData, $customFields);
+        return static::matchesIsRefundableDefaults($transactionData);
     }
 }

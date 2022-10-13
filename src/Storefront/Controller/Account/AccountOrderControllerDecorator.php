@@ -20,16 +20,18 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AccountOrderControllerDecorator extends StorefrontController
 {
-    /** @var AccountOrderController|StorefrontController */
+    /**
+     * @var AccountOrderController
+     */
     protected $decoratedController;
 
-    /** @var EntityRepositoryInterface */
-    protected $orderRepository;
+    protected EntityRepositoryInterface $orderRepository;
 
     public function __construct(StorefrontController $decoratedController, EntityRepositoryInterface $orderRepository)
     {
+        /** @phpstan-ignore-next-line */
         $this->decoratedController = $decoratedController;
-        $this->orderRepository     = $orderRepository;
+        $this->orderRepository = $orderRepository;
     }
 
     public function orderOverview(Request $request, SalesChannelContext $context): Response
@@ -87,7 +89,7 @@ class AccountOrderControllerDecorator extends StorefrontController
 
             if ($transaction
                 && $transaction->getPaymentMethod()
-                && in_array($transaction->getPaymentMethod()->getHandlerIdentifier(), PaymentHandlerGroups::RATEPAY, true)) {
+                && \in_array($transaction->getPaymentMethod()->getHandlerIdentifier(), PaymentHandlerGroups::RATEPAY, true)) {
                 return true;
             }
         }

@@ -12,11 +12,14 @@ use Symfony\Component\Validator\Constraints\IbanValidator;
  */
 class Iban extends \Symfony\Component\Validator\Constraints\Iban
 {
+    /**
+     * @phpstan-ignore-next-line
+     */
     protected static $errorNames = [
-        self::INVALID_COUNTRY_CODE_ERROR       => 'PAYONE_INVALID_COUNTRY_CODE_ERROR',
-        self::INVALID_CHARACTERS_ERROR         => 'PAYONE_INVALID_CHARACTERS_ERROR',
-        self::CHECKSUM_FAILED_ERROR            => 'PAYONE_CHECKSUM_FAILED_ERROR',
-        self::INVALID_FORMAT_ERROR             => 'PAYONE_INVALID_FORMAT_ERROR',
+        self::INVALID_COUNTRY_CODE_ERROR => 'PAYONE_INVALID_COUNTRY_CODE_ERROR',
+        self::INVALID_CHARACTERS_ERROR => 'PAYONE_INVALID_CHARACTERS_ERROR',
+        self::CHECKSUM_FAILED_ERROR => 'PAYONE_CHECKSUM_FAILED_ERROR',
+        self::INVALID_FORMAT_ERROR => 'PAYONE_INVALID_FORMAT_ERROR',
         self::NOT_SUPPORTED_COUNTRY_CODE_ERROR => 'PAYONE_NOT_SUPPORTED_COUNTRY_CODE_ERROR',
     ];
 

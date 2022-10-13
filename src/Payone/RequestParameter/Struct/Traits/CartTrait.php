@@ -8,8 +8,7 @@ use Shopware\Core\Checkout\Cart\Cart;
 
 trait CartTrait
 {
-    /** @var Cart */
-    protected $cart;
+    protected Cart $cart;
 
     public function getCart(): Cart
     {

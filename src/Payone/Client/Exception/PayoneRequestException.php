@@ -4,21 +4,17 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Client\Exception;
 
-use Exception;
-
-class PayoneRequestException extends Exception
+class PayoneRequestException extends \Exception
 {
-    /** @var array */
-    private $request;
+    private array $request;
 
-    /** @var array */
-    private $response;
+    private array $response;
 
     public function __construct(string $message, array $request = [], array $response = [])
     {
         parent::__construct($message);
 
-        $this->request  = $request;
+        $this->request = $request;
         $this->response = $response;
     }
 

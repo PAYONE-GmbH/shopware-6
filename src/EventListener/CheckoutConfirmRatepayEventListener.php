@@ -27,17 +27,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
 {
-    /** @var SystemConfigService */
-    protected $systemConfigService;
+    protected SystemConfigService $systemConfigService;
 
-    /** @var InstallmentServiceInterface */
-    protected $installmentService;
+    protected InstallmentServiceInterface $installmentService;
 
-    /** @var DeviceFingerprintServiceInterface */
-    protected $deviceFingerprintService;
+    protected DeviceFingerprintServiceInterface $deviceFingerprintService;
 
-    /** @var ProfileServiceInterface */
-    protected $profileService;
+    protected ProfileServiceInterface $profileService;
 
     public function __construct(
         SystemConfigService $systemConfigService,
@@ -45,10 +41,10 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         DeviceFingerprintServiceInterface $deviceFingerprintService,
         ProfileServiceInterface $profileService
     ) {
-        $this->systemConfigService      = $systemConfigService;
-        $this->installmentService       = $installmentService;
+        $this->systemConfigService = $systemConfigService;
+        $this->installmentService = $installmentService;
         $this->deviceFingerprintService = $deviceFingerprintService;
-        $this->profileService           = $profileService;
+        $this->profileService = $profileService;
     }
 
     public static function getSubscribedEvents(): array
@@ -73,8 +69,8 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         $page = $event->getPage();
 
         if (
-            !method_exists($page, 'getPaymentMethods') ||
-            !method_exists($page, 'setPaymentMethods')
+            !method_exists($page, 'getPaymentMethods')
+            || !method_exists($page, 'setPaymentMethods')
         ) {
             return;
         }
@@ -93,8 +89,8 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         $page = $event->getPage();
 
         if (
-            !method_exists($page, 'getPaymentMethods') ||
-            !method_exists($page, 'setPaymentMethods')
+            !method_exists($page, 'getPaymentMethods')
+            || !method_exists($page, 'setPaymentMethods')
         ) {
             return;
         }
@@ -117,14 +113,15 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
 
     public function addPayonePageData(PageLoadedEvent $event): void
     {
-        $page    = $event->getPage();
+        /** @var Page $page */
+        $page = $event->getPage();
         $context = $event->getSalesChannelContext();
 
         if ($context->getPaymentMethod()->getId() === PayoneRatepayInstallment::UUID) {
             $this->addInstallmentCalculatorData($page, $context);
         }
 
-        if (in_array($context->getPaymentMethod()->getHandlerIdentifier(), PaymentHandlerGroups::RATEPAY, true)) {
+        if (\in_array($context->getPaymentMethod()->getHandlerIdentifier(), PaymentHandlerGroups::RATEPAY, true)) {
             $this->addDeviceFingerprintData($page, $context);
         }
     }
@@ -133,7 +130,7 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
     {
         return $paymentMethods->filter(
             static function (PaymentMethodEntity $paymentMethod) use ($paymentHandler) {
-                return !in_array($paymentMethod->getHandlerIdentifier(), $paymentHandler, true);
+                return !\in_array($paymentMethod->getHandlerIdentifier(), $paymentHandler, true);
             }
         );
     }
@@ -142,13 +139,13 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
     {
         $customer = $context->getCustomer();
 
-        if (null === $customer) {
+        if ($customer === null) {
             return false;
         }
 
         $billingAddress = $customer->getActiveBillingAddress();
 
-        if (null === $billingAddress) {
+        if ($billingAddress === null) {
             return false;
         }
 
@@ -158,8 +155,8 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
     protected function addInstallmentCalculatorData(Page $page, SalesChannelContext $context): void
     {
         if (
-            !method_exists($page, 'getPaymentMethods') ||
-            !method_exists($page, 'setPaymentMethods')
+            !method_exists($page, 'getPaymentMethods')
+            || !method_exists($page, 'setPaymentMethods')
         ) {
             return;
         }
@@ -187,10 +184,13 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
                     'DeviceFingerprintSnippetId'
                 ),
                 $context->getSalesChannelId()
-            ) ?? 'ratepay';
+            );
+            if (!\is_string($snippetId) || $snippetId === '') {
+                $snippetId = 'ratepay';
+            }
 
             $deviceIdentToken = $this->deviceFingerprintService->getDeviceIdentToken();
-            $snippet          = $this->deviceFingerprintService->getDeviceIdentSnippet($snippetId, $deviceIdentToken);
+            $snippet = $this->deviceFingerprintService->getDeviceIdentSnippet($snippetId, $deviceIdentToken);
 
             $extension = new RatepayDeviceFingerprintData();
             $extension->setSnippet($snippet);

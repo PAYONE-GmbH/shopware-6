@@ -11,12 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Throwable;
 
 class RedirectController
 {
-    /** @var RedirectHandler */
-    private $redirectHandler;
+    private RedirectHandler $redirectHandler;
 
     public function __construct(RedirectHandler $redirectHandler)
     {
@@ -37,7 +35,7 @@ class RedirectController
 
         try {
             $target = $this->redirectHandler->decode($hash);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new NotFoundHttpException();
         }
 

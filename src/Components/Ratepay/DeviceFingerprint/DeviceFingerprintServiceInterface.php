@@ -10,7 +10,7 @@ interface DeviceFingerprintServiceInterface
 
     public function isDeviceIdentTokenAlreadyGenerated(): bool;
 
-    public function getDeviceIdentToken(): ?string;
+    public function getDeviceIdentToken(): string;
 
     public function deleteDeviceIdentToken(): void;
 

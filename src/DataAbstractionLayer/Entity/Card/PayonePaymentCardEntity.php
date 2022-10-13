@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\DataAbstractionLayer\Entity\Card;
 
-use DateTimeInterface;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
@@ -13,20 +12,15 @@ class PayonePaymentCardEntity extends Entity
 {
     use EntityIdTrait;
 
-    /** @var string */
-    protected $pseudoCardPan;
+    protected string $pseudoCardPan;
 
-    /** @var string */
-    protected $truncatedCardPan;
+    protected string $truncatedCardPan;
 
-    /** @var DateTimeInterface */
-    protected $expiresAt;
+    protected \DateTimeInterface $expiresAt;
 
-    /** @var null|CustomerEntity */
-    protected $customer;
+    protected ?CustomerEntity $customer = null;
 
-    /** @var string */
-    protected $customerId;
+    protected string $customerId;
 
     public function getPseudoCardPan(): string
     {
@@ -48,12 +42,12 @@ class PayonePaymentCardEntity extends Entity
         $this->truncatedCardPan = $truncatedCardPan;
     }
 
-    public function getExpiresAt(): DateTimeInterface
+    public function getExpiresAt(): \DateTimeInterface
     {
         return $this->expiresAt;
     }
 
-    public function setExpiresAt(DateTimeInterface $expiresAt): void
+    public function setExpiresAt(\DateTimeInterface $expiresAt): void
     {
         $this->expiresAt = $expiresAt;
     }

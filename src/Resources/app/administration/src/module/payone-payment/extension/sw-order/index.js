@@ -81,11 +81,11 @@ Component.override('sw-order-detail-base', {
         },
 
         isPayoneTransaction(transaction) {
-            if (!transaction.customFields) {
+            if (!transaction.extensions || !transaction.extensions.payonePaymentOrderTransactionData || !transaction.extensions.payonePaymentOrderTransactionData.transactionId) {
                 return false;
             }
 
-            return transaction.customFields.payone_transaction_id;
+            return transaction.extensions.payonePaymentOrderTransactionData.transactionId;
         },
 
         hasNotificationForwards(transaction) {

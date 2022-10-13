@@ -18,8 +18,7 @@ class RatepayCalculationStruct extends AbstractRequestParameterStruct
     use CartTrait;
     use RequestDataTrait;
 
-    /** @var Profile */
-    protected $profile;
+    protected Profile $profile;
 
     public function __construct(
         Cart $cart,
@@ -29,12 +28,12 @@ class RatepayCalculationStruct extends AbstractRequestParameterStruct
         string $paymentMethod,
         string $action = ''
     ) {
-        $this->cart                = $cart;
-        $this->requestData         = $requestData;
+        $this->cart = $cart;
+        $this->requestData = $requestData;
         $this->salesChannelContext = $salesChannelContext;
-        $this->profile             = $profile;
-        $this->paymentMethod       = $paymentMethod;
-        $this->action              = $action;
+        $this->profile = $profile;
+        $this->paymentMethod = $paymentMethod;
+        $this->action = $action;
     }
 
     public function getProfile(): Profile

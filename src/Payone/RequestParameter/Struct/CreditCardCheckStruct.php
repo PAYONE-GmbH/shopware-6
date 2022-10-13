@@ -16,6 +16,6 @@ class CreditCardCheckStruct extends AbstractRequestParameterStruct
         string $paymentMethod
     ) {
         $this->salesChannelContext = $salesChannelContext;
-        $this->paymentMethod       = $paymentMethod;
+        $this->paymentMethod = $paymentMethod;
     }
 }

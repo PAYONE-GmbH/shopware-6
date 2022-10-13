@@ -10,23 +10,17 @@ class RatepayInstallmentCalculatorData extends Struct
 {
     public const EXTENSION_NAME = 'payoneRatepayInstallmentCalculator';
 
-    /** @var float */
-    protected $minimumRate;
+    protected float $minimumRate;
 
-    /** @var float */
-    protected $maximumRate;
+    protected float $maximumRate;
 
-    /** @var array */
-    protected $allowedMonths = [];
+    protected array $allowedMonths = [];
 
-    /** @var array */
-    protected $defaults = [];
+    protected array $defaults = [];
 
-    /** @var array */
-    protected $calculationParams = [];
+    protected array $calculationParams = [];
 
-    /** @var array */
-    protected $calculationResponse = [];
+    protected array $calculationResponse = [];
 
     public function getMinimumRate(): float
     {

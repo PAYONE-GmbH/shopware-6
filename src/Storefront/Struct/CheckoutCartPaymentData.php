@@ -10,14 +10,11 @@ class CheckoutCartPaymentData extends Struct
 {
     public const EXTENSION_NAME = 'payone';
 
-    /** @var string */
-    protected $workOrderId = '';
+    protected string $workOrderId = '';
 
-    /** @var string */
-    protected $cartHash = '';
+    protected string $cartHash = '';
 
-    /** @var array */
-    protected $calculationResponse = [];
+    protected array $calculationResponse = [];
 
     public function getWorkorderId(): string
     {

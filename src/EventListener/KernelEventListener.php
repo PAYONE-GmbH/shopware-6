@@ -14,8 +14,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class KernelEventListener implements EventSubscriberInterface
 {
-    /** @var ProfileServiceInterface */
-    private $profileService;
+    private ProfileServiceInterface $profileService;
 
     public function __construct(ProfileServiceInterface $profileService)
     {
@@ -31,11 +30,11 @@ class KernelEventListener implements EventSubscriberInterface
 
     public function onKernelResponse(ResponseEvent $event): void
     {
-        $route    = $event->getRequest()->get('_route');
+        $route = $event->getRequest()->get('_route');
         $response = $event->getResponse();
 
         if ($route === 'api.action.core.save.system-config.batch') {
-            $results        = [];
+            $results = [];
             $configurations = $event->getRequest()->request->all();
 
             foreach ($configurations as $salesChannelId => $configuration) {
@@ -45,14 +44,14 @@ class KernelEventListener implements EventSubscriberInterface
                     if (isset($configuration[$profilesConfigKey])) {
                         $result = $this->profileService->updateProfileConfiguration(
                             $ratepayHandler,
-                            $salesChannelId === 'null' ? null : $salesChannelId
+                            $salesChannelId === 'null' ? null : (string) $salesChannelId
                         );
                         $results[$salesChannelId][] = $result;
                     }
                 }
             }
 
-            if ($response instanceof JsonResponse && count($results) > 0) {
+            if ($response instanceof JsonResponse && \count($results) > 0) {
                 $this->setResponseData($response, $results);
             }
         }
@@ -70,16 +69,16 @@ class KernelEventListener implements EventSubscriberInterface
         foreach ($updateResults as $salesChannelId => $updateResultsBySalesChannel) {
             $salesChannelData = [
                 'updates' => [],
-                'errors'  => [],
+                'errors' => [],
             ];
 
             foreach ($updateResultsBySalesChannel as $updateResult) {
                 $salesChannelData['updates'][] = $updateResult['updates'];
-                $salesChannelData['errors'][]  = $updateResult['errors'];
+                $salesChannelData['errors'][] = $updateResult['errors'];
             }
 
             $salesChannelData['updates'] = array_merge(...$salesChannelData['updates']);
-            $salesChannelData['errors']  = array_merge(...$salesChannelData['errors']);
+            $salesChannelData['errors'] = array_merge(...$salesChannelData['errors']);
 
             $data['payoneRatepayProfilesUpdateResult'][$salesChannelId] = $salesChannelData;
         }

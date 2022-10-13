@@ -33,12 +33,12 @@ class ProfileServiceTest extends TestCase
         $this->setValidRatepayProfiles($this->getContainer(), $paymentHandler);
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $order          = $this->getRandomOrder();
+        $order = $this->getRandomOrder();
 
         $profile = $profileService->getProfileByOrder($order, $paymentHandler);
 
         static::assertNotNull($profile);
-        static::assertSame(88880103, $profile->getShopId());
+        static::assertSame('88880103', $profile->getShopId());
         static::assertIsArray($profile->getConfiguration());
         static::assertNotEmpty($profile->getConfiguration());
     }
@@ -53,13 +53,13 @@ class ProfileServiceTest extends TestCase
         );
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $order          = $this->getRandomOrder();
+        $order = $this->getRandomOrder();
         $this->addFakeShippingAddress($order);
 
         $profile = $profileService->getProfileByOrder($order, $paymentHandler);
 
         static::assertNotNull($profile);
-        static::assertSame(88880103, $profile->getShopId());
+        static::assertSame('88880103', $profile->getShopId());
         static::assertIsArray($profile->getConfiguration());
         static::assertNotEmpty($profile->getConfiguration());
     }
@@ -74,7 +74,7 @@ class ProfileServiceTest extends TestCase
         );
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $order          = $this->getRandomOrder();
+        $order = $this->getRandomOrder();
         $this->addFakeShippingAddress($order);
 
         $profile = $profileService->getProfileByOrder($order, $paymentHandler);
@@ -87,13 +87,13 @@ class ProfileServiceTest extends TestCase
         $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
         $this->setValidRatepayProfiles($this->getContainer(), $paymentHandler);
 
-        $profileService      = $this->getContainer()->get(ProfileService::class);
+        $profileService = $this->getContainer()->get(ProfileService::class);
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
         $profile = $profileService->getProfileBySalesChannelContext($salesChannelContext, $paymentHandler);
 
         static::assertNotNull($profile);
-        static::assertSame(88880103, $profile->getShopId());
+        static::assertSame('88880103', $profile->getShopId());
         static::assertIsArray($profile->getConfiguration());
         static::assertNotEmpty($profile->getConfiguration());
     }
@@ -103,12 +103,12 @@ class ProfileServiceTest extends TestCase
         $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
         $this->setValidRatepayProfiles($this->getContainer(), $paymentHandler);
 
-        $profileSearch  = $this->getValidProfileSearch($paymentHandler);
+        $profileSearch = $this->getValidProfileSearch($paymentHandler);
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile        = $profileService->getProfile($profileSearch);
+        $profile = $profileService->getProfile($profileSearch);
 
         static::assertNotNull($profile);
-        static::assertSame(88880103, $profile->getShopId());
+        static::assertSame('88880103', $profile->getShopId());
         static::assertIsArray($profile->getConfiguration());
         static::assertNotEmpty($profile->getConfiguration());
     }
@@ -126,7 +126,7 @@ class ProfileServiceTest extends TestCase
         $profileSearch->setBillingCountryCode('NL');
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile        = $profileService->getProfile($profileSearch);
+        $profile = $profileService->getProfile($profileSearch);
 
         static::assertNull($profile);
     }
@@ -144,7 +144,7 @@ class ProfileServiceTest extends TestCase
         $profileSearch->setShippingCountryCode('NL');
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile        = $profileService->getProfile($profileSearch);
+        $profile = $profileService->getProfile($profileSearch);
 
         static::assertNull($profile);
     }
@@ -162,7 +162,7 @@ class ProfileServiceTest extends TestCase
         $profileSearch->setCurrency('USD');
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile        = $profileService->getProfile($profileSearch);
+        $profile = $profileService->getProfile($profileSearch);
 
         static::assertNull($profile);
     }
@@ -180,7 +180,7 @@ class ProfileServiceTest extends TestCase
         $profileSearch->setTotalAmount(10);
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile        = $profileService->getProfile($profileSearch);
+        $profile = $profileService->getProfile($profileSearch);
 
         static::assertNull($profile);
     }
@@ -198,14 +198,14 @@ class ProfileServiceTest extends TestCase
         $profileSearch->setTotalAmount(100);
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile        = $profileService->getProfile($profileSearch);
+        $profile = $profileService->getProfile($profileSearch);
 
         static::assertNull($profile);
     }
 
     public function testItNotReturnsProfileOnMissingConfiguration(): void
     {
-        $paymentHandler      = PayoneRatepayDebitPaymentHandler::class;
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
         $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $this->setValidRatepayProfiles($this->getContainer(), $paymentHandler);
         $systemConfigService->delete(
@@ -215,22 +215,22 @@ class ProfileServiceTest extends TestCase
         $profileSearch = $this->getValidProfileSearch($paymentHandler);
 
         $profileService = $this->getContainer()->get(ProfileService::class);
-        $profile        = $profileService->getProfile($profileSearch);
+        $profile = $profileService->getProfile($profileSearch);
 
         static::assertNull($profile);
     }
 
     public function testItUpdatesProfileConfigurations(): void
     {
-        $paymentHandler           = PayoneRatepayDebitPaymentHandler::class;
-        $profilesKey              = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles');
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
+        $profilesKey = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles');
         $profileConfigurationsKey = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'ProfileConfigurations');
-        $systemConfigService      = $this->getContainer()->get(SystemConfigService::class);
+        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $this->setValidRatepayProfiles($this->getContainer(), $paymentHandler);
         $systemConfigService->delete($profileConfigurationsKey);
 
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects($this->once())->method('request')->willReturn(
+        $client->expects(static::once())->method('request')->willReturn(
             [
                 'addpaydata' => $this->getValidRatepayProfileConfigurations()['88880103'],
             ]
@@ -258,15 +258,15 @@ class ProfileServiceTest extends TestCase
 
     public function testItReturnsApiErrorsWhenUpdatingProfileConfigurations(): void
     {
-        $paymentHandler           = PayoneRatepayDebitPaymentHandler::class;
-        $profilesKey              = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles');
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
+        $profilesKey = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles');
         $profileConfigurationsKey = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'ProfileConfigurations');
-        $systemConfigService      = $this->getContainer()->get(SystemConfigService::class);
+        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $this->setValidRatepayProfiles($this->getContainer(), $paymentHandler);
         $systemConfigService->delete($profileConfigurationsKey);
 
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects($this->once())->method('request')->willThrowException(
+        $client->expects(static::once())->method('request')->willThrowException(
             new PayoneRequestException('payone returned an empty response', [], [
                 'error' => [
                     'ErrorMessage' => 'Failed',
@@ -297,31 +297,31 @@ class ProfileServiceTest extends TestCase
 
     public function testItReturnsPreValidationErrorsWhenUpdatingProfileConfigurations(): void
     {
-        $paymentHandler           = PayoneRatepayDebitPaymentHandler::class;
-        $profilesKey              = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles');
+        $paymentHandler = PayoneRatepayDebitPaymentHandler::class;
+        $profilesKey = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles');
         $profileConfigurationsKey = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'ProfileConfigurations');
-        $systemConfigService      = $this->getContainer()->get(SystemConfigService::class);
+        $systemConfigService = $this->getContainer()->get(SystemConfigService::class);
         $systemConfigService->set($profilesKey, [
             [
-                'shopId'   => null,
+                'shopId' => null,
                 'currency' => 'EUR',
             ],
             [
-                'shopId'   => '88880103',
+                'shopId' => '88880103',
                 'currency' => null,
             ],
             [
-                'shopId'   => '',
+                'shopId' => '',
                 'currency' => 'EUR',
             ],
             [
-                'shopId'   => '88880103',
+                'shopId' => '88880103',
                 'currency' => '',
             ],
         ]);
 
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects($this->never())->method('request');
+        $client->expects(static::never())->method('request');
 
         $profileService = new ProfileService(
             $client,
@@ -351,7 +351,7 @@ class ProfileServiceTest extends TestCase
     protected function addFakeShippingAddress(OrderEntity $order): void
     {
         $shippingAddressId = Uuid::randomHex();
-        $shippingAddress   = new OrderAddressEntity();
+        $shippingAddress = new OrderAddressEntity();
         $shippingAddress->setId($shippingAddressId);
         $shippingAddress->setFirstName('Differs from billing address');
         $shippingAddress->setCountry($order->getAddresses()->get($order->getBillingAddressId())->getCountry());

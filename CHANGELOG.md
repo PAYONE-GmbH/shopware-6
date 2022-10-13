@@ -234,3 +234,37 @@ Maintenance
 
 * Integrate a sales landingpage in backend
 * Tested with version 6.4.14
+
+# 4.0.0
+
+Maintenance
+
+* drop support for 6.3
+* general code improvements
+* customFields on orderTransaction for storing payone transaction data have been replaced by an entity extension
+
+### Read transaction data ###
+```        
+$criteria = (new Criteria())
+->addAssociation(PayonePaymentOrderTransactionExtension::NAME)
+->addFilter(new EqualsFilter(PayonePaymentOrderTransactionExtension::NAME . '.transactionId', $payoneTransactionId));
+
+/** @var null|OrderTransactionEntity $transaction */
+$transaction = $this->transactionRepository->search($criteria, $context)->first();
+
+/** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+$payoneTransactionData = $transaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+   ```
+
+### Update transaction data ###
+
+```
+$this->transactionRepository->upsert([[
+   'id'                                         => $transaction->getId(),
+   PayonePaymentOrderTransactionExtension::NAME => [
+        'id' => $payoneTransactionData->getId(),
+        'sequenceNumber' => 1,
+        'transactionState' => 'appointed'
+   ],
+]], $context);
+ ```

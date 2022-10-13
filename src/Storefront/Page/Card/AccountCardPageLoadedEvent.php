@@ -13,21 +13,18 @@ class AccountCardPageLoadedEvent extends NestedEvent
 {
     public const NAME = 'account-payone-card.page.loaded';
 
-    /** @var AccountCardPage */
-    protected $page;
+    protected AccountCardPage $page;
 
-    /** @var SalesChannelContext */
-    protected $context;
+    protected SalesChannelContext $context;
 
-    /** @var Request */
-    protected $request;
+    protected Request $request;
 
     public function __construct(
         AccountCardPage $page,
         SalesChannelContext $context,
         Request $request
     ) {
-        $this->page    = $page;
+        $this->page = $page;
         $this->context = $context;
         $this->request = $request;
     }

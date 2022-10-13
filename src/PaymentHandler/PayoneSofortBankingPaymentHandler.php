@@ -23,24 +23,18 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 class PayoneSofortBankingPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
-    /** @var PaymentStateHandlerInterface */
-    private $stateHandler;
+    private PaymentStateHandlerInterface $stateHandler;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -55,10 +49,10 @@ class PayoneSofortBankingPaymentHandler extends AbstractPayonePaymentHandler imp
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
         $this->requestParameterFactory = $requestParameterFactory;
-        $this->client                  = $client;
-        $this->translator              = $translator;
-        $this->dataHandler             = $dataHandler;
-        $this->stateHandler            = $stateHandler;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
+        $this->stateHandler = $stateHandler;
     }
 
     /**
@@ -94,7 +88,7 @@ class PayoneSofortBankingPaymentHandler extends AbstractPayonePaymentHandler imp
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -108,10 +102,8 @@ class PayoneSofortBankingPaymentHandler extends AbstractPayonePaymentHandler imp
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, $this->getBaseCustomFields($response['status']));
-
+        $data = $this->preparePayoneOrderTransactionData($request, $response);
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
 
         return new RedirectResponse($response['redirecturl']);
     }
@@ -127,9 +119,9 @@ class PayoneSofortBankingPaymentHandler extends AbstractPayonePaymentHandler imp
     /**
      * {@inheritdoc}
      */
-    public static function isCapturable(array $transactionData, array $customFields): bool
+    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        if (static::isNeverCapturable($transactionData, $customFields)) {
+        if (static::isNeverCapturable($payoneTransActionData)) {
             return false;
         }
 
@@ -139,18 +131,18 @@ class PayoneSofortBankingPaymentHandler extends AbstractPayonePaymentHandler imp
             return true;
         }
 
-        return static::matchesIsCapturableDefaults($transactionData, $customFields);
+        return static::matchesIsCapturableDefaults($transactionData);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function isRefundable(array $transactionData, array $customFields): bool
+    public static function isRefundable(array $transactionData): bool
     {
-        if (static::isNeverRefundable($transactionData, $customFields)) {
+        if (static::isNeverRefundable($transactionData)) {
             return false;
         }
 
-        return static::matchesIsRefundableDefaults($transactionData, $customFields);
+        return static::matchesIsRefundableDefaults($transactionData);
     }
 }

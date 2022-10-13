@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use LogicException;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
@@ -22,7 +21,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInterface
 {
     public const PAYONE_STATE_COMPLETED = 'completed';
-    public const PAYONE_STATE_PENDING   = 'pending';
+    public const PAYONE_STATE_PENDING = 'pending';
 
     public const PAYONE_CLEARING_FNC = 'fnc';
     public const PAYONE_CLEARING_VOR = 'vor';
@@ -36,23 +35,20 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     public const PAYONE_FINANCING_RPS = 'RPS';
     public const PAYONE_FINANCING_RPD = 'RPD';
 
-    /** @var ConfigReaderInterface */
-    protected $configReader;
+    protected ConfigReaderInterface $configReader;
 
-    /** @var EntityRepositoryInterface */
-    protected $lineItemRepository;
+    protected EntityRepositoryInterface $lineItemRepository;
 
-    /** @var RequestStack */
-    protected $requestStack;
+    protected RequestStack $requestStack;
 
     public function __construct(
         ConfigReaderInterface $configReader,
         EntityRepositoryInterface $lineItemRepository,
         RequestStack $requestStack
     ) {
-        $this->configReader       = $configReader;
+        $this->configReader = $configReader;
         $this->lineItemRepository = $lineItemRepository;
-        $this->requestStack       = $requestStack;
+        $this->requestStack = $requestStack;
     }
 
     public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
@@ -65,21 +61,16 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      * based on the current TX status notification. Use this method early in
      * isCapturable() to match common rules shared by all payment methods.
      *
-     * @param array $transactionData Parameters of the TX status notification
-     * @param array $customFields    Custom fields of the affected transaction
+     * @param array $payoneTransactionData Updated transaction data
      *
      * @return bool True if the transaction cannot be captured
      */
-    final protected static function isNeverCapturable(array $transactionData, array $customFields): bool
+    final protected static function isNeverCapturable(array $payoneTransactionData): bool
     {
-        $authorizationType = $customFields[CustomFieldInstaller::AUTHORIZATION_TYPE] ?? null;
+        $authorizationType = $payoneTransactionData['authorizationType'] ?? null;
 
         // Transaction types of authorization are never capturable
-        if ($authorizationType === TransactionStatusService::AUTHORIZATION_TYPE_AUTHORIZATION) {
-            return true;
-        }
-
-        return false;
+        return $authorizationType === TransactionStatusService::AUTHORIZATION_TYPE_AUTHORIZATION;
     }
 
     /**
@@ -89,26 +80,19 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      * payment methods.
      *
      * @param array $transactionData Parameters of the TX status notification
-     * @param array $customFields    Custom fields of the affected transaction
      *
      * @return bool True if the transaction can be captured based on matching default rules
      */
-    final protected static function matchesIsCapturableDefaults(array $transactionData, array $customFields): bool
+    final protected static function matchesIsCapturableDefaults(array $transactionData): bool
     {
-        $txAction   = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
-        $price      = isset($transactionData['price']) ? ((float) $transactionData['price']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $price = isset($transactionData['price']) ? ((float) $transactionData['price']) : null;
         $receivable = isset($transactionData['receivable']) ? ((float) $transactionData['receivable']) : null;
 
         // Allow further captures for TX status that indicates a partial capture
-        if (
-            $txAction === TransactionStatusService::ACTION_CAPTURE &&
-            is_float($price) && is_float($receivable) &&
-            $receivable > 0.0 && $receivable < $price
-        ) {
-            return true;
-        }
-
-        return false;
+        return $txAction === TransactionStatusService::ACTION_CAPTURE
+            && \is_float($price) && \is_float($receivable)
+            && $receivable > 0.0 && $receivable < $price;
     }
 
     /**
@@ -121,7 +105,7 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      */
     final protected static function isTransactionAppointedAndCompleted(array $transactionData): bool
     {
-        $txAction          = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
         $transactionStatus = isset($transactionData['transaction_status']) ? strtolower($transactionData['transaction_status']) : null;
 
         return $txAction === TransactionStatusService::ACTION_APPOINTED && $transactionStatus === TransactionStatusService::STATUS_COMPLETED;
@@ -133,11 +117,10 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      * isRefundable() to match common rules shared by all payment methods.
      *
      * @param array $transactionData Parameters of the TX status notification
-     * @param array $customFields    Custom fields of the affected transaction
      *
      * @return bool True if the transaction cannot be captured
      */
-    final protected static function isNeverRefundable(array $transactionData, array $customFields): bool
+    final protected static function isNeverRefundable(array $transactionData): bool
     {
         return false;
     }
@@ -149,13 +132,12 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      * payment methods.
      *
      * @param array $transactionData Parameters of the TX status notification
-     * @param array $customFields    Custom fields of the affected transaction
      *
      * @return bool True if the transaction can be refunded based on matching default rules
      */
-    final protected static function matchesIsRefundableDefaults(array $transactionData, array $customFields): bool
+    final protected static function matchesIsRefundableDefaults(array $transactionData): bool
     {
-        $txAction   = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
         $receivable = isset($transactionData['receivable']) ? ((float) $transactionData['receivable']) : null;
 
         // Allow refund if capture TX status and receivable indicate we have outstanding funds
@@ -187,28 +169,23 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      */
     protected function getAuthorizationMethod(string $salesChannelId, string $configKey, string $default): string
     {
-        $configuration = $this->configReader->read($salesChannelId);
-
-        return $configuration->getString($configKey, $default);
+        return $this->configReader->read($salesChannelId)->getString($configKey, $default);
     }
 
-    /**
-     * Prepares and returns custom fields for the transaction.
-     *
-     * @param array $request  the PAYONE request parameters
-     * @param array $response the PAYONE response parameters
-     * @param array $fields   any additional custom fields (higher priority)
-     *
-     * @return array a resulting array of custom fields for the transaction
-     */
-    protected function prepareTransactionCustomFields(array $request, array $response, array $fields = []): array
+    protected function preparePayoneOrderTransactionData(array $request, array $response, array $fields = []): array
     {
+        $key = (new \DateTime())->format(\DATE_ATOM);
+
         return array_merge([
-            CustomFieldInstaller::AUTHORIZATION_TYPE => $request['request'],
-            CustomFieldInstaller::LAST_REQUEST       => $request['request'],
-            CustomFieldInstaller::TRANSACTION_ID     => (string) $response['txid'],
-            CustomFieldInstaller::SEQUENCE_NUMBER    => -1,
-            CustomFieldInstaller::USER_ID            => $response['userid'],
+            'authorizationType' => $request['request'],
+            'lastRequest' => $request['request'],
+            'transactionId' => (string) $response['txid'],
+            'sequenceNumber' => -1,
+            'userId' => $response['userid'],
+            'transactionState' => $response['status'],
+            'transactionData' => [
+                $key => ['request' => $request, 'response' => $response],
+            ],
         ], $fields);
     }
 
@@ -223,7 +200,7 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
 
         foreach ($lineItem->getElements() as $lineItemEntity) {
             $saveData[] = [
-                'id'           => $lineItemEntity->getId(),
+                'id' => $lineItemEntity->getId(),
                 'customFields' => array_merge($lineItemEntity->getCustomFields() ?? [], $customFields),
             ];
         }
@@ -231,23 +208,12 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         $this->lineItemRepository->update($saveData, $context);
     }
 
-    protected function getBaseCustomFields(string $status): array
-    {
-        return [
-            CustomFieldInstaller::TRANSACTION_STATE => $status,
-            CustomFieldInstaller::ALLOW_CAPTURE     => false,
-            CustomFieldInstaller::CAPTURED_AMOUNT   => 0,
-            CustomFieldInstaller::ALLOW_REFUND      => false,
-            CustomFieldInstaller::REFUNDED_AMOUNT   => 0,
-        ];
-    }
-
     protected function fetchRequestData(): RequestDataBag
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        if (null === $request) {
-            throw new LogicException('missing current request');
+        if ($request === null) {
+            throw new \LogicException('missing current request');
         }
 
         return new RequestDataBag($request->request->all());
@@ -262,13 +228,13 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     {
         $customer = $salesChannelContext->getCustomer();
 
-        if (null === $customer) {
+        if ($customer === null) {
             return false;
         }
 
         $billingAddress = $customer->getActiveBillingAddress();
 
-        if (null === $billingAddress) {
+        if ($billingAddress === null) {
             return false;
         }
 

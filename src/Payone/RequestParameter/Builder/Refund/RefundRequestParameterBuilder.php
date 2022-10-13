@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\Refund;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -16,58 +17,71 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 
 class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var CurrencyPrecisionInterface */
-    private $currencyPrecision;
+    private CurrencyPrecisionInterface $currencyPrecision;
 
     public function __construct(CurrencyPrecisionInterface $currencyPrecision)
     {
         $this->currencyPrecision = $currencyPrecision;
     }
 
-    /** @param FinancialTransactionStruct $arguments */
+    /**
+     * @param FinancialTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $totalAmount  = $arguments->getRequestData()->get('amount');
-        $order        = $arguments->getPaymentTransaction()->getOrder();
-        $customFields = $arguments->getPaymentTransaction()->getCustomFields();
+        $totalAmount = $arguments->getRequestData()->get('amount');
+        $order = $arguments->getPaymentTransaction()->getOrder();
+        /** @var PayonePaymentOrderTransactionDataEntity|null $transactionData */
+        $transactionData = $arguments->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+
+        if ($transactionData === null) {
+            throw new InvalidOrderException($order->getId());
+        }
 
         if ($totalAmount === null) {
             $totalAmount = $order->getAmountTotal();
         }
 
-        if (empty($customFields[CustomFieldInstaller::TRANSACTION_ID])) {
+        if (empty($transactionData->getTransactionId())) {
             throw new InvalidOrderException($order->getId());
         }
 
-        if ($customFields[CustomFieldInstaller::SEQUENCE_NUMBER] === null || $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] === '') {
+        if ($transactionData->getSequenceNumber() === null) {
             throw new InvalidOrderException($order->getId());
         }
+
+        if ($transactionData->getSequenceNumber() < 0) {
+            throw new InvalidOrderException($order->getId());
+        }
+
+        //TODO: fix set refunded amount
 
         /** @var CurrencyEntity $currency */
         $currency = $order->getCurrency();
 
         $parameters = [
-            'request'        => self::REQUEST_ACTION_DEBIT,
-            'txid'           => $customFields[CustomFieldInstaller::TRANSACTION_ID],
-            'sequencenumber' => $customFields[CustomFieldInstaller::SEQUENCE_NUMBER] + 1,
-            'amount'         => -1 * $this->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
-            'currency'       => $currency->getIsoCode(),
+            'request' => self::REQUEST_ACTION_DEBIT,
+            'txid' => $transactionData->getTransactionId(),
+            'sequencenumber' => $transactionData->getSequenceNumber() + 1,
+            'amount' => -1 * $this->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
+            'currency' => $currency->getIsoCode(),
         ];
 
         if ($arguments->getPaymentMethod() === PayoneDebitPaymentHandler::class) {
-            $transactionData  = $customFields[CustomFieldInstaller::TRANSACTION_DATA];
-            $firstTransaction = reset($transactionData);
+            $transactions = $transactionData->getTransactionData();
 
-            if (!array_key_exists('request', $firstTransaction) || !array_key_exists('iban', $firstTransaction['request'])) {
-                return $parameters;
+            if ($transactions) {
+                $firstTransaction = reset($transactions);
+
+                if (\array_key_exists('request', $firstTransaction) && \array_key_exists('iban', $firstTransaction['request'])) {
+                    $parameters['iban'] = $firstTransaction['request']['iban'];
+                }
             }
-
-            $parameters['iban'] = $firstTransaction['request']['iban'];
         }
 
-        if (in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::RATEPAY)) {
-            $parameters['settleaccount']        = 'yes';
-            $parameters['add_paydata[shop_id]'] = $customFields[CustomFieldInstaller::USED_RATEPAY_SHOP_ID];
+        if (\in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::RATEPAY, true)) {
+            $parameters['settleaccount'] = 'yes';
+            $parameters['add_paydata[shop_id]'] = $transactionData->getAdditionalData()['used_ratepay_shop_id'] ?? null;
         }
 
         return $parameters;

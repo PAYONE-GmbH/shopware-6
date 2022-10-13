@@ -6,15 +6,14 @@ namespace PayonePayment\Payone\RequestParameter\Struct;
 
 class TestCredentialsStruct extends AbstractRequestParameterStruct
 {
-    /** @var array */
-    protected $parameters = [];
+    protected array $parameters = [];
 
     public function __construct(
         array $parameters,
         string $action = ''
     ) {
         $this->parameters = $parameters;
-        $this->action     = $action;
+        $this->action = $action;
     }
 
     public function getParameters(): array

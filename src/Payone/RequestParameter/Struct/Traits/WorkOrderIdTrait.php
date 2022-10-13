@@ -6,8 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Struct\Traits;
 
 trait WorkOrderIdTrait
 {
-    /** @var string */
-    protected $workorderId;
+    protected string $workorderId;
 
     public function getWorkorderId(): string
     {

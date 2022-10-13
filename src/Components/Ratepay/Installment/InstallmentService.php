@@ -19,17 +19,13 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class InstallmentService implements InstallmentServiceInterface
 {
-    /** @var CartService */
-    private $cartService;
+    private CartService $cartService;
 
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
-    /** @var ProfileServiceInterface */
-    private $profileService;
+    private ProfileServiceInterface $profileService;
 
     public function __construct(
         CartService $cartService,
@@ -37,10 +33,10 @@ class InstallmentService implements InstallmentServiceInterface
         RequestParameterFactory $requestParameterFactory,
         ProfileServiceInterface $profileService
     ) {
-        $this->cartService             = $cartService;
-        $this->client                  = $client;
+        $this->cartService = $cartService;
+        $this->client = $client;
         $this->requestParameterFactory = $requestParameterFactory;
-        $this->profileService          = $profileService;
+        $this->profileService = $profileService;
     }
 
     public function getInstallmentCalculatorData(SalesChannelContext $salesChannelContext, ?RequestDataBag $dataBag = null): ?RatepayInstallmentCalculatorData
@@ -55,14 +51,14 @@ class InstallmentService implements InstallmentServiceInterface
         }
 
         $profileConfiguration = $profile->getConfiguration();
-        $allowedMonths        = explode(',', $profileConfiguration['month-allowed']);
-
-        if (\count($allowedMonths) === 0) {
+        if (!isset($profileConfiguration['month-allowed']) || $profileConfiguration['month-allowed'] === '') {
             return null;
         }
 
+        $allowedMonths = explode(',', $profileConfiguration['month-allowed']);
+
         $defaults = [
-            'type'  => CalculationRequestParameterBuilder::INSTALLMENT_TYPE_TIME,
+            'type' => CalculationRequestParameterBuilder::INSTALLMENT_TYPE_TIME,
             'value' => $allowedMonths[0],
         ];
 
@@ -79,11 +75,11 @@ class InstallmentService implements InstallmentServiceInterface
 
         $data = new RatepayInstallmentCalculatorData();
         $data->assign([
-            'minimumRate'         => (float) $profileConfiguration['interestrate-min'],
-            'maximumRate'         => (float) $profileConfiguration['interestrate-max'],
-            'allowedMonths'       => $allowedMonths,
-            'defaults'            => $defaults,
-            'calculationParams'   => $dataBag->all(),
+            'minimumRate' => (float) $profileConfiguration['interestrate-min'],
+            'maximumRate' => (float) $profileConfiguration['interestrate-max'],
+            'allowedMonths' => $allowedMonths,
+            'defaults' => $defaults,
+            'calculationParams' => $dataBag->all(),
             'calculationResponse' => $calculationResponse,
         ]);
 
