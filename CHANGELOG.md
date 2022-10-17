@@ -237,11 +237,31 @@ Maintenance
 
 # 4.0.0
 
-Maintenance
+New Features
+ 
+* Shopware 6.3 support removed
+* General code optimizations implemented
 
-* drop support for 6.3
-* general code improvements
-* customFields on orderTransaction for storing payone transaction data have been replaced by an entity extension
+* Important change: The transaction data of PAYONE payments was 
+previously always stored in the additional fields of the orders. 
+Since the additional fields are stored as JSON in the database, 
+searching the transaction data was not very performant for large 
+amounts of data. Therefore, an entity extension was set up for 
+the transaction data so that the data is stored in an extra database 
+table that can be searched much more performantly. During the plugin 
+update, the old additional fields are migrated to the entity extension 
+and then the additional fields are deleted. If you have used our 
+additional fields in your own code or for example in the synchronization 
+to external systems, you have to adapt this to the new entity extension.
+ 
+Bugfix
+ 
+* Remove deletion of saved credit cards
+ 
+Maintenance
+ 
+* Remove BIC from debit
+* Tested with 6.4.16
 
 ### Read transaction data ###
 ```        
