@@ -234,11 +234,32 @@ Wartung
 
 # 4.0.0
 
+Neue Funktionen
+
+* Unterstützung für Shopware 6.3 aufgehoben
+* Allgemeine Code Optimierungen durchgeführt
+
+* Wichtige Änderung: Die Transaktionsdaten von PAYONE Zahlungen 
+wurden bisher immer in den Zusatzfeldern der Bestellungen gespeichert. 
+Da die Zusatzfelder als JSON in der Datenbank gespeichert werden, 
+war das Durchsuchen der Transaktionsdaten bei großen Datenmengen nicht 
+sehr performant. Deshalb wurde für die Transaktionsdaten eine Entity 
+Extension eingerichtet, sodass die Daten in einer extra Datenbanktabelle 
+gespeichert werden, die deutlich performanter durchsucht werden kann. 
+Beim Plugin Update werden die alten Zusatzfelder in die Entity Extension 
+migriert und danach werden die Zusatzfelder gelöscht. Sollten Sie in Ihrem 
+eigenen Code oder zum Beispiel bei der Synchronisation zu externen Systemen 
+unsere Zusatzfelder verwendet haben, müssen Sie das auf die neue Entity 
+Extension anpassen.
+
+Fehlerbehebung
+
+* Löschung gespeicherter Kreditkarten entfernt
+
 Wartung
 
-* Unterstützung für 6.3 entfernt
-* Allgemeine Code Optimierungen
-* Die Transaktionsdaten wurden von den customFields in eine EntityExtension verlagert
+* BIC aus der Lastschrift entfernt
+* Getestet mit 6.4.16
 
 ### Lesen der Transaktionsdaten ###
 ```        
