@@ -44,7 +44,7 @@ class RedirectHandler
             'hash' => $hash,
         ];
 
-        return $this->router->generate('payone_redirect', $params, UrlGeneratorInterface::ABSOLUTE_URL);
+        return $this->router->generate('payment.payone_redirect', $params, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     public function decode(string $hash): string

@@ -26,7 +26,7 @@
 
         <service id="PayonePayment\Components\RedirectHandler\RedirectHandler">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
-            <argument type="service" id="router.default"/>
+            <argument type="service" id="Shopware\Storefront\Framework\Routing\Router"/>
         </service>
 
         <service id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler">
