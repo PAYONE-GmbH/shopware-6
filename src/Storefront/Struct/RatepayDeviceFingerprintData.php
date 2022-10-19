@@ -10,8 +10,7 @@ class RatepayDeviceFingerprintData extends Struct
 {
     public const EXTENSION_NAME = 'payoneRatepayDeviceFingerprint';
 
-    /** @var string */
-    protected $snippet;
+    protected string $snippet;
 
     public function getSnippet(): string
     {

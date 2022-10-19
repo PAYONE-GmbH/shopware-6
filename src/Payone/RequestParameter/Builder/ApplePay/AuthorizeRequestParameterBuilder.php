@@ -26,17 +26,13 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var CartService */
-    protected $cartService;
+    protected CartService $cartService;
 
-    /** @var CurrencyPrecisionInterface */
-    protected $currencyPrecision;
+    protected CurrencyPrecisionInterface $currencyPrecision;
 
-    /** @var NumberRangeValueGeneratorInterface */
-    protected $numberRangeValueGenerator;
+    protected NumberRangeValueGeneratorInterface $numberRangeValueGenerator;
 
-    /** @var EntityRepositoryInterface */
-    protected $orderRepository;
+    protected EntityRepositoryInterface $orderRepository;
 
     public function __construct(
         CartService $cartService,
@@ -44,33 +40,39 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         NumberRangeValueGeneratorInterface $numberRangeValueGenerator,
         EntityRepositoryInterface $orderRepository
     ) {
-        $this->cartService               = $cartService;
-        $this->currencyPrecision         = $currencyPrecision;
+        $this->cartService = $cartService;
+        $this->currencyPrecision = $currencyPrecision;
         $this->numberRangeValueGenerator = $numberRangeValueGenerator;
-        $this->orderRepository           = $orderRepository;
+        $this->orderRepository = $orderRepository;
     }
 
-    /** @param ApplePayTransactionStruct $arguments */
+    /**
+     * @param ApplePayTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         $salesChannelContext = $arguments->getSalesChannelContext();
-        $customer            = $salesChannelContext->getCustomer();
-        $currency            = $salesChannelContext->getCurrency();
-        $tokenData           = $arguments->getRequestData()->all();
-        $cart                = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
-        $amount              = $cart->getPrice()->getTotalPrice();
+        $customer = $salesChannelContext->getCustomer();
+        $currency = $salesChannelContext->getCurrency();
+        $tokenData = $arguments->getRequestData()->all();
+        $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
+        $amount = $cart->getPrice()->getTotalPrice();
 
-        if (null === $customer || null === $customer->getActiveBillingAddress() || null === $customer->getActiveBillingAddress()->getCountry()) {
+        if ($customer === null) {
             return [];
         }
 
         $billingAddress = $customer->getActiveBillingAddress();
+        if ($billingAddress === null || $billingAddress->getCountry() === null) {
+            return [];
+        }
+
         /** @var CountryEntity $country */
         $country = $billingAddress->getCountry();
 
         $order = $this->getOrderById($arguments);
 
-        if (null !== $order) {
+        if ($order !== null) {
             /** @var CurrencyEntity $currency */
             $currency = $order->getCurrency();
             /** @var OrderAddressCollection $addresses */
@@ -79,31 +81,31 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             $billingAddress = $addresses->get($order->getBillingAddressId());
             /** @var CountryEntity $country */
             $country = $billingAddress->getCountry();
-            $amount  = $order->getAmountTotal();
+            $amount = $order->getAmountTotal();
         }
 
         return [
-            'wallettype'   => 'APL',
+            'wallettype' => 'APL',
             'clearingtype' => self::CLEARING_TYPE_WALLET,
-            'request'      => self::REQUEST_ACTION_AUTHORIZE,
+            'request' => self::REQUEST_ACTION_AUTHORIZE,
 
-            'lastname'  => $billingAddress->getFirstName(),
+            'lastname' => $billingAddress->getFirstName(),
             'firstname' => $billingAddress->getLastName(),
-            'country'   => $country->getIso(),
+            'country' => $country->getIso(),
 
             'currency' => $currency->getIsoCode(),
             'cardtype' => $this->getCardType($arguments->getRequestData()),
 
             'amount' => $this->currencyPrecision->getRoundedTotalAmount($amount, $currency),
 
-            'reference' => substr($this->getReferenceNumber($arguments, $cart, $order), 0, 20) ?? bin2hex(random_bytes(8)),
+            'reference' => substr($this->getReferenceNumber($arguments, $cart, $order), 0, 20),
 
-            'add_paydata[paymentdata_token_version]'             => $tokenData['paymentData']['version'] ?? 'EC_v1',
-            'add_paydata[paymentdata_token_data]'                => $tokenData['paymentData']['data'] ?? '',
-            'add_paydata[paymentdata_token_signature]'           => $tokenData['paymentData']['signature'] ?? '',
+            'add_paydata[paymentdata_token_version]' => $tokenData['paymentData']['version'] ?? 'EC_v1',
+            'add_paydata[paymentdata_token_data]' => $tokenData['paymentData']['data'] ?? '',
+            'add_paydata[paymentdata_token_signature]' => $tokenData['paymentData']['signature'] ?? '',
             'add_paydata[paymentdata_token_ephemeral_publickey]' => $tokenData['paymentData']['header']['ephemeralPublicKey'] ?? '',
-            'add_paydata[paymentdata_token_publickey_hash]'      => $tokenData['paymentData']['header']['publicKeyHash'] ?? '',
-            'add_paydata[paymentdata_token_transaction_id]'      => $tokenData['paymentData']['header']['transactionId'] ?? '',
+            'add_paydata[paymentdata_token_publickey_hash]' => $tokenData['paymentData']['header']['publicKeyHash'] ?? '',
+            'add_paydata[paymentdata_token_transaction_id]' => $tokenData['paymentData']['header']['transactionId'] ?? '',
         ];
     }
 
@@ -116,12 +118,14 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $arguments->getAction() === self::REQUEST_ACTION_AUTHORIZE;
     }
 
-    /** @param ApplePayTransactionStruct $arguments */
+    /**
+     * @param ApplePayTransactionStruct $arguments
+     */
     protected function getReferenceNumber(AbstractRequestParameterStruct $arguments, Cart $cart, ?OrderEntity $order): string
     {
         $referenceNumber = $this->getReferenceForExistingOrder($order);
 
-        if (null !== $referenceNumber) {
+        if ($referenceNumber !== null) {
             return $referenceNumber;
         }
 
@@ -139,7 +143,9 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $referenceNumber;
     }
 
-    /** @param ApplePayTransactionStruct $arguments */
+    /**
+     * @param ApplePayTransactionStruct $arguments
+     */
     private function getOrderById(AbstractRequestParameterStruct $arguments): ?OrderEntity
     {
         if (empty($arguments->getOrderId())) {
@@ -168,13 +174,13 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     private function getReferenceForExistingOrder(?OrderEntity $order): ?string
     {
-        if (null === $order) {
+        if ($order === null) {
             return null;
         }
 
         $transactions = $order->getTransactions();
 
-        if (null === $transactions) {
+        if ($transactions === null) {
             return sprintf('%s_%d', $order->getOrderNumber(), 0);
         }
 

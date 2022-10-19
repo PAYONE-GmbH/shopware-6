@@ -45,26 +45,26 @@ use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 class PaymentMethodInstaller implements InstallerInterface
 {
     public const PAYMENT_METHOD_IDS = [
-        PayoneApplePay::class              => '4cbc89a06e544c06b413a41d158f5e00',
-        PayoneCreditCard::class            => '37f90a48d9194762977c9e6db36334e0',
-        PayoneDebit::class                 => '1b017bef157b4222b734659361d996fd',
-        PayonePaypal::class                => '21e157163fdb4aa4862a2109abcd7522',
-        PayonePaypalExpress::class         => '5ddf648859a84396a98c97a1a92c107f',
+        PayoneApplePay::class => '4cbc89a06e544c06b413a41d158f5e00',
+        PayoneCreditCard::class => '37f90a48d9194762977c9e6db36334e0',
+        PayoneDebit::class => '1b017bef157b4222b734659361d996fd',
+        PayonePaypal::class => '21e157163fdb4aa4862a2109abcd7522',
+        PayonePaypalExpress::class => '5ddf648859a84396a98c97a1a92c107f',
         PayonePayolutionInstallment::class => '569b46970ad2458ca8f17f1ebb754137',
-        PayonePayolutionInvoicing::class   => '0407fd0a5c4b4d2bafc88379efe8cf8d',
-        PayonePayolutionDebit::class       => '700954775fad4a8f92463b3d629c8ad5',
-        PayoneSofortBanking::class         => '9022c4733d14411e84a78707088487aa',
-        PayoneEps::class                   => '6004c8b082234ba5b2834da9874c5ec7',
-        PayoneIDeal::class                 => '3f567ad46f1947e3960b66ed3af537aa',
-        PayonePaydirekt::class             => 'b5b52a27e6b14a37bbb4087ec821b0f4',
-        PayonePrepayment::class            => '267699739afd4cdd9663cac0bd269da6',
-        PayoneTrustly::class               => '741f1deec67d4012bd3ccce265b2e15e',
-        PayoneSecureInvoice::class         => '4e8a9d3d3c6e428887573856b38c9003',
-        PayoneOpenInvoice::class           => '9024aa5a502b4544a745b6b64b486e21',
-        PayoneBancontact::class            => '32ecec740c7142c9bf51d00ea894ffad',
-        PayoneRatepayDebit::class          => '48f2034b3c62480a8554781cf9cac574',
-        PayoneRatepayInstallment::class    => '0af0f201fd164ca9ae72313c70201d18',
-        PayoneRatepayInvoicing::class      => '240dcc8bf5fc409c9dcf840698c082aa',
+        PayonePayolutionInvoicing::class => '0407fd0a5c4b4d2bafc88379efe8cf8d',
+        PayonePayolutionDebit::class => '700954775fad4a8f92463b3d629c8ad5',
+        PayoneSofortBanking::class => '9022c4733d14411e84a78707088487aa',
+        PayoneEps::class => '6004c8b082234ba5b2834da9874c5ec7',
+        PayoneIDeal::class => '3f567ad46f1947e3960b66ed3af537aa',
+        PayonePaydirekt::class => 'b5b52a27e6b14a37bbb4087ec821b0f4',
+        PayonePrepayment::class => '267699739afd4cdd9663cac0bd269da6',
+        PayoneTrustly::class => '741f1deec67d4012bd3ccce265b2e15e',
+        PayoneSecureInvoice::class => '4e8a9d3d3c6e428887573856b38c9003',
+        PayoneOpenInvoice::class => '9024aa5a502b4544a745b6b64b486e21',
+        PayoneBancontact::class => '32ecec740c7142c9bf51d00ea894ffad',
+        PayoneRatepayDebit::class => '48f2034b3c62480a8554781cf9cac574',
+        PayoneRatepayInstallment::class => '0af0f201fd164ca9ae72313c70201d18',
+        PayoneRatepayInvoicing::class => '240dcc8bf5fc409c9dcf840698c082aa',
         PayoneKlarnaInvoice::class         => 'c4cd059611cc4d049187d8d955ec1f91',
         PayoneKlarnaDirectDebit::class     => '31af2cbeda5242bfbfe4531e203f8a42',
         PayoneKlarnaInstallment::class     => 'a18ffddd4baf4948b8c9f9d3d8abd2d4',
@@ -120,20 +120,15 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneKlarnaInstallment::class,
     ];
 
-    /** @var PluginIdProvider */
-    private $pluginIdProvider;
+    private PluginIdProvider $pluginIdProvider;
 
-    /** @var EntityRepositoryInterface */
-    private $paymentMethodRepository;
+    private EntityRepositoryInterface $paymentMethodRepository;
 
-    /** @var EntityRepositoryInterface */
-    private $salesChannelRepository;
+    private EntityRepositoryInterface $salesChannelRepository;
 
-    /** @var EntityRepositoryInterface */
-    private $paymentMethodSalesChannelRepository;
+    private EntityRepositoryInterface $paymentMethodSalesChannelRepository;
 
-    /** @var Connection */
-    private $connection;
+    private Connection $connection;
 
     public function __construct(
         PluginIdProvider $pluginIdProvider,
@@ -142,11 +137,11 @@ class PaymentMethodInstaller implements InstallerInterface
         EntityRepositoryInterface $paymentMethodSalesChannelRepository,
         Connection $connection
     ) {
-        $this->pluginIdProvider                    = $pluginIdProvider;
-        $this->paymentMethodRepository             = $paymentMethodRepository;
-        $this->salesChannelRepository              = $salesChannelRepository;
+        $this->pluginIdProvider = $pluginIdProvider;
+        $this->paymentMethodRepository = $paymentMethodRepository;
+        $this->salesChannelRepository = $salesChannelRepository;
         $this->paymentMethodSalesChannelRepository = $paymentMethodSalesChannelRepository;
-        $this->connection                          = $connection;
+        $this->connection = $connection;
     }
 
     public function install(InstallContext $context): void
@@ -223,10 +218,10 @@ class PaymentMethodInstaller implements InstallerInterface
 
         // Collect some common data which will be used for both update and insert
         $data = [
-            'id'                => $paymentMethod->getId(),
+            'id' => $paymentMethod->getId(),
             'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
-            'pluginId'          => $pluginId,
-            'afterOrderEnabled' => in_array(get_class($paymentMethod), self::AFTER_ORDER_PAYMENT_METHODS),
+            'pluginId' => $pluginId,
+            'afterOrderEnabled' => \in_array(\get_class($paymentMethod), self::AFTER_ORDER_PAYMENT_METHODS, true),
         ];
 
         // Find existing payment method by ID for update / install decision
@@ -243,9 +238,9 @@ class PaymentMethodInstaller implements InstallerInterface
     private function installPaymentMethod(array $data, PaymentMethodInterface $paymentMethod, Context $context): void
     {
         $data = array_merge($data, [
-            'name'         => $paymentMethod->getName(),
-            'description'  => $paymentMethod->getDescription(),
-            'position'     => $paymentMethod->getPosition(),
+            'name' => $paymentMethod->getName(),
+            'description' => $paymentMethod->getDescription(),
+            'position' => $paymentMethod->getPosition(),
             'translations' => $paymentMethod->getTranslations(),
         ]);
 
@@ -263,7 +258,7 @@ class PaymentMethodInstaller implements InstallerInterface
 
         foreach ($channels->getIds() as $channel) {
             $data = [
-                'salesChannelId'  => $channel,
+                'salesChannelId' => $channel,
                 'paymentMethodId' => $paymentMethod->getId(),
             ];
 
@@ -274,7 +269,7 @@ class PaymentMethodInstaller implements InstallerInterface
     private function deactivatePaymentMethod(PaymentMethodInterface $paymentMethod, Context $context): void
     {
         $data = [
-            'id'     => $paymentMethod->getId(),
+            'id' => $paymentMethod->getId(),
             'active' => false,
         ];
 

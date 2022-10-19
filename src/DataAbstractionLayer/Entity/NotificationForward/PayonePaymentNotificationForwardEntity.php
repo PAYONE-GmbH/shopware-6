@@ -13,29 +13,21 @@ class PayonePaymentNotificationForwardEntity extends Entity
 {
     use EntityIdTrait;
 
-    /** @var string */
-    protected $notificationTargetId;
+    protected string $notificationTargetId;
 
-    /** @var null|PayonePaymentNotificationTargetEntity */
-    protected $notificationTarget;
+    protected ?PayonePaymentNotificationTargetEntity $notificationTarget = null;
 
-    /** @var string */
-    protected $ip;
+    protected string $ip;
 
-    /** @var string */
-    protected $txaction;
+    protected string $txaction;
 
-    /** @var string */
-    protected $response;
+    protected string $response;
 
-    /** @var string */
-    protected $transactionId;
+    protected string $transactionId;
 
-    /** @var OrderTransactionEntity */
-    protected $tranaction;
+    protected OrderTransactionEntity $tranaction;
 
-    /** @var string */
-    protected $content;
+    protected string $content;
 
     public function getNotificationTargetId(): string
     {

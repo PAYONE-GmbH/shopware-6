@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Storefront\Controller\Payolution;
 
-use DateTime;
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Installer\ConfigInstaller;
@@ -20,7 +19,6 @@ use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
@@ -33,29 +31,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Throwable;
 
 class PayolutionController extends StorefrontController
 {
     private const URL = 'https://payment.payolution.com/payolution-payment/infoport/dataprivacydeclaration?mId=';
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
-    /** @var CartService */
-    private $cartService;
+    private CartService $cartService;
 
-    /** @var CartHasherInterface */
-    private $cartHasher;
+    private CartHasherInterface $cartHasher;
 
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -65,12 +56,12 @@ class PayolutionController extends StorefrontController
         RequestParameterFactory $requestParameterFactory,
         LoggerInterface $logger
     ) {
-        $this->configReader            = $configReader;
-        $this->cartService             = $cartService;
-        $this->cartHasher              = $cartHasher;
-        $this->client                  = $client;
+        $this->configReader = $configReader;
+        $this->cartService = $cartService;
+        $this->cartHasher = $cartHasher;
+        $this->client = $client;
         $this->requestParameterFactory = $requestParameterFactory;
-        $this->logger                  = $logger;
+        $this->logger = $logger;
     }
 
     /**
@@ -123,7 +114,7 @@ class PayolutionController extends StorefrontController
             $response = $this->client->request($checkRequest);
         } catch (PayoneRequestException $exception) {
             $response = [
-                'status'  => 'ERROR',
+                'status' => 'ERROR',
                 'message' => $exception->getMessage(),
             ];
         }
@@ -154,7 +145,7 @@ class PayolutionController extends StorefrontController
                 try {
                     $response = $this->client->request($checkRequest);
                 } catch (PayoneRequestException $exception) {
-                    throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
+                    throw new \RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
                 }
 
                 // will be used inside the calculation request
@@ -163,9 +154,9 @@ class PayolutionController extends StorefrontController
                 $response['carthash'] = $this->cartHasher->generate($cart, $context);
             } else {
                 $response = [
-                    'status'      => 'OK',
+                    'status' => 'OK',
                     'workorderid' => $dataBag->get('workorder'),
-                    'carthash'    => $dataBag->get('carthash'),
+                    'carthash' => $dataBag->get('carthash'),
                 ];
             }
 
@@ -183,18 +174,18 @@ class PayolutionController extends StorefrontController
             try {
                 $calculationResponse = $this->client->request($calculationRequest);
             } catch (PayoneRequestException $exception) {
-                throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
+                throw new \RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
             }
 
             $calculationResponse = $this->prepareCalculationOutput($calculationResponse);
 
             $response['installmentSelection'] = $this->getInstallmentSelectionHtml($calculationResponse);
-            $response['calculationOverview']  = $this->getCalculationOverviewHtml($calculationResponse);
+            $response['calculationOverview'] = $this->getCalculationOverviewHtml($calculationResponse);
 
             $this->saveCalculationResponse($cart, $calculationResponse, $context);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $response = [
-                'status'  => 'ERROR',
+                'status' => 'ERROR',
                 'message' => $exception->getMessage(),
             ];
         }
@@ -226,8 +217,8 @@ class PayolutionController extends StorefrontController
 
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
 
-        $url      = $this->getCreditInformationUrlFromCart($cart, $duration);
-        $channel  = $configuration->getString(ConfigInstaller::CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_NAME);
+        $url = $this->getCreditInformationUrlFromCart($cart, $duration);
+        $channel = $configuration->getString(ConfigInstaller::CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_NAME);
         $password = $configuration->getString(ConfigInstaller::CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_PASSWORD);
 
         if (empty($url) || empty($channel) || empty($password)) {
@@ -303,10 +294,10 @@ class PayolutionController extends StorefrontController
         $data = [];
 
         foreach ($response['addpaydata'] as $key => $value) {
-            $key  = str_replace('PaymentDetails_', '', $key);
+            $key = str_replace('PaymentDetails_', '', $key);
             $keys = explode('_', $key);
 
-            if (count($keys) === 4) {
+            if (\count($keys) === 4) {
                 $data[$keys[0]][$keys[1]][$keys[2]][$keys[3]] = $this->convertType($keys[3], $value);
 
                 uksort($data[$keys[0]][$keys[1]][$keys[2]], 'strcmp');
@@ -314,14 +305,14 @@ class PayolutionController extends StorefrontController
                 uksort($data[$keys[0]], 'strcmp');
             }
 
-            if (count($keys) === 3) {
+            if (\count($keys) === 3) {
                 $data[$keys[0]][$keys[1]][$keys[2]] = $this->convertType($keys[2], $value);
 
                 uksort($data[$keys[0]][$keys[1]], 'strcmp');
                 uksort($data[$keys[0]], 'strcmp');
             }
 
-            if (count($keys) === 2) {
+            if (\count($keys) === 2) {
                 $data[$keys[0]][$keys[1]] = $this->convertType($keys[1], $value);
 
                 uksort($data[$keys[0]], 'strcmp');
@@ -396,16 +387,16 @@ class PayolutionController extends StorefrontController
             'Due',
         ];
 
-        if (in_array($key, $float)) {
+        if (\in_array($key, $float, true)) {
             return (float) $value;
         }
 
-        if (in_array($key, $int)) {
+        if (\in_array($key, $int, true)) {
             return (int) $value;
         }
 
-        if (in_array($key, $date)) {
-            return DateTime::createFromFormat('Y-m-d', $value);
+        if (\in_array($key, $date, true)) {
+            return \DateTime::createFromFormat('Y-m-d', $value);
         }
 
         return $value;

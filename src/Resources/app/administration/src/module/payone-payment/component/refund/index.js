@@ -49,21 +49,23 @@ Component.register('payone-refund-button', {
         },
 
         remainingAmount() {
-            if (undefined === this.transaction.customFields ||
-                undefined === this.transaction.customFields.payone_captured_amount) {
+            if (!this.transaction.extensions
+                || !this.transaction.extensions.payonePaymentOrderTransactionData
+                || !this.transaction.extensions.payonePaymentOrderTransactionData.capturedAmount) {
                 return 0;
             }
 
-            return this.transaction.customFields.payone_captured_amount - this.refundedAmount;
+            return this.transaction.extensions.payonePaymentOrderTransactionData.capturedAmount - this.refundedAmount;
         },
 
         refundedAmount() {
-            if (undefined === this.transaction.customFields ||
-                undefined === this.transaction.customFields.payone_refunded_amount) {
+            if (!this.transaction.extensions
+                || !this.transaction.extensions.payonePaymentOrderTransactionData
+                || this.transaction.extensions.payonePaymentOrderTransactionData.refundedAmount) {
                 return 0;
             }
 
-            return this.transaction.customFields.payone_refunded_amount;
+            return this.transaction.extensions.payonePaymentOrderTransactionData.refundedAmount;
         },
 
         maxRefundAmount() {
@@ -71,11 +73,12 @@ Component.register('payone-refund-button', {
         },
 
         buttonEnabled() {
-            if (!this.transaction.customFields) {
+            if (!this.transaction.extensions
+                || !this.transaction.extensions.payonePaymentOrderTransactionData) {
                 return false;
             }
 
-            return (this.remainingAmount > 0 && this.refundedAmount > 0) || this.transaction.customFields.payone_allow_refund;
+            return (this.remainingAmount > 0 && this.refundedAmount > 0) || this.transaction.extensions.payonePaymentOrderTransactionData.allowRefund;
         },
 
         hasRemainingRefundableShippingCosts() {
@@ -136,7 +139,7 @@ Component.register('payone-refund-button', {
         refundOrder() {
             const request = {
                 orderTransactionId: this.transaction.id,
-                payone_order_id: this.transaction.customFields.payone_transaction_id,
+                payone_order_id: this.transaction.extensions.payonePaymentOrderTransactionData.transactionId,
                 salesChannel: this.order.salesChannel,
                 amount: this.refundAmount,
                 orderLines: [],
@@ -191,7 +194,7 @@ Component.register('payone-refund-button', {
         refundFullOrder() {
             const request = {
                 orderTransactionId: this.transaction.id,
-                payone_order_id: this.transaction.customFields.payone_transaction_id,
+                payone_order_id: this.transaction.extensions.payonePaymentOrderTransactionData.transactionId,
                 salesChannel: this.order.salesChannel,
                 amount: this.maxRefundAmount,
                 orderLines: [],

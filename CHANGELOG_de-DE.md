@@ -231,3 +231,58 @@ Wartung
 
 * Sales Landingpage ins Backend integriert
 * Getestet mit 6.4.14 
+
+# 4.0.0
+
+Neue Funktionen
+
+* Unterstützung für Shopware 6.3 aufgehoben
+* Allgemeine Code Optimierungen durchgeführt
+
+* Wichtige Änderung: Die Transaktionsdaten von PAYONE Zahlungen 
+wurden bisher immer in den Zusatzfeldern der Bestellungen gespeichert. 
+Da die Zusatzfelder als JSON in der Datenbank gespeichert werden, 
+war das Durchsuchen der Transaktionsdaten bei großen Datenmengen nicht 
+sehr performant. Deshalb wurde für die Transaktionsdaten eine Entity 
+Extension eingerichtet, sodass die Daten in einer extra Datenbanktabelle 
+gespeichert werden, die deutlich performanter durchsucht werden kann. 
+Beim Plugin Update werden die alten Zusatzfelder in die Entity Extension 
+migriert und danach werden die Zusatzfelder gelöscht. Sollten Sie in Ihrem 
+eigenen Code oder zum Beispiel bei der Synchronisation zu externen Systemen 
+unsere Zusatzfelder verwendet haben, müssen Sie das auf die neue Entity 
+Extension anpassen.
+
+Fehlerbehebung
+
+* Löschung gespeicherter Kreditkarten entfernt
+
+Wartung
+
+* BIC aus der Lastschrift entfernt
+* Getestet mit 6.4.16
+
+### Lesen der Transaktionsdaten ###
+```        
+$criteria = (new Criteria())
+->addAssociation(PayonePaymentOrderTransactionExtension::NAME)
+->addFilter(new EqualsFilter(PayonePaymentOrderTransactionExtension::NAME . '.transactionId', $payoneTransactionId));
+
+/** @var null|OrderTransactionEntity $transaction */
+$transaction = $this->transactionRepository->search($criteria, $context)->first();
+
+/** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+$payoneTransactionData = $transaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+   ```
+
+### Aktualisieren der Transaktionsdaten ###
+
+```
+$this->transactionRepository->upsert([[
+   'id'                                         => $transaction->getId(),
+   PayonePaymentOrderTransactionExtension::NAME => [
+        'id' => $payoneTransactionData->getId(),
+        'sequenceNumber' => 1,
+        'transactionState' => 'appointed'
+   ],
+]], $context);
+ ```

@@ -11,33 +11,26 @@ class PayoneBancontact extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'Payone Bancontact';
+    protected string $name = 'Payone Bancontact';
 
-    /** @var string */
-    protected $description = 'Pay fast and secure with your Bancontact card';
+    protected string $description = 'Pay fast and secure with your Bancontact card';
 
-    /** @var string */
-    protected $paymentHandler = PayoneBancontactPaymentHandler::class;
+    protected string $paymentHandler = PayoneBancontactPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template;
+    protected ?string $template = null;
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'Payone Bancontact',
+            'name' => 'Payone Bancontact',
             'description' => 'Schnell und einfach bezahlen mit der Bancontact-Karte',
         ],
         'en-GB' => [
-            'name'        => 'Payone Bancontact',
+            'name' => 'Payone Bancontact',
             'description' => 'Pay fast and secure with your Bancontact card',
         ],
     ];
 
-    /** @var int */
-    protected $position = 120;
+    protected int $position = 120;
 }

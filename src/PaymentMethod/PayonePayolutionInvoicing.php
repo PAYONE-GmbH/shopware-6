@@ -11,33 +11,26 @@ class PayonePayolutionInvoicing extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Unzer Rechnungskauf';
+    protected string $name = 'PAYONE Unzer Rechnungskauf';
 
-    /** @var string */
-    protected $description = 'Invoice payment by Paysafe Pay Later.';
+    protected string $description = 'Invoice payment by Paysafe Pay Later.';
 
-    /** @var string */
-    protected $paymentHandler = PayonePayolutionInvoicingPaymentHandler::class;
+    protected string $paymentHandler = PayonePayolutionInvoicingPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template = '@Storefront/storefront/payone/payolution/payolution-invoicing-form.html.twig';
+    protected ?string $template = '@Storefront/storefront/payone/payolution/payolution-invoicing-form.html.twig';
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Unzer Rechnungskauf',
+            'name' => 'PAYONE Unzer Rechnungskauf',
             'description' => 'Sie zahlen entspannt nach Erhalt der Ware auf Rechnung.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE Unzer Rechnungskauf',
+            'name' => 'PAYONE Unzer Rechnungskauf',
             'description' => 'Pay the invoice after receiving the goods.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 105;
+    protected int $position = 105;
 }

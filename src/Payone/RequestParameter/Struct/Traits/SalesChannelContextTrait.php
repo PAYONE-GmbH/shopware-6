@@ -8,8 +8,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 trait SalesChannelContextTrait
 {
-    /** @var SalesChannelContext */
-    protected $salesChannelContext;
+    protected SalesChannelContext $salesChannelContext;
 
     public function getSalesChannelContext(): SalesChannelContext
     {

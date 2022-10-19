@@ -6,26 +6,19 @@ namespace PayonePayment\Components\Ratepay\Profile;
 
 class ProfileSearch
 {
-    /** @var string */
-    private $billingCountryCode;
+    private string $billingCountryCode;
 
-    /** @var string */
-    private $shippingCountryCode;
+    private string $shippingCountryCode;
 
-    /** @var string */
-    private $paymentHandler;
+    private string $paymentHandler;
 
-    /** @var null|string */
-    private $salesChannelId;
+    private ?string $salesChannelId = null;
 
-    /** @var string */
-    private $currency;
+    private string $currency;
 
-    /** @var bool */
-    private $needsAllowDifferentAddress = false;
+    private bool $needsAllowDifferentAddress = false;
 
-    /** @var float */
-    private $totalAmount;
+    private float $totalAmount;
 
     public function getBillingCountryCode(): string
     {

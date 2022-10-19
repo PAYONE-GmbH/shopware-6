@@ -12,8 +12,7 @@ class ConfigReader implements ConfigReaderInterface
 {
     public const SYSTEM_CONFIG_DOMAIN = 'PayonePayment.settings.';
 
-    /** @var SystemConfigService */
-    private $systemConfigService;
+    private SystemConfigService $systemConfigService;
 
     public function __construct(SystemConfigService $systemConfigService)
     {
@@ -36,7 +35,7 @@ class ConfigReader implements ConfigReaderInterface
         $config = [];
 
         foreach ($values as $key => $value) {
-            $property = substr($key, strlen(self::SYSTEM_CONFIG_DOMAIN));
+            $property = substr($key, \strlen(self::SYSTEM_CONFIG_DOMAIN));
 
             $config[$property] = $value;
         }

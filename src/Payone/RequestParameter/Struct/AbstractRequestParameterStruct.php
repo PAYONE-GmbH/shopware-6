@@ -8,11 +8,9 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class AbstractRequestParameterStruct extends Struct
 {
-    /** @var string */
-    protected $action = '';
+    protected string $action = '';
 
-    /** @var string */
-    protected $paymentMethod = '';
+    protected string $paymentMethod = '';
 
     public function getAction(): string
     {

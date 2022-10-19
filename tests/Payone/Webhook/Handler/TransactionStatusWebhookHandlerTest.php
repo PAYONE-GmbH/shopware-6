@@ -27,9 +27,9 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
         $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
-        $stateMachineRegistry->expects($this->never())->method('transition');
+        $stateMachineRegistry->expects(static::never())->method('transition');
 
-        $orderEntity        = $this->getRandomOrder($salesChannelContext);
+        $orderEntity = $this->getRandomOrder($salesChannelContext);
         $paymentTransaction = $this->getPaymentTransaction($orderEntity, PayoneCreditCardPaymentHandler::class);
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
@@ -39,14 +39,14 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         );
 
         $transactionData = [
-            'txid'           => Constants::PAYONE_TRANSACTION_ID,
-            'txaction'       => 'appointed',
+            'txid' => Constants::PAYONE_TRANSACTION_ID,
+            'txaction' => 'appointed',
             'sequencenumber' => '0',
         ];
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
-        $transactionDataHandler->expects($this->once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
-        $transactionDataHandler->expects($this->once())->method('getCustomFieldsFromWebhook')->willReturn($transactionData);
+        $transactionDataHandler->expects(static::once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
+        $transactionDataHandler->expects(static::once())->method('getTransactionDataFromWebhook')->willReturn($transactionData);
 
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
             $transactionStatusService,
@@ -64,7 +64,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
         $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
-        $stateMachineRegistry->expects($this->once())->method('transition')->with(
+        $stateMachineRegistry->expects(static::once())->method('transition')->with(
             new Transition(
                 OrderTransactionDefinition::ENTITY_NAME,
                 Constants::ORDER_TRANSACTION_ID,
@@ -74,7 +74,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
             $salesChannelContext->getContext()
         );
 
-        $orderEntity        = $this->getRandomOrder($salesChannelContext);
+        $orderEntity = $this->getRandomOrder($salesChannelContext);
         $paymentTransaction = $this->getPaymentTransaction($orderEntity, PayoneCreditCardPaymentHandler::class);
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
@@ -86,14 +86,14 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         );
 
         $transactionData = [
-            'txid'           => Constants::PAYONE_TRANSACTION_ID,
-            'txaction'       => 'appointed',
+            'txid' => Constants::PAYONE_TRANSACTION_ID,
+            'txaction' => 'appointed',
             'sequencenumber' => '0',
         ];
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
-        $transactionDataHandler->expects($this->once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
-        $transactionDataHandler->expects($this->once())->method('getCustomFieldsFromWebhook')->willReturn($transactionData);
+        $transactionDataHandler->expects(static::once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
+        $transactionDataHandler->expects(static::once())->method('getTransactionDataFromWebhook')->willReturn($transactionData);
 
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
             $transactionStatusService,
@@ -111,7 +111,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
         $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
-        $stateMachineRegistry->expects($this->once())->method('transition')->with(
+        $stateMachineRegistry->expects(static::once())->method('transition')->with(
             new Transition(
                 OrderTransactionDefinition::ENTITY_NAME,
                 Constants::ORDER_TRANSACTION_ID,
@@ -121,7 +121,7 @@ class TransactionStatusWebhookHandlerTest extends TestCase
             $salesChannelContext->getContext()
         );
 
-        $orderEntity        = $this->getRandomOrder($salesChannelContext);
+        $orderEntity = $this->getRandomOrder($salesChannelContext);
         $paymentTransaction = $this->getPaymentTransaction($orderEntity, PayoneCreditCardPaymentHandler::class);
 
         $transactionStatusService = TransactionStatusWebhookHandlerFactory::createTransactionStatusService(
@@ -133,14 +133,14 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         );
 
         $transactionData = [
-            'txid'           => Constants::PAYONE_TRANSACTION_ID,
-            'txaction'       => 'appointed',
+            'txid' => Constants::PAYONE_TRANSACTION_ID,
+            'txaction' => 'appointed',
             'sequencenumber' => '0',
         ];
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
-        $transactionDataHandler->expects($this->once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
-        $transactionDataHandler->expects($this->once())->method('getCustomFieldsFromWebhook')->willReturn($transactionData);
+        $transactionDataHandler->expects(static::once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
+        $transactionDataHandler->expects(static::once())->method('getTransactionDataFromWebhook')->willReturn($transactionData);
 
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
             $transactionStatusService,

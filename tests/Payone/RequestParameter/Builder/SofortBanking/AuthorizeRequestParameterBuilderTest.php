@@ -26,15 +26,15 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             $this->getValidRequestAction()
         );
 
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'clearingtype'           => AbstractRequestParameterBuilder::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
-                'request'                => $this->getValidRequestAction(),
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
+                'request' => $this->getValidRequestAction(),
                 'onlinebanktransfertype' => 'PNT',
-                'bankcountry'            => 'DE',
+                'bankcountry' => 'DE',
             ],
             $parameters
         );

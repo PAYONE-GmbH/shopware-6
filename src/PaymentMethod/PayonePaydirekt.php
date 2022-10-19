@@ -11,33 +11,26 @@ class PayonePaydirekt extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE paydirekt';
+    protected string $name = 'PAYONE paydirekt';
 
-    /** @var string */
-    protected $description = 'Pay safe and easy with Paydirekt.';
+    protected string $description = 'Pay safe and easy with Paydirekt.';
 
-    /** @var string */
-    protected $paymentHandler = PayonePaydirektPaymentHandler::class;
+    protected string $paymentHandler = PayonePaydirektPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template = null;
+    protected ?string $template = null;
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE paydirekt',
+            'name' => 'PAYONE paydirekt',
             'description' => 'Zahlen Sie sicher und bequem mit paydirekt.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE paydirekt',
+            'name' => 'PAYONE paydirekt',
             'description' => 'Pay safe and easy with paydirekt.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 116;
+    protected int $position = 116;
 }

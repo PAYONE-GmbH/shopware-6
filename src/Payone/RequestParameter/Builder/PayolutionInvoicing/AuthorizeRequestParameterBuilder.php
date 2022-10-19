@@ -11,17 +11,19 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestParameterBuilder
 {
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $dataBag             = $arguments->getRequestData();
+        $dataBag = $arguments->getRequestData();
         $salesChannelContext = $arguments->getSalesChannelContext();
-        $paymentTransaction  = $arguments->getPaymentTransaction();
+        $paymentTransaction = $arguments->getPaymentTransaction();
 
         $parameters = [
-            'clearingtype'  => self::CLEARING_TYPE_FINANCING,
+            'clearingtype' => self::CLEARING_TYPE_FINANCING,
             'financingtype' => 'PYV',
-            'request'       => self::REQUEST_ACTION_AUTHORIZE,
+            'request' => self::REQUEST_ACTION_AUTHORIZE,
         ];
 
         $this->applyBirthdayParameter($parameters, $dataBag);
@@ -40,7 +42,7 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayonePayolutionInvoicingPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }

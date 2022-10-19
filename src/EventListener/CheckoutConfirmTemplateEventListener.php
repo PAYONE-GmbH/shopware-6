@@ -18,14 +18,14 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class  => 'addPayonePageData',
+            CheckoutConfirmPageLoadedEvent::class => 'addPayonePageData',
             AccountEditOrderPageLoadedEvent::class => 'addPayonePageData',
         ];
     }
 
     public function addPayonePageData(PageLoadedEvent $event): void
     {
-        $page    = $event->getPage();
+        $page = $event->getPage();
         $context = $event->getSalesChannelContext();
 
         if (!$this->isPayonePayment($context->getPaymentMethod())) {
@@ -40,7 +40,7 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
             $payoneData = new CheckoutConfirmPaymentData();
         }
 
-        if (null !== $payoneData) {
+        if ($payoneData !== null) {
             $payoneData->assign([
                 'template' => $template,
             ]);
@@ -51,7 +51,7 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
 
     private function getTemplateFromPaymentMethod(PaymentMethodEntity $paymentMethod): ?string
     {
-        $method = array_search($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS);
+        $method = array_search($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS, true);
 
         if ($method !== false) {
             return (new $method())->getTemplate();
@@ -62,6 +62,6 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
 
     private function isPayonePayment(PaymentMethodEntity $paymentMethod): bool
     {
-        return in_array($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS);
+        return \in_array($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS, true);
     }
 }

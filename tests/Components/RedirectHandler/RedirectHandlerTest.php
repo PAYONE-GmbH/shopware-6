@@ -32,14 +32,14 @@ class RedirectHandlerTest extends TestCase
     public function testItEncodesUrlWithoutDatabase(): void
     {
         $connection = $this->createMock(Connection::class);
-        $router     = $this->getContainer()->get('router.default');
+        $router = $this->getContainer()->get('router.default');
 
-        $connection->expects($this->once())->method('insert')->with(
+        $connection->expects(static::once())->method('insert')->with(
             'payone_payment_redirect',
-            $this->callback(
+            static::callback(
                 static function (array $parameters): bool {
-                    return $parameters['hash'] === 'MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ==' &&
-                        $parameters['url'] === 'the-url';
+                    return $parameters['hash'] === 'MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ=='
+                        && $parameters['url'] === 'the-url';
                 }
             )
         );
@@ -60,7 +60,7 @@ class RedirectHandlerTest extends TestCase
     public function testItEncodesUrlWithDatabase(): array
     {
         $connection = $this->getContainer()->get(Connection::class);
-        $router     = $this->getContainer()->get('router.default');
+        $router = $this->getContainer()->get('router.default');
 
         $redirectHandler = new RedirectHandler(
             $connection,
@@ -70,13 +70,13 @@ class RedirectHandlerTest extends TestCase
         $originalUrl = 'the-url';
         $redirectUrl = $redirectHandler->encode($originalUrl);
 
-        $this->assertSame(
+        static::assertSame(
             'http://localhost/payone/redirect?hash=MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ%3D%3D',
             $redirectUrl
         );
 
-        $hash             = 'MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ==';
-        $query            = 'SELECT url FROM payone_payment_redirect WHERE hash = ?';
+        $hash = 'MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ==';
+        $query = 'SELECT url FROM payone_payment_redirect WHERE hash = ?';
         $foundOriginalUrl = $this->fetchOne($connection, $query, [$hash]);
 
         static::assertSame($originalUrl, $foundOriginalUrl);
@@ -90,7 +90,7 @@ class RedirectHandlerTest extends TestCase
     public function testItDecodesHashWithDatabase(array $data): void
     {
         $connection = $this->getContainer()->get(Connection::class);
-        $router     = $this->getContainer()->get('router.default');
+        $router = $this->getContainer()->get('router.default');
 
         $redirectHandler = new RedirectHandler(
             $connection,
@@ -110,7 +110,7 @@ class RedirectHandlerTest extends TestCase
         putenv('APP_SECRET=');
 
         $connection = $this->createMock(Connection::class);
-        $router     = $this->getContainer()->get('router.default');
+        $router = $this->getContainer()->get('router.default');
 
         $redirectHandler = new RedirectHandler(
             $connection,
@@ -126,7 +126,7 @@ class RedirectHandlerTest extends TestCase
     public function testItThrowsExceptionOnDecodingWithMissingUrl(): void
     {
         $connection = $this->createStub(Connection::class);
-        $router     = $this->createStub(RouterInterface::class);
+        $router = $this->createStub(RouterInterface::class);
 
         $connection->method('fetchOne')->willReturn(false);
 
@@ -147,7 +147,7 @@ class RedirectHandlerTest extends TestCase
     public function testItCleansUpOldUrls(): void
     {
         $connection = $this->getContainer()->get(Connection::class);
-        $router     = $this->getContainer()->get('router.default');
+        $router = $this->getContainer()->get('router.default');
 
         $redirectHandler = new RedirectHandler(
             $connection,
@@ -156,7 +156,7 @@ class RedirectHandlerTest extends TestCase
 
         $redirectHandler->encode('the-url-2');
 
-        $countQuery    = 'SELECT COUNT(*) FROM payone_payment_redirect';
+        $countQuery = 'SELECT COUNT(*) FROM payone_payment_redirect';
         $redirectCount = (int) $this->fetchOne($connection, $countQuery);
 
         static::assertSame(2, $redirectCount);

@@ -14,8 +14,7 @@ use Symfony\Component\Validator\Constraints\Optional;
 
 class PaypalExpressAddressValidationEventListener implements EventSubscriberInterface
 {
-    /** @var RequestStack */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -28,10 +27,10 @@ class PaypalExpressAddressValidationEventListener implements EventSubscriberInte
     public static function getSubscribedEvents(): array
     {
         return [
-            'framework.validation.address.create'  => 'disableAdditionalAddressValidation',
-            'framework.validation.address.update'  => 'disableAdditionalAddressValidation',
+            'framework.validation.address.create' => 'disableAdditionalAddressValidation',
+            'framework.validation.address.update' => 'disableAdditionalAddressValidation',
             'framework.validation.customer.create' => 'disableBirthdayValidation',
-            BuildValidationEvent::class            => 'disableConfirmPageLoaderAddressValidation',
+            BuildValidationEvent::class => 'disableConfirmPageLoaderAddressValidation',
         ];
     }
 
@@ -42,19 +41,19 @@ class PaypalExpressAddressValidationEventListener implements EventSubscriberInte
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        if (null === $request) {
+        if ($request === null) {
             return;
         }
 
         $route = $request->get('_route');
-        /** @var null|SalesChannelContext $salesChannelContext */
+        /** @var SalesChannelContext|null $salesChannelContext */
         $salesChannelContext = $request->get('sw-sales-channel-context');
 
-        if (null === $route || $route !== 'frontend.checkout.confirm.page') {
+        if ($route === null || $route !== 'frontend.checkout.confirm.page') {
             return;
         }
 
-        if (null === $salesChannelContext) {
+        if ($salesChannelContext === null) {
             return;
         }
 

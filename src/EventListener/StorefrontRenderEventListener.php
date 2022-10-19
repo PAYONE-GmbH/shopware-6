@@ -21,29 +21,26 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class StorefrontRenderEventListener implements EventSubscriberInterface
 {
-    /** @var CacheItemPoolInterface */
-    private $cachePool;
+    private CacheItemPoolInterface $cachePool;
 
-    /** @var SalesChannelRepositoryInterface */
-    private $paymentMethodRepository;
+    private SalesChannelRepositoryInterface $paymentMethodRepository;
 
-    /** @var EntityRepositoryInterface */
-    private $salesChannelRepository;
+    private EntityRepositoryInterface $salesChannelRepository;
 
     public function __construct(
         CacheItemPoolInterface $cachePool,
         SalesChannelRepositoryInterface $repository,
         EntityRepositoryInterface $salesChannelRepository
     ) {
-        $this->cachePool               = $cachePool;
+        $this->cachePool = $cachePool;
         $this->paymentMethodRepository = $repository;
-        $this->salesChannelRepository  = $salesChannelRepository;
+        $this->salesChannelRepository = $salesChannelRepository;
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            StorefrontRenderEvent::class       => 'onRender',
+            StorefrontRenderEvent::class => 'onRender',
             EntityWrittenContainerEvent::class => 'onEntityWritten',
         ];
     }
@@ -75,13 +72,13 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
 
         $paymentMethodEvents = $event->getEventByEntityName(PaymentMethodDefinition::ENTITY_NAME);
 
-        if (null !== $paymentMethodEvents) {
+        if ($paymentMethodEvents !== null) {
             $ids = array_merge($ids, $this->collectPrimaryKeys($paymentMethodEvents->getIds()));
         }
 
         $salesChannelEvents = $event->getEventByEntityName(SalesChannelPaymentMethodDefinition::ENTITY_NAME);
 
-        if (null !== $salesChannelEvents) {
+        if ($salesChannelEvents !== null) {
             $ids = array_merge($ids, $this->collectPrimaryKeys($salesChannelEvents->getIds()));
         }
 
@@ -92,7 +89,7 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
         $clearCache = false;
 
         foreach (PaymentMethodInstaller::PAYMENT_METHODS as $paymentMethod) {
-            if (in_array($paymentMethod::UUID, $ids, true)) {
+            if (\in_array($paymentMethod::UUID, $ids, true)) {
                 $clearCache = true;
             }
         }
@@ -107,7 +104,7 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
         $ids = [];
 
         foreach ($primaryKeys as $key) {
-            if (is_array($key)) {
+            if (\is_array($key)) {
                 $ids = array_merge($ids, array_values($key));
             } else {
                 $ids[] = $key;

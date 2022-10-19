@@ -8,7 +8,8 @@ use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
@@ -22,17 +23,13 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var EntityRepositoryInterface */
-    protected $currencyRepository;
+    protected EntityRepositoryInterface $currencyRepository;
 
-    /** @var CurrencyPrecisionInterface */
-    protected $currencyPrecision;
+    protected CurrencyPrecisionInterface $currencyPrecision;
 
-    /** @var CartHasherInterface */
-    private $cartHasher;
+    private CartHasherInterface $cartHasher;
 
-    /** @var ConfigReaderInterface */
-    private $configReader;
+    private ConfigReaderInterface $configReader;
 
     public function __construct(
         CartHasherInterface $cartHasher,
@@ -40,25 +37,25 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         EntityRepositoryInterface $currencyRepository,
         CurrencyPrecisionInterface $currencyPrecision
     ) {
-        $this->cartHasher         = $cartHasher;
-        $this->configReader       = $configReader;
+        $this->cartHasher = $cartHasher;
+        $this->configReader = $configReader;
         $this->currencyRepository = $currencyRepository;
-        $this->currencyPrecision  = $currencyPrecision;
+        $this->currencyPrecision = $currencyPrecision;
     }
 
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         /** @var PaymentTransactionStruct $arguments */
-        $paymentTransaction  = $arguments->getPaymentTransaction();
+        $paymentTransaction = $arguments->getPaymentTransaction();
         $salesChannelContext = $arguments->getSalesChannelContext();
-        $requestData         = $arguments->getRequestData();
-        $paymentMethod       = $arguments->getPaymentMethod();
-        $currency            = $this->getOrderCurrency($paymentTransaction->getOrder(), $salesChannelContext->getContext());
+        $requestData = $arguments->getRequestData();
+        $paymentMethod = $arguments->getPaymentMethod();
+        $currency = $this->getOrderCurrency($paymentTransaction->getOrder(), $salesChannelContext->getContext());
 
         $parameters = [
-            'amount'      => $this->currencyPrecision->getRoundedTotalAmount($paymentTransaction->getOrder()->getAmountTotal(), $currency),
-            'currency'    => $currency->getIsoCode(),
-            'reference'   => $this->getReferenceNumber($paymentTransaction, true),
+            'amount' => $this->currencyPrecision->getRoundedTotalAmount($paymentTransaction->getOrder()->getAmountTotal(), $currency),
+            'currency' => $currency->getIsoCode(),
+            'reference' => $this->getReferenceNumber($paymentTransaction, true),
             'workorderid' => $this->getWorkOrderId($paymentTransaction, $requestData, $salesChannelContext),
         ];
 
@@ -100,9 +97,9 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
             return $latestReferenceNumber;
         }
 
-        $order       = $transaction->getOrder();
+        $order = $transaction->getOrder();
         $orderNumber = $order->getOrderNumber();
-        $suffix      = $this->getReferenceSuffix($transaction->getOrder());
+        $suffix = $this->getReferenceSuffix($transaction->getOrder());
 
         return $orderNumber . $suffix;
     }
@@ -114,7 +111,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
     ): ?string {
         $cartHash = $dataBag->get('carthash');
 
-        if (null === $cartHash) {
+        if ($cartHash === null) {
             return null;
         }
 
@@ -127,7 +124,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
 
     private function getLatestReferenceNumber(PaymentTransaction $transaction): ?string
     {
-        /** @var null|OrderTransactionCollection $transactions */
+        /** @var OrderTransactionCollection|null $transactions */
         $transactions = $transaction->getOrder()->getTransactions();
 
         if ($transactions === null) {
@@ -141,7 +138,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
                 return null;
             }
 
-            if (in_array($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS) === false) {
+            if (\in_array($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS, true) === false) {
                 return null;
             }
         });
@@ -156,13 +153,15 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         /** @var OrderTransactionEntity $orderTransaction */
         $orderTransaction = $transactions->last();
 
-        $customFields = $orderTransaction->getCustomFields();
+        /** @var PayonePaymentOrderTransactionDataEntity|null $transactionData */
+        $transactionData = $orderTransaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        if (empty($customFields[CustomFieldInstaller::TRANSACTION_DATA])) {
+        if ($transactionData === null || empty($transactionData->getTransactionData())) {
             return null;
         }
 
-        $payoneTransactionData = array_pop($customFields[CustomFieldInstaller::TRANSACTION_DATA]);
+        $transactionDataHistory = $transactionData->getTransactionData();
+        $payoneTransactionData = array_pop($transactionDataHistory);
 
         if (!isset($payoneTransactionData['request'])) {
             return null;

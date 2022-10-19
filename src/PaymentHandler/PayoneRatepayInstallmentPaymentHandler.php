@@ -9,7 +9,6 @@ use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInter
 use PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintServiceInterface;
 use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Components\Validator\Iban;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -24,24 +23,18 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var PayoneClientInterface */
-    protected $client;
+    protected PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    protected $translator;
+    protected TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
-    /** @var DeviceFingerprintServiceInterface */
-    private $deviceFingerprintService;
+    private DeviceFingerprintServiceInterface $deviceFingerprintService;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -55,10 +48,10 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandle
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client                   = $client;
-        $this->translator               = $translator;
-        $this->dataHandler              = $dataHandler;
-        $this->requestParameterFactory  = $requestParameterFactory;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
+        $this->requestParameterFactory = $requestParameterFactory;
         $this->deviceFingerprintService = $deviceFingerprintService;
     }
 
@@ -92,12 +85,14 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandle
             $response = $this->client->request($request);
         } catch (PayoneRequestException $exception) {
             $this->deviceFingerprintService->deleteDeviceIdentToken();
+
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->deviceFingerprintService->deleteDeviceIdentToken();
+
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -106,6 +101,7 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandle
 
         if (empty($response['status']) || $response['status'] === 'ERROR') {
             $this->deviceFingerprintService->deleteDeviceIdentToken();
+
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -115,21 +111,16 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandle
         // It differs depending on the authorization method
         $clearingReference = $response['addpaydata']['clearing_reference'] ?? $response['clearing']['Reference'];
 
-        // Prepare custom fields for the transaction
-        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
-            $this->getBaseCustomFields($response['status']),
-            [
-                CustomFieldInstaller::WORK_ORDER_ID        => $requestData->get('workorder'),
-                CustomFieldInstaller::CLEARING_REFERENCE   => $clearingReference,
-                CustomFieldInstaller::CAPTURE_MODE         => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
-                CustomFieldInstaller::CLEARING_TYPE        => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-                CustomFieldInstaller::FINANCING_TYPE       => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
-                CustomFieldInstaller::USED_RATEPAY_SHOP_ID => $request['add_paydata[shop_id]'],
-            ]
-        ));
+        $data = $this->preparePayoneOrderTransactionData($request, $response, [
+            'workOrderId' => $requestData->get('workorder'),
+            'clearingReference' => $clearingReference,
+            'captureMode' => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+            'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+            'financingType' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
+            'additionalData' => ['used_ratepay_shop_id' => $request['add_paydata[shop_id]']],
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
         $this->deviceFingerprintService->deleteDeviceIdentToken();
     }
 
@@ -138,7 +129,7 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandle
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
         $definitions['ratepayBirthday'] = [new NotBlank(), new Birthday(['value' => $this->getMinimumDate()])];
-        $definitions['ratepayIban']     = [new Iban()];
+        $definitions['ratepayIban'] = [new Iban()];
 
         return $definitions;
     }
@@ -146,24 +137,24 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractPayonePaymentHandle
     /**
      * {@inheritdoc}
      */
-    public static function isCapturable(array $transactionData, array $customFields): bool
+    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        if (static::isNeverCapturable($transactionData, $customFields)) {
+        if (static::isNeverCapturable($payoneTransActionData)) {
             return false;
         }
 
-        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData, $customFields);
+        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function isRefundable(array $transactionData, array $customFields): bool
+    public static function isRefundable(array $transactionData): bool
     {
-        if (static::isNeverRefundable($transactionData, $customFields)) {
+        if (static::isNeverRefundable($transactionData)) {
             return false;
         }
 
-        return static::matchesIsRefundableDefaults($transactionData, $customFields);
+        return static::matchesIsRefundableDefaults($transactionData);
     }
 }

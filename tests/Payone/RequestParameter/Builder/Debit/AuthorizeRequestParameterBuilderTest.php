@@ -21,8 +21,8 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     public function testItAddsCorrectAuthorizeParameters(): void
     {
         $dataBag = new RequestDataBag([
-            'iban'         => 'DE61500105178278794285',
-            'bic'          => 'Test123',
+            'iban' => 'DE61500105178278794285',
+            'bic' => 'Test123',
             'accountOwner' => 'Max Mustermann',
         ]);
 
@@ -32,15 +32,15 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             $this->getValidRequestAction()
         );
 
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'clearingtype'      => AbstractRequestParameterBuilder::CLEARING_TYPE_DEBIT,
-                'request'           => $this->getValidRequestAction(),
-                'iban'              => 'DE61500105178278794285',
-                'bic'               => 'Test123',
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_DEBIT,
+                'request' => $this->getValidRequestAction(),
+                'iban' => 'DE61500105178278794285',
+                'bic' => 'Test123',
                 'bankaccountholder' => 'Max Mustermann',
             ],
             $parameters

@@ -29,7 +29,6 @@ use PayonePayment\Payone\RequestParameter\Struct\KlarnaCreateSessionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\ManageMandateStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
-use RuntimeException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -42,17 +41,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @var EntityRepositoryInterface */
-    private $languageRepository;
+    private EntityRepositoryInterface $languageRepository;
 
-    /** @var RequestStack */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    /** @var EntityRepositoryInterface */
-    private $salutationRepository;
+    private EntityRepositoryInterface $salutationRepository;
 
-    /** @var EntityRepositoryInterface */
-    private $countryRepository;
+    private EntityRepositoryInterface $countryRepository;
 
     public function __construct(
         EntityRepositoryInterface $languageRepository,
@@ -60,10 +55,10 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
         EntityRepositoryInterface $countryRepository,
         RequestStack $requestStack
     ) {
-        $this->languageRepository   = $languageRepository;
+        $this->languageRepository = $languageRepository;
         $this->salutationRepository = $salutationRepository;
-        $this->countryRepository    = $countryRepository;
-        $this->requestStack         = $requestStack;
+        $this->countryRepository = $countryRepository;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -74,41 +69,41 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
         $this->validateMethod($arguments, 'getSalesChannelContext');
         $salesChannelContext = $arguments->getSalesChannelContext();
 
-        if (null === $salesChannelContext->getCustomer()) {
-            throw new RuntimeException('missing customer');
+        if ($salesChannelContext->getCustomer() === null) {
+            throw new \RuntimeException('missing customer');
         }
 
         $language = $this->getCustomerLanguage($salesChannelContext);
 
-        if (null === $language->getLocale()) {
-            throw new RuntimeException('missing language locale');
+        if ($language->getLocale() === null) {
+            throw new \RuntimeException('missing language locale');
         }
 
         $billingAddress = $salesChannelContext->getCustomer()->getActiveBillingAddress();
 
-        if (null === $billingAddress) {
-            throw new RuntimeException('missing customer billing address');
+        if ($billingAddress === null) {
+            throw new \RuntimeException('missing customer billing address');
         }
 
         $personalData = [
-            'company'         => $billingAddress->getCompany(),
-            'salutation'      => $this->getCustomerSalutation($billingAddress, $salesChannelContext->getContext())->getDisplayName(),
-            'title'           => $billingAddress->getTitle(),
-            'firstname'       => $billingAddress->getFirstName(),
-            'lastname'        => $billingAddress->getLastName(),
-            'street'          => $billingAddress->getStreet(),
+            'company' => $billingAddress->getCompany(),
+            'salutation' => $this->getCustomerSalutation($billingAddress, $salesChannelContext->getContext())->getDisplayName(),
+            'title' => $billingAddress->getTitle(),
+            'firstname' => $billingAddress->getFirstName(),
+            'lastname' => $billingAddress->getLastName(),
+            'street' => $billingAddress->getStreet(),
             'addressaddition' => $billingAddress->getAdditionalAddressLine1(),
-            'zip'             => $billingAddress->getZipcode(),
-            'city'            => $billingAddress->getCity(),
-            'country'         => $this->getCustomerCountry($billingAddress, $salesChannelContext->getContext())->getIso(),
-            'email'           => $salesChannelContext->getCustomer()->getEmail(),
-            'language'        => substr($language->getLocale()->getCode(), 0, 2),
-            'ip'              => null !== $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
+            'zip' => $billingAddress->getZipcode(),
+            'city' => $billingAddress->getCity(),
+            'country' => $this->getCustomerCountry($billingAddress, $salesChannelContext->getContext())->getIso(),
+            'email' => $salesChannelContext->getCustomer()->getEmail(),
+            'language' => substr($language->getLocale()->getCode(), 0, 2),
+            'ip' => $this->requestStack->getCurrentRequest() !== null ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
         ];
 
         $birthday = $salesChannelContext->getCustomer()->getBirthday();
 
-        if (null !== $birthday) {
+        if ($birthday !== null) {
             $personalData['birthday'] = $birthday->format('Ymd');
         }
 
@@ -162,12 +157,17 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     private function getCustomerSalutation(CustomerAddressEntity $addressEntity, Context $context): SalutationEntity
     {
-        $criteria = new Criteria([$addressEntity->getSalutationId()]);
+        $salutationId = $addressEntity->getSalutationId();
+        if ($salutationId === null) {
+            throw new \RuntimeException('missing order customer salutation');
+        }
+
+        $criteria = new Criteria([$salutationId]);
 
         $salutation = $this->salutationRepository->search($criteria, $context)->first();
 
-        if (null === $salutation) {
-            throw new RuntimeException('missing order customer salutation');
+        if ($salutation === null) {
+            throw new \RuntimeException('missing order customer salutation');
         }
 
         return $salutation;
@@ -177,11 +177,11 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
     {
         $criteria = new Criteria([$addressEntity->getCountryId()]);
 
-        /** @var null|CountryEntity $country */
+        /** @var CountryEntity|null $country */
         $country = $this->countryRepository->search($criteria, $context)->first();
 
-        if (null === $country) {
-            throw new RuntimeException('missing order country entity');
+        if ($country === null) {
+            throw new \RuntimeException('missing order country entity');
         }
 
         return $country;
@@ -189,18 +189,18 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     private function getCustomerLanguage(SalesChannelContext $context): LanguageEntity
     {
-        if (null === $context->getCustomer()) {
-            throw new RuntimeException('missing customer');
+        if ($context->getCustomer() === null) {
+            throw new \RuntimeException('missing customer');
         }
 
         $criteria = new Criteria([$context->getCustomer()->getLanguageId()]);
         $criteria->addAssociation('locale');
 
-        /** @var null|LanguageEntity $language */
+        /** @var LanguageEntity|null $language */
         $language = $this->languageRepository->search($criteria, $context->getContext())->first();
 
-        if (null === $language) {
-            throw new RuntimeException('missing customer language');
+        if ($language === null) {
+            throw new \RuntimeException('missing customer language');
         }
 
         return $language;

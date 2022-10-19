@@ -34,8 +34,8 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $dataBag = new RequestDataBag([
-            'ratepayIban'     => 'DE81500105177147426471',
-            'ratepayPhone'    => '0123456789',
+            'ratepayIban' => 'DE81500105177147426471',
+            'ratepayPhone' => '0123456789',
             'ratepayBirthday' => '2000-01-01',
         ]);
 
@@ -45,21 +45,21 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             $this->getValidRequestAction()
         );
 
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'                                    => $this->getValidRequestAction(),
-                'clearingtype'                               => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
-                'iban'                                       => 'DE81500105177147426471',
+                'request' => $this->getValidRequestAction(),
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
+                'iban' => 'DE81500105177147426471',
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-                'add_paydata[shop_id]'                       => 88880103,
-                'add_paydata[device_token]'                  => 'the-device-ident-token',
-                'telephonenumber'                            => '0123456789',
-                'birthday'                                   => '20000101',
-                'it[1]'                                      => LineItemHydrator::TYPE_GOODS,
+                'add_paydata[shop_id]' => '88880103',
+                'add_paydata[device_token]' => 'the-device-ident-token',
+                'telephonenumber' => '0123456789',
+                'birthday' => '20000101',
+                'it[1]' => LineItemHydrator::TYPE_GOODS,
             ],
             $parameters
         );
@@ -70,7 +70,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->setValidRatepayProfiles($this->getContainer(), $this->getValidPaymentHandler());
 
         $dataBag = new RequestDataBag([
-            'ratepayIban'     => 'DE81500105177147426471',
+            'ratepayIban' => 'DE81500105177147426471',
             'ratepayBirthday' => '2000-01-01',
         ]);
 
@@ -93,7 +93,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->setValidRatepayProfiles($this->getContainer(), $this->getValidPaymentHandler());
 
         $dataBag = new RequestDataBag([
-            'ratepayIban'     => 'DE81500105177147426471',
+            'ratepayIban' => 'DE81500105177147426471',
             'ratepayBirthday' => '2000-01-01',
         ]);
 
@@ -108,7 +108,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         // Save phone number on customer custom fields
         $this->getContainer()->get('customer.repository')->update([
             [
-                'id'           => $struct->getPaymentTransaction()->getOrder()->getOrderCustomer()->getCustomerId(),
+                'id' => $struct->getPaymentTransaction()->getOrder()->getOrderCustomer()->getCustomerId(),
                 'customFields' => [
                     CustomFieldInstaller::CUSTOMER_PHONE_NUMBER => '0123456789',
                 ],
@@ -119,15 +119,15 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
         Assert::assertArraySubset(
             [
-                'request'                                    => $this->getValidRequestAction(),
-                'clearingtype'                               => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
-                'iban'                                       => 'DE81500105177147426471',
+                'request' => $this->getValidRequestAction(),
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
+                'iban' => 'DE81500105177147426471',
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-                'add_paydata[shop_id]'                       => 88880103,
-                'telephonenumber'                            => '0123456789',
-                'birthday'                                   => '20000101',
-                'it[1]'                                      => LineItemHydrator::TYPE_GOODS,
+                'add_paydata[shop_id]' => '88880103',
+                'telephonenumber' => '0123456789',
+                'birthday' => '20000101',
+                'it[1]' => LineItemHydrator::TYPE_GOODS,
             ],
             $parameters
         );

@@ -2,7 +2,7 @@
   "name": "payone-gmbh/shopware-6",
   "type": "shopware-platform-plugin",
   "description": "PAYONE Payment Plugin",
-  "version": "3.3.0",
+  "version": "4.0.0",
   "license": "MIT",
   "authors": [
     {
@@ -23,16 +23,18 @@
     "ext-curl": "*",
     "ext-json": "*",
     "sinergi/browser-detector": "^6.1",
-    "shopware/core": ">= 6.3",
-    "shopware/administration": ">= 6.3",
-    "shopware/storefront": ">= 6.3"
+    "shopware/core": ">= 6.4",
+    "shopware/administration": ">= 6.4",
+    "shopware/storefront": ">= 6.4"
   },
   "require-dev": {
     "dms/phpunit-arraysubset-asserts": "^0.3.0",
-    "k10r/codestyle": "^1.0",
-    "phpstan/phpstan": "^0.12",
-    "phpstan/phpstan-phpunit": "^0.12",
-    "phpunit/phpunit": "^9.5"
+    "kubawerlos/php-cs-fixer-custom-fixers": "^3.11",
+    "phpstan/phpstan": "1.8.0",
+    "phpstan/phpstan-phpunit": "1.1.1",
+    "phpstan/phpstan-symfony": "1.2.5",
+    "phpunit/phpunit": "^9.5",
+    "symplify/easy-coding-standard": "^10.0"
   },
   "autoload": {
     "psr-4": {
@@ -41,8 +43,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "PayonePayment\\": "tests/",
-      "PayonePayment\\Test\\": "tests_legacy/"
+      "PayonePayment\\": "tests/"
     }
   },
   "config": {
@@ -70,8 +71,9 @@
     }
   },
   "scripts": {
-    "phpcs": "./vendor/bin/php-cs-fixer fix",
-    "phpstan": "./vendor/bin/phpstan analyse src tests -a ../../../vendor/autoload.php",
-    "phpunit": "./../../../vendor/bin/phpunit"
+    "phpstan": "./vendor/bin/phpstan analyse -n --no-progress",
+    "phpunit": "./../../../vendor/bin/phpunit",
+    "ecs": "ecs check src tests",
+    "ecs-fix": "ecs check --fix src tests"
   }
 }

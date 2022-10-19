@@ -30,13 +30,13 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
             $this->getValidRequestAction()
         );
 
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'clearingtype'  => AbstractRequestParameterBuilder::CLEARING_TYPE_CREDIT_CARD,
-                'request'       => $this->getValidRequestAction(),
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_CREDIT_CARD,
+                'request' => $this->getValidRequestAction(),
                 'pseudocardpan' => 'my-pan',
             ],
             $parameters

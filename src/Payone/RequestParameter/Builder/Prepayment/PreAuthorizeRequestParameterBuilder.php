@@ -11,11 +11,13 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class PreAuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'request'      => self::REQUEST_ACTION_PREAUTHORIZE,
+            'request' => self::REQUEST_ACTION_PREAUTHORIZE,
             'clearingtype' => self::CLEARING_TYPE_PREPAYMENT,
         ];
     }

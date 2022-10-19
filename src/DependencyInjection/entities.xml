@@ -19,5 +19,13 @@
         <service id="PayonePayment\DataAbstractionLayer\Entity\NotificationForward\PayonePaymentNotificationForwardDefinition">
             <tag name="shopware.entity.definition" entity="payone_payment_notification_forward"/>
         </service>
+
+        <service id="PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataDefinition">
+            <tag name="shopware.entity.definition" entity="payone_payment_order_transaction_data"/>
+        </service>
+
+        <service id="PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
     </services>
 </container>

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\Hydrator\LineItemHydrator;
 
-use Exception;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\Delivery\Struct\Delivery;
@@ -26,9 +25,11 @@ use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 
 class LineItemHydrator implements LineItemHydratorInterface
 {
-    /** @see https://docs.payone.com/display/public/PLATFORM/it%5Bn%5D+-+definition */
-    public const TYPE_GOODS    = 'goods';
-    public const TYPE_VOUCHER  = 'voucher';
+    /**
+     * @see https://docs.payone.com/display/public/PLATFORM/it%5Bn%5D+-+definition
+     */
+    public const TYPE_GOODS = 'goods';
+    public const TYPE_VOUCHER = 'voucher';
     public const TYPE_SHIPMENT = 'shipment';
     public const TYPE_HANDLING = 'handling';
 
@@ -39,15 +40,14 @@ class LineItemHydrator implements LineItemHydratorInterface
     public const PAYONE_ARRAY_KEY_NAME     = 'de';
     public const PAYONE_ARRAY_KEY_TAX_RATE = 'va';
 
-    /** @var CurrencyPrecisionInterface */
-    private $currencyPrecision;
 
-    /** @var EntityRepositoryInterface */
-    private $shipmentRepository;
+    private CurrencyPrecisionInterface $currencyPrecision;
+
+    private EntityRepositoryInterface $shipmentRepository;
 
     public function __construct(CurrencyPrecisionInterface $currencyPrecision, EntityRepositoryInterface $shipmentRepository)
     {
-        $this->currencyPrecision  = $currencyPrecision;
+        $this->currencyPrecision = $currencyPrecision;
         $this->shipmentRepository = $shipmentRepository;
     }
 
@@ -66,7 +66,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         $requestLineItems = [];
 
         foreach ($requestLines as $orderLine) {
-            if (!array_key_exists('id', $orderLine)) {
+            if (!\array_key_exists('id', $orderLine)) {
                 continue;
             }
 
@@ -172,7 +172,7 @@ class LineItemHydrator implements LineItemHydratorInterface
                 null === $lineItemEntity->getParentId()) {
                 return true;
             }
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             // Catch class not found if SwagCustomizedProducts plugin is not installed
         }
 
@@ -186,7 +186,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         $lineItemEntity,
         int $quantity
     ): array {
-        $productNumber = is_array($lineItemEntity->getPayload()) && array_key_exists('productNumber', $lineItemEntity->getPayload())
+        $productNumber = \is_array($lineItemEntity->getPayload()) && \array_key_exists('productNumber', $lineItemEntity->getPayload())
             ? $lineItemEntity->getPayload()['productNumber']
             : null;
 

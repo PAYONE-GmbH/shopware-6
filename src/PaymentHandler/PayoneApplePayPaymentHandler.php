@@ -19,14 +19,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var PayoneClientInterface */
-    protected $client;
+    protected PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    protected $translator;
+    protected TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -38,8 +35,8 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client      = $client;
-        $this->translator  = $translator;
+        $this->client = $client;
+        $this->translator = $translator;
         $this->dataHandler = $dataHandler;
     }
 
@@ -51,9 +48,9 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
         $requestData = $this->fetchRequestData();
 
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $response      = json_decode($requestData->get('response', '{}'), true);
+        $response = json_decode($requestData->get('response', '{}'), true);
 
-        if (null === $response || !array_key_exists('status', $response) || !array_key_exists('txid', $response)) {
+        if ($response === null || !\array_key_exists('status', $response) || !\array_key_exists('txid', $response)) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -73,32 +70,31 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
             'request' => $configuration->getString('applePayAuthorizationMethod', 'preauthorization'),
         ];
 
-        $data = $this->prepareTransactionCustomFields($request, $response);
+        $data = $this->preparePayoneOrderTransactionData($request, $response);
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function isCapturable(array $transactionData, array $customFields): bool
+    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        if (static::isNeverCapturable($transactionData, $customFields)) {
+        if (static::isNeverCapturable($payoneTransActionData)) {
             return false;
         }
 
-        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData, $customFields);
+        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function isRefundable(array $transactionData, array $customFields): bool
+    public static function isRefundable(array $transactionData): bool
     {
-        if (static::isNeverRefundable($transactionData, $customFields)) {
+        if (static::isNeverRefundable($transactionData)) {
             return false;
         }
 
-        return static::matchesIsRefundableDefaults($transactionData, $customFields);
+        return static::matchesIsRefundableDefaults($transactionData);
     }
 }

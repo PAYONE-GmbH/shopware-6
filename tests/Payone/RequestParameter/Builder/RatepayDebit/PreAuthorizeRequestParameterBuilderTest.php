@@ -33,8 +33,8 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $dataBag = new RequestDataBag([
-            'ratepayIban'     => 'DE81500105177147426471',
-            'ratepayPhone'    => '0123456789',
+            'ratepayIban' => 'DE81500105177147426471',
+            'ratepayPhone' => '0123456789',
             'ratepayBirthday' => '2000-01-01',
         ]);
 
@@ -44,21 +44,21 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
             $this->getValidRequestAction()
         );
 
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'                                    => $this->getValidRequestAction(),
-                'clearingtype'                               => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'                              => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
-                'iban'                                       => 'DE81500105177147426471',
+                'request' => $this->getValidRequestAction(),
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPD,
+                'iban' => 'DE81500105177147426471',
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-                'add_paydata[shop_id]'                       => 88880103,
-                'add_paydata[device_token]'                  => 'the-device-ident-token',
-                'telephonenumber'                            => '0123456789',
-                'birthday'                                   => '20000101',
-                'it[1]'                                      => LineItemHydrator::TYPE_GOODS,
+                'add_paydata[shop_id]' => '88880103',
+                'add_paydata[device_token]' => 'the-device-ident-token',
+                'telephonenumber' => '0123456789',
+                'birthday' => '20000101',
+                'it[1]' => LineItemHydrator::TYPE_GOODS,
             ],
             $parameters
         );

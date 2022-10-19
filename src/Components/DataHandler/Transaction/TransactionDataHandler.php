@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\DataHandler\Transaction;
 
-use DateTime;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
-use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\Struct\PaymentTransaction;
-use RuntimeException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -18,114 +17,132 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class TransactionDataHandler implements TransactionDataHandlerInterface
 {
-    /** @var EntityRepositoryInterface */
-    private $transactionRepository;
+    private EntityRepositoryInterface $transactionRepository;
 
-    /** @var CurrencyPrecisionInterface */
-    private $currencyPrecision;
+    private CurrencyPrecisionInterface $currencyPrecision;
 
     public function __construct(EntityRepositoryInterface $transactionRepository, CurrencyPrecisionInterface $currencyPrecision)
     {
         $this->transactionRepository = $transactionRepository;
-        $this->currencyPrecision     = $currencyPrecision;
+        $this->currencyPrecision = $currencyPrecision;
     }
 
     public function getPaymentTransactionByPayoneTransactionId(Context $context, int $payoneTransactionId): ?PaymentTransaction
     {
-        $field = 'order_transaction.customFields.' . CustomFieldInstaller::TRANSACTION_ID;
-
         $criteria = (new Criteria())
-            ->addFilter(new EqualsFilter($field, $payoneTransactionId))
+            ->addAssociation(PayonePaymentOrderTransactionExtension::NAME)
+            ->addFilter(new EqualsFilter(PayonePaymentOrderTransactionExtension::NAME . '.transactionId', $payoneTransactionId))
             ->addAssociation('paymentMethod')
             ->addAssociation('order')
             ->addAssociation('order.currency');
 
-        /** @var null|OrderTransactionEntity $transaction */
+        /** @var OrderTransactionEntity|null $transaction */
         $transaction = $this->transactionRepository->search($criteria, $context)->first();
 
-        if (null === $transaction || null === $transaction->getOrder()) {
+        if ($transaction === null || $transaction->getOrder() === null) {
             return null;
         }
 
         return PaymentTransaction::fromOrderTransaction($transaction, $transaction->getOrder());
     }
 
-    public function getCustomFieldsFromWebhook(PaymentTransaction $paymentTransaction, array $transactionData): array
+    public function getTransactionDataFromWebhook(PaymentTransaction $paymentTransaction, array $transactionData): array
     {
-        $newCustomFields      = [];
-        $existingCustomFields = $paymentTransaction->getCustomFields() ?? [];
+        /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+        $payoneTransactionData = $paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+        $key = (new \DateTime())->format(\DATE_ATOM);
 
-        $currentSequenceNumber                                  = array_key_exists(CustomFieldInstaller::SEQUENCE_NUMBER, $existingCustomFields) ? $existingCustomFields[CustomFieldInstaller::SEQUENCE_NUMBER] : 0;
-        $newCustomFields[CustomFieldInstaller::SEQUENCE_NUMBER] = max((int) $transactionData['sequencenumber'], $currentSequenceNumber);
+        $newTransactionData = [
+            'id' => $payoneTransactionData->getId(),
+        ];
 
-        $newCustomFields[CustomFieldInstaller::TRANSACTION_STATE] = strtolower($transactionData['txaction']);
+        $currentSequenceNumber = $payoneTransactionData->getSequenceNumber();
+
+        $newTransactionData['sequenceNumber'] = max((int) $transactionData['sequencenumber'], $currentSequenceNumber);
+        $newTransactionData['transactionState'] = strtolower($transactionData['txaction']);
+        $newTransactionData['authorizationType'] = $payoneTransactionData->getAuthorizationType();
+
+        $newTransactionData['transactionData'] = array_merge(
+            $payoneTransactionData->getTransactionData() ?? [],
+            [$key => $transactionData]
+        );
 
         if ($this->canChangeCapturableState($transactionData)) {
-            $newCustomFields[CustomFieldInstaller::ALLOW_CAPTURE] = $this->shouldAllowCapture($paymentTransaction, $transactionData);
+            $newTransactionData['allowCapture'] = $this->shouldAllowCapture($paymentTransaction, $transactionData, $newTransactionData);
         }
 
         if ($this->canChangeRefundableState($transactionData)) {
-            $newCustomFields[CustomFieldInstaller::ALLOW_REFUND] = $this->shouldAllowRefund($paymentTransaction, $transactionData);
+            $newTransactionData['allowRefund'] = $this->shouldAllowRefund($paymentTransaction, $transactionData);
         }
 
-        if (in_array($newCustomFields[CustomFieldInstaller::TRANSACTION_STATE], [TransactionStatusService::ACTION_PAID, TransactionStatusService::ACTION_COMPLETED])) {
-            $newCustomFields[CustomFieldInstaller::CAPTURED_AMOUNT] = $this->getCapturedAmount($paymentTransaction, $transactionData);
+        if (\in_array($newTransactionData['transactionState'], [TransactionStatusService::ACTION_PAID, TransactionStatusService::ACTION_COMPLETED], true)) {
+            $newTransactionData['capturedAmount'] = $this->getCapturedAmount($paymentTransaction, $transactionData);
         }
 
-        return $newCustomFields;
+        return $newTransactionData;
     }
 
     public function saveTransactionData(PaymentTransaction $transaction, Context $context, array $data): void
     {
-        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
-        $customFields = array_merge($customFields, $data);
-
-        $this->updateTransactionCustomFields($transaction, $context, $customFields);
+        $this->transactionRepository->upsert([[
+            'id' => $transaction->getOrderTransaction()->getId(),
+            PayonePaymentOrderTransactionExtension::NAME => $data,
+        ]], $context);
     }
 
     public function logResponse(PaymentTransaction $transaction, Context $context, array $data): void
     {
-        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
+        $key = (new \DateTime())->format(\DATE_ATOM);
 
-        $key = (new DateTime())->format(DATE_ATOM);
+        $newTransactionData = [
+            'transactionData' => [
+                $key => $data,
+            ],
+        ];
 
-        $customFields[CustomFieldInstaller::TRANSACTION_DATA][$key] = $data;
+        /** @var PayonePaymentOrderTransactionDataEntity|null $payoneTransactionData */
+        $payoneTransactionData = $transaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        $this->updateTransactionCustomFields($transaction, $context, $customFields);
+        if ($payoneTransactionData !== null) {
+            $newTransactionData = [
+                'id' => $payoneTransactionData->getId(),
+            ];
+
+            $newTransactionData['transactionData'] = array_merge(
+                $payoneTransactionData->getTransactionData() ?? [],
+                [$key => $data]
+            );
+        }
+
+        $this->transactionRepository->update([[
+            'id' => $transaction->getOrderTransaction()->getId(),
+            PayonePaymentOrderTransactionExtension::NAME => $newTransactionData,
+        ]], $context);
     }
 
-    public function incrementSequenceNumber(PaymentTransaction $transaction, Context $context): void
+    public function incrementSequenceNumber(PaymentTransaction $transaction, array &$transactionData): void
     {
-        $customFields = $transaction->getOrderTransaction()->getCustomFields() ?? [];
+        /** @var PayonePaymentOrderTransactionDataEntity|null $payoneTransactionData */
+        $payoneTransactionData = $transaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        ++$customFields[CustomFieldInstaller::SEQUENCE_NUMBER];
+        if ($payoneTransactionData === null) {
+            return;
+        }
 
-        $this->updateTransactionCustomFields($transaction, $context, $customFields);
+        $transactionData['id'] = $payoneTransactionData->getId();
+        $transactionData['sequenceNumber'] = $payoneTransactionData->getSequenceNumber() + 1;
     }
 
     public function saveTransactionState(string $stateId, PaymentTransaction $transaction, Context $context): void
     {
         $update = [
-            'id'      => $transaction->getOrderTransaction()->getId(),
+            'id' => $transaction->getOrderTransaction()->getId(),
             'stateId' => $stateId,
         ];
 
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($update): void {
             $this->transactionRepository->update([$update], $context);
         });
-    }
-
-    private function updateTransactionCustomFields(PaymentTransaction $transaction, Context $context, array $customFields): void
-    {
-        $update = [
-            'id'           => $transaction->getOrderTransaction()->getId(),
-            'customFields' => $customFields,
-        ];
-
-        $transaction->getOrderTransaction()->setCustomFields($customFields);
-        $transaction->setCustomFields($customFields);
-
-        $this->transactionRepository->update([$update], $context);
     }
 
     /**
@@ -141,13 +158,13 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
 
         // The following TX actions do not affect any capturable or refundable state
-        return in_array($txAction, [
+        return \in_array($txAction, [
             TransactionStatusService::ACTION_TRANSFER,
             TransactionStatusService::ACTION_REMINDER,
             TransactionStatusService::ACTION_INVOICE,
             TransactionStatusService::ACTION_VAUTHORIZATION,
             TransactionStatusService::ACTION_VSETTLEMENT,
-        ]);
+        ], true);
     }
 
     /**
@@ -166,15 +183,15 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         return true;
     }
 
-    private function shouldAllowCapture(PaymentTransaction $paymentTransaction, array $transactionData): bool
+    private function shouldAllowCapture(PaymentTransaction $paymentTransaction, array $transactionData, array $payoneTransactionData): bool
     {
         $handlerClass = $this->getHandlerIdentifier($paymentTransaction);
 
-        if (!$handlerClass) {
+        if (!$handlerClass || !class_exists($handlerClass)) {
             return false;
         }
 
-        return $handlerClass::isCapturable($transactionData, $paymentTransaction->getCustomFields());
+        return $handlerClass::isCapturable($transactionData, $payoneTransactionData);
     }
 
     /**
@@ -197,30 +214,30 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
     {
         $handlerClass = $this->getHandlerIdentifier($paymentTransaction);
 
-        if (!$handlerClass) {
+        if (!$handlerClass || !class_exists($handlerClass)) {
             return false;
         }
 
-        return $handlerClass::isRefundable($transactionData, $paymentTransaction->getCustomFields());
+        return $handlerClass::isRefundable($transactionData);
     }
 
     private function getCapturedAmount(PaymentTransaction $paymentTransaction, array $transactionData): int
     {
-        $currency              = $paymentTransaction->getOrder()->getCurrency();
-        $customFields          = $paymentTransaction->getOrderTransaction()->getCustomFields() ?? [];
+        $currency = $paymentTransaction->getOrder()->getCurrency();
+        /** @var PayonePaymentOrderTransactionDataEntity|null $payoneTransactionData */
+        $payoneTransactionData = $paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
         $currentCapturedAmount = 0;
-        $receivable            = 0;
+        $receivable = 0;
 
-        if (!$currency) {
+        if (!$currency || $payoneTransactionData === null) {
             return 0;
         }
 
-        if (array_key_exists(CustomFieldInstaller::CAPTURED_AMOUNT, $customFields) &&
-            $customFields[CustomFieldInstaller::CAPTURED_AMOUNT] !== 0) {
-            $currentCapturedAmount = $customFields[CustomFieldInstaller::CAPTURED_AMOUNT];
+        if (!empty($payoneTransactionData->getCapturedAmount())) {
+            $currentCapturedAmount = $payoneTransactionData->getCapturedAmount();
         }
 
-        if (array_key_exists('receivable', $transactionData)) {
+        if (\array_key_exists('receivable', $transactionData)) {
             $receivable = $this->currencyPrecision->getRoundedTotalAmount((float) $transactionData['receivable'], $currency);
         }
 
@@ -238,7 +255,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $handlerClass = $paymentMethodEntity->getHandlerIdentifier();
 
         if (!class_exists($handlerClass)) {
-            throw new RuntimeException(sprintf('The handler class %s for payment method %s does not exist.', $paymentMethodEntity->getName(), $handlerClass));
+            throw new \RuntimeException(sprintf('The handler class %s for payment method %s does not exist.', $paymentMethodEntity->getName(), $handlerClass));
         }
 
         return $handlerClass;

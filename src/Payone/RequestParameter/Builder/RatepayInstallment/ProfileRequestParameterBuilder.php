@@ -12,16 +12,18 @@ use PayonePayment\Payone\RequestParameter\Struct\RatepayProfileStruct;
 
 class ProfileRequestParameterBuilder extends GeneralTransactionRequestParameterBuilder
 {
-    /** @param RatepayProfileStruct $arguments */
+    /**
+     * @param RatepayProfileStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'request'              => self::REQUEST_ACTION_GENERIC_PAYMENT,
-            'add_paydata[action]'  => 'profile',
+            'request' => self::REQUEST_ACTION_GENERIC_PAYMENT,
+            'add_paydata[action]' => 'profile',
             'add_paydata[shop_id]' => $arguments->getShopId(),
-            'currency'             => $arguments->getCurrency(),
-            'clearingtype'         => self::CLEARING_TYPE_FINANCING,
-            'financingtype'        => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
+            'currency' => $arguments->getCurrency(),
+            'clearingtype' => self::CLEARING_TYPE_FINANCING,
+            'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
         ];
     }
 
@@ -32,7 +34,7 @@ class ProfileRequestParameterBuilder extends GeneralTransactionRequestParameterB
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayoneRatepayInstallmentPaymentHandler::class && $action === self::REQUEST_ACTION_RATEPAY_PROFILE;
     }

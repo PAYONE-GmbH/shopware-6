@@ -23,25 +23,20 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 class ProfileService implements ProfileServiceInterface
 {
     public const PAYMENT_KEYS = [
-        PayoneRatepayDebitPaymentHandler::class       => 'elv',
+        PayoneRatepayDebitPaymentHandler::class => 'elv',
         PayoneRatepayInstallmentPaymentHandler::class => 'installment',
-        PayoneRatepayInvoicingPaymentHandler::class   => 'invoice',
+        PayoneRatepayInvoicingPaymentHandler::class => 'invoice',
     ];
 
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
-    /** @var SystemConfigService */
-    private $systemConfigService;
+    private SystemConfigService $systemConfigService;
 
-    /** @var OrderFetcherInterface */
-    private $orderFetcher;
+    private OrderFetcherInterface $orderFetcher;
 
-    /** @var CartService */
-    private $cartService;
+    private CartService $cartService;
 
     public function __construct(
         PayoneClientInterface $client,
@@ -50,11 +45,11 @@ class ProfileService implements ProfileServiceInterface
         OrderFetcherInterface $orderFetcher,
         CartService $cartService
     ) {
-        $this->client                  = $client;
+        $this->client = $client;
         $this->requestParameterFactory = $requestParameterFactory;
-        $this->systemConfigService     = $systemConfigService;
-        $this->orderFetcher            = $orderFetcher;
-        $this->cartService             = $cartService;
+        $this->systemConfigService = $systemConfigService;
+        $this->orderFetcher = $orderFetcher;
+        $this->cartService = $cartService;
     }
 
     public function getProfile(ProfileSearch $profileSearch): ?Profile
@@ -66,7 +61,7 @@ class ProfileService implements ProfileServiceInterface
             $profileSearch->getSalesChannelId()
         );
 
-        if ($profileConfiguration === null) {
+        if (!\is_array($profileConfiguration)) {
             return null;
         }
 
@@ -77,19 +72,19 @@ class ProfileService implements ProfileServiceInterface
 
             $allowedBillingCountries = explode(',', $configuration['country-code-billing']);
 
-            if (!in_array($profileSearch->getBillingCountryCode(), $allowedBillingCountries, true)) {
+            if (!\in_array($profileSearch->getBillingCountryCode(), $allowedBillingCountries, true)) {
                 continue;
             }
 
             $allowedDeliveryCountries = explode(',', $configuration['country-code-delivery']);
 
-            if (!in_array($profileSearch->getShippingCountryCode(), $allowedDeliveryCountries, true)) {
+            if (!\in_array($profileSearch->getShippingCountryCode(), $allowedDeliveryCountries, true)) {
                 continue;
             }
 
             $allowedCurrencies = explode(',', $configuration['currency']);
 
-            if (!in_array($profileSearch->getCurrency(), $allowedCurrencies, true)) {
+            if (!\in_array($profileSearch->getCurrency(), $allowedCurrencies, true)) {
                 continue;
             }
 
@@ -102,7 +97,7 @@ class ProfileService implements ProfileServiceInterface
             }
 
             $profile = new Profile();
-            $profile->setShopId($shopId);
+            $profile->setShopId((string) $shopId);
             $profile->setConfiguration($configuration);
 
             return $profile;
@@ -113,20 +108,26 @@ class ProfileService implements ProfileServiceInterface
 
     public function getProfileByOrder(OrderEntity $order, string $paymentHandler): ?Profile
     {
-        $billingAddress  = $this->orderFetcher->getOrderBillingAddress($order);
+        $billingAddress = $this->orderFetcher->getOrderBillingAddress($order);
         $shippingAddress = $this->orderFetcher->getOrderShippingAddress($order);
 
-        $billingCountry  = $billingAddress->getCountry();
+        $billingCountry = $billingAddress->getCountry();
         $shippingCountry = $shippingAddress->getCountry();
-        $currency        = $order->getCurrency();
+        $currency = $order->getCurrency();
 
         if ($billingCountry === null || $shippingCountry === null || $currency === null) {
             return null;
         }
 
+        $billingCountryIso = $billingCountry->getIso();
+        $shippingCountryIso = $shippingCountry->getIso();
+        if ($billingCountryIso === null || $shippingCountryIso === null) {
+            return null;
+        }
+
         $profileSearch = new ProfileSearch();
-        $profileSearch->setBillingCountryCode($billingCountry->getIso());
-        $profileSearch->setShippingCountryCode($shippingCountry->getIso());
+        $profileSearch->setBillingCountryCode($billingCountryIso);
+        $profileSearch->setShippingCountryCode($shippingCountryIso);
         $profileSearch->setPaymentHandler($paymentHandler);
         $profileSearch->setSalesChannelId($order->getSalesChannelId());
         $profileSearch->setCurrency($currency->getIsoCode());
@@ -144,25 +145,31 @@ class ProfileService implements ProfileServiceInterface
             return null;
         }
 
-        $billingAddress  = $customer->getActiveBillingAddress();
+        $billingAddress = $customer->getActiveBillingAddress();
         $shippingAddress = $customer->getActiveShippingAddress();
 
         if ($billingAddress === null || $shippingAddress === null) {
             return null;
         }
 
-        $billingCountry  = $billingAddress->getCountry();
+        $billingCountry = $billingAddress->getCountry();
         $shippingCountry = $shippingAddress->getCountry();
 
         if ($billingCountry === null || $shippingCountry === null) {
             return null;
         }
 
+        $billingCountryIso = $billingCountry->getIso();
+        $shippingCountryIso = $shippingCountry->getIso();
+        if ($billingCountryIso === null || $shippingCountryIso === null) {
+            return null;
+        }
+
         $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
 
         $profileSearch = new ProfileSearch();
-        $profileSearch->setBillingCountryCode($billingCountry->getIso());
-        $profileSearch->setShippingCountryCode($shippingCountry->getIso());
+        $profileSearch->setBillingCountryCode($billingCountryIso);
+        $profileSearch->setShippingCountryCode($shippingCountryIso);
         $profileSearch->setPaymentHandler($paymentHandler);
         $profileSearch->setSalesChannelId($salesChannelContext->getSalesChannelId());
         $profileSearch->setCurrency($salesChannelContext->getCurrency()->getIsoCode());
@@ -174,22 +181,25 @@ class ProfileService implements ProfileServiceInterface
 
     public function updateProfileConfiguration(string $paymentHandler, ?string $salesChannelId = null): array
     {
-        $profilesConfigKey        = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles');
+        $profilesConfigKey = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'Profiles');
         $profileConfigurationsKey = ConfigReader::getConfigKeyByPaymentHandler($paymentHandler, 'ProfileConfigurations');
 
         $configUpdates = [];
-        $errors        = [];
+        $errors = [];
 
         $profiles = $this->systemConfigService->get($profilesConfigKey, $salesChannelId);
+        if (!\is_array($profiles)) {
+            $profiles = [];
+        }
 
-        $validProfiles          = [];
+        $validProfiles = [];
         $configurationResponses = [];
         foreach ($profiles as $profile) {
-            $shopId   = (int) $profile['shopId'];
+            $shopId = $profile['shopId'];
             $currency = $profile['currency'];
 
-            if ($shopId === 0 || empty($currency)) {
-                $profile['error']             = 'Shop ID or Currency missing';
+            if (empty($shopId) || empty($currency)) {
+                $profile['error'] = 'Shop ID or Currency missing';
                 $errors[$profilesConfigKey][] = $profile;
 
                 continue;
@@ -208,14 +218,14 @@ class ProfileService implements ProfileServiceInterface
             try {
                 $response = $this->client->request($profileRequest);
             } catch (PayoneRequestException $exception) {
-                $profile['error']             = $exception->getResponse()['error']['ErrorMessage'];
+                $profile['error'] = $exception->getResponse()['error']['ErrorMessage'];
                 $errors[$profilesConfigKey][] = $profile;
 
                 continue;
             }
 
             $configurationResponses[$shopId] = $response['addpaydata'];
-            $validProfiles[$shopId]          = $profile;
+            $validProfiles[$shopId] = $profile;
         }
 
         $validProfiles = array_values($validProfiles);
@@ -229,12 +239,12 @@ class ProfileService implements ProfileServiceInterface
             $configurationResponses,
             $salesChannelId
         );
-        $configUpdates[$profilesConfigKey]        = $validProfiles;
+        $configUpdates[$profilesConfigKey] = $validProfiles;
         $configUpdates[$profileConfigurationsKey] = $configurationResponses;
 
         return [
             'updates' => $configUpdates,
-            'errors'  => $errors,
+            'errors' => $errors,
         ];
     }
 }

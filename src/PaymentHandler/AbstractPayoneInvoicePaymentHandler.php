@@ -7,7 +7,6 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\Validator\Birthday;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -22,21 +21,16 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 abstract class AbstractPayoneInvoicePaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /** @var PayoneClientInterface */
-    private $client;
+    private PayoneClientInterface $client;
 
-    /** @var TranslatorInterface */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
+    private TransactionDataHandlerInterface $dataHandler;
 
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
+    private RequestParameterFactory $requestParameterFactory;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -49,9 +43,9 @@ abstract class AbstractPayoneInvoicePaymentHandler extends AbstractPayonePayment
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 
-        $this->client                  = $client;
-        $this->translator              = $translator;
-        $this->dataHandler             = $dataHandler;
+        $this->client = $client;
+        $this->translator = $translator;
+        $this->dataHandler = $dataHandler;
         $this->requestParameterFactory = $requestParameterFactory;
     }
 
@@ -88,7 +82,7 @@ abstract class AbstractPayoneInvoicePaymentHandler extends AbstractPayonePayment
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -102,28 +96,24 @@ abstract class AbstractPayoneInvoicePaymentHandler extends AbstractPayonePayment
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
-            $this->getBaseCustomFields($response['status']),
-            [
-                CustomFieldInstaller::CAPTURE_MODE => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
+        $data = $this->preparePayoneOrderTransactionData($request, $response, [
+            'captureMode' => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
 
-                // Set clearing type explicitly
-                CustomFieldInstaller::CLEARING_TYPE => static::PAYONE_CLEARING_REC,
+            // Set clearing type explicitly
+            'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_REC,
 
-                // Store clearing bank account information as custom field of the transaction in order to
-                // use this data for payment instructions of an invoice or similar.
-                // See: https://docs.payone.com/display/public/PLATFORM/How+to+use+JSON-Responses#HowtouseJSON-Responses-JSON,Clearing-Data
-                CustomFieldInstaller::CLEARING_BANK_ACCOUNT => array_merge(array_filter($response['clearing']['BankAccount'] ?? []), [
-                    // The PAYONE transaction ID acts as intended purpose of the transfer.
-                    // We add this field explicitly here to make clear that the transaction ID is used
-                    // as payment reference in context of the prepayment.
-                    'Reference' => (string) $response['txid'],
-                ]),
-            ]
-        ));
+            // Store clearing bank account information as custom field of the transaction in order to
+            // use this data for payment instructions of an invoice or similar.
+            // See: https://docs.payone.com/display/public/PLATFORM/How+to+use+JSON-Responses#HowtouseJSON-Responses-JSON,Clearing-Data
+            'clearingBankAccount' => array_merge(array_filter($response['clearing']['BankAccount'] ?? []), [
+                // The PAYONE transaction ID acts as intended purpose of the transfer.
+                // We add this field explicitly here to make clear that the transaction ID is used
+                // as payment reference in context of the prepayment.
+                'Reference' => (string) $response['txid'],
+            ]),
+        ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
     }
 
     public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array

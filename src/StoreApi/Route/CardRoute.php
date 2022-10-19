@@ -24,8 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CardRoute extends AbstractCardRoute
 {
-    /** @var CardRepositoryInterface */
-    private $cardRepository;
+    private CardRepositoryInterface $cardRepository;
 
     public function __construct(CardRepositoryInterface $cardRepository)
     {
@@ -45,7 +44,7 @@ class CardRoute extends AbstractCardRoute
     {
         $customer = $context->getCustomer();
 
-        if (null === $customer) {
+        if ($customer === null) {
             throw new CustomerNotLoggedInException();
         }
 
@@ -77,7 +76,7 @@ class CardRoute extends AbstractCardRoute
      */
     public function delete(string $pseudoCardPan, SalesChannelContext $context): StoreApiResponse
     {
-        if (null === $context->getCustomer()) {
+        if ($context->getCustomer() === null) {
             throw new CustomerNotLoggedInException();
         }
 

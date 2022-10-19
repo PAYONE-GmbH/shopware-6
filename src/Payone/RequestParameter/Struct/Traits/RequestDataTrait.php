@@ -8,8 +8,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait RequestDataTrait
 {
-    /** @var ParameterBag */
-    protected $requestData;
+    protected ParameterBag $requestData;
 
     public function getRequestData(): ParameterBag
     {

@@ -22,9 +22,9 @@ class CheckoutConfirmIDealEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hideIDealForNonNlCustomers',
+            CheckoutConfirmPageLoadedEvent::class => 'hideIDealForNonNlCustomers',
             AccountPaymentMethodPageLoadedEvent::class => 'hideIDealForNonNlCustomers',
-            AccountEditOrderPageLoadedEvent::class     => 'hideIDealForNonNlCustomers',
+            AccountEditOrderPageLoadedEvent::class => 'hideIDealForNonNlCustomers',
         ];
     }
 
@@ -36,8 +36,8 @@ class CheckoutConfirmIDealEventListener implements EventSubscriberInterface
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
         if (
-            $this->isEuroCurrency($event->getSalesChannelContext()) &&
-            $this->isNlCustomer($event->getSalesChannelContext())
+            $this->isEuroCurrency($event->getSalesChannelContext())
+            && $this->isNlCustomer($event->getSalesChannelContext())
         ) {
             return;
         }
@@ -63,13 +63,13 @@ class CheckoutConfirmIDealEventListener implements EventSubscriberInterface
     {
         $customer = $context->getCustomer();
 
-        if (null === $customer) {
+        if ($customer === null) {
             return false;
         }
 
         $billingAddress = $customer->getActiveBillingAddress();
 
-        if (null === $billingAddress || null === $billingAddress->getCountry()) {
+        if ($billingAddress === null || $billingAddress->getCountry() === null) {
             return false;
         }
 

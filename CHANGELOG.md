@@ -234,3 +234,57 @@ Maintenance
 
 * Integrate a sales landingpage in backend
 * Tested with version 6.4.14
+
+# 4.0.0
+
+New Features
+ 
+* Shopware 6.3 support removed
+* General code optimizations implemented
+
+* Important change: The transaction data of PAYONE payments was 
+previously always stored in the additional fields of the orders. 
+Since the additional fields are stored as JSON in the database, 
+searching the transaction data was not very performant for large 
+amounts of data. Therefore, an entity extension was set up for 
+the transaction data so that the data is stored in an extra database 
+table that can be searched much more performantly. During the plugin 
+update, the old additional fields are migrated to the entity extension 
+and then the additional fields are deleted. If you have used our 
+additional fields in your own code or for example in the synchronization 
+to external systems, you have to adapt this to the new entity extension.
+ 
+Bugfix
+ 
+* Remove deletion of saved credit cards
+ 
+Maintenance
+ 
+* Remove BIC from debit
+* Tested with 6.4.16
+
+### Read transaction data ###
+```        
+$criteria = (new Criteria())
+->addAssociation(PayonePaymentOrderTransactionExtension::NAME)
+->addFilter(new EqualsFilter(PayonePaymentOrderTransactionExtension::NAME . '.transactionId', $payoneTransactionId));
+
+/** @var null|OrderTransactionEntity $transaction */
+$transaction = $this->transactionRepository->search($criteria, $context)->first();
+
+/** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
+$payoneTransactionData = $transaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+   ```
+
+### Update transaction data ###
+
+```
+$this->transactionRepository->upsert([[
+   'id'                                         => $transaction->getId(),
+   PayonePaymentOrderTransactionExtension::NAME => [
+        'id' => $payoneTransactionData->getId(),
+        'sequenceNumber' => 1,
+        'transactionState' => 'appointed'
+   ],
+]], $context);
+ ```

@@ -11,26 +11,19 @@ class CheckoutConfirmPaymentData extends Struct
 {
     public const EXTENSION_NAME = 'payone';
 
-    /** @var array */
-    protected $cardRequest = [];
+    protected array $cardRequest = [];
 
-    /** @var null|string */
-    protected $language;
+    protected ?string $language = null;
 
-    /** @var null|EntitySearchResult */
-    protected $savedCards;
+    protected ?EntitySearchResult $savedCards = null;
 
-    /** @var null|string */
-    protected $template;
+    protected ?string $template = null;
 
-    /** @var null|string */
-    protected $workOrderId;
+    protected ?string $workOrderId = null;
 
-    /** @var null|string */
-    protected $cartHash = '';
+    protected ?string $cartHash = '';
 
-    /** @var null|EntitySearchResult */
-    protected $savedMandates;
+    protected ?EntitySearchResult $savedMandates = null;
 
     public function getCardRequest(): array
     {

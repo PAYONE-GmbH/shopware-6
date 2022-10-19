@@ -11,33 +11,26 @@ class PayonePayolutionInstallment extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Unzer Ratenkauf';
+    protected string $name = 'PAYONE Unzer Ratenkauf';
 
-    /** @var string */
-    protected $description = 'Installment payment by Paysafe Pay Later.';
+    protected string $description = 'Installment payment by Paysafe Pay Later.';
 
-    /** @var string */
-    protected $paymentHandler = PayonePayolutionInstallmentPaymentHandler::class;
+    protected string $paymentHandler = PayonePayolutionInstallmentPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template = '@Storefront/storefront/payone/payolution/payolution-installment-form.html.twig';
+    protected ?string $template = '@Storefront/storefront/payone/payolution/payolution-installment-form.html.twig';
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Unzer Ratenkauf',
+            'name' => 'PAYONE Unzer Ratenkauf',
             'description' => 'Bezahlen Sie einfach und bequem in monatlichen Raten.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE Unzer Ratenkauf',
+            'name' => 'PAYONE Unzer Ratenkauf',
             'description' => 'Easily pay in monthly installments.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 104;
+    protected int $position = 104;
 }

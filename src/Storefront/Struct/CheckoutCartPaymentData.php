@@ -14,14 +14,11 @@ class CheckoutCartPaymentData extends Struct
     public const DATA_CART_HASH            = 'cartHash';
     public const DATA_CALCULATION_RESPONSE = 'calculationResponse';
 
-    /** @var string */
-    protected $workOrderId = '';
+    protected string $workOrderId = '';
 
-    /** @var string */
-    protected $cartHash = '';
+    protected string $cartHash = '';
 
-    /** @var array */
-    protected $calculationResponse = [];
+    protected array $calculationResponse = [];
 
     public function getWorkorderId(): string
     {

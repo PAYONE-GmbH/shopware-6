@@ -1,12 +1,27 @@
 includes:
-    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
-    level: max
-    reportUnmatchedIgnoredErrors: false
-    inferPrivatePropertyTypeFromConstructor: true
+    phpVersion: 70400
+    level: 8
+    treatPhpDocTypesAsCertain: false
     checkMissingIterableValueType: false
+    inferPrivatePropertyTypeFromConstructor: true
+    reportUnmatchedIgnoredErrors: false
+    # This can be useful from Shopware 6.4.15.0, but as long as we support lower versions we ignore it
+    checkGenericClassInNonGenericObjectType: false
+    tmpDir: var/cache/phpstan
+
+    featureToggles:
+    	disableCheckMissingIterableValueType: false
+
+    paths:
+        - src
+
+    bootstrapFiles:
+        - bin/static-analyze-autoloader.php
+
     ignoreErrors:
-        - '#Access to constant CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE(.*)#'
-    excludes_analyse:
-        - tests/Bootstrap.php
+        -   # This only occurs in Shopware < 6.4.4.0
+            message: "#Strict comparison using === between string and null will always evaluate to false#"
+            path: src/Payone/RequestParameter/Builder/CustomerRequestParameterBuilder.php

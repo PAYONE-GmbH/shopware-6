@@ -11,33 +11,26 @@ class PayoneTrustly extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Trustly';
+    protected string $name = 'PAYONE Trustly';
 
-    /** @var string */
-    protected $description = 'Wire the amount instantly with your online banking credentials.';
+    protected string $description = 'Wire the amount instantly with your online banking credentials.';
 
-    /** @var string */
-    protected $paymentHandler = PayoneTrustlyPaymentHandler::class;
+    protected string $paymentHandler = PayoneTrustlyPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template = '@Storefront/storefront/payone/trustly/trustly-form.html.twig';
+    protected ?string $template = '@Storefront/storefront/payone/trustly/trustly-form.html.twig';
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Trustly',
+            'name' => 'PAYONE Trustly',
             'description' => 'Überweisen Sie schnell und sicher mit Ihren Online Banking Zugangsdaten.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE Trustly',
+            'name' => 'PAYONE Trustly',
             'description' => 'Wire the amount instantly with your online banking credentials.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 125;
+    protected int $position = 125;
 }

@@ -11,13 +11,15 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    /** @param PaymentTransactionStruct $arguments */
+    /**
+     * @param PaymentTransactionStruct $arguments
+     */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'request'      => self::REQUEST_ACTION_AUTHORIZE,
+            'request' => self::REQUEST_ACTION_AUTHORIZE,
             'clearingtype' => self::CLEARING_TYPE_WALLET,
-            'wallettype'   => 'PPE',
+            'wallettype' => 'PPE',
         ];
     }
 
@@ -28,7 +30,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         $paymentMethod = $arguments->getPaymentMethod();
-        $action        = $arguments->getAction();
+        $action = $arguments->getAction();
 
         return $paymentMethod === PayonePaypalPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }

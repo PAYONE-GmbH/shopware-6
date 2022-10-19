@@ -11,33 +11,26 @@ class PayoneDebit extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Lastschrift';
+    protected string $name = 'PAYONE Lastschrift';
 
-    /** @var string */
-    protected $description = 'We\'ll automatically debit the amount from your bank account.';
+    protected string $description = 'We\'ll automatically debit the amount from your bank account.';
 
-    /** @var string */
-    protected $paymentHandler = PayoneDebitPaymentHandler::class;
+    protected string $paymentHandler = PayoneDebitPaymentHandler::class;
 
-    /** @var null|string */
-    protected $template = '@Storefront/storefront/payone/debit/debit-form.html.twig';
+    protected ?string $template = '@Storefront/storefront/payone/debit/debit-form.html.twig';
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
-            'name'        => 'PAYONE Lastschrift',
+            'name' => 'PAYONE Lastschrift',
             'description' => 'Wir ziehen den Betrag bequem und automatisch von Ihrem Bankkonto ein.',
         ],
         'en-GB' => [
-            'name'        => 'PAYONE Direct Debit',
+            'name' => 'PAYONE Direct Debit',
             'description' => 'We\'ll automatically debit the amount from your bank account.',
         ],
     ];
 
-    /** @var int */
-    protected $position = 101;
+    protected int $position = 101;
 }

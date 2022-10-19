@@ -9,7 +9,9 @@ use Shopware\Core\System\SalesChannel\StoreApiResponse;
 
 class MandateResponse extends StoreApiResponse
 {
-    /** @var EntitySearchResult */
+    /**
+     * @var EntitySearchResult
+     */
     protected $object;
 
     public function __construct(EntitySearchResult $object)
