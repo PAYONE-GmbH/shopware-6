@@ -101,6 +101,7 @@ class LineItemHydrator implements LineItemHydratorInterface
 
     public function mapCartLines(Cart $cart, SalesChannelContext $salesChannelContext): array
     {
+        $context = $salesChannelContext->getContext();
         $requestLineItems = [];
 
         foreach ($cart->getLineItems() as $lineItem) {
@@ -114,7 +115,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         if ($deliveries->count() > 0) {
             $requestLineItems = array_merge(
                 $requestLineItems,
-                $this->getShippingItems($deliveries, $salesChannelContext->getLanguageId(), $salesChannelContext->getContext())
+                $this->getShippingItems($deliveries, $context->getLanguageId(), $context)
             );
         }
 
