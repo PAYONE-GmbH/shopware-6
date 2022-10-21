@@ -79,7 +79,7 @@ class SettingsController extends AbstractController
             ++$testCount;
 
             try {
-                $parameters  = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
+                $parameters = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
                 $testRequest = $this->requestFactory->getRequestParameter(new TestCredentialsStruct($parameters, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST, $paymentClass));
 
                 $this->client->request($testRequest);
@@ -436,17 +436,17 @@ class SettingsController extends AbstractController
             case Handler\PayoneKlarnaDirectDebitPaymentHandler::class:
             case Handler\PayoneKlarnaInstallmentPaymentHandler::class:
                 return [
-                    'request'             => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
-                    'clearingtype'        => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                    'amount'              => 100,
-                    'country'             => 'DE',
-                    'currency'            => 'EUR',
+                    'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
+                    'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                    'amount' => 100,
+                    'country' => 'DE',
+                    'currency' => 'EUR',
                     'add_paydata[action]' => 'start_session',
-                    'it[1]'               => 'goods',
-                    'id[1]'               => '5013210425384',
-                    'pr[1]'               => 100,
-                    'de[1]'               => 'Test product',
-                    'no[1]'               => 1,
+                    'it[1]' => 'goods',
+                    'id[1]' => '5013210425384',
+                    'pr[1]' => 100,
+                    'de[1]' => 'Test product',
+                    'no[1]' => 1,
                 ];
 
             default:

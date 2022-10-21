@@ -70,7 +70,7 @@ trait PayoneTestBehavior
      */
     protected function createCartWithProduct(SalesChannelContext $context, float $itemPrice, int $qty): Cart
     {
-        $cartService        = $this->getContainer()->get(CartService::class);
+        $cartService = $this->getContainer()->get(CartService::class);
         $cartItemCalculator = $this->getContainer()->get(Calculator::class);
 
         $cart = $cartService->createNew($context->getToken());

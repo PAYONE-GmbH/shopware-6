@@ -10,8 +10,7 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends AbstractKlarnaParameterBuilder
 {
-    /** @var LineItemHydratorInterface */
-    private $lineItemHydrator;
+    private LineItemHydratorInterface $lineItemHydrator;
 
     public function __construct(LineItemHydratorInterface $lineItemHydrator)
     {
@@ -26,13 +25,15 @@ class AuthorizeRequestParameterBuilder extends AbstractKlarnaParameterBuilder
         $dataBag = $arguments->getRequestData();
 
         $parameter = [
-            'request'                          => $arguments->getAction(),
-            'clearingtype'                     => self::CLEARING_TYPE_FINANCING,
+            'request' => $arguments->getAction(),
+            'clearingtype' => self::CLEARING_TYPE_FINANCING,
             'add_paydata[authorization_token]' => $dataBag->get('payoneKlarnaAuthorizationToken'),
         ];
 
-        $order     = $arguments->getPaymentTransaction()->getOrder();
-        $lineItems = $this->lineItemHydrator->mapOrderLines($order->getCurrency(), $order, $arguments->getSalesChannelContext()->getContext());
+        $context = $arguments->getSalesChannelContext()->getContext();
+        $order = $arguments->getPaymentTransaction()->getOrder();
+        $currency = $this->getOrderCurrency($order, $context);
+        $lineItems = $this->lineItemHydrator->mapOrderLines($currency, $order, $context);
 
         return array_merge($parameter, $lineItems);
     }

@@ -8,9 +8,12 @@ use PayonePayment\PaymentHandler\PayoneKlarnaInvoicePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\KlarnaCreateSessionStruct;
 
+/**
+ * @covers \PayonePayment\Payone\RequestParameter\Builder\Klarna\CreateSessionRequestParameterBuilder
+ */
 class CreateSessionRequestParameterBuilderTest extends AbstractKlarna
 {
-    public function testGetRequestParameter(): void
+    public function testItAddsCorrectCreateSessionParameters(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
@@ -20,21 +23,21 @@ class CreateSessionRequestParameterBuilderTest extends AbstractKlarna
 
         $service = $this->getContainer()->get(CreateSessionRequestParameterBuilder::class);
 
-        self::assertTrue($service->supports($struct), sprintf('%s::support() have to return true when passing instance of %s', get_class($service), get_class($struct)));
+        static::assertTrue($service->supports($struct), sprintf('%s::support() have to return true when passing instance of %s', \get_class($service), \get_class($struct)));
         $parameters = $service->getRequestParameter($struct);
 
-        self::assertArrayHasKey('request', $parameters);
-        self::assertArrayHasKey('add_paydata[action]', $parameters);
-        self::assertArrayHasKey('clearingtype', $parameters);
-        self::assertArrayHasKey('amount', $parameters);
+        static::assertArrayHasKey('request', $parameters);
+        static::assertArrayHasKey('add_paydata[action]', $parameters);
+        static::assertArrayHasKey('clearingtype', $parameters);
+        static::assertArrayHasKey('amount', $parameters);
 
-        self::assertArrayHasKey('currency', $parameters);
-        self::assertEquals($salesChannelContext->getCurrency()->getIsoCode(), $parameters['currency']);
+        static::assertArrayHasKey('currency', $parameters);
+        static::assertEquals($salesChannelContext->getCurrency()->getIsoCode(), $parameters['currency']);
 
         $this->assertLineItemHasBeenSet($parameters);
     }
 
-    public function testGetRequestParameterByOrder(): void
+    public function testItAddsCorrectCreateSessionParametersByOrder(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
@@ -44,16 +47,16 @@ class CreateSessionRequestParameterBuilderTest extends AbstractKlarna
 
         $service = $this->getContainer()->get(CreateSessionRequestParameterBuilder::class);
 
-        self::assertTrue($service->supports($struct), sprintf('%s::support() have to return true when passing instance of %s', get_class($service), get_class($struct)));
+        static::assertTrue($service->supports($struct), sprintf('%s::support() have to return true when passing instance of %s', \get_class($service), \get_class($struct)));
         $parameters = $service->getRequestParameter($struct);
 
-        self::assertArrayHasKey('request', $parameters);
-        self::assertArrayHasKey('add_paydata[action]', $parameters);
-        self::assertArrayHasKey('clearingtype', $parameters);
-        self::assertArrayHasKey('amount', $parameters);
+        static::assertArrayHasKey('request', $parameters);
+        static::assertArrayHasKey('add_paydata[action]', $parameters);
+        static::assertArrayHasKey('clearingtype', $parameters);
+        static::assertArrayHasKey('amount', $parameters);
 
-        self::assertArrayHasKey('currency', $parameters);
-        self::assertEquals($orderEntity->getCurrency()->getIsoCode(), $parameters['currency']);
+        static::assertArrayHasKey('currency', $parameters);
+        static::assertEquals($orderEntity->getCurrency()->getIsoCode(), $parameters['currency']);
 
         $this->assertLineItemHasBeenSet($parameters);
     }

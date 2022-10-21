@@ -112,9 +112,9 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        if ($arguments instanceof PayolutionAdditionalActionStruct ||
-            $arguments instanceof ManageMandateStruct ||
-            $arguments instanceof KlarnaCreateSessionStruct
+        if ($arguments instanceof PayolutionAdditionalActionStruct
+            || $arguments instanceof ManageMandateStruct
+            || $arguments instanceof KlarnaCreateSessionStruct
         ) {
             return true;
         }

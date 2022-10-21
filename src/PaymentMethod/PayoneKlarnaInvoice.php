@@ -11,20 +11,15 @@ class PayoneKlarnaInvoice extends AbstractPayoneKlarna
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
-    /** @var string */
-    protected $id = self::UUID;
+    protected string $id = self::UUID;
 
-    /** @var string */
-    protected $name = 'PAYONE Klarna Rechnung'; // do not replace this by an english wording. (this is the product name)
+    protected string $name = 'PAYONE Klarna Rechnung'; // do not replace this by an english wording. (this is the product name)
 
-    /** @var string */
-    protected $description = 'Pay with Klarna open invoice.';
+    protected string $description = 'Pay with Klarna open invoice.';
 
-    /** @var string */
-    protected $paymentHandler = PayoneKlarnaInvoicePaymentHandler::class;
+    protected string $paymentHandler = PayoneKlarnaInvoicePaymentHandler::class;
 
-    /** @var array */
-    protected $translations = [
+    protected array $translations = [
         'de-DE' => [
             // do not add de_DE translation for the name. (this::$name is the product name)
             'description' => 'Zahle mit dem Klarna Rechnungskauf.',
@@ -35,6 +30,5 @@ class PayoneKlarnaInvoice extends AbstractPayoneKlarna
         ],
     ];
 
-    /** @var int */
-    protected $position = 130;
+    protected int $position = 130;
 }

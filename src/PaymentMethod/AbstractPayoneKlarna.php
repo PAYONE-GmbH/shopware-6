@@ -6,6 +6,5 @@ namespace PayonePayment\PaymentMethod;
 
 class AbstractPayoneKlarna extends AbstractPaymentMethod
 {
-    /** @var string */
-    protected $template = '@Storefront/storefront/payone/klarna/klarna.html.twig';
+    protected ?string $template = '@Storefront/storefront/payone/klarna/klarna.html.twig';
 }

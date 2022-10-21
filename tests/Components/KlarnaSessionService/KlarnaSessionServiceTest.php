@@ -12,23 +12,26 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
+/**
+ * @covers \PayonePayment\Components\KlarnaSessionService\KlarnaSessionService
+ */
 class KlarnaSessionServiceTest extends TestCase
 {
     use PayoneTestBehavior;
 
-    public function testCreateKlarnaSession(): void
+    public function testItCreatesKlarnaSession(): void
     {
         $instance = $this->getInstance($this->getDefaultResponseByApiDoc());
 
         $sessionStruct = $instance->createKlarnaSession($this->createSalesChannelContext());
 
-        self::assertEquals('my-hash', $sessionStruct->getCartHash());
-        self::assertEquals('WX1A37YBGD9D11DK', $sessionStruct->getWorkorderId());
-        self::assertEquals('eyJhbGciOiJSUzI...7XYwCCb8rrXYw', $sessionStruct->getClientToken());
-        self::assertEquals('pay_over_time', $sessionStruct->getPaymentMethodIdentifier());
+        static::assertEquals('my-hash', $sessionStruct->getCartHash());
+        static::assertEquals('WX1A37YBGD9D11DK', $sessionStruct->getWorkorderId());
+        static::assertEquals('eyJhbGciOiJSUzI...7XYwCCb8rrXYw', $sessionStruct->getClientToken());
+        static::assertEquals('pay_over_time', $sessionStruct->getPaymentMethodIdentifier());
     }
 
-    public function testCreateKlarnaSessionByOrder(): void
+    public function testItCreatesKlarnaSessionByOrder(): void
     {
         $instance = $this->getInstance($this->getDefaultResponseByApiDoc());
 
@@ -38,10 +41,10 @@ class KlarnaSessionServiceTest extends TestCase
         );
 
         // basically it is the same test as `testCreateKlarnaSession`. We just make sure that the behaviour is exactly the same.
-        self::assertEquals('my-hash', $sessionStruct->getCartHash());
-        self::assertEquals('WX1A37YBGD9D11DK', $sessionStruct->getWorkorderId());
-        self::assertEquals('eyJhbGciOiJSUzI...7XYwCCb8rrXYw', $sessionStruct->getClientToken());
-        self::assertEquals('pay_over_time', $sessionStruct->getPaymentMethodIdentifier());
+        static::assertEquals('my-hash', $sessionStruct->getCartHash());
+        static::assertEquals('WX1A37YBGD9D11DK', $sessionStruct->getWorkorderId());
+        static::assertEquals('eyJhbGciOiJSUzI...7XYwCCb8rrXYw', $sessionStruct->getClientToken());
+        static::assertEquals('pay_over_time', $sessionStruct->getPaymentMethodIdentifier());
     }
 
     private function getInstance(array $expectedResponse): KlarnaSessionService
@@ -71,14 +74,14 @@ class KlarnaSessionServiceTest extends TestCase
     private function getDefaultResponseByApiDoc(): array
     {
         return [
-            'status'     => 'OK',
+            'status' => 'OK',
             'addpaydata' => [
                 'payment_method_category_asset_url_descriptive' => 'https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg',
-                'client_token'                                  => 'eyJhbGciOiJSUzI...7XYwCCb8rrXYw',
-                'payment_method_category_identifier'            => 'pay_over_time',
-                'session_id'                                    => '47a35b08-d5ee-71b5-95d1-eae751c5befb',
-                'payment_method_category_name'                  => 'Slice it.',
-                'payment_method_category_asset_url_standard'    => 'https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg',
+                'client_token' => 'eyJhbGciOiJSUzI...7XYwCCb8rrXYw',
+                'payment_method_category_identifier' => 'pay_over_time',
+                'session_id' => '47a35b08-d5ee-71b5-95d1-eae751c5befb',
+                'payment_method_category_name' => 'Slice it.',
+                'payment_method_category_asset_url_standard' => 'https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg',
             ],
             'workorderid' => 'WX1A37YBGD9D11DK',
         ];

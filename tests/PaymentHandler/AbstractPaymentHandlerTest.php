@@ -6,9 +6,9 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
@@ -19,7 +19,6 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandler
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
@@ -27,20 +26,20 @@ abstract class AbstractPaymentHandlerTest extends TestCase
 {
     use PayoneTestBehavior;
 
-    public function testSuccessfulPayment(): void
+    public function testItPerformsSuccessfulPayment(): void
     {
-        $client         = $this->createMock(PayoneClientInterface::class);
+        $client = $this->createMock(PayoneClientInterface::class);
         $requestFactory = $this->createMock(RequestParameterFactory::class);
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = $this->getSuccessfulRequestDataBag();
+        $dataBag = $this->getSuccessfulRequestDataBag();
 
-        $dataHandler    = $this->createMock(TransactionDataHandler::class);
+        $dataHandler = $this->createMock(TransactionDataHandler::class);
         $paymentHandler = $this->getPaymentHandler($client, $dataBag, $requestFactory, $dataHandler);
 
         $responseData = [
-            'status' => 'OK',
-            'txid'   => 'test-transaction-id',
+            'status' => 'REDIRECT',
+            'txid' => 'test-transaction-id',
             'userid' => 'test-user-id',
         ];
 
@@ -51,38 +50,31 @@ abstract class AbstractPaymentHandlerTest extends TestCase
         $client->method('request')->willReturn(array_merge($responseData, $this->getSuccessfulResponseData()));
 
         $requestFactory->method('getRequestParameter')->willReturn(array_merge([
-            'request' => [],
+            'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE,
         ], $this->getSuccessfulRequestParameter()));
 
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
-            get_class($paymentHandler)
+            \get_class($paymentHandler)
         );
 
         // test if the data handler got called, and if the basic information would be set on the order
-        $dataHandler->expects(self::once())
-            ->method('saveTransactionData')
-            ->willReturnCallback(function (PaymentTransaction $transaction, Context $context, array $data): void {
-                self::assertArrayHasKey(CustomFieldInstaller::AUTHORIZATION_TYPE, $data);
-                self::assertArrayHasKey(CustomFieldInstaller::LAST_REQUEST, $data);
-                self::assertArrayHasKey(CustomFieldInstaller::TRANSACTION_ID, $data);
-                self::assertArrayHasKey(CustomFieldInstaller::SEQUENCE_NUMBER, $data);
-                self::assertArrayHasKey(CustomFieldInstaller::USER_ID, $data);
-                self::assertArrayHasKey(CustomFieldInstaller::TRANSACTION_STATE, $data);
-                self::assertArrayHasKey(CustomFieldInstaller::ALLOW_CAPTURE, $data);
-                self::assertArrayHasKey(CustomFieldInstaller::CAPTURED_AMOUNT, $data);
-                self::assertArrayHasKey(CustomFieldInstaller::ALLOW_REFUND, $data);
-                self::assertArrayHasKey(CustomFieldInstaller::REFUNDED_AMOUNT, $data);
+        $dataHandler->expects(static::once())->method('saveTransactionData')->with(
+            static::anything(),
+            static::anything(),
+            static::callback(function ($transactionData) {
+                $this->assertSuccessfulTransactionData($transactionData);
 
-                $this->assertSuccessfulTransactionData($data);
-            });
+                return true;
+            })
+        );
 
         $response = $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
 
         $this->assertSuccessfulResponse($response);
     }
 
-    public function testUnSuccessfulPaymentByStatus(): void
+    public function testItThrowsExceptionOnErrorStatus(): void
     {
         $client = $this->createMock(PayoneClientInterface::class);
 
@@ -90,8 +82,8 @@ abstract class AbstractPaymentHandlerTest extends TestCase
         $requestFactory->method('getRequestParameter')->willReturn([]);
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = $this->getSuccessfulRequestDataBag();
-        $paymentHandler      = $this->getPaymentHandler($client, $dataBag, $requestFactory);
+        $dataBag = $this->getSuccessfulRequestDataBag();
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $requestFactory);
 
         $client->method('request')->willReturn([
             'status' => 'ERROR',
@@ -99,7 +91,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
 
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
-            get_class($paymentHandler)
+            \get_class($paymentHandler)
         );
 
         if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
@@ -108,11 +100,11 @@ abstract class AbstractPaymentHandlerTest extends TestCase
             $expectedException = SyncPaymentProcessException::class;
         }
 
-        self::expectException($expectedException);
+        $this->expectException($expectedException);
         $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
     }
 
-    public function testUnSuccessfulPaymentByInvalidStatus(): void
+    public function testItThrowsExceptionOnInvalidStatus(): void
     {
         $client = $this->createMock(PayoneClientInterface::class);
 
@@ -120,8 +112,8 @@ abstract class AbstractPaymentHandlerTest extends TestCase
         $requestFactory->method('getRequestParameter')->willReturn([]);
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = $this->getSuccessfulRequestDataBag();
-        $paymentHandler      = $this->getPaymentHandler($client, $dataBag, $requestFactory);
+        $dataBag = $this->getSuccessfulRequestDataBag();
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $requestFactory);
 
         $client->method('request')->willReturn([
             'status' => 'invalid-status',
@@ -129,7 +121,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
 
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
-            get_class($paymentHandler)
+            \get_class($paymentHandler)
         );
 
         if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
@@ -138,7 +130,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
             $expectedException = SyncPaymentProcessException::class;
         }
 
-        self::expectException($expectedException);
+        $this->expectException($expectedException);
         $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
     }
 
@@ -146,7 +138,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
      * test if payment handler catches the PayoneException and converts it to a shopware exception
      * and if the customer-message of the payone-response is contained in the shopware exception message
      */
-    public function testUnSuccessfulPaymentByException(): void
+    public function testItHandlesPayoneExceptionsCorrectly(): void
     {
         $client = $this->createMock(PayoneClientInterface::class);
 
@@ -154,8 +146,8 @@ abstract class AbstractPaymentHandlerTest extends TestCase
         $requestFactory->method('getRequestParameter')->willReturn([]);
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = $this->getSuccessfulRequestDataBag();
-        $paymentHandler      = $this->getPaymentHandler($client, $dataBag, $requestFactory);
+        $dataBag = $this->getSuccessfulRequestDataBag();
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $requestFactory);
 
         $exception = new PayoneRequestException(
             'test-exception',
@@ -171,7 +163,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
 
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
-            get_class($paymentHandler)
+            \get_class($paymentHandler)
         );
 
         if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
@@ -180,15 +172,15 @@ abstract class AbstractPaymentHandlerTest extends TestCase
             $expectedException = SyncPaymentProcessException::class;
         }
 
-        self::expectException($expectedException);
-        self::expectExceptionMessageMatches('/.*test-customer-message.*/');
+        $this->expectException($expectedException);
+        $this->expectExceptionMessageMatches('/.*test-customer-message.*/');
         $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
     }
 
     /**
      * test if payment handler catches a random throwable and converts it to a shopware exception
      */
-    public function testUnSuccessfulPaymentByThrowable(): void
+    public function testItHandlesRandomThrowableCorrectly(): void
     {
         $client = $this->createMock(PayoneClientInterface::class);
 
@@ -196,8 +188,8 @@ abstract class AbstractPaymentHandlerTest extends TestCase
         $requestFactory->method('getRequestParameter')->willReturn([]);
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = $this->getSuccessfulRequestDataBag();
-        $paymentHandler      = $this->getPaymentHandler($client, $dataBag, $requestFactory);
+        $dataBag = $this->getSuccessfulRequestDataBag();
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $requestFactory);
 
         $exception = $this->createMock(\Throwable::class);
 
@@ -205,7 +197,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
 
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
-            get_class($paymentHandler)
+            \get_class($paymentHandler)
         );
 
         if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
@@ -214,7 +206,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
             $expectedException = SyncPaymentProcessException::class;
         }
 
-        self::expectException($expectedException);
+        $this->expectException($expectedException);
         $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
     }
 
@@ -248,7 +240,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
         PayoneClientInterface $client,
         RequestDataBag $dataBag,
         RequestParameterFactory $requestFactory,
-        TransactionDataHandlerInterface $dataHandler = null
+        ?TransactionDataHandlerInterface $dataHandler = null
     ): AbstractPayonePaymentHandler;
 
     protected function performPayment(
@@ -269,7 +261,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
                 $paymentTransaction->getOrder()
             );
         } else {
-            throw new \RuntimeException('invalid type of provided payment handler: ' . get_class($paymentHandler));
+            throw new \RuntimeException('invalid type of provided payment handler: ' . \get_class($paymentHandler));
         }
 
         return $paymentHandler->pay($struct, $dataBag, $salesChannelContext);

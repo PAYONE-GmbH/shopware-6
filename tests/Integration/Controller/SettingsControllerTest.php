@@ -18,7 +18,7 @@ class SettingsControllerTest extends TestCase
     public function testForMissingTestParameters(): void
     {
         $refClass = new \ReflectionClass(SettingsController::class);
-        $method   = $refClass->getMethod('getPaymentParameters');
+        $method = $refClass->getMethod('getPaymentParameters');
         $method->setAccessible(true);
 
         $controller = $this->getContainer()->get(SettingsController::class);
@@ -31,7 +31,7 @@ class SettingsControllerTest extends TestCase
             try {
                 $parameters = $method->invoke($controller, $paymentHandlerClass);
             } finally {
-                self::assertIsArray($parameters ?? null, sprintf('There is no test-data defined in %s for payment handler %s', SettingsController::class, $paymentHandlerClass));
+                static::assertIsArray($parameters ?? null, sprintf('There is no test-data defined in %s for payment handler %s', SettingsController::class, $paymentHandlerClass));
             }
         }
     }

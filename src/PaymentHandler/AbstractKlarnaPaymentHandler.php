@@ -9,7 +9,6 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -26,22 +25,20 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Throwable;
 
 abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    /** @var TranslatorInterface */
-    protected $translator;
-    /** @var CartHasherInterface */
-    protected $cartHasher;
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
-    /** @var PayoneClientInterface */
-    private $client;
-    /** @var TransactionDataHandlerInterface */
-    private $dataHandler;
-    /** @var PaymentStateHandlerInterface */
-    private $stateHandler;
+    protected TranslatorInterface $translator;
+
+    protected CartHasherInterface $cartHasher;
+
+    private RequestParameterFactory $requestParameterFactory;
+
+    private PayoneClientInterface $client;
+
+    private TransactionDataHandlerInterface $dataHandler;
+
+    private PaymentStateHandlerInterface $stateHandler;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -54,14 +51,14 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
         CartHasherInterface $cartHasher,
         PaymentStateHandlerInterface $stateHandler
     ) {
-        $this->configReader            = $configReader;
-        $this->lineItemRepository      = $lineItemRepository;
-        $this->requestStack            = $requestStack;
-        $this->translator              = $translator;
+        $this->configReader = $configReader;
+        $this->lineItemRepository = $lineItemRepository;
+        $this->requestStack = $requestStack;
+        $this->translator = $translator;
         $this->requestParameterFactory = $requestParameterFactory;
-        $this->client                  = $client;
-        $this->dataHandler             = $dataHandler;
-        $this->cartHasher              = $cartHasher;
+        $this->client = $client;
+        $this->dataHandler = $dataHandler;
+        $this->cartHasher = $cartHasher;
         parent::__construct($configReader, $lineItemRepository, $requestStack);
         $this->stateHandler = $stateHandler;
     }
@@ -92,7 +89,7 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
                 $paymentTransaction,
                 $this->filterRequestDataBag($dataBag),
                 $salesChannelContext,
-                get_class($this),
+                static::class,
                 $authorizationMethod
             )
         );
@@ -105,7 +102,7 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
                 $exception->getResponse()['error']['CustomerMessage'],
                 $exception
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError'),
@@ -113,22 +110,17 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
             );
         }
 
-        if (empty($response['status']) || $response['status'] !== 'OK') {
+        if (empty($response['status']) || $response['status'] !== 'REDIRECT') {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
 
-        $data = $this->prepareTransactionCustomFields($request, $response, array_merge(
-            $this->getBaseCustomFields($response['status']),
-            [
-                CustomFieldInstaller::CLEARING_TYPE => static::PAYONE_CLEARING_FNC,
-            ]
-        ));
-
+        $data = $this->preparePayoneOrderTransactionData($request, $response, [
+            'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
+        ]);
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->dataHandler->logResponse($paymentTransaction, $salesChannelContext->getContext(), ['request' => $request, 'response' => $response]);
 
         return new RedirectResponse($response['redirecturl']);
     }
@@ -141,35 +133,35 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
     /**
      * {@inheritdoc}
      */
-    public static function isCapturable(array $transactionData, array $customFields): bool
+    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        if (static::isNeverCapturable($transactionData, $customFields)) {
+        if (static::isNeverCapturable($payoneTransActionData)) {
             return false;
         }
 
-        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData, $customFields);
+        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function isRefundable(array $transactionData, array $customFields): bool
+    public static function isRefundable(array $transactionData): bool
     {
-        if (static::isNeverRefundable($transactionData, $customFields)) {
+        if (static::isNeverRefundable($transactionData)) {
             return false;
         }
 
-        return static::matchesIsRefundableDefaults($transactionData, $customFields);
+        return static::matchesIsRefundableDefaults($transactionData);
     }
 
     protected function getConfigKeyPrefix(): string
     {
-        return ConfigurationPrefixes::CONFIGURATION_PREFIXES[get_class($this)];
+        return ConfigurationPrefixes::CONFIGURATION_PREFIXES[static::class];
     }
 
     private function filterRequestDataBag(RequestDataBag $dataBag): RequestDataBag
     {
-        $dataBag           = clone $dataBag; // prevent modifying the original object
+        $dataBag = clone $dataBag; // prevent modifying the original object
         $allowedParameters = [
             'workorder',
             'payonePaymentMethod',
@@ -177,7 +169,7 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
             'carthash',
         ];
         foreach ($dataBag->keys() as $key) {
-            if (!in_array($key, $allowedParameters)) {
+            if (!\in_array($key, $allowedParameters, true)) {
                 $dataBag->remove($key);
             }
         }

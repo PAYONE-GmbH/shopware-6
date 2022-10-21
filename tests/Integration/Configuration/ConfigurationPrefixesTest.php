@@ -13,8 +13,8 @@ class ConfigurationPrefixesTest extends TestCase
     {
         $prefixes = ConfigurationPrefixes::CONFIGURATION_PREFIXES;
 
-        foreach (ClassHelper::getPaymentHandlerClasses() as $paymentHandlersClass) {
-            self::assertArrayHasKey($paymentHandlersClass, $prefixes, sprintf('ConfigurationPrefixes::CONFIGURATION_PREFIXES does not has a key for payment handler %s', $paymentHandlersClass));
+        foreach (ClassHelper::getPaymentHandlerClasses() as $paymentHandlerClass) {
+            static::assertArrayHasKey($paymentHandlerClass, $prefixes, sprintf('ConfigurationPrefixes::CONFIGURATION_PREFIXES does not has a key for payment handler %s', $paymentHandlerClass));
         }
     }
 }

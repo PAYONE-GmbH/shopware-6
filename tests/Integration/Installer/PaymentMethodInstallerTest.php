@@ -14,9 +14,9 @@ class PaymentMethodInstallerTest extends TestCase
     {
         foreach (ClassHelper::getPaymentMethodClasses() as $class) {
             // test UUID & payment method registered
-            self::assertArrayHasKey($class, PaymentMethodInstaller::PAYMENT_METHOD_IDS, sprintf('%s needs to have a key with the classname %s', PaymentMethodInstaller::class . '::PAYMENT_METHOD_IDS', $class));
-            self::assertContains($class, PaymentMethodInstaller::PAYMENT_METHODS, sprintf('%s needs registered in %s', $class, PaymentMethodInstaller::class . '::PAYMENT_METHODS'));
-            self::assertTrue(defined($class . '::UUID'), sprintf('class %s needs to implement constant %s', $class, 'UUID'));
+            static::assertArrayHasKey($class, PaymentMethodInstaller::PAYMENT_METHOD_IDS, sprintf('%s needs to have a key with the classname %s', PaymentMethodInstaller::class . '::PAYMENT_METHOD_IDS', $class));
+            static::assertContains($class, PaymentMethodInstaller::PAYMENT_METHODS, sprintf('%s needs registered in %s', $class, PaymentMethodInstaller::class . '::PAYMENT_METHODS'));
+            static::assertTrue(\defined($class . '::UUID'), sprintf('class %s needs to implement constant %s', $class, 'UUID'));
         }
     }
 }

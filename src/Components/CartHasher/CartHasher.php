@@ -65,7 +65,7 @@ class CartHasher implements CartHasherInterface
         RequestDataBag $requestDataBag,
         $paymentTransaction,
         SalesChannelContext $salesChannelContext,
-        string $exceptionClass = null
+        ?string $exceptionClass = null
     ): void {
         $cartHash = (string) $requestDataBag->get('carthash');
 
@@ -74,7 +74,7 @@ class CartHasher implements CartHasherInterface
         }
     }
 
-    public function getCriteriaForOrder(string $orderId = null): Criteria
+    public function getCriteriaForOrder(?string $orderId = null): Criteria
     {
         $criteria = (new Criteria())
             ->addAssociation('lineItems')

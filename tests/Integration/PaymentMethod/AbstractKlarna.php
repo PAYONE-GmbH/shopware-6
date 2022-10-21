@@ -21,13 +21,13 @@ abstract class AbstractKlarna extends TestCase
         $paymentMethod = new $className();
 
         foreach ($paymentMethod->getTranslations() as $locale => $translations) {
-            self::assertArrayNotHasKey('name', $translations, sprintf('please do not specify a translation for the key `name`. PaymentMethod: %s, Locale: %s', $className, $locale));
+            static::assertArrayNotHasKey('name', $translations, sprintf('please do not specify a translation for the key `name`. PaymentMethod: %s, Locale: %s', $className, $locale));
         }
     }
 
     private function getClassToTest(): string
     {
-        $class = preg_replace('/Test$/', '', get_class($this));
+        $class = preg_replace('/Test$/', '', static::class);
         $class = preg_replace('/\\\Integration/', '', $class);
 
         if (!class_exists($class)) {

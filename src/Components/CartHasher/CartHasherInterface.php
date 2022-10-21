@@ -32,10 +32,10 @@ interface CartHasherInterface
      *
      * @throws AsyncPaymentProcessException|SyncPaymentProcessException
      */
-    public function validateRequest(RequestDataBag $requestDataBag, $paymentTransaction, SalesChannelContext $salesChannelContext);
+    public function validateRequest(RequestDataBag $requestDataBag, $paymentTransaction, SalesChannelContext $salesChannelContext): void;
 
     /**
      * returns Criteria-Objects with all dependencies which are required to generate the full hash for an order
      */
-    public function getCriteriaForOrder(string $orderId = null): Criteria;
+    public function getCriteriaForOrder(?string $orderId = null): Criteria;
 }

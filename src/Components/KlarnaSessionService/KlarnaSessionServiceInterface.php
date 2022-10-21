@@ -13,5 +13,5 @@ interface KlarnaSessionServiceInterface
     /**
      * @throws PayoneRequestException
      */
-    public function createKlarnaSession(SalesChannelContext $salesChannelContext, string $orderId = null): CheckoutKlarnaSessionData;
+    public function createKlarnaSession(SalesChannelContext $salesChannelContext, ?string $orderId = null): CheckoutKlarnaSessionData;
 }

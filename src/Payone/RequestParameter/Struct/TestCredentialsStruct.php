@@ -13,8 +13,8 @@ class TestCredentialsStruct extends AbstractRequestParameterStruct
         string $action = '',
         string $paymentMethodClass = ''
     ) {
-        $this->parameters    = $parameters;
-        $this->action        = $action;
+        $this->parameters = $parameters;
+        $this->action = $action;
         $this->paymentMethod = $paymentMethodClass;
     }
 

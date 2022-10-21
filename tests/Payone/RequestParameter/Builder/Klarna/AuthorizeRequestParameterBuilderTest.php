@@ -11,11 +11,14 @@ use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
+/**
+ * @covers \PayonePayment\Payone\RequestParameter\Builder\Klarna\AuthorizeRequestParameterBuilder
+ */
 class AuthorizeRequestParameterBuilderTest extends AbstractKlarna
 {
     use PayoneTestBehavior;
 
-    public function testGetRequestParameters(): void
+    public function testItAddsCorrectAuthorizeParameters(): void
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
@@ -34,16 +37,16 @@ class AuthorizeRequestParameterBuilderTest extends AbstractKlarna
 
         $service = $this->getContainer()->get(AuthorizeRequestParameterBuilder::class);
 
-        self::assertTrue($service->supports($struct), sprintf('%s::support() have to return true when passing instance of %s', get_class($service), get_class($struct)));
+        static::assertTrue($service->supports($struct), sprintf('%s::support() have to return true when passing instance of %s', \get_class($service), \get_class($struct)));
         $parameters = $service->getRequestParameter($struct);
 
-        self::assertArrayHasKey('request', $parameters);
-        self::assertEquals('test-action', $parameters['request']);
+        static::assertArrayHasKey('request', $parameters);
+        static::assertEquals('test-action', $parameters['request']);
 
-        self::assertArrayHasKey('add_paydata[authorization_token]', $parameters);
-        self::assertEquals('test-token', $parameters['add_paydata[authorization_token]']);
+        static::assertArrayHasKey('add_paydata[authorization_token]', $parameters);
+        static::assertEquals('test-token', $parameters['add_paydata[authorization_token]']);
 
-        self::assertArrayHasKey('clearingtype', $parameters);
+        static::assertArrayHasKey('clearingtype', $parameters);
 
         $this->assertLineItemHasBeenSet($parameters);
     }

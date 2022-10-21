@@ -15,16 +15,15 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class KlarnaSessionService implements KlarnaSessionServiceInterface
 {
-    /** @var RequestParameterFactory */
-    private $requestParameterFactory;
-    /** @var PayoneClientInterface */
-    private $payoneClient;
-    /** @var CartService */
-    private $cartService;
-    /** @var CartHasherInterface */
-    private $cartHasher;
-    /** @var EntityRepository */
-    private $orderEntityRepository;
+    private RequestParameterFactory $requestParameterFactory;
+
+    private PayoneClientInterface $payoneClient;
+
+    private CartService $cartService;
+
+    private CartHasherInterface $cartHasher;
+
+    private EntityRepository $orderEntityRepository;
 
     public function __construct(
         PayoneClientInterface $payoneClient,
@@ -34,17 +33,17 @@ class KlarnaSessionService implements KlarnaSessionServiceInterface
         EntityRepository $orderEntityRepository
     ) {
         $this->requestParameterFactory = $requestParameterFactory;
-        $this->payoneClient            = $payoneClient;
-        $this->cartService             = $cartService;
-        $this->cartHasher              = $cartHasher;
-        $this->orderEntityRepository   = $orderEntityRepository;
+        $this->payoneClient = $payoneClient;
+        $this->cartService = $cartService;
+        $this->cartHasher = $cartHasher;
+        $this->orderEntityRepository = $orderEntityRepository;
     }
 
-    public function createKlarnaSession(SalesChannelContext $salesChannelContext, string $orderId = null): CheckoutKlarnaSessionData
+    public function createKlarnaSession(SalesChannelContext $salesChannelContext, ?string $orderId = null): CheckoutKlarnaSessionData
     {
         if ($orderId) {
             $orderCriteria = $this->cartHasher->getCriteriaForOrder($orderId);
-            $order         = $this->orderEntityRepository->search($orderCriteria, $salesChannelContext->getContext())->first();
+            $order = $this->orderEntityRepository->search($orderCriteria, $salesChannelContext->getContext())->first();
         }
 
         $cartHash = $this->cartHasher->generate(
@@ -52,9 +51,9 @@ class KlarnaSessionService implements KlarnaSessionServiceInterface
             $salesChannelContext
         );
 
-        $struct        = new KlarnaCreateSessionStruct($salesChannelContext, $salesChannelContext->getPaymentMethod()->getHandlerIdentifier(), $order ?? null);
+        $struct = new KlarnaCreateSessionStruct($salesChannelContext, $salesChannelContext->getPaymentMethod()->getHandlerIdentifier(), $order ?? null);
         $requestParams = $this->requestParameterFactory->getRequestParameter($struct);
-        $response      = $this->payoneClient->request($requestParams);
+        $response = $this->payoneClient->request($requestParams);
 
         return new CheckoutKlarnaSessionData(
             $response['addpaydata']['client_token'],

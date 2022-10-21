@@ -16,9 +16,9 @@ class PaymentMethodTest extends TestCase
         foreach (ClassHelper::getPaymentMethodClasses() as $class) {
             /** @var AbstractPaymentMethod $instance */
             $instance = new $class();
-            self::assertInstanceOf(PaymentMethodInterface::class, $instance);
+            static::assertInstanceOf(PaymentMethodInterface::class, $instance);
             // test if UUID is the same as $id
-            self::assertEquals(constant($class . '::UUID'), $instance->getId(), sprintf('%s needs to be the same values as %s', $class . '::$id', $class . '::UUID'));
+            static::assertEquals(\constant($class . '::UUID'), $instance->getId(), sprintf('%s needs to be the same values as %s', $class . '::$id', $class . '::UUID'));
         }
     }
 }

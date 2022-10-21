@@ -75,11 +75,11 @@ abstract class AbstractRequestParameterBuilder
     /**
      * throws an exception if the given $method does not exist on the given $object
      */
-    protected function validateMethod($object, string $method): void
+    protected function validateMethod(object $object, string $method): void
     {
         if (!method_exists($object, $method)) {
             // there is no function to get the salesChannelContext. Without it the builder is not able to get the customer data
-            throw new \RuntimeException(sprintf('method `%s` does not exist on %s', $method, get_class($object)));
+            throw new \RuntimeException(sprintf('method `%s` does not exist on %s', $method, \get_class($object)));
         }
     }
 }

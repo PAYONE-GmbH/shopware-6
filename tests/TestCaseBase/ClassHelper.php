@@ -10,7 +10,7 @@ class ClassHelper
 {
     public static function getPaymentHandlerClasses(): array
     {
-        $classList  = [];
+        $classList = [];
         $classFiles = glob(__DIR__ . '/../../src/PaymentHandler/*.php');
         foreach ($classFiles as $classFile) {
             if (is_file($classFile)) {
@@ -31,7 +31,7 @@ class ClassHelper
 
     public static function getPaymentMethodClasses(): array
     {
-        $classList  = [];
+        $classList = [];
         $classFiles = glob(__DIR__ . '/../../src/PaymentMethod/*.php');
         foreach ($classFiles as $classFile) {
             if (is_file($classFile)) {

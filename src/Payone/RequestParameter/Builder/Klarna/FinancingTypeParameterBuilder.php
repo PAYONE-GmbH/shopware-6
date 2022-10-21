@@ -40,11 +40,11 @@ class FinancingTypeParameterBuilder extends AbstractKlarnaParameterBuilder
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        return parent::supports($arguments) &&
-            (
-                $arguments instanceof KlarnaCreateSessionStruct ||
-                $arguments instanceof PaymentTransactionStruct ||
-                $arguments instanceof TestCredentialsStruct
+        return parent::supports($arguments)
+            && (
+                $arguments instanceof KlarnaCreateSessionStruct
+                || $arguments instanceof PaymentTransactionStruct
+                || $arguments instanceof TestCredentialsStruct
             );
     }
 }

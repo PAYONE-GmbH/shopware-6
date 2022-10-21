@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\CartHasher\CartHasher;
 use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -22,20 +22,20 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 abstract class AbstractKlarnaPaymentHandlerTest extends AbstractPaymentHandlerTest
 {
-    public function testUnSuccessfulPaymentByMissingToken(): void
+    public function testItThrowsExceptionOnMissingToken(): void
     {
         $client = $this->createMock(PayoneClientInterface::class);
 
         $requestFactory = $this->createMock(RequestParameterFactory::class);
-        $requestFactory->expects($this->exactly(0))->method('getRequestParameter'); // validation for token should be performed before parameter build
+        $requestFactory->expects(static::exactly(0))->method('getRequestParameter'); // validation for token should be performed before parameter build
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $dataBag             = new RequestDataBag(); // missing token
-        $paymentHandler      = $this->getPaymentHandler($client, $dataBag, $requestFactory);
+        $dataBag = new RequestDataBag(); // missing token
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $requestFactory);
 
         $paymentTransaction = $this->getPaymentTransaction(
             $this->createMock(OrderEntity::class),
-            get_class($paymentHandler)
+            \get_class($paymentHandler)
         );
 
         if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
@@ -44,7 +44,7 @@ abstract class AbstractKlarnaPaymentHandlerTest extends AbstractPaymentHandlerTe
             $expectedException = SyncPaymentProcessException::class;
         }
 
-        self::expectException($expectedException);
+        $this->expectException($expectedException);
         $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
     }
 
@@ -57,14 +57,27 @@ abstract class AbstractKlarnaPaymentHandlerTest extends AbstractPaymentHandlerTe
 
     protected function assertSuccessfulResponse($response = null): void
     {
-        self::assertInstanceOf(RedirectResponse::class, $response);
-        self::assertEquals('test-redirect-url', $response->getTargetUrl());
+        static::assertInstanceOf(RedirectResponse::class, $response);
+        static::assertEquals('test-redirect-url', $response->getTargetUrl());
     }
 
     protected function assertSuccessfulTransactionData(array $transactionData): void
     {
-        self::assertArrayHasKey(CustomFieldInstaller::CLEARING_TYPE, $transactionData);
-        self::assertEquals(AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC, $transactionData[CustomFieldInstaller::CLEARING_TYPE]);
+        Assert::assertArraySubset(
+            [
+                'authorizationType' => 'authorization',
+                'lastRequest' => 'authorization',
+                'transactionId' => 'test-transaction-id',
+                'sequenceNumber' => -1,
+                'userId' => 'test-user-id',
+                'transactionState' => 'REDIRECT',
+                'clearingType' => 'fnc',
+            ],
+            $transactionData
+        );
+
+        static::assertArrayHasKey('request', array_values($transactionData['transactionData'])[0]);
+        static::assertArrayHasKey('response', array_values($transactionData['transactionData'])[0]);
     }
 
     protected function getSuccessfulRequestParameter(): array
@@ -83,7 +96,7 @@ abstract class AbstractKlarnaPaymentHandlerTest extends AbstractPaymentHandlerTe
         PayoneClientInterface $client,
         RequestDataBag $dataBag,
         RequestParameterFactory $requestFactory,
-        TransactionDataHandlerInterface $dataHandler = null
+        ?TransactionDataHandlerInterface $dataHandler = null
     ): AbstractPayonePaymentHandler {
         $container = $this->getContainer();
         $className = $this->getKlarnaPaymentHandler();

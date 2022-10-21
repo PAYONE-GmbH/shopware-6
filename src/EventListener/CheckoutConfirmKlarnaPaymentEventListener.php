@@ -13,28 +13,28 @@ use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterface
 {
-    /** @var TranslatorInterface */
-    private $translator;
-    /** @var KlarnaSessionServiceInterface */
-    private $klarnaSessionService;
+    private TranslatorInterface $translator;
+
+    private KlarnaSessionServiceInterface $klarnaSessionService;
 
     public function __construct(
         TranslatorInterface $translator,
         KlarnaSessionServiceInterface $klarnaSessionService
     ) {
-        $this->translator           = $translator;
+        $this->translator = $translator;
         $this->klarnaSessionService = $klarnaSessionService;
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class       => ['initiateSession', -20],
-            AccountEditOrderPageLoadedEvent::class      => ['initiateSession', -20],
+            CheckoutConfirmPageLoadedEvent::class => ['initiateSession', -20],
+            AccountEditOrderPageLoadedEvent::class => ['initiateSession', -20],
             HandlePaymentMethodRouteRequestEvent::class => 'onHandlePaymentMethodRouteRequest',
         ];
     }
@@ -59,17 +59,24 @@ class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterf
             );
 
             $currentExtension = $event->getPage()->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
+
+            if (!$currentExtension) {
+                throw new PayoneRequestException('Extension not available: ' . CheckoutCartPaymentData::EXTENSION_NAME);
+            }
+
             $currentExtension->assign([
-                'klarnaSessionStruct'                       => $sessionStruct,
+                'klarnaSessionStruct' => $sessionStruct,
                 CheckoutCartPaymentData::DATA_WORK_ORDER_ID => $sessionStruct->getWorkorderId(),
-                CheckoutCartPaymentData::DATA_CART_HASH     => $sessionStruct->getCartHash(),
+                CheckoutCartPaymentData::DATA_CART_HASH => $sessionStruct->getCartHash(),
             ]);
         } catch (PayoneRequestException $e) {
             $session = $event->getRequest()->getSession();
-            $session->getFlashBag()->add(
-                'danger',
-                $this->translator->trans('PayonePayment.errorMessages.canNotInitKlarna')
-            );
+            if ($session instanceof Session) {
+                $session->getFlashBag()->add(
+                    'danger',
+                    $this->translator->trans('PayonePayment.errorMessages.canNotInitKlarna')
+                );
+            }
         }
     }
 

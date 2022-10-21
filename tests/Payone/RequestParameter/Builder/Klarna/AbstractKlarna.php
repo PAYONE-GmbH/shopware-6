@@ -17,7 +17,7 @@ abstract class AbstractKlarna extends TestCase
 {
     use PayoneTestBehavior;
 
-    final public function testIfBuilderSupportsOnlyKlarnaMethods(): void
+    final public function testItSupportsOnlyKlarnaMethods(): void
     {
         $classToTest = $this->getClassToTest();
         /** @var AbstractRequestParameterBuilder $builder */
@@ -31,7 +31,7 @@ abstract class AbstractKlarna extends TestCase
 
         foreach ($paymentHandlerList as $paymentHandler) {
             $result = $builder->supports($this->getStructForTestingSupportMethod($paymentHandler));
-            self::assertTrue($result, 'builder should support');
+            static::assertTrue($result, 'builder should support');
         }
     }
 
@@ -41,17 +41,17 @@ abstract class AbstractKlarna extends TestCase
     {
         // just verify if the keys exists. Tests for the contents, will be performed by testing the line-item-hydrator
         $indexStr = "[$index]";
-        self::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_NAME . $indexStr, $parameters);
-        self::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_NUMBER . $indexStr, $parameters);
-        self::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_PRICE . $indexStr, $parameters);
-        self::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_QTY . $indexStr, $parameters);
-        self::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_TAX_RATE . $indexStr, $parameters);
-        self::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_TYPE . $indexStr, $parameters);
+        static::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_NAME . $indexStr, $parameters);
+        static::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_NUMBER . $indexStr, $parameters);
+        static::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_PRICE . $indexStr, $parameters);
+        static::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_QTY . $indexStr, $parameters);
+        static::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_TAX_RATE . $indexStr, $parameters);
+        static::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_TYPE . $indexStr, $parameters);
     }
 
     private function getClassToTest(): string
     {
-        $class = preg_replace('/Test$/', '', get_class($this));
+        $class = preg_replace('/Test$/', '', static::class);
 
         if (!class_exists($class)) {
             throw new \RuntimeException(sprintf('Class %s does not exist', $class));
