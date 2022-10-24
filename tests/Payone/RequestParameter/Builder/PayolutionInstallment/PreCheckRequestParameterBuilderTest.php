@@ -70,21 +70,21 @@ class PreCheckRequestParameterBuilderTest extends TestCase
 
     public function testItAddsCorrectPreCheckParameters(): void
     {
-        $struct     = $this->getPayolutionAdditionalActionStruct();
-        $builder    = $this->getContainer()->get(PreCheckRequestParameterBuilder::class);
+        $struct = $this->getPayolutionAdditionalActionStruct();
+        $builder = $this->getContainer()->get(PreCheckRequestParameterBuilder::class);
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'                   => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
-                'clearingtype'              => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'             => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
-                'add_paydata[action]'       => 'pre_check',
+                'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
+                'add_paydata[action]' => 'pre_check',
                 'add_paydata[payment_type]' => 'Payolution-Installment',
-                'amount'                    => 10000,
-                'currency'                  => 'EUR',
-                'workorderid'               => '',
-                'birthday'                  => '20000101',
+                'amount' => 10000,
+                'currency' => 'EUR',
+                'workorderid' => '',
+                'birthday' => '20000101',
             ],
             $parameters
         );
@@ -95,7 +95,7 @@ class PreCheckRequestParameterBuilderTest extends TestCase
         string $requestAction = AbstractRequestParameterBuilder::REQUEST_ACTION_PAYOLUTION_PRE_CHECK
     ): PayolutionAdditionalActionStruct {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $cart                = $this->fillCart($salesChannelContext->getToken(), 100);
+        $cart = $this->fillCart($salesChannelContext->getToken(), 100);
 
         $dataBag = new RequestDataBag([
             'payolutionBirthday' => '2000-01-01',

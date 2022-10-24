@@ -24,11 +24,11 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     public function testItAddsCorrectAuthorizeParameters(): void
     {
         $dataBag = new RequestDataBag([
-            'payolutionIban'                => 'DE81500105177147426471',
-            'payolutionBic'                 => 'ABCD1111',
-            'payolutionAccountOwner'        => 'Tester Test',
+            'payolutionIban' => 'DE81500105177147426471',
+            'payolutionBic' => 'ABCD1111',
+            'payolutionAccountOwner' => 'Tester Test',
             'payolutionInstallmentDuration' => 12,
-            'payolutionBirthday'            => '2000-01-01',
+            'payolutionBirthday' => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
@@ -37,19 +37,19 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             $this->getValidRequestAction()
         );
 
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'                           => $this->getValidRequestAction(),
-                'clearingtype'                      => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'                     => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
+                'request' => $this->getValidRequestAction(),
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
                 'add_paydata[installment_duration]' => 12,
-                'iban'                              => 'DE81500105177147426471',
-                'bic'                               => 'ABCD1111',
-                'bankaccountholder'                 => 'Tester Test',
-                'birthday'                          => '20000101',
+                'iban' => 'DE81500105177147426471',
+                'bic' => 'ABCD1111',
+                'bankaccountholder' => 'Tester Test',
+                'birthday' => '20000101',
             ],
             $parameters
         );

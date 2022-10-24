@@ -94,8 +94,8 @@ class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameter
             if (method_exists($customer, 'getVatIds')) {
                 $vatIds = $customer->getVatIds();
 
-                if ($vatIds && count($vatIds) > 0) {
-                    $parameters['add_paydata[company_uid]'] = $customer->getVatIds()[0];
+                if ($vatIds !== null && \count($vatIds) > 0) {
+                    $parameters['add_paydata[company_uid]'] = $vatIds[0];
                 }
             }
         }

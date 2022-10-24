@@ -24,8 +24,8 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
     public function testItAddsCorrectPreAuthorizeParameters(): void
     {
         $dataBag = new RequestDataBag([
-            'payolutionIban'     => 'DE81500105177147426471',
-            'payolutionBic'      => 'ABCD1111',
+            'payolutionIban' => 'DE81500105177147426471',
+            'payolutionBic' => 'ABCD1111',
             'payolutionBirthday' => '2000-01-01',
         ]);
 
@@ -35,17 +35,17 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
             $this->getValidRequestAction()
         );
 
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'       => $this->getValidRequestAction(),
-                'clearingtype'  => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'request' => $this->getValidRequestAction(),
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
                 'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYD,
-                'iban'          => 'DE81500105177147426471',
-                'bic'           => 'ABCD1111',
-                'birthday'      => '20000101',
+                'iban' => 'DE81500105177147426471',
+                'bic' => 'ABCD1111',
+                'birthday' => '20000101',
             ],
             $parameters
         );

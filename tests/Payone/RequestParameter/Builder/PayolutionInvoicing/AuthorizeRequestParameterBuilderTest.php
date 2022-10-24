@@ -35,15 +35,15 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             $this->getValidRequestAction()
         );
 
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'       => $this->getValidRequestAction(),
-                'clearingtype'  => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'request' => $this->getValidRequestAction(),
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
                 'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYV,
-                'birthday'      => '20000101',
+                'birthday' => '20000101',
             ],
             $parameters
         );
@@ -68,25 +68,25 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $addressRepository = $this->getContainer()->get('order_address.repository');
-        $order             = $struct->getPaymentTransaction()->getOrder();
+        $order = $struct->getPaymentTransaction()->getOrder();
         $addressRepository->update([
             [
-                'id'      => $order->getBillingAddressId(),
+                'id' => $order->getBillingAddressId(),
                 'company' => 'the-company',
-                'vatId'   => 'the-vatid',
+                'vatId' => 'the-vatid',
             ],
         ], Context::createDefaultContext());
 
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'                  => $this->getValidRequestAction(),
-                'clearingtype'             => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'            => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYV,
-                'birthday'                 => '20000101',
-                'add_paydata[b2b]'         => 'yes',
+                'request' => $this->getValidRequestAction(),
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYV,
+                'birthday' => '20000101',
+                'add_paydata[b2b]' => 'yes',
                 'add_paydata[company_uid]' => 'the-vatid',
             ],
             $parameters
@@ -112,25 +112,25 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $orderCustomerRepository = $this->getContainer()->get('order_customer.repository');
-        $order                   = $struct->getPaymentTransaction()->getOrder();
+        $order = $struct->getPaymentTransaction()->getOrder();
         $orderCustomerRepository->update([
             [
-                'id'      => $order->getOrderCustomer()->getId(),
+                'id' => $order->getOrderCustomer()->getId(),
                 'company' => 'the-company',
-                'vatIds'  => ['the-vatid'],
+                'vatIds' => ['the-vatid'],
             ],
         ], Context::createDefaultContext());
 
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
             [
-                'request'                  => $this->getValidRequestAction(),
-                'clearingtype'             => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype'            => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYV,
-                'birthday'                 => '20000101',
-                'add_paydata[b2b]'         => 'yes',
+                'request' => $this->getValidRequestAction(),
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYV,
+                'birthday' => '20000101',
+                'add_paydata[b2b]' => 'yes',
                 'add_paydata[company_uid]' => 'the-vatid',
             ],
             $parameters
@@ -156,16 +156,16 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $addressRepository = $this->getContainer()->get('order_address.repository');
-        $order             = $struct->getPaymentTransaction()->getOrder();
+        $order = $struct->getPaymentTransaction()->getOrder();
         $addressRepository->update([
             [
-                'id'      => $order->getBillingAddressId(),
+                'id' => $order->getBillingAddressId(),
                 'company' => 'the-company',
-                'vatId'   => 'the-vatid',
+                'vatId' => 'the-vatid',
             ],
         ], Context::createDefaultContext());
 
-        $builder    = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
         $parameters = $builder->getRequestParameter($struct);
 
         static::assertArrayNotHasKey('add_paydata[b2b]', $parameters);

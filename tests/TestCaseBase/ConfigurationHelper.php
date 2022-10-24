@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 trait ConfigurationHelper
 {
     /**
-     * @param null|array|bool|float|int|string $configValue
+     * @param array|bool|float|int|string|null $configValue
      */
     protected function setPayoneConfig(
         ContainerInterface $container,

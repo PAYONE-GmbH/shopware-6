@@ -75,13 +75,13 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
     {
         $order = $this->orderFetcher->getOrderById($orderId, $context);
 
-        if (null === $order) {
+        if ($order === null) {
             return;
         }
 
         $orderAddresses = $order->getAddresses();
 
-        if (null === $orderAddresses) {
+        if ($orderAddresses === null) {
             return;
         }
 
@@ -99,8 +99,8 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
             } elseif (method_exists($orderCustomer, 'getVatIds')) {
                 $vatIds = $orderCustomer->getVatIds();
 
-                if ($vatIds && count($vatIds) > 0) {
-                    $parameters['add_paydata[company_uid]'] = $orderCustomer->getVatIds()[0];
+                if ($vatIds !== null && \count($vatIds) > 0) {
+                    $parameters['add_paydata[company_uid]'] = $vatIds[0];
                 }
             }
         }
