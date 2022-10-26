@@ -16,8 +16,9 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
      */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $pseudoCardPan = $arguments->getRequestData()->get('pseudoCardPan');
-        $savedPseudoCardPan = $arguments->getRequestData()->get('savedPseudoCardPan');
+        $cardType = $arguments->getRequestData()->get(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_TYPE);
+        $pseudoCardPan = $arguments->getRequestData()->get(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN);
+        $savedPseudoCardPan = $arguments->getRequestData()->get(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN);
 
         if (!empty($savedPseudoCardPan)) {
             $pseudoCardPan = $savedPseudoCardPan;
@@ -27,6 +28,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'clearingtype' => self::CLEARING_TYPE_CREDIT_CARD,
             'request' => self::REQUEST_ACTION_AUTHORIZE,
             'pseudocardpan' => $pseudoCardPan,
+            'cardtype' => $cardType,
         ];
     }
 

@@ -31,6 +31,7 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
     public const REQUEST_PARAM_PSEUDO_CARD_PAN = 'pseudoCardPan';
     public const REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN = 'savedPseudoCardPan';
     public const REQUEST_PARAM_CARD_EXPIRE_DATE = 'cardExpireDate';
+    public const REQUEST_PARAM_CARD_TYPE = 'cardType';
     public const REQUEST_PARAM_TRUNCATED_CARD_PAN = 'truncatedCardPan';
 
     protected PayoneClientInterface $client;
@@ -106,31 +107,50 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             );
         }
 
-        $data = $this->preparePayoneOrderTransactionData($request, $response);
-        $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-
-        if ($paymentTransaction->getOrder()->getLineItems() !== null) {
-            $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());
-        }
-
-        $truncatedCardPan = $requestData->get(self::REQUEST_PARAM_TRUNCATED_CARD_PAN);
-        $cardExpireDate = $requestData->get(self::REQUEST_PARAM_CARD_EXPIRE_DATE);
+        $customer = $salesChannelContext->getCustomer();
         $savedPseudoCardPan = $requestData->get(self::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN);
-        $pseudoCardPan = $requestData->get(self::REQUEST_PARAM_PSEUDO_CARD_PAN);
-        $saveCreditCard = $requestData->get(self::REQUEST_PARAM_SAVE_CREDIT_CARD) === 'on';
 
         if (empty($savedPseudoCardPan)) {
+            $truncatedCardPan = $requestData->get(self::REQUEST_PARAM_TRUNCATED_CARD_PAN);
+            $cardExpireDate = $requestData->get(self::REQUEST_PARAM_CARD_EXPIRE_DATE);
+            $pseudoCardPan = $requestData->get(self::REQUEST_PARAM_PSEUDO_CARD_PAN);
+            $cardType = $requestData->get(self::REQUEST_PARAM_CARD_TYPE);
+            $saveCreditCard = $requestData->get(self::REQUEST_PARAM_SAVE_CREDIT_CARD) === 'on';
             $expiresAt = \DateTime::createFromFormat('ym', $cardExpireDate);
 
-            if (!empty($expiresAt) && $salesChannelContext->getCustomer() !== null && $saveCreditCard) {
+            if (!empty($expiresAt) && $customer !== null && $saveCreditCard) {
                 $this->cardRepository->saveCard(
-                    $salesChannelContext->getCustomer(),
+                    $customer,
                     $truncatedCardPan,
                     $pseudoCardPan,
+                    $cardType,
                     $expiresAt,
                     $salesChannelContext->getContext()
                 );
             }
+        } else {
+            $cardType = '';
+
+            if ($customer) {
+                $savedCard = $this->cardRepository->getExistingCard(
+                    $customer,
+                    $savedPseudoCardPan,
+                    $salesChannelContext->getContext()
+                );
+
+                $cardType = $savedCard ? $savedCard->getCardType() : '';
+            }
+        }
+
+        $data = $this->preparePayoneOrderTransactionData($request, $response, [
+            'additionalData' => [
+                'card_type' => $cardType,
+            ],
+        ]);
+        $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+
+        if ($paymentTransaction->getOrder()->getLineItems() !== null) {
+            $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());
         }
 
         if (strtolower($response['status']) === 'redirect') {
