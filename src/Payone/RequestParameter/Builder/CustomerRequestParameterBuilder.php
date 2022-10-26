@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
@@ -24,6 +25,7 @@ use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
+use PayonePayment\Payone\RequestParameter\Struct\KlarnaCreateSessionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\ManageMandateStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
@@ -60,10 +62,11 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
     }
 
     /**
-     * @param PaymentTransactionStruct $arguments
+     * @param KlarnaCreateSessionStruct|ManageMandateStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments
      */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
+        $this->validateMethod($arguments, 'getSalesChannelContext');
         $salesChannelContext = $arguments->getSalesChannelContext();
 
         if ($salesChannelContext->getCustomer() === null) {
@@ -109,11 +112,10 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        if ($arguments instanceof PayolutionAdditionalActionStruct) {
-            return true;
-        }
-
-        if ($arguments instanceof ManageMandateStruct) {
+        if ($arguments instanceof PayolutionAdditionalActionStruct
+            || $arguments instanceof ManageMandateStruct
+            || $arguments instanceof KlarnaCreateSessionStruct
+        ) {
             return true;
         }
 
@@ -144,6 +146,10 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneRatepayInstallmentPaymentHandler::class:
             case PayoneRatepayInvoicingPaymentHandler::class:
                 return true;
+        }
+
+        if (is_subclass_of($paymentMethod, AbstractKlarnaPaymentHandler::class)) {
+            return true;
         }
 
         return false;

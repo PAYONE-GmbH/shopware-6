@@ -33,9 +33,12 @@
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
         </service>
+        <service id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" alias="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler"/>
+
 
         <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler">
             <argument type="service" id="translator" />
         </service>
+        <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface" alias="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler"/>
     </services>
 </container>

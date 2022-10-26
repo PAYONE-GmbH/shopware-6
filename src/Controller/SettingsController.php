@@ -6,6 +6,7 @@ namespace PayonePayment\Controller;
 
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler as Handler;
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -79,9 +80,11 @@ class SettingsController extends AbstractController
 
             try {
                 $parameters = array_merge($this->getPaymentParameters($paymentClass), $this->getConfigurationParameters($request, $paymentClass));
-                $testRequest = $this->requestFactory->getRequestParameter(new TestCredentialsStruct($parameters, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST));
+                $testRequest = $this->requestFactory->getRequestParameter(new TestCredentialsStruct($parameters, AbstractRequestParameterBuilder::REQUEST_ACTION_TEST, $paymentClass));
 
                 $this->client->request($testRequest);
+            } catch (PayoneRequestException $e) {
+                $errors[$configurationPrefix] = $e->getResponse()['error']['ErrorMessage'];
             } catch (\Throwable $exception) {
                 $errors[$configurationPrefix] = true;
             }
@@ -428,6 +431,22 @@ class SettingsController extends AbstractController
                     'zip' => '12345',
                     'city' => 'Test',
                     'ip' => '127.0.0.1',
+                ];
+            case Handler\PayoneKlarnaInvoicePaymentHandler::class:
+            case Handler\PayoneKlarnaDirectDebitPaymentHandler::class:
+            case Handler\PayoneKlarnaInstallmentPaymentHandler::class:
+                return [
+                    'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
+                    'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
+                    'amount' => 100,
+                    'country' => 'DE',
+                    'currency' => 'EUR',
+                    'add_paydata[action]' => 'start_session',
+                    'it[1]' => 'goods',
+                    'id[1]' => '5013210425384',
+                    'pr[1]' => 100,
+                    'de[1]' => 'Test product',
+                    'no[1]' => 1,
                 ];
 
             default:

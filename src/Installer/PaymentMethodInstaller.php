@@ -12,6 +12,9 @@ use PayonePayment\PaymentMethod\PayoneCreditCard;
 use PayonePayment\PaymentMethod\PayoneDebit;
 use PayonePayment\PaymentMethod\PayoneEps;
 use PayonePayment\PaymentMethod\PayoneIDeal;
+use PayonePayment\PaymentMethod\PayoneKlarnaDirectDebit;
+use PayonePayment\PaymentMethod\PayoneKlarnaInstallment;
+use PayonePayment\PaymentMethod\PayoneKlarnaInvoice;
 use PayonePayment\PaymentMethod\PayoneOpenInvoice;
 use PayonePayment\PaymentMethod\PayonePaydirekt;
 use PayonePayment\PaymentMethod\PayonePayolutionDebit;
@@ -62,6 +65,9 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneRatepayDebit::class => '48f2034b3c62480a8554781cf9cac574',
         PayoneRatepayInstallment::class => '0af0f201fd164ca9ae72313c70201d18',
         PayoneRatepayInvoicing::class => '240dcc8bf5fc409c9dcf840698c082aa',
+        PayoneKlarnaInvoice::class => 'c4cd059611cc4d049187d8d955ec1f91',
+        PayoneKlarnaDirectDebit::class => '31af2cbeda5242bfbfe4531e203f8a42',
+        PayoneKlarnaInstallment::class => 'a18ffddd4baf4948b8c9f9d3d8abd2d4',
     ];
 
     public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
@@ -87,6 +93,9 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneRatepayDebit::class,
         PayoneRatepayInstallment::class,
         PayoneRatepayInvoicing::class,
+        PayoneKlarnaInvoice::class,
+        PayoneKlarnaDirectDebit::class,
+        PayoneKlarnaInstallment::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [
@@ -106,6 +115,9 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneRatepayDebit::class,
         PayoneRatepayInstallment::class,
         PayoneRatepayInvoicing::class,
+        PayoneKlarnaInvoice::class,
+        PayoneKlarnaDirectDebit::class,
+        PayoneKlarnaInstallment::class,
     ];
 
     private PluginIdProvider $pluginIdProvider;

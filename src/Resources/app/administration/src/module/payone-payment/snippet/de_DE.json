@@ -108,7 +108,10 @@
                 "bancontact": "Die API-Zugangsdaten für PAYONE Bancontact sind nicht korrekt.",
                 "ratepayDebit": "Die API-Zugangsdaten für PAYONE Ratepay Lastschrift sind nicht korrekt.",
                 "ratepayInstallment": "Die API-Zugangsdaten für PAYONE Ratepay Ratenzahlung sind nicht korrekt.",
-                "ratepayInvoicing": "Die API-Zugangsdaten für PAYONE Ratepay Rechnungskauf sind nicht korrekt."
+                "ratepayInvoicing": "Die API-Zugangsdaten für PAYONE Ratepay Rechnungskauf sind nicht korrekt.",
+                "klarnaInvoice": "Die API-Zugangsdaten für PAYONE Klarna Rechnung sind nicht korrekt.",
+                "klarnaDirectDebit": "Die API-Zugangsdaten für PAYONE Klarna Sofort bezahlen sind nicht korrekt.",
+                "klarnaInstallment": "Die API-Zugangsdaten für PAYONE Klarna Ratenkauf sind nicht korrekt."
             }
         },
         "supportModal": {

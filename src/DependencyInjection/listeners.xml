@@ -103,5 +103,15 @@
         <service id="PayonePayment\EventListener\DocumentOrderEventListener">
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmKlarnaPaymentEventListener">
+            <argument type="service" id="translator"/>
+            <argument type="service" id="PayonePayment\Components\KlarnaSessionService\KlarnaSessionServiceInterface"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\CheckoutConfirmKlarnaRestrictPaymentEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>

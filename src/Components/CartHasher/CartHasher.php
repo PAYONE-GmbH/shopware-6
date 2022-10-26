@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace PayonePayment\Components\CartHasher;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
+use PayonePayment\Components\Exception\InvalidCartHashException;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\Struct;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 
@@ -51,6 +56,38 @@ class CartHasher implements CartHasherInterface
         $expected = $this->generateHash($hashData);
 
         return hash_equals($expected, $cartHash);
+    }
+
+    /**
+     * @param AsyncPaymentTransactionStruct|SyncPaymentTransactionStruct $paymentTransaction
+     */
+    public function validateRequest(
+        RequestDataBag $requestDataBag,
+        $paymentTransaction,
+        SalesChannelContext $salesChannelContext,
+        ?string $exceptionClass = null
+    ): void {
+        $cartHash = (string) $requestDataBag->get('carthash');
+
+        if (!$this->validate($paymentTransaction->getOrder(), $cartHash, $salesChannelContext)) {
+            throw new InvalidCartHashException();
+        }
+    }
+
+    public function getCriteriaForOrder(?string $orderId = null): Criteria
+    {
+        $criteria = (new Criteria())
+            ->addAssociation('lineItems')
+            ->addAssociation('currency')
+            ->addAssociation('paymentMethod')
+            ->addAssociation('shippingMethod')
+            ->addAssociation('customer');
+
+        if ($orderId) {
+            $criteria->setIds([$orderId]);
+        }
+
+        return $criteria;
     }
 
     /**

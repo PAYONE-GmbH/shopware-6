@@ -1,7 +1,8 @@
 {
     "PayonePayment": {
         "errorMessages": {
-            "genericError": "An error has occurred. Please try another payment method."
+            "genericError": "An error has occurred. Please try another payment method.",
+            "canNotInitKlarna": "Klarna Payment can not be initialized."
         },
         "creditCard": {
             "newCard": "Use a new credit card",

@@ -13,10 +13,13 @@ use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\RatepayProfileStruct;
 use PayonePayment\Struct\PaymentTransaction;
+use Shopware\Core\Checkout\Cart\Calculator;
 use Shopware\Core\Checkout\Cart\Cart;
+use Shopware\Core\Checkout\Cart\CartBehavior;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
+use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
@@ -47,6 +50,9 @@ trait PayoneTestBehavior
     use IntegrationTestBehaviour;
     use StorefrontPageTestBehaviour;
 
+    /**
+     * @deprecated use `createCartWithProduct`
+     */
     protected function fillCart(string $contextToken, float $totalPrice): Cart
     {
         $cart = $this->getContainer()->get(CartService::class)->createNew($contextToken);
@@ -55,6 +61,31 @@ trait PayoneTestBehavior
         $cart->add(new LineItem('lineItem1', LineItem::PRODUCT_LINE_ITEM_TYPE, $productId));
 
         $cart->setPrice($this->createPrice($totalPrice));
+
+        return $cart;
+    }
+
+    /**
+     * creates a cart with calculated sums
+     */
+    protected function createCartWithProduct(SalesChannelContext $context, float $itemPrice, int $qty): Cart
+    {
+        $cartService = $this->getContainer()->get(CartService::class);
+        $cartItemCalculator = $this->getContainer()->get(Calculator::class);
+
+        $cart = $cartService->createNew($context->getToken());
+
+        $productId = $this->createProduct($itemPrice);
+
+        $lineItem = (new LineItem('lineItem1', LineItem::PRODUCT_LINE_ITEM_TYPE, $productId, $qty))
+            ->setPriceDefinition(new QuantityPriceDefinition($itemPrice, new TaxRuleCollection([]), $qty))
+            ->setLabel('lineItem1');
+
+        $cart->add($lineItem);
+
+        $cart->setPrice($this->createPrice($itemPrice * $qty));
+        $lineItems = $cartItemCalculator->calculate($cart->getLineItems(), $context, new CartBehavior());
+        $cart->setLineItems($lineItems);
 
         return $cart;
     }
@@ -190,7 +221,7 @@ trait PayoneTestBehavior
         return PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
     }
 
-    protected function getLineItem(int $amount): OrderLineItemCollection
+    protected function getOrderLineItem(float $amount): OrderLineItemCollection
     {
         $lineItemTaxRules = new TaxRule(Constants::CURRENCY_TAX_RATE);
 

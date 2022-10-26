@@ -104,7 +104,7 @@ class OrderLinesRequestParameterBuilderTest extends TestCase
 
         $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
 
-        $struct->getPaymentTransaction()->getOrder()->setLineItems($this->getLineItem(2));
+        $struct->getPaymentTransaction()->getOrder()->setLineItems($this->getOrderLineItem(2));
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
@@ -148,7 +148,7 @@ class OrderLinesRequestParameterBuilderTest extends TestCase
 
         $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
 
-        $struct->getPaymentTransaction()->getOrder()->setLineItems($this->getLineItem(2));
+        $struct->getPaymentTransaction()->getOrder()->setLineItems($this->getOrderLineItem(2));
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
@@ -192,7 +192,7 @@ class OrderLinesRequestParameterBuilderTest extends TestCase
 
         $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
 
-        $struct->getPaymentTransaction()->getOrder()->setLineItems($this->getLineItem(2));
+        $struct->getPaymentTransaction()->getOrder()->setLineItems($this->getOrderLineItem(2));
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(
@@ -236,7 +236,7 @@ class OrderLinesRequestParameterBuilderTest extends TestCase
 
         $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
 
-        $struct->getPaymentTransaction()->getOrder()->setLineItems($this->getLineItem(2));
+        $struct->getPaymentTransaction()->getOrder()->setLineItems($this->getOrderLineItem(2));
         $parameters = $builder->getRequestParameter($struct);
 
         Assert::assertArraySubset(

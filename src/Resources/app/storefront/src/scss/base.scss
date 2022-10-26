@@ -36,6 +36,7 @@ apple-pay-button {
     .card-logo-container {
         padding-left: 10px;
     }
+
     #card-logo {
         display: block;
         height: calc(4em - #{$payone-logo-gutter});
@@ -144,5 +145,13 @@ apple-pay-button {
                 }
             }
         }
+    }
+}
+
+.payone-payment--klarna {
+    margin-bottom: 1rem;
+
+    iframe {
+        max-width: none !important;
     }
 }

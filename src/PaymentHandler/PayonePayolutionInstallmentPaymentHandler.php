@@ -26,13 +26,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
+    protected CartHasherInterface $cartHasher;
+
     private PayoneClientInterface $client;
 
     private TranslatorInterface $translator;
 
     private TransactionDataHandlerInterface $dataHandler;
-
-    private CartHasherInterface $cartHasher;
 
     private RequestParameterFactory $requestParameterFactory;
 
@@ -62,14 +62,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
     {
         $requestData = $this->fetchRequestData();
 
-        $cartHash = (string) $requestData->get('carthash');
-
-        if (!$this->cartHasher->validate($transaction->getOrder(), $cartHash, $salesChannelContext)) {
-            throw new SyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
-        }
+        $this->cartHasher->validateRequest($dataBag, $transaction, $salesChannelContext);
 
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(

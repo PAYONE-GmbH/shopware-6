@@ -439,6 +439,22 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <!-- Klarna -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\CreateSessionRequestParameterBuilder">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
+            <tag name="payone_request_builder"/>
+        </service>
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\AuthorizeRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
+            <tag name="payone_request_builder"/>
+        </service>
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\FinancingTypeParameterBuilder">
+            <tag name="payone_request_builder"/>
+        </service>
+
         <!-- Capture -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Capture\CaptureRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
