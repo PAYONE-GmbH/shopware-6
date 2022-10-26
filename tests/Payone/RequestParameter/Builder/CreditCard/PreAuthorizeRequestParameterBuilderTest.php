@@ -22,6 +22,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
     {
         $dataBag = new RequestDataBag([
             'pseudoCardPan' => 'my-pan',
+            'cardType' => 'my-card-type',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
@@ -38,6 +39,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
                 'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_CREDIT_CARD,
                 'request' => $this->getValidRequestAction(),
                 'pseudocardpan' => 'my-pan',
+                'cardtype' => 'my-card-type',
             ],
             $parameters
         );
