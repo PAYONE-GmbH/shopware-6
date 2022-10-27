@@ -27,6 +27,7 @@ class CardRepository implements CardRepositoryInterface
         CustomerEntity $customer,
         string $truncatedCardPan,
         string $pseudoCardPan,
+        string $cardType,
         \DateTime $expiresAt,
         Context $context
     ): void {
@@ -43,6 +44,7 @@ class CardRepository implements CardRepositoryInterface
             'id' => $card === null ? Uuid::randomHex() : $card->getId(),
             'pseudoCardPan' => $pseudoCardPan,
             'truncatedCardPan' => $truncatedCardPan,
+            'cardType' => $cardType,
             'expiresAt' => $expiresAt,
             'customerId' => $customer->getId(),
         ];
@@ -98,7 +100,7 @@ class CardRepository implements CardRepositoryInterface
         $this->cardRepository->delete($ids, $context);
     }
 
-    protected function getExistingCard(
+    public function getExistingCard(
         CustomerEntity $customer,
         string $pseudoCardPan,
         Context $context

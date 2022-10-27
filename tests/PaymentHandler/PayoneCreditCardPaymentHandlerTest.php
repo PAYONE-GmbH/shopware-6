@@ -7,7 +7,9 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Components\Currency\CurrencyPrecision;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
+use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
+use PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardEntity;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
@@ -66,6 +68,9 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $dataBag = $this->getDataBag([
+            PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN => 'the-card-pan',
+            PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN => 'the-pseudo-card-pan',
+            PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_TYPE => 'the-card-type',
             PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVE_CREDIT_CARD => 'on',
         ]);
 
@@ -79,7 +84,14 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         );
 
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
-        $cardRepository->expects(static::once())->method('saveCard');
+        $cardRepository->expects(static::once())->method('saveCard')->with(
+            $salesChannelContext->getCustomer(),
+            'the-card-pan',
+            'the-pseudo-card-pan',
+            'the-card-type',
+            static::anything(),
+            static::anything()
+        );
 
         $requestFactory = $this->createMock(RequestParameterFactory::class);
         $requestFactory->expects(static::once())->method('getRequestParameter')->willReturn(
@@ -89,7 +101,19 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             ]
         );
 
-        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory);
+        $dataHandler = $this->createMock(TransactionDataHandlerInterface::class);
+        $dataHandler->expects(static::once())->method('saveTransactionData')->with(
+            static::anything(),
+            static::anything(),
+            static::callback(static function ($parameter) {
+                static::assertIsArray($parameter);
+                static::assertSame('the-card-type', $parameter['additionalData']['card_type']);
+
+                return true;
+            })
+        );
+
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory, $dataHandler);
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
             PayoneCreditCardPaymentHandler::class
@@ -184,8 +208,11 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             ]
         );
 
+        $savedCard = new PayonePaymentCardEntity();
+        $savedCard->setCardType('the-card-type');
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
         $cardRepository->expects(static::never())->method('saveCard');
+        $cardRepository->expects(static::once())->method('getExistingCard')->willReturn($savedCard);
 
         $requestFactory = $this->createMock(RequestParameterFactory::class);
         $requestFactory->expects(static::once())->method('getRequestParameter')->willReturn(
@@ -195,7 +222,19 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             ]
         );
 
-        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory);
+        $dataHandler = $this->createMock(TransactionDataHandlerInterface::class);
+        $dataHandler->expects(static::once())->method('saveTransactionData')->with(
+            static::anything(),
+            static::anything(),
+            static::callback(static function ($parameter) {
+                static::assertIsArray($parameter);
+                static::assertSame('the-card-type', $parameter['additionalData']['card_type']);
+
+                return true;
+            })
+        );
+
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $cardRepository, $requestFactory, $dataHandler);
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
             PayoneCreditCardPaymentHandler::class
@@ -212,6 +251,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN, '');
         $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN, '');
         $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN, '');
+        $dataBag->set(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_TYPE, '');
         $dataBag->set(
             PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE,
             (new \DateTimeImmutable())->add(new \DateInterval('P1Y'))->format('ym')
@@ -228,18 +268,26 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         PayoneClientInterface $client,
         RequestDataBag $dataBag,
         CardRepositoryInterface $cardRepository,
-        RequestParameterFactory $requestFactory
+        RequestParameterFactory $requestFactory,
+        ?TransactionDataHandlerInterface $dataHandler = null
     ): PayoneCreditCardPaymentHandler {
         $translator = $this->getContainer()->get('translator');
         $configReader = new ConfigReaderMock([
             'creditCardAuthorizationMethod' => 'preauthorization',
         ]);
 
+        if (!$dataHandler) {
+            $dataHandler = new TransactionDataHandler(
+                $this->createMock(EntityRepositoryInterface::class),
+                new CurrencyPrecision()
+            );
+        }
+
         return new PayoneCreditCardPaymentHandler(
             $configReader,
             $client,
             $translator,
-            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
+            $dataHandler,
             $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($translator),
             $cardRepository,

@@ -227,6 +227,7 @@ export default class PayonePaymentCreditCard extends Plugin {
             document.getElementById('pseudocardpan').value = response.pseudocardpan;
             document.getElementById('truncatedcardpan').value = response.truncatedcardpan;
             document.getElementById('cardexpiredate').value = response.cardexpiredate;
+            document.getElementById('cardtype').value = response.cardtype;
 
             this.orderFormDisabled = false;
 

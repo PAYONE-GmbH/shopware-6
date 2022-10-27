@@ -1,0 +1,20 @@
+{
+    "sw-order": {
+        "payone-payment": {
+            "creditCard": {
+                "cardTypeLabel": "Kartentyp",
+                "cardTypes": {
+                    "V": "Visa",
+                    "M": "MasterCard",
+                    "A": "American Express",
+                    "D": "Diners / Discover",
+                    "J": "JCB",
+                    "O": "Maestro International",
+                    "P": "China Union Pay",
+                    "U": "UATP / Airplus",
+                    "G": "girocard"
+                }
+            }
+        }
+    }
+}

@@ -52,6 +52,7 @@ class PayonePaymentCardDefinition extends EntityDefinition
 
             $pseudoCardPanField,
             (new StringField('truncated_card_pan', 'truncatedCardPan'))->setFlags(new Required()),
+            (new StringField('card_type', 'cardType'))->setFlags(new Required()),
             (new DateTimeField('expires_at', 'expiresAt'))->setFlags(new Required()),
 
             new ManyToOneAssociationField('customer', 'customer_id', CustomerDefinition::class, 'id', false),

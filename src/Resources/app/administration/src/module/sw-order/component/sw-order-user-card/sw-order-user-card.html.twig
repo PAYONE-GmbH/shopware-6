@@ -1,0 +1,11 @@
+{% block sw_order_detail_base_secondary_info_payment %}
+    <template v-if="currentOrder.transactions.length > 0">
+        <dt>{{ $tc('sw-order.detailBase.labelPaymentMethod') }}</dt>
+        <dd>
+            {{ currentOrder.transactions.last().paymentMethod.translated.distinguishableName }}
+        </dd>
+        <dd v-if="payoneCardType">
+            {{ $tc('sw-order.payone-payment.creditCard.cardTypeLabel') }}: {{ payoneCardType }}
+        </dd>
+    </template>
+{% endblock %}

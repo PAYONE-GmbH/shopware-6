@@ -16,6 +16,8 @@ class PayonePaymentCardEntity extends Entity
 
     protected string $truncatedCardPan;
 
+    protected string $cardType;
+
     protected \DateTimeInterface $expiresAt;
 
     protected ?CustomerEntity $customer = null;
@@ -40,6 +42,16 @@ class PayonePaymentCardEntity extends Entity
     public function setTruncatedCardPan(string $truncatedCardPan): void
     {
         $this->truncatedCardPan = $truncatedCardPan;
+    }
+
+    public function getCardType(): string
+    {
+        return $this->cardType;
+    }
+
+    public function setCardType(string $cardType): void
+    {
+        $this->cardType = $cardType;
     }
 
     public function getExpiresAt(): \DateTimeInterface
