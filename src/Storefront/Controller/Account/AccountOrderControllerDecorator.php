@@ -8,6 +8,7 @@ use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\AccountOrderController;
 use Shopware\Storefront\Controller\StorefrontController;
@@ -17,6 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route(defaults={"_routeScope": {"storefront"}})
+ * @RouteScope(scopes={"storefront"})
  */
 class AccountOrderControllerDecorator extends StorefrontController
 {
