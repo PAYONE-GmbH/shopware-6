@@ -17,8 +17,6 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         $dataBag = $arguments->getRequestData();
-        $salesChannelContext = $arguments->getSalesChannelContext();
-        $paymentTransaction = $arguments->getPaymentTransaction();
 
         $parameters = [
             'clearingtype' => self::CLEARING_TYPE_FINANCING,
@@ -31,10 +29,6 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
         ];
 
         $this->applyBirthdayParameter($parameters, $dataBag);
-
-        if ($this->transferCompanyData($salesChannelContext)) {
-            $this->provideCompanyParams($paymentTransaction->getOrder()->getId(), $parameters, $salesChannelContext->getContext());
-        }
 
         return $parameters;
     }

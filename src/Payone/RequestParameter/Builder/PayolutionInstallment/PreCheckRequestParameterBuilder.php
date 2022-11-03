@@ -8,6 +8,7 @@ use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameterBuilder
 {
@@ -31,13 +32,7 @@ class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameter
             'workorderid' => $arguments->getWorkorderId(),
         ];
 
-        if (!empty($dataBag->get('payolutionBirthday'))) {
-            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
-
-            if (!empty($birthday)) {
-                $parameters['birthday'] = $birthday->format('Ymd');
-            }
-        }
+        $this->applyBirthdayParameter($parameters, $dataBag);
 
         return $parameters;
     }
@@ -52,5 +47,16 @@ class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameter
         $action = $arguments->getAction();
 
         return $paymentMethod === PayonePayolutionInstallmentPaymentHandler::class && $action === self::REQUEST_ACTION_PAYOLUTION_PRE_CHECK;
+    }
+
+    protected function applyBirthdayParameter(array &$parameters, ParameterBag $dataBag): void
+    {
+        if (!empty($dataBag->get('payolutionBirthday'))) {
+            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
+
+            if (!empty($birthday)) {
+                $parameters['birthday'] = $birthday->format('Ymd');
+            }
+        }
     }
 }

@@ -1750,12 +1750,6 @@
             <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
         </input-field>
 
-        <input-field type="bool">
-            <name>payolutionDebitTransferCompanyData</name>
-            <label>Sets the b2b flag if the customer's company name is present.</label>
-            <label lang="de-DE">Setzt das b2b-Flag, wenn beim Kunden der Firmennamen gesetzt ist.</label>
-        </input-field>
-
         <input-field type="single-select">
             <name>payolutionDebitAuthorizationMethod</name>
             <label>Authorization Method</label>

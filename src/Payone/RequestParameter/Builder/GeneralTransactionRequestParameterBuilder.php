@@ -27,9 +27,9 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
 
     protected CurrencyPrecisionInterface $currencyPrecision;
 
-    private CartHasherInterface $cartHasher;
+    protected CartHasherInterface $cartHasher;
 
-    private ConfigReaderInterface $configReader;
+    protected ConfigReaderInterface $configReader;
 
     public function __construct(
         CartHasherInterface $cartHasher,
