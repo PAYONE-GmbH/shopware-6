@@ -84,6 +84,11 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
 
     public function saveTransactionData(PaymentTransaction $transaction, Context $context, array $data): void
     {
+        $extension = $transaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+        if ($extension instanceof PayonePaymentOrderTransactionDataEntity) {
+            $data['id'] = $extension->getId();
+        }
+
         $this->transactionRepository->upsert([[
             'id' => $transaction->getOrderTransaction()->getId(),
             PayonePaymentOrderTransactionExtension::NAME => $data,

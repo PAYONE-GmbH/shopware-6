@@ -203,6 +203,7 @@ trait PayoneTestBehavior
 
         $payoneTransactionData = new PayonePaymentOrderTransactionDataEntity();
         $payoneTransactionData->assign([
+            'id' => Uuid::randomHex(),
             'transactionId' => Constants::PAYONE_TRANSACTION_ID,
             'sequenceNumber' => 0,
             'lastRequest' => 'authorization',
