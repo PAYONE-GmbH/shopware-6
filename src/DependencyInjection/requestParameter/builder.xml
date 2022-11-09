@@ -447,6 +447,19 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <!-- Przelewy24 -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Przelewy24\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Przelewy24\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
         <!-- Capture -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Capture\CaptureRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
