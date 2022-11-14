@@ -35,6 +35,7 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_WE_CHAT_PAY = 'weChatPay';
     public const CONFIGURATION_PREFIX_POSTFINANCE_CARD = 'postfinanceCard';
     public const CONFIGURATION_PREFIX_POSTFINANCE_WALLET = 'postfinanceWallet';
+    public const CONFIGURATION_PREFIX_ALIPAY = 'alipay';
 
     public const CONFIGURATION_PREFIXES = [
         Handler\PayoneApplePayPaymentHandler::class => self::CONFIGURATION_PREFIX_APPLE_PAY,
@@ -64,5 +65,6 @@ interface ConfigurationPrefixes
         Handler\PayoneWeChatPayPaymentHandler::class => self::CONFIGURATION_PREFIX_WE_CHAT_PAY,
         Handler\PayonePostfinanceCardPaymentHandler::class => self::CONFIGURATION_PREFIX_POSTFINANCE_CARD,
         Handler\PayonePostfinanceWalletPaymentHandler::class => self::CONFIGURATION_PREFIX_POSTFINANCE_WALLET,
+        Handler\PayoneAlipayPaymentHandler::class => self::CONFIGURATION_PREFIX_ALIPAY,
     ];
 }

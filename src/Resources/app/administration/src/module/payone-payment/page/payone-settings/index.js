@@ -59,6 +59,7 @@ Component.register('payone-settings', {
                 'payment_we_chat_pay': true,
                 'payment_postfinanceCard': true,
                 'payment_postfinanceWallet': true,
+                'payment_alipay': true,
             },
         };
     },
@@ -135,6 +136,7 @@ Component.register('payone-settings', {
                 'weChatPay',
                 'postfinanceCard',
                 'postfinanceWallet',
+                'alipay',
             ];
         },
 
