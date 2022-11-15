@@ -23,6 +23,7 @@ use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
 use PayonePayment\PaymentMethod\PayonePrepayment;
+use PayonePayment\PaymentMethod\PayonePrzelewy24;
 use PayonePayment\PaymentMethod\PayoneRatepayDebit;
 use PayonePayment\PaymentMethod\PayoneRatepayInstallment;
 use PayonePayment\PaymentMethod\PayoneRatepayInvoicing;
@@ -68,6 +69,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneKlarnaInvoice::class => 'c4cd059611cc4d049187d8d955ec1f91',
         PayoneKlarnaDirectDebit::class => '31af2cbeda5242bfbfe4531e203f8a42',
         PayoneKlarnaInstallment::class => 'a18ffddd4baf4948b8c9f9d3d8abd2d4',
+        PayonePrzelewy24::class => '6068e01cef8b4c9698956c6cca648d50',
     ];
 
     public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
@@ -96,6 +98,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneKlarnaInvoice::class,
         PayoneKlarnaDirectDebit::class,
         PayoneKlarnaInstallment::class,
+        PayonePrzelewy24::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [

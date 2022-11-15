@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\RequestParameter\Builder\Bancontact;
+namespace PayonePayment\Payone\RequestParameter\Builder\Przelewy24;
 
-use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
@@ -18,8 +18,8 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     {
         return [
             'clearingtype' => self::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
-            'onlinebanktransfertype' => 'BCT',
-            'bankcountry' => 'BE',
+            'onlinebanktransfertype' => 'P24',
+            'bankcountry' => 'PL',
             'request' => self::REQUEST_ACTION_AUTHORIZE,
         ];
     }
@@ -33,6 +33,6 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $paymentMethod = $arguments->getPaymentMethod();
         $action = $arguments->getAction();
 
-        return $paymentMethod === PayoneBancontactPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
+        return $paymentMethod === PayonePrzelewy24PaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }
 }

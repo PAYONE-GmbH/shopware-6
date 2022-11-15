@@ -449,6 +449,22 @@ class SettingsController extends AbstractController
                     'no[1]' => 1,
                 ];
 
+            case Handler\PayonePrzelewy24PaymentHandler::class:
+                return [
+                    'request' => 'preauthorization',
+                    'clearingtype' => 'sb',
+                    'onlinebanktransfertype' => 'P24',
+                    'bankcountry' => 'PL',
+                    'amount' => 100,
+                    'currency' => 'EUR',
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'lastname' => 'Test',
+                    'country' => 'PL',
+                    'successurl' => 'https://www.payone.com',
+                    'errorurl' => 'https://www.payone.com',
+                    'backurl' => 'https://www.payone.com',
+                ];
+
             default:
                 $this->logger->error(sprintf('There is no test data defined for payment class %s', $paymentClass));
 

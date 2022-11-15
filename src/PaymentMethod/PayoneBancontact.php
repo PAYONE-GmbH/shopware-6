@@ -13,7 +13,7 @@ class PayoneBancontact extends AbstractPaymentMethod
 
     protected string $id = self::UUID;
 
-    protected string $name = 'Payone Bancontact';
+    protected string $name = 'PAYONE Bancontact';
 
     protected string $description = 'Pay fast and secure with your Bancontact card';
 
@@ -23,11 +23,11 @@ class PayoneBancontact extends AbstractPaymentMethod
 
     protected array $translations = [
         'de-DE' => [
-            'name' => 'Payone Bancontact',
+            'name' => 'PAYONE Bancontact',
             'description' => 'Schnell und einfach bezahlen mit der Bancontact-Karte',
         ],
         'en-GB' => [
-            'name' => 'Payone Bancontact',
+            'name' => 'PAYONE Bancontact',
             'description' => 'Pay fast and secure with your Bancontact card',
         ],
     ];

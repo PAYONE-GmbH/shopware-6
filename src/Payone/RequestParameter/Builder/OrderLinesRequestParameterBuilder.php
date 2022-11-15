@@ -10,6 +10,7 @@ use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
@@ -68,6 +69,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneRatepayDebitPaymentHandler::class:
             case PayoneRatepayInstallmentPaymentHandler::class:
             case PayoneRatepayInvoicingPaymentHandler::class:
+            case PayonePrzelewy24PaymentHandler::class:
                 return true;
         }
 
