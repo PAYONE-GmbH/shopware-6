@@ -214,6 +214,8 @@ Fehlerbehebung
 * Fehler in Regel zur Entfernung des gesicherten Rechnungskaufs behoben
  
 Wartung
+
+# 4.1.0
  
 * Umbenennung der Zahlungsarten
 * PAYONE Logo ausgetauscht
@@ -286,3 +288,23 @@ $this->transactionRepository->upsert([[
    ],
 ]], $context);
  ```
+
+# 4.1.0
+
+Neue Funktionen
+ 
+* Neue Zahlungsart: Klarna Rechnung
+* Neue Zahlungsart: Klarna Sofort
+* Neue Zahlungsart: Klarna Ratenkauf
+* Neue Zahlungsart: P24
+* Der Kreditkarten - Kartentyp wird nun im Adminbereich bei den Bestelldetails angezeigt
+ 
+Fehlerbehebung
+ 
+* Fehler in der Weiterleitung behoben, wenn Multi-Saleschannels genutzt werden - Vielen Dank an @patchee500
+* Fehler bei Unzer B2B behoben
+* Fehler beim Refund mit falscher tx_id behoben
+ 
+Wartung
+ 
+* Getestet mit: 6.4.17.1
