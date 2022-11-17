@@ -25,6 +25,7 @@ use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneWeChatPayPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\KlarnaCreateSessionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\ManageMandateStruct;
@@ -147,6 +148,7 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneRatepayInstallmentPaymentHandler::class:
             case PayoneRatepayInvoicingPaymentHandler::class:
             case PayonePrzelewy24PaymentHandler::class:
+            case PayoneWeChatPayPaymentHandler::class:
                 return true;
         }
 
