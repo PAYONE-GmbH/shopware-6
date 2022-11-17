@@ -202,7 +202,7 @@ Maintenance
 Tested with:
 Shopware 6.4.10.0
 
-#3.2.0
+# 3.2.0
 
 New Features
  
@@ -222,7 +222,7 @@ Maintenance
 * Changed PAYONE Logo
 * tested with 6.4.12
 
-#3.3.0
+# 3.3.0
 
 New Features
 
@@ -288,3 +288,23 @@ $this->transactionRepository->upsert([[
    ],
 ]], $context);
  ```
+
+# 4.1.0
+
+New Features
+ 
+* New payment method: Klarna Rechnung
+* New payment method: Klarna Sofort
+* New payment method: Klarna Ratenkauf
+* New payment method: P24
+* The credit card - card type is now displayed in the backend at the order details
+ 
+Bugfixes
+ 
+* Fixed redirect routing when using multi-saleschannels - Thanks to @patchee500
+* Fixed Unzer B2B
+* Fixed Refund with wrong tx_id
+ 
+Maintenance
+ 
+* tested with 6.4.17.1
