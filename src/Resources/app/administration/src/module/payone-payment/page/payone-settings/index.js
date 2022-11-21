@@ -57,6 +57,8 @@ Component.register('payone-settings', {
                 'payment_klarna_installment': true,
                 'payment_przelewy24': true,
                 'payment_we_chat_pay': true,
+                'payment_postfinanceCard': true,
+                'payment_postfinanceWallet': true,
             },
         };
     },
@@ -131,6 +133,8 @@ Component.register('payone-settings', {
                 'klarnaInstallment',
                 'przelewy24',
                 'weChatPay',
+                'postfinanceCard',
+                'postfinanceWallet',
             ];
         },
 

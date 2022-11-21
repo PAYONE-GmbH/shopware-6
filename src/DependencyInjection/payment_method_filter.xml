@@ -60,6 +60,20 @@
             <tag name="payone.payment_method.filter"/>
         </service>
 
+        <service id="payone.payment_filter_method.postfinance" class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
+            <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\AbstractPostfinancePaymentHandler</argument>
+            <argument key="$allowedCountries" type="collection">
+                <argument>CH</argument>
+            </argument>
+            <argument key="$allowedB2bCountries" type="collection">
+                <argument>CH</argument>
+            </argument>
+            <argument key="$allowedCurrencies" type="collection">
+                <argument>CHF</argument>
+            </argument>
+            <tag name="payone.payment_method.filter"/>
+        </service>
+
         <service id="payone.payment_filter_method.przelewy24" class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler</argument>
             <argument key="$allowedCountries" type="collection">

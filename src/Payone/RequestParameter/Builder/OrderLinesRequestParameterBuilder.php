@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
+use PayonePayment\PaymentHandler\AbstractPostfinancePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
@@ -73,6 +74,10 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayonePrzelewy24PaymentHandler::class:
             case PayoneWeChatPayPaymentHandler::class:
                 return true;
+        }
+
+        if (is_subclass_of($arguments->getPaymentMethod(), AbstractPostfinancePaymentHandler::class)) {
+            return true;
         }
 
         return false;

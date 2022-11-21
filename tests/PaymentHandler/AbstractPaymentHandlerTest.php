@@ -216,7 +216,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
     abstract protected function getSuccessfulResponseData(): array;
 
     /**
-     * returns request-data-bag which would be send by the browser
+     * returns request-data-bag which would be sent by the browser
      */
     abstract protected function getSuccessfulRequestDataBag(): RequestDataBag;
 

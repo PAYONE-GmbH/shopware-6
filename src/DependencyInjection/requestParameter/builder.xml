@@ -454,6 +454,11 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <!-- Postfinance -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Postfinance\AuthorizeRequestParameterBuilder">
+            <tag name="payone_request_builder"/>
+        </service>
+
         <service id="PayonePayment\Payone\RequestParameter\Builder\Przelewy24\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
 

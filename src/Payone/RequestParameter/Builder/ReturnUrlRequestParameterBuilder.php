@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler;
+use PayonePayment\PaymentHandler\AbstractPostfinancePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
@@ -68,6 +69,10 @@ class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if (is_subclass_of($paymentMethod, AbstractKlarnaPaymentHandler::class)) {
+            return true;
+        }
+
+        if (is_subclass_of($paymentMethod, AbstractPostfinancePaymentHandler::class)) {
             return true;
         }
 

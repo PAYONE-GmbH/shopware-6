@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler;
+use PayonePayment\PaymentHandler\AbstractPostfinancePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
@@ -153,6 +154,10 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if (is_subclass_of($paymentMethod, AbstractKlarnaPaymentHandler::class)) {
+            return true;
+        }
+
+        if (is_subclass_of($paymentMethod, AbstractPostfinancePaymentHandler::class)) {
             return true;
         }
 

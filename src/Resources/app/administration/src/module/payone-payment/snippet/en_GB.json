@@ -113,7 +113,9 @@
                 "klarnaDirectDebit": "The API credentials for PAYONE Klarna Sofort bezahlen are not valid.",
                 "klarnaInstallment": "The API credentials for PAYONE Klarna Ratenkauf are not valid.",
                 "przelewy24": "The API credentials for PAYONE Przelewy24 are not valid.",
-                "weChatPay": "The API credentials for PAYONE WeChat Pay are not valid."
+                "weChatPay": "The API credentials for PAYONE WeChat Pay are not valid.",
+                "postfinanceCard": "The API credentials for PAYONE Postfinance (Card) are not valid.",
+                "postfinanceWallet": "The API credentials for PAYONE Postfinance (Wallet) are not valid."
             }
         },
         "supportModal": {
