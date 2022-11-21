@@ -16,6 +16,7 @@
         <import resource="scheduled_tasks.xml" />
         <import resource="webhooks.xml"/>
         <import resource="requestParameter/*.xml"/>
+        <import resource="payment_method_filter.xml"/>
     </imports>
 
     <services>

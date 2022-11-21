@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="PayonePayment\Components\PaymentFilter\IterablePaymentFilter">
+            <argument type="tagged_iterator" tag="payone.payment_method.filter"/>
+        </service>
+
+        <service id="payone.payment_filter_method.klarna" class="PayonePayment\Components\PaymentFilter\KlarnaPaymentMethodFilter">
+            <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler</argument>
+            <argument key="$allowedCountries" type="collection">
+                <argument>AT</argument>
+                <argument>CH</argument>
+                <argument>DE</argument>
+                <argument>DK</argument>
+                <argument>Fi</argument>
+                <argument>NL</argument>
+                <argument>NO</argument>
+                <argument>SE</argument>
+            </argument>
+            <argument key="$allowedB2bCountries" type="collection">
+                <argument>Fi</argument>
+                <argument>DE</argument>
+                <argument>NO</argument>
+                <argument>SE</argument>
+            </argument>
+            <argument key="$allowedCurrencies" type="collection">
+                <argument>EUR</argument>
+                <argument>CHF</argument>
+                <argument>DKK</argument>
+                <argument>NOK</argument>
+                <argument>SEK</argument>
+            </argument>
+            <tag name="payone.payment_method.filter"/>
+        </service>
+
+        <service id="payone.payment_filter_method.przelewy24" class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
+            <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler</argument>
+            <argument key="$allowedCountries" type="collection">
+                <argument>PL</argument>
+            </argument>
+            <argument key="$allowedB2bCountries" type="collection">
+                <argument>PL</argument>
+            </argument>
+            <argument key="$allowedCurrencies" type="collection">
+                <argument>PLN</argument>
+            </argument>
+            <tag name="payone.payment_method.filter"/>
+        </service>
+
+    </services>
+</container>
