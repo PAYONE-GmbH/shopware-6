@@ -9,6 +9,7 @@ use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDa
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneIDealPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
@@ -90,8 +91,12 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if (\in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::RATEPAY, true)) {
-            $parameters['settleaccount'] = 'yes';
+            $parameters['settleaccount'] = self::SETTLEACCOUNT_YES;
             $parameters['add_paydata[shop_id]'] = $transactionData->getAdditionalData()['used_ratepay_shop_id'] ?? null;
+        }
+
+        if ($arguments->getPaymentMethod() === PayoneIDealPaymentHandler::class) {
+            $parameters['settleaccount'] = self::SETTLEACCOUNT_YES;
         }
 
         return $parameters;
