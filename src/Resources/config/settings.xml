@@ -339,6 +339,14 @@
             <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
         </input-field>
 
+        <input-field type="bool">
+            <name>prepaymentAutomaticCapture</name>
+            <label>Enable automatic capture of orders?</label>
+            <label lang="de-DE">Automatisches Capturen von Bestellungen aktivieren?</label>
+            <helpText>This will automatically execute the capture as soon as it is possible. Important: Use this option only if you can ensure that the goods will always be shipped immediately</helpText>
+            <helpText lang="de-DE">Hierdurch wird der Capture automatisch ausgeführt, sobald er möglich ist. Wichtig: Diese Option nur nutzen, wenn Sie sicherstellen können, dass die Ware immer zeitnah versendet wird</helpText>
+        </input-field>
+
         <input-field type="single-select">
             <name>prepaymentPaymentStatusAppointed</name>
             <label>Transition for APPOINTED</label>
@@ -2237,6 +2245,14 @@
             <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
         </input-field>
 
+        <input-field type="bool">
+            <name>secureInvoiceAutomaticCapture</name>
+            <label>Enable automatic capture of orders?</label>
+            <label lang="de-DE">Automatisches Capturen von Bestellungen aktivieren?</label>
+            <helpText>This will automatically execute the capture as soon as it is possible. Important: Use this option only if you can ensure that the goods will always be shipped immediately</helpText>
+            <helpText lang="de-DE">Hierdurch wird der Capture automatisch ausgeführt, sobald er möglich ist. Wichtig: Diese Option nur nutzen, wenn Sie sicherstellen können, dass die Ware immer zeitnah versendet wird</helpText>
+        </input-field>
+
         <input-field type="single-select">
             <name>secureInvoicePaymentStatusAppointed</name>
             <label>Transition for APPOINTED</label>
@@ -2388,6 +2404,14 @@
             <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
             <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
             <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>openInvoiceAutomaticCapture</name>
+            <label>Enable automatic capture of orders?</label>
+            <label lang="de-DE">Automatisches Capturen von Bestellungen aktivieren?</label>
+            <helpText>This will automatically execute the capture as soon as it is possible. Important: Use this option only if you can ensure that the goods will always be shipped immediately</helpText>
+            <helpText lang="de-DE">Hierdurch wird der Capture automatisch ausgeführt, sobald er möglich ist. Wichtig: Diese Option nur nutzen, wenn Sie sicherstellen können, dass die Ware immer zeitnah versendet wird</helpText>
         </input-field>
 
         <input-field type="single-select">

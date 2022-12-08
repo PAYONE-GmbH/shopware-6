@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\TestCaseBase\Factory;
 
+use PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureServiceInterface;
 use PayonePayment\Components\Currency\CurrencyPrecision;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
@@ -27,12 +28,14 @@ class TransactionStatusWebhookHandlerFactory
 {
     public static function createHandler(
         TransactionStatusServiceInterface $transactionStatusService,
-        TransactionDataHandlerInterface $transactionDataHandler
+        TransactionDataHandlerInterface $transactionDataHandler,
+        AutomaticCaptureServiceInterface $automaticCaptureService
     ): TransactionStatusWebhookHandler {
         return new TransactionStatusWebhookHandler(
             $transactionStatusService,
             $transactionDataHandler,
-            new NullLogger()
+            new NullLogger(),
+            $automaticCaptureService
         );
     }
 

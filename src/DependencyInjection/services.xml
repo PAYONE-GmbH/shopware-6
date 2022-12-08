@@ -100,5 +100,13 @@
             <argument type="service" id="order.repository" />
         </service>
         <service id="PayonePayment\Components\KlarnaSessionService\KlarnaSessionServiceInterface" alias="PayonePayment\Components\KlarnaSessionService\KlarnaSessionService"/>
+
+        <service id="PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureService">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+            <argument type="service" id="PayonePayment\Components\TransactionHandler\Capture\CaptureTransactionHandler" />
+            <argument type="service" id="PayonePayment\Util\Logger" />
+        </service>
+        <service id="PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureServiceInterface"
+                 alias="PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureService" />
     </services>
 </container>
