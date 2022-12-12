@@ -1,10 +1,4 @@
 <div class="payone-payment ratepay-debit">
-    {% block page_checkout_confirm_payone_ratepay_debit_device_fingerprint %}
-        {% if page.extensions.payoneRatepayDeviceFingerprint.snippet %}
-            {{ page.extensions.payoneRatepayDeviceFingerprint.snippet|raw }}
-        {% endif %}
-    {% endblock %}
-
     {% block page_checkout_confirm_payone_card_title_ratepay_debit_card %}
         <div class="card-title">
             {{ "PayonePayment.checkoutConfirmPage.defaultCardTitle" | trans }}

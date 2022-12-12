@@ -32,7 +32,7 @@ class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameter
             'workorderid' => $arguments->getWorkorderId(),
         ];
 
-        $this->applyBirthdayParameter($parameters, $dataBag);
+        $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
 
         return $parameters;
     }
@@ -49,7 +49,7 @@ class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameter
         return $paymentMethod === PayonePayolutionInstallmentPaymentHandler::class && $action === self::REQUEST_ACTION_PAYOLUTION_PRE_CHECK;
     }
 
-    protected function applyBirthdayParameter(array &$parameters, ParameterBag $dataBag): void
+    protected function applyBirthdayParameterWithoutCustomField(array &$parameters, ParameterBag $dataBag): void
     {
         if (!empty($dataBag->get('payolutionBirthday'))) {
             $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));

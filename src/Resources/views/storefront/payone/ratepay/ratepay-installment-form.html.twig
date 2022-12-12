@@ -1,10 +1,4 @@
 <div class="payone-payment ratepay-installment">
-    {% block page_checkout_confirm_payone_ratepay_installment_device_fingerprint %}
-        {% if page.extensions.payoneRatepayDeviceFingerprint.snippet %}
-            {{ page.extensions.payoneRatepayDeviceFingerprint.snippet|raw }}
-        {% endif %}
-    {% endblock %}
-
     <input type="hidden" id="payoneCsrfTokenRatepayInstallmentCalculation" value="{{ sw_csrf('frontend.payone.ratepay.installment.calculation', {'mode': 'token'}) }}">
 
     {% block page_checkout_confirm_payone_card_content_ratepay_installment_card %}

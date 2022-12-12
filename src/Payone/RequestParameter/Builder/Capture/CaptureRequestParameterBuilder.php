@@ -12,6 +12,7 @@ use PayonePayment\PaymentHandler\PayoneAlipayPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneIDealPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneWeChatPayPaymentHandler;
@@ -99,6 +100,10 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         if ($arguments->getPaymentMethod() === PayoneIDealPaymentHandler::class) {
             $parameters['settleaccount'] = self::SETTLEACCOUNT_YES;
+        }
+
+        if ($arguments->getPaymentMethod() === PayoneSecuredInvoicePaymentHandler::class) {
+            unset($parameters['capturemode']);
         }
 
         return $parameters;

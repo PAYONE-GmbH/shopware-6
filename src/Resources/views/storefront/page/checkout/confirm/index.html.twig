@@ -31,6 +31,10 @@
 {% block page_checkout_confirm %}
     {{ parent() }}
 
+    {% if page.extensions.payoneDeviceFingerprint and page.extensions.payoneDeviceFingerprint.snippet %}
+        {{ page.extensions.payoneDeviceFingerprint.snippet|raw }}
+    {% endif %}
+
     {% if page.extensions.payone and page.extensions.payone.template %}
         {% sw_include page.extensions.payone.template %}
     {% endif %}
