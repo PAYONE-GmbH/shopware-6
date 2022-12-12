@@ -1,0 +1,49 @@
+<div class="payone-payment secured-invoice">
+    {% block page_checkout_confirm_payone_card_title_secured_invoice %}
+        <div class="card-title">
+            {{ "PayonePayment.checkoutConfirmPage.defaultCardTitle" | trans }}
+        </div>
+    {% endblock %}
+
+    {% block page_checkout_confirm_payone_card_content_secured_invoice %}
+        {% set customerCustomFields = context.customer.customFields %}
+
+        <div class="card">
+            <fieldset>
+                {% if customerCustomFields is null or customerCustomFields['payone_customer_phone_number'] is not defined or customerCustomFields['payone_customer_phone_number'] is empty %}
+                    <div class="form-row col-md-12">
+                        <div class="form-group col-md-12">
+                            <label class="form-label" for="securedInvoicePhone">{{ "PayonePayment.securedInvoice.phoneNumber.label" | trans }}{% if not billingAddress.phoneNumber %}{{ "general.required"|trans|sw_sanitize }}{% endif %}</label>
+                            <input class="form-control payone-input"
+                                   id="securedInvoicePhone"
+                                   name="securedInvoicePhone"
+                                   type="tel"
+                                   form="confirmOrderForm"
+                                   required="required"/>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if customerCustomFields is null or customerCustomFields['payone_customer_birthday'] is not defined or customerCustomFields['payone_customer_birthday'] is empty %}
+                    <div class="form-row col-md-12">
+                        <div class="form-group col-md-12">
+                            <label class="form-label" for="payoneInvoiceBirthday">{{ "PayonePayment.securedInvoice.birthday.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
+                            <input class="form-control payone-input"
+                                   id="payoneInvoiceBirthday"
+                                   name="payoneInvoiceBirthday"
+                                   type="date"
+                                   form="confirmOrderForm"
+                                   required="required"/>
+                        </div>
+                    </div>
+                {% endif %}
+            </fieldset>
+
+            <div class="col-md-12">
+                <p>
+                    {{ "PayonePayment.securedInvoice.general.consentText" |trans|raw }}
+                </p>
+            </div>
+        </div>
+    {% endblock %}
+</div>

@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\Components\ConfigReader\ConfigReader;
-use PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintServiceInterface;
 use PayonePayment\Components\Ratepay\Installment\InstallmentServiceInterface;
 use PayonePayment\Components\Ratepay\Profile\ProfileServiceInterface;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
-use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
 use PayonePayment\PaymentMethod\PayoneRatepayInstallment;
-use PayonePayment\Storefront\Struct\RatepayDeviceFingerprintData;
 use PayonePayment\Storefront\Struct\RatepayInstallmentCalculatorData;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -31,19 +27,15 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
 
     protected InstallmentServiceInterface $installmentService;
 
-    protected DeviceFingerprintServiceInterface $deviceFingerprintService;
-
     protected ProfileServiceInterface $profileService;
 
     public function __construct(
         SystemConfigService $systemConfigService,
         InstallmentServiceInterface $installmentService,
-        DeviceFingerprintServiceInterface $deviceFingerprintService,
         ProfileServiceInterface $profileService
     ) {
         $this->systemConfigService = $systemConfigService;
         $this->installmentService = $installmentService;
-        $this->deviceFingerprintService = $deviceFingerprintService;
         $this->profileService = $profileService;
     }
 
@@ -120,10 +112,6 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         if ($context->getPaymentMethod()->getId() === PayoneRatepayInstallment::UUID) {
             $this->addInstallmentCalculatorData($page, $context);
         }
-
-        if (\in_array($context->getPaymentMethod()->getHandlerIdentifier(), PaymentHandlerGroups::RATEPAY, true)) {
-            $this->addDeviceFingerprintData($page, $context);
-        }
     }
 
     protected function removePaymentMethods(PaymentMethodCollection $paymentMethods, array $paymentHandler): PaymentMethodCollection
@@ -173,29 +161,5 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         }
 
         $page->addExtension(RatepayInstallmentCalculatorData::EXTENSION_NAME, $installmentCalculator);
-    }
-
-    protected function addDeviceFingerprintData(Page $page, SalesChannelContext $context): void
-    {
-        if ($this->deviceFingerprintService->isDeviceIdentTokenAlreadyGenerated() === false) {
-            $snippetId = $this->systemConfigService->get(
-                ConfigReader::getConfigKeyByPaymentHandler(
-                    PayoneRatepayInvoicingPaymentHandler::class,
-                    'DeviceFingerprintSnippetId'
-                ),
-                $context->getSalesChannelId()
-            );
-            if (!\is_string($snippetId) || $snippetId === '') {
-                $snippetId = 'ratepay';
-            }
-
-            $deviceIdentToken = $this->deviceFingerprintService->getDeviceIdentToken();
-            $snippet = $this->deviceFingerprintService->getDeviceIdentSnippet($snippetId, $deviceIdentToken);
-
-            $extension = new RatepayDeviceFingerprintData();
-            $extension->setSnippet($snippet);
-
-            $page->addExtension(RatepayDeviceFingerprintData::EXTENSION_NAME, $extension);
-        }
     }
 }

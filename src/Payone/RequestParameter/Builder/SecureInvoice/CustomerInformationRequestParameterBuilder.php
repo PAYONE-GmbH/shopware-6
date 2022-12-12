@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\SecureInvoice;
 
 use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -67,7 +68,11 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
             return false;
         }
 
-        return \in_array($arguments->getPaymentMethod(), [PayoneSecureInvoicePaymentHandler::class, PayoneOpenInvoicePaymentHandler::class], true);
+        return \in_array($arguments->getPaymentMethod(), [
+            PayoneSecureInvoicePaymentHandler::class,
+            PayoneOpenInvoicePaymentHandler::class,
+            PayoneSecuredInvoicePaymentHandler::class,
+        ], true);
     }
 
     private function getBillingAddress(OrderEntity $order, Context $context): OrderAddressEntity

@@ -24,6 +24,10 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
 
     private ?array $allowedCurrencies;
 
+    private float $allowedMinValue;
+
+    private ?float $allowedMaxValue;
+
     /**
      * @param class-string<\PayonePayment\PaymentHandler\AbstractPayonePaymentHandler> $paymentHandlerClass
      */
@@ -31,12 +35,16 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
         string $paymentHandlerClass,
         ?array $allowedCountries = null,
         ?array $allowedB2bCountries = null,
-        ?array $allowedCurrencies = null
+        ?array $allowedCurrencies = null,
+        float $allowedMinValue = 0.0,
+        ?float $allowedMaxValue = null
     ) {
         $this->paymentHandlerClass = $paymentHandlerClass;
         $this->allowedCountries = $allowedCountries;
         $this->allowedB2bCountries = $allowedB2bCountries;
         $this->allowedCurrencies = $allowedCurrencies;
+        $this->allowedMinValue = $allowedMinValue;
+        $this->allowedMaxValue = $allowedMaxValue;
     }
 
     public function filterPaymentMethods(
@@ -46,9 +54,21 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
         $currency = $filterContext->getCurrency();
         $billingAddress = $filterContext->getBillingAddress();
 
+        $currentValue = null;
+        if ($filterContext->getCart()) {
+            $currentValue = $filterContext->getCart()->getPrice()->getTotalPrice();
+        } elseif ($filterContext->getOrder()) {
+            $currentValue = $filterContext->getOrder()->getPrice()->getTotalPrice();
+        }
+
         try {
             $this->validateCurrency($currency);
             $this->validateAddress($billingAddress);
+
+            if ($currentValue) {
+                $this->validateMinValue($currentValue);
+                $this->validateMaxValue($currentValue);
+            }
         } catch (PaymentMethodNotAllowedException $e) {
             $methodCollection = $this->removePaymentMethod($methodCollection);
         }
@@ -106,6 +126,20 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
     {
         if ($currency && $this->allowedCurrencies !== null && !\in_array($currency->getIsoCode(), $this->allowedCurrencies, true)) {
             throw new PaymentMethodNotAllowedException('Currency is not allowed');
+        }
+    }
+
+    private function validateMinValue(float $currentValue): void
+    {
+        if ($currentValue < $this->allowedMinValue) {
+            throw new PaymentMethodNotAllowedException('The current cart/order value is lower than the allowed min value');
+        }
+    }
+
+    private function validateMaxValue(float $currentValue): void
+    {
+        if ($this->allowedMaxValue !== null && $currentValue > $this->allowedMaxValue) {
+            throw new PaymentMethodNotAllowedException('The current cart/order value is higher than the allowed max value');
         }
     }
 }

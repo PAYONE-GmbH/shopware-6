@@ -28,7 +28,7 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
             'bankaccountholder' => $dataBag->get('payolutionAccountOwner'),
         ];
 
-        $this->applyBirthdayParameter($parameters, $dataBag);
+        $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
 
         return $parameters;
     }
