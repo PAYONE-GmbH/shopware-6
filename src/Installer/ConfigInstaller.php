@@ -19,6 +19,7 @@ class ConfigInstaller implements InstallerInterface
     public const CONFIG_FIELD_MERCHANT_ID = 'merchantId';
     public const CONFIG_FIELD_PORTAL_ID = 'portalId';
     public const CONFIG_FIELD_PORTAL_KEY = 'portalKey';
+    public const CONFIG_FIELD_TRANSACTION_MODE = 'transactionMode';
     public const CONFIG_FIELD_PAYOLUTION_INVOICING_TRANSFER_COMPANY_DATA = 'payolutionInvoicingTransferCompanyData';
     public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_NAME = 'payolutionInstallmentChannelName';
     public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_PASSWORD = 'payolutionInstallmentChannelPassword';

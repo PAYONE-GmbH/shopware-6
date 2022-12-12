@@ -36,6 +36,7 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_POSTFINANCE_CARD = 'postfinanceCard';
     public const CONFIGURATION_PREFIX_POSTFINANCE_WALLET = 'postfinanceWallet';
     public const CONFIGURATION_PREFIX_ALIPAY = 'alipay';
+    public const CONFIGURATION_PREFIX_SECURED_INVOICE = 'securedInvoice';
 
     public const CONFIGURATION_PREFIXES = [
         Handler\PayoneApplePayPaymentHandler::class => self::CONFIGURATION_PREFIX_APPLE_PAY,
@@ -66,5 +67,6 @@ interface ConfigurationPrefixes
         Handler\PayonePostfinanceCardPaymentHandler::class => self::CONFIGURATION_PREFIX_POSTFINANCE_CARD,
         Handler\PayonePostfinanceWalletPaymentHandler::class => self::CONFIGURATION_PREFIX_POSTFINANCE_WALLET,
         Handler\PayoneAlipayPaymentHandler::class => self::CONFIGURATION_PREFIX_ALIPAY,
+        Handler\PayoneSecuredInvoicePaymentHandler::class => self::CONFIGURATION_PREFIX_SECURED_INVOICE,
     ];
 }

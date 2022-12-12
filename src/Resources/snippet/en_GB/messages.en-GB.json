@@ -231,6 +231,17 @@
                     "label": "Phone number"
                 }
             }
+        },
+        "securedInvoice": {
+            "general": {
+                "consentText": "By placing this order, I agree to the supplementary payment terms and <a href=\"https://legal.paylater.payone.com/en/terms-of-payment.html\" title=\"https://legal.paylater.payone.com/en/terms-of-payment.html\" target=\"_blank\">the risk assessment for the selected payment method</a>. I am aware of the <a href=\"https://legal.paylater.payone.com/en/data-protection-payments.html\" title=\"https://legal.paylater.payone.com/en/data-protection-payments.html\" target=\"_blank\">additional data protection</a> notice."
+            },
+            "birthday": {
+                "label": "Date of birth"
+            },
+            "phoneNumber": {
+                "label": "Phone number"
+            }
         }
     },
     "error": {

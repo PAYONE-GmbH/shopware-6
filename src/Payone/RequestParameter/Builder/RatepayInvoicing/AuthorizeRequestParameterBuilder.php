@@ -31,11 +31,11 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
             'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPV,
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
             'add_paydata[shop_id]' => $profile->getShopId(),
-            'add_paydata[device_token]' => $this->deviceFingerprintService->getDeviceIdentToken(),
+            'add_paydata[device_token]' => $this->deviceFingerprintService->getDeviceIdentToken($salesChannelContext),
         ];
 
-        $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
-        $this->applyBirthdayParameter($parameters, $dataBag);
+        $this->applyPhoneParameter($order, $parameters, $dataBag->get('ratepayPhone') ?? '', $context);
+        $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
 
         if ($order->getLineItems() !== null) {
             $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order, $context));

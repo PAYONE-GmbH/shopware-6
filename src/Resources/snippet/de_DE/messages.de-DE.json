@@ -231,6 +231,17 @@
                     "label": "Telefonnummer"
                 }
             }
+        },
+        "securedInvoice": {
+            "general": {
+                "consentText": "Mit dieser Bestellung erkläre ich mich mit den zusätzlichen Zahlungsbedingungen und der <a href=\"https://legal.paylater.payone.com/de/terms-of-payment.html\" title=\"https://legal.paylater.payone.com/de/terms-of-payment.html\" target=\"_blank\">Risikobewertung für die gewählte Zahlungsart</a> einverstanden. Ich habe den <a href=\"https://legal.paylater.payone.com/de/data-protection-payments.html\" title=\"https://legal.paylater.payone.com/de/data-protection-payments.html\" target=\"_blank\">zusätzlichen Datenschutzhinweis</a> zur Kenntnis genommen."
+            },
+            "birthday": {
+                "label": "Geburtsdatum"
+            },
+            "phoneNumber": {
+                "label": "Telefonnummer"
+            }
         }
     },
     "error": {

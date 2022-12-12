@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\RatepayDebit;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
+use PayonePayment\Components\DeviceFingerprint\RatepayDeviceFingerprintService;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
-use PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -28,7 +28,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
     {
         $this->setValidRatepayProfiles($this->getContainer(), $this->getValidPaymentHandler());
         $this->getContainer()->get(SessionInterface::class)->set(
-            DeviceFingerprintService::SESSION_VAR_NAME,
+            RatepayDeviceFingerprintService::SESSION_VAR_NAME,
             'the-device-ident-token'
         );
 

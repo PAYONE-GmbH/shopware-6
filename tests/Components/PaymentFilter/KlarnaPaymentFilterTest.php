@@ -44,6 +44,21 @@ class KlarnaPaymentFilterTest extends AbstractPaymentFilterTest
         return $currency;
     }
 
+    protected function getTooLowValue(): ?float
+    {
+        return null;
+    }
+
+    protected function getTooHighValue(): ?float
+    {
+        return null;
+    }
+
+    protected function getAllowedValue(): float
+    {
+        return 100.0;
+    }
+
     protected function getPaymentHandlerClass(): string
     {
         return PayoneKlarnaInvoicePaymentHandler::class;
