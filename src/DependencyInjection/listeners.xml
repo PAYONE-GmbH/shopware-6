@@ -110,10 +110,5 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="PayonePayment\EventListener\CheckoutConfirmRestrictPaymentEventListener">
-            <argument type="service" id="PayonePayment\Components\PaymentFilter\IterablePaymentFilter"/>
-            <tag name="kernel.event_subscriber"/>
-        </service>
-
     </services>
 </container>

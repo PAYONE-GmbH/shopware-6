@@ -3,7 +3,6 @@
 namespace PayonePayment\Components\PaymentFilter;
 
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
-use Shopware\Storefront\Page\PageLoadedEvent;
 
 class IterablePaymentFilter implements PaymentFilterServiceInterface
 {
@@ -17,19 +16,12 @@ class IterablePaymentFilter implements PaymentFilterServiceInterface
         $this->services = $services;
     }
 
-    public function filterPaymentMethods(PaymentMethodCollection $methodCollection, string $currencyIso, $billingAddress = null, $shippingAddress = null): PaymentMethodCollection
-    {
+    public function filterPaymentMethods(
+        PaymentMethodCollection $methodCollection,
+        PaymentFilterContext $filterContext
+    ): PaymentMethodCollection {
         foreach ($this->services as $service) {
-            $methodCollection = $service->filterPaymentMethods($methodCollection, $currencyIso, $billingAddress, $shippingAddress);
-        }
-
-        return $methodCollection;
-    }
-
-    public function filterPaymentMethodsAdditionalCheck(PaymentMethodCollection $methodCollection, PageLoadedEvent $event): PaymentMethodCollection
-    {
-        foreach ($this->services as $service) {
-            $methodCollection = $service->filterPaymentMethodsAdditionalCheck($methodCollection, $event);
+            $methodCollection = $service->filterPaymentMethods($methodCollection, $filterContext);
         }
 
         return $methodCollection;
