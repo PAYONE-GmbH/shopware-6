@@ -5,6 +5,29 @@
 
     <services>
 
+        <service id="PayonePayment\Components\PaymentFilter\PaymentFilterContextFactory">
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
+        </service>
+        <service id="PayonePayment\Components\PaymentFilter\PaymentFilterContextFactoryInterface"
+                 alias="PayonePayment\Components\PaymentFilter\PaymentFilterContextFactory"/>
+
+        <service id="PayonePayment\Components\PaymentFilter\FilteredPaymentMethodRoute"
+                 decorates="Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRoute"
+                 decoration-priority="-1500"> <!-- Priority needs to be higher than Shopware\Core\Checkout\Payment\SalesChannel\CachedPaymentMethodRoute -->
+            <argument type="service" id="PayonePayment\Components\PaymentFilter\FilteredPaymentMethodRoute.inner"/>
+            <argument type="service" id="PayonePayment\Components\PaymentFilter\IterablePaymentFilter"/>
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+            <argument type="service" id="PayonePayment\Components\PaymentFilter\PaymentFilterContextFactoryInterface"/>
+        </service>
+
+        <service id="PayonePayment\Components\PaymentFilter\PayonePaymentMethodValidator">
+            <argument type="service" id="PayonePayment\Components\PaymentFilter\IterablePaymentFilter"/>
+            <argument type="service" id="PayonePayment\Components\PaymentFilter\PaymentFilterContextFactoryInterface"/>
+            <tag name="shopware.cart.validator"/>
+        </service>
+
         <service id="PayonePayment\Components\PaymentFilter\IterablePaymentFilter">
             <argument type="tagged_iterator" tag="payone.payment_method.filter"/>
         </service>

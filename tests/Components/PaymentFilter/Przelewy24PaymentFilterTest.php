@@ -6,6 +6,7 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\Components\PaymentFilter\PaymentFilterServiceInterface;
 use PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler;
+use Shopware\Core\System\Currency\CurrencyEntity;
 
 /**
  * @covers \PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService
@@ -27,14 +28,20 @@ class Przelewy24PaymentFilterTest extends AbstractPaymentFilterTest
         return 'PL';
     }
 
-    protected function getDisallowedCurrency(): string
+    protected function getDisallowedCurrency(): CurrencyEntity
     {
-        return 'EUR';
+        $currency = $this->createMock(CurrencyEntity::class);
+        $currency->method('getIsoCode')->willReturn('EUR');
+
+        return $currency;
     }
 
-    protected function getAllowedCurrency(): string
+    protected function getAllowedCurrency(): CurrencyEntity
     {
-        return 'PLN';
+        $currency = $this->createMock(CurrencyEntity::class);
+        $currency->method('getIsoCode')->willReturn('PLN');
+
+        return $currency;
     }
 
     protected function getPaymentHandlerClass(): string

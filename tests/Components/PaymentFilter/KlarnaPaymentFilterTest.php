@@ -6,6 +6,7 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\Components\PaymentFilter\PaymentFilterServiceInterface;
 use PayonePayment\PaymentHandler\PayoneKlarnaInvoicePaymentHandler;
+use Shopware\Core\System\Currency\CurrencyEntity;
 
 /**
  * @covers \PayonePayment\Components\PaymentFilter\KlarnaPaymentMethodFilter
@@ -27,14 +28,20 @@ class KlarnaPaymentFilterTest extends AbstractPaymentFilterTest
         return 'DE';
     }
 
-    protected function getDisallowedCurrency(): string
+    protected function getDisallowedCurrency(): CurrencyEntity
     {
-        return 'CZK';
+        $currency = $this->createMock(CurrencyEntity::class);
+        $currency->method('getIsoCode')->willReturn('CZK');
+
+        return $currency;
     }
 
-    protected function getAllowedCurrency(): string
+    protected function getAllowedCurrency(): CurrencyEntity
     {
-        return 'EUR';
+        $currency = $this->createMock(CurrencyEntity::class);
+        $currency->method('getIsoCode')->willReturn('EUR');
+
+        return $currency;
     }
 
     protected function getPaymentHandlerClass(): string

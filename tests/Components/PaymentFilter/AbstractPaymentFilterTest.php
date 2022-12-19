@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
+use PayonePayment\Components\PaymentFilter\PaymentFilterContext;
 use PayonePayment\Components\PaymentFilter\PaymentFilterServiceInterface;
 use PayonePayment\TestCaseBase\ConfigurationHelper;
 use PayonePayment\TestCaseBase\Mock\PaymentHandler\PaymentHandlerMock;
@@ -13,6 +14,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Country\CountryEntity;
+use Shopware\Core\System\Currency\CurrencyEntity;
 
 abstract class AbstractPaymentFilterTest extends TestCase
 {
@@ -29,11 +31,14 @@ abstract class AbstractPaymentFilterTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $salesChannelContext->getCustomer()->getActiveBillingAddress()->setCountry($country);
 
-        $result = $this->getFilterService()->filterPaymentMethods(
-            $methods,
-            $this->getAllowedCurrency(),
-            $salesChannelContext->getCustomer()->getActiveBillingAddress()
+        $filterContext = new PaymentFilterContext(
+            $salesChannelContext,
+            $salesChannelContext->getCustomer()->getActiveBillingAddress(),
+            null,
+            $this->getAllowedCurrency()
         );
+
+        $result = $this->getFilterService()->filterPaymentMethods($methods, $filterContext);
 
         static::assertNotInPaymentCollection($this->getPaymentHandlerClass(), $result);
         static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
@@ -49,11 +54,14 @@ abstract class AbstractPaymentFilterTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $salesChannelContext->getCustomer()->getActiveBillingAddress()->setCountry($country);
 
-        $result = $this->getFilterService()->filterPaymentMethods(
-            $methods,
-            $this->getDisallowedCurrency(),
-            $salesChannelContext->getCustomer()->getActiveBillingAddress()
+        $filterContext = new PaymentFilterContext(
+            $salesChannelContext,
+            $salesChannelContext->getCustomer()->getActiveBillingAddress(),
+            null,
+            $this->getDisallowedCurrency()
         );
+
+        $result = $this->getFilterService()->filterPaymentMethods($methods, $filterContext);
 
         static::assertNotInPaymentCollection($this->getPaymentHandlerClass(), $result);
         static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
@@ -69,11 +77,14 @@ abstract class AbstractPaymentFilterTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $salesChannelContext->getCustomer()->getActiveBillingAddress()->setCountry($country);
 
-        $result = $this->getFilterService()->filterPaymentMethods(
-            $methods,
-            $this->getAllowedCurrency(),
-            $salesChannelContext->getCustomer()->getActiveBillingAddress()
+        $filterContext = new PaymentFilterContext(
+            $salesChannelContext,
+            $salesChannelContext->getCustomer()->getActiveBillingAddress(),
+            null,
+            $this->getAllowedCurrency()
         );
+
+        $result = $this->getFilterService()->filterPaymentMethods($methods, $filterContext);
 
         static::assertInPaymentCollection($this->getPaymentHandlerClass(), $result);
         static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
@@ -85,9 +96,9 @@ abstract class AbstractPaymentFilterTest extends TestCase
 
     abstract protected function getAllowedBillingCountry(): string;
 
-    abstract protected function getDisallowedCurrency(): string;
+    abstract protected function getDisallowedCurrency(): CurrencyEntity;
 
-    abstract protected function getAllowedCurrency(): string;
+    abstract protected function getAllowedCurrency(): CurrencyEntity;
 
     /**
      * @return class-string

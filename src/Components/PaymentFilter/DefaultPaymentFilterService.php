@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
+use PayonePayment\Components\PaymentFilter\Exception\PaymentMethodNotAllowedException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Storefront\Page\PageLoadedEvent;
+use Shopware\Core\System\Currency\CurrencyEntity;
 
 class DefaultPaymentFilterService implements PaymentFilterServiceInterface
 {
@@ -38,13 +39,21 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
         $this->allowedCurrencies = $allowedCurrencies;
     }
 
-    public function filterPaymentMethods(PaymentMethodCollection $methodCollection, string $currencyIso, $billingAddress = null, $shippingAddress = null): PaymentMethodCollection
-    {
-        if ($this->isCurrencyAllowed($currencyIso) && (!$billingAddress || $this->isAddressAllowed($billingAddress))) {
-            return $methodCollection;
+    public function filterPaymentMethods(
+        PaymentMethodCollection $methodCollection,
+        PaymentFilterContext $filterContext
+    ): PaymentMethodCollection {
+        $currency = $filterContext->getCurrency();
+        $billingAddress = $filterContext->getBillingAddress();
+
+        try {
+            $this->validateCurrency($currency);
+            $this->validateAddress($billingAddress);
+        } catch (PaymentMethodNotAllowedException $e) {
+            $methodCollection = $this->removePaymentMethod($methodCollection);
         }
 
-        return $this->removePaymentMethod($methodCollection);
+        return $methodCollection;
     }
 
     /**
@@ -61,11 +70,6 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
             : $paymentMethod->getHandlerIdentifier() === $this->paymentHandlerClass;
     }
 
-    public function filterPaymentMethodsAdditionalCheck(PaymentMethodCollection $methodCollection, PageLoadedEvent $event): PaymentMethodCollection
-    {
-        return $methodCollection;
-    }
-
     protected function removePaymentMethod(PaymentMethodCollection $paymentMethodCollection): PaymentMethodCollection
     {
         $that = $this;
@@ -76,19 +80,32 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
     }
 
     /**
-     * @param CustomerAddressEntity|OrderAddressEntity $address
+     * @param CustomerAddressEntity|OrderAddressEntity|null $address
      */
-    private function isAddressAllowed($address): bool
+    private function validateAddress($address): void
     {
-        $country = $address->getCountry();
+        if (!$address) {
+            return;
+        }
 
-        return $country
-            && ($this->allowedCountries === null || \in_array($country->getIso(), $this->allowedCountries, true))
-            && (!$address->getCompany() || $this->allowedB2bCountries === null || \in_array($country->getIso(), $this->allowedB2bCountries, true));
+        $country = $address->getCountry();
+        if (!$country) {
+            return;
+        }
+
+        if ($this->allowedCountries !== null && !\in_array($country->getIso(), $this->allowedCountries, true)) {
+            throw new PaymentMethodNotAllowedException('Country is not allowed');
+        }
+
+        if ($address->getCompany() && $this->allowedB2bCountries !== null && !\in_array($country->getIso(), $this->allowedB2bCountries, true)) {
+            throw new PaymentMethodNotAllowedException('Country is not allowed for B2B');
+        }
     }
 
-    private function isCurrencyAllowed(string $currencyCode): bool
+    private function validateCurrency(?CurrencyEntity $currency): void
     {
-        return $this->allowedCurrencies === null || \in_array($currencyCode, $this->allowedCurrencies, true);
+        if ($currency && $this->allowedCurrencies !== null && !\in_array($currency->getIsoCode(), $this->allowedCurrencies, true)) {
+            throw new PaymentMethodNotAllowedException('Currency is not allowed');
+        }
     }
 }
