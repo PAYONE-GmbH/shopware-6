@@ -110,12 +110,5 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="PayonePayment\EventListener\CheckoutConfirmKlarnaRestrictPaymentEventListener">
-            <tag name="kernel.event_subscriber"/>
-        </service>
-
-        <service id="PayonePayment\EventListener\CheckoutConfirmPrzelewy24EventListener">
-            <tag name="kernel.event_subscriber"/>
-        </service>
     </services>
 </container>
