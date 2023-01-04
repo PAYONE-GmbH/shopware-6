@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Handler;
 
+use PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureServiceInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Constants;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
@@ -45,12 +46,16 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         ];
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
-        $transactionDataHandler->expects(static::once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
+        $transactionDataHandler->expects(static::exactly(2))->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
         $transactionDataHandler->expects(static::once())->method('getTransactionDataFromWebhook')->willReturn($transactionData);
+
+        $automaticCaptureService = $this->createMock(AutomaticCaptureServiceInterface::class);
+        $automaticCaptureService->expects(static::once())->method('captureIfPossible');
 
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
             $transactionStatusService,
-            $transactionDataHandler
+            $transactionDataHandler,
+            $automaticCaptureService
         );
 
         $transactionStatusHandler->process(
@@ -92,12 +97,16 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         ];
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
-        $transactionDataHandler->expects(static::once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
+        $transactionDataHandler->expects(static::exactly(2))->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
         $transactionDataHandler->expects(static::once())->method('getTransactionDataFromWebhook')->willReturn($transactionData);
+
+        $automaticCaptureService = $this->createMock(AutomaticCaptureServiceInterface::class);
+        $automaticCaptureService->expects(static::once())->method('captureIfPossible');
 
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
             $transactionStatusService,
-            $transactionDataHandler
+            $transactionDataHandler,
+            $automaticCaptureService
         );
 
         $transactionStatusHandler->process(
@@ -139,12 +148,16 @@ class TransactionStatusWebhookHandlerTest extends TestCase
         ];
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
-        $transactionDataHandler->expects(static::once())->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
+        $transactionDataHandler->expects(static::exactly(2))->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
         $transactionDataHandler->expects(static::once())->method('getTransactionDataFromWebhook')->willReturn($transactionData);
+
+        $automaticCaptureService = $this->createMock(AutomaticCaptureServiceInterface::class);
+        $automaticCaptureService->expects(static::once())->method('captureIfPossible');
 
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
             $transactionStatusService,
-            $transactionDataHandler
+            $transactionDataHandler,
+            $automaticCaptureService
         );
 
         $transactionStatusHandler->process(

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Handler;
 
+use PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureServiceInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\Struct\PaymentTransaction;
@@ -19,14 +20,18 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
 
     private LoggerInterface $logger;
 
+    private AutomaticCaptureServiceInterface $automaticCaptureService;
+
     public function __construct(
         TransactionStatusServiceInterface $transactionStatusService,
         TransactionDataHandlerInterface $transactionDataHandler,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        AutomaticCaptureServiceInterface $automaticCaptureService
     ) {
         $this->transactionStatusService = $transactionStatusService;
         $this->transactionDataHandler = $transactionDataHandler;
         $this->logger = $logger;
+        $this->automaticCaptureService = $automaticCaptureService;
     }
 
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool
@@ -64,6 +69,17 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
 
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $payoneTransactionData);
         $this->transactionStatusService->transitionByConfigMapping($salesChannelContext, $paymentTransaction, $data);
+
+        // Reload the paymentTransaction for automatic capture
+        /** @var PaymentTransaction|null $paymentTransaction */
+        $paymentTransaction = $this->transactionDataHandler->getPaymentTransactionByPayoneTransactionId(
+            $salesChannelContext->getContext(),
+            (int) $data['txid']
+        );
+
+        if ($paymentTransaction) {
+            $this->automaticCaptureService->captureIfPossible($paymentTransaction, $salesChannelContext);
+        }
     }
 
     private function utf8EncodeRecursive(array $transactionData): array

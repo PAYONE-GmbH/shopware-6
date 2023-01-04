@@ -34,6 +34,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             ->addFilter(new EqualsFilter(PayonePaymentOrderTransactionExtension::NAME . '.transactionId', $payoneTransactionId))
             ->addAssociation('paymentMethod')
             ->addAssociation('order')
+            ->addAssociation('order.lineItems')
             ->addAssociation('order.currency');
 
         /** @var OrderTransactionEntity|null $transaction */
