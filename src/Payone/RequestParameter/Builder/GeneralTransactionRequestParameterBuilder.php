@@ -180,6 +180,6 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
             return '';
         }
 
-        return sprintf('_%d', $transactions->count());
+        return sprintf('.%d', $transactions->count());
     }
 }
