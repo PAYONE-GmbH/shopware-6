@@ -465,6 +465,21 @@ class SettingsController extends AbstractController
                     'backurl' => 'https://www.payone.com',
                 ];
 
+            case Handler\PayoneWeChatPayPaymentHandler::class:
+                return [
+                    'request' => 'preauthorization',
+                    'clearingtype' => 'wlt',
+                    'wallettype' => 'WCP',
+                    'amount' => 100,
+                    'country' => 'DE',
+                    'currency' => 'EUR',
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'lastname' => 'Test',
+                    'successurl' => 'https://www.payone.com',
+                    'errorurl' => 'https://www.payone.com',
+                    'backurl' => 'https://www.payone.com',
+                ];
+
             default:
                 $this->logger->error(sprintf('There is no test data defined for payment class %s', $paymentClass));
 

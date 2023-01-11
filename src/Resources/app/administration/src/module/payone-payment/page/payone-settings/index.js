@@ -56,6 +56,7 @@ Component.register('payone-settings', {
                 'payment_klarna_direct_debit': true,
                 'payment_klarna_installment': true,
                 'payment_przelewy24': true,
+                'payment_we_chat_pay': true,
             },
         };
     },
@@ -129,6 +130,7 @@ Component.register('payone-settings', {
                 'klarnaDirectDebit',
                 'klarnaInstallment',
                 'przelewy24',
+                'weChatPay',
             ];
         },
 

@@ -30,6 +30,7 @@ use PayonePayment\PaymentMethod\PayoneRatepayInvoicing;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\PaymentMethod\PayoneSofortBanking;
 use PayonePayment\PaymentMethod\PayoneTrustly;
+use PayonePayment\PaymentMethod\PayoneWeChatPay;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
@@ -70,6 +71,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneKlarnaDirectDebit::class => '31af2cbeda5242bfbfe4531e203f8a42',
         PayoneKlarnaInstallment::class => 'a18ffddd4baf4948b8c9f9d3d8abd2d4',
         PayonePrzelewy24::class => '6068e01cef8b4c9698956c6cca648d50',
+        PayoneWeChatPay::class => 'e9647d765b284cea9c4c0d68005665b7',
     ];
 
     public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
@@ -99,6 +101,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneKlarnaDirectDebit::class,
         PayoneKlarnaInstallment::class,
         PayonePrzelewy24::class,
+        PayoneWeChatPay::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [

@@ -15,6 +15,7 @@ use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
+use PayonePayment\PaymentHandler\PayoneWeChatPayPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 
@@ -70,6 +71,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneRatepayInstallmentPaymentHandler::class:
             case PayoneRatepayInvoicingPaymentHandler::class:
             case PayonePrzelewy24PaymentHandler::class:
+            case PayoneWeChatPayPaymentHandler::class:
                 return true;
         }
 

@@ -112,7 +112,8 @@
                 "klarnaInvoice": "Die API-Zugangsdaten für PAYONE Klarna Rechnung sind nicht korrekt.",
                 "klarnaDirectDebit": "Die API-Zugangsdaten für PAYONE Klarna Sofort bezahlen sind nicht korrekt.",
                 "klarnaInstallment": "Die API-Zugangsdaten für PAYONE Klarna Ratenkauf sind nicht korrekt.",
-                "przelewy24": "Die API-Zugangsdaten für PAYONE Przelewy24 sind nicht korrekt."
+                "przelewy24": "Die API-Zugangsdaten für PAYONE Przelewy24 sind nicht korrekt.",
+                "weChatPay": "Die API-Zugangsdaten für PAYONE WeChat Pay sind nicht korrekt."
             }
         },
         "supportModal": {
