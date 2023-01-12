@@ -320,5 +320,31 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
+        <service id="PayonePayment\PaymentHandler\PayonePostfinanceCardPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClientInterface" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
+            <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="PayonePayment\PaymentHandler\PayonePostfinanceWalletPaymentHandler">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+            <argument type="service" id="order_line_item.repository" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClientInterface" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
+            <argument type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
     </services>
 </container>

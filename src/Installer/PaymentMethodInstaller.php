@@ -22,6 +22,8 @@ use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
+use PayonePayment\PaymentMethod\PayonePostfinanceCard;
+use PayonePayment\PaymentMethod\PayonePostfinanceWallet;
 use PayonePayment\PaymentMethod\PayonePrepayment;
 use PayonePayment\PaymentMethod\PayonePrzelewy24;
 use PayonePayment\PaymentMethod\PayoneRatepayDebit;
@@ -72,6 +74,8 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneKlarnaInstallment::class => 'a18ffddd4baf4948b8c9f9d3d8abd2d4',
         PayonePrzelewy24::class => '6068e01cef8b4c9698956c6cca648d50',
         PayoneWeChatPay::class => 'e9647d765b284cea9c4c0d68005665b7',
+        PayonePostfinanceCard::class => '8b4503f88a7746069a670e1689908832',
+        PayonePostfinanceWallet::class => 'cd65c7f9c0cc4e0886799f7cc7407494',
     ];
 
     public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
@@ -102,6 +106,8 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneKlarnaInstallment::class,
         PayonePrzelewy24::class,
         PayoneWeChatPay::class,
+        PayonePostfinanceCard::class,
+        PayonePostfinanceWallet::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [
@@ -124,6 +130,8 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneKlarnaInvoice::class,
         PayoneKlarnaDirectDebit::class,
         PayoneKlarnaInstallment::class,
+        PayonePostfinanceCard::class,
+        PayonePostfinanceWallet::class,
     ];
 
     private PluginIdProvider $pluginIdProvider;

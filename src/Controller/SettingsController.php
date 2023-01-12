@@ -480,6 +480,39 @@ class SettingsController extends AbstractController
                     'backurl' => 'https://www.payone.com',
                 ];
 
+            case Handler\PayonePostfinanceCardPaymentHandler::class:
+                return [
+                    'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
+                    'add_paydata[action]' => 'register_alias',
+                    'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
+                    'onlinebanktransfertype' => \PayonePayment\Payone\RequestParameter\Builder\Postfinance\AbstractRequestParameterBuilder::ONLINEBANK_TRANSFER_TYPE_CARD,
+                    'bankcountry' => 'CH',
+                    'amount' => 100,
+                    'currency' => 'CHF',
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'lastname' => 'Test',
+                    'country' => 'CH',
+                    'successurl' => 'https://www.payone.com',
+                    'errorurl' => 'https://www.payone.com',
+                    'backurl' => 'https://www.payone.com',
+                ];
+            case Handler\PayonePostfinanceWalletPaymentHandler::class:
+                return [
+                    'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
+                    'add_paydata[action]' => 'register_alias',
+                    'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
+                    'onlinebanktransfertype' => \PayonePayment\Payone\RequestParameter\Builder\Postfinance\AbstractRequestParameterBuilder::ONLINEBANK_TRANSFER_TYPE_WALLET,
+                    'bankcountry' => 'CH',
+                    'amount' => 100,
+                    'currency' => 'CHF',
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'lastname' => 'Test',
+                    'country' => 'CH',
+                    'successurl' => 'https://www.payone.com',
+                    'errorurl' => 'https://www.payone.com',
+                    'backurl' => 'https://www.payone.com',
+                ];
+
             default:
                 $this->logger->error(sprintf('There is no test data defined for payment class %s', $paymentClass));
 
