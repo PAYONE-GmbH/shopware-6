@@ -6,6 +6,7 @@ namespace PayonePayment\Installer;
 
 use Doctrine\DBAL\Connection;
 use PayonePayment\PaymentMethod\PaymentMethodInterface;
+use PayonePayment\PaymentMethod\PayoneAlipay;
 use PayonePayment\PaymentMethod\PayoneApplePay;
 use PayonePayment\PaymentMethod\PayoneBancontact;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
@@ -76,6 +77,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneWeChatPay::class => 'e9647d765b284cea9c4c0d68005665b7',
         PayonePostfinanceCard::class => '8b4503f88a7746069a670e1689908832',
         PayonePostfinanceWallet::class => 'cd65c7f9c0cc4e0886799f7cc7407494',
+        PayoneAlipay::class => 'fef3c750f8e94a6abb7d0a8061ac9faf',
     ];
 
     public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
@@ -108,6 +110,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneWeChatPay::class,
         PayonePostfinanceCard::class,
         PayonePostfinanceWallet::class,
+        PayoneAlipay::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [

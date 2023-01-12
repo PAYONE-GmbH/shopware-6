@@ -478,6 +478,19 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <!-- Alipay -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Alipay\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Alipay\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
         <!-- Capture -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Capture\CaptureRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">

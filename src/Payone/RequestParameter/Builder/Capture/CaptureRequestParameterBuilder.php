@@ -8,6 +8,7 @@ use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
+use PayonePayment\PaymentHandler\PayoneAlipayPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneIDealPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler;
@@ -86,7 +87,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
             $parameters['clearingtype'] = $transactionData->getClearingType();
         }
 
-        if (\in_array($arguments->getPaymentMethod(), [PayoneBancontactPaymentHandler::class, PayonePrzelewy24PaymentHandler::class, PayoneWeChatPayPaymentHandler::class], true)) {
+        if (\in_array($arguments->getPaymentMethod(), [PayoneBancontactPaymentHandler::class, PayonePrzelewy24PaymentHandler::class, PayoneWeChatPayPaymentHandler::class, PayoneAlipayPaymentHandler::class], true)) {
             $isCompleted = $parameters['capturemode'] === self::CAPTUREMODE_COMPLETED;
             $parameters['settleaccount'] = $isCompleted ? self::SETTLEACCOUNT_YES : self::SETTLEACCOUNT_NO;
         }

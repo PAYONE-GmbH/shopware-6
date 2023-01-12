@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\PaymentHandler\AbstractPostfinancePaymentHandler;
+use PayonePayment\PaymentHandler\PayoneAlipayPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
@@ -73,6 +74,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneRatepayInvoicingPaymentHandler::class:
             case PayonePrzelewy24PaymentHandler::class:
             case PayoneWeChatPayPaymentHandler::class:
+            case PayoneAlipayPaymentHandler::class:
                 return true;
         }
 
