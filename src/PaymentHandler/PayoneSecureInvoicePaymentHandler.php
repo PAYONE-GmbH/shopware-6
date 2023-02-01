@@ -4,8 +4,23 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\Components\Validator\Birthday;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
 class PayoneSecureInvoicePaymentHandler extends AbstractPayoneInvoicePaymentHandler
 {
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    {
+        $definitions = parent::getValidationDefinitions($salesChannelContext);
+
+        if (!$this->customerHasCompanyAddress($salesChannelContext)) {
+            $definitions['payoneInvoiceBirthday'] = [new NotBlank(), new Birthday(['value' => $this->getMinimumDate()])];
+        }
+
+        return $definitions;
+    }
+
     /**
      * {@inheritdoc}
      */

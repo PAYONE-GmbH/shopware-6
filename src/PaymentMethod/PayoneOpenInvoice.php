@@ -19,7 +19,7 @@ class PayoneOpenInvoice extends AbstractPaymentMethod
 
     protected string $paymentHandler = PayoneOpenInvoicePaymentHandler::class;
 
-    protected ?string $template = '@Storefront/storefront/payone/open-invoice/open-invoice.html.twig';
+    protected ?string $template = null;
 
     protected array $translations = [
         'de-DE' => [
