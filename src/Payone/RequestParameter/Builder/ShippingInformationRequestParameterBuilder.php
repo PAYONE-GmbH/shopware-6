@@ -10,6 +10,7 @@ use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
@@ -59,6 +60,7 @@ class ShippingInformationRequestParameterBuilder extends AbstractRequestParamete
                 PayonePayolutionDebitPaymentHandler::class,
                 PayonePayolutionInstallmentPaymentHandler::class,
                 PayoneSecuredInvoicePaymentHandler::class,
+                PayoneSecuredInstallmentPaymentHandler::class,
             ],
             true
         );

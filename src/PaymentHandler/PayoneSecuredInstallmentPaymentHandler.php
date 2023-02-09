@@ -21,7 +21,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class PayoneSecuredInvoicePaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
+class PayoneSecuredInstallmentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
     private PayoneClientInterface $client;
 
@@ -62,7 +62,7 @@ class PayoneSecuredInvoicePaymentHandler extends AbstractPayonePaymentHandler im
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
-            'securedInvoiceAuthorizationMethod',
+            'securedInstallmentAuthorizationMethod',
             'preauthorization'
         );
 
@@ -106,8 +106,9 @@ class PayoneSecuredInvoicePaymentHandler extends AbstractPayonePaymentHandler im
         }
 
         $data = $this->preparePayoneOrderTransactionData($request, $response, [
+            // ToDo: Daten anpassen?
             'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-            'financingType' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PIV,
+            'financingType' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PIN,
 
             // Store clearing bank account information as custom field of the transaction in order to
             // use this data for payment instructions of an invoice or similar.

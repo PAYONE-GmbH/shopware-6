@@ -16,6 +16,7 @@ use PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneWeChatPayPaymentHandler;
@@ -57,6 +58,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
         // For specific payment methods the "pr" parameter must be negative on refunds
         $paymentMethodsThatRequireNegativePriceForRefunds = [
             PayoneSecuredInvoicePaymentHandler::class,
+            PayoneSecuredInstallmentPaymentHandler::class,
         ];
         if ($arguments->getAction() === self::REQUEST_ACTION_REFUND
             && \in_array($arguments->getPaymentMethod(), $paymentMethodsThatRequireNegativePriceForRefunds, true)) {
@@ -92,6 +94,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneWeChatPayPaymentHandler::class:
             case PayoneAlipayPaymentHandler::class:
             case PayoneSecuredInvoicePaymentHandler::class:
+            case PayoneSecuredInstallmentPaymentHandler::class:
                 return true;
         }
 

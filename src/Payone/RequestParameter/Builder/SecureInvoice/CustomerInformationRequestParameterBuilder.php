@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\SecureInvoice;
 
 use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
@@ -71,7 +72,9 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
         return \in_array($arguments->getPaymentMethod(), [
             PayoneSecureInvoicePaymentHandler::class,
             PayoneOpenInvoicePaymentHandler::class,
+            // ToDo: Die gehören hier eigentlich nicht rein. Klasse entweder kopieren oder außerhalb von "SecureInvoice" platzieren
             PayoneSecuredInvoicePaymentHandler::class,
+            PayoneSecuredInstallmentPaymentHandler::class,
         ], true);
     }
 

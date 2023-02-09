@@ -12,7 +12,6 @@ use PayonePayment\PaymentHandler\PayoneAlipayPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneIDealPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler;
-use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneWeChatPayPaymentHandler;
@@ -102,7 +101,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
             $parameters['settleaccount'] = self::SETTLEACCOUNT_YES;
         }
 
-        if ($arguments->getPaymentMethod() === PayoneSecuredInvoicePaymentHandler::class) {
+        if (\in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::BNPL, true)) {
             unset($parameters['capturemode']);
         }
 

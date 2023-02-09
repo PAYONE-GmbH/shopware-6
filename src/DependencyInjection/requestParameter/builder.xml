@@ -482,7 +482,7 @@
         <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredInvoice\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
-            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\SecuredInvoiceDeviceFingerprintService"/>
+            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
             <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
             <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
             <argument type="service" id="customer.repository"/>
@@ -493,10 +493,42 @@
         <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredInvoice\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\SecuredInvoice\AuthorizeRequestParameterBuilder">
             <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
-            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\SecuredInvoiceDeviceFingerprintService"/>
+            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
             <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
             <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
             <argument type="service" id="customer.repository"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <!-- Secured Installment -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredInstallment\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
+            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
+            <argument type="service" id="customer.repository"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredInstallment\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\SecuredInstallment\AuthorizeRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
+            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
+            <argument type="service" id="customer.repository"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredInstallment\InstallmentOptionsRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+            <argument type="service" id="currency.repository"/>
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
             <tag name="payone_request_builder"/>
         </service>

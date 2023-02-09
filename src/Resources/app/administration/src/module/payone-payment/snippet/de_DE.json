@@ -117,7 +117,8 @@
                 "postfinanceCard": "Die API-Zugangsdaten für PAYONE Postfinance (Card) sind nicht korrekt.",
                 "postfinanceWallet": "Die API-Zugangsdaten für PAYONE Postfinance (Wallet) sind nicht korrekt.",
                 "alipay": "Die API-Zugangsdaten für PAYONE Alipay sind nicht korrekt.",
-                "securedInvoice": "Die API-Zugangsdaten für PAYONE Gesicherter Rechnungskauf sind nicht korrekt."
+                "securedInvoice": "Die API-Zugangsdaten für PAYONE Gesicherter Rechnungskauf sind nicht korrekt.",
+                "securedInstallment": "Die API-Zugangsdaten für PAYONE Gesicherter Ratenkauf sind nicht korrekt."
             }
         },
         "supportModal": {
