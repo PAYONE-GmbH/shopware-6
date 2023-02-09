@@ -19,9 +19,9 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 /**
- * @covers \PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler
+ * @covers \PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler
  */
-class PayoneSecuredInvoicePaymentHandlerTest extends TestCase
+class PayoneSecuredInstallmentPaymentHandlerTest extends TestCase
 {
     use PayoneTestBehavior;
 
@@ -61,14 +61,6 @@ class PayoneSecuredInvoicePaymentHandlerTest extends TestCase
                     $transactionData
                 );
 
-                Assert::assertArraySubset(
-                    [
-                        'Key' => 'Value',
-                        'Reference' => '123456789',
-                    ],
-                    $transactionData['clearingBankAccount']
-                );
-
                 return true;
             })
         );
@@ -98,8 +90,8 @@ class PayoneSecuredInvoicePaymentHandlerTest extends TestCase
         RequestParameterFactory $requestFactory,
         PayoneBNPLDeviceFingerprintService $deviceFingerprintService,
         RequestDataBag $dataBag
-    ): PayoneSecuredInvoicePaymentHandler {
-        return new PayoneSecuredInvoicePaymentHandler(
+    ): PayoneSecuredInstallmentPaymentHandler {
+        return new PayoneSecuredInstallmentPaymentHandler(
             $this->getContainer()->get(ConfigReader::class),
             $client,
             $this->getContainer()->get('translator'),

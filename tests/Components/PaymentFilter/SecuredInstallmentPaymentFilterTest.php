@@ -6,7 +6,7 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\Components\PaymentFilter\PaymentFilterContext;
 use PayonePayment\Components\PaymentFilter\PaymentFilterServiceInterface;
-use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
 use PayonePayment\TestCaseBase\Mock\PaymentHandler\PaymentHandlerMock;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -16,7 +16,7 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 /**
  * @covers \PayonePayment\Components\PaymentFilter\PayoneBNPLPaymentMethodFilter
  */
-class SecuredInvoicePaymentFilterTest extends AbstractPaymentFilterTest
+class SecuredInstallmentPaymentFilterTest extends AbstractPaymentFilterTest
 {
     public function testItHidesPaymentMethodForDifferentShippingAddressOnCheckout(): void
     {
@@ -77,7 +77,7 @@ class SecuredInvoicePaymentFilterTest extends AbstractPaymentFilterTest
 
     protected function getFilterService(): PaymentFilterServiceInterface
     {
-        return $this->getContainer()->get('payone.payment_filter_method.secured_invoice');
+        return $this->getContainer()->get('payone.payment_filter_method.secured_installment');
     }
 
     protected function getDisallowedBillingCountry(): string
@@ -108,21 +108,21 @@ class SecuredInvoicePaymentFilterTest extends AbstractPaymentFilterTest
 
     protected function getTooLowValue(): ?float
     {
-        return 1.0;
+        return 150.0;
     }
 
     protected function getTooHighValue(): ?float
     {
-        return 2000.0;
+        return 3600.0;
     }
 
     protected function getAllowedValue(): float
     {
-        return 100.0;
+        return 300.0;
     }
 
     protected function getPaymentHandlerClass(): string
     {
-        return PayoneSecuredInvoicePaymentHandler::class;
+        return PayoneSecuredInstallmentPaymentHandler::class;
     }
 }

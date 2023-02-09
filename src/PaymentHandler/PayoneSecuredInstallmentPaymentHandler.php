@@ -7,6 +7,7 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\DeviceFingerprint\AbstractDeviceFingerprintService;
+use PayonePayment\Components\Validator\Iban;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -21,7 +22,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class PayoneSecuredInvoicePaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
+class PayoneSecuredInstallmentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
     private PayoneClientInterface $client;
 
@@ -62,7 +63,7 @@ class PayoneSecuredInvoicePaymentHandler extends AbstractPayonePaymentHandler im
         // Get configured authorization method
         $authorizationMethod = $this->getAuthorizationMethod(
             $transaction->getOrder()->getSalesChannelId(),
-            'securedInvoiceAuthorizationMethod',
+            'securedInstallmentAuthorizationMethod',
             'preauthorization'
         );
 
@@ -107,21 +108,20 @@ class PayoneSecuredInvoicePaymentHandler extends AbstractPayonePaymentHandler im
 
         $data = $this->preparePayoneOrderTransactionData($request, $response, [
             'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
-            'financingType' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PIV,
-
-            // Store clearing bank account information as custom field of the transaction in order to
-            // use this data for payment instructions of an invoice or similar.
-            // See: https://docs.payone.com/display/public/PLATFORM/How+to+use+JSON-Responses#HowtouseJSON-Responses-JSON,Clearing-Data
-            'clearingBankAccount' => array_merge(array_filter($response['clearing']['BankAccount'] ?? []), [
-                // The PAYONE transaction ID acts as intended purpose of the transfer.
-                // We add this field explicitly here to make clear that the transaction ID is used
-                // as payment reference in context of the prepayment.
-                'Reference' => (string) $response['txid'],
-            ]),
+            'financingType' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PIN,
         ]);
 
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
         $this->deviceFingerprintService->deleteDeviceIdentToken();
+    }
+
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    {
+        $definitions = parent::getValidationDefinitions($salesChannelContext);
+
+        $definitions['securedInstallmentIban'] = [new Iban()];
+
+        return $definitions;
     }
 
     /**

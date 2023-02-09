@@ -7,13 +7,13 @@ namespace PayonePayment\Components\DeviceFingerprint;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\ConfigInstaller;
-use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
+use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class SecuredInvoiceDeviceFingerprintService extends AbstractDeviceFingerprintService
+class PayoneBNPLDeviceFingerprintService extends AbstractDeviceFingerprintService
 {
-    public const SESSION_VAR_NAME = 'payone_secured_invoice_device_ident_token';
+    public const SESSION_VAR_NAME = 'payone_bnpl_device_ident_token';
     private const PAYLA_PARTNER_ID = 'e7yeryF2of8X';
 
     protected ConfigReaderInterface $configReader;
@@ -26,7 +26,7 @@ class SecuredInvoiceDeviceFingerprintService extends AbstractDeviceFingerprintSe
 
     public function getSupportedPaymentHandlerClasses(): array
     {
-        return [PayoneSecuredInvoicePaymentHandler::class];
+        return PaymentHandlerGroups::BNPL;
     }
 
     public function getDeviceIdentSnippet(string $deviceIdentToken, SalesChannelContext $salesChannelContext): string

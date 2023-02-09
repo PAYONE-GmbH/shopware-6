@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\RequestParameter\Builder\SecuredInvoice;
+namespace PayonePayment\Payone\RequestParameter\Builder\SecuredInstallment;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
-use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
@@ -16,7 +16,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * @covers \PayonePayment\Payone\RequestParameter\Builder\SecuredInvoice\PreAuthorizeRequestParameterBuilder
+ * @covers \PayonePayment\Payone\RequestParameter\Builder\SecuredInstallment\PreAuthorizeRequestParameterBuilder
  */
 class PreAuthorizeRequestParameterBuilderTest extends TestCase
 {
@@ -30,8 +30,10 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $dataBag = new RequestDataBag([
-            'securedInvoicePhone' => '0123456789',
-            'payoneInvoiceBirthday' => '2000-01-01',
+            'securedInstallmentPhone' => '0123456789',
+            'securedInstallmentBirthday' => '2000-01-01',
+            'securedInstallmentIban' => 'DE85500105173716329595',
+            'securedInstallmentOptionId' => 'the-option-id',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
@@ -47,10 +49,13 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
             [
                 'request' => $this->getValidRequestAction(),
                 'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PIV,
+                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PIN,
                 'add_paydata[device_token]' => 'the-device-ident-token',
                 'telephonenumber' => '0123456789',
                 'birthday' => '20000101',
+                'bankaccountholder' => 'Max Mustermann',
+                'iban' => 'DE85500105173716329595',
+                'add_paydata[installment_option_id]' => 'the-option-id',
                 'it[1]' => LineItemHydrator::TYPE_GOODS,
             ],
             $parameters
@@ -67,7 +72,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
 
     protected function getValidPaymentHandler(): string
     {
-        return PayoneSecuredInvoicePaymentHandler::class;
+        return PayoneSecuredInstallmentPaymentHandler::class;
     }
 
     protected function getValidRequestAction(): string
