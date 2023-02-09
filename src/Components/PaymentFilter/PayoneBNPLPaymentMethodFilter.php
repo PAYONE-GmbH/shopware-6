@@ -9,7 +9,7 @@ use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEnt
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 
-class SecuredInvoicePaymentMethodFilter extends DefaultPaymentFilterService
+class PayoneBNPLPaymentMethodFilter extends DefaultPaymentFilterService
 {
     public function filterPaymentMethods(PaymentMethodCollection $methodCollection, PaymentFilterContext $filterContext): PaymentMethodCollection
     {

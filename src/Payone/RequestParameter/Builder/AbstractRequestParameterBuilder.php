@@ -29,6 +29,7 @@ abstract class AbstractRequestParameterBuilder
     public const REQUEST_ACTION_DEBIT = 'debit';
     public const REQUEST_ACTION_RATEPAY_PROFILE = 'ratepayProfile';
     public const REQUEST_ACTION_RATEPAY_CALCULATION = 'ratepayCalculation';
+    public const REQUEST_ACTION_SECURED_INSTALLMENT_OPTIONS = 'securedInstallmentOptions';
 
     public const CLEARING_TYPE_DEBIT = 'elv';
     public const CLEARING_TYPE_WALLET = 'wlt';

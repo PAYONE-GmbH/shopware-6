@@ -82,6 +82,14 @@
             <argument type="service" id="PayonePayment\Components\Ratepay\Profile\ProfileService" />
         </service>
 
+        <service id="PayonePayment\Components\SecuredInstallment\InstallmentService">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+        </service>
+        <service id="PayonePayment\Components\SecuredInstallment\InstallmentServiceInterface"
+                 alias="PayonePayment\Components\SecuredInstallment\InstallmentService"/>
+
         <service id="PayonePayment\Components\Ratepay\Profile\ProfileService">
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />

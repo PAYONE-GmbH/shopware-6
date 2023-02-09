@@ -1,0 +1,107 @@
+<div class="payone-payment secured-installment">
+    {% block page_checkout_confirm_payone_card_title_secured_installment %}
+        <div class="card-title">
+            {{ "PayonePayment.checkoutConfirmPage.defaultCardTitle" | trans }}
+        </div>
+    {% endblock %}
+
+    {% block page_checkout_confirm_payone_card_content_secured_installment %}
+        {% set customerCustomFields = context.customer.customFields %}
+
+        <div class="card">
+            <fieldset>
+                {% if customerCustomFields is null or customerCustomFields['payone_customer_phone_number'] is not defined or customerCustomFields['payone_customer_phone_number'] is empty %}
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label class="form-label" for="securedInstallmentPhone">{{ "PayonePayment.securedInstallment.phoneNumber.label" | trans }}{% if not billingAddress.phoneNumber %}{{ "general.required"|trans|sw_sanitize }}{% endif %}</label>
+                            <input class="form-control payone-input"
+                                   id="securedInstallmentPhone"
+                                   name="securedInstallmentPhone"
+                                   type="tel"
+                                   form="confirmOrderForm"
+                                   required="required"/>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if customerCustomFields is null or customerCustomFields['payone_customer_birthday'] is not defined or customerCustomFields['payone_customer_birthday'] is empty %}
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label class="form-label" for="securedInstallmentBirthday">{{ "PayonePayment.securedInstallment.birthday.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
+                            <input class="form-control payone-input"
+                                   id="securedInstallmentBirthday"
+                                   name="securedInstallmentBirthday"
+                                   type="date"
+                                   form="confirmOrderForm"
+                                   required="required"/>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label class="form-label" for="securedInstallmentIban">{{ "PayonePayment.securedInstallment.iban.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
+                        <input class="form-control payone-input"
+                               id="securedInstallmentIban"
+                               name="securedInstallmentIban"
+                               type="text"
+                               form="confirmOrderForm"
+                               required="required"/>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="row">
+                {% for option in page.extensions.payoneSecuredInstallmentOptions.options %}
+                    <div class="col-12">
+                        <input type="radio"
+                               class="payone-secured-installment-option-input"
+                               id="{{ option.installmentOptionId }}"
+                               name="securedInstallmentOptionId"
+                               value="{{ option.installmentOptionId }}"
+                               form="confirmOrderForm"
+                               required="required">
+                        <label for="{{ option.installmentOptionId }}">
+                            {{ "PayonePayment.securedInstallment.options.label" | trans({'%numberOfPayments%': option.numberOfPayments, '%monthlyAmountValue%': option.monthlyAmountValue|currency}) }}
+                        </label>
+                        <table class="table table-striped payone-secured-installment-option-information">
+                            <tr>
+                                <td>{{ "PayonePayment.securedInstallment.options.numberOfPayments" | trans }}</td>
+                                <td>{{ option.numberOfPayments }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ "PayonePayment.securedInstallment.options.monthlyAmountValue" | trans }}</td>
+                                <td>{{ option.monthlyAmountValue|currency }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ "PayonePayment.securedInstallment.options.totalAmountValue" | trans }}</td>
+                                <td>{{ option.totalAmountValue|currency }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ "PayonePayment.securedInstallment.options.nominalInterestRate" | trans }}</td>
+                                <td>{{ option.nominalInterestRate }}%</td>
+                            </tr>
+                            <tr>
+                                <td>{{ "PayonePayment.securedInstallment.options.effectiveInterestRate" | trans }}</td>
+                                <td>{{ option.effectiveInterestRate }}%</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <a href="{{ option.linkCreditInformationHref }}" target="_blank" rel="noopener noreferrer">
+                                        {{ "PayonePayment.securedInstallment.options.linkCreditInformation" | trans }}
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div>
+                <p>
+                    {{ "PayonePayment.securedInstallment.general.consentText" |trans|raw }}
+                </p>
+            </div>
+        </div>
+    {% endblock %}
+</div>
