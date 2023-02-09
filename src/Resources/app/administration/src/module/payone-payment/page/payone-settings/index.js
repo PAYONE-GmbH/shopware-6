@@ -61,6 +61,7 @@ Component.register('payone-settings', {
                 'payment_postfinanceWallet': true,
                 'payment_alipay': true,
                 'payment_secured_invoice': true,
+                'payment_secured_installment': true,
             },
         };
     },
@@ -139,6 +140,7 @@ Component.register('payone-settings', {
                 'postfinanceWallet',
                 'alipay',
                 'securedInvoice',
+                'securedInstallment',
             ];
         },
 
