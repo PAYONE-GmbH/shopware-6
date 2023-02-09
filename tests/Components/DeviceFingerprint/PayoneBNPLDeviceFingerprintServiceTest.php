@@ -10,13 +10,13 @@ use PayonePayment\Struct\Configuration;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * @covers \PayonePayment\Components\DeviceFingerprint\SecuredInvoiceDeviceFingerprintService
+ * @covers \PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService
  */
-class SecuredInvoiceDeviceFingerprintServiceTest extends AbstractDeviceFingerprintServiceTest
+class PayoneBNPLDeviceFingerprintServiceTest extends AbstractDeviceFingerprintServiceTest
 {
     protected function getDeviceFingerprintServiceClass(): string
     {
-        return SecuredInvoiceDeviceFingerprintService::class;
+        return PayoneBNPLDeviceFingerprintService::class;
     }
 
     protected function getSupportedPaymentHandlerClass(): string
@@ -33,7 +33,7 @@ class SecuredInvoiceDeviceFingerprintServiceTest extends AbstractDeviceFingerpri
         $configReader = $this->createMock(ConfigReaderInterface::class);
         $configReader->method('read')->willReturn($configuration);
 
-        return new SecuredInvoiceDeviceFingerprintService($session, $configReader);
+        return new PayoneBNPLDeviceFingerprintService($session, $configReader);
     }
 
     protected function getExpectedSnippet(string $token): string

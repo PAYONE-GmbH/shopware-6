@@ -18,7 +18,7 @@
             <tag name="payone.device_fingerprint_service" />
         </service>
 
-        <service id="PayonePayment\Components\DeviceFingerprint\SecuredInvoiceDeviceFingerprintService">
+        <service id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService">
             <argument type="service" id="Symfony\Component\HttpFoundation\Session\SessionInterface"/>
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface"/>
             <tag name="payone.device_fingerprint_service" />

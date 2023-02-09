@@ -117,7 +117,8 @@
                 "postfinanceCard": "The API credentials for PAYONE Postfinance (Card) are not valid.",
                 "postfinanceWallet": "The API credentials for PAYONE Postfinance (Wallet) are not valid.",
                 "alipay": "The API credentials for PAYONE Alipay are not valid.",
-                "securedInvoice": "The API credentials for PAYONE Secured Invoice are not valid."
+                "securedInvoice": "The API credentials for PAYONE Secured Invoice are not valid.",
+                "securedInstallment": "The API credentials for PAYONE Secured Installment are not valid."
             }
         },
         "supportModal": {

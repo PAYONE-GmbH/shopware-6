@@ -7,6 +7,7 @@ namespace PayonePayment\PaymentHandler;
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
+use PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -72,11 +73,15 @@ class PayoneSecuredInvoicePaymentHandlerTest extends TestCase
             })
         );
 
+        $deviceFingerprintService = $this->createMock(PayoneBNPLDeviceFingerprintService::class);
+        $deviceFingerprintService->expects(static::once())->method('deleteDeviceIdentToken');
+
         $dataBag = new RequestDataBag([]);
         $paymentHandler = $this->getPaymentHandler(
             $client,
             $dataHandler,
             $requestFactory,
+            $deviceFingerprintService,
             $dataBag
         );
         $paymentTransaction = $this->getPaymentTransaction(
@@ -91,6 +96,7 @@ class PayoneSecuredInvoicePaymentHandlerTest extends TestCase
         PayoneClientInterface $client,
         TransactionDataHandlerInterface $dataHandler,
         RequestParameterFactory $requestFactory,
+        PayoneBNPLDeviceFingerprintService $deviceFingerprintService,
         RequestDataBag $dataBag
     ): PayoneSecuredInvoicePaymentHandler {
         return new PayoneSecuredInvoicePaymentHandler(
@@ -100,7 +106,8 @@ class PayoneSecuredInvoicePaymentHandlerTest extends TestCase
             $dataHandler,
             $this->getContainer()->get('order_line_item.repository'),
             $this->getRequestStack($dataBag),
-            $requestFactory
+            $requestFactory,
+            $deviceFingerprintService
         );
     }
 

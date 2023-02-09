@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\SecuredInvoice;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
-use PayonePayment\Components\DeviceFingerprint\SecuredInvoiceDeviceFingerprintService;
+use PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
@@ -25,7 +25,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
     public function testItAddsCorrectPreAuthorizeParameters(): void
     {
         $this->getContainer()->get(SessionInterface::class)->set(
-            SecuredInvoiceDeviceFingerprintService::SESSION_VAR_NAME,
+            PayoneBNPLDeviceFingerprintService::SESSION_VAR_NAME,
             'the-device-ident-token'
         );
 
