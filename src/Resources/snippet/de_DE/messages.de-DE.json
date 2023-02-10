@@ -252,6 +252,17 @@
             },
             "phoneNumber": {
                 "label": "Telefonnummer"
+            },
+            "iban": {
+                "label": "IBAN"
+            },
+            "options": {
+                "label": "Bezahlung in %numberOfPayments% Raten je %monthlyAmountValue%",
+                "numberOfPayments": "Anzahl der Raten",
+                "monthlyAmountValue": "Ratenhöhe",
+                "totalAmountValue": "Gesamtbetrag",
+                "nominalInterestRate": "Sollzins p.a. (gebunden)",
+                "effectiveInterestRate": "Effektiver Jahreszins"
             }
         }
     },

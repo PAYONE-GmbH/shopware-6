@@ -155,3 +155,17 @@ apple-pay-button {
         max-width: none !important;
     }
 }
+
+.payone-payment.secured-installment {
+    .payone-secured-installment-option-information {
+        display: none;
+    }
+
+    .payone-secured-installment-option-input {
+        &:checked {
+            ~ .payone-secured-installment-option-information {
+                display: block;
+            }
+        }
+    }
+}

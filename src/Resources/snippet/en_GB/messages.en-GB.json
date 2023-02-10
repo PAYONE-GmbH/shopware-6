@@ -252,6 +252,17 @@
             },
             "phoneNumber": {
                 "label": "Phone number"
+            },
+            "iban": {
+                "label": "IBAN"
+            },
+            "options": {
+                "label": "Pay in %numberOfPayments% rates per %monthlyAmountValue%",
+                "numberOfPayments": "Number of payments",
+                "monthlyAmountValue": "Monthly amount value",
+                "totalAmountValue": "Total amount value",
+                "nominalInterestRate": "Debit interest p.a. (fixed)",
+                "effectiveInterestRate": "Effective interest rate"
             }
         }
     },
