@@ -44,7 +44,7 @@
                         <input class="form-control payone-input"
                                id="securedInstallmentIban"
                                name="securedInstallmentIban"
-                               type="date"
+                               type="text"
                                form="confirmOrderForm"
                                required="required"/>
                     </div>
@@ -53,17 +53,16 @@
 
             <div class="row">
                 {% for option in page.extensions.payoneSecuredInstallmentOptions.options %}
-                    <div class="col-12 col-md-4">
-                        <div>
-                            <input type="radio"
-                                   id="{{ option.installmentOptionId }}"
-                                   name="securedInstallmentOptionId"
-                                   value="{{ option.installmentOptionId }}">
-                            <label for="{{ option.installmentOptionId }}">
-                                {{ "PayonePayment.securedInstallment.options.label" | trans({'%numberOfPayments%': option.numberOfPayments, '%monthlyAmountValue%': option.monthlyAmountValue|currency}) }}
-                            </label>
-                        </div>
-                        <table class="table table-striped">
+                    <div class="col-12">
+                        <input type="radio"
+                               class="payone-secured-installment-option-input"
+                               id="{{ option.installmentOptionId }}"
+                               name="securedInstallmentOptionId"
+                               value="{{ option.installmentOptionId }}">
+                        <label for="{{ option.installmentOptionId }}">
+                            {{ "PayonePayment.securedInstallment.options.label" | trans({'%numberOfPayments%': option.numberOfPayments, '%monthlyAmountValue%': option.monthlyAmountValue|currency}) }}
+                        </label>
+                        <table class="table table-striped payone-secured-installment-option-information">
                             <tr>
                                 <td>{{ "PayonePayment.securedInstallment.options.numberOfPayments" | trans }}</td>
                                 <td>{{ option.numberOfPayments }}</td>
