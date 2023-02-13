@@ -58,7 +58,9 @@
                                class="payone-secured-installment-option-input"
                                id="{{ option.installmentOptionId }}"
                                name="securedInstallmentOptionId"
-                               value="{{ option.installmentOptionId }}">
+                               value="{{ option.installmentOptionId }}"
+                               form="confirmOrderForm"
+                               required="required">
                         <label for="{{ option.installmentOptionId }}">
                             {{ "PayonePayment.securedInstallment.options.label" | trans({'%numberOfPayments%': option.numberOfPayments, '%monthlyAmountValue%': option.monthlyAmountValue|currency}) }}
                         </label>
