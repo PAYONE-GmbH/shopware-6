@@ -315,7 +315,7 @@
             <tag name="payone_request_builder"/>
         </service>
 
-        <service id="PayonePayment\Payone\RequestParameter\Builder\SecureInvoice\CustomerInformationRequestParameterBuilder"
+        <service id="PayonePayment\Payone\RequestParameter\Builder\CustomerInformationRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <argument type="service" id="order_address.repository"/>
 

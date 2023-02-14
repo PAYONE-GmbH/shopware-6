@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Payone\RequestParameter\Builder\SecureInvoice;
+namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
-use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -72,7 +71,6 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
         return \in_array($arguments->getPaymentMethod(), [
             PayoneSecureInvoicePaymentHandler::class,
             PayoneOpenInvoicePaymentHandler::class,
-            // ToDo: Die gehören hier eigentlich nicht rein. Klasse entweder kopieren oder außerhalb von "SecureInvoice" platzieren
             PayoneSecuredInvoicePaymentHandler::class,
             PayoneSecuredInstallmentPaymentHandler::class,
         ], true);
