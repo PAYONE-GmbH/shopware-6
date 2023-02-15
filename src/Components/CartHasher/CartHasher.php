@@ -101,6 +101,7 @@ class CartHasher implements CartHasherInterface
             return $hashData;
         }
 
+        $hashData['items'] = [];
         if ($entity->getLineItems() !== null) {
             foreach ($entity->getLineItems() as $lineItem) {
                 try {
@@ -123,9 +124,14 @@ class CartHasher implements CartHasherInterface
                     $detail['price'] = $this->currencyPrecision->getRoundedItemAmount($lineItem->getPrice()->getTotalPrice(), $context->getCurrency());
                 }
 
-                $hashData[] = $detail;
+                $hashData['items'][] = md5((string) json_encode($detail));
             }
         }
+
+        // sort hashed items to make sure, they are always in the same order (cart/order) cause Shopware will re-order
+        // the items after placing the order for an unknown reason. If we collect the items and pass them directly into
+        // the hash, the items may be in a different order, after the order has been placed --> validation will fail.
+        sort($hashData['items']);
 
         $hashData['currency'] = $context->getCurrency()->getId();
         $hashData['paymentMethod'] = $context->getPaymentMethod()->getId();
