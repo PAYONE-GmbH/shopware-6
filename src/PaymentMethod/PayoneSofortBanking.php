@@ -7,9 +7,6 @@ namespace PayonePayment\PaymentMethod;
 use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 
-/**
- * TODO: only valid in DE, AT, CH, NL. Use ruleEngine to enforce this during the checkout
- */
 class PayoneSofortBanking extends AbstractPaymentMethod
 {
     public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];

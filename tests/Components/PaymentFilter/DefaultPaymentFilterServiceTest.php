@@ -71,6 +71,52 @@ class DefaultPaymentFilterServiceTest extends TestCase
         static::assertCount(3, $result->getElements(), 'no payment method should be removed, cause no currency filter is provided');
     }
 
+    public function testCurrencyCountry(): void
+    {
+        $methodCollection = $this->getMethodCollection();
+
+        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
+
+        $billingAddress = $salesChannelContext->getCustomer()->getActiveBillingAddress();
+        $shippingAddress = $salesChannelContext->getCustomer()->getActiveShippingAddress();
+
+        $billingAddress->getCountry()->setIso('CH');
+
+        $chfCurrency = $this->createMock(CurrencyEntity::class);
+        $chfCurrency->method('getIsoCode')->willReturn('CHF');
+
+        $filterContext = new PaymentFilterContext($salesChannelContext, $billingAddress, $shippingAddress, $chfCurrency);
+
+        $filterService = new DefaultPaymentFilterService(PaymentHandlerMock::class, null, null, null, null);
+        $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
+        static::assertCount(3, $result->getElements(), 'no payment methods should be removed, cause no restriction has been passed to service');
+
+        $filterService = new DefaultPaymentFilterService(\stdClass::class, null, null, null, []);
+        $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
+        static::assertCount(1, $result->getElements(), 'two payment methods should be removed, cause the passed restriction does not allow any currencies/countries (restrictions are empty)');
+
+        $filterService = new DefaultPaymentFilterService(PaymentHandlerMock::class, null, null, null, [
+            'EUR' => ['DE', 'CH']
+        ]);
+        $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
+        static::assertCount(2, $result->getElements(), 'first payment method should be removed, cause CHF/CH does not exist.');
+
+        $filterService = new DefaultPaymentFilterService(PaymentHandlerMock::class, null, null, null, [
+            'EUR' => ['DE', 'CH'],
+            'CHF' => ['DE']
+        ]);
+        $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
+        static::assertCount(2, $result->getElements(), 'first payment method should be removed, cause CH is not allowed for CHF.');
+
+        $filterService = new DefaultPaymentFilterService(PaymentHandlerMock::class, null, null, null, [
+            'EUR' => ['DE'],
+            'CHF' => ['DE', 'CH']
+        ]);
+        $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
+        static::assertCount(3, $result->getElements(), 'no payment methods should be removed, cause CHF/CH is allowed');
+
+    }
+
     public function testB2C(): void
     {
         $methodCollection = $this->getMethodCollection();
