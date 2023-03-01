@@ -29,6 +29,7 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
 
     public const PAYONE_FINANCING_PIV = 'PIV';
     public const PAYONE_FINANCING_PIN = 'PIN';
+    public const PAYONE_FINANCING_PDD = 'PDD';
 
     public const PAYONE_FINANCING_PYV = 'PYV';
     public const PAYONE_FINANCING_PYS = 'PYS';
