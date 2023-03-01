@@ -30,6 +30,7 @@ use PayonePayment\PaymentMethod\PayonePrzelewy24;
 use PayonePayment\PaymentMethod\PayoneRatepayDebit;
 use PayonePayment\PaymentMethod\PayoneRatepayInstallment;
 use PayonePayment\PaymentMethod\PayoneRatepayInvoicing;
+use PayonePayment\PaymentMethod\PayoneSecuredDirectDebit;
 use PayonePayment\PaymentMethod\PayoneSecuredInstallment;
 use PayonePayment\PaymentMethod\PayoneSecuredInvoice;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
@@ -82,6 +83,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneAlipay::class => 'fef3c750f8e94a6abb7d0a8061ac9faf',
         PayoneSecuredInvoice::class => '4ca01ac1471c4da5b76faeaa42524cc3',
         PayoneSecuredInstallment::class => '9c4d04f6ad4b4a2787e3812c56b6153b',
+        PayoneSecuredDirectDebit::class => '72c4c88b918441848e20081de67a16c4',
     ];
 
     public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
@@ -117,6 +119,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneAlipay::class,
         PayoneSecuredInvoice::class,
         PayoneSecuredInstallment::class,
+        PayoneSecuredDirectDebit::class,
     ];
 
     public const AFTER_ORDER_PAYMENT_METHODS = [
