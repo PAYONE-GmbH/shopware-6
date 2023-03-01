@@ -13,6 +13,7 @@ interface PaymentHandlerGroups
     ];
 
     public const BNPL = [
+        PayoneSecuredDirectDebitPaymentHandler::class,
         PayoneSecuredInvoicePaymentHandler::class,
         PayoneSecuredInstallmentPaymentHandler::class,
     ];

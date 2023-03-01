@@ -478,6 +478,29 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <!-- Secured Direct Debit -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredDirectDebit\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
+            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
+            <argument type="service" id="customer.repository"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredDirectDebit\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\SecuredDirectDebit\AuthorizeRequestParameterBuilder">
+            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
+            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
+            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
+            <argument type="service" id="customer.repository"/>
+
+            <tag name="payone_request_builder"/>
+        </service>
+
         <!-- Secured Invoice -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredInvoice\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">

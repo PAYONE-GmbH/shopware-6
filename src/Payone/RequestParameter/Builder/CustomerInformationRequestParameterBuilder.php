@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredDirectDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
@@ -73,6 +74,7 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
             PayoneOpenInvoicePaymentHandler::class,
             PayoneSecuredInvoicePaymentHandler::class,
             PayoneSecuredInstallmentPaymentHandler::class,
+            PayoneSecuredDirectDebitPaymentHandler::class,
         ], true);
     }
 

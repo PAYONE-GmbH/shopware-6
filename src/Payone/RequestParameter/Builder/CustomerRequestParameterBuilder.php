@@ -24,6 +24,7 @@ use PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredDirectDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
@@ -156,6 +157,7 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneAlipayPaymentHandler::class:
             case PayoneSecuredInvoicePaymentHandler::class:
             case PayoneSecuredInstallmentPaymentHandler::class:
+            case PayoneSecuredDirectDebitPaymentHandler::class:
                 return true;
         }
 

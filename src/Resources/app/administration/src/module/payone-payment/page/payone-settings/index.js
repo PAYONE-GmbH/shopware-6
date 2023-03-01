@@ -62,6 +62,7 @@ Component.register('payone-settings', {
                 'payment_alipay': true,
                 'payment_secured_invoice': true,
                 'payment_secured_installment': true,
+                'payment_secured_direct_debit': true,
             },
         };
     },
@@ -141,6 +142,7 @@ Component.register('payone-settings', {
                 'alipay',
                 'securedInvoice',
                 'securedInstallment',
+                'securedDirectDebit',
             ];
         },
 
