@@ -32,18 +32,17 @@ class PayoneIDealPaymentHandler extends AbstractPayonePaymentHandler implements 
      */
     protected const VALID_IDEAL_BANK_GROUPS = [
         'ABN_AMRO_BANK',
-        'BUNQ_BANK',
-        'RABOBANK',
         'ASN_BANK',
-        'SNS_BANK',
-        'TRIODOS_BANK',
-        'SNS_REGIO_BANK',
+        'BUNQ_BANK',
         'ING_BANK',
         'KNAB_BANK',
-        'VAN_LANSCHOT_BANKIERS',
-        'HANDELSBANKEN',
-        'FRIESLAND_BANK',
+        'RABOBANK',
         'REVOLUT',
+        'SNS_BANK',
+        'SNS_REGIO_BANK',
+        'TRIODOS_BANK',
+        'VAN_LANSCHOT_BANKIERS',
+        'YOURSAFE',
     ];
 
     private PayoneClientInterface $client;
