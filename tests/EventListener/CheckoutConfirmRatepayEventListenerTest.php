@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService;
 use PayonePayment\Components\Ratepay\Installment\InstallmentService;
 use PayonePayment\Components\Ratepay\Profile\ProfileService;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
@@ -16,7 +15,6 @@ use PayonePayment\PaymentMethod\PayoneDebit;
 use PayonePayment\PaymentMethod\PayoneRatepayDebit;
 use PayonePayment\PaymentMethod\PayoneRatepayInstallment;
 use PayonePayment\PaymentMethod\PayoneRatepayInvoicing;
-use PayonePayment\Storefront\Struct\RatepayDeviceFingerprintData;
 use PayonePayment\Storefront\Struct\RatepayInstallmentCalculatorData;
 use PayonePayment\TestCaseBase\ConfigurationHelper;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
@@ -146,7 +144,6 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $listener = new CheckoutConfirmRatepayEventListener(
             $this->getContainer()->get(SystemConfigService::class),
             $installmentService,
-            $this->getContainer()->get(DeviceFingerprintService::class),
             $this->getContainer()->get(ProfileService::class)
         );
 
@@ -174,7 +171,6 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $listener = new CheckoutConfirmRatepayEventListener(
             $this->getContainer()->get(SystemConfigService::class),
             $installmentService,
-            $this->getContainer()->get(DeviceFingerprintService::class),
             $this->getContainer()->get(ProfileService::class)
         );
 
@@ -199,7 +195,6 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $listener = new CheckoutConfirmRatepayEventListener(
             $this->getContainer()->get(SystemConfigService::class),
             $installmentService,
-            $this->getContainer()->get(DeviceFingerprintService::class),
             $this->getContainer()->get(ProfileService::class)
         );
 
@@ -212,48 +207,6 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
             PayoneRatepayInstallmentPaymentHandler::class,
             $event->getPage()->getPaymentMethods()
         );
-    }
-
-    public function testItAddsDeviceFingerprintDataExtensionOnCheckoutConfirmPage(): void
-    {
-        $page = new CheckoutConfirmPage();
-        $this->setPaymentMethods($page);
-
-        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $salesChannelContext->getPaymentMethod()->setHandlerIdentifier(PayoneRatepayDebitPaymentHandler::class);
-
-        $listener = new CheckoutConfirmRatepayEventListener(
-            $this->getContainer()->get(SystemConfigService::class),
-            $this->createMock(InstallmentService::class),
-            $this->getContainer()->get(DeviceFingerprintService::class),
-            $this->getContainer()->get(ProfileService::class)
-        );
-
-        $event = new CheckoutConfirmPageLoadedEvent($page, $salesChannelContext, new Request());
-        $listener->addPayonePageData($event);
-
-        static::assertTrue($event->getPage()->hasExtension(RatepayDeviceFingerprintData::EXTENSION_NAME));
-    }
-
-    public function testItAddsDeviceFingerprintDataExtensionOnAccountEditOrderPage(): void
-    {
-        $page = new AccountEditOrderPage();
-        $this->setPaymentMethods($page);
-
-        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $salesChannelContext->getPaymentMethod()->setHandlerIdentifier(PayoneRatepayDebitPaymentHandler::class);
-
-        $listener = new CheckoutConfirmRatepayEventListener(
-            $this->getContainer()->get(SystemConfigService::class),
-            $this->createMock(InstallmentService::class),
-            $this->getContainer()->get(DeviceFingerprintService::class),
-            $this->getContainer()->get(ProfileService::class)
-        );
-
-        $event = new AccountEditOrderPageLoadedEvent($page, $salesChannelContext, new Request());
-        $listener->addPayonePageData($event);
-
-        static::assertTrue($event->getPage()->hasExtension(RatepayDeviceFingerprintData::EXTENSION_NAME));
     }
 
     public function filterByProfilesData(): array

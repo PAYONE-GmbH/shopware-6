@@ -101,6 +101,10 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
             $parameters['settleaccount'] = self::SETTLEACCOUNT_YES;
         }
 
+        if (\in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::BNPL, true)) {
+            unset($parameters['capturemode']);
+        }
+
         return $parameters;
     }
 

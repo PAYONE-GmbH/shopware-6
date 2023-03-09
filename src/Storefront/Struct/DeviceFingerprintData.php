@@ -6,9 +6,9 @@ namespace PayonePayment\Storefront\Struct;
 
 use Shopware\Core\Framework\Struct\Struct;
 
-class RatepayDeviceFingerprintData extends Struct
+class DeviceFingerprintData extends Struct
 {
-    public const EXTENSION_NAME = 'payoneRatepayDeviceFingerprint';
+    public const EXTENSION_NAME = 'payoneDeviceFingerprint';
 
     protected string $snippet;
 

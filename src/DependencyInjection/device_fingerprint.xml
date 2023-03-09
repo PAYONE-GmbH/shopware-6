@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- DEVICE FINGERPRINT SERVICE COLLECTION -->
+        <service id="PayonePayment\Components\DeviceFingerprint\DeviceFingerprintServiceCollection">
+            <argument type="tagged_iterator" tag="payone.device_fingerprint_service"/>
+        </service>
+        <service id="PayonePayment\Components\DeviceFingerprint\DeviceFingerprintServiceCollectionInterface"
+                 alias="PayonePayment\Components\DeviceFingerprint\DeviceFingerprintServiceCollection" />
+
+        <!-- DEVICE FINGERPRINT SERVICES -->
+        <service id="PayonePayment\Components\DeviceFingerprint\RatepayDeviceFingerprintService">
+            <argument type="service" id="Symfony\Component\HttpFoundation\Session\SessionInterface"/>
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface"/>
+            <tag name="payone.device_fingerprint_service" />
+        </service>
+
+        <service id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService">
+            <argument type="service" id="Symfony\Component\HttpFoundation\Session\SessionInterface"/>
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface"/>
+            <tag name="payone.device_fingerprint_service" />
+        </service>
+    </services>
+</container>

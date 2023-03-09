@@ -27,7 +27,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'bic' => $dataBag->get('payolutionBic'),
         ];
 
-        $this->applyBirthdayParameter($parameters, $dataBag);
+        $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
 
         return $parameters;
     }
@@ -44,7 +44,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $paymentMethod === PayonePayolutionDebitPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
     }
 
-    protected function applyBirthdayParameter(array &$parameters, ParameterBag $dataBag): void
+    protected function applyBirthdayParameterWithoutCustomField(array &$parameters, ParameterBag $dataBag): void
     {
         if (!empty($dataBag->get('payolutionBirthday'))) {
             $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));

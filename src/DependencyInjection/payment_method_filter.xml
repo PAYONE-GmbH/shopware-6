@@ -88,5 +88,56 @@
             <tag name="payone.payment_method.filter"/>
         </service>
 
+        <service id="payone.payment_filter_method.secured_invoice"
+                 class="PayonePayment\Components\PaymentFilter\PayoneBNPLPaymentMethodFilter">
+            <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler</argument>
+            <argument key="$allowedCountries" type="collection">
+                <argument>DE</argument>
+                <argument>AT</argument>
+            </argument>
+            <argument key="$allowedB2bCountries" type="collection">
+            </argument>
+            <argument key="$allowedCurrencies" type="collection">
+                <argument>EUR</argument>
+            </argument>
+            <argument key="$allowedMinValue">10</argument>
+            <argument key="$allowedMaxValue">1500</argument>
+            <tag name="payone.payment_method.filter"/>
+        </service>
+
+        <service id="payone.payment_filter_method.secured_installment"
+                 class="PayonePayment\Components\PaymentFilter\PayoneBNPLPaymentMethodFilter">
+            <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler</argument>
+            <argument key="$allowedCountries" type="collection">
+                <argument>DE</argument>
+                <argument>AT</argument>
+            </argument>
+            <argument key="$allowedB2bCountries" type="collection">
+            </argument>
+            <argument key="$allowedCurrencies" type="collection">
+                <argument>EUR</argument>
+            </argument>
+            <argument key="$allowedMinValue">200</argument>
+            <argument key="$allowedMaxValue">3500</argument>
+            <tag name="payone.payment_method.filter"/>
+        </service>
+
+        <service id="payone.payment_filter_method.secured_direct_debit"
+                 class="PayonePayment\Components\PaymentFilter\PayoneBNPLPaymentMethodFilter">
+            <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayoneSecuredDirectDebitPaymentHandler</argument>
+            <argument key="$allowedCountries" type="collection">
+                <argument>DE</argument>
+                <argument>AT</argument>
+            </argument>
+            <argument key="$allowedB2bCountries" type="collection">
+            </argument>
+            <argument key="$allowedCurrencies" type="collection">
+                <argument>EUR</argument>
+            </argument>
+            <argument key="$allowedMinValue">10</argument>
+            <argument key="$allowedMaxValue">1500</argument>
+            <tag name="payone.payment_method.filter"/>
+        </service>
+
     </services>
 </container>

@@ -16,6 +16,9 @@ use PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredDirectDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneWeChatPayPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
@@ -46,12 +49,29 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
             return [];
         }
 
-        return $this->lineItemHydrator->mapPayoneOrderLinesByRequest(
+        $parameters = $this->lineItemHydrator->mapPayoneOrderLinesByRequest(
             $currency,
             $paymentTransaction->getOrder(),
             $orderLines,
             $isCompleted ? true : $includeShippingCosts
         );
+
+        // For specific payment methods the "pr" parameter must be negative on refunds
+        $paymentMethodsThatRequireNegativePriceForRefunds = [
+            PayoneSecuredInvoicePaymentHandler::class,
+            PayoneSecuredInstallmentPaymentHandler::class,
+            PayoneSecuredDirectDebitPaymentHandler::class,
+        ];
+        if ($arguments->getAction() === self::REQUEST_ACTION_REFUND
+            && \in_array($arguments->getPaymentMethod(), $paymentMethodsThatRequireNegativePriceForRefunds, true)) {
+            foreach ($parameters as $key => &$parameter) {
+                if (strpos($key, 'pr[') === 0) {
+                    $parameter *= -1;
+                }
+            }
+        }
+
+        return $parameters;
     }
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
@@ -75,6 +95,9 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayonePrzelewy24PaymentHandler::class:
             case PayoneWeChatPayPaymentHandler::class:
             case PayoneAlipayPaymentHandler::class:
+            case PayoneSecuredInvoicePaymentHandler::class:
+            case PayoneSecuredInstallmentPaymentHandler::class:
+            case PayoneSecuredDirectDebitPaymentHandler::class:
                 return true;
         }
 

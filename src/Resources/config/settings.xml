@@ -4259,4 +4259,463 @@
             <label lang="de-DE">Statuswechsel für FAILED</label>
         </input-field>
     </card>
+
+    <card>
+        <title>PAYONE Secured Invoice</title>
+        <title lang="de-DE">PAYONE Gesicherter Rechnungskauf</title>
+
+        <name>payment_secured_invoice</name>
+
+        <input-field>
+            <name>securedInvoiceMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>securedInvoiceAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>securedInvoicePortalId</name>
+            <label>Portal ID</label>
+            <helpText>You need an ID to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen eine ID zu einem separates Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>securedInvoicePortalKey</name>
+            <label>Key</label>
+            <helpText>You need a key to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoiceAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Defines the authorization method for this payment method.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>securedInvoiceProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusAppointed</name>
+            <label>Transition for APPOINTED</label>
+            <label lang="de-DE">Statuswechsel für APPOINTED</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusCapture</name>
+            <label>Transition for CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusPartialCapture</name>
+            <label>Transition for PARTIAL_CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusPaid</name>
+            <label>Transition for PAID</label>
+            <label lang="de-DE">Statuswechsel für PAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusUnderpaid</name>
+            <label>Transition for UNDERPAID</label>
+            <label lang="de-DE">Statuswechsel für UNDERPAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusCancelation</name>
+            <label>Transition for CANCELLATION</label>
+            <label lang="de-DE">Statuswechsel für CANCELLATION</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusRefund</name>
+            <label>Transition for REFUND</label>
+            <label lang="de-DE">Statuswechsel für REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusPartialRefund</name>
+            <label>Transition for PARTIAL_REFUND</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusDebit</name>
+            <label>Transition for DEBIT</label>
+            <label lang="de-DE">Statuswechsel für DEBIT</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusReminder</name>
+            <label>Transition for REMINDER</label>
+            <label lang="de-DE">Statuswechsel für REMINDER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusVauthorization</name>
+            <label>Transition for VAuthorization</label>
+            <label lang="de-DE">Statuswechsel für VAuthorization</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusVsettlement</name>
+            <label>Transition for VSettlement</label>
+            <label lang="de-DE">Statuswechsel für VSettlement</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusTransfer</name>
+            <label>Transition for TRANSFER</label>
+            <label lang="de-DE">Statuswechsel für TRANSFER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusInvoice</name>
+            <label>Transition for INVOICE</label>
+            <label lang="de-DE">Statuswechsel für INVOICE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInvoicePaymentStatusFailed</name>
+            <label>Transition for FAILED</label>
+            <label lang="de-DE">Statuswechsel für FAILED</label>
+        </input-field>
+    </card>
+
+    <card>
+        <title>PAYONE Secured Installment</title>
+        <title lang="de-DE">PAYONE Gesicherter Ratenkauf</title>
+
+        <name>payment_secured_installment</name>
+
+        <input-field>
+            <name>securedInstallmentMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>securedInstallmentAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>securedInstallmentPortalId</name>
+            <label>Portal ID</label>
+            <helpText>You need an ID to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen eine ID zu einem separates Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>securedInstallmentPortalKey</name>
+            <label>Key</label>
+            <helpText>You need a key to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Defines the authorization method for this payment method.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>securedInstallmentProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusAppointed</name>
+            <label>Transition for APPOINTED</label>
+            <label lang="de-DE">Statuswechsel für APPOINTED</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusCapture</name>
+            <label>Transition for CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusPartialCapture</name>
+            <label>Transition for PARTIAL_CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusPaid</name>
+            <label>Transition for PAID</label>
+            <label lang="de-DE">Statuswechsel für PAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusUnderpaid</name>
+            <label>Transition for UNDERPAID</label>
+            <label lang="de-DE">Statuswechsel für UNDERPAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusCancelation</name>
+            <label>Transition for CANCELLATION</label>
+            <label lang="de-DE">Statuswechsel für CANCELLATION</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusRefund</name>
+            <label>Transition for REFUND</label>
+            <label lang="de-DE">Statuswechsel für REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusPartialRefund</name>
+            <label>Transition for PARTIAL_REFUND</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusDebit</name>
+            <label>Transition for DEBIT</label>
+            <label lang="de-DE">Statuswechsel für DEBIT</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusReminder</name>
+            <label>Transition for REMINDER</label>
+            <label lang="de-DE">Statuswechsel für REMINDER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusVauthorization</name>
+            <label>Transition for VAuthorization</label>
+            <label lang="de-DE">Statuswechsel für VAuthorization</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusVsettlement</name>
+            <label>Transition for VSettlement</label>
+            <label lang="de-DE">Statuswechsel für VSettlement</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusTransfer</name>
+            <label>Transition for TRANSFER</label>
+            <label lang="de-DE">Statuswechsel für TRANSFER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusInvoice</name>
+            <label>Transition for INVOICE</label>
+            <label lang="de-DE">Statuswechsel für INVOICE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedInstallmentPaymentStatusFailed</name>
+            <label>Transition for FAILED</label>
+            <label lang="de-DE">Statuswechsel für FAILED</label>
+        </input-field>
+    </card>
+
+    <card>
+        <title>PAYONE Secured Direct Debit</title>
+        <title lang="de-DE">PAYONE Gesicherte Lastschrift</title>
+
+        <name>payment_secured_direct_debit</name>
+
+        <input-field>
+            <name>securedDirectDebitMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>securedDirectDebitAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>securedDirectDebitPortalId</name>
+            <label>Portal ID</label>
+            <helpText>You need an ID to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen eine ID zu einem separates Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>securedDirectDebitPortalKey</name>
+            <label>Key</label>
+            <helpText>You need a key to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Defines the authorization method for this payment method.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>securedDirectDebitProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusAppointed</name>
+            <label>Transition for APPOINTED</label>
+            <label lang="de-DE">Statuswechsel für APPOINTED</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusCapture</name>
+            <label>Transition for CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusPartialCapture</name>
+            <label>Transition for PARTIAL_CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusPaid</name>
+            <label>Transition for PAID</label>
+            <label lang="de-DE">Statuswechsel für PAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusUnderpaid</name>
+            <label>Transition for UNDERPAID</label>
+            <label lang="de-DE">Statuswechsel für UNDERPAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusCancelation</name>
+            <label>Transition for CANCELLATION</label>
+            <label lang="de-DE">Statuswechsel für CANCELLATION</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusRefund</name>
+            <label>Transition for REFUND</label>
+            <label lang="de-DE">Statuswechsel für REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusPartialRefund</name>
+            <label>Transition for PARTIAL_REFUND</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusDebit</name>
+            <label>Transition for DEBIT</label>
+            <label lang="de-DE">Statuswechsel für DEBIT</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusReminder</name>
+            <label>Transition for REMINDER</label>
+            <label lang="de-DE">Statuswechsel für REMINDER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusVauthorization</name>
+            <label>Transition for VAuthorization</label>
+            <label lang="de-DE">Statuswechsel für VAuthorization</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusVsettlement</name>
+            <label>Transition for VSettlement</label>
+            <label lang="de-DE">Statuswechsel für VSettlement</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusTransfer</name>
+            <label>Transition for TRANSFER</label>
+            <label lang="de-DE">Statuswechsel für TRANSFER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusInvoice</name>
+            <label>Transition for INVOICE</label>
+            <label lang="de-DE">Statuswechsel für INVOICE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>securedDirectDebitPaymentStatusFailed</name>
+            <label>Transition for FAILED</label>
+            <label lang="de-DE">Statuswechsel für FAILED</label>
+        </input-field>
+    </card>
 </config>

@@ -7,6 +7,7 @@
         <import resource="store_api.xml"/>
         <import resource="controllers.xml" />
         <import resource="decorations.xml"/>
+        <import resource="device_fingerprint.xml"/>
         <import resource="entities.xml" />
         <import resource="handler/global_handlers.xml" />
         <import resource="handler/payment_handler.xml" />
@@ -81,16 +82,20 @@
             <argument type="service" id="PayonePayment\Components\Ratepay\Profile\ProfileService" />
         </service>
 
+        <service id="PayonePayment\Components\SecuredInstallment\InstallmentService">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+        </service>
+        <service id="PayonePayment\Components\SecuredInstallment\InstallmentServiceInterface"
+                 alias="PayonePayment\Components\SecuredInstallment\InstallmentService"/>
+
         <service id="PayonePayment\Components\Ratepay\Profile\ProfileService">
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher" />
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
-        </service>
-
-        <service id="PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintService">
-            <argument type="service" id="Symfony\Component\HttpFoundation\Session\SessionInterface"/>
         </service>
 
         <service id="PayonePayment\Components\KlarnaSessionService\KlarnaSessionService">

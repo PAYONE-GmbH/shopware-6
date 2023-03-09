@@ -6,7 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
-use PayonePayment\Components\Ratepay\DeviceFingerprint\DeviceFingerprintServiceInterface;
+use PayonePayment\Components\DeviceFingerprint\AbstractDeviceFingerprintService;
 use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Components\Validator\Iban;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
@@ -34,7 +34,7 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
 
     private RequestParameterFactory $requestParameterFactory;
 
-    private DeviceFingerprintServiceInterface $deviceFingerprintService;
+    private AbstractDeviceFingerprintService $deviceFingerprintService;
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -44,7 +44,7 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
         EntityRepositoryInterface $lineItemRepository,
         RequestStack $requestStack,
         RequestParameterFactory $requestParameterFactory,
-        DeviceFingerprintServiceInterface $deviceFingerprintService
+        AbstractDeviceFingerprintService $deviceFingerprintService
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
 

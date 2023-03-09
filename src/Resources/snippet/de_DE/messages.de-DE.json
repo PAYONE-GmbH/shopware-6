@@ -231,6 +231,54 @@
                     "label": "Telefonnummer"
                 }
             }
+        },
+        "securedInvoice": {
+            "general": {
+                "consentText": "Mit Abschluss dieser Bestellung erkläre ich mich mit den <a href=\"https://legal.paylater.payone.com/de/terms-of-payment.html\" title=\"https://legal.paylater.payone.com/de/terms-of-payment.html\" target=\"_blank\">ergänzenden Zahlungsbedingungen</a> und der Durchführung einer Risikoprüfung für die ausgewählte Zahlungsart einverstanden. Den <a href=\"https://legal.paylater.payone.com/de/data-protection-payments.html\" title=\"https://legal.paylater.payone.com/de/data-protection-payments.html\" target=\"_blank\">ergänzenden Datenschutzhinweis</a> habe ich zur Kenntnis genommen."
+            },
+            "birthday": {
+                "label": "Geburtsdatum"
+            },
+            "phoneNumber": {
+                "label": "Telefonnummer"
+            }
+        },
+        "securedInstallment": {
+            "general": {
+                "consentText": "Mit Abschluss dieser Bestellung erkläre ich mich mit den <a href=\"https://legal.paylater.payone.com/de/terms-of-payment.html\" title=\"https://legal.paylater.payone.com/de/terms-of-payment.html\" target=\"_blank\">ergänzenden Zahlungsbedingungen</a> und der Durchführung einer Risikoprüfung für die ausgewählte Zahlungsart einverstanden. Den <a href=\"https://legal.paylater.payone.com/de/data-protection-payments.html\" title=\"https://legal.paylater.payone.com/de/data-protection-payments.html\" target=\"_blank\">ergänzenden Datenschutzhinweis</a> habe ich zur Kenntnis genommen."
+            },
+            "birthday": {
+                "label": "Geburtsdatum"
+            },
+            "phoneNumber": {
+                "label": "Telefonnummer"
+            },
+            "iban": {
+                "label": "IBAN"
+            },
+            "options": {
+                "label": "Bezahlung in %numberOfPayments% Raten je %monthlyAmountValue%",
+                "numberOfPayments": "Anzahl der Raten",
+                "monthlyAmountValue": "Ratenhöhe",
+                "totalAmountValue": "Gesamtbetrag",
+                "nominalInterestRate": "Sollzins p.a. (gebunden)",
+                "effectiveInterestRate": "Effektiver Jahreszins",
+                "linkCreditInformation": "Ratenkauf Informationen herunterladen"
+            }
+        },
+        "securedDirectDebit": {
+            "general": {
+                "consentText": "Mit Abschluss dieser Bestellung erkläre ich mich mit den <a href=\"https://legal.paylater.payone.com/de/terms-of-payment.html\" title=\"https://legal.paylater.payone.com/de/terms-of-payment.html\" target=\"_blank\">ergänzenden Zahlungsbedingungen</a> und der Durchführung einer Risikoprüfung für die ausgewählte Zahlungsart einverstanden. Den <a href=\"https://legal.paylater.payone.com/de/data-protection-payments.html\" title=\"https://legal.paylater.payone.com/de/data-protection-payments.html\" target=\"_blank\">ergänzenden Datenschutzhinweis</a> habe ich zur Kenntnis genommen."
+            },
+            "birthday": {
+                "label": "Geburtsdatum"
+            },
+            "phoneNumber": {
+                "label": "Telefonnummer"
+            },
+            "iban": {
+                "label": "IBAN"
+            }
         }
     },
     "error": {
