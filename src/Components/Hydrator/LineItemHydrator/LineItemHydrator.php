@@ -296,11 +296,6 @@ class LineItemHydrator implements LineItemHydratorInterface
             $item['pr'] = $this->currencyPrecision->getRoundedItemAmount($item['pr'], $currency);
             $item['va'] = $this->currencyPrecision->getRoundedItemAmount($item['va'], $currency);
 
-            if ($item['pr'] <= 0) {
-                // price is does not have a positive price - skip it
-                continue;
-            }
-
             foreach ($item as $key => $value) {
                 $payoneList[sprintf('%s[%d]', $key, $index)] = $value;
             }
