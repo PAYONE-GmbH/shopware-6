@@ -308,3 +308,30 @@ Bugfixes
 Maintenance
  
 * tested with 6.4.17.1
+
+# 4.2.0
+
+New Features
+ 
+* New payment method: PAYONE Secured Invoice
+* New payment method: PAYONE Secured Installment
+* New payment method: PAYONE Secured Direct Debit
+* New payment method: PAYONE WeChat Pay
+* New payment method: PAYONE Postfinance Card
+* New payment method: PAYONE Postfinance E-Finance
+* New payment method: PAYONE AliPay
+* Opt-in for automatic capture 
+
+Bugfixes
+ 
+* fixed reference problem in paydirekt
+* fixed capture problem in iDEAL
+* fixed data-type-casting in migration
+* fixed support for vouchers 
+
+Maintenance
+ 
+* improve payment filter technology
+* removed birthday field from open invoice
+* update iDEAL issuer list
+* tested with 6.4.20
