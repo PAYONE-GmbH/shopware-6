@@ -308,3 +308,26 @@ Fehlerbehebung
 Wartung
  
 * Getestet mit: 6.4.17.1
+
+# 4.2.0
+
+* Neue Zahlungsart: PAYONE WeChat Pay
+* Neue Zahlungsart: PAYONE Postfinance Card
+* Neue Zahlungsart: PAYONE Postfinance E-Finance
+* Neue Zahlungsart: PAYONE AliPay
+* Opt-in für automatischen Capture
+
+Fehlerbehebung
+
+* Fehler mit der Bestellnummer bei paydirekt behoben
+* Fehler beim Capture bei iDEAL behoben
+* Fehler bei Datentyp Migration behoben
+* Fehler bei der Unterstützung von Rabattcodes behoben
+
+Wartung
+
+* Zahlungsartenfilter Technologie verbessert
+* Geburtstagsfeld aus der Zahlungsart offene Rechnung entfernt
+* iDEAL Bankliste geupdated
+* getestet mit 6.4.20
+
