@@ -13,7 +13,7 @@ jobs:
       with:
         php-version: 7.4
         extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium
-        tools: composer:v2
+        tools: composer:v2.2
     - name: Check PHP Version
       run: php -v
     - name: Check Composer Version
