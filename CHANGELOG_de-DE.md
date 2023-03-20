@@ -330,4 +330,3 @@ Wartung
 * Geburtstagsfeld aus der Zahlungsart offene Rechnung entfernt
 * iDEAL Bankliste geupdated
 * getestet mit 6.4.20
-
