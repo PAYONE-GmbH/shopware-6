@@ -4,7 +4,7 @@
     <template #smart-bar-header>
         <h2>
             {{ $tc('sw-settings.index.title') }}
-            <sw-icon name="small-arrow-medium-right" small></sw-icon>
+            <sw-icon name="regular-chevron-right-xs" small></sw-icon>
             {{ $tc('payone-payment.title') }}
         </h2>
     </template>
@@ -70,7 +70,7 @@
             <sw-container columns="1fr 1fr 1fr 1fr">
                 <div class="payone-feedback__col">
                     <div class="payone-feedback__icon">
-                        <sw-icon name="default-documentation-file" large="true"></sw-icon>
+                        <sw-icon name="regular-file-text" large="true"></sw-icon>
                     </div>
                     <p class="payone-feedback__desc">
                         {{ $tc('payone-payment.supportModal.documentation.description') }}
@@ -87,7 +87,7 @@
                 </div>
                 <div class="payone-feedback__col">
                     <div class="payone-feedback__icon">
-                        <sw-icon name="default-device-headset" large="true"></sw-icon>
+                        <sw-icon name="regular-headset" large="true"></sw-icon>
                     </div>
                     <p class="payone-feedback__desc">
                         {{ $tc('payone-payment.supportModal.support.description') }}
@@ -104,7 +104,7 @@
                 </div>
                 <div class="payone-feedback__col">
                     <div class="payone-feedback__icon">
-                        <sw-icon name="default-text-code" large="true"></sw-icon>
+                        <sw-icon name="regular-code" large="true"></sw-icon>
                     </div>
                     <p class="payone-feedback__desc">
                         {{ $tc('payone-payment.supportModal.repository.description') }}
@@ -121,7 +121,7 @@
                 </div>
                 <div class="payone-feedback__col">
                     <div class="payone-feedback__icon">
-                        <sw-icon name="default-lock-fingerprint" large="true"></sw-icon>
+                        <sw-icon name="regular-fingerprint" large="true"></sw-icon>
                     </div>
                     <p class="payone-feedback__desc">
                         {{ $tc('payone-payment.supportModal.testdata.description') }}
@@ -151,8 +151,8 @@
                 <template #beforeElements="{card, config}">
                     <div v-if="isCollapsible(card)" class="payone-config__collapsible-container" v-bind:class="{'collapsed': isCollapsed(card)}" >
                         <a class="payone-config__collapsible-handle" @click="toggleCollapsible(card)">
-                            <sw-icon small v-if="isCollapsed(card)" name="small-arrow-medium-down" class="payone-config__collapsible-handle-open"></sw-icon>
-                            <sw-icon small v-if="!isCollapsed(card)" name="small-arrow-medium-up" class="payone-config__collapsible-handle-close"></sw-icon>
+                            <sw-icon small v-if="isCollapsed(card)" name="regular-chevron-down-xxs" class="payone-config__collapsible-handle-open"></sw-icon>
+                            <sw-icon small v-if="!isCollapsed(card)" name="regular-chevron-up-xxs" class="payone-config__collapsible-handle-close"></sw-icon>
                         </a>
                     </div>
                 </template>

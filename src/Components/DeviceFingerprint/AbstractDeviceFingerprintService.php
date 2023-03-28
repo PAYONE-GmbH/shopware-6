@@ -6,15 +6,15 @@ namespace PayonePayment\Components\DeviceFingerprint;
 
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 abstract class AbstractDeviceFingerprintService
 {
-    protected SessionInterface $session;
+    protected RequestStack $requestStack;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -26,13 +26,13 @@ abstract class AbstractDeviceFingerprintService
 
     public function getDeviceIdentToken(SalesChannelContext $salesChannelContext): string
     {
-        $sessionValue = $this->session->get($this->getSessionVarName());
+        $sessionValue = $this->requestStack->getSession()->get($this->getSessionVarName());
 
         if ($sessionValue) {
             $token = $sessionValue;
         } else {
             $token = $this->buildDeviceIdentToken($salesChannelContext);
-            $this->session->set($this->getSessionVarName(), $token);
+            $this->requestStack->getSession()->set($this->getSessionVarName(), $token);
         }
 
         return $token;
@@ -40,12 +40,12 @@ abstract class AbstractDeviceFingerprintService
 
     public function isDeviceIdentTokenAlreadyGenerated(): bool
     {
-        return $this->session->get($this->getSessionVarName()) !== null;
+        return $this->requestStack->getSession()->get($this->getSessionVarName()) !== null;
     }
 
     public function deleteDeviceIdentToken(): void
     {
-        $this->session->remove($this->getSessionVarName());
+        $this->requestStack->getSession()->remove($this->getSessionVarName());
     }
 
     abstract protected function getSessionVarName(): string;

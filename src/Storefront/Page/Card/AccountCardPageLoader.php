@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Storefront\Page\Card;
 
 use PayonePayment\StoreApi\Route\AbstractCardRoute;
-use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
+use Shopware\Core\Checkout\Cart\CartException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\GenericPageLoader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -32,7 +32,8 @@ class AccountCardPageLoader
     public function load(Request $request, SalesChannelContext $context): AccountCardPage
     {
         if (!$context->getCustomer()) {
-            throw new CustomerNotLoggedInException();
+            // ToDo 6.5: Die CartException gibt es erst ab 6.4.15.0. Ok das dann als neue Mindestversion zu nehmen? (Kommt auch an anderen Stellen vor)
+            throw CartException::customerNotLoggedIn();
         }
 
         $page = AccountCardPage::createFrom(

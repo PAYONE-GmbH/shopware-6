@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Installer;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
@@ -25,15 +25,15 @@ class CustomFieldInstaller implements InstallerInterface
     public const FIELDSET_ID_PAYMENT_METHOD = 'ed39626e94fd4dfe9d81976fdbcdb06c';
     public const FIELDSET_ID_CUSTOMER = '8e4a0b8f7eb04272ad874f3b22cf4935';
 
-    private EntityRepositoryInterface $customFieldRepository;
+    private EntityRepository $customFieldRepository;
 
-    private EntityRepositoryInterface $customFieldSetRepository;
+    private EntityRepository $customFieldSetRepository;
 
     private array $customFields;
 
     private array $customFieldSets;
 
-    public function __construct(EntityRepositoryInterface $customFieldSetRepository, EntityRepositoryInterface $customFieldRepository)
+    public function __construct(EntityRepository $customFieldSetRepository, EntityRepository $customFieldRepository)
     {
         $this->customFieldSetRepository = $customFieldSetRepository;
         $this->customFieldRepository = $customFieldRepository;

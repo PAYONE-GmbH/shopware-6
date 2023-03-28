@@ -13,7 +13,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
@@ -21,13 +21,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutFinishEventListener implements EventSubscriberInterface
 {
-    private EntityRepositoryInterface $mandateRepository;
+    private EntityRepository $mandateRepository;
 
-    private EntityRepositoryInterface $orderTransactionRepository;
+    private EntityRepository $orderTransactionRepository;
 
     public function __construct(
-        EntityRepositoryInterface $mandateRepository,
-        EntityRepositoryInterface $orderTransactionRepository
+        EntityRepository $mandateRepository,
+        EntityRepository $orderTransactionRepository
     ) {
         $this->mandateRepository = $mandateRepository;
         $this->orderTransactionRepository = $orderTransactionRepository;
@@ -94,9 +94,9 @@ class CheckoutFinishEventListener implements EventSubscriberInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('orderId', $order->getId()));
 
-        /** @var OrderTransactionEntity[] $transactions */
         $transactions = $this->orderTransactionRepository->search($criteria, $context);
 
+        /** @var OrderTransactionEntity $transaction */
         foreach ($transactions as $transaction) {
             /** @var PayonePaymentOrderTransactionDataEntity|null $payoneTransactionData */
             $payoneTransactionData = $transaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);

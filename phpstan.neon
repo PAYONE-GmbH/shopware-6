@@ -3,7 +3,6 @@ includes:
     - vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
-    phpVersion: 70400
     level: 8
     treatPhpDocTypesAsCertain: false
     checkMissingIterableValueType: false

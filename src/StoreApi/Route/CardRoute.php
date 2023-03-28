@@ -7,21 +7,14 @@ namespace PayonePayment\StoreApi\Route;
 use OpenApi\Annotations as OA;
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\StoreApi\Response\CardResponse;
-use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
+use Shopware\Core\Checkout\Cart\CartException;
 use Shopware\Core\Framework\Plugin\Exception\DecorationPatternException;
-use Shopware\Core\Framework\Routing\Annotation\ContextTokenRequired;
 use Shopware\Core\Framework\Routing\Annotation\Entity;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SalesChannel\StoreApiResponse;
 use Shopware\Core\System\SalesChannel\SuccessResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @RouteScope(scopes={"store-api"})
- * @ContextTokenRequired
- */
 class CardRoute extends AbstractCardRoute
 {
     private CardRepositoryInterface $cardRepository;
@@ -38,14 +31,14 @@ class CardRoute extends AbstractCardRoute
 
     /**
      * @Entity("payone_payment_card")
-     * @Route("/store-api/payone/account/card", name="store-api.payone.account.card", methods={"GET"})
+     * @Route("/store-api/payone/account/card", name="store-api.payone.account.card", methods={"GET"}, defaults={"_routeScope"={"store-api"}, "_contextTokenRequired"=true})
      */
     public function load(SalesChannelContext $context): CardResponse
     {
         $customer = $context->getCustomer();
 
         if ($customer === null) {
-            throw new CustomerNotLoggedInException();
+            throw CartException::customerNotLoggedIn();
         }
 
         $result = $this->cardRepository->getCards($customer, $context->getContext());
@@ -72,12 +65,12 @@ class CardRoute extends AbstractCardRoute
      *         @OA\JsonContent(ref="#/components/schemas/SuccessResponse")
      *     )
      * )
-     * @Route("/store-api/payone/account/deleteCard/{pseudoCardPan}", name="store-api.payone.account.deleteCard", methods={"POST"})
+     * @Route("/store-api/payone/account/deleteCard/{pseudoCardPan}", name="store-api.payone.account.deleteCard", methods={"POST"}, defaults={"_routeScope"={"store-api"}, "_contextTokenRequired"=true})
      */
     public function delete(string $pseudoCardPan, SalesChannelContext $context): StoreApiResponse
     {
         if ($context->getCustomer() === null) {
-            throw new CustomerNotLoggedInException();
+            throw CartException::customerNotLoggedIn();
         }
 
         $this->cardRepository->removeCard(

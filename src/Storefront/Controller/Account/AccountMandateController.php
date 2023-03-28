@@ -6,7 +6,6 @@ namespace PayonePayment\Storefront\Controller\Account;
 
 use PayonePayment\StoreApi\Route\AbstractMandateRoute;
 use PayonePayment\Storefront\Page\Mandate\AccountMandatePageLoader;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,8 +25,7 @@ class AccountMandateController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/account/mandate/overview", name="frontend.account.payone.mandate.page", options={"seo": "false"}, methods={"GET"})
+     * @Route("/account/mandate/overview", name="frontend.account.payone.mandate.page", options={"seo": "false"}, methods={"GET"}, defaults={"_routeScope"={"storefront"}})
      */
     public function mandateOverview(Request $request, SalesChannelContext $context): Response
     {
@@ -37,8 +35,7 @@ class AccountMandateController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/account/mandate/download", name="frontend.account.payone.mandate.download", options={"seo": "false"}, methods={"GET"})
+     * @Route("/account/mandate/download", name="frontend.account.payone.mandate.download", options={"seo": "false"}, methods={"GET"}, defaults={"_routeScope"={"storefront"}})
      */
     public function downloadMandate(Request $request, SalesChannelContext $context): Response
     {

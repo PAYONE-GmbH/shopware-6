@@ -40,7 +40,7 @@ use PayonePayment\PaymentMethod\PayoneWeChatPay;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -148,19 +148,19 @@ class PaymentMethodInstaller implements InstallerInterface
 
     private PluginIdProvider $pluginIdProvider;
 
-    private EntityRepositoryInterface $paymentMethodRepository;
+    private EntityRepository $paymentMethodRepository;
 
-    private EntityRepositoryInterface $salesChannelRepository;
+    private EntityRepository $salesChannelRepository;
 
-    private EntityRepositoryInterface $paymentMethodSalesChannelRepository;
+    private EntityRepository $paymentMethodSalesChannelRepository;
 
     private Connection $connection;
 
     public function __construct(
         PluginIdProvider $pluginIdProvider,
-        EntityRepositoryInterface $paymentMethodRepository,
-        EntityRepositoryInterface $salesChannelRepository,
-        EntityRepositoryInterface $paymentMethodSalesChannelRepository,
+        EntityRepository $paymentMethodRepository,
+        EntityRepository $salesChannelRepository,
+        EntityRepository $paymentMethodSalesChannelRepository,
         Connection $connection
     ) {
         $this->pluginIdProvider = $pluginIdProvider;
@@ -189,6 +189,7 @@ class PaymentMethodInstaller implements InstallerInterface
         // before any update procedures take place otherwise we would have a duplicate payment method.
         // This is also the reason why a migration is not a viable way here.
         if ($this->findPaymentMethodEntity('0b532088e2da3092f9f7054ec4009d18', $context->getContext())) {
+            /** @phpstan-ignore-next-line */
             if (method_exists($this->connection, 'executeStatement')) {
                 $this->connection->executeStatement("UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');");
                 $this->connection->executeStatement("UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');");
@@ -319,10 +320,6 @@ class PaymentMethodInstaller implements InstallerInterface
 
         $result = $this->paymentMethodRepository->search($criteria, $context);
 
-        if ($result->getTotal() === 0) {
-            return false;
-        }
-
-        return true;
+        return $result->getTotal() !== 0;
     }
 }

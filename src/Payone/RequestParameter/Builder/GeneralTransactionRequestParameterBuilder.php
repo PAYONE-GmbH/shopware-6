@@ -17,13 +17,13 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    protected EntityRepositoryInterface $currencyRepository;
+    protected EntityRepository $currencyRepository;
 
     protected CurrencyPrecisionInterface $currencyPrecision;
 
@@ -34,7 +34,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
     public function __construct(
         CartHasherInterface $cartHasher,
         ConfigReaderInterface $configReader,
-        EntityRepositoryInterface $currencyRepository,
+        EntityRepository $currencyRepository,
         CurrencyPrecisionInterface $currencyPrecision
     ) {
         $this->cartHasher = $cartHasher;

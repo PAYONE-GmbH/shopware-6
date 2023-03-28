@@ -44,9 +44,9 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
             $payoneData->assign([
                 'template' => $template,
             ]);
-        }
 
-        $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+            $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+        }
     }
 
     private function getTemplateFromPaymentMethod(PaymentMethodEntity $paymentMethod): ?string

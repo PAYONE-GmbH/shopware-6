@@ -12,7 +12,7 @@ use PayonePayment\StoreApi\Route\AbstractCardRoute;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
@@ -24,13 +24,13 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
 {
     private RequestParameterFactory $requestParameterFactory;
 
-    private EntityRepositoryInterface $languageRepository;
+    private EntityRepository $languageRepository;
 
     private AbstractCardRoute $cardRoute;
 
     public function __construct(
         RequestParameterFactory $requestParameterFactory,
-        EntityRepositoryInterface $languageRepository,
+        EntityRepository $languageRepository,
         AbstractCardRoute $cardRoute
     ) {
         $this->requestParameterFactory = $requestParameterFactory;
@@ -80,9 +80,9 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
                 'language' => $language,
                 'savedCards' => !empty($savedCards) ? $savedCards : null,
             ]);
-        }
 
-        $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+            $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+        }
     }
 
     private function getCustomerLanguage(Context $context): string

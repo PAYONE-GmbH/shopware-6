@@ -51,6 +51,7 @@ class RedirectHandler
     {
         $query = 'SELECT url FROM payone_payment_redirect WHERE hash = ?';
 
+        /** @phpstan-ignore-next-line */
         if (method_exists($this->connection, 'fetchOne')) {
             $url = $this->connection->fetchOne($query, [$hash]);
         } elseif (method_exists($this->connection, 'fetchColumn')) {

@@ -16,7 +16,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Country\CountryEntity;
@@ -32,13 +32,13 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     protected NumberRangeValueGeneratorInterface $numberRangeValueGenerator;
 
-    protected EntityRepositoryInterface $orderRepository;
+    protected EntityRepository $orderRepository;
 
     public function __construct(
         CartService $cartService,
         CurrencyPrecisionInterface $currencyPrecision,
         NumberRangeValueGeneratorInterface $numberRangeValueGenerator,
-        EntityRepositoryInterface $orderRepository
+        EntityRepository $orderRepository
     ) {
         $this->cartService = $cartService;
         $this->currencyPrecision = $currencyPrecision;
