@@ -11,7 +11,7 @@ use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -21,14 +21,14 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 class MandateService implements MandateServiceInterface
 {
-    private EntityRepositoryInterface $mandateRepository;
+    private EntityRepository $mandateRepository;
 
     private PayoneClientInterface $client;
 
     private RequestParameterFactory $requestFactory;
 
     public function __construct(
-        EntityRepositoryInterface $mandateRepository,
+        EntityRepository $mandateRepository,
         PayoneClientInterface $client,
         RequestParameterFactory $requestFactory
     ) {

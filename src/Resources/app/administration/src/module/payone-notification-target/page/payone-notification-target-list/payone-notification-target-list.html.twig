@@ -63,8 +63,8 @@
 
                             {% block payone_notification_target_list_grid_columns_is_basic_auth %}
                                 <template #column-isBasicAuth="{ item }">
-                                    <sw-icon v-if="item.isBasicAuth" name="small-default-checkmark-line-medium" small class="is--active"></sw-icon>
-                                    <sw-icon v-else name="small-default-x-line-medium" small class="is--inactive"></sw-icon>
+                                    <sw-icon v-if="item.isBasicAuth" name="regular-checkmark-xs" small class="is--active"></sw-icon>
+                                    <sw-icon v-else name="regular-times-s" small class="is--inactive"></sw-icon>
                                 </template>
                             {% endblock %}
 

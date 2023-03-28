@@ -91,6 +91,7 @@ class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameter
         if ($billingAddress->getCompany() || $customer->getCompany()) {
             $parameters['add_paydata[b2b]'] = 'yes';
 
+            /** @phpstan-ignore-next-line */
             if (method_exists($customer, 'getVatIds')) {
                 $vatIds = $customer->getVatIds();
 

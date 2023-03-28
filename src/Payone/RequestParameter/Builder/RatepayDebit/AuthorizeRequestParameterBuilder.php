@@ -16,7 +16,7 @@ use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
@@ -27,7 +27,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     protected AbstractDeviceFingerprintService $deviceFingerprintService;
 
-    protected EntityRepositoryInterface $customerRepository;
+    protected EntityRepository $customerRepository;
 
     protected LineItemHydratorInterface $lineItemHydrator;
 
@@ -35,7 +35,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         OrderFetcherInterface $orderFetcher,
         ProfileServiceInterface $profileService,
         AbstractDeviceFingerprintService $deviceFingerprintService,
-        EntityRepositoryInterface $customerRepository,
+        EntityRepository $customerRepository,
         LineItemHydratorInterface $lineItemHydrator
     ) {
         $this->orderFetcher = $orderFetcher;

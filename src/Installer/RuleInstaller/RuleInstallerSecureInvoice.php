@@ -9,7 +9,7 @@ use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use Shopware\Core\Checkout\Customer\Rule\BillingCountryRule;
 use Shopware\Core\Checkout\Customer\Rule\DifferentAddressesRule;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -39,19 +39,19 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     private const CONDITION_ID_CURRENCY = '6099e1e292f737aa31c126a73339c92e';
     private const CONDITION_ID_DIFFERENT_ADDRESSES = 'f1a5251ffcd09b5dc0befc059dfad9c1';
 
-    private EntityRepositoryInterface $ruleRepository;
+    private EntityRepository $ruleRepository;
 
-    private EntityRepositoryInterface $countryRepository;
+    private EntityRepository $countryRepository;
 
-    private EntityRepositoryInterface $currencyRepository;
+    private EntityRepository $currencyRepository;
 
-    private EntityRepositoryInterface $paymentMethodRepository;
+    private EntityRepository $paymentMethodRepository;
 
     public function __construct(
-        EntityRepositoryInterface $ruleRepository,
-        EntityRepositoryInterface $countryRepository,
-        EntityRepositoryInterface $currencyRepository,
-        EntityRepositoryInterface $paymentMethodRepository
+        EntityRepository $ruleRepository,
+        EntityRepository $countryRepository,
+        EntityRepository $currencyRepository,
+        EntityRepository $paymentMethodRepository
     ) {
         $this->ruleRepository = $ruleRepository;
         $this->countryRepository = $countryRepository;

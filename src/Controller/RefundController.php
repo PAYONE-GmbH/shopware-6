@@ -6,7 +6,6 @@ namespace PayonePayment\Controller;
 
 use PayonePayment\Components\TransactionHandler\Refund\RefundTransactionHandlerInterface;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,9 +22,8 @@ class RefundController extends AbstractController
     }
 
     /**
-     * @RouteScope(scopes={"api"})
-     * @Route("/api/_action/payone/refund-payment", name="api.action.payone.refund_payment", methods={"POST"})
-     * @Route("/api/v{version}/_action/payone/refund-payment", name="api.action.payone.refund_payment.legacy", methods={"POST"})
+     * @Route("/api/_action/payone/refund-payment", name="api.action.payone.refund_payment", methods={"POST"}, defaults={"_routeScope"={"api"}})
+     * @Route("/api/v{version}/_action/payone/refund-payment", name="api.action.payone.refund_payment.legacy", methods={"POST"}, defaults={"_routeScope"={"api"}})
      */
     public function refundAction(Request $request, Context $context): JsonResponse
     {

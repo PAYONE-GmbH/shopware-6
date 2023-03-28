@@ -53,8 +53,8 @@ class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
             $payoneData->assign([
                 'savedMandates' => $savedMandates,
             ]);
-        }
 
-        $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+            $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+        }
     }
 }

@@ -14,7 +14,7 @@ use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\AuthorizeRequestParameterBuilder as RatepayDebitAuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
 class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParameterBuilder
 {
@@ -24,7 +24,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
         OrderFetcherInterface $orderFetcher,
         ProfileServiceInterface $profileService,
         AbstractDeviceFingerprintService $deviceFingerprintService,
-        EntityRepositoryInterface $customerRepository,
+        EntityRepository $customerRepository,
         LineItemHydratorInterface $lineItemHydrator,
         CurrencyPrecisionInterface $currencyPrecision
     ) {

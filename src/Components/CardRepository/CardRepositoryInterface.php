@@ -12,7 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 interface CardRepositoryInterface
 {
     public function saveCard(
-        CustomerEntity $transaction,
+        CustomerEntity $customer,
         string $truncatedCardPan,
         string $pseudoCardPan,
         string $cardType,

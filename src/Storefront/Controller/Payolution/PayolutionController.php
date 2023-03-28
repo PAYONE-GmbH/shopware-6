@@ -21,7 +21,6 @@ use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
@@ -65,8 +64,7 @@ class PayolutionController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/consent", name="frontend.account.payone.payolution.consent", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
+     * @Route("/payone/consent", name="frontend.account.payone.payolution.consent", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true, "_routeScope"={"storefront"}})
      */
     public function displayContentModal(SalesChannelContext $context): Response
     {
@@ -93,8 +91,7 @@ class PayolutionController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/invoicing/validate", name="frontend.payone.payolution.invoicing.validate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
+     * @Route("/payone/invoicing/validate", name="frontend.payone.payolution.invoicing.validate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true, "_routeScope"={"storefront"}})
      */
     public function validate(RequestDataBag $dataBag, SalesChannelContext $context): JsonResponse
     {
@@ -123,8 +120,7 @@ class PayolutionController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/installment/calculation", name="frontend.payone.payolution.installment.calculation", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
+     * @Route("/payone/installment/calculation", name="frontend.payone.payolution.installment.calculation", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true, "_routeScope"={"storefront"}})
      */
     public function calculation(RequestDataBag $dataBag, SalesChannelContext $context): JsonResponse
     {
@@ -194,8 +190,7 @@ class PayolutionController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/installment/download", name="frontend.payone.payolution.installment.download", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
+     * @Route("/payone/installment/download", name="frontend.payone.payolution.installment.download", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true, "_routeScope"={"storefront"}})
      */
     public function download(Request $request, SalesChannelContext $context): Response
     {

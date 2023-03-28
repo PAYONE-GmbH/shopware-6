@@ -6,7 +6,6 @@ namespace PayonePayment\Storefront\Controller\Account;
 
 use PayonePayment\StoreApi\Route\AbstractCardRoute;
 use PayonePayment\Storefront\Page\Card\AccountCardPageLoader;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -27,8 +26,7 @@ class AccountCardController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/account/card/overview", name="frontend.account.payone.card.page", options={"seo": "false"}, methods={"GET"})
+     * @Route("/account/card/overview", name="frontend.account.payone.card.page", options={"seo": "false"}, methods={"GET"}, defaults={"_routeScope"={"storefront"}})
      */
     public function cardOverview(Request $request, SalesChannelContext $context): Response
     {
@@ -38,8 +36,7 @@ class AccountCardController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/account/card/delete", name="frontend.account.payone.card.delete", options={"seo": "false"}, methods={"GET"})
+     * @Route("/account/card/delete", name="frontend.account.payone.card.delete", options={"seo": "false"}, methods={"GET"}, defaults={"_routeScope"={"storefront"}})
      */
     public function deleteCard(Request $request, SalesChannelContext $context): Response
     {

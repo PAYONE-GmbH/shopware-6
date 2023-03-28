@@ -9,7 +9,7 @@ use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class PayoneBNPLDeviceFingerprintService extends AbstractDeviceFingerprintService
 {
@@ -18,9 +18,9 @@ class PayoneBNPLDeviceFingerprintService extends AbstractDeviceFingerprintServic
 
     protected ConfigReaderInterface $configReader;
 
-    public function __construct(SessionInterface $session, ConfigReaderInterface $configReader)
+    public function __construct(RequestStack $requestStack, ConfigReaderInterface $configReader)
     {
-        parent::__construct($session);
+        parent::__construct($requestStack);
         $this->configReader = $configReader;
     }
 
@@ -52,7 +52,7 @@ class PayoneBNPLDeviceFingerprintService extends AbstractDeviceFingerprintServic
 
     protected function buildDeviceIdentToken(SalesChannelContext $salesChannelContext): string
     {
-        $sessionId = $this->session->get('sessionId');
+        $sessionId = $this->requestStack->getSession()->get('sessionId');
 
         return self::PAYLA_PARTNER_ID . '_' . $this->getPartnerMerchantId($salesChannelContext) . '_' . $sessionId;
     }
