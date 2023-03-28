@@ -18,10 +18,9 @@ use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Customer\SalesChannel\AbstractRegisterRoute;
 use Shopware\Core\Checkout\Customer\SalesChannel\AccountService;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Country\CountryEntity;
@@ -50,9 +49,9 @@ class PaypalExpressController extends StorefrontController
 
     private AbstractSalesChannelContextFactory $salesChannelContextFactory;
 
-    private EntityRepositoryInterface $salutationRepository;
+    private EntityRepository $salutationRepository;
 
-    private EntityRepositoryInterface $countryRepository;
+    private EntityRepository $countryRepository;
 
     private SalesChannelContextSwitcher $salesChannelContextSwitcher;
 
@@ -68,8 +67,8 @@ class PaypalExpressController extends StorefrontController
         AbstractRegisterRoute $registerRoute,
         AccountService $accountService,
         AbstractSalesChannelContextFactory $salesChannelContextFactory,
-        EntityRepositoryInterface $salutationRepository,
-        EntityRepositoryInterface $countryRepository,
+        EntityRepository $salutationRepository,
+        EntityRepository $countryRepository,
         SalesChannelContextSwitcher $salesChannelContextSwitcher,
         CartHasherInterface $cartHasher,
         RouterInterface $router,
@@ -89,8 +88,7 @@ class PaypalExpressController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/paypal/express-checkout", name="frontend.account.payone.paypal.express-checkout", options={"seo": "false"}, methods={"GET"})
+     * @Route("/payone/paypal/express-checkout", name="frontend.account.payone.paypal.express-checkout", options={"seo": "false"}, methods={"GET"}, defaults={"_routeScope"={"storefront"}})
      */
     public function express(SalesChannelContext $context): Response
     {
@@ -130,8 +128,7 @@ class PaypalExpressController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/paypal/redirect-handler", name="frontend.account.payone.paypal.express-checkout-handler", options={"seo": "false"}, methods={"GET"})
+     * @Route("/payone/paypal/redirect-handler", name="frontend.account.payone.paypal.express-checkout-handler", options={"seo": "false"}, methods={"GET"}, defaults={"_routeScope"={"storefront"}})
      */
     public function redirectHandler(SalesChannelContext $context, Request $request): Response
     {

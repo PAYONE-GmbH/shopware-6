@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\Helper\OrderFetcherInterface;
 use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
@@ -29,12 +30,16 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
 
     private OrderFetcherInterface $orderFetcher;
 
+    private CurrencyPrecisionInterface $currencyPrecision;
+
     public function __construct(
         OrderConverter $orderConverter,
-        OrderFetcherInterface $orderFetcher
+        OrderFetcherInterface $orderFetcher,
+        CurrencyPrecisionInterface $currencyPrecision
     ) {
         $this->orderConverter = $orderConverter;
         $this->orderFetcher = $orderFetcher;
+        $this->currencyPrecision = $currencyPrecision;
     }
 
     public static function getSubscribedEvents(): array
@@ -75,9 +80,9 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
                 'workOrderId' => $extension->getWorkorderId(),
                 'cartHash' => $extension->getCartHash(),
             ]);
-        }
 
-        $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+            $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+        }
     }
 
     /**
@@ -85,7 +90,7 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
      */
     private function hidePayonePaymentMethodsOnZeroAmountCart(Page $page, Cart $cart, SalesChannelContext $salesChannelContext): void
     {
-        $totalAmount = (int) round($cart->getPrice()->getTotalPrice() * (10 ** $salesChannelContext->getCurrency()->getDecimalPrecision()));
+        $totalAmount = $this->currencyPrecision->getRoundedItemAmount($cart->getPrice()->getTotalPrice(), $salesChannelContext->getCurrency());
 
         if ($totalAmount > 0) {
             return;

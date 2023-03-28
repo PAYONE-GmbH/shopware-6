@@ -49,6 +49,7 @@ class Migration1638289341AddOrderTransActionDataTable extends MigrationStep
             CONSTRAINT `json.payone_payment_order_transaction_data.clearing_bank_account` CHECK (JSON_VALID(`clearing_bank_account`))
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;';
 
+        /** @phpstan-ignore-next-line */
         if (method_exists($connection, 'executeStatement')) {
             $connection->executeStatement($sql);
         } elseif (method_exists($connection, 'exec')) {

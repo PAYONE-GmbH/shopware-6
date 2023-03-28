@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Storefront\Page\Mandate;
 
 use PayonePayment\StoreApi\Route\AbstractMandateRoute;
-use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
+use Shopware\Core\Checkout\Cart\CartException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\GenericPageLoader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -32,7 +32,7 @@ class AccountMandatePageLoader
     public function load(Request $request, SalesChannelContext $context): AccountMandatePage
     {
         if (!$context->getCustomer()) {
-            throw new CustomerNotLoggedInException();
+            throw CartException::customerNotLoggedIn();
         }
 
         $page = AccountMandatePage::createFrom(

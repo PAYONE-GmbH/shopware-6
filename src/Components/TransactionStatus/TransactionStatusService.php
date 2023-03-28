@@ -15,7 +15,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefi
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -55,7 +55,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private ConfigReaderInterface $configReader;
 
-    private EntityRepositoryInterface $transactionRepository;
+    private EntityRepository $transactionRepository;
 
     private LoggerInterface $logger;
 
@@ -64,7 +64,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     public function __construct(
         StateMachineRegistry $stateMachineRegistry,
         ConfigReaderInterface $configReader,
-        EntityRepositoryInterface $transactionRepository,
+        EntityRepository $transactionRepository,
         LoggerInterface $logger,
         CurrencyPrecisionInterface $currencyPrecision
     ) {

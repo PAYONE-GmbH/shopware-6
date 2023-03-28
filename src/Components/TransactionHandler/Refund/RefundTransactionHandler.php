@@ -16,7 +16,7 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -30,8 +30,8 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         PayoneClientInterface $client,
         TransactionDataHandlerInterface $dataHandler,
         TransactionStatusServiceInterface $transactionStatusService,
-        EntityRepositoryInterface $transactionRepository,
-        EntityRepositoryInterface $lineItemRepository,
+        EntityRepository $transactionRepository,
+        EntityRepository $lineItemRepository,
         CurrencyPrecisionInterface $currencyPrecision
     ) {
         $this->requestFactory = $requestFactory;

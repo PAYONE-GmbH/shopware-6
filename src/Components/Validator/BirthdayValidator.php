@@ -28,7 +28,7 @@ class BirthdayValidator extends AbstractComparisonValidator
     /**
      * {@inheritdoc}
      */
-    protected function getErrorCode()
+    protected function getErrorCode(): ?string
     {
         return Birthday::TOO_HIGH_ERROR;
     }

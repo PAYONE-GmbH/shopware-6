@@ -7,8 +7,7 @@ namespace PayonePayment\Controller;
 use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardCommand;
 use PayonePayment\Payone\Webhook\Processor\WebhookProcessorInterface;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
@@ -21,13 +20,13 @@ class WebhookController extends StorefrontController
 {
     private WebhookProcessorInterface $webhookProcessor;
 
-    private EntityRepositoryInterface $notificationForwardRepository;
+    private EntityRepository $notificationForwardRepository;
 
     private MessageBusInterface $messageBus;
 
     public function __construct(
         WebhookProcessorInterface $webhookProcessor,
-        EntityRepositoryInterface $notificationForwardRepository,
+        EntityRepository $notificationForwardRepository,
         MessageBusInterface $messageBus
     ) {
         $this->webhookProcessor = $webhookProcessor;
@@ -36,8 +35,7 @@ class WebhookController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/webhook", name="payone_webhook", defaults={"csrf_protected": false}, methods={"POST"})
+     * @Route("/payone/webhook", name="payone_webhook", defaults={"csrf_protected": false, "_routeScope"={"storefront"}}, methods={"POST"})
      */
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {
@@ -45,9 +43,8 @@ class WebhookController extends StorefrontController
     }
 
     /**
-     * @RouteScope(scopes={"api"})
-     * @Route("/api/_action/payone/requeue-forward", name="api.action.payone.requeue.forward", methods={"POST"})
-     * @Route("/api/v{version}/_action/payone/requeue-forward", name="api.action.payone.requeue.forward.legacy", methods={"POST"})
+     * @Route("/api/_action/payone/requeue-forward", name="api.action.payone.requeue.forward", methods={"POST"}, defaults={"_routeScope"={"api"}})
+     * @Route("/api/v{version}/_action/payone/requeue-forward", name="api.action.payone.requeue.forward.legacy", methods={"POST"}, defaults={"_routeScope"={"api"}})
      */
     public function reQueueForward(Request $request, Context $context): Response
     {

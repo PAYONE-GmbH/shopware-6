@@ -17,7 +17,7 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Promotion\Cart\PromotionProcessor;
 use Shopware\Core\Checkout\Shipping\ShippingMethodEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -42,9 +42,9 @@ class LineItemHydrator implements LineItemHydratorInterface
 
     private CurrencyPrecisionInterface $currencyPrecision;
 
-    private EntityRepositoryInterface $shipmentRepository;
+    private EntityRepository $shipmentRepository;
 
-    public function __construct(CurrencyPrecisionInterface $currencyPrecision, EntityRepositoryInterface $shipmentRepository)
+    public function __construct(CurrencyPrecisionInterface $currencyPrecision, EntityRepository $shipmentRepository)
     {
         $this->currencyPrecision = $currencyPrecision;
         $this->shipmentRepository = $shipmentRepository;

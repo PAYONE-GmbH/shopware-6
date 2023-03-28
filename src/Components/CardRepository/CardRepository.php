@@ -7,7 +7,7 @@ namespace PayonePayment\Components\CardRepository;
 use PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -16,9 +16,9 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class CardRepository implements CardRepositoryInterface
 {
-    private EntityRepositoryInterface $cardRepository;
+    private EntityRepository $cardRepository;
 
-    public function __construct(EntityRepositoryInterface $cardRepository)
+    public function __construct(EntityRepository $cardRepository)
     {
         $this->cardRepository = $cardRepository;
     }

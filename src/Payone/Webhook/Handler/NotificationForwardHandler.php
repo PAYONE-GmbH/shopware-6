@@ -8,7 +8,7 @@ use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInter
 use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetCollection;
 use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardCommand;
 use PayonePayment\Struct\PaymentTransaction;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -18,17 +18,17 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class NotificationForwardHandler implements WebhookHandlerInterface
 {
-    private EntityRepositoryInterface $notificationTargetRepository;
+    private EntityRepository $notificationTargetRepository;
 
-    private EntityRepositoryInterface $notificationForwardRepository;
+    private EntityRepository $notificationForwardRepository;
 
     private TransactionDataHandlerInterface $transactionDataHandler;
 
     private MessageBusInterface $messageBus;
 
     public function __construct(
-        EntityRepositoryInterface $notificationTargetRepository,
-        EntityRepositoryInterface $notificationForwardRepository,
+        EntityRepository $notificationTargetRepository,
+        EntityRepository $notificationForwardRepository,
         TransactionDataHandlerInterface $transactionDataHandler,
         MessageBusInterface $messageBus
     ) {

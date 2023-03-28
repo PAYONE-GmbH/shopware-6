@@ -9,7 +9,7 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Installer\CustomFieldInstaller;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -41,13 +41,13 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
 
     protected ConfigReaderInterface $configReader;
 
-    protected EntityRepositoryInterface $lineItemRepository;
+    protected EntityRepository $lineItemRepository;
 
     protected RequestStack $requestStack;
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        EntityRepositoryInterface $lineItemRepository,
+        EntityRepository $lineItemRepository,
         RequestStack $requestStack
     ) {
         $this->configReader = $configReader;

@@ -27,8 +27,6 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
                 throw new \RuntimeException('Invalid payment method handler');
         }
 
-        $billingAddress = $arguments->getPaymentTransaction()->getOrder()->getBillingAddress();
-
         return [
             'request' => $arguments->getAction(),
             'clearingtype' => self::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
