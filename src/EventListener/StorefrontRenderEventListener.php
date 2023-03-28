@@ -8,13 +8,13 @@ use PayonePayment\Installer\PaymentMethodInstaller;
 use Psr\Cache\CacheItemPoolInterface;
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelPaymentMethod\SalesChannelPaymentMethodDefinition;
-use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepositoryInterface;
+use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Event\StorefrontRenderEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -23,14 +23,14 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
 {
     private CacheItemPoolInterface $cachePool;
 
-    private SalesChannelRepositoryInterface $paymentMethodRepository;
+    private SalesChannelRepository $paymentMethodRepository;
 
-    private EntityRepositoryInterface $salesChannelRepository;
+    private EntityRepository $salesChannelRepository;
 
     public function __construct(
         CacheItemPoolInterface $cachePool,
-        SalesChannelRepositoryInterface $repository,
-        EntityRepositoryInterface $salesChannelRepository
+        SalesChannelRepository $repository,
+        EntityRepository $salesChannelRepository
     ) {
         $this->cachePool = $cachePool;
         $this->paymentMethodRepository = $repository;

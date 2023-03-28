@@ -38,7 +38,7 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Language\LanguageEntity;
@@ -48,18 +48,18 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    private EntityRepositoryInterface $languageRepository;
+    private EntityRepository $languageRepository;
 
     private RequestStack $requestStack;
 
-    private EntityRepositoryInterface $salutationRepository;
+    private EntityRepository $salutationRepository;
 
-    private EntityRepositoryInterface $countryRepository;
+    private EntityRepository $countryRepository;
 
     public function __construct(
-        EntityRepositoryInterface $languageRepository,
-        EntityRepositoryInterface $salutationRepository,
-        EntityRepositoryInterface $countryRepository,
+        EntityRepository $languageRepository,
+        EntityRepository $salutationRepository,
+        EntityRepository $countryRepository,
         RequestStack $requestStack
     ) {
         $this->languageRepository = $languageRepository;

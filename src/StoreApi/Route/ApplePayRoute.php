@@ -12,8 +12,6 @@ use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\ApplePayTransactionStruct;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Plugin\Exception\DecorationPatternException;
-use Shopware\Core\Framework\Routing\Annotation\ContextTokenRequired;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
@@ -22,10 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @RouteScope(scopes={"store-api"})
- * @ContextTokenRequired
- */
 class ApplePayRoute extends AbstractApplePayRoute
 {
     public const CERT_FOLDER = '/config/apple-pay-cert/';
@@ -64,7 +58,7 @@ class ApplePayRoute extends AbstractApplePayRoute
     }
 
     /**
-     * @Route("/store-api/payone/apple-pay/validate-merchant", name="store-api.payone.apple-pay.validate-merchant", methods={"POST"})
+     * @Route("/store-api/payone/apple-pay/validate-merchant", name="store-api.payone.apple-pay.validate-merchant", methods={"POST"}, defaults={"_routeScope"={"store-api"}, "_contextTokenRequired"=true})
      */
     public function validateMerchant(Request $request, SalesChannelContext $context): Response
     {
@@ -119,7 +113,7 @@ class ApplePayRoute extends AbstractApplePayRoute
     }
 
     /**
-     * @Route("/store-api/payone/apple-pay/process", name="store-api.payone.apple-pay.process", methods={"POST"})
+     * @Route("/store-api/payone/apple-pay/process", name="store-api.payone.apple-pay.process", methods={"POST"}, defaults={"_routeScope"={"store-api"}, "_contextTokenRequired"=true})
      */
     public function process(Request $request, SalesChannelContext $context): Response
     {

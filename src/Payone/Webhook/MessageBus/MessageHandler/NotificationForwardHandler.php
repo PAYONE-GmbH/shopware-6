@@ -9,30 +9,31 @@ use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNo
 use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardCommand;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
-use Shopware\Core\Framework\MessageQueue\Handler\AbstractMessageHandler;
+use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
-class NotificationForwardHandler extends AbstractMessageHandler
+class NotificationForwardHandler implements MessageSubscriberInterface
 {
-    private EntityRepositoryInterface $notificationForwardRepository;
+    private EntityRepository $notificationForwardRepository;
 
     private LoggerInterface $logger;
 
-    public function __construct(EntityRepositoryInterface $notificationForwardRepository, LoggerInterface $logger)
+    public function __construct(EntityRepository $notificationForwardRepository, LoggerInterface $logger)
     {
         $this->notificationForwardRepository = $notificationForwardRepository;
         $this->logger = $logger;
     }
 
-    /**
-     * @param NotificationForwardCommand $message
-     */
-    public function handle($message): void
+    public function __invoke(NotificationForwardCommand $message): void
+    {
+        $this->handle($message);
+    }
+
+    public function handle(NotificationForwardCommand $message): void
     {
         $notificationForwards = $this->getNotificationForwards($message->getNotificationTargetIds(), $message->getContext());
-        /** @var resource $multiHandle */
         $multiHandle = curl_multi_init();
 
         $this->logger->info('Forwarding notifications', array_keys($notificationForwards->getElements()));
@@ -73,11 +74,12 @@ class NotificationForwardHandler extends AbstractMessageHandler
         return $this->notificationForwardRepository->search($criteria, $context);
     }
 
-    /**
-     * @param resource $multiHandle
-     */
-    private function updateResponses($multiHandle, EntitySearchResult $notificationForwards, array $forwardRequests, Context $context): void
-    {
+    private function updateResponses(
+        \CurlMultiHandle $multiHandle,
+        EntitySearchResult $notificationForwards,
+        array $forwardRequests,
+        Context $context
+    ): void {
         $data = [];
 
         /** @var PayonePaymentNotificationForwardEntity $forward */
@@ -96,10 +98,7 @@ class NotificationForwardHandler extends AbstractMessageHandler
         $this->notificationForwardRepository->update($data, $context);
     }
 
-    /**
-     * @param resource $multiHandle
-     */
-    private function getForwardRequests($multiHandle, EntitySearchResult $notificationForwards): array
+    private function getForwardRequests(\CurlMultiHandle $multiHandle, EntitySearchResult $notificationForwards): array
     {
         $forwardRequests = [];
 
@@ -109,20 +108,24 @@ class NotificationForwardHandler extends AbstractMessageHandler
 
             $target = $forward->getNotificationTarget();
 
-            if ($target === null) {
+            if ($target === null || empty($target->getUrl())) {
                 continue;
             }
 
             $forwardRequests[$id] = curl_init();
 
             $serialize = unserialize($forward->getContent(), []);
-            /** @var array $content */
+            /** @var array<int, string>|string|false $content */
             $content = mb_convert_encoding($serialize, 'ISO-8859-1', 'UTF-8');
 
+            if (!\is_array($content)) {
+                continue;
+            }
+
             curl_setopt($forwardRequests[$id], \CURLOPT_URL, $target->getUrl());
-            curl_setopt($forwardRequests[$id], \CURLOPT_HEADER, 0);
-            curl_setopt($forwardRequests[$id], \CURLOPT_POST, 1);
-            curl_setopt($forwardRequests[$id], \CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($forwardRequests[$id], \CURLOPT_HEADER, false);
+            curl_setopt($forwardRequests[$id], \CURLOPT_POST, true);
+            curl_setopt($forwardRequests[$id], \CURLOPT_RETURNTRANSFER, true);
             curl_setopt($forwardRequests[$id], \CURLOPT_TIMEOUT, 10);
             curl_setopt($forwardRequests[$id], \CURLOPT_CONNECTTIMEOUT, 10);
             curl_setopt($forwardRequests[$id], \CURLOPT_POSTFIELDS, http_build_query($content));

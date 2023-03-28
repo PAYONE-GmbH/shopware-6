@@ -9,7 +9,7 @@ use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Installer\RuleInstaller\RuleInstallerSecureInvoice;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
@@ -114,13 +114,13 @@ class PayonePayment extends Plugin
 
     private function getRuleInstallerSecureInvoice(): RuleInstallerSecureInvoice
     {
-        /** @var EntityRepositoryInterface $ruleRepository */
+        /** @var EntityRepository $ruleRepository */
         $ruleRepository = $this->container->get('rule.repository');
-        /** @var EntityRepositoryInterface $countryRepository */
+        /** @var EntityRepository $countryRepository */
         $countryRepository = $this->container->get('country.repository');
-        /** @var EntityRepositoryInterface $currencyRepository */
+        /** @var EntityRepository $currencyRepository */
         $currencyRepository = $this->container->get('currency.repository');
-        /** @var EntityRepositoryInterface $paymentMethodRepository */
+        /** @var EntityRepository $paymentMethodRepository */
         $paymentMethodRepository = $this->container->get('payment_method.repository');
 
         return new RuleInstallerSecureInvoice(
@@ -143,11 +143,11 @@ class PayonePayment extends Plugin
     {
         /** @var PluginIdProvider $pluginIdProvider */
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
-        /** @var EntityRepositoryInterface $paymentMethodRepository */
+        /** @var EntityRepository $paymentMethodRepository */
         $paymentMethodRepository = $this->container->get('payment_method.repository');
-        /** @var EntityRepositoryInterface $salesChannelRepository */
+        /** @var EntityRepository $salesChannelRepository */
         $salesChannelRepository = $this->container->get('sales_channel.repository');
-        /** @var EntityRepositoryInterface $paymentMethodSalesChannelRepository */
+        /** @var EntityRepository $paymentMethodSalesChannelRepository */
         $paymentMethodSalesChannelRepository = $this->container->get('sales_channel_payment_method.repository');
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
@@ -163,9 +163,9 @@ class PayonePayment extends Plugin
 
     private function getCustomFieldInstaller(): CustomFieldInstaller
     {
-        /** @var EntityRepositoryInterface $customFieldSetRepository */
+        /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
-        /** @var EntityRepositoryInterface $customFieldRepository */
+        /** @var EntityRepository $customFieldRepository */
         $customFieldRepository = $this->container->get('custom_field.repository');
 
         return new CustomFieldInstaller($customFieldSetRepository, $customFieldRepository);

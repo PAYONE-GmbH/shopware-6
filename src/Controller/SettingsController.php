@@ -15,11 +15,10 @@ use PayonePayment\StoreApi\Route\ApplePayRoute;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Grouping\FieldGrouping;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,43 +33,43 @@ class SettingsController extends AbstractController
 
     private RequestParameterFactory $requestFactory;
 
-    private EntityRepositoryInterface $stateMachineTransitionRepository;
+    private EntityRepository $stateMachineTransitionRepository;
 
     private LoggerInterface $logger;
 
     private string $kernelDirectory;
 
+    private EntityRepository $paymentMethodRepository;
+
     public function __construct(
         PayoneClientInterface $client,
         RequestParameterFactory $requestFactory,
-        EntityRepositoryInterface $stateMachineTransitionRepository,
+        EntityRepository $stateMachineTransitionRepository,
         LoggerInterface $logger,
-        string $kernelDirectory
+        string $kernelDirectory,
+        EntityRepository $paymentMethodRepository
     ) {
         $this->client = $client;
         $this->requestFactory = $requestFactory;
         $this->stateMachineTransitionRepository = $stateMachineTransitionRepository;
         $this->logger = $logger;
         $this->kernelDirectory = $kernelDirectory;
+        $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
     /**
-     * @RouteScope(scopes={"api"})
-     * @Route("/api/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials", methods={"POST"})
-     * @Route("/api/v{version}/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials.legacy", methods={"POST"})
+     * @Route("/api/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials", methods={"POST"}, defaults={"_routeScope"={"api"}})
+     * @Route("/api/v{version}/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials.legacy", methods={"POST"}, defaults={"_routeScope"={"api"}})
      */
     public function validateApiCredentials(Request $request, Context $context): JsonResponse
     {
         $testCount = 0;
         $errors = [];
 
-        /** @var EntityRepositoryInterface $paymentMethodRepository */
-        $paymentMethodRepository = $this->get('payment_method.repository');
-
         foreach (ConfigurationPrefixes::CONFIGURATION_PREFIXES as $paymentClass => $configurationPrefix) {
             /** @var PaymentMethodEntity|null $paymentMethod */
             $criteria = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', $paymentClass));
-            $paymentMethod = $paymentMethodRepository->search($criteria, $context)->first();
+            $paymentMethod = $this->paymentMethodRepository->search($criteria, $context)->first();
 
             if (!$paymentMethod || !$paymentMethod->getActive() || \in_array($paymentMethod->getHandlerIdentifier(), Handler\PaymentHandlerGroups::RATEPAY, true)) {
                 continue;
@@ -103,9 +102,8 @@ class SettingsController extends AbstractController
     }
 
     /**
-     * @RouteScope(scopes={"api"})
-     * @Route("/api/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions", methods={"GET"})
-     * @Route("/api/v{version}/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions.legacy", methods={"GET"})
+     * @Route("/api/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions", methods={"GET"}, defaults={"_routeScope"={"api"}})
+     * @Route("/api/v{version}/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions.legacy", methods={"GET"}, defaults={"_routeScope"={"api"}})
      */
     public function getStateMachineTransitionActions(Request $request, Context $context): JsonResponse
     {
@@ -131,9 +129,8 @@ class SettingsController extends AbstractController
     }
 
     /**
-     * @RouteScope(scopes={"api"})
-     * @Route("/api/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert", methods={"GET"})
-     * @Route("/api/v{version}/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert.legacy", methods={"GET"})
+     * @Route("/api/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert", methods={"GET"}, defaults={"_routeScope"={"api"}})
+     * @Route("/api/v{version}/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert.legacy", methods={"GET"}, defaults={"_routeScope"={"api"}})
      */
     public function checkApplePayCert(): JsonResponse
     {

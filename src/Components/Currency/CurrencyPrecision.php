@@ -12,10 +12,12 @@ class CurrencyPrecision implements CurrencyPrecisionInterface
 
     public function getItemRoundingPrecision(CurrencyEntity $currency): int
     {
+        /** @phpstan-ignore-next-line */
         if (method_exists($currency, 'getItemRounding')) {
             return $currency->getItemRounding()->getDecimals();
         }
 
+        /** @phpstan-ignore-next-line */
         if (method_exists($currency, 'getDecimalPrecision')) {
             /** @noinspection PhpDeprecationInspection */
             return $currency->getDecimalPrecision();
@@ -26,10 +28,12 @@ class CurrencyPrecision implements CurrencyPrecisionInterface
 
     public function getTotalRoundingPrecision(CurrencyEntity $currency): int
     {
+        /** @phpstan-ignore-next-line */
         if (method_exists($currency, 'getTotalRounding')) {
             return $currency->getTotalRounding()->getDecimals();
         }
 
+        /** @phpstan-ignore-next-line */
         if (method_exists($currency, 'getDecimalPrecision')) {
             /** @noinspection PhpDeprecationInspection */
             return $currency->getDecimalPrecision();

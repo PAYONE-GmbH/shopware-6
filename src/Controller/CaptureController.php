@@ -6,7 +6,6 @@ namespace PayonePayment\Controller;
 
 use PayonePayment\Components\TransactionHandler\Capture\CaptureTransactionHandlerInterface;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,9 +22,8 @@ class CaptureController extends AbstractController
     }
 
     /**
-     * @RouteScope(scopes={"api"})
-     * @Route("/api/_action/payone/capture-payment", name="api.action.payone.capture_payment", methods={"POST"})
-     * @Route("/api/v{version}/_action/payone/capture-payment", name="api.action.payone.capture_payment.legacy", methods={"POST"})
+     * @Route("/api/_action/payone/capture-payment", name="api.action.payone.capture_payment", methods={"POST"}, defaults={"_routeScope"={"api"}})
+     * @Route("/api/v{version}/_action/payone/capture-payment", name="api.action.payone.capture_payment.legacy", methods={"POST"}, defaults={"_routeScope"={"api"}})
      */
     public function captureAction(Request $request, Context $context): JsonResponse
     {

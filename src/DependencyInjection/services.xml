@@ -6,7 +6,6 @@
     <imports>
         <import resource="store_api.xml"/>
         <import resource="controllers.xml" />
-        <import resource="decorations.xml"/>
         <import resource="device_fingerprint.xml"/>
         <import resource="entities.xml" />
         <import resource="handler/global_handlers.xml" />
@@ -72,6 +71,7 @@
         </service>
 
         <service id="PayonePayment\Components\CartValidator\ZeroAmountCartValidator">
+            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
             <tag name="shopware.cart.validator"/>
         </service>
 

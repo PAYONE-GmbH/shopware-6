@@ -11,17 +11,17 @@ use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionEx
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class TransactionDataHandler implements TransactionDataHandlerInterface
 {
-    private EntityRepositoryInterface $transactionRepository;
+    private EntityRepository $transactionRepository;
 
     private CurrencyPrecisionInterface $currencyPrecision;
 
-    public function __construct(EntityRepositoryInterface $transactionRepository, CurrencyPrecisionInterface $currencyPrecision)
+    public function __construct(EntityRepository $transactionRepository, CurrencyPrecisionInterface $currencyPrecision)
     {
         $this->transactionRepository = $transactionRepository;
         $this->currencyPrecision = $currencyPrecision;
