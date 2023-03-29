@@ -7,6 +7,7 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
+use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -125,11 +126,11 @@ class PayoneBancontactPaymentHandler extends AbstractPayonePaymentHandler implem
      */
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        if (static::isNeverCapturable($payoneTransActionData)) {
+        if ($payoneTransActionData['authorizationType'] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
             return false;
         }
 
-        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData);
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 
     /**
@@ -137,10 +138,10 @@ class PayoneBancontactPaymentHandler extends AbstractPayonePaymentHandler implem
      */
     public static function isRefundable(array $transactionData): bool
     {
-        if (static::isNeverRefundable($transactionData)) {
-            return false;
+        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
+            return true;
         }
 
-        return static::matchesIsRefundableDefaults($transactionData);
+        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 }
