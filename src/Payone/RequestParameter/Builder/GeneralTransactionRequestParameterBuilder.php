@@ -25,22 +25,13 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
 {
     protected EntityRepository $currencyRepository;
 
-    protected CurrencyPrecisionInterface $currencyPrecision;
-
-    protected CartHasherInterface $cartHasher;
-
-    protected ConfigReaderInterface $configReader;
-
     public function __construct(
-        CartHasherInterface $cartHasher,
-        ConfigReaderInterface $configReader,
+        protected CartHasherInterface $cartHasher,
+        protected ConfigReaderInterface $configReader,
         EntityRepository $currencyRepository,
-        CurrencyPrecisionInterface $currencyPrecision
+        protected CurrencyPrecisionInterface $currencyPrecision
     ) {
-        $this->cartHasher = $cartHasher;
-        $this->configReader = $configReader;
         $this->currencyRepository = $currencyRepository;
-        $this->currencyPrecision = $currencyPrecision;
     }
 
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
@@ -147,9 +138,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
             return null;
         }
 
-        $transactions->sort(static function (OrderTransactionEntity $a, OrderTransactionEntity $b) {
-            return $a->getCreatedAt() <=> $b->getCreatedAt();
-        });
+        $transactions->sort(static fn(OrderTransactionEntity $a, OrderTransactionEntity $b) => $a->getCreatedAt() <=> $b->getCreatedAt());
         /** @var OrderTransactionEntity $orderTransaction */
         $orderTransaction = $transactions->last();
 

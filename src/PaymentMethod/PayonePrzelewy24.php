@@ -9,7 +9,7 @@ use PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler;
 
 class PayonePrzelewy24 extends AbstractPaymentMethod
 {
-    public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
+    final public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
     protected string $id = self::UUID;
 

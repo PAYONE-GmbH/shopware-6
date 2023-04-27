@@ -15,24 +15,15 @@ use Shopware\Core\Framework\Context;
 
 class CreateSessionRequestParameterBuilder extends AbstractKlarnaParameterBuilder
 {
-    private CartService $cartService;
-
-    private LineItemHydratorInterface $lineItemHydrator;
-
-    private CurrencyPrecisionInterface $currencyPrecision;
-
-    private OrderFetcherInterface $orderFetcher;
+    private readonly CartService $cartService;
 
     public function __construct(
         CartService $cartService,
-        LineItemHydratorInterface $lineItemHydrator,
-        CurrencyPrecisionInterface $currencyPrecision,
-        OrderFetcherInterface $orderFetcher
+        private readonly LineItemHydratorInterface $lineItemHydrator,
+        private readonly CurrencyPrecisionInterface $currencyPrecision,
+        private readonly OrderFetcherInterface $orderFetcher
     ) {
         $this->cartService = $cartService;
-        $this->lineItemHydrator = $lineItemHydrator;
-        $this->currencyPrecision = $currencyPrecision;
-        $this->orderFetcher = $orderFetcher;
     }
 
     /**

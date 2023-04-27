@@ -9,12 +9,10 @@ use Symfony\Component\Validator\Constraints\AbstractComparisonValidator;
 class PaymentMethodValidator extends AbstractComparisonValidator
 {
     /**
-     * @param mixed $value1
-     * @param mixed $value2
      *
      * @return bool always fails as the check is done inside a subscriber
      */
-    protected function compareValues($value1, $value2): bool
+    protected function compareValues(mixed $value1, mixed $value2): bool
     {
         return false;
     }

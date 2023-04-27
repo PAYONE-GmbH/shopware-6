@@ -12,7 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class PayonePaymentOrderTransactionExtension extends EntityExtension
 {
-    public const NAME = 'payonePaymentOrderTransactionData';
+    final public const NAME = 'payonePaymentOrderTransactionData';
 
     public function extendFields(FieldCollection $collection): void
     {

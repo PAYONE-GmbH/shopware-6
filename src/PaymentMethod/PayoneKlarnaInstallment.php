@@ -9,7 +9,7 @@ use PayonePayment\PaymentHandler\PayoneKlarnaInstallmentPaymentHandler;
 
 class PayoneKlarnaInstallment extends AbstractPayoneKlarna
 {
-    public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
+    final public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
     protected string $id = self::UUID;
 

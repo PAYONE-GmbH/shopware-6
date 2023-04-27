@@ -16,14 +16,11 @@ use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
 class NotificationForwardHandler implements MessageSubscriberInterface
 {
-    private EntityRepository $notificationForwardRepository;
+    private readonly EntityRepository $notificationForwardRepository;
 
-    private LoggerInterface $logger;
-
-    public function __construct(EntityRepository $notificationForwardRepository, LoggerInterface $logger)
+    public function __construct(EntityRepository $notificationForwardRepository, private readonly LoggerInterface $logger)
     {
         $this->notificationForwardRepository = $notificationForwardRepository;
-        $this->logger = $logger;
     }
 
     public function __invoke(NotificationForwardCommand $message): void
@@ -116,7 +113,7 @@ class NotificationForwardHandler implements MessageSubscriberInterface
 
             $serialize = unserialize($forward->getContent(), []);
             /** @var array<int, string>|string|false $content */
-            $content = mb_convert_encoding($serialize, 'ISO-8859-1', 'UTF-8');
+            $content = mb_convert_encoding((string) $serialize, 'ISO-8859-1', 'UTF-8');
 
             if (!\is_array($content)) {
                 continue;

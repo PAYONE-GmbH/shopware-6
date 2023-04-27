@@ -13,20 +13,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AccountCardPageLoader
 {
-    private GenericPageLoader $genericLoader;
-
-    private EventDispatcherInterface $eventDispatcher;
-
-    private AbstractCardRoute $cardRoute;
+    private readonly GenericPageLoader $genericLoader;
 
     public function __construct(
         GenericPageLoader $genericLoader,
-        EventDispatcherInterface $eventDispatcher,
-        AbstractCardRoute $cardRoute
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly AbstractCardRoute $cardRoute
     ) {
         $this->genericLoader = $genericLoader;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->cardRoute = $cardRoute;
     }
 
     public function load(Request $request, SalesChannelContext $context): AccountCardPage

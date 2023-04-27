@@ -22,20 +22,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
 {
-    private RequestParameterFactory $requestParameterFactory;
-
-    private EntityRepository $languageRepository;
-
-    private AbstractCardRoute $cardRoute;
+    private readonly EntityRepository $languageRepository;
 
     public function __construct(
-        RequestParameterFactory $requestParameterFactory,
+        private readonly RequestParameterFactory $requestParameterFactory,
         EntityRepository $languageRepository,
-        AbstractCardRoute $cardRoute
+        private readonly AbstractCardRoute $cardRoute
     ) {
-        $this->requestParameterFactory = $requestParameterFactory;
         $this->languageRepository = $languageRepository;
-        $this->cardRoute = $cardRoute;
     }
 
     public static function getSubscribedEvents(): array
@@ -98,6 +92,6 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
             return 'en';
         }
 
-        return substr($language->getLocale()->getCode(), 0, 2);
+        return substr((string) $language->getLocale()->getCode(), 0, 2);
     }
 }

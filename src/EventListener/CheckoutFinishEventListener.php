@@ -21,9 +21,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutFinishEventListener implements EventSubscriberInterface
 {
-    private EntityRepository $mandateRepository;
+    private readonly EntityRepository $mandateRepository;
 
-    private EntityRepository $orderTransactionRepository;
+    private readonly EntityRepository $orderTransactionRepository;
 
     public function __construct(
         EntityRepository $mandateRepository,

@@ -13,11 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RedirectController
 {
-    private RedirectHandler $redirectHandler;
-
-    public function __construct(RedirectHandler $redirectHandler)
+    public function __construct(private readonly RedirectHandler $redirectHandler)
     {
-        $this->redirectHandler = $redirectHandler;
     }
 
     /**
@@ -33,7 +30,7 @@ class RedirectController
 
         try {
             $target = $this->redirectHandler->decode($hash);
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             throw new NotFoundHttpException();
         }
 

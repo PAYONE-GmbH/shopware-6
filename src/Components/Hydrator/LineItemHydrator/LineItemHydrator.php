@@ -28,25 +28,22 @@ class LineItemHydrator implements LineItemHydratorInterface
     /**
      * @see https://docs.payone.com/display/public/PLATFORM/it%5Bn%5D+-+definition
      */
-    public const TYPE_GOODS = 'goods';
-    public const TYPE_VOUCHER = 'voucher';
-    public const TYPE_SHIPMENT = 'shipment';
-    public const TYPE_HANDLING = 'handling';
+    final public const TYPE_GOODS = 'goods';
+    final public const TYPE_VOUCHER = 'voucher';
+    final public const TYPE_SHIPMENT = 'shipment';
+    final public const TYPE_HANDLING = 'handling';
 
-    public const PAYONE_ARRAY_KEY_TYPE = 'it';
-    public const PAYONE_ARRAY_KEY_NUMBER = 'id';
-    public const PAYONE_ARRAY_KEY_PRICE = 'pr';
-    public const PAYONE_ARRAY_KEY_QTY = 'no';
-    public const PAYONE_ARRAY_KEY_NAME = 'de';
-    public const PAYONE_ARRAY_KEY_TAX_RATE = 'va';
+    final public const PAYONE_ARRAY_KEY_TYPE = 'it';
+    final public const PAYONE_ARRAY_KEY_NUMBER = 'id';
+    final public const PAYONE_ARRAY_KEY_PRICE = 'pr';
+    final public const PAYONE_ARRAY_KEY_QTY = 'no';
+    final public const PAYONE_ARRAY_KEY_NAME = 'de';
+    final public const PAYONE_ARRAY_KEY_TAX_RATE = 'va';
 
-    private CurrencyPrecisionInterface $currencyPrecision;
+    private readonly EntityRepository $shipmentRepository;
 
-    private EntityRepository $shipmentRepository;
-
-    public function __construct(CurrencyPrecisionInterface $currencyPrecision, EntityRepository $shipmentRepository)
+    public function __construct(private readonly CurrencyPrecisionInterface $currencyPrecision, EntityRepository $shipmentRepository)
     {
-        $this->currencyPrecision = $currencyPrecision;
         $this->shipmentRepository = $shipmentRepository;
     }
 
@@ -173,7 +170,7 @@ class LineItemHydrator implements LineItemHydratorInterface
                 && $lineItemEntity->getParentId() === null) {
                 return true;
             }
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             // Catch class not found if SwagCustomizedProducts plugin is not installed
         }
 

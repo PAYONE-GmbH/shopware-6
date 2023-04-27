@@ -13,20 +13,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AccountMandatePageLoader
 {
-    private GenericPageLoader $genericLoader;
-
-    private EventDispatcherInterface $eventDispatcher;
-
-    private AbstractMandateRoute $mandateRoute;
+    private readonly GenericPageLoader $genericLoader;
 
     public function __construct(
         GenericPageLoader $genericLoader,
-        EventDispatcherInterface $eventDispatcher,
-        AbstractMandateRoute $mandateRoute
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly AbstractMandateRoute $mandateRoute
     ) {
         $this->genericLoader = $genericLoader;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->mandateRoute = $mandateRoute;
     }
 
     public function load(Request $request, SalesChannelContext $context): AccountMandatePage

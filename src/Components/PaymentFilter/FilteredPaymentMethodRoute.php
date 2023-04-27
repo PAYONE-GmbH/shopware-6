@@ -17,32 +17,23 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class FilteredPaymentMethodRoute extends AbstractPaymentMethodRoute
 {
-    private AbstractPaymentMethodRoute $decorated;
+    private readonly AbstractPaymentMethodRoute $decorated;
 
-    private IterablePaymentFilter $iterablePaymentFilter;
+    private readonly RequestStack $requestStack;
 
-    private RequestStack $requestStack;
-
-    private OrderFetcherInterface $orderFetcher;
-
-    private CartService $cartService;
-
-    private PaymentFilterContextFactoryInterface $paymentFilterContextFactory;
+    private readonly CartService $cartService;
 
     public function __construct(
         AbstractPaymentMethodRoute $decorated,
-        IterablePaymentFilter $iterablePaymentFilter,
+        private readonly IterablePaymentFilter $iterablePaymentFilter,
         RequestStack $requestStack,
-        OrderFetcherInterface $orderFetcher,
+        private readonly OrderFetcherInterface $orderFetcher,
         CartService $cartService,
-        PaymentFilterContextFactoryInterface $paymentFilterContextFactory
+        private readonly PaymentFilterContextFactoryInterface $paymentFilterContextFactory
     ) {
         $this->decorated = $decorated;
-        $this->iterablePaymentFilter = $iterablePaymentFilter;
         $this->requestStack = $requestStack;
-        $this->orderFetcher = $orderFetcher;
         $this->cartService = $cartService;
-        $this->paymentFilterContextFactory = $paymentFilterContextFactory;
     }
 
     public function getDecorated(): AbstractPaymentMethodRoute

@@ -14,37 +14,10 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 class DefaultPaymentFilterService implements PaymentFilterServiceInterface
 {
     /**
-     * @var class-string<\PayonePayment\PaymentHandler\AbstractPayonePaymentHandler>
-     */
-    private string $paymentHandlerClass;
-
-    private ?array $allowedCountries;
-
-    private ?array $allowedB2bCountries;
-
-    private ?array $allowedCurrencies;
-
-    private float $allowedMinValue;
-
-    private ?float $allowedMaxValue;
-
-    /**
      * @param class-string<\PayonePayment\PaymentHandler\AbstractPayonePaymentHandler> $paymentHandlerClass
      */
-    public function __construct(
-        string $paymentHandlerClass,
-        ?array $allowedCountries = null,
-        ?array $allowedB2bCountries = null,
-        ?array $allowedCurrencies = null,
-        float $allowedMinValue = 0.0,
-        ?float $allowedMaxValue = null
-    ) {
-        $this->paymentHandlerClass = $paymentHandlerClass;
-        $this->allowedCountries = $allowedCountries;
-        $this->allowedB2bCountries = $allowedB2bCountries;
-        $this->allowedCurrencies = $allowedCurrencies;
-        $this->allowedMinValue = $allowedMinValue;
-        $this->allowedMaxValue = $allowedMaxValue;
+    public function __construct(private readonly string $paymentHandlerClass, private readonly ?array $allowedCountries = null, private readonly ?array $allowedB2bCountries = null, private readonly ?array $allowedCurrencies = null, private readonly float $allowedMinValue = 0.0, private readonly ?float $allowedMaxValue = null)
+    {
     }
 
     public function filterPaymentMethods(
@@ -69,7 +42,7 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
                 $this->validateMinValue($currentValue);
                 $this->validateMaxValue($currentValue);
             }
-        } catch (PaymentMethodNotAllowedException $e) {
+        } catch (PaymentMethodNotAllowedException) {
             $methodCollection = $this->removePaymentMethod($methodCollection);
         }
 
@@ -94,9 +67,7 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
     {
         $that = $this;
         // filter-method needs a closure (forced anonymous function) so we can not use [$this, 'filterMethod']
-        return $paymentMethodCollection->filter(static function (PaymentMethodEntity $entity) use ($that) {
-            return !$that->canMethodRemoved($entity);
-        });
+        return $paymentMethodCollection->filter(static fn(PaymentMethodEntity $entity) => !$that->canMethodRemoved($entity));
     }
 
     /**

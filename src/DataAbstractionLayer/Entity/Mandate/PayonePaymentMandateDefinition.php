@@ -20,7 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class PayonePaymentMandateDefinition extends EntityDefinition
 {
-    public const ENTITY_NAME = 'payone_payment_mandate';
+    final public const ENTITY_NAME = 'payone_payment_mandate';
 
     public function getEntityName(): string
     {

@@ -48,13 +48,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    private EntityRepository $languageRepository;
+    private readonly EntityRepository $languageRepository;
 
-    private RequestStack $requestStack;
+    private readonly RequestStack $requestStack;
 
-    private EntityRepository $salutationRepository;
+    private readonly EntityRepository $salutationRepository;
 
-    private EntityRepository $countryRepository;
+    private readonly EntityRepository $countryRepository;
 
     public function __construct(
         EntityRepository $languageRepository,
@@ -104,7 +104,7 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
             'city' => $billingAddress->getCity(),
             'country' => $this->getCustomerCountry($billingAddress, $salesChannelContext->getContext())->getIso(),
             'email' => $salesChannelContext->getCustomer()->getEmail(),
-            'language' => substr($language->getLocale()->getCode(), 0, 2),
+            'language' => substr((string) $language->getLocale()->getCode(), 0, 2),
             'ip' => $this->requestStack->getCurrentRequest() !== null ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
         ];
 

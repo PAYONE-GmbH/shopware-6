@@ -13,11 +13,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class InvoiceRendererEventListener implements EventSubscriberInterface
 {
-    private ConfigReaderInterface $configReader;
-
-    public function __construct(ConfigReaderInterface $configReader)
+    public function __construct(private readonly ConfigReaderInterface $configReader)
     {
-        $this->configReader = $configReader;
     }
 
     public static function getSubscribedEvents(): array

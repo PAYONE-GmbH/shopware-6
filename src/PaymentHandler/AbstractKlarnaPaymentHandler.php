@@ -30,37 +30,22 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractPayonePaymentHandler
 {
     protected TranslatorInterface $translator;
 
-    protected CartHasherInterface $cartHasher;
-
-    private RequestParameterFactory $requestParameterFactory;
-
-    private PayoneClientInterface $client;
-
-    private TransactionDataHandlerInterface $dataHandler;
-
-    private PaymentStateHandlerInterface $stateHandler;
-
     public function __construct(
         ConfigReaderInterface $configReader,
         EntityRepository $lineItemRepository,
         RequestStack $requestStack,
         TranslatorInterface $translator,
-        RequestParameterFactory $requestParameterFactory,
-        PayoneClientInterface $client,
-        TransactionDataHandlerInterface $dataHandler,
-        CartHasherInterface $cartHasher,
-        PaymentStateHandlerInterface $stateHandler
+        private readonly RequestParameterFactory $requestParameterFactory,
+        private readonly PayoneClientInterface $client,
+        private readonly TransactionDataHandlerInterface $dataHandler,
+        protected CartHasherInterface $cartHasher,
+        private readonly PaymentStateHandlerInterface $stateHandler
     ) {
         $this->configReader = $configReader;
         $this->lineItemRepository = $lineItemRepository;
         $this->requestStack = $requestStack;
         $this->translator = $translator;
-        $this->requestParameterFactory = $requestParameterFactory;
-        $this->client = $client;
-        $this->dataHandler = $dataHandler;
-        $this->cartHasher = $cartHasher;
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-        $this->stateHandler = $stateHandler;
     }
 
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse

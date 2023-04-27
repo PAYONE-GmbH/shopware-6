@@ -8,29 +8,16 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class Configuration extends Struct
 {
-    protected array $configuration = [];
-
-    public function __construct(array $configuration)
+    public function __construct(protected array $configuration)
     {
-        $this->configuration = $configuration;
     }
 
-    /**
-     * @param array|bool|int|string|null $default
-     *
-     * @return array|bool|int|string|null
-     */
-    public function getByPrefix(string $key, string $prefix = '', $default = '')
+    public function getByPrefix(string $key, string $prefix = '', array|bool|int|string|null $default = ''): array|bool|int|string|null
     {
         return $this->get(sprintf('%s%s', $prefix, ucfirst($key)), $default);
     }
 
-    /**
-     * @param array|bool|int|string|null $default
-     *
-     * @return array|bool|int|string|null
-     */
-    public function get(string $key, $default = '')
+    public function get(string $key, array|bool|int|string|null $default = ''): array|bool|int|string|null
     {
         if (!\array_key_exists($key, $this->configuration)) {
             return $default;

@@ -26,20 +26,14 @@ use Symfony\Component\Process\Exception\LogicException;
 
 class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
 {
-    private OrderConverter $orderConverter;
-
-    private OrderFetcherInterface $orderFetcher;
-
-    private CurrencyPrecisionInterface $currencyPrecision;
+    private readonly OrderConverter $orderConverter;
 
     public function __construct(
         OrderConverter $orderConverter,
-        OrderFetcherInterface $orderFetcher,
-        CurrencyPrecisionInterface $currencyPrecision
+        private readonly OrderFetcherInterface $orderFetcher,
+        private readonly CurrencyPrecisionInterface $currencyPrecision
     ) {
         $this->orderConverter = $orderConverter;
-        $this->orderFetcher = $orderFetcher;
-        $this->currencyPrecision = $currencyPrecision;
     }
 
     public static function getSubscribedEvents(): array
@@ -97,9 +91,7 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
         }
 
         $page->setPaymentMethods(
-            $page->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) {
-                return mb_strpos($paymentMethod->getHandlerIdentifier(), PaymentMethodInstaller::HANDLER_IDENTIFIER_ROOT_NAMESPACE) === false;
-            })
+            $page->getPaymentMethods()->filter(static fn(PaymentMethodEntity $paymentMethod) => mb_strpos((string) $paymentMethod->getHandlerIdentifier(), PaymentMethodInstaller::HANDLER_IDENTIFIER_ROOT_NAMESPACE) === false)
         );
 
         $salesChannelContext->assign(['paymentMethods' => $page->getPaymentMethods()]);

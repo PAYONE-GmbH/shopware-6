@@ -25,18 +25,12 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
 {
     protected SystemConfigService $systemConfigService;
 
-    protected InstallmentServiceInterface $installmentService;
-
-    protected ProfileServiceInterface $profileService;
-
     public function __construct(
         SystemConfigService $systemConfigService,
-        InstallmentServiceInterface $installmentService,
-        ProfileServiceInterface $profileService
+        protected InstallmentServiceInterface $installmentService,
+        protected ProfileServiceInterface $profileService
     ) {
         $this->systemConfigService = $systemConfigService;
-        $this->installmentService = $installmentService;
-        $this->profileService = $profileService;
     }
 
     public static function getSubscribedEvents(): array
@@ -117,9 +111,7 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
     protected function removePaymentMethods(PaymentMethodCollection $paymentMethods, array $paymentHandler): PaymentMethodCollection
     {
         return $paymentMethods->filter(
-            static function (PaymentMethodEntity $paymentMethod) use ($paymentHandler) {
-                return !\in_array($paymentMethod->getHandlerIdentifier(), $paymentHandler, true);
-            }
+            static fn(PaymentMethodEntity $paymentMethod) => !\in_array($paymentMethod->getHandlerIdentifier(), $paymentHandler, true)
         );
     }
 

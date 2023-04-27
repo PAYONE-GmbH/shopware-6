@@ -24,12 +24,8 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    protected RedirectHandler $redirectHandler;
-
-    public function __construct(
-        RedirectHandler $redirectHandler
-    ) {
-        $this->redirectHandler = $redirectHandler;
+    public function __construct(protected RedirectHandler $redirectHandler)
+    {
     }
 
     /**

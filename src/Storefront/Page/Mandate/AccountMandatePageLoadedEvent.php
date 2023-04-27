@@ -11,20 +11,17 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AccountMandatePageLoadedEvent extends NestedEvent
 {
-    public const NAME = 'account-payone-mandate.page.loaded';
-
-    protected AccountMandatePage $page;
+    final public const NAME = 'account-payone-mandate.page.loaded';
 
     protected SalesChannelContext $context;
 
     protected Request $request;
 
     public function __construct(
-        AccountMandatePage $page,
+        protected AccountMandatePage $page,
         SalesChannelContext $context,
         Request $request
     ) {
-        $this->page = $page;
         $this->context = $context;
         $this->request = $request;
     }

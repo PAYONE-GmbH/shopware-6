@@ -27,44 +27,28 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    public const REQUEST_PARAM_SAVE_CREDIT_CARD = 'saveCreditCard';
-    public const REQUEST_PARAM_PSEUDO_CARD_PAN = 'pseudoCardPan';
-    public const REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN = 'savedPseudoCardPan';
-    public const REQUEST_PARAM_CARD_EXPIRE_DATE = 'cardExpireDate';
-    public const REQUEST_PARAM_CARD_TYPE = 'cardType';
-    public const REQUEST_PARAM_TRUNCATED_CARD_PAN = 'truncatedCardPan';
-
-    protected PayoneClientInterface $client;
+    final public const REQUEST_PARAM_SAVE_CREDIT_CARD = 'saveCreditCard';
+    final public const REQUEST_PARAM_PSEUDO_CARD_PAN = 'pseudoCardPan';
+    final public const REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN = 'savedPseudoCardPan';
+    final public const REQUEST_PARAM_CARD_EXPIRE_DATE = 'cardExpireDate';
+    final public const REQUEST_PARAM_CARD_TYPE = 'cardType';
+    final public const REQUEST_PARAM_TRUNCATED_CARD_PAN = 'truncatedCardPan';
 
     protected TranslatorInterface $translator;
 
-    private TransactionDataHandlerInterface $dataHandler;
-
-    private PaymentStateHandlerInterface $stateHandler;
-
-    private CardRepositoryInterface $cardRepository;
-
-    private RequestParameterFactory $requestParameterFactory;
-
     public function __construct(
         ConfigReaderInterface $configReader,
-        PayoneClientInterface $client,
+        protected PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
+        private readonly TransactionDataHandlerInterface $dataHandler,
         EntityRepository $lineItemRepository,
-        PaymentStateHandlerInterface $stateHandler,
-        CardRepositoryInterface $cardRepository,
+        private readonly PaymentStateHandlerInterface $stateHandler,
+        private readonly CardRepositoryInterface $cardRepository,
         RequestStack $requestStack,
-        RequestParameterFactory $requestParameterFactory
+        private readonly RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->client = $client;
         $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
-        $this->stateHandler = $stateHandler;
-        $this->cardRepository = $cardRepository;
-        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
@@ -88,7 +72,7 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
                 $paymentTransaction,
                 $requestData,
                 $salesChannelContext,
-                __CLASS__,
+                self::class,
                 $authorizationMethod
             )
         );
@@ -100,7 +84,7 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -153,7 +137,7 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());
         }
 
-        if (strtolower($response['status']) === 'redirect') {
+        if (strtolower((string) $response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);
         }
 
@@ -177,7 +161,7 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
             return false;
         }
 
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
 
         if ($txAction === TransactionStatusService::ACTION_APPOINTED) {
             return true;

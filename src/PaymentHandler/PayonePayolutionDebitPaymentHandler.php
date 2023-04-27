@@ -22,29 +22,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    protected PayoneClientInterface $client;
-
     protected TranslatorInterface $translator;
-
-    private TransactionDataHandlerInterface $dataHandler;
-
-    private RequestParameterFactory $requestParameterFactory;
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        PayoneClientInterface $client,
+        protected PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
+        private readonly TransactionDataHandlerInterface $dataHandler,
         EntityRepository $lineItemRepository,
         RequestStack $requestStack,
-        RequestParameterFactory $requestParameterFactory
+        private readonly RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->client = $client;
         $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
-        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
@@ -89,7 +79,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
 
         try {
             $this->validate($requestData);
-        } catch (PayoneRequestException $e) {
+        } catch (PayoneRequestException) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -101,7 +91,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
                 $paymentTransaction,
                 $requestData,
                 $salesChannelContext,
-                __CLASS__,
+                self::class,
                 $authorizationMethod
             )
         );
@@ -113,7 +103,7 @@ class PayonePayolutionDebitPaymentHandler extends AbstractPayonePaymentHandler i
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')

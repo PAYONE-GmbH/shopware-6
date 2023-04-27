@@ -21,18 +21,15 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class StorefrontRenderEventListener implements EventSubscriberInterface
 {
-    private CacheItemPoolInterface $cachePool;
+    private readonly SalesChannelRepository $paymentMethodRepository;
 
-    private SalesChannelRepository $paymentMethodRepository;
-
-    private EntityRepository $salesChannelRepository;
+    private readonly EntityRepository $salesChannelRepository;
 
     public function __construct(
-        CacheItemPoolInterface $cachePool,
+        private readonly CacheItemPoolInterface $cachePool,
         SalesChannelRepository $repository,
         EntityRepository $salesChannelRepository
     ) {
-        $this->cachePool = $cachePool;
         $this->paymentMethodRepository = $repository;
         $this->salesChannelRepository = $salesChannelRepository;
     }
@@ -105,7 +102,7 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
 
         foreach ($primaryKeys as $key) {
             if (\is_array($key)) {
-                $ids = array_merge($ids, array_values($key));
+                $ids = [...$ids, ...array_values($key)];
             } else {
                 $ids[] = $key;
             }

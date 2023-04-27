@@ -11,7 +11,7 @@ class Migration1562097986AddPayonePaymentMandateTable extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1562097986;
+        return 1_562_097_986;
     }
 
     public function update(Connection $connection): void

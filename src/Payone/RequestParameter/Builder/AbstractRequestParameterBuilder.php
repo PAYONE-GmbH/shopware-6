@@ -13,31 +13,31 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 
 abstract class AbstractRequestParameterBuilder
 {
-    public const REQUEST_ACTION_AUTHORIZE = 'authorization';
-    public const REQUEST_ACTION_PREAUTHORIZE = 'preauthorization';
-    public const REQUEST_ACTION_CAPTURE = 'capture';
-    public const REQUEST_ACTION_REFUND = 'refund';
-    public const REQUEST_ACTION_TEST = 'test';
-    public const REQUEST_ACTION_GET_EXPRESS_CHECKOUT_DETAILS = 'getexpresscheckoutdetails';
-    public const REQUEST_ACTION_SET_EXPRESS_CHECKOUT = 'setexpresscheckout';
-    public const REQUEST_ACTION_PAYOLUTION_PRE_CHECK = 'pre-check';
-    public const REQUEST_ACTION_PAYOLUTION_CALCULATION = 'calculation';
-    public const REQUEST_ACTION_GENERIC_PAYMENT = 'genericpayment';
-    public const REQUEST_ACTION_CREDITCARD_CHECK = 'creditcardcheck';
-    public const REQUEST_ACTION_GET_FILE = 'getfile';
-    public const REQUEST_ACTION_MANAGE_MANDATE = 'managemandate';
-    public const REQUEST_ACTION_DEBIT = 'debit';
-    public const REQUEST_ACTION_RATEPAY_PROFILE = 'ratepayProfile';
-    public const REQUEST_ACTION_RATEPAY_CALCULATION = 'ratepayCalculation';
-    public const REQUEST_ACTION_SECURED_INSTALLMENT_OPTIONS = 'securedInstallmentOptions';
+    final public const REQUEST_ACTION_AUTHORIZE = 'authorization';
+    final public const REQUEST_ACTION_PREAUTHORIZE = 'preauthorization';
+    final public const REQUEST_ACTION_CAPTURE = 'capture';
+    final public const REQUEST_ACTION_REFUND = 'refund';
+    final public const REQUEST_ACTION_TEST = 'test';
+    final public const REQUEST_ACTION_GET_EXPRESS_CHECKOUT_DETAILS = 'getexpresscheckoutdetails';
+    final public const REQUEST_ACTION_SET_EXPRESS_CHECKOUT = 'setexpresscheckout';
+    final public const REQUEST_ACTION_PAYOLUTION_PRE_CHECK = 'pre-check';
+    final public const REQUEST_ACTION_PAYOLUTION_CALCULATION = 'calculation';
+    final public const REQUEST_ACTION_GENERIC_PAYMENT = 'genericpayment';
+    final public const REQUEST_ACTION_CREDITCARD_CHECK = 'creditcardcheck';
+    final public const REQUEST_ACTION_GET_FILE = 'getfile';
+    final public const REQUEST_ACTION_MANAGE_MANDATE = 'managemandate';
+    final public const REQUEST_ACTION_DEBIT = 'debit';
+    final public const REQUEST_ACTION_RATEPAY_PROFILE = 'ratepayProfile';
+    final public const REQUEST_ACTION_RATEPAY_CALCULATION = 'ratepayCalculation';
+    final public const REQUEST_ACTION_SECURED_INSTALLMENT_OPTIONS = 'securedInstallmentOptions';
 
-    public const CLEARING_TYPE_DEBIT = 'elv';
-    public const CLEARING_TYPE_WALLET = 'wlt';
-    public const CLEARING_TYPE_FINANCING = 'fnc';
-    public const CLEARING_TYPE_CREDIT_CARD = 'cc';
-    public const CLEARING_TYPE_PREPAYMENT = 'vor';
-    public const CLEARING_TYPE_ONLINE_BANK_TRANSFER = 'sb';
-    public const CLEARING_TYPE_INVOICE = 'rec';
+    final public const CLEARING_TYPE_DEBIT = 'elv';
+    final public const CLEARING_TYPE_WALLET = 'wlt';
+    final public const CLEARING_TYPE_FINANCING = 'fnc';
+    final public const CLEARING_TYPE_CREDIT_CARD = 'cc';
+    final public const CLEARING_TYPE_PREPAYMENT = 'vor';
+    final public const CLEARING_TYPE_ONLINE_BANK_TRANSFER = 'sb';
+    final public const CLEARING_TYPE_INVOICE = 'rec';
 
     abstract public function getRequestParameter(AbstractRequestParameterStruct $arguments): array;
 
@@ -81,7 +81,7 @@ abstract class AbstractRequestParameterBuilder
     {
         if (!method_exists($object, $method)) {
             // there is no function to get the salesChannelContext. Without it the builder is not able to get the customer data
-            throw new \RuntimeException(sprintf('method `%s` does not exist on %s', $method, \get_class($object)));
+            throw new \RuntimeException(sprintf('method `%s` does not exist on %s', $method, $object::class));
         }
     }
 

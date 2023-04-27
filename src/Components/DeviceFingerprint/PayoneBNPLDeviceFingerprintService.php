@@ -13,15 +13,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PayoneBNPLDeviceFingerprintService extends AbstractDeviceFingerprintService
 {
-    public const SESSION_VAR_NAME = 'payone_bnpl_device_ident_token';
+    final public const SESSION_VAR_NAME = 'payone_bnpl_device_ident_token';
     private const PAYLA_PARTNER_ID = 'e7yeryF2of8X';
 
-    protected ConfigReaderInterface $configReader;
-
-    public function __construct(RequestStack $requestStack, ConfigReaderInterface $configReader)
+    public function __construct(RequestStack $requestStack, protected ConfigReaderInterface $configReader)
     {
         parent::__construct($requestStack);
-        $this->configReader = $configReader;
     }
 
     public function getSupportedPaymentHandlerClasses(): array

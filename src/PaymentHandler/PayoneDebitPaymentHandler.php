@@ -24,35 +24,22 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    public const REQUEST_PARAM_SAVE_MANDATE = 'saveMandate';
-
-    protected PayoneClientInterface $client;
+    final public const REQUEST_PARAM_SAVE_MANDATE = 'saveMandate';
 
     protected TranslatorInterface $translator;
 
-    private TransactionDataHandlerInterface $dataHandler;
-
-    private MandateServiceInterface $mandateService;
-
-    private RequestParameterFactory $requestParameterFactory;
-
     public function __construct(
         ConfigReaderInterface $configReader,
-        PayoneClientInterface $client,
+        protected PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
+        private readonly TransactionDataHandlerInterface $dataHandler,
         EntityRepository $lineItemRepository,
-        MandateServiceInterface $mandateService,
+        private readonly MandateServiceInterface $mandateService,
         RequestStack $requestStack,
-        RequestParameterFactory $requestParameterFactory
+        private readonly RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->client = $client;
         $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
-        $this->mandateService = $mandateService;
-        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
@@ -76,7 +63,7 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
                 $paymentTransaction,
                 $requestData,
                 $salesChannelContext,
-                __CLASS__,
+                self::class,
                 $authorizationMethod
             )
         );
@@ -88,7 +75,7 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -138,7 +125,7 @@ class PayoneDebitPaymentHandler extends AbstractPayonePaymentHandler implements 
             return false;
         }
 
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
 
         if ($txAction === TransactionStatusService::ACTION_APPOINTED) {
             return true;
