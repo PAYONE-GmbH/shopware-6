@@ -1,9 +1,9 @@
-import template from './capture.html.twig';
-import './style.scss';
+import template from './payone-capture-button.html.twig';
+import './payone-capture-button.scss';
 
-const { Component, Mixin, Context } = Shopware;
+const { Mixin } = Shopware;
 
-Component.register('payone-capture-button', {
+export default {
     template,
 
     mixins: [
@@ -220,14 +220,14 @@ Component.register('payone-capture-button', {
         executeCapture(request) {
             this.PayonePaymentService.capturePayment(request).then(() => {
                 this.createNotificationSuccess({
-                    title: this.$tc('payone-payment.capture.successTitle'),
-                    message: this.$tc('payone-payment.capture.successMessage')
+                    title: this.$tc('sw-order.payone-payment.capture.successTitle'),
+                    message: this.$tc('sw-order.payone-payment.capture.successMessage')
                 });
 
                 this.isCaptureSuccessful = true;
             }).catch((error) => {
                 this.createNotificationError({
-                    title: this.$tc('payone-payment.capture.errorTitle'),
+                    title: this.$tc('sw-order.payone-payment.capture.errorTitle'),
                     message: error.message
                 });
 
@@ -297,4 +297,4 @@ Component.register('payone-capture-button', {
             }
         }
     }
-});
+};

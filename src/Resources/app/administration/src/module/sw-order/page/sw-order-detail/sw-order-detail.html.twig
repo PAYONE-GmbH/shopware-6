@@ -1,0 +1,15 @@
+{% block sw_order_detail_content_tabs_extension %}
+    {% parent %}
+
+    {% block sw_order_detail_content_tabs_payone %}
+        <sw-tabs-item
+                v-if="order && hasPayoneTransaction(order)"
+                class="sw-order-detail__tabs-tab-payone"
+                :route="{ name: 'sw.order.detail.payone', params: { id: $route.params.id } }"
+                :title="$tc('sw-order.detail.payone')"
+        >
+            {{ $tc('sw-order.detail.payone') }}
+        </sw-tabs-item>
+    {% endblock %}
+
+{% endblock %}

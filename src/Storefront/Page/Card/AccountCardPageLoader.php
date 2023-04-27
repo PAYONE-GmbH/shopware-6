@@ -32,7 +32,6 @@ class AccountCardPageLoader
     public function load(Request $request, SalesChannelContext $context): AccountCardPage
     {
         if (!$context->getCustomer()) {
-            // ToDo 6.5: Die CartException gibt es erst ab 6.4.15.0. Ok das dann als neue Mindestversion zu nehmen? (Kommt auch an anderen Stellen vor)
             throw CartException::customerNotLoggedIn();
         }
 

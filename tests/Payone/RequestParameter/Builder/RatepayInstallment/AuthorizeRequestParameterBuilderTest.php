@@ -15,7 +15,7 @@ use PayonePayment\TestCaseBase\ConfigurationHelper;
 use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @covers \PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\AuthorizeRequestParameterBuilder
@@ -34,10 +34,11 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
                 'tx-limit-installment-min' => '10',
             ]
         );
-        $this->getContainer()->get(SessionInterface::class)->set(
-            RatepayDeviceFingerprintService::SESSION_VAR_NAME,
-            'the-device-ident-token'
-        );
+
+        $request = $this->getRequestWithSession([
+            RatepayDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
             'ratepayIban' => 'DE81500105177147426471',
@@ -92,6 +93,11 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
             ]
         );
 
+        $request = $this->getRequestWithSession([
+            RatepayDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
         $dataBag = new RequestDataBag([
             'ratepayPhone' => '0123456789',
             'ratepayBirthday' => '2000-01-01',
@@ -124,6 +130,11 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
                 'tx-limit-installment-min' => '10',
             ]
         );
+
+        $request = $this->getRequestWithSession([
+            RatepayDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
             'ratepayIban' => 'DE81500105177147426471',
@@ -158,6 +169,11 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
                 'tx-limit-installment-min' => '10',
             ]
         );
+
+        $request = $this->getRequestWithSession([
+            RatepayDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
             'ratepayIban' => 'DE81500105177147426471',

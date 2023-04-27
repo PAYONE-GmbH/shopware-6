@@ -24,7 +24,7 @@ class MandateRoute extends AbstractMandateRoute
         $this->mandateService = $mandateService;
     }
 
-    public function getDecorated(): AbstractCardRoute
+    public function getDecorated(): AbstractMandateRoute
     {
         throw new DecorationPatternException(self::class);
     }

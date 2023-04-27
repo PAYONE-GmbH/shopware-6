@@ -33,7 +33,6 @@ class InvoiceRendererEventListener implements EventSubscriberInterface
 
         foreach ($orders as $order) {
             if ($this->hasPayolutionInvoicingTransaction($order)) {
-                // ToDo 6.5: Write tests so that we can check if it is working in both versions
                 $this->addInvoiceDocumentExtension($order);
             }
         }
