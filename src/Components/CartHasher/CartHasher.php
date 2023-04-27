@@ -23,14 +23,8 @@ class CartHasher implements CartHasherInterface
         OrderEntity::class,
     ];
 
-    private CurrencyPrecisionInterface $currencyPrecision;
-
-    private string $appSecret;
-
-    public function __construct(CurrencyPrecisionInterface $currencyPrecision, string $appSecret = '')
+    public function __construct(private readonly CurrencyPrecisionInterface $currencyPrecision, private readonly string $appSecret = '')
     {
-        $this->currencyPrecision = $currencyPrecision;
-        $this->appSecret = $appSecret;
     }
 
     /**
@@ -38,7 +32,7 @@ class CartHasher implements CartHasherInterface
      */
     public function generate(Struct $entity, SalesChannelContext $context): string
     {
-        if (!\in_array(\get_class($entity), self::VALID_TYPES, true)) {
+        if (!\in_array($entity::class, self::VALID_TYPES, true)) {
             throw new \LogicException('unsupported struct type during hash creation or validation');
         }
 
@@ -52,7 +46,7 @@ class CartHasher implements CartHasherInterface
      */
     public function validate(Struct $entity, string $cartHash, SalesChannelContext $context): bool
     {
-        if (!\in_array(\get_class($entity), self::VALID_TYPES, true)) {
+        if (!\in_array($entity::class, self::VALID_TYPES, true)) {
             throw new \LogicException('unsupported struct type during hash creation or validation');
         }
         $hashData = $this->getHashData($entity, $context);
@@ -113,7 +107,7 @@ class CartHasher implements CartHasherInterface
                         && (!method_exists($lineItem, 'getParentId') || $lineItem->getParentId() === null)) {
                         continue;
                     }
-                } catch (\Exception $exception) {
+                } catch (\Exception) {
                     // Catch class not found if SwagCustomizedProducts plugin is not installed
                 }
 
@@ -127,7 +121,7 @@ class CartHasher implements CartHasherInterface
                     $detail['price'] = $this->currencyPrecision->getRoundedItemAmount($lineItem->getPrice()->getTotalPrice(), $context->getCurrency());
                 }
 
-                $hashData['items'][] = md5((string) json_encode($detail));
+                $hashData['items'][] = md5((string) json_encode($detail, JSON_THROW_ON_ERROR));
             }
         }
 

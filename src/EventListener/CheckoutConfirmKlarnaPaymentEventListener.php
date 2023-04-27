@@ -18,16 +18,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterface
 {
-    private TranslatorInterface $translator;
-
-    private KlarnaSessionServiceInterface $klarnaSessionService;
+    private readonly TranslatorInterface $translator;
 
     public function __construct(
         TranslatorInterface $translator,
-        KlarnaSessionServiceInterface $klarnaSessionService
+        private readonly KlarnaSessionServiceInterface $klarnaSessionService
     ) {
         $this->translator = $translator;
-        $this->klarnaSessionService = $klarnaSessionService;
     }
 
     public static function getSubscribedEvents(): array
@@ -69,7 +66,7 @@ class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterf
                 CheckoutCartPaymentData::DATA_WORK_ORDER_ID => $sessionStruct->getWorkorderId(),
                 CheckoutCartPaymentData::DATA_CART_HASH => $sessionStruct->getCartHash(),
             ]);
-        } catch (PayoneRequestException $e) {
+        } catch (PayoneRequestException) {
             $session = $event->getRequest()->getSession();
             if ($session instanceof Session) {
                 $session->getFlashBag()->add(

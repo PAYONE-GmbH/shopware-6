@@ -18,23 +18,20 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class NotificationForwardHandler implements WebhookHandlerInterface
 {
-    private EntityRepository $notificationTargetRepository;
+    private readonly EntityRepository $notificationTargetRepository;
 
-    private EntityRepository $notificationForwardRepository;
+    private readonly EntityRepository $notificationForwardRepository;
 
-    private TransactionDataHandlerInterface $transactionDataHandler;
-
-    private MessageBusInterface $messageBus;
+    private readonly MessageBusInterface $messageBus;
 
     public function __construct(
         EntityRepository $notificationTargetRepository,
         EntityRepository $notificationForwardRepository,
-        TransactionDataHandlerInterface $transactionDataHandler,
+        private readonly TransactionDataHandlerInterface $transactionDataHandler,
         MessageBusInterface $messageBus
     ) {
         $this->notificationTargetRepository = $notificationTargetRepository;
         $this->notificationForwardRepository = $notificationForwardRepository;
-        $this->transactionDataHandler = $transactionDataHandler;
         $this->messageBus = $messageBus;
     }
 
@@ -83,7 +80,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
         foreach ($notificationTargets as $target) {
             $notificationForwards[] = [
                 'id' => Uuid::randomHex(),
-                'content' => serialize(mb_convert_encoding($data, 'UTF-8', 'ISO-8859-1')),
+                'content' => serialize(mb_convert_encoding((string) $data, 'UTF-8', 'ISO-8859-1')),
                 'notificationTargetId' => $target->getId(),
                 'transactionId' => $paymentTransactionId,
                 'ip' => $request->getClientIp(),
@@ -112,7 +109,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
         $result = $notificationTargets->getEntities();
 
         if (!($result instanceof PayonePaymentNotificationTargetCollection)) {
-            throw new \LogicException('invalid collection type ' . \get_class($result));
+            throw new \LogicException('invalid collection type ' . $result::class);
         }
 
         return $result;

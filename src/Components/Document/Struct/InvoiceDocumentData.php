@@ -8,7 +8,7 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class InvoiceDocumentData extends Struct
 {
-    public const EXTENSION_NAME = 'payone_document';
+    final public const EXTENSION_NAME = 'payone_document';
 
     protected string $iban = '';
 

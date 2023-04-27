@@ -26,33 +26,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneSofortBankingPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    private RequestParameterFactory $requestParameterFactory;
-
-    private PayoneClientInterface $client;
-
-    private TranslatorInterface $translator;
-
-    private TransactionDataHandlerInterface $dataHandler;
-
-    private PaymentStateHandlerInterface $stateHandler;
+    private readonly TranslatorInterface $translator;
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        RequestParameterFactory $requestParameterFactory,
-        PayoneClientInterface $client,
+        private readonly RequestParameterFactory $requestParameterFactory,
+        private readonly PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
+        private readonly TransactionDataHandlerInterface $dataHandler,
         EntityRepository $lineItemRepository,
-        PaymentStateHandlerInterface $stateHandler,
+        private readonly PaymentStateHandlerInterface $stateHandler,
         RequestStack $requestStack
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->requestParameterFactory = $requestParameterFactory;
-        $this->client = $client;
         $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
-        $this->stateHandler = $stateHandler;
     }
 
     /**
@@ -76,7 +63,7 @@ class PayoneSofortBankingPaymentHandler extends AbstractPayonePaymentHandler imp
                 $paymentTransaction,
                 $requestData,
                 $salesChannelContext,
-                __CLASS__,
+                self::class,
                 $authorizationMethod
             )
         );
@@ -88,7 +75,7 @@ class PayoneSofortBankingPaymentHandler extends AbstractPayonePaymentHandler imp
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -125,7 +112,7 @@ class PayoneSofortBankingPaymentHandler extends AbstractPayonePaymentHandler imp
             return false;
         }
 
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
 
         if ($txAction === TransactionStatusService::ACTION_PAID) {
             return true;

@@ -8,7 +8,7 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class RatepayInstallmentCalculatorData extends Struct
 {
-    public const EXTENSION_NAME = 'payoneRatepayInstallmentCalculator';
+    final public const EXTENSION_NAME = 'payoneRatepayInstallmentCalculator';
 
     protected float $minimumRate;
 

@@ -15,7 +15,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class OrderFetcher implements OrderFetcherInterface
 {
-    private EntityRepository $orderRepository;
+    private readonly EntityRepository $orderRepository;
 
     public function __construct(EntityRepository $orderRepository)
     {

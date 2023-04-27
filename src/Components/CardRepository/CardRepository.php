@@ -16,7 +16,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class CardRepository implements CardRepositoryInterface
 {
-    private EntityRepository $cardRepository;
+    private readonly EntityRepository $cardRepository;
 
     public function __construct(EntityRepository $cardRepository)
     {
@@ -93,9 +93,7 @@ class CardRepository implements CardRepositoryInterface
     {
         $cards = $this->getCards($customer, $context);
 
-        $ids = array_map(static function ($item) {
-            return ['id' => $item];
-        }, array_values($cards->getIds()));
+        $ids = array_map(static fn($item) => ['id' => $item], array_values($cards->getIds()));
 
         $this->cardRepository->delete($ids, $context);
     }

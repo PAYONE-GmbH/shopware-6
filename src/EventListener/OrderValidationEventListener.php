@@ -16,9 +16,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class OrderValidationEventListener implements EventSubscriberInterface
 {
-    private RequestStack $requestStack;
+    private readonly RequestStack $requestStack;
 
-    private PaymentHandlerRegistry $paymentHandlerRegistry;
+    private readonly PaymentHandlerRegistry $paymentHandlerRegistry;
 
     public function __construct(RequestStack $requestStack, PaymentHandlerRegistry $paymentHandlerRegistry)
     {

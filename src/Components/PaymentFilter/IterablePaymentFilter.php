@@ -6,14 +6,11 @@ use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 
 class IterablePaymentFilter implements PaymentFilterServiceInterface
 {
-    private iterable $services;
-
     /**
      * @param iterable<PaymentFilterServiceInterface> $services
      */
-    public function __construct(iterable $services)
+    public function __construct(private readonly iterable $services)
     {
-        $this->services = $services;
     }
 
     public function filterPaymentMethods(

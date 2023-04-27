@@ -25,33 +25,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneSecuredDirectDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    private PayoneClientInterface $client;
-
-    private TranslatorInterface $translator;
-
-    private TransactionDataHandlerInterface $dataHandler;
-
-    private RequestParameterFactory $requestParameterFactory;
-
-    private AbstractDeviceFingerprintService $deviceFingerprintService;
+    private readonly TranslatorInterface $translator;
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        PayoneClientInterface $client,
+        private readonly PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
+        private readonly TransactionDataHandlerInterface $dataHandler,
         EntityRepository $lineItemRepository,
         RequestStack $requestStack,
-        RequestParameterFactory $requestParameterFactory,
-        AbstractDeviceFingerprintService $deviceFingerprintService
+        private readonly RequestParameterFactory $requestParameterFactory,
+        private readonly AbstractDeviceFingerprintService $deviceFingerprintService
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->client = $client;
         $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
-        $this->requestParameterFactory = $requestParameterFactory;
-        $this->deviceFingerprintService = $deviceFingerprintService;
     }
 
     /**
@@ -75,7 +62,7 @@ class PayoneSecuredDirectDebitPaymentHandler extends AbstractPayonePaymentHandle
                 $paymentTransaction,
                 $requestData,
                 $salesChannelContext,
-                __CLASS__,
+                self::class,
                 $authorizationMethod
             )
         );
@@ -89,7 +76,7 @@ class PayoneSecuredDirectDebitPaymentHandler extends AbstractPayonePaymentHandle
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             $this->deviceFingerprintService->deleteDeviceIdentToken();
 
             throw new SyncPaymentProcessException(

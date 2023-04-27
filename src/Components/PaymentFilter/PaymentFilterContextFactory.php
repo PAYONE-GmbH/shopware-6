@@ -11,11 +11,8 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentFilterContextFactory implements PaymentFilterContextFactoryInterface
 {
-    private OrderFetcherInterface $orderFetcher;
-
-    public function __construct(OrderFetcherInterface $orderFetcher)
+    public function __construct(private readonly OrderFetcherInterface $orderFetcher)
     {
-        $this->orderFetcher = $orderFetcher;
     }
 
     public function createContextForOrder(OrderEntity $order, SalesChannelContext $salesChannelContext): PaymentFilterContext

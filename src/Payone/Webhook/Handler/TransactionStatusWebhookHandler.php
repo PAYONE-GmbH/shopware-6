@@ -14,24 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TransactionStatusWebhookHandler implements WebhookHandlerInterface
 {
-    private TransactionStatusServiceInterface $transactionStatusService;
-
-    private TransactionDataHandlerInterface $transactionDataHandler;
-
-    private LoggerInterface $logger;
-
-    private AutomaticCaptureServiceInterface $automaticCaptureService;
-
-    public function __construct(
-        TransactionStatusServiceInterface $transactionStatusService,
-        TransactionDataHandlerInterface $transactionDataHandler,
-        LoggerInterface $logger,
-        AutomaticCaptureServiceInterface $automaticCaptureService
-    ) {
-        $this->transactionStatusService = $transactionStatusService;
-        $this->transactionDataHandler = $transactionDataHandler;
-        $this->logger = $logger;
-        $this->automaticCaptureService = $automaticCaptureService;
+    public function __construct(private readonly TransactionStatusServiceInterface $transactionStatusService, private readonly TransactionDataHandlerInterface $transactionDataHandler, private readonly LoggerInterface $logger, private readonly AutomaticCaptureServiceInterface $automaticCaptureService)
+    {
     }
 
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool
@@ -91,7 +75,7 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
                 continue;
             }
 
-            $transactionValue = utf8_encode($transactionValue);
+            $transactionValue = utf8_encode((string) $transactionValue);
         }
         unset($transactionValue);
 

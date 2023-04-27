@@ -15,11 +15,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
 {
-    private AbstractMandateRoute $mandateRoute;
-
-    public function __construct(AbstractMandateRoute $mandateRoute)
+    public function __construct(private readonly AbstractMandateRoute $mandateRoute)
     {
-        $this->mandateRoute = $mandateRoute;
     }
 
     public static function getSubscribedEvents(): array

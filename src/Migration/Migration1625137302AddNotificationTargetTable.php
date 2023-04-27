@@ -11,7 +11,7 @@ class Migration1625137302AddNotificationTargetTable extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1625137302;
+        return 1_625_137_302;
     }
 
     public function update(Connection $connection): void

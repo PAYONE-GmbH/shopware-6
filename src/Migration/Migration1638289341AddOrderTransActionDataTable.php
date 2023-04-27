@@ -14,7 +14,7 @@ class Migration1638289341AddOrderTransActionDataTable extends MigrationStep
 
     public function getCreationTimestamp(): int
     {
-        return 1638289341;
+        return 1_638_289_341;
     }
 
     public function update(Connection $connection): void

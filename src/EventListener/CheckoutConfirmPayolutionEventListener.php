@@ -18,11 +18,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
 {
-    private ConfigReaderInterface $configReader;
-
-    public function __construct(ConfigReaderInterface $configReader)
+    public function __construct(private readonly ConfigReaderInterface $configReader)
     {
-        $this->configReader = $configReader;
     }
 
     public static function getSubscribedEvents(): array
@@ -63,9 +60,7 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
     private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection
     {
         return $paymentMethods->filter(
-            static function (PaymentMethodEntity $paymentMethod) use ($paymentMethodId) {
-                return $paymentMethod->getId() !== $paymentMethodId;
-            }
+            static fn(PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId
         );
     }
 

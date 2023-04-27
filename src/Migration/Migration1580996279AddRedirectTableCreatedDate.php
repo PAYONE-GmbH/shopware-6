@@ -11,7 +11,7 @@ class Migration1580996279AddRedirectTableCreatedDate extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1580996279;
+        return 1_580_996_279;
     }
 
     public function update(Connection $connection): void

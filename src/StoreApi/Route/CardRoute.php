@@ -17,11 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CardRoute extends AbstractCardRoute
 {
-    private CardRepositoryInterface $cardRepository;
-
-    public function __construct(CardRepositoryInterface $cardRepository)
+    public function __construct(private readonly CardRepositoryInterface $cardRepository)
     {
-        $this->cardRepository = $cardRepository;
     }
 
     public function getDecorated(): AbstractCardRoute

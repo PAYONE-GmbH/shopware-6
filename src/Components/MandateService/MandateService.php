@@ -21,20 +21,14 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 class MandateService implements MandateServiceInterface
 {
-    private EntityRepository $mandateRepository;
-
-    private PayoneClientInterface $client;
-
-    private RequestParameterFactory $requestFactory;
+    private readonly EntityRepository $mandateRepository;
 
     public function __construct(
         EntityRepository $mandateRepository,
-        PayoneClientInterface $client,
-        RequestParameterFactory $requestFactory
+        private readonly PayoneClientInterface $client,
+        private readonly RequestParameterFactory $requestFactory
     ) {
         $this->mandateRepository = $mandateRepository;
-        $this->client = $client;
-        $this->requestFactory = $requestFactory;
     }
 
     public function getMandates(CustomerEntity $customer, SalesChannelContext $context): EntitySearchResult
@@ -95,7 +89,7 @@ class MandateService implements MandateServiceInterface
 
         try {
             $response = $this->client->request($request, false);
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             throw new \RuntimeException('mandate not found');
         }
 
@@ -106,9 +100,7 @@ class MandateService implements MandateServiceInterface
     {
         $mandates = $this->getMandates($customer, $context);
 
-        $ids = array_map(static function ($item) {
-            return ['id' => $item];
-        }, array_values($mandates->getIds()));
+        $ids = array_map(static fn($item) => ['id' => $item], array_values($mandates->getIds()));
 
         $this->mandateRepository->delete($ids, $context->getContext());
     }

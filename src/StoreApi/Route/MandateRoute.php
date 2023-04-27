@@ -17,11 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MandateRoute extends AbstractMandateRoute
 {
-    private MandateServiceInterface $mandateService;
-
-    public function __construct(MandateServiceInterface $mandateService)
+    public function __construct(private readonly MandateServiceInterface $mandateService)
     {
-        $this->mandateService = $mandateService;
     }
 
     public function getDecorated(): AbstractMandateRoute
@@ -58,7 +55,7 @@ class MandateRoute extends AbstractMandateRoute
 
         try {
             $content = $this->mandateService->downloadMandate($context->getCustomer(), $mandateId, $context);
-        } catch (FileNotFoundException $e) {
+        } catch (FileNotFoundException) {
             return new Response(null, 404);
         }
 

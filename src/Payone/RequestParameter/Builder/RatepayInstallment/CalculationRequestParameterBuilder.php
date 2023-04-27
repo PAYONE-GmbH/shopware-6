@@ -12,8 +12,8 @@ use PayonePayment\Payone\RequestParameter\Struct\RatepayCalculationStruct;
 
 class CalculationRequestParameterBuilder extends GeneralTransactionRequestParameterBuilder
 {
-    public const INSTALLMENT_TYPE_RATE = 'rate';
-    public const INSTALLMENT_TYPE_TIME = 'time';
+    final public const INSTALLMENT_TYPE_RATE = 'rate';
+    final public const INSTALLMENT_TYPE_TIME = 'time';
 
     /**
      * @param RatepayCalculationStruct $arguments
