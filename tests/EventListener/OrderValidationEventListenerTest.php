@@ -6,7 +6,7 @@ namespace PayonePayment\EventListener;
 
 use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Components\Validator\Iban;
-use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
+use PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
@@ -40,11 +40,11 @@ class OrderValidationEventListenerTest extends TestCase
             'sub' => new DataValidationDefinition(),
         ];
 
-        $paymentHandler = $this->createMock(AbstractPayonePaymentHandler::class);
+        $paymentHandler = $this->createMock(AbstractKlarnaPaymentHandler::class);
         $paymentHandler->expects(static::once())->method('getValidationDefinitions')->willReturn($definitions);
 
         $paymentHandlerRegistry = $this->createMock(PaymentHandlerRegistry::class);
-        $paymentHandlerRegistry->expects(static::once())->method('getHandler')->willReturn($paymentHandler);
+        $paymentHandlerRegistry->expects(static::once())->method('getPaymentMethodHandler')->willReturn($paymentHandler);
 
         $listener = new OrderValidationEventListener($requestStack, $paymentHandlerRegistry);
         $listener->validateOrderData($event);

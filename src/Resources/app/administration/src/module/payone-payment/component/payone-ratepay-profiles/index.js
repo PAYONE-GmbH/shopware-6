@@ -1,9 +1,9 @@
 import './payone-ratepay-profiles.scss';
 import template from './payone-ratepay-profiles.html.twig';
 
-const { Component, Utils } = Shopware;
+const { Utils } = Shopware;
 
-Component.register('payone-ratepay-profiles', {
+export default {
     template,
 
     props: {
@@ -169,4 +169,4 @@ Component.register('payone-ratepay-profiles', {
             this.$emit('deleted', this.profiles);
         },
     }
-});
+};

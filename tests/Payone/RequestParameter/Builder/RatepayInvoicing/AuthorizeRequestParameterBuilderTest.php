@@ -15,7 +15,7 @@ use PayonePayment\TestCaseBase\ConfigurationHelper;
 use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @covers \PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing\AuthorizeRequestParameterBuilder
@@ -28,10 +28,11 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     public function testItAddsCorrectAuthorizeParameters(): void
     {
         $this->setValidRatepayProfiles($this->getContainer(), $this->getValidPaymentHandler());
-        $this->getContainer()->get(SessionInterface::class)->set(
-            RatepayDeviceFingerprintService::SESSION_VAR_NAME,
-            'the-device-ident-token'
-        );
+
+        $request = $this->getRequestWithSession([
+            RatepayDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
             'ratepayPhone' => '0123456789',
@@ -67,6 +68,11 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     {
         $this->setValidRatepayProfiles($this->getContainer(), $this->getValidPaymentHandler());
 
+        $request = $this->getRequestWithSession([
+            RatepayDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
         $dataBag = new RequestDataBag([
             'ratepayBirthday' => '2000-01-01',
         ]);
@@ -88,6 +94,11 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     public function testItAddsCorrectAuthorizeParametersWithSavedPhoneNumber(): void
     {
         $this->setValidRatepayProfiles($this->getContainer(), $this->getValidPaymentHandler());
+
+        $request = $this->getRequestWithSession([
+            RatepayDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
             'ratepayBirthday' => '2000-01-01',

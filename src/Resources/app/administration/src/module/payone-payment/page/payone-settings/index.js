@@ -1,10 +1,10 @@
-const { Component, Mixin } = Shopware;
-const { object, types } = Shopware.Utils;
-
 import template from './payone-settings.html.twig';
 import './style.scss';
 
-Component.register('payone-settings', {
+const { Mixin } = Shopware;
+const { object, types } = Shopware.Utils;
+
+export default {
     template,
 
     mixins: [
@@ -387,4 +387,4 @@ Component.register('payone-settings', {
             }
         }
     }
-});
+};

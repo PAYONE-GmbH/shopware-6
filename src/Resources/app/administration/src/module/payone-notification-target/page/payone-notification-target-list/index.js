@@ -1,7 +1,7 @@
 import template from './payone-notification-target-list.html.twig';
-const { Component, Mixin, Data: { Criteria } } = Shopware;
+const { Mixin, Data: { Criteria } } = Shopware;
 
-Component.register('payone-notification-target-list', {
+export default {
     template,
 
     inject: ['repositoryFactory'],
@@ -90,4 +90,4 @@ Component.register('payone-notification-target-list', {
             this.getList();
         },
     }
-})
+};
