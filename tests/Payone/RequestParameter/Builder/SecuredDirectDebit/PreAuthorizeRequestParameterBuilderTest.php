@@ -13,7 +13,7 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @covers \PayonePayment\Payone\RequestParameter\Builder\SecuredDirectDebit\PreAuthorizeRequestParameterBuilder
@@ -24,10 +24,10 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
 
     public function testItAddsCorrectPreAuthorizeParameters(): void
     {
-        $this->getContainer()->get(SessionInterface::class)->set(
-            PayoneBNPLDeviceFingerprintService::SESSION_VAR_NAME,
-            'the-device-ident-token'
-        );
+        $request = $this->getRequestWithSession([
+            PayoneBNPLDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
             'securedDirectDebitPhone' => '0123456789',

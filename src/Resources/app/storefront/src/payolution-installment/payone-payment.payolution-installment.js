@@ -225,13 +225,11 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
     }
 
     _getRequestData() {
-        const csrfToken = document.getElementById('payoneCsrfTokenPayolutionInstallmentCalculation');
         const birthday = document.getElementById('payolutionBirthday');
         const workorder = document.getElementById('payoneWorkOrder');
         const carthash = document.getElementById('payoneCartHash');
 
         return {
-            '_csrf_token': csrfToken.value,
             'payolutionBirthday': birthday.value,
             'workorder': workorder.value,
             'carthash': carthash.value

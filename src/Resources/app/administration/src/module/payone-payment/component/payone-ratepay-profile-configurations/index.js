@@ -1,9 +1,7 @@
 import './payone-ratepay-profile-configurations.scss';
 import template from './payone-ratepay-profile-configurations.html.twig';
 
-const {Component} = Shopware;
-
-Component.register('payone-ratepay-profile-configurations', {
+export default {
     template,
 
     inject: ['PayonePaymentSettingsService'],
@@ -82,7 +80,6 @@ Component.register('payone-ratepay-profile-configurations', {
     methods: {
         createdComponent() {
             this.$root.$on('payone-ratepay-profiles-update-result', this.onProfilesUpdateResult);
-            console.log(this.configuration);
         },
 
         destroyedComponent() {
@@ -95,4 +92,4 @@ Component.register('payone-ratepay-profile-configurations', {
             }
         }
     }
-});
+};

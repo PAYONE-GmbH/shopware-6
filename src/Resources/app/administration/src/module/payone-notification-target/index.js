@@ -1,7 +1,8 @@
-import './page/payone-notification-target-list';
-import './page/payone-notification-target-detail';
 import deDE from './snippet/de_DE.json';
 import enGB from './snippet/en_GB.json';
+
+Shopware.Component.register('payone-notification-target-detail', import('./page/payone-notification-target-detail'));
+Shopware.Component.register('payone-notification-target-list', import('./page/payone-notification-target-list'));
 
 Shopware.Module.register('payone-notification-target', {
     type: 'plugin',

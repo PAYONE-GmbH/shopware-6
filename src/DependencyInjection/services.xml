@@ -19,6 +19,10 @@
         <import resource="payment_method_filter.xml"/>
     </imports>
 
+    <parameters>
+        <parameter key="env.app_secret">%env(APP_SECRET)%</parameter>
+    </parameters>
+
     <services>
         <service id="PayonePayment\Components\CardRepository\CardRepository">
             <argument type="service" id="payone_payment_card.repository" />
@@ -26,6 +30,7 @@
 
         <service id="PayonePayment\Components\CartHasher\CartHasher">
             <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
+            <argument>%env.app_secret%</argument>
         </service>
         <service id="PayonePayment\Components\CartHasher\CartHasherInterface" alias="PayonePayment\Components\CartHasher\CartHasher"/>
 

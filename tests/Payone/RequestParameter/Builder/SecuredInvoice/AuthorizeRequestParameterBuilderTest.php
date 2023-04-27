@@ -14,7 +14,7 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @covers \PayonePayment\Payone\RequestParameter\Builder\SecuredInvoice\AuthorizeRequestParameterBuilder
@@ -25,10 +25,10 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
     public function testItAddsCorrectAuthorizeParameters(): void
     {
-        $this->getContainer()->get(SessionInterface::class)->set(
-            PayoneBNPLDeviceFingerprintService::SESSION_VAR_NAME,
-            'the-device-ident-token'
-        );
+        $request = $this->getRequestWithSession([
+            PayoneBNPLDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
             'securedInvoicePhone' => '0123456789',
@@ -63,6 +63,11 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
     public function testItThrowsExceptionOnMissingPhoneNumber(): void
     {
+        $request = $this->getRequestWithSession([
+            PayoneBNPLDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
         $dataBag = new RequestDataBag([
             'payoneInvoiceBirthday' => '2000-01-01',
         ]);
@@ -83,6 +88,11 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
     public function testItThrowsExceptionOnMissingBirthday(): void
     {
+        $request = $this->getRequestWithSession([
+            PayoneBNPLDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
         $dataBag = new RequestDataBag([
             'securedInvoicePhone' => '0123456789',
         ]);
@@ -103,6 +113,11 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
     public function testItAddsCorrectAuthorizeParametersWithSavedPhoneNumber(): void
     {
+        $request = $this->getRequestWithSession([
+            PayoneBNPLDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
         $dataBag = new RequestDataBag([
             'payoneInvoiceBirthday' => '2000-01-01',
         ]);
@@ -142,6 +157,11 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
     public function testItAddsCorrectAuthorizeParametersWithSavedBirthday(): void
     {
+        $request = $this->getRequestWithSession([
+            PayoneBNPLDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
         $dataBag = new RequestDataBag([
             'securedInvoicePhone' => '0123456789',
         ]);

@@ -1,9 +1,7 @@
-import template from './order-items.html.twig';
-import './order-items.scss';
+import template from './payone-order-items.html.twig';
+import './payone-order-items.scss';
 
-const { Component } = Shopware;
-
-Component.register('payone-order-items', {
+export default {
     template,
 
     props: {
@@ -66,7 +64,7 @@ Component.register('payone-order-items', {
             if (this.order.shippingCosts.totalPrice > 0) {
                 data.push({
                     id: 'shipping',
-                    product: this.$tc('payone-payment.modal.shippingCosts'),
+                    product: this.$tc('sw-order.payone-payment.modal.shippingCosts'),
                     quantity: 1,
                     disabled: false,
                     selected: false,
@@ -82,17 +80,17 @@ Component.register('payone-order-items', {
             return [
                 {
                     property: 'product',
-                    label: this.$tc('payone-payment.modal.columns.product'),
+                    label: this.$tc('sw-order.payone-payment.modal.columns.product'),
                     rawData: true
                 },
                 {
                     property: 'quantity',
-                    label: this.$tc('payone-payment.modal.columns.quantity'),
+                    label: this.$tc('sw-order.payone-payment.modal.columns.quantity'),
                     rawData: true
                 },
                 {
                     property: 'price',
-                    label: this.$tc('payone-payment.modal.columns.price'),
+                    label: this.$tc('sw-order.payone-payment.modal.columns.price'),
                     rawData: true
                 }
             ];
@@ -108,4 +106,4 @@ Component.register('payone-order-items', {
             this.$emit('change-quantity', id, value);
         }
     }
-});
+};

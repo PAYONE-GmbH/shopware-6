@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
 class TransactionDataHandlerTest extends TestCase
 {
@@ -31,7 +31,7 @@ class TransactionDataHandlerTest extends TestCase
             ->method('getId')
             ->willReturn('the-id');
 
-        $transactionRepository = $this->createMock(EntityRepositoryInterface::class);
+        $transactionRepository = $this->createMock(EntityRepository::class);
         $transactionRepository->expects(static::once())
             ->method('upsert')
             ->with(static::callback(static function (array $data) {
@@ -78,7 +78,7 @@ class TransactionDataHandlerTest extends TestCase
             ->method('getId')
             ->willReturn('the-transaction-id');
 
-        $transactionRepository = $this->createMock(EntityRepositoryInterface::class);
+        $transactionRepository = $this->createMock(EntityRepository::class);
         $transactionRepository->expects(static::once())
             ->method('upsert')
             ->with(static::callback(static function (array $data) {

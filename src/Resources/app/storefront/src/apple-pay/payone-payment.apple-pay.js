@@ -2,7 +2,7 @@
 
 import Plugin from 'src/plugin-system/plugin.class';
 import DomAccess from 'src/helper/dom-access.helper';
-import StoreApiClient from "src/service/store-api-client.service";
+import HttpClient from 'src/service/http-client.service';
 
 export default class PayonePaymentApplePay extends Plugin {
     static options = {
@@ -28,7 +28,7 @@ export default class PayonePaymentApplePay extends Plugin {
             this.options.supportedNetworks = [];
         }
 
-        this.client = new StoreApiClient();
+        this._httpClient = new HttpClient();
         this.validateMerchantUrl = this.el.dataset.validateMerchantUrl;
         this.processPaymentUrl = this.el.dataset.processPaymentUrl;
         this.orderForm = DomAccess.querySelector(document, '#confirmOrderForm');
@@ -56,8 +56,8 @@ export default class PayonePaymentApplePay extends Plugin {
     validateMerchant(event) {
         const validationUrl = event.validationURL;
 
-        this.client.abort();
-        this.client.post(this.validateMerchantUrl, JSON.stringify({validationUrl: validationUrl}), (response) => {
+        this._httpClient.abort();
+        this._httpClient.post(this.validateMerchantUrl, JSON.stringify({validationUrl: validationUrl}), (response) => {
             let merchantSession = null;
 
             try {
@@ -85,8 +85,8 @@ export default class PayonePaymentApplePay extends Plugin {
     authorizePayment(event) {
         let orderId = DomAccess.querySelector(this.orderForm, 'input[name=\'orderId\']').value;
 
-        this.client.abort();
-        this.client.post(this.processPaymentUrl, JSON.stringify({token: event.payment.token, orderId: orderId}), (response) => {
+        this._httpClient.abort();
+        this._httpClient.post(this.processPaymentUrl, JSON.stringify({token: event.payment.token, orderId: orderId}), (response) => {
             this.completePayment(response);
             this.orderForm.submit();
         })

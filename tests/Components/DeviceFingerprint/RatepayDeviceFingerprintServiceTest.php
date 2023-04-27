@@ -7,7 +7,7 @@ namespace PayonePayment\Components\DeviceFingerprint;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\Struct\Configuration;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @covers \PayonePayment\Components\DeviceFingerprint\RatepayDeviceFingerprintService
@@ -24,7 +24,7 @@ class RatepayDeviceFingerprintServiceTest extends AbstractDeviceFingerprintServi
         return PayoneRatepayDebitPaymentHandler::class;
     }
 
-    protected function getDeviceFingerprintService(SessionInterface $session): AbstractDeviceFingerprintService
+    protected function getDeviceFingerprintService(RequestStack $requestStack): AbstractDeviceFingerprintService
     {
         $configuration = $this->createMock(Configuration::class);
         $configuration->method('getByPrefix')->willReturn('ratepay');
@@ -32,7 +32,7 @@ class RatepayDeviceFingerprintServiceTest extends AbstractDeviceFingerprintServi
         $configReader = $this->createMock(ConfigReaderInterface::class);
         $configReader->method('read')->willReturn($configuration);
 
-        return new RatepayDeviceFingerprintService($session, $configReader);
+        return new RatepayDeviceFingerprintService($requestStack, $configReader);
     }
 
     protected function getExpectedSnippet(string $token): string

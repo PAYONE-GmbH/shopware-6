@@ -1,6 +1,4 @@
 <div class="payone-payment ratepay-installment">
-    <input type="hidden" id="payoneCsrfTokenRatepayInstallmentCalculation" value="{{ sw_csrf('frontend.payone.ratepay.installment.calculation', {'mode': 'token'}) }}">
-
     {% block page_checkout_confirm_payone_card_content_ratepay_installment_card %}
         {% set customerCustomFields = context.customer.customFields %}
 

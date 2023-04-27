@@ -52,7 +52,7 @@ class ApplePayRoute extends AbstractApplePayRoute
         $this->kernelDirectory = $kernelDirectory;
     }
 
-    public function getDecorated(): AbstractCardRoute
+    public function getDecorated(): AbstractApplePayRoute
     {
         throw new DecorationPatternException(self::class);
     }

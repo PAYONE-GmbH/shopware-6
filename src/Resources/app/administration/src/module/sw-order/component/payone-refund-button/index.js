@@ -1,9 +1,9 @@
-import template from './refund.html.twig';
-import './style.scss';
+import template from './payone-refund-button.html.twig';
+import './payone-refund-button.scss';
 
-const { Component, Mixin } = Shopware;
+const { Mixin } = Shopware;
 
-Component.register('payone-refund-button', {
+export default {
     template,
 
     mixins: [
@@ -169,14 +169,14 @@ Component.register('payone-refund-button', {
 
             this.PayonePaymentService.refundPayment(request).then(() => {
                 this.createNotificationSuccess({
-                    title: this.$tc('payone-payment.refund.successTitle'),
-                    message: this.$tc('payone-payment.refund.successMessage')
+                    title: this.$tc('sw-order.payone-payment.refund.successTitle'),
+                    message: this.$tc('sw-order.payone-payment.refund.successMessage')
                 });
 
                 this.isRefundSuccessful = true;
             }).catch((error) => {
                 this.createNotificationError({
-                    title: this.$tc('payone-payment.refund.errorTitle'),
+                    title: this.$tc('sw-order.payone-payment.refund.errorTitle'),
                     message: error.message
                 });
 
@@ -222,14 +222,14 @@ Component.register('payone-refund-button', {
 
             this.PayonePaymentService.refundPayment(request).then(() => {
                 this.createNotificationSuccess({
-                    title: this.$tc('payone-payment.refund.successTitle'),
-                    message: this.$tc('payone-payment.refund.successMessage')
+                    title: this.$tc('sw-order.payone-payment.refund.successTitle'),
+                    message: this.$tc('sw-order.payone-payment.refund.successMessage')
                 });
 
                 this.isRefundSuccessful = true;
             }).catch((error) => {
                 this.createNotificationError({
-                    title: this.$tc('payone-payment.refund.errorTitle'),
+                    title: this.$tc('sw-order.payone-payment.refund.errorTitle'),
                     message: error.message
                 });
 
@@ -299,4 +299,4 @@ Component.register('payone-refund-button', {
             }
         }
     }
-});
+};
