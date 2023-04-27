@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -38,7 +38,7 @@ class AccountOrderControllerDecoratorTest extends TestCase
         $paymentTransaction = $this->getPaymentTransaction($order, PayoneRatepayDebitPaymentHandler::class);
         $order->setTransactions(new OrderTransactionCollection([$paymentTransaction->getOrderTransaction()]));
 
-        $orderRepository = $this->createMock(EntityRepositoryInterface::class);
+        $orderRepository = $this->createMock(EntityRepository::class);
         $orderRepository->expects(static::once())->method('search')->willReturn(
             $this->getEntitySearchResult($order, $salesChannelContext)
         );
@@ -64,7 +64,7 @@ class AccountOrderControllerDecoratorTest extends TestCase
         $paymentTransaction = $this->getPaymentTransaction($order, PayoneDebitPaymentHandler::class);
         $order->setTransactions(new OrderTransactionCollection([$paymentTransaction->getOrderTransaction()]));
 
-        $orderRepository = $this->createMock(EntityRepositoryInterface::class);
+        $orderRepository = $this->createMock(EntityRepository::class);
         $orderRepository->expects(static::once())->method('search')->willReturn(
             $this->getEntitySearchResult($order, $salesChannelContext)
         );
@@ -95,7 +95,7 @@ class AccountOrderControllerDecoratorTest extends TestCase
         $paymentTransaction = $this->getPaymentTransaction($order, PayoneRatepayDebitPaymentHandler::class);
         $order->setTransactions(new OrderTransactionCollection([$paymentTransaction->getOrderTransaction()]));
 
-        $orderRepository = $this->createMock(EntityRepositoryInterface::class);
+        $orderRepository = $this->createMock(EntityRepository::class);
         $orderRepository->expects(static::once())->method('search')->willReturn(
             $this->getEntitySearchResult($order, $salesChannelContext)
         );
@@ -121,7 +121,7 @@ class AccountOrderControllerDecoratorTest extends TestCase
         $paymentTransaction = $this->getPaymentTransaction($order, PayoneDebitPaymentHandler::class);
         $order->setTransactions(new OrderTransactionCollection([$paymentTransaction->getOrderTransaction()]));
 
-        $orderRepository = $this->createMock(EntityRepositoryInterface::class);
+        $orderRepository = $this->createMock(EntityRepository::class);
         $orderRepository->expects(static::once())->method('search')->willReturn(
             $this->getEntitySearchResult($order, $salesChannelContext)
         );
@@ -176,7 +176,7 @@ class AccountOrderControllerDecoratorTest extends TestCase
 
         $controller = new AccountOrderControllerDecorator(
             $decoratedController,
-            $this->createMock(EntityRepositoryInterface::class)
+            $this->createMock(EntityRepository::class)
         );
 
         $controller->orderOverview($request, $salesChannelContext);

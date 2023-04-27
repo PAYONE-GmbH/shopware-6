@@ -17,21 +17,22 @@ class RedirectHandler
 
     private RouterInterface $router;
 
-    public function __construct(Connection $connection, RouterInterface $router)
+    private string $appSecret;
+
+    public function __construct(Connection $connection, RouterInterface $router, string $appSecret = '')
     {
         $this->connection = $connection;
         $this->router = $router;
+        $this->appSecret = $appSecret;
     }
 
     public function encode(string $url): string
     {
-        $secret = getenv('APP_SECRET');
-
-        if (empty($secret)) {
+        if (empty($this->appSecret)) {
             throw new \LogicException('empty app secret');
         }
 
-        $hash = base64_encode(hash_hmac('sha256', $url, $secret));
+        $hash = base64_encode(hash_hmac('sha256', $url, $this->appSecret));
 
         $this->connection->insert('payone_payment_redirect', [
             'id' => Uuid::randomBytes(),

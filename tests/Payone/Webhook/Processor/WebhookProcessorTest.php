@@ -22,7 +22,6 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Test\Cart\Common\Generator;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Pricing\CashRoundingConfig;
 use Shopware\Core\System\Currency\CurrencyEntity;
@@ -30,6 +29,7 @@ use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachine
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
+use Shopware\Core\Test\TestDefaults;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -41,7 +41,7 @@ class WebhookProcessorTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $salesChannelContext = Generator::createSalesChannelContext($context);
-        $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
+        $salesChannelContext->getSalesChannel()->setId(TestDefaults::SALES_CHANNEL);
 
         $request = new Request();
         $request->request->set('key', md5(''));
@@ -62,7 +62,7 @@ class WebhookProcessorTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $salesChannelContext = Generator::createSalesChannelContext($context);
-        $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
+        $salesChannelContext->getSalesChannel()->setId(TestDefaults::SALES_CHANNEL);
 
         $request = new Request();
         $request->request->set('key', md5(''));
@@ -84,7 +84,7 @@ class WebhookProcessorTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $salesChannelContext = Generator::createSalesChannelContext($context);
-        $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
+        $salesChannelContext->getSalesChannel()->setId(TestDefaults::SALES_CHANNEL);
 
         $request = new Request();
         $request->request->set('key', md5(''));
@@ -107,7 +107,7 @@ class WebhookProcessorTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $salesChannelContext = Generator::createSalesChannelContext($context);
-        $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
+        $salesChannelContext->getSalesChannel()->setId(TestDefaults::SALES_CHANNEL);
 
         $request = new Request();
         $request->request->set('key', md5(''));
@@ -128,7 +128,7 @@ class WebhookProcessorTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $salesChannelContext = Generator::createSalesChannelContext($context);
-        $salesChannelContext->getSalesChannel()->setId(Defaults::SALES_CHANNEL);
+        $salesChannelContext->getSalesChannel()->setId(TestDefaults::SALES_CHANNEL);
 
         $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
         $stateMachineRegistry->expects(static::once())->method('transition')->with(
@@ -169,7 +169,7 @@ class WebhookProcessorTest extends TestCase
 
         $orderEntity = new OrderEntity();
         $orderEntity->setId(Constants::ORDER_ID);
-        $orderEntity->setSalesChannelId(Defaults::SALES_CHANNEL);
+        $orderEntity->setSalesChannelId(TestDefaults::SALES_CHANNEL);
         $orderEntity->setAmountTotal(100);
         $orderEntity->setCurrencyId(Constants::CURRENCY_ID);
         $orderEntity->setCurrency($currency);

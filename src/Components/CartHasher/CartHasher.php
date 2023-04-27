@@ -25,9 +25,12 @@ class CartHasher implements CartHasherInterface
 
     private CurrencyPrecisionInterface $currencyPrecision;
 
-    public function __construct(CurrencyPrecisionInterface $currencyPrecision)
+    private string $appSecret;
+
+    public function __construct(CurrencyPrecisionInterface $currencyPrecision, string $appSecret = '')
     {
         $this->currencyPrecision = $currencyPrecision;
+        $this->appSecret = $appSecret;
     }
 
     /**
@@ -177,12 +180,10 @@ class CartHasher implements CartHasherInterface
             throw new \LogicException('could not generate hash');
         }
 
-        $secret = getenv('APP_SECRET');
-
-        if (empty($secret)) {
+        if (empty($this->appSecret)) {
             throw new \LogicException('empty app secret');
         }
 
-        return hash_hmac('sha256', $json, $secret);
+        return hash_hmac('sha256', $json, $this->appSecret);
     }
 }

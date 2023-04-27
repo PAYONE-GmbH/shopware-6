@@ -1,6 +1,18 @@
 {
     "sw-order": {
+        "detail": {
+            "payone": "PAYONE"
+        },
         "payone-payment": {
+            "title": "PAYONE",
+            "paymentMethod": "Payment Method",
+            "txid": "TXID",
+            "transactionState": "State",
+            "transactionCancelled": "Transaction cancelled in Shopware",
+            "sequenceNumber": {
+                "label": "Sequence Number",
+                "empty": "none"
+            },
             "creditCard": {
                 "cardTypeLabel": "Card Type",
                 "cardTypes": {
@@ -13,6 +25,54 @@
                     "P": "China Union Pay",
                     "U": "UATP / Airplus",
                     "G": "girocard"
+                }
+            },
+            "capture": {
+                "buttonTitle": "Capture",
+                "successTitle": "PAYONE",
+                "successMessage": "Capture processed successfully.",
+                "errorTitle": "PAYONE",
+                "errorMessage": "Capture could not be processed.",
+                "tooltips": {
+                    "impossible": "Capture impossible"
+                }
+            },
+            "refund": {
+                "buttonTitle": "Refund",
+                "successTitle": "PAYONE",
+                "successMessage": "Refund processed successfully.",
+                "errorTitle": "PAYONE",
+                "errorMessage": "Refund could not be processed.",
+                "tooltips": {
+                    "impossible": "Refund impossible"
+                }
+            },
+            "modal": {
+                "capture": {
+                    "title": "Capture",
+                    "submit": "Capture",
+                    "fullSubmit": "Full capture",
+                    "amount": "Capture amount",
+                    "captured": "Captured amount"
+                },
+                "refund": {
+                    "title": "Refund",
+                    "submit": "Refund",
+                    "fullSubmit": "Full Refund",
+                    "amount": "Refund amount",
+                    "refunded": "Refunded amount"
+                },
+                "orderAmount": "Order amount",
+                "remainingAmount": "Remaining amount",
+                "shippingCosts": "Shipping costs",
+                "descriptionHelpText": "Description help text",
+                "close": "Close",
+                "labelComment": "Label comment",
+                "columns": {
+                    "reference": "Reference",
+                    "product": "Product",
+                    "quantity": "Quantity",
+                    "price": "Price"
                 }
             }
         }

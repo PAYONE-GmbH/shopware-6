@@ -35,10 +35,12 @@ use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityD
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Test\TestCaseBase\SessionTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
+use Shopware\Core\Test\TestDefaults;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoader;
 use Shopware\Storefront\Test\Page\StorefrontPageTestBehaviour;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -49,6 +51,7 @@ trait PayoneTestBehavior
 {
     use IntegrationTestBehaviour;
     use StorefrontPageTestBehaviour;
+    use SessionTestBehaviour;
 
     /**
      * @deprecated use `createCartWithProduct`
@@ -110,7 +113,7 @@ trait PayoneTestBehavior
             'visibilities' => [
                 [
                     'id' => $productId,
-                    'salesChannelId' => Defaults::SALES_CHANNEL,
+                    'salesChannelId' => TestDefaults::SALES_CHANNEL,
                     'visibility' => ProductVisibilityDefinition::VISIBILITY_ALL,
                 ],
             ],
@@ -152,7 +155,7 @@ trait PayoneTestBehavior
         return new RatepayProfileStruct(
             '88880103',
             'EUR',
-            Defaults::SALES_CHANNEL,
+            TestDefaults::SALES_CHANNEL,
             $paymentHandler,
             $requestAction
         );
@@ -277,5 +280,19 @@ trait PayoneTestBehavior
     protected function getPageLoader(): CheckoutConfirmPageLoader
     {
         return $this->getContainer()->get(CheckoutConfirmPageLoader::class);
+    }
+
+    protected function getRequestWithSession(array $sessionVariables): Request
+    {
+        $session = $this->getSession();
+
+        foreach ($sessionVariables as $key => $value) {
+            $session->set($key, $value);
+        }
+
+        $request = new Request();
+        $request->setSession($session);
+
+        return $request;
     }
 }

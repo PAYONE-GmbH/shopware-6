@@ -17,7 +17,7 @@ use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
@@ -45,7 +45,7 @@ class TransactionStatusWebhookHandlerFactory
         ?OrderTransactionEntity $transaction = null
     ): TransactionStatusServiceInterface {
         /** @var MockObject $entityRepositoryMock */
-        $entityRepositoryMock = (new Generator())->getMock(EntityRepositoryInterface::class);
+        $entityRepositoryMock = (new Generator())->getMock(EntityRepository::class, [], [], '', false);
 
         try {
             $entitySearchResult = new EntitySearchResult(
@@ -64,7 +64,7 @@ class TransactionStatusWebhookHandlerFactory
         $entityRepositoryMock->method('search')->willReturn($entitySearchResult);
         $entityRepositoryMock->method('update')->willReturn(new EntityWrittenContainerEvent(Context::createDefaultContext(), new NestedEventCollection(), []));
 
-        /** @var EntityRepositoryInterface $entityRepositoryMock */
+        /** @var EntityRepository $entityRepositoryMock */
         return new TransactionStatusService(
             $stateMachineRegistry,
             new ConfigReaderMock($configuration),

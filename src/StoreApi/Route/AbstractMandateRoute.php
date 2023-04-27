@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractMandateRoute
 {
-    abstract public function getDecorated(): AbstractCardRoute;
+    abstract public function getDecorated(): AbstractMandateRoute;
 
     abstract public function load(SalesChannelContext $context): MandateResponse;
 

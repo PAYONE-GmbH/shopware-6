@@ -136,11 +136,9 @@ export default class PayonePaymentPayolutionInvoicing extends Plugin {
     }
 
     _getRequestData() {
-        const csrfToken = document.getElementById('payoneCsrfTokenPayolutionInvoiceValidation');
         const birthday = document.getElementById('payolutionBirthday');
 
         return {
-            '_csrf_token': csrfToken.value,
             'payolutionBirthday': birthday.value
         };
     }
