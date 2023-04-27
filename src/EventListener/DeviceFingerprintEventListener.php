@@ -14,11 +14,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DeviceFingerprintEventListener implements EventSubscriberInterface
 {
-    protected DeviceFingerprintServiceCollectionInterface $deviceFingerprintServiceCollection;
-
-    public function __construct(DeviceFingerprintServiceCollectionInterface $deviceFingerprintServiceCollection)
+    public function __construct(protected DeviceFingerprintServiceCollectionInterface $deviceFingerprintServiceCollection)
     {
-        $this->deviceFingerprintServiceCollection = $deviceFingerprintServiceCollection;
     }
 
     public static function getSubscribedEvents(): array

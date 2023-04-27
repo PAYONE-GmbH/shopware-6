@@ -26,33 +26,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    protected CartHasherInterface $cartHasher;
-
-    private PayoneClientInterface $client;
-
-    private TranslatorInterface $translator;
-
-    private TransactionDataHandlerInterface $dataHandler;
-
-    private RequestParameterFactory $requestParameterFactory;
+    private readonly TranslatorInterface $translator;
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        PayoneClientInterface $client,
+        private readonly PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
+        private readonly TransactionDataHandlerInterface $dataHandler,
         EntityRepository $lineItemRepository,
-        CartHasherInterface $cartHasher,
+        protected CartHasherInterface $cartHasher,
         RequestStack $requestStack,
-        RequestParameterFactory $requestParameterFactory
+        private readonly RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->client = $client;
         $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
-        $this->cartHasher = $cartHasher;
-        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
@@ -78,7 +65,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
                 $paymentTransaction,
                 $requestData,
                 $salesChannelContext,
-                __CLASS__,
+                self::class,
                 $authorizationMethod
             )
         );
@@ -90,7 +77,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractPayonePaymentHan
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')

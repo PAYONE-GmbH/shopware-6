@@ -23,13 +23,13 @@ use Shopware\Core\System\Currency\Rule\CurrencyRule;
 
 class RuleInstallerSecureInvoice implements InstallerInterface
 {
-    public const VALID_COUNTRIES = [
+    final public const VALID_COUNTRIES = [
         'AT',
         'CH',
         'DE',
     ];
 
-    public const CURRENCIES = [
+    final public const CURRENCIES = [
         'EUR',
     ];
 
@@ -39,13 +39,13 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     private const CONDITION_ID_CURRENCY = '6099e1e292f737aa31c126a73339c92e';
     private const CONDITION_ID_DIFFERENT_ADDRESSES = 'f1a5251ffcd09b5dc0befc059dfad9c1';
 
-    private EntityRepository $ruleRepository;
+    private readonly EntityRepository $ruleRepository;
 
-    private EntityRepository $countryRepository;
+    private readonly EntityRepository $countryRepository;
 
-    private EntityRepository $currencyRepository;
+    private readonly EntityRepository $currencyRepository;
 
-    private EntityRepository $paymentMethodRepository;
+    private readonly EntityRepository $paymentMethodRepository;
 
     public function __construct(
         EntityRepository $ruleRepository,
@@ -170,7 +170,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
 
         $countryIds = $this->countryRepository->searchIds($criteria, $context)->getIds();
 
-        if (\count($countryIds) === 0) {
+        if ((is_countable($countryIds) ? \count($countryIds) : 0) === 0) {
             // if country does not exist, enter invalid uuid so rule always fails. empty is not allowed
             return [Uuid::randomHex()];
         }
@@ -187,7 +187,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
 
         $currencyIds = $this->currencyRepository->searchIds($criteria, $context)->getIds();
 
-        if (\count($currencyIds) === 0) {
+        if ((is_countable($currencyIds) ? \count($currencyIds) : 0) === 0) {
             // if currency does not exist, enter invalid uuid so rule always fails. empty is not allowed
             return [Uuid::randomHex()];
         }

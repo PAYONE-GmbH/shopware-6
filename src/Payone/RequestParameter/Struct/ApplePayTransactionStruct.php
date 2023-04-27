@@ -14,20 +14,17 @@ class ApplePayTransactionStruct extends AbstractRequestParameterStruct
     use SalesChannelContextTrait;
     use RequestDataTrait;
 
-    protected ?string $orderId = null;
-
     public function __construct(
         RequestDataBag $requestData,
         SalesChannelContext $salesChannelContext,
         string $paymentMethod,
         string $action = '',
-        ?string $orderId = null
+        protected ?string $orderId = null
     ) {
         $this->requestData = $requestData;
         $this->salesChannelContext = $salesChannelContext;
         $this->paymentMethod = $paymentMethod;
         $this->action = $action;
-        $this->orderId = $orderId;
     }
 
     public function getOrderId(): ?string

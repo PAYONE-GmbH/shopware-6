@@ -20,7 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 class CustomerInformationRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    private EntityRepository $orderAddressRepository;
+    private readonly EntityRepository $orderAddressRepository;
 
     public function __construct(EntityRepository $orderAddressRepository)
     {
@@ -32,6 +32,7 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
      */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
+        $parameters = [];
         $paymentTransaction = $arguments->getPaymentTransaction();
         $dataBag = $arguments->getRequestData();
         $order = $paymentTransaction->getOrder();

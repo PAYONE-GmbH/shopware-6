@@ -183,7 +183,7 @@ abstract class AbstractTransactionHandler
         $requestContent = $requestResponse->getContent();
 
         if ($requestContent) {
-            $decodedResultContent = json_decode($requestContent, true);
+            $decodedResultContent = json_decode($requestContent, true, 512, JSON_THROW_ON_ERROR);
         }
 
         return !empty($decodedResultContent) && $decodedResultContent['status'];

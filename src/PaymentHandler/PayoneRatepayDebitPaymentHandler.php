@@ -26,33 +26,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    protected PayoneClientInterface $client;
-
     protected TranslatorInterface $translator;
-
-    private TransactionDataHandlerInterface $dataHandler;
-
-    private RequestParameterFactory $requestParameterFactory;
-
-    private AbstractDeviceFingerprintService $deviceFingerprintService;
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        PayoneClientInterface $client,
+        protected PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
+        private readonly TransactionDataHandlerInterface $dataHandler,
         EntityRepository $lineItemRepository,
         RequestStack $requestStack,
-        RequestParameterFactory $requestParameterFactory,
-        AbstractDeviceFingerprintService $deviceFingerprintService
+        private readonly RequestParameterFactory $requestParameterFactory,
+        private readonly AbstractDeviceFingerprintService $deviceFingerprintService
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->client = $client;
         $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
-        $this->requestParameterFactory = $requestParameterFactory;
-        $this->deviceFingerprintService = $deviceFingerprintService;
     }
 
     /**
@@ -76,7 +63,7 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
                 $paymentTransaction,
                 $requestData,
                 $salesChannelContext,
-                __CLASS__,
+                self::class,
                 $authorizationMethod
             )
         );
@@ -90,7 +77,7 @@ class PayoneRatepayDebitPaymentHandler extends AbstractPayonePaymentHandler impl
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             $this->deviceFingerprintService->deleteDeviceIdentToken();
 
             throw new SyncPaymentProcessException(

@@ -62,33 +62,20 @@ class PayoneEpsPaymentHandler extends AbstractPayonePaymentHandler implements As
         'EPS_VKB',
     ];
 
-    private PayoneClientInterface $client;
-
-    private TranslatorInterface $translator;
-
-    private TransactionDataHandlerInterface $dataHandler;
-
-    private PaymentStateHandlerInterface $stateHandler;
-
-    private RequestParameterFactory $requestParameterFactory;
+    private readonly TranslatorInterface $translator;
 
     public function __construct(
         ConfigReaderInterface $configReader,
         EntityRepository $lineItemRepository,
-        PayoneClientInterface $client,
+        private readonly PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
-        PaymentStateHandlerInterface $stateHandler,
+        private readonly TransactionDataHandlerInterface $dataHandler,
+        private readonly PaymentStateHandlerInterface $stateHandler,
         RequestStack $requestStack,
-        RequestParameterFactory $requestParameterFactory
+        private readonly RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->client = $client;
         $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
-        $this->stateHandler = $stateHandler;
-        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
@@ -109,7 +96,7 @@ class PayoneEpsPaymentHandler extends AbstractPayonePaymentHandler implements As
 
         try {
             $this->validate($requestData);
-        } catch (PayoneRequestException $e) {
+        } catch (PayoneRequestException) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -121,7 +108,7 @@ class PayoneEpsPaymentHandler extends AbstractPayonePaymentHandler implements As
                 $paymentTransaction,
                 $requestData,
                 $salesChannelContext,
-                __CLASS__,
+                self::class,
                 $authorizationMethod
             )
         );
@@ -133,7 +120,7 @@ class PayoneEpsPaymentHandler extends AbstractPayonePaymentHandler implements As
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -170,7 +157,7 @@ class PayoneEpsPaymentHandler extends AbstractPayonePaymentHandler implements As
             return false;
         }
 
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
 
         if ($txAction === TransactionStatusService::ACTION_PAID) {
             return true;

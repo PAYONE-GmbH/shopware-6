@@ -14,14 +14,11 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class RatepayDeviceFingerprintService extends AbstractDeviceFingerprintService
 {
-    public const SESSION_VAR_NAME = 'payone_ratepay_device_ident_token';
+    final public const SESSION_VAR_NAME = 'payone_ratepay_device_ident_token';
 
-    protected ConfigReaderInterface $configReader;
-
-    public function __construct(RequestStack $requestStack, ConfigReaderInterface $configReader)
+    public function __construct(RequestStack $requestStack, protected ConfigReaderInterface $configReader)
     {
         parent::__construct($requestStack);
-        $this->configReader = $configReader;
     }
 
     public function getSupportedPaymentHandlerClasses(): array
@@ -44,7 +41,7 @@ class RatepayDeviceFingerprintService extends AbstractDeviceFingerprintService
                 'v' => $snippetId,
                 't' => $deviceIdentToken,
                 'l' => $location,
-            ])
+            ], JSON_THROW_ON_ERROR)
         );
 
         $snippet .= sprintf(

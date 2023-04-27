@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints\AbstractComparison;
  */
 class PaymentMethod extends AbstractComparison
 {
-    public const INVALID_ERROR = '8608fc941e7a4407bc8d259866ca64b4';
+    final public const INVALID_ERROR = '8608fc941e7a4407bc8d259866ca64b4';
 
     /**
      * @phpstan-ignore-next-line

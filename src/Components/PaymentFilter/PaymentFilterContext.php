@@ -14,17 +14,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentFilterContext extends Struct
 {
-    private SalesChannelContext $salesChannelContext;
-
-    /**
-     * @var CustomerAddressEntity|OrderAddressEntity|null
-     */
-    private $billingAddress = null;
-
-    /**
-     * @var CustomerAddressEntity|OrderAddressEntity|null
-     */
-    private $shippingAddress = null;
+    private readonly SalesChannelContext $salesChannelContext;
 
     private ?CurrencyEntity $currency = null;
 
@@ -38,15 +28,13 @@ class PaymentFilterContext extends Struct
      */
     public function __construct(
         SalesChannelContext $salesChannelContext,
-        $billingAddress = null,
-        $shippingAddress = null,
+        private readonly \Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity|\Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity|null $billingAddress = null,
+        private readonly \Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity|\Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity|null $shippingAddress = null,
         ?CurrencyEntity $currency = null,
         ?OrderEntity $order = null,
         ?Cart $cart = null
     ) {
         $this->salesChannelContext = $salesChannelContext;
-        $this->billingAddress = $billingAddress;
-        $this->shippingAddress = $shippingAddress;
         $this->currency = $currency;
         $this->order = $order;
         $this->cart = $cart;

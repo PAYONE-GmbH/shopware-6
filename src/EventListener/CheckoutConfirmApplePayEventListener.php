@@ -21,11 +21,8 @@ class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
 {
     use RemovesPaymentMethod;
 
-    private string $kernelDirectory;
-
-    public function __construct(string $kernelDirectory)
+    public function __construct(private readonly string $kernelDirectory)
     {
-        $this->kernelDirectory = $kernelDirectory;
     }
 
     public static function getSubscribedEvents(): array

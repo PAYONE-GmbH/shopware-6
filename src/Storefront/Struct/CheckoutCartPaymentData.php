@@ -8,11 +8,11 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class CheckoutCartPaymentData extends Struct
 {
-    public const EXTENSION_NAME = 'payone';
+    final public const EXTENSION_NAME = 'payone';
 
-    public const DATA_WORK_ORDER_ID = 'workOrderId';
-    public const DATA_CART_HASH = 'cartHash';
-    public const DATA_CALCULATION_RESPONSE = 'calculationResponse';
+    final public const DATA_WORK_ORDER_ID = 'workOrderId';
+    final public const DATA_CART_HASH = 'cartHash';
+    final public const DATA_CALCULATION_RESPONSE = 'calculationResponse';
 
     protected string $workOrderId = '';
 

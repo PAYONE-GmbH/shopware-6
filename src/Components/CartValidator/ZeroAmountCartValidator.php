@@ -14,11 +14,8 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class ZeroAmountCartValidator implements CartValidatorInterface
 {
-    protected CurrencyPrecisionInterface $currencyPrecision;
-
-    public function __construct(CurrencyPrecisionInterface $currencyPrecision)
+    public function __construct(protected CurrencyPrecisionInterface $currencyPrecision)
     {
-        $this->currencyPrecision = $currencyPrecision;
     }
 
     public function validate(Cart $cart, ErrorCollection $errors, SalesChannelContext $context): void
@@ -31,7 +28,7 @@ class ZeroAmountCartValidator implements CartValidatorInterface
             return;
         }
 
-        if (mb_strpos($context->getPaymentMethod()->getHandlerIdentifier(), PaymentMethodInstaller::HANDLER_IDENTIFIER_ROOT_NAMESPACE) === false) {
+        if (mb_strpos((string) $context->getPaymentMethod()->getHandlerIdentifier(), PaymentMethodInstaller::HANDLER_IDENTIFIER_ROOT_NAMESPACE) === false) {
             return;
         }
 

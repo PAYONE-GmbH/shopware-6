@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints\AbstractComparison;
  */
 class Birthday extends AbstractComparison
 {
-    public const TOO_HIGH_ERROR = 'ac2f93c6-f906-47c9-8b09-6f7cf41f4f49';
+    final public const TOO_HIGH_ERROR = 'ac2f93c6-f906-47c9-8b09-6f7cf41f4f49';
 
     /**
      * @phpstan-ignore-next-line

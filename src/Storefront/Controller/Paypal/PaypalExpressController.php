@@ -39,30 +39,24 @@ use Symfony\Component\Routing\RouterInterface;
 
 class PaypalExpressController extends StorefrontController
 {
-    private PayoneClientInterface $client;
+    private readonly CartService $cartService;
 
-    private CartService $cartService;
+    private readonly AbstractRegisterRoute $registerRoute;
 
-    private AbstractRegisterRoute $registerRoute;
+    private readonly AccountService $accountService;
 
-    private AccountService $accountService;
+    private readonly AbstractSalesChannelContextFactory $salesChannelContextFactory;
 
-    private AbstractSalesChannelContextFactory $salesChannelContextFactory;
+    private readonly EntityRepository $salutationRepository;
 
-    private EntityRepository $salutationRepository;
+    private readonly EntityRepository $countryRepository;
 
-    private EntityRepository $countryRepository;
+    private readonly SalesChannelContextSwitcher $salesChannelContextSwitcher;
 
-    private SalesChannelContextSwitcher $salesChannelContextSwitcher;
-
-    private CartHasherInterface $cartHasher;
-
-    private RouterInterface $router;
-
-    private RequestParameterFactory $requestParameterFactory;
+    private readonly RouterInterface $router;
 
     public function __construct(
-        PayoneClientInterface $client,
+        private readonly PayoneClientInterface $client,
         CartService $cartService,
         AbstractRegisterRoute $registerRoute,
         AccountService $accountService,
@@ -70,11 +64,10 @@ class PaypalExpressController extends StorefrontController
         EntityRepository $salutationRepository,
         EntityRepository $countryRepository,
         SalesChannelContextSwitcher $salesChannelContextSwitcher,
-        CartHasherInterface $cartHasher,
+        private readonly CartHasherInterface $cartHasher,
         RouterInterface $router,
-        RequestParameterFactory $requestParameterFactory
+        private readonly RequestParameterFactory $requestParameterFactory
     ) {
-        $this->client = $client;
         $this->cartService = $cartService;
         $this->registerRoute = $registerRoute;
         $this->accountService = $accountService;
@@ -82,9 +75,7 @@ class PaypalExpressController extends StorefrontController
         $this->salutationRepository = $salutationRepository;
         $this->countryRepository = $countryRepository;
         $this->salesChannelContextSwitcher = $salesChannelContextSwitcher;
-        $this->cartHasher = $cartHasher;
         $this->router = $router;
-        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
@@ -118,7 +109,7 @@ class PaypalExpressController extends StorefrontController
 
         try {
             $response = $this->client->request($setRequest);
-        } catch (PayoneRequestException $exception) {
+        } catch (PayoneRequestException) {
             throw new \RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
@@ -134,7 +125,7 @@ class PaypalExpressController extends StorefrontController
     {
         try {
             $this->handleStateResponse($request->get('state'));
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             return $this->redirectToRoute('frontend.checkout.cart.page');
         }
 
@@ -160,7 +151,7 @@ class PaypalExpressController extends StorefrontController
 
         try {
             $response = $this->client->request($getRequest);
-        } catch (PayoneRequestException $exception) {
+        } catch (PayoneRequestException) {
             throw new \RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 

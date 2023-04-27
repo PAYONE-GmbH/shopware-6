@@ -19,24 +19,15 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class InstallmentService implements InstallmentServiceInterface
 {
-    private CartService $cartService;
-
-    private PayoneClientInterface $client;
-
-    private RequestParameterFactory $requestParameterFactory;
-
-    private ProfileServiceInterface $profileService;
+    private readonly CartService $cartService;
 
     public function __construct(
         CartService $cartService,
-        PayoneClientInterface $client,
-        RequestParameterFactory $requestParameterFactory,
-        ProfileServiceInterface $profileService
+        private readonly PayoneClientInterface $client,
+        private readonly RequestParameterFactory $requestParameterFactory,
+        private readonly ProfileServiceInterface $profileService
     ) {
         $this->cartService = $cartService;
-        $this->client = $client;
-        $this->requestParameterFactory = $requestParameterFactory;
-        $this->profileService = $profileService;
     }
 
     public function getInstallmentCalculatorData(SalesChannelContext $salesChannelContext, ?RequestDataBag $dataBag = null): ?RatepayInstallmentCalculatorData
@@ -55,7 +46,7 @@ class InstallmentService implements InstallmentServiceInterface
             return null;
         }
 
-        $allowedMonths = explode(',', $profileConfiguration['month-allowed']);
+        $allowedMonths = explode(',', (string) $profileConfiguration['month-allowed']);
 
         $defaults = [
             'type' => CalculationRequestParameterBuilder::INSTALLMENT_TYPE_TIME,

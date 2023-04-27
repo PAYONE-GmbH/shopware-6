@@ -15,14 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AccountCardController extends StorefrontController
 {
-    private AccountCardPageLoader $accountCardPageLoader;
-
-    private AbstractCardRoute $cardRoute;
-
-    public function __construct(AccountCardPageLoader $accountCardPageLoader, AbstractCardRoute $cardRoute)
+    public function __construct(private readonly AccountCardPageLoader $accountCardPageLoader, private readonly AbstractCardRoute $cardRoute)
     {
-        $this->accountCardPageLoader = $accountCardPageLoader;
-        $this->cardRoute = $cardRoute;
     }
 
     /**
@@ -42,7 +36,7 @@ class AccountCardController extends StorefrontController
     {
         try {
             $this->cardRoute->delete($request->get('pseudoCardPan'), $context);
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             $this->addFlash('danger', $this->trans('PayonePayment.cardPage.error'));
 
             return $this->forwardToRoute('frontend.account.payone.card.page');

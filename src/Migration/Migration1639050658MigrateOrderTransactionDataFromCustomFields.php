@@ -11,7 +11,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
 {
     public function getCreationTimestamp(): int
     {
-        return 1639050658;
+        return 1_639_050_658;
     }
 
     public function update(Connection $connection): void
@@ -68,7 +68,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
             }
 
             $connection->commit();
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $connection->rollBack();
 
             throw new \RuntimeException('An error occurred while migrating payone custom field values');
@@ -110,7 +110,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
             }
 
             $connection->commit();
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $connection->rollBack();
 
             throw new \RuntimeException('An error occurred while unsetting payone custom field values');

@@ -20,37 +20,34 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInterface
 {
-    public const PAYONE_STATE_COMPLETED = 'completed';
-    public const PAYONE_STATE_PENDING = 'pending';
+    final public const PAYONE_STATE_COMPLETED = 'completed';
+    final public const PAYONE_STATE_PENDING = 'pending';
 
-    public const PAYONE_CLEARING_FNC = 'fnc';
-    public const PAYONE_CLEARING_VOR = 'vor';
-    public const PAYONE_CLEARING_REC = 'rec';
+    final public const PAYONE_CLEARING_FNC = 'fnc';
+    final public const PAYONE_CLEARING_VOR = 'vor';
+    final public const PAYONE_CLEARING_REC = 'rec';
 
-    public const PAYONE_FINANCING_PIV = 'PIV';
-    public const PAYONE_FINANCING_PIN = 'PIN';
-    public const PAYONE_FINANCING_PDD = 'PDD';
+    final public const PAYONE_FINANCING_PIV = 'PIV';
+    final public const PAYONE_FINANCING_PIN = 'PIN';
+    final public const PAYONE_FINANCING_PDD = 'PDD';
 
-    public const PAYONE_FINANCING_PYV = 'PYV';
-    public const PAYONE_FINANCING_PYS = 'PYS';
-    public const PAYONE_FINANCING_PYD = 'PYD';
+    final public const PAYONE_FINANCING_PYV = 'PYV';
+    final public const PAYONE_FINANCING_PYS = 'PYS';
+    final public const PAYONE_FINANCING_PYD = 'PYD';
 
-    public const PAYONE_FINANCING_RPV = 'RPV';
-    public const PAYONE_FINANCING_RPS = 'RPS';
-    public const PAYONE_FINANCING_RPD = 'RPD';
-
-    protected ConfigReaderInterface $configReader;
+    final public const PAYONE_FINANCING_RPV = 'RPV';
+    final public const PAYONE_FINANCING_RPS = 'RPS';
+    final public const PAYONE_FINANCING_RPD = 'RPD';
 
     protected EntityRepository $lineItemRepository;
 
     protected RequestStack $requestStack;
 
     public function __construct(
-        ConfigReaderInterface $configReader,
+        protected ConfigReaderInterface $configReader,
         EntityRepository $lineItemRepository,
         RequestStack $requestStack
     ) {
-        $this->configReader = $configReader;
         $this->lineItemRepository = $lineItemRepository;
         $this->requestStack = $requestStack;
     }
@@ -89,7 +86,7 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      */
     final protected static function matchesIsCapturableDefaults(array $transactionData): bool
     {
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
         $price = isset($transactionData['price']) ? ((float) $transactionData['price']) : null;
         $receivable = isset($transactionData['receivable']) ? ((float) $transactionData['receivable']) : null;
 
@@ -109,8 +106,8 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      */
     final protected static function isTransactionAppointedAndCompleted(array $transactionData): bool
     {
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
-        $transactionStatus = isset($transactionData['transaction_status']) ? strtolower($transactionData['transaction_status']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
+        $transactionStatus = isset($transactionData['transaction_status']) ? strtolower((string) $transactionData['transaction_status']) : null;
 
         return $txAction === TransactionStatusService::ACTION_APPOINTED && $transactionStatus === TransactionStatusService::STATUS_COMPLETED;
     }
@@ -141,7 +138,7 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      */
     final protected static function matchesIsRefundableDefaults(array $transactionData): bool
     {
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
         $receivable = isset($transactionData['receivable']) ? ((float) $transactionData['receivable']) : null;
 
         // Allow refund if capture TX status and receivable indicate we have outstanding funds

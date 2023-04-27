@@ -11,16 +11,13 @@ class GetFileStruct extends AbstractRequestParameterStruct
 {
     use SalesChannelContextTrait;
 
-    protected string $identification;
-
     public function __construct(
         SalesChannelContext $salesChannelContext,
         string $paymentMethod,
-        string $identification
+        protected string $identification
     ) {
         $this->salesChannelContext = $salesChannelContext;
         $this->paymentMethod = $paymentMethod;
-        $this->identification = $identification;
     }
 
     public function getIdentification(): string

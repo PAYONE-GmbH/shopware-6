@@ -8,7 +8,7 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class DeviceFingerprintData extends Struct
 {
-    public const EXTENSION_NAME = 'payoneDeviceFingerprint';
+    final public const EXTENSION_NAME = 'payoneDeviceFingerprint';
 
     protected string $snippet;
 

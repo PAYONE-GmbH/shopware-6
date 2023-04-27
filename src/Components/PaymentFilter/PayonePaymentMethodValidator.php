@@ -11,16 +11,8 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PayonePaymentMethodValidator implements CartValidatorInterface
 {
-    private IterablePaymentFilter $iterablePaymentFilter;
-
-    private PaymentFilterContextFactoryInterface $paymentFilterContextFactory;
-
-    public function __construct(
-        IterablePaymentFilter $iterablePaymentFilter,
-        PaymentFilterContextFactoryInterface $paymentFilterContextFactory
-    ) {
-        $this->iterablePaymentFilter = $iterablePaymentFilter;
-        $this->paymentFilterContextFactory = $paymentFilterContextFactory;
+    public function __construct(private readonly IterablePaymentFilter $iterablePaymentFilter, private readonly PaymentFilterContextFactoryInterface $paymentFilterContextFactory)
+    {
     }
 
     /**
