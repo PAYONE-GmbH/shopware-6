@@ -19,25 +19,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    protected PayoneClientInterface $client;
-
     protected TranslatorInterface $translator;
-
-    private TransactionDataHandlerInterface $dataHandler;
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        PayoneClientInterface $client,
+        protected PayoneClientInterface $client,
         TranslatorInterface $translator,
         EntityRepository $lineItemRepository,
         RequestStack $requestStack,
-        TransactionDataHandlerInterface $dataHandler
+        private readonly TransactionDataHandlerInterface $dataHandler
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->client = $client;
         $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
     }
 
     /**
@@ -48,7 +41,7 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
         $requestData = $this->fetchRequestData();
 
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $response = json_decode($requestData->get('response', '{}'), true);
+        $response = json_decode((string) $requestData->get('response', '{}'), true, 512, JSON_THROW_ON_ERROR);
 
         if ($response === null || !\array_key_exists('status', $response) || !\array_key_exists('txid', $response)) {
             throw new SyncPaymentProcessException(

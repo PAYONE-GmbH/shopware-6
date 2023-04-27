@@ -58,6 +58,6 @@ class PayoneSecureInvoicePaymentHandler extends AbstractPayoneInvoicePaymentHand
      */
     protected function getPaymentMethod(): string
     {
-        return __CLASS__;
+        return self::class;
     }
 }

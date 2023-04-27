@@ -11,7 +11,7 @@ class Migration1561379069AddPayonePaymentCardTable extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1561379069;
+        return 1_561_379_069;
     }
 
     public function update(Connection $connection): void

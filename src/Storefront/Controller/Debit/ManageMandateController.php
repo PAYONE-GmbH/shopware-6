@@ -17,16 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ManageMandateController extends StorefrontController
 {
-    private RequestParameterFactory $requestFactory;
-
-    private PayoneClientInterface $client;
-
-    public function __construct(
-        RequestParameterFactory $mandateRequestFactory,
-        PayoneClientInterface $client
-    ) {
-        $this->requestFactory = $mandateRequestFactory;
-        $this->client = $client;
+    public function __construct(private readonly RequestParameterFactory $requestFactory, private readonly PayoneClientInterface $client)
+    {
     }
 
     /**
@@ -47,7 +39,7 @@ class ManageMandateController extends StorefrontController
             $response = $this->client->request($payoneRequest);
 
             if (!empty($response['mandate']['HtmlText'])) {
-                $response['mandate']['HtmlText'] = urldecode($response['mandate']['HtmlText']);
+                $response['mandate']['HtmlText'] = urldecode((string) $response['mandate']['HtmlText']);
 
                 $content = $this->renderView('@PayonePayment/storefront/payone/mandate/mandate.html.twig', $response);
 
@@ -57,7 +49,7 @@ class ManageMandateController extends StorefrontController
             $response = [
                 'error' => $exception->getResponse()['error']['CustomerMessage'],
             ];
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             $response = [
                 'error' => $this->trans('PayonePayment.errorMessages.genericError'),
             ];

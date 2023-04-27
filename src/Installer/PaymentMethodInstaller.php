@@ -52,7 +52,7 @@ use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 
 class PaymentMethodInstaller implements InstallerInterface
 {
-    public const PAYMENT_METHOD_IDS = [
+    final public const PAYMENT_METHOD_IDS = [
         PayoneApplePay::class => '4cbc89a06e544c06b413a41d158f5e00',
         PayoneCreditCard::class => '37f90a48d9194762977c9e6db36334e0',
         PayoneDebit::class => '1b017bef157b4222b734659361d996fd',
@@ -86,9 +86,9 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneSecuredDirectDebit::class => '72c4c88b918441848e20081de67a16c4',
     ];
 
-    public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
+    final public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
 
-    public const PAYMENT_METHODS = [
+    final public const PAYMENT_METHODS = [
         PayoneApplePay::class,
         PayoneCreditCard::class,
         PayoneDebit::class,
@@ -122,7 +122,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneSecuredDirectDebit::class,
     ];
 
-    public const AFTER_ORDER_PAYMENT_METHODS = [
+    final public const AFTER_ORDER_PAYMENT_METHODS = [
         PayoneApplePay::class,
         PayoneCreditCard::class,
         PayoneDebit::class,
@@ -146,15 +146,15 @@ class PaymentMethodInstaller implements InstallerInterface
         PayonePostfinanceWallet::class,
     ];
 
-    private PluginIdProvider $pluginIdProvider;
+    private readonly PluginIdProvider $pluginIdProvider;
 
-    private EntityRepository $paymentMethodRepository;
+    private readonly EntityRepository $paymentMethodRepository;
 
-    private EntityRepository $salesChannelRepository;
+    private readonly EntityRepository $salesChannelRepository;
 
-    private EntityRepository $paymentMethodSalesChannelRepository;
+    private readonly EntityRepository $paymentMethodSalesChannelRepository;
 
-    private Connection $connection;
+    private readonly Connection $connection;
 
     public function __construct(
         PluginIdProvider $pluginIdProvider,
@@ -248,7 +248,7 @@ class PaymentMethodInstaller implements InstallerInterface
             'id' => $paymentMethod->getId(),
             'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
             'pluginId' => $pluginId,
-            'afterOrderEnabled' => \in_array(\get_class($paymentMethod), self::AFTER_ORDER_PAYMENT_METHODS, true),
+            'afterOrderEnabled' => \in_array($paymentMethod::class, self::AFTER_ORDER_PAYMENT_METHODS, true),
         ];
 
         // Find existing payment method by ID for update / install decision

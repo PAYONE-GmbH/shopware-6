@@ -15,7 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class PayonePaymentNotificationTargetDefinition extends EntityDefinition
 {
-    public const ENTITY_NAME = 'payone_payment_notification_target';
+    final public const ENTITY_NAME = 'payone_payment_notification_target';
 
     public function getEntityName(): string
     {

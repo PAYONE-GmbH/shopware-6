@@ -28,20 +28,17 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     protected CartService $cartService;
 
-    protected CurrencyPrecisionInterface $currencyPrecision;
-
     protected NumberRangeValueGeneratorInterface $numberRangeValueGenerator;
 
     protected EntityRepository $orderRepository;
 
     public function __construct(
         CartService $cartService,
-        CurrencyPrecisionInterface $currencyPrecision,
+        protected CurrencyPrecisionInterface $currencyPrecision,
         NumberRangeValueGeneratorInterface $numberRangeValueGenerator,
         EntityRepository $orderRepository
     ) {
         $this->cartService = $cartService;
-        $this->currencyPrecision = $currencyPrecision;
         $this->numberRangeValueGenerator = $numberRangeValueGenerator;
         $this->orderRepository = $orderRepository;
     }
@@ -169,7 +166,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
     {
         $paymentMethod = $requestDataBag->get('paymentMethod', new RequestDataBag());
 
-        return strtoupper(substr($paymentMethod->get('network', '?'), 0, 1));
+        return strtoupper(substr((string) $paymentMethod->get('network', '?'), 0, 1));
     }
 
     private function getReferenceForExistingOrder(?OrderEntity $order): ?string

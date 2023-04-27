@@ -18,7 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class PayonePaymentNotificationForwardDefinition extends EntityDefinition
 {
-    public const ENTITY_NAME = 'payone_payment_notification_forward';
+    final public const ENTITY_NAME = 'payone_payment_notification_forward';
 
     public function getEntityName(): string
     {

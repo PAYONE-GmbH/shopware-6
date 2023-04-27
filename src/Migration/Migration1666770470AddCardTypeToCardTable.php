@@ -11,7 +11,7 @@ class Migration1666770470AddCardTypeToCardTable extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1666770470;
+        return 1_666_770_470;
     }
 
     public function update(Connection $connection): void

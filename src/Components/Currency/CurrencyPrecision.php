@@ -8,7 +8,7 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 
 class CurrencyPrecision implements CurrencyPrecisionInterface
 {
-    public const DEFAULT_ROUNDING_PRECISION = 2;
+    final public const DEFAULT_ROUNDING_PRECISION = 2;
 
     public function getItemRoundingPrecision(CurrencyEntity $currency): int
     {

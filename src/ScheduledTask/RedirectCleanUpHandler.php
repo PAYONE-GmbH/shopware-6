@@ -11,19 +11,12 @@ use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
 
 class RedirectCleanUpHandler extends ScheduledTaskHandler
 {
-    private RedirectHandler $redirectHandler;
-
-    private LoggerInterface $logger;
-
     public function __construct(
         EntityRepository $scheduledTaskRepository,
-        RedirectHandler $redirectHandler,
-        LoggerInterface $logger
+        private readonly RedirectHandler $redirectHandler,
+        private readonly LoggerInterface $logger
     ) {
         parent::__construct($scheduledTaskRepository);
-
-        $this->redirectHandler = $redirectHandler;
-        $this->logger = $logger;
     }
 
     public static function getHandledMessages(): iterable

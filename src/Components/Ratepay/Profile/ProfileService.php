@@ -22,33 +22,24 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ProfileService implements ProfileServiceInterface
 {
-    public const PAYMENT_KEYS = [
+    final public const PAYMENT_KEYS = [
         PayoneRatepayDebitPaymentHandler::class => 'elv',
         PayoneRatepayInstallmentPaymentHandler::class => 'installment',
         PayoneRatepayInvoicingPaymentHandler::class => 'invoice',
     ];
 
-    private PayoneClientInterface $client;
+    private readonly SystemConfigService $systemConfigService;
 
-    private RequestParameterFactory $requestParameterFactory;
-
-    private SystemConfigService $systemConfigService;
-
-    private OrderFetcherInterface $orderFetcher;
-
-    private CartService $cartService;
+    private readonly CartService $cartService;
 
     public function __construct(
-        PayoneClientInterface $client,
-        RequestParameterFactory $requestParameterFactory,
+        private readonly PayoneClientInterface $client,
+        private readonly RequestParameterFactory $requestParameterFactory,
         SystemConfigService $systemConfigService,
-        OrderFetcherInterface $orderFetcher,
+        private readonly OrderFetcherInterface $orderFetcher,
         CartService $cartService
     ) {
-        $this->client = $client;
-        $this->requestParameterFactory = $requestParameterFactory;
         $this->systemConfigService = $systemConfigService;
-        $this->orderFetcher = $orderFetcher;
         $this->cartService = $cartService;
     }
 
@@ -70,19 +61,19 @@ class ProfileService implements ProfileServiceInterface
                 continue;
             }
 
-            $allowedBillingCountries = explode(',', $configuration['country-code-billing']);
+            $allowedBillingCountries = explode(',', (string) $configuration['country-code-billing']);
 
             if (!\in_array($profileSearch->getBillingCountryCode(), $allowedBillingCountries, true)) {
                 continue;
             }
 
-            $allowedDeliveryCountries = explode(',', $configuration['country-code-delivery']);
+            $allowedDeliveryCountries = explode(',', (string) $configuration['country-code-delivery']);
 
             if (!\in_array($profileSearch->getShippingCountryCode(), $allowedDeliveryCountries, true)) {
                 continue;
             }
 
-            $allowedCurrencies = explode(',', $configuration['currency']);
+            $allowedCurrencies = explode(',', (string) $configuration['currency']);
 
             if (!\in_array($profileSearch->getCurrency(), $allowedCurrencies, true)) {
                 continue;

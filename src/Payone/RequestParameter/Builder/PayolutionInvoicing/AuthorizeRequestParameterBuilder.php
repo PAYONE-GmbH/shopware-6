@@ -18,14 +18,8 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestParameterBuilder
 {
-    protected ConfigReaderInterface $configReader;
-
-    protected OrderFetcherInterface $orderFetcher;
-
-    public function __construct(ConfigReaderInterface $configReader, OrderFetcherInterface $orderFetcher)
+    public function __construct(protected ConfigReaderInterface $configReader, protected OrderFetcherInterface $orderFetcher)
     {
-        $this->configReader = $configReader;
-        $this->orderFetcher = $orderFetcher;
     }
 
     /**
@@ -99,7 +93,7 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
             } elseif (method_exists($orderCustomer, 'getVatIds')) {
                 $vatIds = $orderCustomer->getVatIds();
 
-                if ($vatIds !== null && \count($vatIds) > 0) {
+                if ($vatIds !== null && (is_countable($vatIds) ? \count($vatIds) : 0) > 0) {
                     $parameters['add_paydata[company_uid]'] = $vatIds[0];
                 }
             }

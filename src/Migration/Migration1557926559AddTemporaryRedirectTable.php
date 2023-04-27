@@ -11,7 +11,7 @@ class Migration1557926559AddTemporaryRedirectTable extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1557926559;
+        return 1_557_926_559;
     }
 
     public function update(Connection $connection): void

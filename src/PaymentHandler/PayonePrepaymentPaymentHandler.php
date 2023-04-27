@@ -24,29 +24,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    private RequestParameterFactory $requestParameterFactory;
-
-    private PayoneClientInterface $client;
-
-    private TranslatorInterface $translator;
-
-    private TransactionDataHandlerInterface $dataHandler;
+    private readonly TranslatorInterface $translator;
 
     public function __construct(
         ConfigReaderInterface $configReader,
-        RequestParameterFactory $requestParameterFactory,
-        PayoneClientInterface $client,
+        private readonly RequestParameterFactory $requestParameterFactory,
+        private readonly PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
+        private readonly TransactionDataHandlerInterface $dataHandler,
         EntityRepository $lineItemRepository,
         RequestStack $requestStack
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->requestParameterFactory = $requestParameterFactory;
-        $this->client = $client;
         $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
     }
 
     /**
@@ -63,7 +53,7 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
                 $paymentTransaction,
                 $requestData,
                 $salesChannelContext,
-                __CLASS__,
+                self::class,
                 AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE
             )
         );
@@ -75,7 +65,7 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             throw new SyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -115,7 +105,7 @@ class PayonePrepaymentPaymentHandler extends AbstractPayonePaymentHandler implem
             return false;
         }
 
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
 
         $isAppointed = static::isTransactionAppointedAndCompleted($transactionData);
         $isUnderpaid = $txAction === TransactionStatusService::ACTION_UNDERPAID;

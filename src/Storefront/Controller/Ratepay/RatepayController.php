@@ -13,11 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RatepayController extends StorefrontController
 {
-    private InstallmentServiceInterface $installmentService;
-
-    public function __construct(InstallmentServiceInterface $installmentService)
+    public function __construct(private readonly InstallmentServiceInterface $installmentService)
     {
-        $this->installmentService = $installmentService;
     }
 
     /**
@@ -27,7 +24,7 @@ class RatepayController extends StorefrontController
     {
         try {
             $installmentPlan = $this->installmentService->getInstallmentCalculatorData($context, $dataBag);
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             throw new \RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 

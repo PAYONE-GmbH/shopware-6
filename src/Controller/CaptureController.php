@@ -14,11 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CaptureController extends AbstractController
 {
-    private CaptureTransactionHandlerInterface $captureHandler;
-
-    public function __construct(CaptureTransactionHandlerInterface $captureHandler)
+    public function __construct(private readonly CaptureTransactionHandlerInterface $captureHandler)
     {
-        $this->captureHandler = $captureHandler;
     }
 
     /**

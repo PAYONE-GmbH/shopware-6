@@ -18,11 +18,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmSecuredInstallmentEventListener implements EventSubscriberInterface
 {
-    protected InstallmentServiceInterface $installmentService;
-
-    public function __construct(InstallmentServiceInterface $installmentService)
+    public function __construct(protected InstallmentServiceInterface $installmentService)
     {
-        $this->installmentService = $installmentService;
     }
 
     public static function getSubscribedEvents(): array
@@ -64,9 +61,7 @@ class CheckoutConfirmSecuredInstallmentEventListener implements EventSubscriberI
     protected function removePaymentMethods(PaymentMethodCollection $paymentMethods, array $paymentHandler): PaymentMethodCollection
     {
         return $paymentMethods->filter(
-            static function (PaymentMethodEntity $paymentMethod) use ($paymentHandler) {
-                return !\in_array($paymentMethod->getHandlerIdentifier(), $paymentHandler, true);
-            }
+            static fn(PaymentMethodEntity $paymentMethod) => !\in_array($paymentMethod->getHandlerIdentifier(), $paymentHandler, true)
         );
     }
 }

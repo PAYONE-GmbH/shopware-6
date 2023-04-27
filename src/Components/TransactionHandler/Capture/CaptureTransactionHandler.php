@@ -23,13 +23,11 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class CaptureTransactionHandler extends AbstractTransactionHandler implements CaptureTransactionHandlerInterface
 {
-    private TransactionStatusServiceInterface $transactionStatusService;
-
     public function __construct(
         RequestParameterFactory $requestFactory,
         PayoneClientInterface $client,
         TransactionDataHandlerInterface $dataHandler,
-        TransactionStatusServiceInterface $transactionStatusService,
+        private readonly TransactionStatusServiceInterface $transactionStatusService,
         EntityRepository $transactionRepository,
         EntityRepository $lineItemRepository,
         CurrencyPrecisionInterface $currencyPrecision
@@ -37,7 +35,6 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $this->requestFactory = $requestFactory;
         $this->client = $client;
         $this->dataHandler = $dataHandler;
-        $this->transactionStatusService = $transactionStatusService;
         $this->transactionRepository = $transactionRepository;
         $this->lineItemRepository = $lineItemRepository;
         $this->currencyPrecision = $currencyPrecision;

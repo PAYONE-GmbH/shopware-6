@@ -9,11 +9,8 @@ use Psr\Log\LoggerInterface;
 
 class PayoneClient implements PayoneClientInterface
 {
-    private LoggerInterface $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private readonly LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     /**

@@ -18,15 +18,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
 class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParameterBuilder
 {
-    protected CurrencyPrecisionInterface $currencyPrecision;
-
     public function __construct(
         OrderFetcherInterface $orderFetcher,
         ProfileServiceInterface $profileService,
         AbstractDeviceFingerprintService $deviceFingerprintService,
         EntityRepository $customerRepository,
         LineItemHydratorInterface $lineItemHydrator,
-        CurrencyPrecisionInterface $currencyPrecision
+        protected CurrencyPrecisionInterface $currencyPrecision
     ) {
         parent::__construct(
             $orderFetcher,
@@ -35,7 +33,6 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
             $customerRepository,
             $lineItemHydrator
         );
-        $this->currencyPrecision = $currencyPrecision;
     }
 
     /**

@@ -10,11 +10,8 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends AbstractKlarnaParameterBuilder
 {
-    private LineItemHydratorInterface $lineItemHydrator;
-
-    public function __construct(LineItemHydratorInterface $lineItemHydrator)
+    public function __construct(private readonly LineItemHydratorInterface $lineItemHydrator)
     {
-        $this->lineItemHydrator = $lineItemHydrator;
     }
 
     /**

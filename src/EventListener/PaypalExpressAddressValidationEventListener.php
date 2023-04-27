@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints\Optional;
 
 class PaypalExpressAddressValidationEventListener implements EventSubscriberInterface
 {
-    private RequestStack $requestStack;
+    private readonly RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -72,7 +72,7 @@ class PaypalExpressAddressValidationEventListener implements EventSubscriberInte
             return;
         }
 
-        if (\mb_strpos($request->getPathInfo(), '/payone/paypal/redirect-handler') === false) {
+        if (\mb_strpos((string) $request->getPathInfo(), '/payone/paypal/redirect-handler') === false) {
             return;
         }
 
@@ -87,7 +87,7 @@ class PaypalExpressAddressValidationEventListener implements EventSubscriberInte
             return;
         }
 
-        if (\mb_strpos($request->getPathInfo(), '/payone/paypal/redirect-handler') === false) {
+        if (\mb_strpos((string) $request->getPathInfo(), '/payone/paypal/redirect-handler') === false) {
             return;
         }
 

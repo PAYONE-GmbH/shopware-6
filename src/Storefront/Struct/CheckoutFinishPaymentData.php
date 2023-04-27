@@ -9,7 +9,7 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class CheckoutFinishPaymentData extends Struct
 {
-    public const EXTENSION_NAME = 'payone';
+    final public const EXTENSION_NAME = 'payone';
 
     protected ?PayonePaymentMandateEntity $mandate = null;
 

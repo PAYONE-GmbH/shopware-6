@@ -11,7 +11,7 @@ class Migration1637576753FixForeignKeyConstraints extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1637576753;
+        return 1_637_576_753;
     }
 
     public function update(Connection $connection): void

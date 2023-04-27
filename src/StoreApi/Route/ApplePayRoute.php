@@ -22,34 +22,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ApplePayRoute extends AbstractApplePayRoute
 {
-    public const CERT_FOLDER = '/config/apple-pay-cert/';
+    final public const CERT_FOLDER = '/config/apple-pay-cert/';
 
-    private Client $httpClient;
-
-    private LoggerInterface $logger;
-
-    private RequestParameterFactory $requestParameterFactory;
-
-    private PayoneClientInterface $client;
-
-    private ConfigReaderInterface $configReader;
-
-    private string $kernelDirectory;
+    private readonly Client $httpClient;
 
     public function __construct(
         Client $httpClient,
-        LoggerInterface $logger,
-        RequestParameterFactory $requestParameterFactory,
-        PayoneClientInterface $client,
-        ConfigReaderInterface $configReader,
-        string $kernelDirectory
+        private readonly LoggerInterface $logger,
+        private readonly RequestParameterFactory $requestParameterFactory,
+        private readonly PayoneClientInterface $client,
+        private readonly ConfigReaderInterface $configReader,
+        private readonly string $kernelDirectory
     ) {
         $this->httpClient = $httpClient;
-        $this->logger = $logger;
-        $this->requestParameterFactory = $requestParameterFactory;
-        $this->client = $client;
-        $this->configReader = $configReader;
-        $this->kernelDirectory = $kernelDirectory;
     }
 
     public function getDecorated(): AbstractApplePayRoute
@@ -106,7 +91,7 @@ class ApplePayRoute extends AbstractApplePayRoute
         }
 
         return new JsonResponse(
-            json_decode($response->getBody()->getContents(), true),
+            json_decode((string) $response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR),
             $statusCode,
             $response->getHeaders()
         );
@@ -135,7 +120,7 @@ class ApplePayRoute extends AbstractApplePayRoute
 
         try {
             $response = $this->client->request($payoneRequest);
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             return new JsonResponse([], 402);
         }
 

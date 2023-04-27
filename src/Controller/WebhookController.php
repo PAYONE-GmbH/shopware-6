@@ -18,18 +18,15 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class WebhookController extends StorefrontController
 {
-    private WebhookProcessorInterface $webhookProcessor;
+    private readonly EntityRepository $notificationForwardRepository;
 
-    private EntityRepository $notificationForwardRepository;
-
-    private MessageBusInterface $messageBus;
+    private readonly MessageBusInterface $messageBus;
 
     public function __construct(
-        WebhookProcessorInterface $webhookProcessor,
+        private readonly WebhookProcessorInterface $webhookProcessor,
         EntityRepository $notificationForwardRepository,
         MessageBusInterface $messageBus
     ) {
-        $this->webhookProcessor = $webhookProcessor;
         $this->notificationForwardRepository = $notificationForwardRepository;
         $this->messageBus = $messageBus;
     }

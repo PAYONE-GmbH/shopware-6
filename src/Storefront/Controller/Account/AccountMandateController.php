@@ -14,14 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AccountMandateController extends StorefrontController
 {
-    private AccountMandatePageLoader $accountMandatePageLoader;
-
-    private AbstractMandateRoute $mandateRoute;
-
-    public function __construct(AccountMandatePageLoader $accountMandatePageLoader, AbstractMandateRoute $mandateRoute)
+    public function __construct(private readonly AccountMandatePageLoader $accountMandatePageLoader, private readonly AbstractMandateRoute $mandateRoute)
     {
-        $this->accountMandatePageLoader = $accountMandatePageLoader;
-        $this->mandateRoute = $mandateRoute;
     }
 
     /**
@@ -41,7 +35,7 @@ class AccountMandateController extends StorefrontController
     {
         try {
             $response = $this->mandateRoute->getFile($request->get('mandate'), $context);
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             $this->addFlash('danger', $this->trans('PayonePayment.mandatePage.error'));
 
             return $this->forwardToRoute('frontend.account.payone.mandate.page');

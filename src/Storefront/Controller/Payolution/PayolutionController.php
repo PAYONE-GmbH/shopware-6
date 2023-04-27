@@ -35,32 +35,17 @@ class PayolutionController extends StorefrontController
 {
     private const URL = 'https://payment.payolution.com/payolution-payment/infoport/dataprivacydeclaration?mId=';
 
-    private ConfigReaderInterface $configReader;
-
-    private CartService $cartService;
-
-    private CartHasherInterface $cartHasher;
-
-    private PayoneClientInterface $client;
-
-    private RequestParameterFactory $requestParameterFactory;
-
-    private LoggerInterface $logger;
+    private readonly CartService $cartService;
 
     public function __construct(
-        ConfigReaderInterface $configReader,
+        private readonly ConfigReaderInterface $configReader,
         CartService $cartService,
-        CartHasherInterface $cartHasher,
-        PayoneClientInterface $client,
-        RequestParameterFactory $requestParameterFactory,
-        LoggerInterface $logger
+        private readonly CartHasherInterface $cartHasher,
+        private readonly PayoneClientInterface $client,
+        private readonly RequestParameterFactory $requestParameterFactory,
+        private readonly LoggerInterface $logger
     ) {
-        $this->configReader = $configReader;
         $this->cartService = $cartService;
-        $this->cartHasher = $cartHasher;
-        $this->client = $client;
-        $this->requestParameterFactory = $requestParameterFactory;
-        $this->logger = $logger;
     }
 
     /**
@@ -252,16 +237,12 @@ class PayolutionController extends StorefrontController
     {
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
-        switch ($salesChannelContext->getPaymentMethod()->getId()) {
-            case PayonePayolutionInvoicing::UUID:
-                return $configuration->getString('payolutionInvoicingCompanyName');
-            case PayonePayolutionInstallment::UUID:
-                return $configuration->getString('payolutionInstallmentCompanyName');
-            case PayonePayolutionDebit::UUID:
-                return $configuration->getString('payolutionDebitCompanyName');
-            default:
-                return null;
-        }
+        return match ($salesChannelContext->getPaymentMethod()->getId()) {
+            PayonePayolutionInvoicing::UUID => $configuration->getString('payolutionInvoicingCompanyName'),
+            PayonePayolutionInstallment::UUID => $configuration->getString('payolutionInstallmentCompanyName'),
+            PayonePayolutionDebit::UUID => $configuration->getString('payolutionDebitCompanyName'),
+            default => null,
+        };
     }
 
     private function getCreditInformationUrlFromCart(Cart $cart, int $duration): ?string
@@ -289,7 +270,7 @@ class PayolutionController extends StorefrontController
         $data = [];
 
         foreach ($response['addpaydata'] as $key => $value) {
-            $key = str_replace('PaymentDetails_', '', $key);
+            $key = str_replace('PaymentDetails_', '', (string) $key);
             $keys = explode('_', $key);
 
             if (\count($keys) === 4) {

@@ -26,33 +26,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneWeChatPayPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
 {
-    private PayoneClientInterface $client;
-
-    private TranslatorInterface $translator;
-
-    private TransactionDataHandlerInterface $dataHandler;
-
-    private PaymentStateHandlerInterface $stateHandler;
-
-    private RequestParameterFactory $requestParameterFactory;
+    private readonly TranslatorInterface $translator;
 
     public function __construct(
         ConfigReaderInterface $configReader,
         EntityRepository $lineItemRepository,
-        PayoneClientInterface $client,
+        private readonly PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
-        PaymentStateHandlerInterface $stateHandler,
+        private readonly TransactionDataHandlerInterface $dataHandler,
+        private readonly PaymentStateHandlerInterface $stateHandler,
         RequestStack $requestStack,
-        RequestParameterFactory $requestParameterFactory
+        private readonly RequestParameterFactory $requestParameterFactory
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->client = $client;
         $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
-        $this->stateHandler = $stateHandler;
-        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     /**
@@ -76,7 +63,7 @@ class PayoneWeChatPayPaymentHandler extends AbstractPayonePaymentHandler impleme
                 $paymentTransaction,
                 $requestData,
                 $salesChannelContext,
-                __CLASS__,
+                self::class,
                 $authorizationMethod
             )
         );
@@ -88,7 +75,7 @@ class PayoneWeChatPayPaymentHandler extends AbstractPayonePaymentHandler impleme
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -130,7 +117,7 @@ class PayoneWeChatPayPaymentHandler extends AbstractPayonePaymentHandler impleme
             return false;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+        return strtolower((string) $transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 
     /**
@@ -138,10 +125,10 @@ class PayoneWeChatPayPaymentHandler extends AbstractPayonePaymentHandler impleme
      */
     public static function isRefundable(array $transactionData): bool
     {
-        if (strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
+        if (strtolower((string) $transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE && (float) $transactionData['receivable'] !== 0.0) {
             return true;
         }
 
-        return strtolower($transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+        return strtolower((string) $transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 }
