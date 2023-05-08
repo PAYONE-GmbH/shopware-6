@@ -93,7 +93,7 @@ class CardRepository implements CardRepositoryInterface
     {
         $cards = $this->getCards($customer, $context);
 
-        $ids = array_map(static fn($item) => ['id' => $item], array_values($cards->getIds()));
+        $ids = array_map(static fn ($item) => ['id' => $item], array_values($cards->getIds()));
 
         $this->cardRepository->delete($ids, $context);
     }

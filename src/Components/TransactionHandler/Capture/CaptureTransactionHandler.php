@@ -40,9 +40,6 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $this->currencyPrecision = $currencyPrecision;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function capture(ParameterBag $parameterBag, Context $context): JsonResponse
     {
         [$requestResponse, $payoneResponse] = $this->handleRequest($parameterBag, AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE, $context);
@@ -53,7 +50,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
 
         $this->updateTransactionData($parameterBag, (float) $parameterBag->get('amount'));
         $this->updateClearingBankAccountData($payoneResponse);
-        $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
+        $this->saveOrderLineItemData($parameterBag->all('orderLines'), $context);
 
         /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
         $payoneTransactionData = $this->paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);

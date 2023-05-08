@@ -12,15 +12,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class AccountMandateController extends StorefrontController
 {
-    public function __construct(private readonly AccountMandatePageLoader $accountMandatePageLoader, private readonly AbstractMandateRoute $mandateRoute)
-    {
+    public function __construct(
+        private readonly AccountMandatePageLoader $accountMandatePageLoader,
+        private readonly AbstractMandateRoute $mandateRoute
+    ) {
     }
 
-    /**
-     * @Route("/account/mandate/overview", name="frontend.account.payone.mandate.page", options={"seo": "false"}, methods={"GET"}, defaults={"_routeScope"={"storefront"}})
-     */
+    #[Route(path: '/account/mandate/overview', name: 'frontend.account.payone.mandate.page', options: ['seo' => false], methods: ['GET'])]
     public function mandateOverview(Request $request, SalesChannelContext $context): Response
     {
         $page = $this->accountMandatePageLoader->load($request, $context);
@@ -28,9 +29,7 @@ class AccountMandateController extends StorefrontController
         return $this->renderStorefront('@Storefront/storefront/payone/account/mandate.html.twig', ['page' => $page]);
     }
 
-    /**
-     * @Route("/account/mandate/download", name="frontend.account.payone.mandate.download", options={"seo": "false"}, methods={"GET"}, defaults={"_routeScope"={"storefront"}})
-     */
+    #[Route(path: '/account/mandate/download', name: 'frontend.account.payone.mandate.download', options: ['seo' => false], methods: ['GET'])]
     public function downloadMandate(Request $request, SalesChannelContext $context): Response
     {
         try {

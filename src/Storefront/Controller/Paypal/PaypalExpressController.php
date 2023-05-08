@@ -37,50 +37,25 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class PaypalExpressController extends StorefrontController
 {
-    private readonly CartService $cartService;
-
-    private readonly AbstractRegisterRoute $registerRoute;
-
-    private readonly AccountService $accountService;
-
-    private readonly AbstractSalesChannelContextFactory $salesChannelContextFactory;
-
-    private readonly EntityRepository $salutationRepository;
-
-    private readonly EntityRepository $countryRepository;
-
-    private readonly SalesChannelContextSwitcher $salesChannelContextSwitcher;
-
-    private readonly RouterInterface $router;
-
     public function __construct(
         private readonly PayoneClientInterface $client,
-        CartService $cartService,
-        AbstractRegisterRoute $registerRoute,
-        AccountService $accountService,
-        AbstractSalesChannelContextFactory $salesChannelContextFactory,
-        EntityRepository $salutationRepository,
-        EntityRepository $countryRepository,
-        SalesChannelContextSwitcher $salesChannelContextSwitcher,
+        private readonly CartService $cartService,
+        private readonly AbstractRegisterRoute $registerRoute,
+        private readonly AccountService $accountService,
+        private readonly AbstractSalesChannelContextFactory $salesChannelContextFactory,
+        private readonly EntityRepository $salutationRepository,
+        private readonly EntityRepository $countryRepository,
+        private readonly SalesChannelContextSwitcher $salesChannelContextSwitcher,
         private readonly CartHasherInterface $cartHasher,
-        RouterInterface $router,
+        private readonly RouterInterface $router,
         private readonly RequestParameterFactory $requestParameterFactory
     ) {
-        $this->cartService = $cartService;
-        $this->registerRoute = $registerRoute;
-        $this->accountService = $accountService;
-        $this->salesChannelContextFactory = $salesChannelContextFactory;
-        $this->salutationRepository = $salutationRepository;
-        $this->countryRepository = $countryRepository;
-        $this->salesChannelContextSwitcher = $salesChannelContextSwitcher;
-        $this->router = $router;
     }
 
-    /**
-     * @Route("/payone/paypal/express-checkout", name="frontend.account.payone.paypal.express-checkout", options={"seo": "false"}, methods={"GET"}, defaults={"_routeScope"={"storefront"}})
-     */
+    #[Route(path: '/payone/paypal/express-checkout', name: 'frontend.account.payone.paypal.express-checkout', options: ['seo' => false], methods: ['GET'])]
     public function express(SalesChannelContext $context): Response
     {
         $cart = $this->cartService->getCart($context->getToken(), $context);
@@ -113,14 +88,12 @@ class PaypalExpressController extends StorefrontController
             throw new \RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
-        $this->addCartExtenson($cart, $context, $response['workorderid']);
+        $this->addCartExtension($cart, $context, $response['workorderid']);
 
         return new RedirectResponse($response['redirecturl']);
     }
 
-    /**
-     * @Route("/payone/paypal/redirect-handler", name="frontend.account.payone.paypal.express-checkout-handler", options={"seo": "false"}, methods={"GET"}, defaults={"_routeScope"={"storefront"}})
-     */
+    #[Route(path: '/payone/paypal/redirect-handler', name: 'frontend.account.payone.paypal.express-checkout-handler', options: ['seo' => false], methods: ['GET'])]
     public function redirectHandler(SalesChannelContext $context, Request $request): Response
     {
         try {
@@ -179,12 +152,12 @@ class PaypalExpressController extends StorefrontController
         $this->salesChannelContextSwitcher->update($salesChannelDataBag, $context);
 
         $cart = $this->cartService->getCart($newContext->getToken(), $context);
-        $this->addCartExtenson($cart, $newContext, $response['workorderid']);
+        $this->addCartExtension($cart, $newContext, $response['workorderid']);
 
         return $this->redirectToRoute('frontend.checkout.confirm.page');
     }
 
-    protected function addCartExtenson(
+    protected function addCartExtension(
         Cart $cart,
         SalesChannelContext $context,
         string $workOrderId

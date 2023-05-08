@@ -59,7 +59,7 @@ class KernelEventListener implements EventSubscriberInterface
         $data = [];
 
         if ($response->getContent()) {
-            $data = json_decode((string) $response->getContent(), true, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode((string) $response->getContent(), true, 512, \JSON_THROW_ON_ERROR);
         }
 
         $data['payoneRatepayProfilesUpdateResult'] = [];

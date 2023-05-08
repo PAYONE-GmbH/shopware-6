@@ -21,17 +21,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class StorefrontRenderEventListener implements EventSubscriberInterface
 {
-    private readonly SalesChannelRepository $paymentMethodRepository;
-
-    private readonly EntityRepository $salesChannelRepository;
-
     public function __construct(
         private readonly CacheItemPoolInterface $cachePool,
-        SalesChannelRepository $repository,
-        EntityRepository $salesChannelRepository
+        private readonly SalesChannelRepository $paymentMethodRepository,
+        private readonly EntityRepository $salesChannelRepository
     ) {
-        $this->paymentMethodRepository = $repository;
-        $this->salesChannelRepository = $salesChannelRepository;
     }
 
     public static function getSubscribedEvents(): array

@@ -18,31 +18,20 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class WebhookController extends StorefrontController
 {
-    private readonly EntityRepository $notificationForwardRepository;
-
-    private readonly MessageBusInterface $messageBus;
-
     public function __construct(
         private readonly WebhookProcessorInterface $webhookProcessor,
-        EntityRepository $notificationForwardRepository,
-        MessageBusInterface $messageBus
+        private readonly EntityRepository $notificationForwardRepository,
+        private readonly MessageBusInterface $messageBus
     ) {
-        $this->notificationForwardRepository = $notificationForwardRepository;
-        $this->messageBus = $messageBus;
     }
 
-    /**
-     * @Route("/payone/webhook", name="payone_webhook", defaults={"csrf_protected": false, "_routeScope"={"storefront"}}, methods={"POST"})
-     */
+    #[Route(path: '/payone/webhook', name: 'payone_webhook', defaults: ['_routeScope' => ['storefront']], methods: ['POST'])]
     public function execute(Request $request, SalesChannelContext $salesChannelContext): Response
     {
         return $this->webhookProcessor->process($salesChannelContext, $request);
     }
 
-    /**
-     * @Route("/api/_action/payone/requeue-forward", name="api.action.payone.requeue.forward", methods={"POST"}, defaults={"_routeScope"={"api"}})
-     * @Route("/api/v{version}/_action/payone/requeue-forward", name="api.action.payone.requeue.forward.legacy", methods={"POST"}, defaults={"_routeScope"={"api"}})
-     */
+    #[Route(path: '/api/_action/payone/requeue-forward', name: 'api.action.payone.requeue.forward', defaults: ['_routeScope' => ['api']], methods: ['POST'])]
     public function reQueueForward(Request $request, Context $context): Response
     {
         $id = $request->get('notificationForwardId');

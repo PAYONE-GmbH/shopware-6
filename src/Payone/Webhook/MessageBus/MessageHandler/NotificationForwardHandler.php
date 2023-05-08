@@ -16,11 +16,10 @@ use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
 class NotificationForwardHandler implements MessageSubscriberInterface
 {
-    private readonly EntityRepository $notificationForwardRepository;
-
-    public function __construct(EntityRepository $notificationForwardRepository, private readonly LoggerInterface $logger)
-    {
-        $this->notificationForwardRepository = $notificationForwardRepository;
+    public function __construct(
+        private readonly EntityRepository $notificationForwardRepository,
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     public function __invoke(NotificationForwardCommand $message): void

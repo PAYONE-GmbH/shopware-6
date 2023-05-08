@@ -10,7 +10,6 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
-use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmPaypalExpressEventListener implements EventSubscriberInterface
@@ -24,11 +23,9 @@ class CheckoutConfirmPaypalExpressEventListener implements EventSubscriberInterf
         ];
     }
 
-    /**
-     * @param AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
-     */
-    public function hideInternalPaymentMethods(PageLoadedEvent $event): void
-    {
+    public function hideInternalPaymentMethods(
+        AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
+    ): void {
         $page = $event->getPage();
 
         if ($event instanceof AccountEditOrderPageLoadedEvent) {

@@ -18,18 +18,7 @@ class Migration1666770470AddCardTypeToCardTable extends MigrationStep
     {
         $sql = 'ALTER TABLE `payone_payment_card` ADD `card_type` VARCHAR(255) NOT NULL;';
 
-        /** @phpstan-ignore-next-line */
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-
-            return;
-        }
-
-        /** @phpstan-ignore-next-line */
-        if (method_exists($connection, 'exec')) {
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void

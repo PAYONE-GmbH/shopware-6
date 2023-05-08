@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Framework\Context;
@@ -39,17 +40,11 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     final public const PAYONE_FINANCING_RPS = 'RPS';
     final public const PAYONE_FINANCING_RPD = 'RPD';
 
-    protected EntityRepository $lineItemRepository;
-
-    protected RequestStack $requestStack;
-
     public function __construct(
         protected ConfigReaderInterface $configReader,
-        EntityRepository $lineItemRepository,
-        RequestStack $requestStack
+        protected EntityRepository $lineItemRepository,
+        protected RequestStack $requestStack
     ) {
-        $this->lineItemRepository = $lineItemRepository;
-        $this->requestStack = $requestStack;
     }
 
     public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
@@ -209,17 +204,6 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         $this->lineItemRepository->update($saveData, $context);
     }
 
-    protected function fetchRequestData(): RequestDataBag
-    {
-        $request = $this->requestStack->getCurrentRequest();
-
-        if ($request === null) {
-            throw new \LogicException('missing current request');
-        }
-
-        return new RequestDataBag($request->request->all());
-    }
-
     protected function getMinimumDate(): \DateTimeInterface
     {
         return (new \DateTime())->modify('-18 years')->setTime(0, 0);
@@ -240,5 +224,33 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         }
 
         return !empty($billingAddress->getCompany());
+    }
+
+    final protected function getConfigKeyPrefix(): string
+    {
+        return ConfigurationPrefixes::CONFIGURATION_PREFIXES[static::class];
+    }
+
+    /**
+     * Define this method to return either AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
+     * or AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE that should be used as default authorization
+     * method if it is not configured by shop owner.
+     */
+    abstract protected function getDefaultAuthorizationMethod(): string;
+
+    /**
+     * Override this method to validate the posted data. Throw a PayoneRequestException if validation fails!
+     */
+    protected function validateRequestData(RequestDataBag $dataBag): void
+    {
+    }
+
+    /**
+     * Override this method to define additional transaction data that should be saved to the transaction
+     * data extension
+     */
+    protected function getAdditionalTransactionData(RequestDataBag $dataBag, array $request, array $response): array
+    {
+        return [];
     }
 }

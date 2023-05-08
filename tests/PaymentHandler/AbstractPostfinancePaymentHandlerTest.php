@@ -72,11 +72,11 @@ abstract class AbstractPostfinancePaymentHandlerTest extends AbstractPaymentHand
         return new $className(
             $container->get(ConfigReader::class),
             $this->createMock(EntityRepository::class),
+            $container->get(RequestStack::class),
             $client,
             $container->get('translator'),
             $dataHandler ?? $this->createMock(TransactionDataHandlerInterface::class),
             $container->get(PaymentStateHandler::class),
-            $container->get(RequestStack::class),
             $requestFactory
         );
     }

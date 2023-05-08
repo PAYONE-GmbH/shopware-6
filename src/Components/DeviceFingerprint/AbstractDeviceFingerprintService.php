@@ -6,7 +6,9 @@ namespace PayonePayment\Components\DeviceFingerprint;
 
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class AbstractDeviceFingerprintService
 {
@@ -26,13 +28,13 @@ abstract class AbstractDeviceFingerprintService
 
     public function getDeviceIdentToken(SalesChannelContext $salesChannelContext): string
     {
-        $sessionValue = $this->requestStack->getSession()->get($this->getSessionVarName());
+        $sessionValue = $this->getSession()?->get($this->getSessionVarName());
 
         if ($sessionValue) {
             $token = $sessionValue;
         } else {
             $token = $this->buildDeviceIdentToken($salesChannelContext);
-            $this->requestStack->getSession()->set($this->getSessionVarName(), $token);
+            $this->getSession()?->set($this->getSessionVarName(), $token);
         }
 
         return $token;
@@ -40,15 +42,24 @@ abstract class AbstractDeviceFingerprintService
 
     public function isDeviceIdentTokenAlreadyGenerated(): bool
     {
-        return $this->requestStack->getSession()->get($this->getSessionVarName()) !== null;
+        return $this->getSession()?->get($this->getSessionVarName()) !== null;
     }
 
     public function deleteDeviceIdentToken(): void
     {
-        $this->requestStack->getSession()->remove($this->getSessionVarName());
+        $this->getSession()?->remove($this->getSessionVarName());
     }
 
     abstract protected function getSessionVarName(): string;
 
     abstract protected function buildDeviceIdentToken(SalesChannelContext $salesChannelContext): string;
+
+    protected function getSession(): ?SessionInterface
+    {
+        try {
+            return $this->requestStack->getSession();
+        } catch (SessionNotFoundException) {
+            return null;
+        }
+    }
 }

@@ -8,13 +8,13 @@ use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\StoreApi\Response\MandateResponse;
 use Shopware\Core\Checkout\Cart\CartException;
 use Shopware\Core\Framework\Plugin\Exception\DecorationPatternException;
-use Shopware\Core\Framework\Routing\Annotation\Entity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(defaults: ['_routeScope' => ['store-api']])]
 class MandateRoute extends AbstractMandateRoute
 {
     public function __construct(private readonly MandateServiceInterface $mandateService)
@@ -26,10 +26,7 @@ class MandateRoute extends AbstractMandateRoute
         throw new DecorationPatternException(self::class);
     }
 
-    /**
-     * @Entity("payone_payment_mandate")
-     * @Route("/store-api/payone/account/mandate", name="store-api.payone.account.mandate", methods={"GET"}, defaults={"_routeScope"={"store-api"}, "_contextTokenRequired"=true})
-     */
+    #[Route(path: '/store-api/payone/account/mandate', name: 'store-api.payone.account.mandate', defaults: ['_contextTokenRequired' => true, '_entity' => 'payone_payment_mandate'], methods: ['GET'])]
     public function load(SalesChannelContext $context): MandateResponse
     {
         $customer = $context->getCustomer();
@@ -43,10 +40,7 @@ class MandateRoute extends AbstractMandateRoute
         return new MandateResponse($result);
     }
 
-    /**
-     * @Entity("payone_payment_mandate")
-     * @Route("/store-api/payone/account/mandate/{mandateId}", name="store-api.payone.account.mandate.file", methods={"GET"}, defaults={"_routeScope"={"store-api"}, "_contextTokenRequired"=true})
-     */
+    #[Route(path: '/store-api/payone/account/mandate/{mandateId}', name: 'store-api.payone.account.mandate.file', defaults: ['_contextTokenRequired' => true, '_entity' => 'payone_payment_mandate'], methods: ['GET'])]
     public function getFile(string $mandateId, SalesChannelContext $context): Response
     {
         if ($context->getCustomer() === null) {

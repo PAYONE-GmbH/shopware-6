@@ -21,16 +21,13 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    protected EntityRepository $customerRepository;
-
     public function __construct(
         protected OrderFetcherInterface $orderFetcher,
         protected ProfileServiceInterface $profileService,
         protected AbstractDeviceFingerprintService $deviceFingerprintService,
-        EntityRepository $customerRepository,
+        protected EntityRepository $customerRepository,
         protected LineItemHydratorInterface $lineItemHydrator
     ) {
-        $this->customerRepository = $customerRepository;
     }
 
     /**

@@ -17,23 +17,14 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class FilteredPaymentMethodRoute extends AbstractPaymentMethodRoute
 {
-    private readonly AbstractPaymentMethodRoute $decorated;
-
-    private readonly RequestStack $requestStack;
-
-    private readonly CartService $cartService;
-
     public function __construct(
-        AbstractPaymentMethodRoute $decorated,
+        private readonly AbstractPaymentMethodRoute $decorated,
         private readonly IterablePaymentFilter $iterablePaymentFilter,
-        RequestStack $requestStack,
+        private readonly RequestStack $requestStack,
         private readonly OrderFetcherInterface $orderFetcher,
-        CartService $cartService,
+        private readonly CartService $cartService,
         private readonly PaymentFilterContextFactoryInterface $paymentFilterContextFactory
     ) {
-        $this->decorated = $decorated;
-        $this->requestStack = $requestStack;
-        $this->cartService = $cartService;
     }
 
     public function getDecorated(): AbstractPaymentMethodRoute

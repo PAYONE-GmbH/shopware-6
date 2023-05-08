@@ -17,11 +17,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class TransactionDataHandler implements TransactionDataHandlerInterface
 {
-    private readonly EntityRepository $transactionRepository;
-
-    public function __construct(EntityRepository $transactionRepository, private readonly CurrencyPrecisionInterface $currencyPrecision)
-    {
-        $this->transactionRepository = $transactionRepository;
+    public function __construct(
+        private readonly EntityRepository $transactionRepository,
+        private readonly CurrencyPrecisionInterface $currencyPrecision
+    ) {
     }
 
     public function getPaymentTransactionByPayoneTransactionId(Context $context, int $payoneTransactionId): ?PaymentTransaction
@@ -236,7 +235,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             return 0;
         }
 
-        if (!empty($payoneTransactionData->getCapturedAmount())) {
+        if ($payoneTransactionData->getCapturedAmount() !== null) {
             $currentCapturedAmount = $payoneTransactionData->getCapturedAmount();
         }
 

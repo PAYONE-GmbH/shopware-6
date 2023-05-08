@@ -1,7 +1,7 @@
 {% block payone_payment_management %}
     <div class="payone-payment-management">
         <template v-for="(transaction, index) in payoneTransactions">
-            <sw-card class="payone-payment-management-card" :title="index === 0 ? $tc('sw-order.payone-payment.title') : ''">
+            <sw-card class="payone-payment-management-card" position-identifier="payone-payment-management-card" :title="index === 0 ? $tc('sw-order.payone-payment.title') : ''">
                 <sw-container columns="1fr 1fr">
                     <sw-container>
                         <sw-description-list>
