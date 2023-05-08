@@ -18,21 +18,12 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class NotificationForwardHandler implements WebhookHandlerInterface
 {
-    private readonly EntityRepository $notificationTargetRepository;
-
-    private readonly EntityRepository $notificationForwardRepository;
-
-    private readonly MessageBusInterface $messageBus;
-
     public function __construct(
-        EntityRepository $notificationTargetRepository,
-        EntityRepository $notificationForwardRepository,
+        private readonly EntityRepository $notificationTargetRepository,
+        private readonly EntityRepository $notificationForwardRepository,
         private readonly TransactionDataHandlerInterface $transactionDataHandler,
-        MessageBusInterface $messageBus
+        private readonly MessageBusInterface $messageBus
     ) {
-        $this->notificationTargetRepository = $notificationTargetRepository;
-        $this->notificationForwardRepository = $notificationForwardRepository;
-        $this->messageBus = $messageBus;
     }
 
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool
@@ -44,9 +35,6 @@ class NotificationForwardHandler implements WebhookHandlerInterface
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(SalesChannelContext $salesChannelContext, Request $request): void
     {
         $data = $request->request->all();
@@ -74,13 +62,14 @@ class NotificationForwardHandler implements WebhookHandlerInterface
         string $paymentTransactionId,
         SalesChannelContext $salesChannelContext
     ): array {
+        /** @var array $data this annotation is required for rector */
         $data = $request->request->all();
         $notificationForwards = [];
 
         foreach ($notificationTargets as $target) {
             $notificationForwards[] = [
                 'id' => Uuid::randomHex(),
-                'content' => serialize(mb_convert_encoding((string) $data, 'UTF-8', 'ISO-8859-1')),
+                'content' => serialize(mb_convert_encoding($data, 'UTF-8', 'ISO-8859-1')),
                 'notificationTargetId' => $target->getId(),
                 'transactionId' => $paymentTransactionId,
                 'ip' => $request->getClientIp(),
@@ -123,10 +112,6 @@ class NotificationForwardHandler implements WebhookHandlerInterface
             $txid
         );
 
-        if ($paymentTransaction === null) {
-            return null;
-        }
-
-        return $paymentTransaction->getOrderTransaction()->getId();
+        return $paymentTransaction?->getOrderTransaction()->getId();
     }
 }

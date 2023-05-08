@@ -59,13 +59,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
         try {
             $connection->beginTransaction();
 
-            /** @phpstan-ignore-next-line */
-            if (method_exists($connection, 'executeStatement')) {
-                $connection->executeStatement($sql);
-            } elseif (method_exists($connection, 'exec')) {
-                /** @noinspection PhpDeprecationInspection */
-                $connection->exec($sql);
-            }
+            $connection->executeStatement($sql);
 
             $connection->commit();
         } catch (\Throwable) {
@@ -101,13 +95,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
         try {
             $connection->beginTransaction();
 
-            /** @phpstan-ignore-next-line */
-            if (method_exists($connection, 'executeStatement')) {
-                $connection->executeStatement($sql);
-            } elseif (method_exists($connection, 'exec')) {
-                /** @noinspection PhpDeprecationInspection */
-                $connection->exec($sql);
-            }
+            $connection->executeStatement($sql);
 
             $connection->commit();
         } catch (\Throwable) {

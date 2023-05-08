@@ -40,9 +40,6 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         $this->currencyPrecision = $currencyPrecision;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function refund(ParameterBag $parameterBag, Context $context): JsonResponse
     {
         [$requestResponse,] = $this->handleRequest($parameterBag, AbstractRequestParameterBuilder::REQUEST_ACTION_REFUND, $context);
@@ -52,7 +49,7 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         }
 
         $this->updateTransactionData($parameterBag, (float) $parameterBag->get('amount'));
-        $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
+        $this->saveOrderLineItemData($parameterBag->all('orderLines'), $context);
 
         $transitionName = StateMachineTransitionActions::ACTION_REFUND_PARTIALLY;
 

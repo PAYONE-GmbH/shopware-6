@@ -48,24 +48,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    private readonly EntityRepository $languageRepository;
-
-    private readonly RequestStack $requestStack;
-
-    private readonly EntityRepository $salutationRepository;
-
-    private readonly EntityRepository $countryRepository;
-
     public function __construct(
-        EntityRepository $languageRepository,
-        EntityRepository $salutationRepository,
-        EntityRepository $countryRepository,
-        RequestStack $requestStack
+        private readonly EntityRepository $languageRepository,
+        private readonly EntityRepository $salutationRepository,
+        private readonly EntityRepository $countryRepository,
+        private readonly RequestStack $requestStack
     ) {
-        $this->languageRepository = $languageRepository;
-        $this->salutationRepository = $salutationRepository;
-        $this->countryRepository = $countryRepository;
-        $this->requestStack = $requestStack;
     }
 
     /**

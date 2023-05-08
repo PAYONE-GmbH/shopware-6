@@ -28,11 +28,9 @@ class CheckoutConfirmEpsEventListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
-     */
-    public function hideEpsForNonAtCustomers($event): void
-    {
+    public function hideEpsForNonAtCustomers(
+        AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
+    ): void {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
         if (
@@ -79,7 +77,7 @@ class CheckoutConfirmEpsEventListener implements EventSubscriberInterface
     private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection
     {
         return $paymentMethods->filter(
-            static fn(PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId
+            static fn (PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId
         );
     }
 }

@@ -25,19 +25,14 @@ class CustomFieldInstaller implements InstallerInterface
     final public const FIELDSET_ID_PAYMENT_METHOD = 'ed39626e94fd4dfe9d81976fdbcdb06c';
     final public const FIELDSET_ID_CUSTOMER = '8e4a0b8f7eb04272ad874f3b22cf4935';
 
-    private readonly EntityRepository $customFieldRepository;
-
-    private readonly EntityRepository $customFieldSetRepository;
-
     private readonly array $customFields;
 
     private readonly array $customFieldSets;
 
-    public function __construct(EntityRepository $customFieldSetRepository, EntityRepository $customFieldRepository)
-    {
-        $this->customFieldSetRepository = $customFieldSetRepository;
-        $this->customFieldRepository = $customFieldRepository;
-
+    public function __construct(
+        private readonly EntityRepository $customFieldSetRepository,
+        private readonly EntityRepository $customFieldRepository
+    ) {
         $this->customFieldSets = [
             [
                 'id' => self::FIELDSET_ID_PAYMENT_METHOD,

@@ -11,15 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class RedirectController
 {
     public function __construct(private readonly RedirectHandler $redirectHandler)
     {
     }
 
-    /**
-     * @Route("/payone/redirect", name="payment.payone_redirect", defaults={"csrf_protected": false, "_routeScope"={"storefront"}})
-     */
+    #[Route(path: '/payone/redirect', name: 'payment.payone_redirect')]
     public function execute(Request $request): Response
     {
         $hash = $request->get('hash');

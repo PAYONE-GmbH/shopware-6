@@ -15,15 +15,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class ManageMandateController extends StorefrontController
 {
-    public function __construct(private readonly RequestParameterFactory $requestFactory, private readonly PayoneClientInterface $client)
-    {
+    public function __construct(
+        private readonly RequestParameterFactory $requestFactory,
+        private readonly PayoneClientInterface $client
+    ) {
     }
 
-    /**
-     * @Route("/payone/debit/manage-mandate", name="frontend.payone.debit.manage-mandate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true, "_routeScope"={"storefront"}})
-     */
+    #[Route(path: '/payone/debit/manage-mandate', name: 'frontend.payone.debit.manage-mandate', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
     public function mandateOverview(Request $request, SalesChannelContext $context): JsonResponse
     {
         $payoneRequest = $this->requestFactory->getRequestParameter(

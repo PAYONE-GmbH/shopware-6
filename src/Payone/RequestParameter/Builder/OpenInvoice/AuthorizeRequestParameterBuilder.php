@@ -13,11 +13,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    protected EntityRepository $currencyRepository;
-
-    public function __construct(protected LineItemHydratorInterface $lineItemHydrator, EntityRepository $currencyRepository)
-    {
-        $this->currencyRepository = $currencyRepository;
+    public function __construct(
+        protected LineItemHydratorInterface $lineItemHydrator,
+        protected EntityRepository $currencyRepository
+    ) {
     }
 
     /**

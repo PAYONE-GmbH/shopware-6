@@ -7,60 +7,41 @@ namespace PayonePayment\Components\CartHasher;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\Exception\InvalidCartHashException;
 use Shopware\Core\Checkout\Cart\Cart;
+use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 
 class CartHasher implements CartHasherInterface
 {
-    private const VALID_TYPES = [
-        Cart::class,
-        OrderEntity::class,
-    ];
-
-    public function __construct(private readonly CurrencyPrecisionInterface $currencyPrecision, private readonly string $appSecret = '')
-    {
+    public function __construct(
+        private readonly CurrencyPrecisionInterface $currencyPrecision,
+        private readonly string $appSecret = ''
+    ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function generate(Struct $entity, SalesChannelContext $context): string
+    public function generate(Cart|OrderEntity $entity, SalesChannelContext $context): string
     {
-        if (!\in_array($entity::class, self::VALID_TYPES, true)) {
-            throw new \LogicException('unsupported struct type during hash creation or validation');
-        }
-
         $hashData = $this->getHashData($entity, $context);
 
         return $this->generateHash($hashData);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function validate(Struct $entity, string $cartHash, SalesChannelContext $context): bool
+    public function validate(Cart|OrderEntity $entity, string $cartHash, SalesChannelContext $context): bool
     {
-        if (!\in_array($entity::class, self::VALID_TYPES, true)) {
-            throw new \LogicException('unsupported struct type during hash creation or validation');
-        }
         $hashData = $this->getHashData($entity, $context);
         $expected = $this->generateHash($hashData);
 
         return hash_equals($expected, $cartHash);
     }
 
-    /**
-     * @param AsyncPaymentTransactionStruct|SyncPaymentTransactionStruct $paymentTransaction
-     */
     public function validateRequest(
         RequestDataBag $requestDataBag,
-        $paymentTransaction,
+        AsyncPaymentTransactionStruct|SyncPaymentTransactionStruct $paymentTransaction,
         SalesChannelContext $salesChannelContext,
         ?string $exceptionClass = null
     ): void {
@@ -87,16 +68,9 @@ class CartHasher implements CartHasherInterface
         return $criteria;
     }
 
-    /**
-     * @param Cart|OrderEntity $entity
-     */
-    private function getHashData(Struct $entity, SalesChannelContext $context): array
+    private function getHashData(Cart|OrderEntity $entity, SalesChannelContext $context): array
     {
         $hashData = [];
-
-        if (!method_exists($entity, 'getLineItems')) {
-            return $hashData;
-        }
 
         $hashData['items'] = [];
         if ($entity->getLineItems() !== null) {
@@ -104,7 +78,7 @@ class CartHasher implements CartHasherInterface
                 try {
                     if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector')
                         && $lineItem->getType() === CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE
-                        && (!method_exists($lineItem, 'getParentId') || $lineItem->getParentId() === null)) {
+                        && (($lineItem instanceof LineItem) || $lineItem->getParentId() === null)) {
                         continue;
                     }
                 } catch (\Exception) {
@@ -121,7 +95,7 @@ class CartHasher implements CartHasherInterface
                     $detail['price'] = $this->currencyPrecision->getRoundedItemAmount($lineItem->getPrice()->getTotalPrice(), $context->getCurrency());
                 }
 
-                $hashData['items'][] = md5((string) json_encode($detail, JSON_THROW_ON_ERROR));
+                $hashData['items'][] = md5((string) json_encode($detail, \JSON_THROW_ON_ERROR));
             }
         }
 
@@ -168,7 +142,7 @@ class CartHasher implements CartHasherInterface
 
     private function generateHash(array $hashData): string
     {
-        $json = json_encode($hashData, \JSON_PRESERVE_ZERO_FRACTION);
+        $json = json_encode($hashData, \JSON_PRESERVE_ZERO_FRACTION | \JSON_THROW_ON_ERROR);
 
         if (empty($json)) {
             throw new \LogicException('could not generate hash');

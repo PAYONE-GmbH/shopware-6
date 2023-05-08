@@ -38,7 +38,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
         $paymentTransaction = $arguments->getPaymentTransaction();
         $currency = $paymentTransaction->getOrder()->getCurrency();
         $requestData = $arguments->getRequestData();
-        $orderLines = $requestData->get('orderLines', []);
+        $orderLines = $requestData->all('orderLines');
         $isCompleted = $requestData->get('complete', false);
         $includeShippingCosts = $requestData->get('includeShippingCosts', false);
 

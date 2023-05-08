@@ -1,12 +1,11 @@
 import deDE from './snippet/de_DE.json';
 import enGB from './snippet/en_GB.json';
+import './filter/payone_currency.filter';
 
 Shopware.Component.register('payone-payment-plugin-icon', () => import('./component/payone-payment-plugin-icon'));
 Shopware.Component.register('payone-ratepay-profile-configurations', () => import('./component/payone-ratepay-profile-configurations'));
 Shopware.Component.register('payone-ratepay-profiles', () => import('./component/payone-ratepay-profiles'));
 Shopware.Component.register('payone-settings', () => import('./page/payone-settings'));
-
-Shopware.Filter.register('payone_currency', () => import('./filter/payone_currency.filter'));
 
 Shopware.Module.register('payone-payment', {
     type: 'plugin',

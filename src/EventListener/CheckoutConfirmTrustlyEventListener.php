@@ -42,11 +42,9 @@ class CheckoutConfirmTrustlyEventListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
-     */
-    public function hideTrustlyForDisallowedCountryCustomers($event): void
-    {
+    public function hideTrustlyForDisallowedCountryCustomers(
+        AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
+    ): void {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
         if (
@@ -92,7 +90,7 @@ class CheckoutConfirmTrustlyEventListener implements EventSubscriberInterface
     private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection
     {
         return $paymentMethods->filter(
-            static fn(PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId
+            static fn (PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId
         );
     }
 }

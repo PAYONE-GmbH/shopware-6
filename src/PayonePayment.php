@@ -34,20 +34,20 @@ class PayonePayment extends Plugin
         parent::build($container);
     }
 
-    public function install(InstallContext $context): void
+    public function install(InstallContext $installContext): void
     {
-        $this->getConfigInstaller()->install($context);
-        $this->getCustomFieldInstaller()->install($context);
-        $this->getPaymentMethodInstaller()->install($context);
-        $this->getRuleInstallerSecureInvoice()->install($context);
+        $this->getConfigInstaller()->install($installContext);
+        $this->getCustomFieldInstaller()->install($installContext);
+        $this->getPaymentMethodInstaller()->install($installContext);
+        $this->getRuleInstallerSecureInvoice()->install($installContext);
     }
 
-    public function update(UpdateContext $context): void
+    public function update(UpdateContext $updateContext): void
     {
-        $this->getConfigInstaller()->update($context);
-        $this->getCustomFieldInstaller()->update($context);
-        $this->getPaymentMethodInstaller()->update($context);
-        $this->getRuleInstallerSecureInvoice()->update($context);
+        $this->getConfigInstaller()->update($updateContext);
+        $this->getCustomFieldInstaller()->update($updateContext);
+        $this->getPaymentMethodInstaller()->update($updateContext);
+        $this->getRuleInstallerSecureInvoice()->update($updateContext);
     }
 
     public function postUpdate(UpdateContext $updateContext): void
@@ -55,61 +55,42 @@ class PayonePayment extends Plugin
         $this->getCustomFieldInstaller()->cleanup($updateContext);
     }
 
-    public function activate(ActivateContext $context): void
+    public function activate(ActivateContext $activateContext): void
     {
-        $this->getConfigInstaller()->activate($context);
-        $this->getCustomFieldInstaller()->activate($context);
-        $this->getPaymentMethodInstaller()->activate($context);
-        $this->getRuleInstallerSecureInvoice()->activate($context);
+        $this->getConfigInstaller()->activate($activateContext);
+        $this->getCustomFieldInstaller()->activate($activateContext);
+        $this->getPaymentMethodInstaller()->activate($activateContext);
+        $this->getRuleInstallerSecureInvoice()->activate($activateContext);
     }
 
-    public function deactivate(DeactivateContext $context): void
+    public function deactivate(DeactivateContext $deactivateContext): void
     {
-        $this->getConfigInstaller()->deactivate($context);
-        $this->getCustomFieldInstaller()->deactivate($context);
-        $this->getPaymentMethodInstaller()->deactivate($context);
-        $this->getRuleInstallerSecureInvoice()->deactivate($context);
+        $this->getConfigInstaller()->deactivate($deactivateContext);
+        $this->getCustomFieldInstaller()->deactivate($deactivateContext);
+        $this->getPaymentMethodInstaller()->deactivate($deactivateContext);
+        $this->getRuleInstallerSecureInvoice()->deactivate($deactivateContext);
     }
 
-    public function uninstall(UninstallContext $context): void
+    public function uninstall(UninstallContext $uninstallContext): void
     {
-        $this->getConfigInstaller()->uninstall($context);
-        $this->getCustomFieldInstaller()->uninstall($context);
-        $this->getPaymentMethodInstaller()->uninstall($context);
-        $this->getRuleInstallerSecureInvoice()->uninstall($context);
+        $this->getConfigInstaller()->uninstall($uninstallContext);
+        $this->getCustomFieldInstaller()->uninstall($uninstallContext);
+        $this->getPaymentMethodInstaller()->uninstall($uninstallContext);
+        $this->getRuleInstallerSecureInvoice()->uninstall($uninstallContext);
 
-        if ($context->keepUserData()) {
+        if ($uninstallContext->keepUserData()) {
             return;
         }
 
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
 
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement('DROP TABLE payone_payment_card');
-            $connection->executeStatement('DROP TABLE payone_payment_redirect');
-            $connection->executeStatement('DROP TABLE payone_payment_mandate');
-            $connection->executeStatement('DROP TABLE payone_payment_notification_forward');
-            $connection->executeStatement('DROP TABLE payone_payment_notification_target');
-            $connection->executeStatement('DROP TABLE payone_payment_order_transaction_data');
-
-            return;
-        }
-
-        if (method_exists($connection, 'exec')) {
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec('DROP TABLE payone_payment_card');
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec('DROP TABLE payone_payment_redirect');
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec('DROP TABLE payone_payment_mandate');
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec('DROP TABLE payone_payment_notification_forward');
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec('DROP TABLE payone_payment_notification_target');
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec('DROP TABLE payone_payment_order_transaction_data');
-        }
+        $connection->executeStatement('DROP TABLE payone_payment_card');
+        $connection->executeStatement('DROP TABLE payone_payment_redirect');
+        $connection->executeStatement('DROP TABLE payone_payment_mandate');
+        $connection->executeStatement('DROP TABLE payone_payment_notification_forward');
+        $connection->executeStatement('DROP TABLE payone_payment_notification_target');
+        $connection->executeStatement('DROP TABLE payone_payment_order_transaction_data');
     }
 
     private function getRuleInstallerSecureInvoice(): RuleInstallerSecureInvoice

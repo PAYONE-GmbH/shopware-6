@@ -13,7 +13,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
-use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
@@ -31,16 +30,10 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function hidePaymentMethodsForCompanies(PageLoadedEvent $event): void
-    {
+    public function hidePaymentMethodsForCompanies(
+        CheckoutConfirmPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|AccountEditOrderPageLoadedEvent $event
+    ): void {
         $page = $event->getPage();
-
-        if (
-            !method_exists($page, 'getPaymentMethods')
-            || !method_exists($page, 'setPaymentMethods')
-        ) {
-            return;
-        }
 
         if (!$this->customerHasCompanyAddress($event->getSalesChannelContext())) {
             return;
@@ -60,7 +53,7 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
     private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection
     {
         return $paymentMethods->filter(
-            static fn(PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId
+            static fn (PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId
         );
     }
 
@@ -85,6 +78,6 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
     {
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
 
-        return !((bool) $configuration->get('payolutionInvoicingTransferCompanyData'));
+        return !($configuration->get('payolutionInvoicingTransferCompanyData'));
     }
 }

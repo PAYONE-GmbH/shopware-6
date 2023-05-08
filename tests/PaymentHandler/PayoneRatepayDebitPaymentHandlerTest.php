@@ -186,11 +186,11 @@ class PayoneRatepayDebitPaymentHandlerTest extends TestCase
     ): PayoneRatepayDebitPaymentHandler {
         return new PayoneRatepayDebitPaymentHandler(
             $this->getContainer()->get(ConfigReader::class),
+            $this->getContainer()->get('order_line_item.repository'),
+            $this->getRequestStack($dataBag),
             $client,
             $this->getContainer()->get('translator'),
             $dataHandler,
-            $this->getContainer()->get('order_line_item.repository'),
-            $this->getRequestStack($dataBag),
             $requestFactory,
             $deviceFingerprintService
         );

@@ -18,4 +18,10 @@ export default {
             'order',
         ]),
     },
+
+    methods: {
+        reloadEntityData() {
+            this.$emit('reload-entity-data');
+        },
+    }
 };

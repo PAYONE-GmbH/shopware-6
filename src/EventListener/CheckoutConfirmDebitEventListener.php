@@ -10,7 +10,6 @@ use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
-use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
@@ -27,7 +26,7 @@ class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function addPayonePageData(PageLoadedEvent $event): void
+    public function addPayonePageData(CheckoutConfirmPageLoadedEvent|AccountEditOrderPageLoadedEvent $event): void
     {
         $page = $event->getPage();
         $context = $event->getSalesChannelContext();

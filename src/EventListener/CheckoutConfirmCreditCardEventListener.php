@@ -17,19 +17,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
-use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
 {
-    private readonly EntityRepository $languageRepository;
-
     public function __construct(
         private readonly RequestParameterFactory $requestParameterFactory,
-        EntityRepository $languageRepository,
+        private readonly EntityRepository $languageRepository,
         private readonly AbstractCardRoute $cardRoute
     ) {
-        $this->languageRepository = $languageRepository;
     }
 
     public static function getSubscribedEvents(): array
@@ -40,7 +36,7 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function addPayonePageData(PageLoadedEvent $event): void
+    public function addPayonePageData(CheckoutConfirmPageLoadedEvent|AccountEditOrderPageLoadedEvent $event): void
     {
         $page = $event->getPage();
         $context = $event->getSalesChannelContext();
@@ -56,6 +52,7 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
             )
         );
 
+        $savedCards = null;
         if ($context->getCustomer() !== null) {
             $savedCards = $this->cardRoute->load($context)->getSearchResult();
         }
@@ -72,7 +69,7 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
             $payoneData->assign([
                 'cardRequest' => $cardRequest,
                 'language' => $language,
-                'savedCards' => !empty($savedCards) ? $savedCards : null,
+                'savedCards' => $savedCards,
             ]);
 
             $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
@@ -92,6 +89,6 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
             return 'en';
         }
 
-        return substr((string) $language->getLocale()->getCode(), 0, 2);
+        return substr($language->getLocale()->getCode(), 0, 2);
     }
 }
