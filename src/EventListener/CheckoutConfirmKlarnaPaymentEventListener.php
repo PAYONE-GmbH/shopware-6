@@ -13,18 +13,14 @@ use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterface
 {
-    private readonly TranslatorInterface $translator;
-
     public function __construct(
-        TranslatorInterface $translator,
+        private readonly TranslatorInterface $translator,
         private readonly KlarnaSessionServiceInterface $klarnaSessionService
     ) {
-        $this->translator = $translator;
     }
 
     public static function getSubscribedEvents(): array
@@ -36,11 +32,9 @@ class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterf
         ];
     }
 
-    /**
-     * @param AccountEditOrderPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
-     */
-    public function initiateSession($event): void
-    {
+    public function initiateSession(
+        AccountEditOrderPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
+    ): void {
         $currentPaymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
 
         if (!$this->isKlarnaPaymentMethod($currentPaymentMethod)) {
@@ -68,7 +62,7 @@ class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterf
             ]);
         } catch (PayoneRequestException) {
             $session = $event->getRequest()->getSession();
-            if ($session instanceof Session) {
+            if (method_exists($session, 'getFlashBag')) {
                 $session->getFlashBag()->add(
                     'danger',
                     $this->translator->trans('PayonePayment.errorMessages.canNotInitKlarna')

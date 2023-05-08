@@ -28,7 +28,7 @@ class ZeroAmountCartValidator implements CartValidatorInterface
             return;
         }
 
-        if (mb_strpos((string) $context->getPaymentMethod()->getHandlerIdentifier(), PaymentMethodInstaller::HANDLER_IDENTIFIER_ROOT_NAMESPACE) === false) {
+        if (!str_contains($context->getPaymentMethod()->getHandlerIdentifier(), PaymentMethodInstaller::HANDLER_IDENTIFIER_ROOT_NAMESPACE)) {
             return;
         }
 

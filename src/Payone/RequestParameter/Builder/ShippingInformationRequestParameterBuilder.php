@@ -24,7 +24,7 @@ class ShippingInformationRequestParameterBuilder extends AbstractRequestParamete
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         $salesChannelContext = $arguments->getSalesChannelContext();
-        $shippingAddress = $salesChannelContext->getCustomer() !== null ? $salesChannelContext->getCustomer()->getActiveShippingAddress() : null;
+        $shippingAddress = $salesChannelContext->getCustomer()?->getActiveShippingAddress();
 
         $parameters = [];
 
@@ -36,7 +36,7 @@ class ShippingInformationRequestParameterBuilder extends AbstractRequestParamete
                 'shipping_street' => $shippingAddress->getStreet(),
                 'shipping_zip' => $shippingAddress->getZipcode(),
                 'shipping_city' => $shippingAddress->getCity(),
-                'shipping_country' => $shippingAddress->getCountry() !== null ? $shippingAddress->getCountry()->getIso() : null,
+                'shipping_country' => $shippingAddress->getCountry()?->getIso(),
             ]);
         }
 

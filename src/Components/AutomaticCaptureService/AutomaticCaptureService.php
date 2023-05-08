@@ -17,8 +17,11 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AutomaticCaptureService implements AutomaticCaptureServiceInterface
 {
-    public function __construct(protected ConfigReaderInterface $configReader, protected CaptureTransactionHandlerInterface $captureTransactionHandler, protected LoggerInterface $logger)
-    {
+    public function __construct(
+        protected ConfigReaderInterface $configReader,
+        protected CaptureTransactionHandlerInterface $captureTransactionHandler,
+        protected LoggerInterface $logger
+    ) {
     }
 
     public function captureIfPossible(PaymentTransaction $paymentTransaction, SalesChannelContext $salesChannelContext): void
@@ -74,7 +77,7 @@ class AutomaticCaptureService implements AutomaticCaptureServiceInterface
             'amount' => $order->getAmountTotal(),
             'complete' => true,
             'includeShippingCosts' => true,
-            'orderLines' => $orderLines->map(static fn(OrderLineItemEntity $lineItem) => [
+            'orderLines' => $orderLines->map(static fn (OrderLineItemEntity $lineItem) => [
                 'id' => $lineItem->getId(),
                 'quantity' => $lineItem->getQuantity(),
                 'unit_price' => $lineItem->getUnitPrice(),

@@ -16,7 +16,7 @@ trait RemovesPaymentMethod
     protected function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection
     {
         return $paymentMethods->filter(
-            static fn(PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId
+            static fn (PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId
         );
     }
 }

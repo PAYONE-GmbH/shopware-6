@@ -40,11 +40,10 @@ class LineItemHydrator implements LineItemHydratorInterface
     final public const PAYONE_ARRAY_KEY_NAME = 'de';
     final public const PAYONE_ARRAY_KEY_TAX_RATE = 'va';
 
-    private readonly EntityRepository $shipmentRepository;
-
-    public function __construct(private readonly CurrencyPrecisionInterface $currencyPrecision, EntityRepository $shipmentRepository)
-    {
-        $this->shipmentRepository = $shipmentRepository;
+    public function __construct(
+        private readonly CurrencyPrecisionInterface $currencyPrecision,
+        private readonly EntityRepository $shipmentRepository
+    ) {
     }
 
     public function mapPayoneOrderLinesByRequest(
@@ -177,11 +176,8 @@ class LineItemHydrator implements LineItemHydratorInterface
         return false;
     }
 
-    /**
-     * @param LineItem|OrderLineItemEntity $lineItemEntity
-     */
     private function getLineItemRequest(
-        $lineItemEntity,
+        LineItem|OrderLineItemEntity $lineItemEntity,
         int $quantity
     ): array {
         $productNumber = \is_array($lineItemEntity->getPayload()) && \array_key_exists('productNumber', $lineItemEntity->getPayload())
@@ -196,28 +192,31 @@ class LineItemHydrator implements LineItemHydratorInterface
             }
         }
 
-        $taxes = $lineItemEntity->getPrice() !== null ? $lineItemEntity->getPrice()->getCalculatedTaxes() : null;
+        $taxes = $lineItemEntity->getPrice()?->getCalculatedTaxes();
 
         $taxRate = $taxes === null || $taxes->first() === null
             ? 0.0
             : $taxes->first()->getTaxRate();
 
+        $unitPrice = null;
+        if ($lineItemEntity instanceof LineItem) {
+            $unitPrice = $lineItemEntity->getPrice()?->getUnitPrice();
+        } elseif ($lineItemEntity instanceof OrderLineItemEntity) {
+            $unitPrice = $lineItemEntity->getUnitPrice();
+        }
+
         return $this->getRequestItem(
             $this->mapItemType($lineItemEntity->getType()),
             $productNumber,
             $lineItemEntity->getLabel() ?? '',
-            /** @phpstan-ignore-next-line */
-            $lineItemEntity instanceof LineItem ? $lineItemEntity->getPrice()->getUnitPrice() : $lineItemEntity->getUnitPrice(),
+            $unitPrice ?? 0.0,
             $quantity,
             $taxRate
         );
     }
 
-    /**
-     * @param DeliveryCollection|OrderDeliveryCollection $deliveryCollection
-     */
     private function getShippingItems(
-        $deliveryCollection,
+        DeliveryCollection|OrderDeliveryCollection $deliveryCollection,
         string $languageId,
         ?Context $context = null
     ): array {
@@ -234,7 +233,7 @@ class LineItemHydrator implements LineItemHydratorInterface
 
         $shippingCosts = $deliveryEntity->getShippingCosts();
 
-        if ($shippingCosts->getCalculatedTaxes()->count() === 0 || $shippingCosts->getTotalPrice() <= 0) {
+        if ($shippingCosts->getTotalPrice() <= 0 || $shippingCosts->getCalculatedTaxes()->count() === 0) {
             return [];
         }
 

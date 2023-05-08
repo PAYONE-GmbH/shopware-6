@@ -1,6 +1,5 @@
 {% block sw_order_detail_payone %}
 <div class="sw-order-detail-payone" v-if="order">
-    <payone-payment-details :order="order"></payone-payment-details>
-    <payone-payment-management :order="order"></payone-payment-management>
+    <payone-payment-management :order="order" @reload-entity-data="reloadEntityData"></payone-payment-management>
 </div>
 {% endblock %}

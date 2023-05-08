@@ -11,15 +11,14 @@ use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class RatepayController extends StorefrontController
 {
     public function __construct(private readonly InstallmentServiceInterface $installmentService)
     {
     }
 
-    /**
-     * @Route("/payone/ratepay/installment/calculation", name="frontend.payone.ratepay.installment.calculation", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true, "_routeScope"={"storefront"}})
-     */
+    #[Route(path: '/payone/ratepay/installment/calculation', name: 'frontend.payone.ratepay.installment.calculation', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
     public function calculation(RequestDataBag $dataBag, SalesChannelContext $context): Response
     {
         try {

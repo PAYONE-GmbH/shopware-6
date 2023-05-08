@@ -71,12 +71,12 @@ class PayonePaypalPaymentHandlerTest extends TestCase
 
         return new PayonePaypalPaymentHandler(
             $configReader,
+            $this->createMock(EntityRepository::class),
+            $this->getRequestStack($dataBag),
             $client,
             $translator,
             new TransactionDataHandler($this->createMock(EntityRepository::class), new CurrencyPrecision()),
-            $this->createMock(EntityRepository::class),
             new PaymentStateHandler($translator),
-            $this->getRequestStack($dataBag),
             $requestFactory
         );
     }

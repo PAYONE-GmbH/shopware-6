@@ -37,7 +37,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $client = $this->createMock(PayoneClientInterface::class);
         $client->expects(static::once())->method('request')->willReturn(
             [
-                'status' => '',
+                'status' => 'success',
                 'txid' => '',
                 'userid' => '',
             ]
@@ -77,7 +77,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $client = $this->createMock(PayoneClientInterface::class);
         $client->expects(static::once())->method('request')->willReturn(
             [
-                'status' => '',
+                'status' => 'success',
                 'txid' => '',
                 'userid' => '',
             ]
@@ -130,7 +130,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $client = $this->createMock(PayoneClientInterface::class);
         $client->expects(static::once())->method('request')->willReturn(
             [
-                'status' => '',
+                'status' => 'success',
                 'txid' => '',
                 'userid' => '',
             ]
@@ -202,7 +202,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $client = $this->createMock(PayoneClientInterface::class);
         $client->expects(static::once())->method('request')->willReturn(
             [
-                'status' => '',
+                'status' => 'success',
                 'txid' => '',
                 'userid' => '',
             ]
@@ -285,14 +285,14 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
 
         return new PayoneCreditCardPaymentHandler(
             $configReader,
+            $this->createMock(EntityRepository::class),
+            $this->getRequestStack($dataBag),
             $client,
             $translator,
             $dataHandler,
-            $this->createMock(EntityRepository::class),
             new PaymentStateHandler($translator),
-            $cardRepository,
-            $this->getRequestStack($dataBag),
-            $requestFactory
+            $requestFactory,
+            $cardRepository
         );
     }
 

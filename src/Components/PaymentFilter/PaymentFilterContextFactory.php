@@ -33,8 +33,8 @@ class PaymentFilterContextFactory implements PaymentFilterContextFactoryInterfac
 
         return new PaymentFilterContext(
             $salesChannelContext,
-            $customer ? $customer->getActiveBillingAddress() : null,
-            $customer ? $customer->getActiveShippingAddress() : null,
+            $customer?->getActiveBillingAddress(),
+            $customer?->getActiveShippingAddress(),
             $salesChannelContext->getCurrency(),
             null,
             $cart
