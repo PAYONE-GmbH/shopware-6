@@ -14,8 +14,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TransactionStatusWebhookHandler implements WebhookHandlerInterface
 {
-    public function __construct(private readonly TransactionStatusServiceInterface $transactionStatusService, private readonly TransactionDataHandlerInterface $transactionDataHandler, private readonly LoggerInterface $logger, private readonly AutomaticCaptureServiceInterface $automaticCaptureService)
-    {
+    public function __construct(
+        private readonly TransactionStatusServiceInterface $transactionStatusService,
+        private readonly TransactionDataHandlerInterface $transactionDataHandler,
+        private readonly LoggerInterface $logger,
+        private readonly AutomaticCaptureServiceInterface $automaticCaptureService
+    ) {
     }
 
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool
@@ -27,9 +31,6 @@ class TransactionStatusWebhookHandler implements WebhookHandlerInterface
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(SalesChannelContext $salesChannelContext, Request $request): void
     {
         $data = $request->request->all();

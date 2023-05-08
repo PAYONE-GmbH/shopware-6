@@ -14,30 +14,14 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentFilterContext extends Struct
 {
-    private readonly SalesChannelContext $salesChannelContext;
-
-    private ?CurrencyEntity $currency = null;
-
-    private ?OrderEntity $order = null;
-
-    private ?Cart $cart = null;
-
-    /**
-     * @param CustomerAddressEntity|OrderAddressEntity|null $billingAddress
-     * @param CustomerAddressEntity|OrderAddressEntity|null $shippingAddress
-     */
     public function __construct(
-        SalesChannelContext $salesChannelContext,
-        private readonly \Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity|\Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity|null $billingAddress = null,
-        private readonly \Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity|\Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity|null $shippingAddress = null,
-        ?CurrencyEntity $currency = null,
-        ?OrderEntity $order = null,
-        ?Cart $cart = null
+        private readonly SalesChannelContext $salesChannelContext,
+        private readonly CustomerAddressEntity|OrderAddressEntity|null $billingAddress = null,
+        private readonly CustomerAddressEntity|OrderAddressEntity|null $shippingAddress = null,
+        private readonly ?CurrencyEntity $currency = null,
+        private readonly ?OrderEntity $order = null,
+        private readonly ?Cart $cart = null
     ) {
-        $this->salesChannelContext = $salesChannelContext;
-        $this->currency = $currency;
-        $this->order = $order;
-        $this->cart = $cart;
     }
 
     public function getSalesChannelContext(): SalesChannelContext
@@ -45,18 +29,12 @@ class PaymentFilterContext extends Struct
         return $this->salesChannelContext;
     }
 
-    /**
-     * @return CustomerAddressEntity|OrderAddressEntity|null
-     */
-    public function getBillingAddress()
+    public function getBillingAddress(): CustomerAddressEntity|OrderAddressEntity|null
     {
         return $this->billingAddress;
     }
 
-    /**
-     * @return CustomerAddressEntity|OrderAddressEntity|null
-     */
-    public function getShippingAddress()
+    public function getShippingAddress(): CustomerAddressEntity|OrderAddressEntity|null
     {
         return $this->shippingAddress;
     }

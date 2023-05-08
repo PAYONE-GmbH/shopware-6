@@ -14,5 +14,5 @@ abstract class AbstractMandateRoute
 
     abstract public function load(SalesChannelContext $context): MandateResponse;
 
-    abstract public function getFile(string $mandate, SalesChannelContext $context): Response;
+    abstract public function getFile(string $mandateId, SalesChannelContext $context): Response;
 }

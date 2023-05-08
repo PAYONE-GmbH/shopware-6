@@ -25,30 +25,22 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(defaults: ['_routeScope' => ['api']])]
 class SettingsController extends AbstractController
 {
     private const REFERENCE_PREFIX_TEST = 'TESTPO-';
 
-    private readonly EntityRepository $stateMachineTransitionRepository;
-
-    private readonly EntityRepository $paymentMethodRepository;
-
     public function __construct(
         private readonly PayoneClientInterface $client,
         private readonly RequestParameterFactory $requestFactory,
-        EntityRepository $stateMachineTransitionRepository,
+        private readonly EntityRepository $stateMachineTransitionRepository,
         private readonly LoggerInterface $logger,
         private readonly string $kernelDirectory,
-        EntityRepository $paymentMethodRepository
+        private readonly EntityRepository $paymentMethodRepository
     ) {
-        $this->stateMachineTransitionRepository = $stateMachineTransitionRepository;
-        $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
-    /**
-     * @Route("/api/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials", methods={"POST"}, defaults={"_routeScope"={"api"}})
-     * @Route("/api/v{version}/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials.legacy", methods={"POST"}, defaults={"_routeScope"={"api"}})
-     */
+    #[Route(path: '/api/_action/payone_payment/validate-api-credentials', name: 'api.action.payone_payment.validate.api.credentials', methods: ['POST'])]
     public function validateApiCredentials(Request $request, Context $context): JsonResponse
     {
         $testCount = 0;
@@ -89,11 +81,8 @@ class SettingsController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/api/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions", methods={"GET"}, defaults={"_routeScope"={"api"}})
-     * @Route("/api/v{version}/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions.legacy", methods={"GET"}, defaults={"_routeScope"={"api"}})
-     */
-    public function getStateMachineTransitionActions(Request $request, Context $context): JsonResponse
+    #[Route(path: '/api/_action/payone_payment/get-state-machine-transition-actions', name: 'api.action.payone_payment.get.state_machine_transition.actions', methods: ['GET'])]
+    public function getStateMachineTransitionActions(Context $context): JsonResponse
     {
         $criteria = (new Criteria())
             ->addAssociation('stateMachine')
@@ -103,23 +92,18 @@ class SettingsController extends AbstractController
         $searchResult = $this->stateMachineTransitionRepository->search($criteria, $context);
         $transitionNames = [];
 
-        if ((is_countable($searchResult->getElements()) ? \count($searchResult->getElements()) : 0) > 0) {
-            /** @var StateMachineTransitionEntity $stateMachineAction */
-            foreach ($searchResult->getElements() as $stateMachineAction) {
-                $transitionNames[] = [
-                    'label' => $stateMachineAction->getActionName(),
-                    'value' => $stateMachineAction->getActionName(),
-                ];
-            }
+        /** @var StateMachineTransitionEntity $stateMachineAction */
+        foreach ($searchResult->getElements() as $stateMachineAction) {
+            $transitionNames[] = [
+                'label' => $stateMachineAction->getActionName(),
+                'value' => $stateMachineAction->getActionName(),
+            ];
         }
 
         return new JsonResponse(['data' => $transitionNames, 'total' => \count($transitionNames)]);
     }
 
-    /**
-     * @Route("/api/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert", methods={"GET"}, defaults={"_routeScope"={"api"}})
-     * @Route("/api/v{version}/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert.legacy", methods={"GET"}, defaults={"_routeScope"={"api"}})
-     */
+    #[Route(path: '/api/_action/payone_payment/check-apple-pay-cert', name: 'api.action.payone_payment.check.apple_pay_cert', methods: ['GET'])]
     public function checkApplePayCert(): JsonResponse
     {
         if (!file_exists($this->kernelDirectory . ApplePayRoute::CERT_FOLDER . 'merchant_id.key')) {

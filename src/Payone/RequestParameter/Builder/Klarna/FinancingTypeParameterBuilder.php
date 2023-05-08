@@ -16,22 +16,12 @@ class FinancingTypeParameterBuilder extends AbstractKlarnaParameterBuilder
 {
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        switch ($arguments->getPaymentMethod()) {
-            case PayoneKlarnaInvoicePaymentHandler::class:
-                $type = 'KIV';
-
-                break;
-            case PayoneKlarnaInstallmentPaymentHandler::class:
-                $type = 'KIS';
-
-                break;
-            case PayoneKlarnaDirectDebitPaymentHandler::class:
-                $type = 'KDD';
-
-                break;
-            default:
-                throw new \RuntimeException('invalid payment method');
-        }
+        $type = match ($arguments->getPaymentMethod()) {
+            PayoneKlarnaInvoicePaymentHandler::class => 'KIV',
+            PayoneKlarnaInstallmentPaymentHandler::class => 'KIS',
+            PayoneKlarnaDirectDebitPaymentHandler::class => 'KDD',
+            default => throw new \RuntimeException('invalid payment method'),
+        };
 
         return [
             'financingtype' => $type,

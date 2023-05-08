@@ -26,21 +26,12 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    protected CartService $cartService;
-
-    protected NumberRangeValueGeneratorInterface $numberRangeValueGenerator;
-
-    protected EntityRepository $orderRepository;
-
     public function __construct(
-        CartService $cartService,
+        protected CartService $cartService,
         protected CurrencyPrecisionInterface $currencyPrecision,
-        NumberRangeValueGeneratorInterface $numberRangeValueGenerator,
-        EntityRepository $orderRepository
+        protected NumberRangeValueGeneratorInterface $numberRangeValueGenerator,
+        protected EntityRepository $orderRepository
     ) {
-        $this->cartService = $cartService;
-        $this->numberRangeValueGenerator = $numberRangeValueGenerator;
-        $this->orderRepository = $orderRepository;
     }
 
     /**

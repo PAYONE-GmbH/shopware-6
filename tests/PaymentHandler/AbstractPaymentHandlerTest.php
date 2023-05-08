@@ -255,15 +255,18 @@ abstract class AbstractPaymentHandlerTest extends TestCase
                 $paymentTransaction->getOrder(),
                 ''
             );
-        } elseif ($paymentHandler instanceof SynchronousPaymentHandlerInterface) {
+
+            return $paymentHandler->pay($struct, $dataBag, $salesChannelContext);
+        }
+
+        if ($paymentHandler instanceof SynchronousPaymentHandlerInterface) {
             $struct = new SyncPaymentTransactionStruct(
                 $paymentTransaction->getOrderTransaction(),
                 $paymentTransaction->getOrder()
             );
+            $paymentHandler->pay($struct, $dataBag, $salesChannelContext);
         } else {
             throw new \RuntimeException('invalid type of provided payment handler: ' . \get_class($paymentHandler));
         }
-
-        return $paymentHandler->pay($struct, $dataBag, $salesChannelContext);
     }
 }

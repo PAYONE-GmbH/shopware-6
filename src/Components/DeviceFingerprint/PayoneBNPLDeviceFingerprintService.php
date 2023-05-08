@@ -49,7 +49,7 @@ class PayoneBNPLDeviceFingerprintService extends AbstractDeviceFingerprintServic
 
     protected function buildDeviceIdentToken(SalesChannelContext $salesChannelContext): string
     {
-        $sessionId = $this->requestStack->getSession()->get('sessionId');
+        $sessionId = $this->getSession()?->get('sessionId') ?? '';
 
         return self::PAYLA_PARTNER_ID . '_' . $this->getPartnerMerchantId($salesChannelContext) . '_' . $sessionId;
     }

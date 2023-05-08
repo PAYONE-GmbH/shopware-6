@@ -16,14 +16,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class OrderValidationEventListener implements EventSubscriberInterface
 {
-    private readonly RequestStack $requestStack;
-
-    private readonly PaymentHandlerRegistry $paymentHandlerRegistry;
-
-    public function __construct(RequestStack $requestStack, PaymentHandlerRegistry $paymentHandlerRegistry)
-    {
-        $this->requestStack = $requestStack;
-        $this->paymentHandlerRegistry = $paymentHandlerRegistry;
+    public function __construct(
+        private readonly RequestStack $requestStack,
+        private readonly PaymentHandlerRegistry $paymentHandlerRegistry
+    ) {
     }
 
     public static function getSubscribedEvents(): array

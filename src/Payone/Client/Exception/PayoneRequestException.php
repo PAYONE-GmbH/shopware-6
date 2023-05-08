@@ -6,8 +6,11 @@ namespace PayonePayment\Payone\Client\Exception;
 
 class PayoneRequestException extends \Exception
 {
-    public function __construct(string $message, private readonly array $request = [], private readonly array $response = [])
-    {
+    public function __construct(
+        string $message,
+        private readonly array $request = [],
+        private readonly array $response = []
+    ) {
         parent::__construct($message);
     }
 

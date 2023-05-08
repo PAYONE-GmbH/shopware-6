@@ -31,26 +31,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class PayolutionController extends StorefrontController
 {
     private const URL = 'https://payment.payolution.com/payolution-payment/infoport/dataprivacydeclaration?mId=';
 
-    private readonly CartService $cartService;
-
     public function __construct(
         private readonly ConfigReaderInterface $configReader,
-        CartService $cartService,
+        private readonly CartService $cartService,
         private readonly CartHasherInterface $cartHasher,
         private readonly PayoneClientInterface $client,
         private readonly RequestParameterFactory $requestParameterFactory,
         private readonly LoggerInterface $logger
     ) {
-        $this->cartService = $cartService;
     }
 
-    /**
-     * @Route("/payone/consent", name="frontend.account.payone.payolution.consent", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true, "_routeScope"={"storefront"}})
-     */
+    #[Route(path: '/payone/consent', name: 'frontend.account.payone.payolution.consent', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['GET'])]
     public function displayContentModal(SalesChannelContext $context): Response
     {
         $companyName = $this->getCompanyName($context);
@@ -75,9 +71,7 @@ class PayolutionController extends StorefrontController
         return new Response($content);
     }
 
-    /**
-     * @Route("/payone/invoicing/validate", name="frontend.payone.payolution.invoicing.validate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true, "_routeScope"={"storefront"}})
-     */
+    #[Route(path: '/payone/invoicing/validate', name: 'frontend.payone.payolution.invoicing.validate', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
     public function validate(RequestDataBag $dataBag, SalesChannelContext $context): JsonResponse
     {
         $cart = $this->cartService->getCart($context->getToken(), $context);
@@ -104,9 +98,7 @@ class PayolutionController extends StorefrontController
         return new JsonResponse($response);
     }
 
-    /**
-     * @Route("/payone/installment/calculation", name="frontend.payone.payolution.installment.calculation", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true, "_routeScope"={"storefront"}})
-     */
+    #[Route(path: '/payone/installment/calculation', name: 'frontend.payone.payolution.installment.calculation', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
     public function calculation(RequestDataBag $dataBag, SalesChannelContext $context): JsonResponse
     {
         try {
@@ -154,7 +146,7 @@ class PayolutionController extends StorefrontController
 
             try {
                 $calculationResponse = $this->client->request($calculationRequest);
-            } catch (PayoneRequestException $exception) {
+            } catch (PayoneRequestException) {
                 throw new \RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
             }
 
@@ -174,9 +166,7 @@ class PayolutionController extends StorefrontController
         return new JsonResponse($response);
     }
 
-    /**
-     * @Route("/payone/installment/download", name="frontend.payone.payolution.installment.download", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true, "_routeScope"={"storefront"}})
-     */
+    #[Route(path: '/payone/installment/download', name: 'frontend.payone.payolution.installment.download', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['GET'])]
     public function download(Request $request, SalesChannelContext $context): Response
     {
         $duration = (int) $request->get('duration');

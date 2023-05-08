@@ -105,12 +105,12 @@ abstract class AbstractKlarnaPaymentHandlerTest extends AbstractPaymentHandlerTe
             $container->get(ConfigReader::class),
             $this->createMock(EntityRepository::class),
             $container->get(RequestStack::class),
-            $container->get('translator'),
-            $requestFactory,
             $client,
+            $container->get('translator'),
             $dataHandler ?? $this->createMock(TransactionDataHandlerInterface::class),
-            $this->createMock(CartHasher::class),
             $container->get(PaymentStateHandler::class),
+            $requestFactory,
+            $this->createMock(CartHasher::class)
         );
     }
 }

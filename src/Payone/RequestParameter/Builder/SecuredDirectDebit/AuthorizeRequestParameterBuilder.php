@@ -19,16 +19,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    protected EntityRepository $customerRepository;
-
     public function __construct(
         protected OrderFetcherInterface $orderFetcher,
         protected AbstractDeviceFingerprintService $deviceFingerprintService,
         protected CurrencyPrecisionInterface $currencyPrecision,
         protected LineItemHydratorInterface $lineItemHydrator,
-        EntityRepository $customerRepository
+        protected EntityRepository $customerRepository
     ) {
-        $this->customerRepository = $customerRepository;
     }
 
     /**

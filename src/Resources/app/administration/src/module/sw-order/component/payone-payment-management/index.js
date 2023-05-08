@@ -122,7 +122,7 @@ export default {
       }
     },
     reloadEntityData() {
-      // ToDo 6.5: Reload order after capture/refund?
+      this.$emit('reload-entity-data');
     },
     getPayoneCardType(transaction) {
       let cardType = transaction.extensions.payonePaymentOrderTransactionData?.additionalData?.card_type;

@@ -4,44 +4,21 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
-use PayonePayment\Payone\Client\PayoneClientInterface;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Struct\PaymentTransaction;
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
-class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
+class PayoneApplePayPaymentHandler extends AbstractSynchronousPayonePaymentHandler
 {
-    protected TranslatorInterface $translator;
-
-    public function __construct(
-        ConfigReaderInterface $configReader,
-        protected PayoneClientInterface $client,
-        TranslatorInterface $translator,
-        EntityRepository $lineItemRepository,
-        RequestStack $requestStack,
-        private readonly TransactionDataHandlerInterface $dataHandler
-    ) {
-        parent::__construct($configReader, $lineItemRepository, $requestStack);
-        $this->translator = $translator;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function pay(SyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): void
-    {
-        $requestData = $this->fetchRequestData();
-
-        $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $response = json_decode((string) $requestData->get('response', '{}'), true, 512, JSON_THROW_ON_ERROR);
+    public function pay(
+        SyncPaymentTransactionStruct $transaction,
+        RequestDataBag $dataBag,
+        SalesChannelContext $salesChannelContext
+    ): void {
+        $response = json_decode((string) $dataBag->get('response', '{}'), true, 512, \JSON_THROW_ON_ERROR);
 
         if ($response === null || !\array_key_exists('status', $response) || !\array_key_exists('txid', $response)) {
             throw new SyncPaymentProcessException(
@@ -59,17 +36,20 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
 
         $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 
+        $authorizationMethod = $this->getAuthorizationMethod(
+            $transaction->getOrder()->getSalesChannelId(),
+            $this->getConfigKeyPrefix() . 'AuthorizationMethod',
+            $this->getDefaultAuthorizationMethod()
+        );
+
         $request = [
-            'request' => $configuration->getString('applePayAuthorizationMethod', 'preauthorization'),
+            'request' => $authorizationMethod,
         ];
 
         $data = $this->preparePayoneOrderTransactionData($request, $response);
         $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (static::isNeverCapturable($payoneTransActionData)) {
@@ -79,9 +59,6 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
         return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function isRefundable(array $transactionData): bool
     {
         if (static::isNeverRefundable($transactionData)) {
@@ -89,5 +66,10 @@ class PayoneApplePayPaymentHandler extends AbstractPayonePaymentHandler implemen
         }
 
         return static::matchesIsRefundableDefaults($transactionData);
+    }
+
+    protected function getDefaultAuthorizationMethod(): string
+    {
+        return AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE;
     }
 }

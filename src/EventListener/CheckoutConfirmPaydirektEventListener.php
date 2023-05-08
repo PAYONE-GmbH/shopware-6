@@ -27,11 +27,9 @@ class CheckoutConfirmPaydirektEventListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
-     */
-    public function hidePaydirektForNonDeCustomers($event): void
-    {
+    public function hidePaydirektForNonDeCustomers(
+        AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
+    ): void {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
         if (

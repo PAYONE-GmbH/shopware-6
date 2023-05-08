@@ -20,21 +20,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(defaults: ['_routeScope' => ['store-api']])]
 class ApplePayRoute extends AbstractApplePayRoute
 {
     final public const CERT_FOLDER = '/config/apple-pay-cert/';
 
-    private readonly Client $httpClient;
-
     public function __construct(
-        Client $httpClient,
+        private readonly Client $httpClient,
         private readonly LoggerInterface $logger,
         private readonly RequestParameterFactory $requestParameterFactory,
         private readonly PayoneClientInterface $client,
         private readonly ConfigReaderInterface $configReader,
         private readonly string $kernelDirectory
     ) {
-        $this->httpClient = $httpClient;
     }
 
     public function getDecorated(): AbstractApplePayRoute
@@ -42,9 +40,7 @@ class ApplePayRoute extends AbstractApplePayRoute
         throw new DecorationPatternException(self::class);
     }
 
-    /**
-     * @Route("/store-api/payone/apple-pay/validate-merchant", name="store-api.payone.apple-pay.validate-merchant", methods={"POST"}, defaults={"_routeScope"={"store-api"}, "_contextTokenRequired"=true})
-     */
+    #[Route(path: '/store-api/payone/apple-pay/validate-merchant', name: 'store-api.payone.apple-pay.validate-merchant', defaults: ['_contextTokenRequired' => true], methods: ['POST'])]
     public function validateMerchant(Request $request, SalesChannelContext $context): Response
     {
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
@@ -91,15 +87,13 @@ class ApplePayRoute extends AbstractApplePayRoute
         }
 
         return new JsonResponse(
-            json_decode((string) $response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR),
+            json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR),
             $statusCode,
             $response->getHeaders()
         );
     }
 
-    /**
-     * @Route("/store-api/payone/apple-pay/process", name="store-api.payone.apple-pay.process", methods={"POST"}, defaults={"_routeScope"={"store-api"}, "_contextTokenRequired"=true})
-     */
+    #[Route(path: '/store-api/payone/apple-pay/process', name: 'store-api.payone.apple-pay.process', defaults: ['_contextTokenRequired' => true], methods: ['POST'])]
     public function process(Request $request, SalesChannelContext $context): Response
     {
         $salesChannelId = $context->getSalesChannel()->getId();

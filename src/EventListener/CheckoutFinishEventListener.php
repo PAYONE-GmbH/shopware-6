@@ -21,16 +21,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutFinishEventListener implements EventSubscriberInterface
 {
-    private readonly EntityRepository $mandateRepository;
-
-    private readonly EntityRepository $orderTransactionRepository;
-
     public function __construct(
-        EntityRepository $mandateRepository,
-        EntityRepository $orderTransactionRepository
+        private readonly EntityRepository $mandateRepository,
+        private readonly EntityRepository $orderTransactionRepository
     ) {
-        $this->mandateRepository = $mandateRepository;
-        $this->orderTransactionRepository = $orderTransactionRepository;
     }
 
     public static function getSubscribedEvents(): array

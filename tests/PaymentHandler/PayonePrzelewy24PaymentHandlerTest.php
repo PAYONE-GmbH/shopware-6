@@ -176,11 +176,11 @@ class PayonePrzelewy24PaymentHandlerTest extends TestCase
         return new PayonePrzelewy24PaymentHandler(
             $this->getContainer()->get(ConfigReader::class),
             $this->getContainer()->get('order_line_item.repository'),
+            $this->getRequestStack($dataBag),
             $client,
             $this->getContainer()->get('translator'),
             $dataHandler,
             $stateHandler,
-            $this->getRequestStack($dataBag),
             $requestFactory
         );
     }

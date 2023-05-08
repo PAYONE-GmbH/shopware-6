@@ -20,7 +20,7 @@ class RequestParameterFactory
     ];
 
     /**
-     * @param \PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder[] $requestParameterBuilder
+     * @param AbstractRequestParameterBuilder[] $requestParameterBuilder
      */
     public function __construct(private readonly iterable $requestParameterBuilder)
     {
@@ -67,7 +67,7 @@ class RequestParameterFactory
         $this->generateParameterHash($parameters);
         $parameters['key'] = hash('md5', (string) $parameters['key']);
 
-        return array_filter($parameters, static fn($value) => $value !== null && $value !== '');
+        return array_filter($parameters, static fn ($value) => $value !== null && $value !== '');
     }
 
     private function generateParameterHash(array &$parameters): void

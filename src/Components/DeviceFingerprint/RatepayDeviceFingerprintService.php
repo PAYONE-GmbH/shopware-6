@@ -41,7 +41,7 @@ class RatepayDeviceFingerprintService extends AbstractDeviceFingerprintService
                 'v' => $snippetId,
                 't' => $deviceIdentToken,
                 'l' => $location,
-            ], JSON_THROW_ON_ERROR)
+            ], \JSON_THROW_ON_ERROR)
         );
 
         $snippet .= sprintf(
@@ -62,7 +62,7 @@ class RatepayDeviceFingerprintService extends AbstractDeviceFingerprintService
 
     protected function buildDeviceIdentToken(SalesChannelContext $salesChannelContext): string
     {
-        $sessionId = $this->requestStack->getSession()->get('sessionId');
+        $sessionId = $this->getSession()?->get('sessionId') ?? '';
 
         return md5($sessionId . '_' . microtime());
     }

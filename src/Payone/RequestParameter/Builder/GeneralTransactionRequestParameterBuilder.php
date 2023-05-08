@@ -23,15 +23,12 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    protected EntityRepository $currencyRepository;
-
     public function __construct(
         protected CartHasherInterface $cartHasher,
         protected ConfigReaderInterface $configReader,
-        EntityRepository $currencyRepository,
+        protected EntityRepository $currencyRepository,
         protected CurrencyPrecisionInterface $currencyPrecision
     ) {
-        $this->currencyRepository = $currencyRepository;
     }
 
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
@@ -138,7 +135,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
             return null;
         }
 
-        $transactions->sort(static fn(OrderTransactionEntity $a, OrderTransactionEntity $b) => $a->getCreatedAt() <=> $b->getCreatedAt());
+        $transactions->sort(static fn (OrderTransactionEntity $a, OrderTransactionEntity $b) => $a->getCreatedAt() <=> $b->getCreatedAt());
         /** @var OrderTransactionEntity $orderTransaction */
         $orderTransaction = $transactions->last();
 

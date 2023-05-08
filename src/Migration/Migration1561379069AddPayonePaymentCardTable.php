@@ -41,18 +41,7 @@ class Migration1561379069AddPayonePaymentCardTable extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ';
 
-        /** @phpstan-ignore-next-line */
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-
-            return;
-        }
-
-        /** @phpstan-ignore-next-line */
-        if (method_exists($connection, 'exec')) {
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void
