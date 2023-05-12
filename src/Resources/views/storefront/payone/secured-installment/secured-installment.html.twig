@@ -11,8 +11,8 @@
         <div class="card">
             <fieldset>
                 {% if customerCustomFields is null or customerCustomFields['payone_customer_phone_number'] is not defined or customerCustomFields['payone_customer_phone_number'] is empty %}
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
                             <label class="form-label" for="securedInstallmentPhone">{{ "PayonePayment.securedInstallment.phoneNumber.label" | trans }}{% if not billingAddress.phoneNumber %}{{ "general.required"|trans|sw_sanitize }}{% endif %}</label>
                             <input class="form-control payone-input"
                                    id="securedInstallmentPhone"
@@ -25,8 +25,8 @@
                 {% endif %}
 
                 {% if customerCustomFields is null or customerCustomFields['payone_customer_birthday'] is not defined or customerCustomFields['payone_customer_birthday'] is empty %}
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
                             <label class="form-label" for="securedInstallmentBirthday">{{ "PayonePayment.securedInstallment.birthday.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
                             <input class="form-control payone-input"
                                    id="securedInstallmentBirthday"
@@ -38,8 +38,8 @@
                     </div>
                 {% endif %}
 
-                <div class="form-row">
-                    <div class="form-group col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
                         <label class="form-label" for="securedInstallmentIban">{{ "PayonePayment.securedInstallment.iban.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
                         <input class="form-control payone-input"
                                id="securedInstallmentIban"
@@ -61,7 +61,7 @@
                                value="{{ option.installmentOptionId }}"
                                form="confirmOrderForm"
                                required="required">
-                        <label for="{{ option.installmentOptionId }}">
+                        <label class="form-label" for="{{ option.installmentOptionId }}">
                             {{ "PayonePayment.securedInstallment.options.label" | trans({'%numberOfPayments%': option.numberOfPayments, '%monthlyAmountValue%': option.monthlyAmountValue|currency}) }}
                         </label>
                         <table class="table table-striped payone-secured-installment-option-information">
