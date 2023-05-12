@@ -5,6 +5,10 @@ $payone-logo-gutter: 1rem;
     .card {
         margin-bottom: 1.5rem;
     }
+
+    .consent-row {
+        margin-bottom: 1rem;
+    }
 }
 
 apple-pay-button {
@@ -14,6 +18,12 @@ apple-pay-button {
     --apple-pay-button-padding: 0px 0px;
     --apple-pay-button-box-sizing: border-box;
     display: block;
+}
+
+.payone-payment.debit {
+    .debit-row {
+        margin-bottom: 1rem;
+    }
 }
 
 .payone-payment.credit-card {
