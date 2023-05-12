@@ -10,7 +10,7 @@
 
         <div class="card">
             <fieldset>
-                <div class="form-row col-md-12">
+                <div class="row">
                     <div class="form-group col-md-12">
                         <label class="form-label" for="ratepayIban">{{ "PayonePayment.ratepay.debit.iban.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
                         <input class="form-control payone-input"
@@ -22,7 +22,7 @@
                 </div>
 
                 {% if customerCustomFields is null or customerCustomFields['payone_customer_phone_number'] is not defined or customerCustomFields['payone_customer_phone_number'] is empty %}
-                    <div class="form-row col-md-12">
+                    <div class="row">
                         <div class="form-group col-md-12">
                             <label class="form-label" for="ratepayPhone">{{ "PayonePayment.ratepay.debit.phoneNumber.label" | trans }}{% if not billingAddress.phoneNumber %}{{ "general.required"|trans|sw_sanitize }}{% endif %}</label>
                             <input class="form-control payone-input"
@@ -35,7 +35,7 @@
                     </div>
                 {% endif %}
 
-                <div class="form-row col-md-12">
+                <div class="row">
                     <div class="form-group col-md-12">
                         <label class="form-label" for="ratepayBirthday">{{ "PayonePayment.ratepay.debit.birthday.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
                         <input class="form-control payone-input"
