@@ -1,4 +1,4 @@
-$payone-input-gutter: 1.9rem;
+$payone-input-gutter: 1.8rem;
 $payone-logo-gutter: 1rem;
 
 .payone-payment {
@@ -42,6 +42,10 @@ apple-pay-button {
         height: calc(4em - #{$payone-logo-gutter});
         border: 1px solid transparent;
         margin: 0 auto;
+    }
+
+    .credit-card-input {
+        margin-bottom: 1rem;
     }
 }
 

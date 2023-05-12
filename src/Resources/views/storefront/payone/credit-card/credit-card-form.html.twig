@@ -14,8 +14,8 @@
                 <input type="hidden" name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_TYPE') }}" id="cardtype" form="confirmOrderForm">
 
                 {% if page.extensions.payone.savedCards.total > 0 %}
-                    <div class="form-row col-md-12">
-                        <div class="form-group col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
                             <label class="form-label" for="savedPseudoCardPan">{{ "PayonePayment.creditCard.savedCards" | trans }}</label>
                             <select class="form-control" id="savedpseudocardpan" name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN') }}" form="confirmOrderForm">
                                 <option value="">{{ "PayonePayment.creditCard.newCard" | trans }}</option>
@@ -33,38 +33,38 @@
                     </div>
                 {% endif %}
 
-                <div class="form-row col-md-12 credit-card-input">
-                    <div class="form-group col-md-4">
+                <div class="row credit-card-input">
+                    <div class="col-md-4">
                         <label class="form-label" for="cardpanInput">{{ "PayonePayment.creditCard.cardNumber" | trans }}</label>
                         <span class="form-control iframe" id="cardpan"></span>
                     </div>
 
-                    <div class="form-group col-md-2 card-logo-container">
+                    <div class="col-md-2 card-logo-container">
                         <label class="form-label" for="cardexpireyear">&nbsp;</label>
                         <img id="card-logo" src="" alt="card-logo" style="display: none;"/>
                     </div>
                 </div>
 
-                <div class="form-row col-md-12 credit-card-input">
-                    <div class="form-group col-md-2">
+                <div class="row credit-card-input">
+                    <div class="col-md-2">
                         <label class="form-label" for="cvcInput">{{ "PayonePayment.creditCard.securityCode" | trans }}</label>
                         <span class="form-control iframe" id="cardcvc2"></span>
                     </div>
 
-                    <div class="form-group col-md-2">
+                    <div class="col-md-2">
                         <label class="form-label" for="cardexpiremonth">{{ "PayonePayment.creditCard.expiryDate" | trans }}</label>
                         <span class="form-control iframe" id="cardexpiremonth"></span>
                     </div>
 
-                    <div class="form-group col-md-2">
+                    <div class="col-md-2">
                         <label class="form-label" for="cardexpireyear">&nbsp;</label>
                         <span class="form-control iframe" id="cardexpireyear"></span>
                     </div>
                 </div>
 
                 {% if context.customer and not context.customer.guest %}
-                    <div class="form-row col-md-12">
-                        <div class="form-group col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
                             <input type="checkbox"
                                    name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVE_CREDIT_CARD') }}"
                                    id="saveCreditCard"
@@ -78,8 +78,8 @@
                     </div>
                 {% endif %}
 
-                <div class="form-row col-md-12">
-                    <div class="form-group col-md-12" >
+                <div class="row">
+                    <div class="col-md-12" >
                         <div id="iframeErrorOutput" class="alert alert-warning" role="alert" style="display: none;">
                             {{ "PayonePayment.creditCard.iframeError" | trans }}
                         </div>
