@@ -13,13 +13,13 @@
     </div>
 
     {% block page_checkout_confirm_payone_card_content_ideal %}
-        <div class="form-row">
+        <div class="row">
             <div class="col-12">
                 <label class="form-label" for="idealBankGroup">
                     {{ "PayonePayment.ideal.bankGroupFieldLabel" | trans }}{{ "general.required" | trans }}
                 </label>
             </div>
-            <div class="form-group {% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
+            <div class="{% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
                 <select
                     id="idealBankGroup"
                     name="idealBankGroup"
