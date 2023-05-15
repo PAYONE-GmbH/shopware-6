@@ -51,19 +51,13 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     final public const TRANSACTION_TYPE_GT = 'GT';
 
-    private readonly StateMachineRegistry $stateMachineRegistry;
-
-    private readonly EntityRepository $transactionRepository;
-
     public function __construct(
-        StateMachineRegistry $stateMachineRegistry,
+        private readonly StateMachineRegistry $stateMachineRegistry,
         private readonly ConfigReaderInterface $configReader,
-        EntityRepository $transactionRepository,
+        private readonly EntityRepository $transactionRepository,
         private readonly LoggerInterface $logger,
         private readonly CurrencyPrecisionInterface $currencyPrecision
     ) {
-        $this->stateMachineRegistry = $stateMachineRegistry;
-        $this->transactionRepository = $transactionRepository;
     }
 
     public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, PaymentTransaction $paymentTransaction, array $transactionData): void

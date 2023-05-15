@@ -17,14 +17,11 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class InstallmentService implements InstallmentServiceInterface
 {
-    private readonly CartService $cartService;
-
     public function __construct(
-        CartService $cartService,
+        private readonly CartService $cartService,
         private readonly PayoneClientInterface $client,
         private readonly RequestParameterFactory $requestParameterFactory
     ) {
-        $this->cartService = $cartService;
     }
 
     public function getInstallmentOptions(SalesChannelContext $salesChannelContext, ?RequestDataBag $dataBag = null): SecuredInstallmentOptionsData

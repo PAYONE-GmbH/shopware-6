@@ -12,11 +12,8 @@ class ConfigReader implements ConfigReaderInterface
 {
     final public const SYSTEM_CONFIG_DOMAIN = 'PayonePayment.settings.';
 
-    private readonly SystemConfigService $systemConfigService;
-
-    public function __construct(SystemConfigService $systemConfigService)
+    public function __construct(private readonly SystemConfigService $systemConfigService)
     {
-        $this->systemConfigService = $systemConfigService;
     }
 
     public static function getConfigKeyByPaymentHandler(string $paymentHandler, string $configuration): string
