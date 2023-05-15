@@ -21,8 +21,9 @@ jobs:
     name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
     services:
       mysql:
-        image: mysql:5.7.38
+        image: mysql:8.0
         env:
+          MYSQL_DATABASE: shopware
           MYSQL_ROOT_PASSWORD: root
         ports:
           - 3306:3306
