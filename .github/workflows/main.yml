@@ -16,13 +16,15 @@ jobs:
       max-parallel: 15
       fail-fast: false
       matrix:
-        php-versions: [ '7.4', '8.0' ]
-        shopware-versions: [ 'v6.4.0.0', 'v6.4.1.0', 'v6.4.2.0', 'v6.4.3.0', 'v6.4.4.0', 'v6.4.5.0', 'v6.4.6.0', 'v6.4.7.0', 'v6.4.8.0', 'v6.4.9.0', 'v6.4.10.0', 'v6.4.11.0', 'v6.4.12.0', 'v6.4.13.0', 'v6.4.14.0', 'v6.4.15.0', 'v6.4.16.0', 'v6.4.17.0', 'v6.4.18.0', 'v6.4.19.0', 'v6.4.20.0' ]
-    name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
+        php-versions: [ '8.1', '8.2' ]
+        mysql-versions: [ '5.7', '8.0' ]
+        shopware-versions: [ 'v6.5.0.0' ]
+    name: SW ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }}, MySQL ${{ matrix.mysql-versions }}
     services:
       mysql:
-        image: mysql:5.7.38
+        image: mysql:${{ matrix.mysql-versions }}
         env:
+          MYSQL_DATABASE: shopware
           MYSQL_ROOT_PASSWORD: root
         ports:
           - 3306:3306
@@ -34,7 +36,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium
-          tools: composer:2.1.5
+          tools: composer:2.2
       - name: Check PHP Version
         run: php -v
       - name: Check Composer Version
@@ -47,16 +49,10 @@ jobs:
         run: composer ecs
       - name: SW-Install
         run: |
-          mkdir -p /tmp/shopware
-          git clone --depth 1 --single-branch -b ${{ matrix.shopware-versions }} https://github.com/shopware/development /tmp/shopware
-          printf "const:\n    APP_ENV: \"dev\"\n    APP_URL: \"http://localhost\"\n    DB_HOST: \"127.0.0.1\"\n    DB_PORT: \"3306\"\n    DB_NAME: \"shopware\"\n    DB_USER: \"root\"\n    DB_PASSWORD: \"root\"" > /tmp/shopware/.psh.yaml.override
-          rm -rf /tmp/shopware/platform
-          git clone --depth 1 --single-branch -b ${{ matrix.shopware-versions }} https://github.com/shopware/platform /tmp/shopware/platform
+          composer create-project shopware/production:${{ matrix.shopware-versions }} /tmp/shopware
           cd /tmp/shopware
-          php psh.phar init
-          cd /tmp/shopware/vendor/shopware/platform
-          wget https://github.com/shopware/platform/commit/0e6cbc24383f0123c01f59bd9aae0a49ce739cca.patch
-          patch -p1 -N < 0e6cbc24383f0123c01f59bd9aae0a49ce739cca.patch || true
+          printf "APP_ENV=dev\nAPP_URL=http://localhost\nDATABASE_URL=mysql://root:root@127.0.0.1:3306/shopware" > /tmp/shopware/.env.local
+          php bin/console system:install --basic-setup
       - name: Install plugin
         run: |
           mkdir -p /tmp/shopware/custom/plugins/PayonePayment
