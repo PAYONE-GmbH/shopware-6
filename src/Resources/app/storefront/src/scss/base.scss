@@ -1,9 +1,13 @@
-$payone-input-gutter: 1.9rem;
+$payone-input-gutter: 1.8rem;
 $payone-logo-gutter: 1rem;
 
 .payone-payment {
     .card {
         margin-bottom: 1.5rem;
+    }
+
+    .consent-row {
+        margin-bottom: 1rem;
     }
 }
 
@@ -14,6 +18,12 @@ apple-pay-button {
     --apple-pay-button-padding: 0px 0px;
     --apple-pay-button-box-sizing: border-box;
     display: block;
+}
+
+.payone-payment.debit {
+    .debit-row {
+        margin-bottom: 1rem;
+    }
 }
 
 .payone-payment.credit-card {
@@ -42,6 +52,10 @@ apple-pay-button {
         height: calc(4em - #{$payone-logo-gutter});
         border: 1px solid transparent;
         margin: 0 auto;
+    }
+
+    .credit-card-input {
+        margin-bottom: 1rem;
     }
 }
 
