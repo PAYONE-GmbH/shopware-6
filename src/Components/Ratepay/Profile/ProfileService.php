@@ -28,19 +28,13 @@ class ProfileService implements ProfileServiceInterface
         PayoneRatepayInvoicingPaymentHandler::class => 'invoice',
     ];
 
-    private readonly SystemConfigService $systemConfigService;
-
-    private readonly CartService $cartService;
-
     public function __construct(
         private readonly PayoneClientInterface $client,
         private readonly RequestParameterFactory $requestParameterFactory,
-        SystemConfigService $systemConfigService,
+        private readonly SystemConfigService $systemConfigService,
         private readonly OrderFetcherInterface $orderFetcher,
-        CartService $cartService
+        private readonly CartService $cartService
     ) {
-        $this->systemConfigService = $systemConfigService;
-        $this->cartService = $cartService;
     }
 
     public function getProfile(ProfileSearch $profileSearch): ?Profile

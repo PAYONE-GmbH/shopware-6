@@ -12,11 +12,8 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class AbstractDeviceFingerprintService
 {
-    protected RequestStack $requestStack;
-
-    public function __construct(RequestStack $requestStack)
+    public function __construct(protected RequestStack $requestStack)
     {
-        $this->requestStack = $requestStack;
     }
 
     /**

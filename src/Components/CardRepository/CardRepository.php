@@ -16,11 +16,8 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class CardRepository implements CardRepositoryInterface
 {
-    private readonly EntityRepository $cardRepository;
-
-    public function __construct(EntityRepository $cardRepository)
+    public function __construct(private readonly EntityRepository $cardRepository)
     {
-        $this->cardRepository = $cardRepository;
     }
 
     public function saveCard(

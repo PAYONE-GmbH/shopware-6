@@ -19,15 +19,12 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class InstallmentService implements InstallmentServiceInterface
 {
-    private readonly CartService $cartService;
-
     public function __construct(
-        CartService $cartService,
+        private readonly CartService $cartService,
         private readonly PayoneClientInterface $client,
         private readonly RequestParameterFactory $requestParameterFactory,
         private readonly ProfileServiceInterface $profileService
     ) {
-        $this->cartService = $cartService;
     }
 
     public function getInstallmentCalculatorData(SalesChannelContext $salesChannelContext, ?RequestDataBag $dataBag = null): ?RatepayInstallmentCalculatorData
