@@ -15,11 +15,8 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class OrderFetcher implements OrderFetcherInterface
 {
-    private readonly EntityRepository $orderRepository;
-
-    public function __construct(EntityRepository $orderRepository)
+    public function __construct(private readonly EntityRepository $orderRepository)
     {
-        $this->orderRepository = $orderRepository;
     }
 
     public function getOrderById(string $orderId, Context $context): ?OrderEntity

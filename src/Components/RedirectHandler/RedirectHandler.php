@@ -13,14 +13,11 @@ use Symfony\Component\Routing\RouterInterface;
 
 class RedirectHandler
 {
-    private readonly Connection $connection;
-
-    private readonly RouterInterface $router;
-
-    public function __construct(Connection $connection, RouterInterface $router, private readonly string $appSecret = '')
-    {
-        $this->connection = $connection;
-        $this->router = $router;
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly RouterInterface $router,
+        private readonly string $appSecret = ''
+    ) {
     }
 
     public function encode(string $url): string
