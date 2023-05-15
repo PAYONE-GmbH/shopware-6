@@ -16,10 +16,10 @@ jobs:
       max-parallel: 15
       fail-fast: false
       matrix:
-        php-versions: [ '8.1' ]
+        php-versions: [ '8.1', '8.2' ]
         mysql-versions: [ '5.7', '8.0' ]
         shopware-versions: [ 'v6.5.0.0' ]
-    name: Shopware ${{ matrix.shopware-versions }} on PHP ${{ matrix.php-versions }}
+    name: Shopware ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }}, MySQL ${{ matrix.mysql-versions }}
     services:
       mysql:
         image: mysql:${{ matrix.mysql-versions }}
@@ -36,7 +36,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium
-          tools: composer:2.1.5
+          tools: composer:2
       - name: Check PHP Version
         run: php -v
       - name: Check Composer Version
