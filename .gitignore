@@ -3,9 +3,6 @@
 /src/apple-pay-cert/*
 !/src/apple-pay-cert/.gitkeep
 
-# shopware
-/src/Resources/public/static/
-
 # unit/style/etc.
 /.php_cs.cache
 /.phpunit.result.cache
