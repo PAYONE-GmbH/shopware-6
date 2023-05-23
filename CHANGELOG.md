@@ -345,6 +345,7 @@ New Features
 Bugfixes
 
 * Payla: fix typo in deviceFingerPrint
+* Klarna: change event name of submitting order to prevent default behavior
 
 Maintenance
 
