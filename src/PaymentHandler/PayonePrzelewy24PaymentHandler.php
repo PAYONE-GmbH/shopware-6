@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
@@ -11,20 +12,20 @@ class PayonePrzelewy24PaymentHandler extends AbstractAsynchronousPayonePaymentHa
 {
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        if (static::isNeverCapturable($payoneTransActionData)) {
+        if ($payoneTransActionData['authorizationType'] !== TransactionStatusService::AUTHORIZATION_TYPE_PREAUTHORIZATION) {
             return false;
         }
 
-        return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData);
+        return strtolower((string) $transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 
     public static function isRefundable(array $transactionData): bool
     {
-        if (static::isNeverRefundable($transactionData)) {
-            return false;
+        if ((float) $transactionData['receivable'] !== 0.0 && strtolower((string) $transactionData['txaction']) === TransactionStatusService::ACTION_CAPTURE) {
+            return true;
         }
 
-        return static::matchesIsRefundableDefaults($transactionData);
+        return strtolower((string) $transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 
     protected function getDefaultAuthorizationMethod(): string
