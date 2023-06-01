@@ -339,12 +339,26 @@ Maintenance
 # 4.2.1
 
 Bugfixes
- 
+
 * Fixed capture for Bancontact
 * Fixed typo in dfp snippet for Payla
 * Fixed txid in database
 * Fixed Klarna event name
- 
+
 Maintenance
- 
+
 * tested with 6.4.20.2
+
+# 5.0.0
+
+New Features
+
+* Added support for Shopware 6.5
+* Removed support for Shopware 6.4
+* General code optimizations implemented
+* If you use classes and functions of the plugin in your own plugins or extend code of the plugin, you should check your
+  code for functionality after the update, because some places were adjusted
+
+Maintenance
+
+* Tested with 6.5.0.0
