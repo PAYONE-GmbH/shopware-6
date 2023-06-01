@@ -351,3 +351,17 @@ Bugfixes
 Maintenance
 
 * add index for transaction-id in transaction-data table for better performance
+
+# 5.0.0
+
+New Features
+
+* Added support for Shopware 6.5
+* Removed support for Shopware 6.4
+* General code optimizations implemented
+* If you use classes and functions of the plugin in your own plugins or extend code of the plugin, you should check your
+  code for functionality after the update, because some places were adjusted
+
+Maintenance
+
+* Tested with 6.5.0.0

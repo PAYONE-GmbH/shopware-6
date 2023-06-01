@@ -212,14 +212,6 @@ Fehlerbehebung
  
 * Versandkosten zu einzelnen Artikeln hinzugefügt
 * Fehler in Regel zur Entfernung des gesicherten Rechnungskaufs behoben
- 
-Wartung
-
-# 4.1.0
- 
-* Umbenennung der Zahlungsarten
-* PAYONE Logo ausgetauscht
-* Getestet mit 6.4.12
 
 # 3.3.0
 
@@ -330,3 +322,16 @@ Wartung
 * Geburtstagsfeld aus der Zahlungsart offene Rechnung entfernt
 * iDEAL Bankliste geupdated
 * getestet mit 6.4.20
+
+# 5.0.0
+
+Neue Funktionen
+
+* Unterstützung für Shopware 6.5 hinzugefügt
+* Unterstützung für Shopware 6.4 aufgehoben
+* Allgemeine Code Optimierungen durchgeführt
+* Falls Sie Klassen und Funktionen des Plugins in eigenen Plugins nutzen oder Code des Plugins erweitern, sollten Sie Ihren Code nach dem Update auf Funktionalität prüfen, da einige Stellen angepasst wurden
+
+Wartung
+
+* Getestet mit 6.5.0.0
