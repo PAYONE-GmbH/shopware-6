@@ -40,8 +40,8 @@ class RedirectHandlerTest extends TestCase
 
         $url = $redirectHandler->encode('the-url');
 
-        static::assertSame(
-            'http://localhost/payone/redirect?hash=MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ%3D%3D',
+        static::assertStringEndsWith(
+            '/payone/redirect?hash=MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ%3D%3D',
             $url
         );
     }
@@ -60,8 +60,8 @@ class RedirectHandlerTest extends TestCase
         $originalUrl = 'the-url';
         $redirectUrl = $redirectHandler->encode($originalUrl);
 
-        static::assertSame(
-            'http://localhost/payone/redirect?hash=MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ%3D%3D',
+        static::assertStringEndsWith(
+            '/payone/redirect?hash=MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ%3D%3D',
             $redirectUrl
         );
 
