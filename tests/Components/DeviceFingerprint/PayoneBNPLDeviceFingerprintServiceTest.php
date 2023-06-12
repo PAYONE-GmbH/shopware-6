@@ -38,11 +38,11 @@ class PayoneBNPLDeviceFingerprintServiceTest extends AbstractDeviceFingerprintSe
 
     protected function getExpectedSnippet(string $token): string
     {
-        return '<script id="paylaDcs" type="text/javascript" src="<https://d.payla.io/dcs/e7yeryF2of8X/the-merchant-id/dcs.js"></script>
+        return '<script id="paylaDcs" type="text/javascript" src="https://d.payla.io/dcs/e7yeryF2of8X/the-merchant-id/dcs.js"></script>
              <script>
                 var paylaDcsT = paylaDcs.init("t", "' . $token . '");
              </script>
-            
-             <link id="paylaDcsCss" type="text/css" rel="stylesheet" href="<https://d.payla.io/dcs/dcs.css?st=' . $token . '&pi=e7yeryF2of8X&psi=the-merchant-id&e=t">';
+
+             <link id="paylaDcsCss" type="text/css" rel="stylesheet" href="https://d.payla.io/dcs/dcs.css?st=' . $token . '&pi=e7yeryF2of8X&psi=the-merchant-id&e=t">';
     }
 }

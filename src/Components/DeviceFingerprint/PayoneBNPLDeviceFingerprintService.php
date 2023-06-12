@@ -32,12 +32,12 @@ class PayoneBNPLDeviceFingerprintService extends AbstractDeviceFingerprintServic
     public function getDeviceIdentSnippet(string $deviceIdentToken, SalesChannelContext $salesChannelContext): string
     {
         return sprintf(
-            '<script id="paylaDcs" type="text/javascript" src="<https://d.payla.io/dcs/%1$s/%2$s/dcs.js"></script>
+            '<script id="paylaDcs" type="text/javascript" src="https://d.payla.io/dcs/%1$s/%2$s/dcs.js"></script>
              <script>
                 var paylaDcsT = paylaDcs.init("%3$s", "%4$s");
              </script>
-            
-             <link id="paylaDcsCss" type="text/css" rel="stylesheet" href="<https://d.payla.io/dcs/dcs.css?st=%4$s&pi=%1$s&psi=%2$s&e=%3$s">',
+
+             <link id="paylaDcsCss" type="text/css" rel="stylesheet" href="https://d.payla.io/dcs/dcs.css?st=%4$s&pi=%1$s&psi=%2$s&e=%3$s">',
             self::PAYLA_PARTNER_ID,
             $this->getPartnerMerchantId($salesChannelContext),
             $this->getEnvironment($salesChannelContext),
