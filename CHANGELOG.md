@@ -346,6 +346,7 @@ Bugfixes
 
 * Payla: fix typo in deviceFingerPrint
 * Klarna: change event name of submitting order to prevent default behavior
+* Secured Debit/Secured Installment: add validation for IBAN
 
 Maintenance
 
