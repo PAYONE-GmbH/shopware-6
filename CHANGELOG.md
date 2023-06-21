@@ -348,4 +348,4 @@ Bugfixes
 
 Maintenance
 
-*
+* add index for transaction-id in transaction-data table for better performance
