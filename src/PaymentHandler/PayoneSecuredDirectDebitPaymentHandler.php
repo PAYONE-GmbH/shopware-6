@@ -7,6 +7,7 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\DeviceFingerprint\AbstractDeviceFingerprintService;
+use PayonePayment\Components\Validator\Iban;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -19,6 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneSecuredDirectDebitPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
@@ -136,5 +138,14 @@ class PayoneSecuredDirectDebitPaymentHandler extends AbstractPayonePaymentHandle
         }
 
         return static::matchesIsRefundableDefaults($transactionData);
+    }
+
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    {
+        $definitions = parent::getValidationDefinitions($salesChannelContext);
+
+        $definitions['securedDirectDebitIban'] = [new NotBlank(), new Iban()];
+
+        return $definitions;
     }
 }

@@ -20,6 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneSecuredInstallmentPaymentHandler extends AbstractPayonePaymentHandler implements SynchronousPaymentHandlerInterface
@@ -119,7 +120,7 @@ class PayoneSecuredInstallmentPaymentHandler extends AbstractPayonePaymentHandle
     {
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
-        $definitions['securedInstallmentIban'] = [new Iban()];
+        $definitions['securedInstallmentIban'] = [new NotBlank(), new Iban()];
 
         return $definitions;
     }
