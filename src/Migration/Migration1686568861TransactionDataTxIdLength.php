@@ -19,16 +19,7 @@ class Migration1686568861TransactionDataTxIdLength extends MigrationStep
         // reduce max length of transaction-id
         $sql = 'ALTER TABLE `payone_payment_order_transaction_data` CHANGE `transaction_id` `transaction_id` VARCHAR(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;';
 
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-
-            return;
-        }
-
-        if (method_exists($connection, 'exec')) {
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void
