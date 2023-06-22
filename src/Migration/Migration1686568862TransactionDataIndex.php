@@ -19,16 +19,7 @@ class Migration1686568862TransactionDataIndex extends MigrationStep
         // add index for transaction-id
         $sql = 'ALTER TABLE `payone_payment_order_transaction_data` ADD INDEX(`transaction_id`);';
 
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-
-            return;
-        }
-
-        if (method_exists($connection, 'exec')) {
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void
