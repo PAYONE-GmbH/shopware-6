@@ -259,14 +259,14 @@ abstract class AbstractPaymentFilterTest extends TestCase
     protected static function assertInPaymentCollection(string $paymentHandler, PaymentMethodCollection $paymentMethods): void
     {
         static::assertSame(1, $paymentMethods->filter(
-            static fn(PaymentMethodEntity $paymentMethod) => $paymentMethod->getHandlerIdentifier() === $paymentHandler
+            static fn (PaymentMethodEntity $paymentMethod) => $paymentMethod->getHandlerIdentifier() === $paymentHandler
         )->count());
     }
 
     protected static function assertNotInPaymentCollection(string $paymentHandler, PaymentMethodCollection $paymentMethods): void
     {
         static::assertSame(0, $paymentMethods->filter(
-            static fn(PaymentMethodEntity $paymentMethod) => $paymentMethod->getHandlerIdentifier() === $paymentHandler
+            static fn (PaymentMethodEntity $paymentMethod) => $paymentMethod->getHandlerIdentifier() === $paymentHandler
         )->count());
     }
 }
