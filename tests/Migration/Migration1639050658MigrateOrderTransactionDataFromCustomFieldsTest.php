@@ -35,7 +35,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
         $orderTransaction = $order->getTransactions()->first();
 
         $customFields = [
-            'payone_transaction_id' => 'the-transaction-id',
+            'payone_transaction_id' => '123456789123456',
             $customFieldKey => $customFieldValue,
         ];
 
@@ -58,7 +58,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
         $payoneTransactionData = $this->getExtension($orderTransaction, $salesChannelContext->getContext());
 
         static::assertNotNull($payoneTransactionData);
-        static::assertSame('the-transaction-id', $payoneTransactionData->getTransactionId());
+        static::assertSame('123456789123456', $payoneTransactionData->getTransactionId());
         static::assertSame($expectedExtensionValue, $payoneTransactionData->$extensionGetter());
 
         $orderTransaction = $this->getOrderTransaction($orderTransaction->getId(), $salesChannelContext->getContext());
