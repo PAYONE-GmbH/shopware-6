@@ -35,7 +35,7 @@ abstract class AbstractKlarnaPaymentHandlerTest extends AbstractPaymentHandlerTe
 
         $paymentTransaction = $this->getPaymentTransaction(
             $this->createMock(OrderEntity::class),
-            \get_class($paymentHandler)
+            $paymentHandler::class
         );
 
         if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {

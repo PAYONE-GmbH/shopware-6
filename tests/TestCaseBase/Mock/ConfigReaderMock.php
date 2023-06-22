@@ -9,11 +9,8 @@ use PayonePayment\Struct\Configuration;
 
 class ConfigReaderMock implements ConfigReaderInterface
 {
-    private array $configuration;
-
-    public function __construct(array $configuration)
+    public function __construct(private readonly array $configuration)
     {
-        $this->configuration = $configuration;
     }
 
     public function read(string $salesChannelId = '', bool $fallback = true): Configuration

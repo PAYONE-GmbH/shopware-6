@@ -22,7 +22,7 @@ trait PaymentTransactionParameterBuilderTestTrait
             $this->getValidRequestAction()
         );
 
-        $builder = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = static::getContainer()->get($this->getParameterBuilder());
 
         TestCase::assertTrue($builder->supports($struct));
     }
@@ -35,7 +35,7 @@ trait PaymentTransactionParameterBuilderTestTrait
             $this->getInvalidRequestAction()
         );
 
-        $builder = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = static::getContainer()->get($this->getParameterBuilder());
 
         TestCase::assertFalse($builder->supports($struct));
     }
@@ -48,7 +48,7 @@ trait PaymentTransactionParameterBuilderTestTrait
             $this->getValidRequestAction()
         );
 
-        $builder = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = static::getContainer()->get($this->getParameterBuilder());
 
         TestCase::assertFalse($builder->supports($struct));
     }
@@ -61,7 +61,7 @@ trait PaymentTransactionParameterBuilderTestTrait
             AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
         );
 
-        $builder = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = static::getContainer()->get($this->getParameterBuilder());
 
         TestCase::assertFalse($builder->supports($struct));
     }

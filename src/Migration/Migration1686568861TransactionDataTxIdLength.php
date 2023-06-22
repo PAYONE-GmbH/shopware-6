@@ -11,7 +11,7 @@ class Migration1686568861TransactionDataTxIdLength extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1686568861;
+        return 1_686_568_861;
     }
 
     public function update(Connection $connection): void

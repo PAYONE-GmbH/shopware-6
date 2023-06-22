@@ -16,7 +16,7 @@ trait RatepayProfileParameterBuilderTestTrait
     public function testItSupportsValidProfileRequest(): void
     {
         $struct = $this->getRatepayProfileStruct($this->getValidPaymentHandler());
-        $builder = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = static::getContainer()->get($this->getParameterBuilder());
 
         TestCase::assertTrue($builder->supports($struct));
     }
@@ -28,7 +28,7 @@ trait RatepayProfileParameterBuilderTestTrait
             AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
         );
 
-        $builder = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = static::getContainer()->get($this->getParameterBuilder());
 
         TestCase::assertFalse($builder->supports($struct));
     }
@@ -36,7 +36,7 @@ trait RatepayProfileParameterBuilderTestTrait
     public function testItNotSupportsInvalidPaymentMethod(): void
     {
         $struct = $this->getRatepayProfileStruct(PayoneDebitPaymentHandler::class);
-        $builder = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = static::getContainer()->get($this->getParameterBuilder());
 
         TestCase::assertFalse($builder->supports($struct));
     }
@@ -49,7 +49,7 @@ trait RatepayProfileParameterBuilderTestTrait
             AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
         );
 
-        $builder = $this->getContainer()->get($this->getParameterBuilder());
+        $builder = static::getContainer()->get($this->getParameterBuilder());
 
         TestCase::assertFalse($builder->supports($struct));
     }

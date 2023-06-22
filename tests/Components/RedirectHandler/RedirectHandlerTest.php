@@ -25,10 +25,8 @@ class RedirectHandlerTest extends TestCase
         $connection->expects(static::once())->method('insert')->with(
             'payone_payment_redirect',
             static::callback(
-                static function (array $parameters): bool {
-                    return $parameters['hash'] === 'MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ=='
-                        && $parameters['url'] === 'the-url';
-                }
+                static fn(array $parameters): bool => $parameters['hash'] === 'MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ=='
+                    && $parameters['url'] === 'the-url'
             )
         );
 

@@ -56,7 +56,7 @@ class TransactionStatusWebhookHandlerFactory
                 new Criteria(),
                 Context::createDefaultContext()
             );
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             /** @phpstan-ignore-next-line */
             $entitySearchResult = new EntitySearchResult(0, new EntityCollection(array_filter([$transaction])), null, new Criteria(), Context::createDefaultContext());
         }

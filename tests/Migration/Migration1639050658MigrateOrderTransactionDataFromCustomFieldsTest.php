@@ -137,7 +137,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
             ['payone_financing_type', 'the-financing-type', 'getFinancingType', 'the-financing-type'],
             ['payone_capture_mode', 'the-capture-mode', 'getCaptureMode', 'the-capture-mode'],
             ['payone_clearing_bank_account', ['key' => 'value'], 'getClearingBankAccount', ['key' => 'value']],
-            ['payone_used_ratepay_shop_id', 88880103, 'getAdditionalData', ['used_ratepay_shop_id' => '88880103']],
+            ['payone_used_ratepay_shop_id', 88_880_103, 'getAdditionalData', ['used_ratepay_shop_id' => '88880103']],
         ];
     }
 

@@ -28,7 +28,7 @@ class SettingsTest extends TestCase
             static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPortalKey', $prefix)));
             //self::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sAuthorizationMethod', $prefix))); // is not supported by all methods
             //self::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sProvideNarrativeText', $prefix))); // is not supported by all methods
-            if (strpos($prefix, 'ratepay') === 0) {
+            if (str_starts_with((string) $prefix, 'ratepay')) {
                 // skip status checks
                 continue;
             }
@@ -53,22 +53,11 @@ class SettingsTest extends TestCase
 class ConfigKeyMatches extends Constraint
 {
     /**
-     * @var int|string
-     */
-    private $key;
-
-    /**
-     * @var int|string
-     */
-    private $value;
-
-    /**
      * @param int|string $key
+     * @param int|string $value
      */
-    public function __construct($key, $value)
+    public function __construct(private $key, private $value)
     {
-        $this->key = $key;
-        $this->value = $value;
     }
 
     /**
@@ -112,7 +101,7 @@ class ConfigKeyMatches extends Constraint
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    protected function failureDescription($other): string
+    protected function failureDescription(mixed $other): string
     {
         return 'an array ' . $this->toString();
     }
