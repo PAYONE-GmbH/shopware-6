@@ -2,10 +2,7 @@
 
 use Symfony\Component\Dotenv\Dotenv;
 
-$projectRoot = $_SERVER['PROJECT_ROOT'];
-if (!$projectRoot) {
-    die('Server variable PROJECT_ROOT is missing');
-}
+$projectRoot = $_SERVER['PROJECT_ROOT'] ?? dirname(__DIR__, 4);
 
 require_once $projectRoot . '/vendor/autoload.php';
 

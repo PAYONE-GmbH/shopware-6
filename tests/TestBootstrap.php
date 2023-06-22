@@ -17,12 +17,30 @@ if (is_readable(__DIR__ . '/../../../project/vendor/shopware/platform/src/Core/T
     require __DIR__ . '/TestBootstrapper.php';
 }
 
+// project-root
+$projectRoot = $_SERVER['PROJECT_ROOT'] ?? dirname(__DIR__, 4);
+
+// get classloader
+$expectedClassLoaderFiles = [
+    __DIR__ . '/../vendor/autoload.php',
+    $projectRoot . '/vendor/autoload.php',
+    __DIR__ . '/../../../../vendor/autoload.php',
+];
+$classLoaderFile = null;
+foreach ($expectedClassLoaderFiles as $_classLoaderFile) {
+    if (file_exists($_classLoaderFile)) {
+        $classLoaderFile = $_classLoaderFile;
+
+        break;
+    }
+}
+
 return (new TestBootstrapper())
-    ->setProjectDir($_SERVER['PROJECT_ROOT'] ?? dirname(__DIR__, 4))
+    ->setProjectDir($projectRoot)
     ->setLoadEnvFile(true)
     ->setForceInstallPlugins(true)
     ->addCallingPlugin()
     ->setDatabaseUrl($_SERVER['TEST_DATABASE_URL'] ?? null)
     ->bootstrap()
-    ->setClassLoader(require dirname(__DIR__) . '/vendor/autoload.php')
+    ->setClassLoader(require $classLoaderFile)
     ->getClassLoader();
