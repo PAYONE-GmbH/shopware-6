@@ -8,11 +8,8 @@ use Shopware\Core\Framework\Context;
 
 class NotificationForwardCommand
 {
-    private Context $context;
-
-    public function __construct(private array $notificationTargetIds, Context $context)
+    public function __construct(private array $notificationTargetIds, private Context $context)
     {
-        $this->context = $context;
     }
 
     public function getNotificationTargetIds(): array

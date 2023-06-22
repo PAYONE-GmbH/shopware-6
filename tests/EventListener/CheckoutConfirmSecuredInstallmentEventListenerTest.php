@@ -108,9 +108,7 @@ class CheckoutConfirmSecuredInstallmentEventListenerTest extends TestCase
     protected static function assertNotInPaymentCollection(string $paymentHandler, PaymentMethodCollection $paymentMethods): void
     {
         static::assertSame(0, $paymentMethods->filter(
-            static function (PaymentMethodEntity $paymentMethod) use ($paymentHandler) {
-                return $paymentMethod->getHandlerIdentifier() === $paymentHandler;
-            }
+            static fn(PaymentMethodEntity $paymentMethod) => $paymentMethod->getHandlerIdentifier() === $paymentHandler
         )->count());
     }
 }
