@@ -37,15 +37,13 @@ class NotificationForwardHandler implements WebhookHandlerInterface
 
     public function process(SalesChannelContext $salesChannelContext, Request $request): void
     {
-        $data = $request->request->all();
-
-        $paymentTransactionId = $this->getPaymentTransactionId((int) $data['txid'], $salesChannelContext);
+        $paymentTransactionId = $this->getPaymentTransactionId($request->request->getInt('txid'), $salesChannelContext);
 
         if ($paymentTransactionId === null) {
             return;
         }
 
-        $notificationTargets = $this->getRelevantNotificationTargets($data['txaction'], $salesChannelContext);
+        $notificationTargets = $this->getRelevantNotificationTargets($request->request->getAlnum('txaction'), $salesChannelContext);
 
         if ($notificationTargets === null) {
             return;
