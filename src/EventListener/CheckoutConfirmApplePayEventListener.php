@@ -35,7 +35,7 @@ class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
     }
 
     public function hideApplePayForNonSafariUsers(
-        AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
+        CheckoutConfirmPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|AccountEditOrderPageLoadedEvent $event
     ): void {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
