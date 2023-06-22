@@ -93,6 +93,11 @@ class PayonePayment extends Plugin
         $connection->executeStatement('DROP TABLE payone_payment_order_transaction_data');
     }
 
+    public function executeComposerCommands(): bool
+    {
+        return true;
+    }
+
     private function getRuleInstallerSecureInvoice(): RuleInstallerSecureInvoice
     {
         /** @var EntityRepository $ruleRepository */

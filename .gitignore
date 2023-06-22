@@ -13,3 +13,4 @@
 /cypress.json
 /package-lock.json
 /node_modules
+composer.lock
