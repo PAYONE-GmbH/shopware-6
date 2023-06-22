@@ -11,7 +11,7 @@ class Migration1686568862TransactionDataIndex extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1686568862;
+        return 1_686_568_862;
     }
 
     public function update(Connection $connection): void

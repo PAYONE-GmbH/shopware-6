@@ -23,13 +23,10 @@ class AccountOrderControllerDecorator extends StorefrontController
      */
     protected $decoratedController;
 
-    protected EntityRepository $orderRepository;
-
-    public function __construct(StorefrontController $decoratedController, EntityRepository $orderRepository)
+    public function __construct(StorefrontController $decoratedController, protected EntityRepository $orderRepository)
     {
         /** @phpstan-ignore-next-line */
         $this->decoratedController = $decoratedController;
-        $this->orderRepository = $orderRepository;
     }
 
     public function orderOverview(Request $request, SalesChannelContext $context): Response

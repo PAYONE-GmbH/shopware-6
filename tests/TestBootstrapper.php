@@ -191,7 +191,7 @@ class TestBootstrapper
         }
 
         $composer = json_decode((string) file_get_contents($pathToComposerJson), true);
-        $baseClass = $composer['extra']['shopware-plugin-class'] ?? '';
+        $baseClass = (string)($composer['extra']['shopware-plugin-class'] ?? '');
 
         if ($baseClass === '') {
             throw new \RuntimeException('composer.json does not contain `extra.shopware-plugin-class`. Path: ' . $pathToComposerJson);
@@ -275,7 +275,7 @@ class TestBootstrapper
             $connection->executeQuery('SELECT 1 FROM `plugin`')->fetchAll();
 
             return true;
-        } catch (\Throwable $exists) {
+        } catch (\Throwable) {
             return false;
         }
     }

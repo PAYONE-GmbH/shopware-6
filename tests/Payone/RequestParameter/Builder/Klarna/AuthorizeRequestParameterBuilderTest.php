@@ -37,7 +37,7 @@ class AuthorizeRequestParameterBuilderTest extends AbstractKlarna
 
         $service = $this->getContainer()->get(AuthorizeRequestParameterBuilder::class);
 
-        static::assertTrue($service->supports($struct), sprintf('%s::support() have to return true when passing instance of %s', \get_class($service), \get_class($struct)));
+        static::assertTrue($service->supports($struct), sprintf('%s::support() have to return true when passing instance of %s', $service::class, $struct::class));
         $parameters = $service->getRequestParameter($struct);
 
         static::assertArrayHasKey('request', $parameters);

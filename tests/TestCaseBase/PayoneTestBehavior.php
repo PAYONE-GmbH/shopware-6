@@ -58,7 +58,7 @@ trait PayoneTestBehavior
      */
     protected function fillCart(string $contextToken, float $totalPrice): Cart
     {
-        $cart = $this->getContainer()->get(CartService::class)->createNew($contextToken);
+        $cart = static::getContainer()->get(CartService::class)->createNew($contextToken);
 
         $productId = $this->createProduct($totalPrice);
         $cart->add(new LineItem('lineItem1', LineItem::PRODUCT_LINE_ITEM_TYPE, $productId));
@@ -73,8 +73,8 @@ trait PayoneTestBehavior
      */
     protected function createCartWithProduct(SalesChannelContext $context, float $itemPrice, int $qty): Cart
     {
-        $cartService = $this->getContainer()->get(CartService::class);
-        $cartItemCalculator = $this->getContainer()->get(Calculator::class);
+        $cartService = static::getContainer()->get(CartService::class);
+        $cartItemCalculator = static::getContainer()->get(Calculator::class);
 
         $cart = $cartService->createNew($context->getToken());
 
@@ -119,7 +119,7 @@ trait PayoneTestBehavior
             ],
         ];
 
-        $this->getContainer()->get('product.repository')->create([$product], Context::createDefaultContext());
+        static::getContainer()->get('product.repository')->create([$product], Context::createDefaultContext());
 
         return $productId;
     }
@@ -142,7 +142,7 @@ trait PayoneTestBehavior
             $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         }
 
-        $orderFetcher = $this->getContainer()->get(OrderFetcher::class);
+        $orderFetcher = static::getContainer()->get(OrderFetcher::class);
         $orderId = $this->placeRandomOrder($salesChannelContext);
 
         return $orderFetcher->getOrderById($orderId, $salesChannelContext->getContext());
@@ -279,7 +279,7 @@ trait PayoneTestBehavior
 
     protected function getPageLoader(): CheckoutConfirmPageLoader
     {
-        return $this->getContainer()->get(CheckoutConfirmPageLoader::class);
+        return static::getContainer()->get(CheckoutConfirmPageLoader::class);
     }
 
     protected function getRequestWithSession(array $sessionVariables): Request
