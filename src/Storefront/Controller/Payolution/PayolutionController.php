@@ -117,7 +117,7 @@ class PayolutionController extends StorefrontController
             if ($this->isPreCheckNeeded($cart, $dataBag, $context)) {
                 try {
                     $response = $this->client->request($checkRequest);
-                } catch (PayoneRequestException $exception) {
+                } catch (PayoneRequestException) {
                     throw new \RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
                 }
 

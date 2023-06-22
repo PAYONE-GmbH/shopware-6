@@ -8,7 +8,6 @@ use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 
 class ClassHelper
 {
-    
     /**
      * @return string[]
      */

@@ -36,7 +36,7 @@ trait ConfigurationHelper
         $criteria = new Criteria();
         $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('iso', 'DE')]));
         $countriesToDisable = $countryRepository->searchIds($criteria, $context);
-        $countryRepository->update(array_map(static fn(string $id) => [
+        $countryRepository->update(array_map(static fn (string $id) => [
             'id' => $id,
             'active' => false,
         ], $countriesToDisable->getIds()), $context);
