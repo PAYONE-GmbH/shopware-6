@@ -7,6 +7,7 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Components\Validator\Iban;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PayoneSecuredDirectDebitPaymentHandler extends AbstractSynchronousPayonePaymentHandler
