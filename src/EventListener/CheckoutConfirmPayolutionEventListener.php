@@ -69,7 +69,6 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
         );
     }
 
-
     private function companyDataHandlingIsDisabled(SalesChannelContext $context): bool
     {
         return !($this->getConfiguration($context, 'payolutionInvoicingTransferCompanyData'));
