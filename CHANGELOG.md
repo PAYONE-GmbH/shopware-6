@@ -338,17 +338,13 @@ Maintenance
 
 # 4.2.1
 
-New Features
-
-*
-
 Bugfixes
-
-* Payla: fix typo in deviceFingerPrint
-* Klarna: change event name of submitting order to prevent default behavior
-* Secured Debit/Secured Installment: add validation for IBAN
-* Postfinance: fix that capturing was not possible
-
+ 
+* Fixed capture for Bancontact
+* Fixed typo in dfp snippet for Payla
+* Fixed txid in database
+* Fixed Klarna event name
+ 
 Maintenance
-
-* add index for transaction-id in transaction-data table for better performance
+ 
+* tested with 6.4.20.2

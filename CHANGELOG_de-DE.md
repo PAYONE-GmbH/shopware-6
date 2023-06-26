@@ -311,6 +311,8 @@ Wartung
 
 # 4.2.0
 
+Neue Funktionen
+
 * Neue Zahlungsart: PAYONE WeChat Pay
 * Neue Zahlungsart: PAYONE Postfinance Card
 * Neue Zahlungsart: PAYONE Postfinance E-Finance
@@ -329,4 +331,17 @@ Wartung
 * Zahlungsartenfilter Technologie verbessert
 * Geburtstagsfeld aus der Zahlungsart offene Rechnung entfernt
 * iDEAL Bankliste geupdated
-* getestet mit 6.4.20
+* Getestet mit 6.4.20
+
+# 4.2.1
+
+Fehlerbehebung
+ 
+* Fehler beim Capture in Bancontact behoben
+* Schreibfehler in dfp snippet für Payla behoben
+* Fehler txid in Datenbank behoben
+* Fehler Klarna Eventname behoben
+ 
+Wartung
+ 
+* Getestet mit 6.4.20.2
