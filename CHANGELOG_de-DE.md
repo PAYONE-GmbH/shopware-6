@@ -337,6 +337,7 @@ Fehlerbehebung
 Wartung
 
 * Getestet mit 6.4.20.2
+
 # 5.0.0
 
 Neue Funktionen
@@ -348,4 +349,6 @@ Neue Funktionen
 
 Wartung
 
-* Getestet mit 6.5.0.0
+* Getestet mit 6.5.1.1
+* 1. Lauf getestet mit 6.5.2.1
+* 2. Lauf getestet mit 6.5.3.0
