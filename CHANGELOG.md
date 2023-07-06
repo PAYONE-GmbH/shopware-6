@@ -349,7 +349,7 @@ Maintenance
 
 * tested with 6.4.20.2
 
-# 5.0.0
+# 5.0.2
 
 New Features
 
