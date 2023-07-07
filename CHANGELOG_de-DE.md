@@ -350,5 +350,5 @@ Neue Funktionen
 Wartung
 
 * Getestet mit 6.5.1.1
-* 1. Lauf getestet mit 6.5.2.1
-* 2. Lauf getestet mit 6.5.3.0
+* 1er Lauf getestet mit 6.5.2.1
+* 2ter Lauf getestet mit 6.5.3.0
