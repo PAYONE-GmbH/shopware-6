@@ -362,5 +362,5 @@ New Features
 Maintenance
 
 * Tested with 6.5.1.1
-* 1. run tested with 6.5.2.1
-* 2. run tested with 6.5.3.0
+* 1st run tested with 6.5.2.1
+* 2nd run tested with 6.5.3.0
