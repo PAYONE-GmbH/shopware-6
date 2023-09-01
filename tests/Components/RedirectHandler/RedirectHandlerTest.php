@@ -8,6 +8,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Shopware\Core\DevOps\Environment\EnvironmentHelper;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -21,7 +22,7 @@ class RedirectHandlerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->appSecret = getenv('APP_SECRET');
+        $this->appSecret = EnvironmentHelper::getVariable('APP_SECRET', '');
     }
 
     protected function tearDown(): void

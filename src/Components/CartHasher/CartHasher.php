@@ -10,6 +10,7 @@ use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
+use Shopware\Core\DevOps\Environment\EnvironmentHelper;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -177,7 +178,7 @@ class CartHasher implements CartHasherInterface
             throw new \LogicException('could not generate hash');
         }
 
-        $secret = getenv('APP_SECRET');
+        $secret = EnvironmentHelper::getVariable('APP_SECRET', '');
 
         if (empty($secret)) {
             throw new \LogicException('empty app secret');

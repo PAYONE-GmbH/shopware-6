@@ -8,6 +8,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\DevOps\Environment\EnvironmentHelper;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -25,7 +26,7 @@ class RedirectHandler
 
     public function encode(string $url): string
     {
-        $secret = getenv('APP_SECRET');
+        $secret = EnvironmentHelper::getVariable('APP_SECRET', '');
 
         if (empty($secret)) {
             throw new \LogicException('empty app secret');
