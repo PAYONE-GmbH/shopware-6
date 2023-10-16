@@ -15,7 +15,7 @@ class PayonePaymentNotificationTargetEntity extends Entity
 
     protected bool $isBasicAuth = false;
 
-    protected string $txactions;
+    protected array $txactions;
 
     protected ?string $username = null;
 
@@ -41,12 +41,12 @@ class PayonePaymentNotificationTargetEntity extends Entity
         $this->isBasicAuth = $isBasicAuth;
     }
 
-    public function getTxactions(): string
+    public function getTxactions(): array
     {
         return $this->txactions;
     }
 
-    public function setTxactions(string $txactions): void
+    public function setTxactions(array $txactions): void
     {
         $this->txactions = $txactions;
     }
