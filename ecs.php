@@ -36,12 +36,6 @@ use PhpCsFixer\Fixer\Strict\DeclareStrictTypesFixer;
 use PhpCsFixer\Fixer\StringNotation\ExplicitStringVariableFixer;
 use PhpCsFixer\Fixer\Whitespace\BlankLineBeforeStatementFixer;
 use PhpCsFixer\Fixer\Whitespace\CompactNullableTypehintFixer;
-use PhpCsFixerCustomFixers\Fixer\NoImportFromGlobalNamespaceFixer;
-use PhpCsFixerCustomFixers\Fixer\NoSuperfluousConcatenationFixer;
-use PhpCsFixerCustomFixers\Fixer\NoUselessCommentFixer;
-use PhpCsFixerCustomFixers\Fixer\NoUselessParenthesisFixer;
-use PhpCsFixerCustomFixers\Fixer\NoUselessStrlenFixer;
-use PhpCsFixerCustomFixers\Fixer\SingleSpaceAfterStatementFixer;
 use Symplify\CodingStandard\Fixer\ArrayNotation\ArrayListItemNewlineFixer;
 use Symplify\CodingStandard\Fixer\ArrayNotation\ArrayOpenerAndCloserNewlineFixer;
 use Symplify\CodingStandard\Fixer\ArrayNotation\StandaloneLineInMultilineArrayFixer;
@@ -50,6 +44,12 @@ use Symplify\EasyCodingStandard\ValueObject\Option;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
 return static function (ECSConfig $ecsConfig): void {
+
+    $ecsConfig->paths([
+        __DIR__ . '/src',
+        __DIR__ . '/tests',
+    ]);
+
     $ecsConfig->sets([
         SetList::ARRAY,
         SetList::CONTROL_STRUCTURES,
@@ -75,12 +75,6 @@ return static function (ECSConfig $ecsConfig): void {
         DeclareStrictTypesFixer::class,
         BlankLineBeforeStatementFixer::class,
         CompactNullableTypehintFixer::class,
-        NoImportFromGlobalNamespaceFixer::class,
-        NoSuperfluousConcatenationFixer::class,
-        NoUselessCommentFixer::class,
-        SingleSpaceAfterStatementFixer::class,
-        NoUselessParenthesisFixer::class,
-        NoUselessStrlenFixer::class,
     ]);
 
     $ecsConfig->ruleWithConfiguration(ClassAttributesSeparationFixer::class, ['elements' => ['property' => 'one', 'method' => 'one']]);

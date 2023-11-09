@@ -9,8 +9,14 @@ on:
       - master
   workflow_dispatch:
 
+env:
+  MODULE_NAME: PayonePayment
+  COMPOSER_NAME: payone-gmbh/shopware-6
+  TEST_DATABASE_URL: "mysql://root:root@127.0.0.1:3306/shopware"
+
 jobs:
   ci-current:
+    name: SW ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }}, MySQL ${{ matrix.mysql-versions }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 15
@@ -19,7 +25,6 @@ jobs:
         php-versions: [ '8.1', '8.2' ]
         mysql-versions: [ '5.7', '8.0' ]
         shopware-versions: [ 'v6.5.0.0', 'v6.5.1.0', 'v6.5.2.0' ]
-    name: SW ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }}, MySQL ${{ matrix.mysql-versions }}
     services:
       mysql:
         image: mysql:${{ matrix.mysql-versions }}
@@ -28,46 +33,81 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
         ports:
           - 3306:3306
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@master
       - name: Install PHP
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium
+          extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium, pdo_mysql
           tools: composer:2.2
-      - name: Check PHP Version
+
+      - name: "Check PHP Version"
         run: php -v
-      - name: Check Composer Version
+
+      - name: "Check Composer Version"
         run: composer -V
-      - name: Check PHP Extensions
+
+      - name: "Check PHP Extensions"
         run: php -m
-      - name: Composer setup
-        run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --optimize-autoloader
-      - name: Codestyle
-        run: composer ecs
-      - name: SW-Install
+
+      - name: "checkout Shopware"
+        uses: actions/checkout@v3
+        with:
+          repository: shopware/production
+          ref: 'flex'
+
+      - name: "Checkout ${{ env.COMPOSER_NAME }}"
+        uses: actions/checkout@v3
+        with:
+          path: custom/plugins/${{ env.MODULE_NAME }}
+
+      - name: "Get composer cache directory"
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: "Cache Composer dependencies"
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ matrix.operating-system }}-${{ matrix.php-versions }}-${{ matrix.shopware-versions }}-${{ hashFiles('**/composer.lock') }}
+
+      - name: "Install Shopware dependencies"
+        # Install Shopware with --no-dev to prevent that dev-tools of the module got in conflict with the tools of shopware
         run: |
-          composer create-project shopware/production:flex-dev /tmp/shopware -s dev --no-install
-          composer req shopware/administration:${{ matrix.shopware-versions }} shopware/core:${{ matrix.shopware-versions }} shopware/elasticsearch:${{ matrix.shopware-versions }} shopware/storefront:${{ matrix.shopware-versions }} --no-update -d /tmp/shopware
-          composer update -d /tmp/shopware
-          cd /tmp/shopware
-          printf "APP_ENV=dev\nAPP_URL=http://localhost\nDATABASE_URL=mysql://root:root@127.0.0.1:3306/shopware" > /tmp/shopware/.env.local
-          php bin/console system:install --basic-setup
-      - name: Install plugin
+          composer req shopware/administration:${{ matrix.shopware-versions }} shopware/core:${{ matrix.shopware-versions }} shopware/elasticsearch:${{ matrix.shopware-versions }} shopware/storefront:${{ matrix.shopware-versions }} --no-update
+          composer install --no-dev
+
+      - name: "Install ${{ env.COMPOSER_NAME }}"
+        run: composer req ${{ env.COMPOSER_NAME }}
+
+      - name: "Install DEV-Tools"
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
         run: |
-          mkdir -p /tmp/shopware/custom/plugins/PayonePayment
-          cp -r * /tmp/shopware/custom/plugins/PayonePayment
-          cd /tmp/shopware
-          php bin/console plugin:refresh
-          php bin/console plugin:install --activate PayonePayment
-      - name: Static code analyze (phpstan)
-        run: PROJECT_ROOT=/tmp/shopware composer phpstan
-      - name: PHPUnit
+          composer remove shopware/* --no-update
+          composer install
+
+      - name: "Run PHPStan"
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
+        run: ./vendor/bin/phpstan
+
+      - name: "Check Code style (easy-coding-style)"
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
+        run: ./vendor/bin/ecs
+
+      - name: "Check Code style (rector)"
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
+        run: ./vendor/bin/rector --dry-run
+
+      - name: "Install Shopware"
         run: |
-          PROJECT_ROOT=/tmp/shopware \
-            TEST_DATABASE_URL="mysql://root:root@127.0.0.1:3306/shopware" \
-            /tmp/shopware/custom/plugins/PayonePayment/vendor/bin/phpunit \
-            --testdox \
-            --configuration /tmp/shopware/custom/plugins/PayonePayment/phpunit.xml.dist
+          echo APP_ENV=dev >> .env
+          echo APP_URL=http://localhost >> .env
+          echo DATABASE_URL=${{ env.TEST_DATABASE_URL }} >> .env
+          echo APP_SECRET=secretf0rt3st >> .env
+          bin/console system:install --basic-setup
+
+      - name: "Run PHPUnit Tests"
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
+        run: ./vendor/bin/phpunit --testdox
+

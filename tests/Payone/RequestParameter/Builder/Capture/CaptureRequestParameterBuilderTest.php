@@ -8,6 +8,7 @@ use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
+use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
@@ -323,5 +324,26 @@ class CaptureRequestParameterBuilderTest extends TestCase
         $parameters = $builder->getRequestParameter($struct);
 
         static::assertNull($parameters['capturemode']);
+    }
+
+    public function testItRemovesCaptureModeForPaymentHandlers(): void
+    {
+        $dataBag = new RequestDataBag([
+            'amount' => 100,
+            'complete' => false,
+        ]);
+
+        $paymentHandlers = [...PaymentHandlerGroups::BNPL, ...PaymentHandlerGroups::POSTFINANCE];
+
+        foreach ($paymentHandlers as $handler) {
+            $struct = $this->getFinancialTransactionStruct(
+                $dataBag,
+                $handler,
+                AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
+            );
+
+            $builder = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
+            static::assertArrayNotHasKey('capturemode', $builder->getRequestParameter($struct), sprintf('For the payment-handler `%s` no capture mode should be returned.', $handler));
+        }
     }
 }
