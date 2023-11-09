@@ -24,5 +24,3 @@ parameters:
         -   # This only occurs in Shopware < 6.4.4.0
             message: "#Strict comparison using === between string and null will always evaluate to false#"
             path: src/Payone/RequestParameter/Builder/CustomerRequestParameterBuilder.php
-        -   # ignores errors for deprecated message-system
-            message: "#.*deprecated.*AsMessageHandler.*#"

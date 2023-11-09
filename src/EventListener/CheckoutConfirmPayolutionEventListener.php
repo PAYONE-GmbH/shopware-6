@@ -43,21 +43,15 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
         $paymentMethods = $page->getPaymentMethods();
         $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionInstallment::UUID);
 
-        if ($this->companyNameMissing($event->getSalesChannelContext(), PayonePayolutionInvoicingPaymentHandler::class)) {
-            $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionInvoicing::UUID);
-        }
-
-        if ($this->companyNameMissing($event->getSalesChannelContext(), PayonePayolutionDebitPaymentHandler::class)) {
-            $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionDebit::UUID);
-        }
-
-        if ($this->companyNameMissing($event->getSalesChannelContext(), PayonePayolutionInstallmentPaymentHandler::class)) {
-            $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionInstallment::UUID);
-        }
+        /* Remove Payolution payment methods if company name is missing */
+        $paymentMethods = $this->removePaymentMethodIfMissing($paymentMethods, $event->getSalesChannelContext(), PayonePayolutionInvoicingPaymentHandler::class, PayonePayolutionInvoicing::UUID);
+        $paymentMethods = $this->removePaymentMethodIfMissing($paymentMethods, $event->getSalesChannelContext(), PayonePayolutionDebitPaymentHandler::class, PayonePayolutionDebit::UUID);
+        $paymentMethods = $this->removePaymentMethodIfMissing($paymentMethods, $event->getSalesChannelContext(), PayonePayolutionInstallmentPaymentHandler::class, PayonePayolutionInstallment::UUID);
 
         if ($this->companyDataHandlingIsDisabled($event->getSalesChannelContext())) {
             $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionInvoicing::UUID);
         }
+
 
         $page->setPaymentMethods($paymentMethods);
     }
@@ -67,6 +61,19 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
         return $paymentMethods->filter(
             static fn (PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId
         );
+    }
+
+    private function removePaymentMethodIfMissing(
+        PaymentMethodCollection $paymentMethods,
+        SalesChannelContext $context,
+        string $paymentHandlerClass,
+        string $paymentMethodUUID
+    ): PaymentMethodCollection|array {
+        if ($this->companyNameMissing($context, $paymentHandlerClass)) {
+            return $this->removePaymentMethod($paymentMethods, $paymentMethodUUID);
+        }
+
+        return $paymentMethods;
     }
 
     private function companyDataHandlingIsDisabled(SalesChannelContext $context): bool
@@ -79,7 +86,7 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
         return empty($this->getConfiguration($context, ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentHandler] . 'CompanyName'));
     }
 
-    private function getConfiguration(SalesChannelContext $context, string $configName): array|bool|int|string|null
+    private function getConfiguration(SalesChannelContext $context, $configName): array|bool|int|string
     {
         return $this->configReader->read($context->getSalesChannel()->getId())->get($configName);
     }

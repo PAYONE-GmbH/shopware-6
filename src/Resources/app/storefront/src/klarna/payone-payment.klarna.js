@@ -39,7 +39,7 @@ export default class PayonePaymentKlarna extends Plugin {
 
     _registerEventListeners() {
         if (this.orderForm) {
-            this.orderForm.addEventListener('beforeSubmit', this._handleOrderSubmit.bind(this));
+            this.orderForm.addEventListener('submit', this._handleOrderSubmit.bind(this));
         }
     }
 

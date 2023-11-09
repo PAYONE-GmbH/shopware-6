@@ -17,4 +17,8 @@ interface PaymentHandlerGroups
         PayoneSecuredInvoicePaymentHandler::class,
         PayoneSecuredInstallmentPaymentHandler::class,
     ];
+    public const POSTFINANCE = [
+        PayonePostfinanceCardPaymentHandler::class,
+        PayonePostfinanceWalletPaymentHandler::class,
+    ];
 }

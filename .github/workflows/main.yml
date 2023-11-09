@@ -54,8 +54,8 @@ jobs:
       - name: "checkout Shopware"
         uses: actions/checkout@v3
         with:
-          repository: shopware/platform
-          ref: ${{ matrix.shopware-versions }}
+          repository: shopware/production
+          ref: 'flex'
 
       - name: "Checkout ${{ env.COMPOSER_NAME }}"
         uses: actions/checkout@v3
@@ -73,44 +73,41 @@ jobs:
           key: ${{ matrix.operating-system }}-${{ matrix.php-versions }}-${{ matrix.shopware-versions }}-${{ hashFiles('**/composer.lock') }}
 
       - name: "Install Shopware dependencies"
-        run: composer install
+        # Install Shopware with --no-dev to prevent that dev-tools of the module got in conflict with the tools of shopware
+        run: |
+          composer req shopware/administration:${{ matrix.shopware-versions }} shopware/core:${{ matrix.shopware-versions }} shopware/elasticsearch:${{ matrix.shopware-versions }} shopware/storefront:${{ matrix.shopware-versions }} --no-update
+          composer install --no-dev
 
       - name: "Install ${{ env.COMPOSER_NAME }}"
         run: composer req ${{ env.COMPOSER_NAME }}
 
-      - name: "Install Tools"
-        # note: for some reason the file vendor/bin/ecs does exist and composer won't install the binary
+      - name: "Install DEV-Tools"
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
         run: |
-          rm vendor/bin/ecs
-          composer req phpstan/phpstan symplify/easy-coding-standard --dev
+          composer remove shopware/* --no-update
+          composer install
 
       - name: "Run PHPStan"
-        uses: php-actions/phpstan@v3
-        with:
-          php_version: ${{ matrix.php-versions }}
-          configuration: custom/plugins/${{ env.MODULE_NAME }}/phpstan.neon
-          memory_limit: -1
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
+        run: ./vendor/bin/phpstan
 
-      - name: "Check Code style"
-        run: ./vendor/bin/ecs check -c custom/plugins/${{ env.MODULE_NAME }}/ecs.php
+      - name: "Check Code style (easy-coding-style)"
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
+        run: ./vendor/bin/ecs
+
+      - name: "Check Code style (rector)"
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
+        run: ./vendor/bin/rector --dry-run
 
       - name: "Install Shopware"
         run: |
           echo APP_ENV=dev >> .env
           echo APP_URL=http://localhost >> .env
           echo DATABASE_URL=${{ env.TEST_DATABASE_URL }} >> .env
-          echo APP_SECRET=8583a6ff63c5894a3195331701749943 >> .env
+          echo APP_SECRET=secretf0rt3st >> .env
           bin/console system:install --basic-setup
 
-      - name: "Install plugin"
-        run: bin/console plugin:install --activate ${{ env.MODULE_NAME }}
-
       - name: "Run PHPUnit Tests"
-        # we will remove phpunit from project-root, to make sure that it will not be in conflict with the phpunit of the module
-        # in Line 2 we will remove all shopware packages from composer.json of the module and install all deps.
-        # with this we make sure that the tests/-folder got loaded with namespaces.
-        run: |
-          composer remove phpunit/phpunit
-          composer remove shopware/* -d custom/plugins/${{ env.MODULE_NAME }}
-          ./vendor/bin/phpunit --testdox -c custom/plugins/${{ env.MODULE_NAME }}/phpunit.xml.dist
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
+        run: ./vendor/bin/phpunit --testdox
 

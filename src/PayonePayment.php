@@ -20,6 +20,7 @@ use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 class PayonePayment extends Plugin
@@ -73,6 +74,11 @@ class PayonePayment extends Plugin
 
     public function uninstall(UninstallContext $uninstallContext): void
     {
+        if (!$this->container instanceof ContainerInterface) {
+            // symfony 6.4: variable has been set to ContainerInterface|null.
+            throw new \RuntimeException('container instance missing.');
+        }
+
         $this->getConfigInstaller()->uninstall($uninstallContext);
         $this->getCustomFieldInstaller()->uninstall($uninstallContext);
         $this->getPaymentMethodInstaller()->uninstall($uninstallContext);
@@ -100,6 +106,11 @@ class PayonePayment extends Plugin
 
     private function getRuleInstallerSecureInvoice(): RuleInstallerSecureInvoice
     {
+        if (!$this->container instanceof ContainerInterface) {
+            // symfony 6.4: variable has been set to ContainerInterface|null.
+            throw new \RuntimeException('container instance missing.');
+        }
+
         /** @var EntityRepository $ruleRepository */
         $ruleRepository = $this->container->get('rule.repository');
         /** @var EntityRepository $countryRepository */
@@ -119,6 +130,11 @@ class PayonePayment extends Plugin
 
     private function getConfigInstaller(): ConfigInstaller
     {
+        if (!$this->container instanceof ContainerInterface) {
+            // symfony 6.4: variable has been set to ContainerInterface|null.
+            throw new \RuntimeException('container instance missing.');
+        }
+
         /** @var SystemConfigService $systemConfigService */
         $systemConfigService = $this->container->get(SystemConfigService::class);
 
@@ -127,6 +143,11 @@ class PayonePayment extends Plugin
 
     private function getPaymentMethodInstaller(): PaymentMethodInstaller
     {
+        if (!$this->container instanceof ContainerInterface) {
+            // symfony 6.4: variable has been set to ContainerInterface|null.
+            throw new \RuntimeException('container instance missing.');
+        }
+
         /** @var PluginIdProvider $pluginIdProvider */
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
         /** @var EntityRepository $paymentMethodRepository */
@@ -149,6 +170,11 @@ class PayonePayment extends Plugin
 
     private function getCustomFieldInstaller(): CustomFieldInstaller
     {
+        if (!$this->container instanceof ContainerInterface) {
+            // symfony 6.4: variable has been set to ContainerInterface|null.
+            throw new \RuntimeException('container instance missing.');
+        }
+
         /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
         /** @var EntityRepository $customFieldRepository */
