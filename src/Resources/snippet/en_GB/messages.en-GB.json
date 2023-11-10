@@ -101,7 +101,7 @@
             },
             "consentCheckbox": {
                 "introduction": "With the transmission of the data necessary for the completion of the invoice purchase, an identity check and credit check to payolution GmbH, Am Euro Platz 2, 1120 Wien I agree.",
-                "textWithLink": "I can revoke my <a href=\"%link%\" data-url=\"%link%\" data-modal-class=\"payolution\" data-toggle=\"modal\" title=\"Einwilligung\">consent</a>  at any time with effect for the future."
+                "textWithLink": "I can revoke my <a data-toggle=\"modal\" data-bs-toggle=\"modal\" data-url=\"%link%\" href=\"%link%\" title=\"Einwilligung\">consent</a> at any time with effect for the future."
             },
             "mandateCheckbox": {
                 "textWithLink": "I hereby issue the <a href=\"%link%\" target=\"_blank\" title=\"Paysafe Pay Later SEPA mandate\">SEPA direct debit mandate</a>."
