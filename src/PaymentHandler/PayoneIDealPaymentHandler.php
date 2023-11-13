@@ -28,6 +28,8 @@ class PayoneIDealPaymentHandler extends AbstractAsynchronousPayonePaymentHandler
         'TRIODOS_BANK',
         'VAN_LANSCHOT_BANKIERS',
         'YOURSAFE',
+        'NATIONALE_NEDERLANDEN',
+        'N26',
     ];
 
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
@@ -36,7 +38,7 @@ class PayoneIDealPaymentHandler extends AbstractAsynchronousPayonePaymentHandler
             return false;
         }
 
-        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string)$transactionData['txaction']) : null;
 
         if ($txAction === TransactionStatusService::ACTION_PAID) {
             return true;
