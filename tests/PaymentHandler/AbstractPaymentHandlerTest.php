@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
@@ -34,8 +35,9 @@ abstract class AbstractPaymentHandlerTest extends TestCase
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $dataBag = $this->getSuccessfulRequestDataBag();
 
-        $dataHandler = $this->createMock(TransactionDataHandler::class);
-        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $requestFactory, $dataHandler);
+        $transactionDataHandler = $this->createMock(TransactionDataHandler::class);
+        $orderActionLogDataHandler = $this->createMock(OrderActionLogDataHandlerInterface::class);
+        $paymentHandler = $this->getPaymentHandler($client, $dataBag, $requestFactory, $transactionDataHandler, $orderActionLogDataHandler);
 
         $responseData = [
             'status' => 'REDIRECT',
@@ -59,7 +61,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
         );
 
         // test if the data handler got called, and if the basic information would be set on the order
-        $dataHandler->expects(static::once())->method('saveTransactionData')->with(
+        $transactionDataHandler->expects(static::once())->method('saveTransactionData')->with(
             static::anything(),
             static::anything(),
             static::callback(function ($transactionData) {
@@ -68,6 +70,8 @@ abstract class AbstractPaymentHandlerTest extends TestCase
                 return true;
             })
         );
+
+        $orderActionLogDataHandler->expects(static::once())->method('createOrderActionLog');
 
         $response = $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
 
@@ -240,7 +244,8 @@ abstract class AbstractPaymentHandlerTest extends TestCase
         PayoneClientInterface $client,
         RequestDataBag $dataBag,
         RequestParameterFactory $requestFactory,
-        ?TransactionDataHandlerInterface $dataHandler = null
+        ?TransactionDataHandlerInterface $transactionDataHandler = null,
+        ?OrderActionLogDataHandlerInterface $orderActionLogDataHandler = null
     ): AbstractPayonePaymentHandler;
 
     protected function performPayment(

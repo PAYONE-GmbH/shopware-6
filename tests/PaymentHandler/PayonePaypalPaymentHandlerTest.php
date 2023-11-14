@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\Currency\CurrencyPrecision;
+use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -69,6 +70,9 @@ class PayonePaypalPaymentHandlerTest extends TestCase
             'paypalAuthorizationMethod' => 'authorization',
         ]);
 
+        $orderActionLogDataHandler = $this->createMock(OrderActionLogDataHandlerInterface::class);
+        $orderActionLogDataHandler->expects(static::once())->method('createOrderActionLog');
+
         return new PayonePaypalPaymentHandler(
             $configReader,
             $this->createMock(EntityRepository::class),
@@ -76,6 +80,7 @@ class PayonePaypalPaymentHandlerTest extends TestCase
             $client,
             $translator,
             new TransactionDataHandler($this->createMock(EntityRepository::class), new CurrencyPrecision()),
+            $orderActionLogDataHandler,
             new PaymentStateHandler($translator),
             $requestFactory
         );

@@ -7,6 +7,7 @@ namespace PayonePayment\PaymentHandler;
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\CartHasher\CartHasher;
 use PayonePayment\Components\ConfigReader\ConfigReader;
+use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -96,7 +97,8 @@ abstract class AbstractKlarnaPaymentHandlerTest extends AbstractPaymentHandlerTe
         PayoneClientInterface $client,
         RequestDataBag $dataBag,
         RequestParameterFactory $requestFactory,
-        ?TransactionDataHandlerInterface $dataHandler = null
+        ?TransactionDataHandlerInterface $transactionDataHandler = null,
+        ?OrderActionLogDataHandlerInterface $orderActionLogDataHandler = null
     ): AbstractPayonePaymentHandler {
         $container = $this->getContainer();
         $className = $this->getKlarnaPaymentHandler();
@@ -107,7 +109,8 @@ abstract class AbstractKlarnaPaymentHandlerTest extends AbstractPaymentHandlerTe
             $container->get(RequestStack::class),
             $client,
             $container->get('translator'),
-            $dataHandler ?? $this->createMock(TransactionDataHandlerInterface::class),
+            $transactionDataHandler ?? $this->createMock(TransactionDataHandlerInterface::class),
+            $orderActionLogDataHandler ?? $this->createMock(OrderActionLogDataHandlerInterface::class),
             $container->get(PaymentStateHandler::class),
             $requestFactory,
             $this->createMock(CartHasher::class)

@@ -47,7 +47,13 @@ class PayoneApplePayPaymentHandler extends AbstractSynchronousPayonePaymentHandl
         ];
 
         $data = $this->preparePayoneOrderTransactionData($request, $response);
-        $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->orderActionLogDataHandler->createOrderActionLog(
+            $transaction->getOrder(),
+            $request,
+            $response,
+            $salesChannelContext->getContext()
+        );
     }
 
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool

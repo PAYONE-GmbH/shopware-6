@@ -61,7 +61,7 @@ class PayoneClient implements PayoneClientInterface
         ]);
 
         if (empty($data)) {
-            throw new PayoneRequestException('payone returned a empty response', $parameters, []);
+            throw new PayoneRequestException('payone returned an empty response', $parameters, []);
         }
 
         $response = array_change_key_case($data, \CASE_LOWER);
@@ -69,7 +69,7 @@ class PayoneClient implements PayoneClientInterface
         ksort($response, \SORT_NATURAL | \SORT_FLAG_CASE);
 
         if ($response['status'] === 'ERROR') {
-            throw new PayoneRequestException('payone returned a error', $parameters, $response);
+            throw new PayoneRequestException('payone returned an error', $parameters, $response);
         }
 
         return $response;

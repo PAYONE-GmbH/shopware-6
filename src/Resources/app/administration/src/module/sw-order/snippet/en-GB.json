@@ -5,6 +5,9 @@
         },
         "payone-payment": {
             "title": "PAYONE",
+            "tabGeneral": "General",
+            "tabOrderActionLog": "Order Action Protocol",
+            "tabWebhookLog": "Webhook Protocol",
             "paymentMethod": "Payment Method",
             "txid": "TXID",
             "transactionState": "State",
@@ -73,6 +76,57 @@
                     "product": "Product",
                     "quantity": "Quantity",
                     "price": "Price"
+                }
+            },
+            "general": {
+                "cardTitle": "General"
+            },
+            "orderActionLog": {
+                "cardTitle": "API-Log",
+                "columnTitleTransactionId": "Transaction ID",
+                "columnTitleReferenceNumber": "Reference Number",
+                "columnTitleRequest": "Request",
+                "columnTitleResponse": "Response",
+                "columnTitleAmount": "Amount",
+                "columnTitleRequestDateTime": "Date",
+                "columnTitleKey": "Field",
+                "columnTitleValue": "Value",
+                "contextMenu": {
+                    "openRequestDetails": "Open request details",
+                    "openResponseDetails": "Open response details"
+                },
+                "requestDetailsModal": {
+                    "title": "Request Details",
+                    "downloadButton": "Download request as .txt file"
+                },
+                "responseDetailsModal": {
+                    "title": "Response Details",
+                    "downloadButton": "Download response as .txt file"
+                },
+                "emptyState": {
+                    "title": "No API-Logs found",
+                    "subline": ""
+                }
+            },
+            "webhookLog": {
+                "cardTitle": "Transactionstatus-Log",
+                "columnTitleTransactionId": "Transaction ID",
+                "columnTitleTransactionState": "Status",
+                "columnTitleSequenceNumber": "Sequence Number",
+                "columnTitleClearingType": "Clearing Type",
+                "columnTitleWebhookDateTime": "Date",
+                "columnTitleKey": "Field",
+                "columnTitleValue": "Value",
+                "contextMenu": {
+                    "openWebhookDetails": "Open details"
+                },
+                "webhookDetailsModal": {
+                    "title": "Webhook Details",
+                    "downloadButton": "Download webhook as .txt file"
+                },
+                "emptyState": {
+                    "title": "No Transactionstatus-Logs found",
+                    "subline": ""
                 }
             }
         }

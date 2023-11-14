@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Components\Currency\CurrencyPrecision;
+use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
@@ -269,15 +270,16 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         RequestDataBag $dataBag,
         CardRepositoryInterface $cardRepository,
         RequestParameterFactory $requestFactory,
-        ?TransactionDataHandlerInterface $dataHandler = null
+        ?TransactionDataHandlerInterface $transactionDataHandler = null,
+        ?OrderActionLogDataHandlerInterface $orderActionLogDataHandler = null
     ): PayoneCreditCardPaymentHandler {
         $translator = $this->getContainer()->get('translator');
         $configReader = new ConfigReaderMock([
             'creditCardAuthorizationMethod' => 'preauthorization',
         ]);
 
-        if (!$dataHandler) {
-            $dataHandler = new TransactionDataHandler(
+        if (!$transactionDataHandler) {
+            $transactionDataHandler = new TransactionDataHandler(
                 $this->createMock(EntityRepository::class),
                 new CurrencyPrecision()
             );
@@ -289,7 +291,8 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             $this->getRequestStack($dataBag),
             $client,
             $translator,
-            $dataHandler,
+            $transactionDataHandler,
+            $orderActionLogDataHandler ?? $this->createMock(OrderActionLogDataHandlerInterface::class),
             new PaymentStateHandler($translator),
             $requestFactory,
             $cardRepository

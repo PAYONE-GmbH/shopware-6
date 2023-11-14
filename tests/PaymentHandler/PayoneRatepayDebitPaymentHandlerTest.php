@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\ConfigReader\ConfigReader;
+use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\DeviceFingerprint\RatepayDeviceFingerprintService;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -51,8 +52,8 @@ class PayoneRatepayDebitPaymentHandlerTest extends TestCase
             ]
         );
 
-        $dataHandler = $this->createMock(TransactionDataHandlerInterface::class);
-        $dataHandler->expects(static::once())->method('saveTransactionData')->with(
+        $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
+        $transactionDataHandler->expects(static::once())->method('saveTransactionData')->with(
             static::anything(),
             static::anything(),
             static::callback(static function ($transactionData) {
@@ -81,13 +82,17 @@ class PayoneRatepayDebitPaymentHandlerTest extends TestCase
             })
         );
 
+        $orderActionLogDataHandler = $this->createMock(OrderActionLogDataHandlerInterface::class);
+        $orderActionLogDataHandler->expects(static::once())->method('createOrderActionLog');
+
         $deviceFingerprintService = $this->createMock(RatepayDeviceFingerprintService::class);
         $deviceFingerprintService->expects(static::once())->method('deleteDeviceIdentToken');
 
         $dataBag = new RequestDataBag([]);
         $paymentHandler = $this->getPaymentHandler(
             $client,
-            $dataHandler,
+            $transactionDataHandler,
+            $orderActionLogDataHandler,
             $requestFactory,
             $deviceFingerprintService,
             $dataBag
@@ -128,8 +133,8 @@ class PayoneRatepayDebitPaymentHandlerTest extends TestCase
             ]
         );
 
-        $dataHandler = $this->createMock(TransactionDataHandlerInterface::class);
-        $dataHandler->expects(static::once())->method('saveTransactionData')->with(
+        $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
+        $transactionDataHandler->expects(static::once())->method('saveTransactionData')->with(
             static::anything(),
             static::anything(),
             static::callback(static function ($transactionData) {
@@ -158,13 +163,17 @@ class PayoneRatepayDebitPaymentHandlerTest extends TestCase
             })
         );
 
+        $orderActionLogDataHandler = $this->createMock(OrderActionLogDataHandlerInterface::class);
+        $orderActionLogDataHandler->expects(static::once())->method('createOrderActionLog');
+
         $deviceFingerprintService = $this->createMock(RatepayDeviceFingerprintService::class);
         $deviceFingerprintService->expects(static::once())->method('deleteDeviceIdentToken');
 
         $dataBag = new RequestDataBag([]);
         $paymentHandler = $this->getPaymentHandler(
             $client,
-            $dataHandler,
+            $transactionDataHandler,
+            $orderActionLogDataHandler,
             $requestFactory,
             $deviceFingerprintService,
             $dataBag
@@ -179,7 +188,8 @@ class PayoneRatepayDebitPaymentHandlerTest extends TestCase
 
     private function getPaymentHandler(
         PayoneClientInterface $client,
-        TransactionDataHandlerInterface $dataHandler,
+        TransactionDataHandlerInterface $transactionDataHandler,
+        OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
         RequestParameterFactory $requestFactory,
         RatepayDeviceFingerprintService $deviceFingerprintService,
         RequestDataBag $dataBag
@@ -190,7 +200,8 @@ class PayoneRatepayDebitPaymentHandlerTest extends TestCase
             $this->getRequestStack($dataBag),
             $client,
             $this->getContainer()->get('translator'),
-            $dataHandler,
+            $transactionDataHandler,
+            $orderActionLogDataHandler,
             $requestFactory,
             $deviceFingerprintService
         );

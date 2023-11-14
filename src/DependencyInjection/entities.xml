@@ -20,6 +20,14 @@
             <tag name="shopware.entity.definition" entity="payone_payment_notification_forward"/>
         </service>
 
+        <service id="PayonePayment\DataAbstractionLayer\Entity\OrderActionLog\PayonePaymentOrderActionLogDefinition">
+            <tag name="shopware.entity.definition" entity="payone_payment_order_action_log"/>
+        </service>
+
+        <service id="PayonePayment\DataAbstractionLayer\Entity\WebhookLog\PayonePaymentWebhookLogDefinition">
+            <tag name="shopware.entity.definition" entity="payone_payment_webhook_log"/>
+        </service>
+
         <service id="PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataDefinition">
             <tag name="shopware.entity.definition" entity="payone_payment_order_transaction_data"/>
         </service>

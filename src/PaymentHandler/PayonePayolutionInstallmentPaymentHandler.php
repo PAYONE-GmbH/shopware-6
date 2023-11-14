@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Components\Validator\PaymentMethod;
@@ -28,7 +29,8 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractSynchronousPayon
         RequestStack $requestStack,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
+        TransactionDataHandlerInterface $transactionDataHandler,
+        OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
         RequestParameterFactory $requestParameterFactory,
         protected CartHasherInterface $cartHasher
     ) {
@@ -38,7 +40,8 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractSynchronousPayon
             $requestStack,
             $client,
             $translator,
-            $dataHandler,
+            $transactionDataHandler,
+            $orderActionLogDataHandler,
             $requestParameterFactory
         );
     }

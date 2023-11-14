@@ -5,6 +5,9 @@
         },
         "payone-payment": {
             "title": "PAYONE",
+            "tabGeneral": "Allgemein",
+            "tabOrderActionLog": "API Protokoll",
+            "tabWebhookLog": "Webhook Protokoll",
             "paymentMethod": "Zahlungsart",
             "txid": "TXID",
             "transactionState": "Status",
@@ -73,6 +76,57 @@
                     "product": "Produkt",
                     "quantity": "Anzahl",
                     "price": "Preis"
+                }
+            },
+            "general": {
+                "cardTitle": "Allgemein"
+            },
+            "orderActionLog": {
+                "cardTitle": "API-Log",
+                "columnTitleTransactionId": "Transaktionsstatus",
+                "columnTitleReferenceNumber": "Referenznummer",
+                "columnTitleRequest": "Request",
+                "columnTitleResponse": "Response",
+                "columnTitleAmount": "Betrag",
+                "columnTitleRequestDateTime": "Datum",
+                "columnTitleKey": "Feld",
+                "columnTitleValue": "Wert",
+                "contextMenu": {
+                    "openRequestDetails": "Request Details öffnen",
+                    "openResponseDetails": "Response Details öffnen"
+                },
+                "requestDetailsModal": {
+                    "title": "Request Details",
+                    "downloadButton": "Request als .txt Datei herunterladen"
+                },
+                "responseDetailsModal": {
+                    "title": "Response Details",
+                    "downloadButton": "Response als .txt Datei herunterladen"
+                },
+                "emptyState": {
+                    "title": "Keine API-Logs gefunden",
+                    "subline": "Das Aufzeichnen der API-Logs wurde erst mit der Plugin Version 5.1.0 eingeführt, weshalb bei Bestellungen, die vor dem Update eingegangen sind, noch keine Logs vorhanden sind."
+                }
+            },
+            "webhookLog": {
+                "cardTitle": "Transaktionsstatus-Log",
+                "columnTitleTransactionId": "Transaktionsstatus",
+                "columnTitleTransactionState": "Status",
+                "columnTitleSequenceNumber": "Sequenznr.",
+                "columnTitleClearingType": "Zahlart",
+                "columnTitleWebhookDateTime": "Datum",
+                "columnTitleKey": "Feld",
+                "columnTitleValue": "Wert",
+                "contextMenu": {
+                    "openWebhookDetails": "Details öffnen"
+                },
+                "webhookDetailsModal": {
+                    "title": "Webhook Details",
+                    "downloadButton": "Webhook als .txt Datei herunterladen"
+                },
+                "emptyState": {
+                    "title": "Keine Transaktionsstatus-Logs gefunden",
+                    "subline": "Das Aufzeichnen der Transaktionsstatus-Logs wurde erst mit der Plugin Version 5.1.0 eingeführt, weshalb bei Bestellungen, die vor dem Update eingegangen sind, noch keine Logs vorhanden sind."
                 }
             }
         }
