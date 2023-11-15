@@ -107,6 +107,9 @@ class CardRepository implements CardRepositoryInterface
             new EqualsFilter('payone_payment_card.customerId', $customer->getId())
         );
 
-        return $this->cardRepository->search($criteria, $context)->first();
+        /** @var PayonePaymentCardEntity|null $card */
+        $card = $this->cardRepository->search($criteria, $context)->first();
+
+        return $card;
     }
 }

@@ -150,7 +150,10 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $criteria->addAssociation('addresses');
         $criteria->addAssociation('addresses.country');
 
-        return $this->orderRepository->search($criteria, $context)->first();
+        /** @var OrderEntity|null $order */
+        $order = $this->orderRepository->search($criteria, $context)->first();
+
+        return $order;
     }
 
     private function getCardType(ParameterBag $requestDataBag): string

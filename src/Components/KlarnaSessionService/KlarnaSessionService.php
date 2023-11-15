@@ -10,6 +10,7 @@ use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\KlarnaCreateSessionStruct;
 use PayonePayment\Storefront\Struct\CheckoutKlarnaSessionData;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
@@ -28,6 +29,7 @@ class KlarnaSessionService implements KlarnaSessionServiceInterface
     {
         if ($orderId) {
             $orderCriteria = $this->cartHasher->getCriteriaForOrder($orderId);
+            /** @var OrderEntity|null $order */
             $order = $this->orderEntityRepository->search($orderCriteria, $salesChannelContext->getContext())->first();
         }
 
