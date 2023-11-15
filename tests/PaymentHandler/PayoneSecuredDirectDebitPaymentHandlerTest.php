@@ -112,8 +112,7 @@ class PayoneSecuredDirectDebitPaymentHandlerTest extends TestCase
         $paymentHandler->pay(
             new SyncPaymentTransactionStruct(
                 $paymentTransaction->getOrderTransaction(),
-                $paymentTransaction->getOrder(),
-                ''
+                $paymentTransaction->getOrder()
             ),
             $dataBag,
             $salesChannelContext
