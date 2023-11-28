@@ -38,7 +38,7 @@ class PayoneIDealPaymentHandler extends AbstractAsynchronousPayonePaymentHandler
             return false;
         }
 
-        $txAction = isset($transactionData['txaction']) ? strtolower((string)$transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
 
         if ($txAction === TransactionStatusService::ACTION_PAID) {
             return true;
