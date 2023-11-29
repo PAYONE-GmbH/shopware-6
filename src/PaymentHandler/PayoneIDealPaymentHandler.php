@@ -28,6 +28,8 @@ class PayoneIDealPaymentHandler extends AbstractAsynchronousPayonePaymentHandler
         'TRIODOS_BANK',
         'VAN_LANSCHOT_BANKIERS',
         'YOURSAFE',
+        'NATIONALE_NEDERLANDEN',
+        'N26',
     ];
 
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
