@@ -18,7 +18,11 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractSynchronousPayoneP
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
         $definitions['payolutionConsent'] = [new NotBlank()];
-        $definitions['payolutionBirthday'] = [new NotBlank(), new Birthday(['value' => $this->getMinimumDate()])];
+
+        // if the customer has a company address, the birthday is not required
+        if ($salesChannelContext->getCustomer()?->getDefaultBillingAddress()?->getCompany() === null) {
+            $definitions['payolutionBirthday'] = [new NotBlank(), new Birthday(['value' => $this->getMinimumDate()])];
+        }
 
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
