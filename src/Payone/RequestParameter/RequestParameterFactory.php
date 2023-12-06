@@ -20,13 +20,10 @@ class RequestParameterFactory
     ];
 
     /**
-     * @var iterable<AbstractRequestParameterBuilder>
+     * @param AbstractRequestParameterBuilder[] $requestParameterBuilder
      */
-    private iterable $requestParameterBuilder;
-
-    public function __construct(iterable $requestParameterBuilder)
+    public function __construct(private readonly iterable $requestParameterBuilder)
     {
-        $this->requestParameterBuilder = $requestParameterBuilder;
     }
 
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
@@ -68,11 +65,9 @@ class RequestParameterFactory
         }
 
         $this->generateParameterHash($parameters);
-        $parameters['key'] = hash('md5', $parameters['key']);
+        $parameters['key'] = hash('md5', (string) $parameters['key']);
 
-        return array_filter($parameters, static function ($value) {
-            return $value !== null && $value !== '';
-        });
+        return array_filter($parameters, static fn ($value) => $value !== null && $value !== '');
     }
 
     private function generateParameterHash(array &$parameters): void
@@ -83,6 +78,6 @@ class RequestParameterFactory
             unset($data[$field]);
         }
 
-        $parameters['hash'] = strtolower(hash_hmac('sha384', implode('', $data), $parameters['key']));
+        $parameters['hash'] = strtolower(hash_hmac('sha384', implode('', $data), (string) $parameters['key']));
     }
 }

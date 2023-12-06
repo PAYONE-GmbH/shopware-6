@@ -8,7 +8,7 @@ use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInter
 use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetCollection;
 use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardCommand;
 use PayonePayment\Struct\PaymentTransaction;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -18,24 +18,12 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class NotificationForwardHandler implements WebhookHandlerInterface
 {
-    private EntityRepositoryInterface $notificationTargetRepository;
-
-    private EntityRepositoryInterface $notificationForwardRepository;
-
-    private TransactionDataHandlerInterface $transactionDataHandler;
-
-    private MessageBusInterface $messageBus;
-
     public function __construct(
-        EntityRepositoryInterface $notificationTargetRepository,
-        EntityRepositoryInterface $notificationForwardRepository,
-        TransactionDataHandlerInterface $transactionDataHandler,
-        MessageBusInterface $messageBus
+        private readonly EntityRepository $notificationTargetRepository,
+        private readonly EntityRepository $notificationForwardRepository,
+        private readonly TransactionDataHandlerInterface $transactionDataHandler,
+        private readonly MessageBusInterface $messageBus
     ) {
-        $this->notificationTargetRepository = $notificationTargetRepository;
-        $this->notificationForwardRepository = $notificationForwardRepository;
-        $this->transactionDataHandler = $transactionDataHandler;
-        $this->messageBus = $messageBus;
     }
 
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool
@@ -47,20 +35,15 @@ class NotificationForwardHandler implements WebhookHandlerInterface
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(SalesChannelContext $salesChannelContext, Request $request): void
     {
-        $data = $request->request->all();
-
-        $paymentTransactionId = $this->getPaymentTransactionId((int) $data['txid'], $salesChannelContext);
+        $paymentTransactionId = $this->getPaymentTransactionId($request->request->getInt('txid'), $salesChannelContext);
 
         if ($paymentTransactionId === null) {
             return;
         }
 
-        $notificationTargets = $this->getRelevantNotificationTargets($data['txaction'], $salesChannelContext);
+        $notificationTargets = $this->getRelevantNotificationTargets($request->request->getAlnum('txaction'), $salesChannelContext);
 
         if ($notificationTargets === null) {
             return;
@@ -77,6 +60,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
         string $paymentTransactionId,
         SalesChannelContext $salesChannelContext
     ): array {
+        /** @var array $data this annotation is required for rector */
         $data = $request->request->all();
         $notificationForwards = [];
 
@@ -112,7 +96,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
         $result = $notificationTargets->getEntities();
 
         if (!($result instanceof PayonePaymentNotificationTargetCollection)) {
-            throw new \LogicException('invalid collection type ' . \get_class($result));
+            throw new \LogicException('invalid collection type ' . $result::class);
         }
 
         return $result;
@@ -126,10 +110,6 @@ class NotificationForwardHandler implements WebhookHandlerInterface
             $txid
         );
 
-        if ($paymentTransaction === null) {
-            return null;
-        }
-
-        return $paymentTransaction->getOrderTransaction()->getId();
+        return $paymentTransaction?->getOrderTransaction()->getId();
     }
 }

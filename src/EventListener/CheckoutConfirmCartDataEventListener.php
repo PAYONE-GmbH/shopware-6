@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
+use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\Helper\OrderFetcherInterface;
 use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
@@ -18,23 +19,16 @@ use Shopware\Storefront\Page\Account\Order\AccountEditOrderPage;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPage;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
-use Shopware\Storefront\Page\Page;
-use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Process\Exception\LogicException;
 
 class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
 {
-    private OrderConverter $orderConverter;
-
-    private OrderFetcherInterface $orderFetcher;
-
     public function __construct(
-        OrderConverter $orderConverter,
-        OrderFetcherInterface $orderFetcher
+        private readonly OrderConverter $orderConverter,
+        private readonly OrderFetcherInterface $orderFetcher,
+        private readonly CurrencyPrecisionInterface $currencyPrecision
     ) {
-        $this->orderConverter = $orderConverter;
-        $this->orderFetcher = $orderFetcher;
     }
 
     public static function getSubscribedEvents(): array
@@ -45,10 +39,7 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param AccountEditOrderPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
-     */
-    public function addCartData(PageLoadedEvent $event): void
+    public function addCartData(AccountEditOrderPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event): void
     {
         $page = $event->getPage();
 
@@ -75,26 +66,26 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
                 'workOrderId' => $extension->getWorkorderId(),
                 'cartHash' => $extension->getCartHash(),
             ]);
-        }
 
-        $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+            $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+        }
     }
 
-    /**
-     * @param AccountEditOrderPage|CheckoutConfirmPage $page
-     */
-    private function hidePayonePaymentMethodsOnZeroAmountCart(Page $page, Cart $cart, SalesChannelContext $salesChannelContext): void
-    {
-        $totalAmount = (int) round($cart->getPrice()->getTotalPrice() * (10 ** $salesChannelContext->getCurrency()->getDecimalPrecision()));
+    private function hidePayonePaymentMethodsOnZeroAmountCart(
+        AccountEditOrderPage|CheckoutConfirmPage $page,
+        Cart $cart,
+        SalesChannelContext $salesChannelContext
+    ): void {
+        $totalAmount = $this->currencyPrecision->getRoundedItemAmount($cart->getPrice()->getTotalPrice(), $salesChannelContext->getCurrency());
 
         if ($totalAmount > 0) {
             return;
         }
 
         $page->setPaymentMethods(
-            $page->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) {
-                return mb_strpos($paymentMethod->getHandlerIdentifier(), PaymentMethodInstaller::HANDLER_IDENTIFIER_ROOT_NAMESPACE) === false;
-            })
+            $page->getPaymentMethods()->filter(
+                static fn (PaymentMethodEntity $paymentMethod) => !str_contains($paymentMethod->getHandlerIdentifier(), PaymentMethodInstaller::HANDLER_IDENTIFIER_ROOT_NAMESPACE)
+            )
         );
 
         $salesChannelContext->assign(['paymentMethods' => $page->getPaymentMethods()]);

@@ -17,20 +17,11 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AutomaticCaptureService implements AutomaticCaptureServiceInterface
 {
-    protected ConfigReaderInterface $configReader;
-
-    protected CaptureTransactionHandlerInterface $captureTransactionHandler;
-
-    protected LoggerInterface $logger;
-
     public function __construct(
-        ConfigReaderInterface $configReader,
-        CaptureTransactionHandlerInterface $captureTransactionHandler,
-        LoggerInterface $logger
+        protected ConfigReaderInterface $configReader,
+        protected CaptureTransactionHandlerInterface $captureTransactionHandler,
+        protected LoggerInterface $logger
     ) {
-        $this->configReader = $configReader;
-        $this->captureTransactionHandler = $captureTransactionHandler;
-        $this->logger = $logger;
     }
 
     public function captureIfPossible(PaymentTransaction $paymentTransaction, SalesChannelContext $salesChannelContext): void
@@ -86,14 +77,12 @@ class AutomaticCaptureService implements AutomaticCaptureServiceInterface
             'amount' => $order->getAmountTotal(),
             'complete' => true,
             'includeShippingCosts' => true,
-            'orderLines' => $orderLines->map(static function (OrderLineItemEntity $lineItem) {
-                return [
-                    'id' => $lineItem->getId(),
-                    'quantity' => $lineItem->getQuantity(),
-                    'unit_price' => $lineItem->getUnitPrice(),
-                    'selected' => false,
-                ];
-            }),
+            'orderLines' => $orderLines->map(static fn (OrderLineItemEntity $lineItem) => [
+                'id' => $lineItem->getId(),
+                'quantity' => $lineItem->getQuantity(),
+                'unit_price' => $lineItem->getUnitPrice(),
+                'selected' => false,
+            ]),
             'orderTransactionId' => $orderTransaction->getId(),
             'payone_order_id' => $payoneExtension->getTransactionId(),
             'salesChannel' => $salesChannelContext->getSalesChannel()->getVars(),

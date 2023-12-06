@@ -14,7 +14,7 @@ class Migration1638289341AddOrderTransActionDataTable extends MigrationStep
 
     public function getCreationTimestamp(): int
     {
-        return 1638289341;
+        return 1_638_289_341;
     }
 
     public function update(Connection $connection): void
@@ -49,12 +49,7 @@ class Migration1638289341AddOrderTransActionDataTable extends MigrationStep
             CONSTRAINT `json.payone_payment_order_transaction_data.clearing_bank_account` CHECK (JSON_VALID(`clearing_bank_account`))
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;';
 
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-        } elseif (method_exists($connection, 'exec')) {
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void

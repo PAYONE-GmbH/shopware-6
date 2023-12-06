@@ -6,24 +6,17 @@ namespace PayonePayment\ScheduledTask;
 
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
 
 class RedirectCleanUpHandler extends ScheduledTaskHandler
 {
-    private RedirectHandler $redirectHandler;
-
-    private LoggerInterface $logger;
-
     public function __construct(
-        EntityRepositoryInterface $scheduledTaskRepository,
-        RedirectHandler $redirectHandler,
-        LoggerInterface $logger
+        EntityRepository $scheduledTaskRepository,
+        private readonly RedirectHandler $redirectHandler,
+        private readonly LoggerInterface $logger
     ) {
         parent::__construct($scheduledTaskRepository);
-
-        $this->redirectHandler = $redirectHandler;
-        $this->logger = $logger;
     }
 
     public static function getHandledMessages(): iterable

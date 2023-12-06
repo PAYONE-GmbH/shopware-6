@@ -9,18 +9,14 @@ use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    protected LineItemHydratorInterface $lineItemHydrator;
-
-    protected EntityRepositoryInterface $currencyRepository;
-
-    public function __construct(LineItemHydratorInterface $lineItemHydrator, EntityRepositoryInterface $currencyRepository)
-    {
-        $this->lineItemHydrator = $lineItemHydrator;
-        $this->currencyRepository = $currencyRepository;
+    public function __construct(
+        protected LineItemHydratorInterface $lineItemHydrator,
+        protected EntityRepository $currencyRepository
+    ) {
     }
 
     /**

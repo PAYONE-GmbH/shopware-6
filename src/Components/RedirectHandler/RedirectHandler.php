@@ -13,25 +13,20 @@ use Symfony\Component\Routing\RouterInterface;
 
 class RedirectHandler
 {
-    private Connection $connection;
-
-    private RouterInterface $router;
-
-    public function __construct(Connection $connection, RouterInterface $router)
-    {
-        $this->connection = $connection;
-        $this->router = $router;
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly RouterInterface $router,
+        private readonly string $appSecret = ''
+    ) {
     }
 
     public function encode(string $url): string
     {
-        $secret = getenv('APP_SECRET');
-
-        if (empty($secret)) {
+        if (empty($this->appSecret)) {
             throw new \LogicException('empty app secret');
         }
 
-        $hash = base64_encode(hash_hmac('sha256', $url, $secret));
+        $hash = base64_encode(hash_hmac('sha256', $url, $this->appSecret));
 
         $this->connection->insert('payone_payment_redirect', [
             'id' => Uuid::randomBytes(),
@@ -51,12 +46,7 @@ class RedirectHandler
     {
         $query = 'SELECT url FROM payone_payment_redirect WHERE hash = ?';
 
-        if (method_exists($this->connection, 'fetchOne')) {
-            $url = $this->connection->fetchOne($query, [$hash]);
-        } elseif (method_exists($this->connection, 'fetchColumn')) {
-            /** @noinspection PhpDeprecationInspection */
-            $url = $this->connection->fetchColumn($query, [$hash]);
-        }
+        $url = $this->connection->fetchOne($query, [$hash]);
 
         if (empty($url)) {
             throw new \RuntimeException('no matching url for hash found');

@@ -40,7 +40,7 @@ use PayonePayment\PaymentMethod\PayoneWeChatPay;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -52,7 +52,7 @@ use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 
 class PaymentMethodInstaller implements InstallerInterface
 {
-    public const PAYMENT_METHOD_IDS = [
+    final public const PAYMENT_METHOD_IDS = [
         PayoneApplePay::class => '4cbc89a06e544c06b413a41d158f5e00',
         PayoneCreditCard::class => '37f90a48d9194762977c9e6db36334e0',
         PayoneDebit::class => '1b017bef157b4222b734659361d996fd',
@@ -86,9 +86,9 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneSecuredDirectDebit::class => '72c4c88b918441848e20081de67a16c4',
     ];
 
-    public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
+    final public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
 
-    public const PAYMENT_METHODS = [
+    final public const PAYMENT_METHODS = [
         PayoneApplePay::class,
         PayoneCreditCard::class,
         PayoneDebit::class,
@@ -122,7 +122,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneSecuredDirectDebit::class,
     ];
 
-    public const AFTER_ORDER_PAYMENT_METHODS = [
+    final public const AFTER_ORDER_PAYMENT_METHODS = [
         PayoneApplePay::class,
         PayoneCreditCard::class,
         PayoneDebit::class,
@@ -146,28 +146,13 @@ class PaymentMethodInstaller implements InstallerInterface
         PayonePostfinanceWallet::class,
     ];
 
-    private PluginIdProvider $pluginIdProvider;
-
-    private EntityRepositoryInterface $paymentMethodRepository;
-
-    private EntityRepositoryInterface $salesChannelRepository;
-
-    private EntityRepositoryInterface $paymentMethodSalesChannelRepository;
-
-    private Connection $connection;
-
     public function __construct(
-        PluginIdProvider $pluginIdProvider,
-        EntityRepositoryInterface $paymentMethodRepository,
-        EntityRepositoryInterface $salesChannelRepository,
-        EntityRepositoryInterface $paymentMethodSalesChannelRepository,
-        Connection $connection
+        private readonly PluginIdProvider $pluginIdProvider,
+        private readonly EntityRepository $paymentMethodRepository,
+        private readonly EntityRepository $salesChannelRepository,
+        private readonly EntityRepository $paymentMethodSalesChannelRepository,
+        private readonly Connection $connection
     ) {
-        $this->pluginIdProvider = $pluginIdProvider;
-        $this->paymentMethodRepository = $paymentMethodRepository;
-        $this->salesChannelRepository = $salesChannelRepository;
-        $this->paymentMethodSalesChannelRepository = $paymentMethodSalesChannelRepository;
-        $this->connection = $connection;
     }
 
     public function install(InstallContext $context): void
@@ -189,15 +174,8 @@ class PaymentMethodInstaller implements InstallerInterface
         // before any update procedures take place otherwise we would have a duplicate payment method.
         // This is also the reason why a migration is not a viable way here.
         if ($this->findPaymentMethodEntity('0b532088e2da3092f9f7054ec4009d18', $context->getContext())) {
-            if (method_exists($this->connection, 'executeStatement')) {
-                $this->connection->executeStatement("UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');");
-                $this->connection->executeStatement("UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');");
-            } elseif (method_exists($this->connection, 'exec')) {
-                /** @noinspection PhpDeprecationInspection */
-                $this->connection->exec("UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');");
-                /** @noinspection PhpDeprecationInspection */
-                $this->connection->exec("UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');");
-            }
+            $this->connection->executeStatement("UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');");
+            $this->connection->executeStatement("UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');");
         }
 
         foreach ($this->getPaymentMethods() as $paymentMethod) {
@@ -247,7 +225,7 @@ class PaymentMethodInstaller implements InstallerInterface
             'id' => $paymentMethod->getId(),
             'handlerIdentifier' => $paymentMethod->getPaymentHandler(),
             'pluginId' => $pluginId,
-            'afterOrderEnabled' => \in_array(\get_class($paymentMethod), self::AFTER_ORDER_PAYMENT_METHODS, true),
+            'afterOrderEnabled' => \in_array($paymentMethod::class, self::AFTER_ORDER_PAYMENT_METHODS, true),
         ];
 
         // Find existing payment method by ID for update / install decision
@@ -319,10 +297,6 @@ class PaymentMethodInstaller implements InstallerInterface
 
         $result = $this->paymentMethodRepository->search($criteria, $context);
 
-        if ($result->getTotal() === 0) {
-            return false;
-        }
-
-        return true;
+        return $result->getTotal() !== 0;
     }
 }

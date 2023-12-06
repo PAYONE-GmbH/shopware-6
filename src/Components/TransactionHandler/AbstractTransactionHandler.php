@@ -14,7 +14,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractTransactionHandler
 {
-    protected EntityRepositoryInterface $lineItemRepository;
+    protected EntityRepository $lineItemRepository;
 
     protected RequestParameterFactory $requestFactory;
 
@@ -30,7 +30,7 @@ abstract class AbstractTransactionHandler
 
     protected TransactionDataHandlerInterface $dataHandler;
 
-    protected EntityRepositoryInterface $transactionRepository;
+    protected EntityRepository $transactionRepository;
 
     protected Context $context;
 
@@ -183,7 +183,7 @@ abstract class AbstractTransactionHandler
         $requestContent = $requestResponse->getContent();
 
         if ($requestContent) {
-            $decodedResultContent = json_decode($requestContent, true);
+            $decodedResultContent = json_decode($requestContent, true, 512, \JSON_THROW_ON_ERROR);
         }
 
         return !empty($decodedResultContent) && $decodedResultContent['status'];

@@ -26,11 +26,8 @@ use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 
 class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    private LineItemHydratorInterface $lineItemHydrator;
-
-    public function __construct(LineItemHydratorInterface $lineItemHydrator)
+    public function __construct(private readonly LineItemHydratorInterface $lineItemHydrator)
     {
-        $this->lineItemHydrator = $lineItemHydrator;
     }
 
     /**
@@ -41,7 +38,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
         $paymentTransaction = $arguments->getPaymentTransaction();
         $currency = $paymentTransaction->getOrder()->getCurrency();
         $requestData = $arguments->getRequestData();
-        $orderLines = $requestData->get('orderLines', []);
+        $orderLines = $requestData->all('orderLines');
         $isCompleted = $requestData->get('complete', false);
         $includeShippingCosts = $requestData->get('includeShippingCosts', false);
 
@@ -65,7 +62,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
         if ($arguments->getAction() === self::REQUEST_ACTION_REFUND
             && \in_array($arguments->getPaymentMethod(), $paymentMethodsThatRequireNegativePriceForRefunds, true)) {
             foreach ($parameters as $key => &$parameter) {
-                if (strpos($key, 'pr[') === 0) {
+                if (str_starts_with($key, 'pr[')) {
                     $parameter *= -1;
                 }
             }

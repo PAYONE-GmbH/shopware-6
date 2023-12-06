@@ -17,20 +17,11 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class InstallmentService implements InstallmentServiceInterface
 {
-    private CartService $cartService;
-
-    private PayoneClientInterface $client;
-
-    private RequestParameterFactory $requestParameterFactory;
-
     public function __construct(
-        CartService $cartService,
-        PayoneClientInterface $client,
-        RequestParameterFactory $requestParameterFactory
+        private readonly CartService $cartService,
+        private readonly PayoneClientInterface $client,
+        private readonly RequestParameterFactory $requestParameterFactory
     ) {
-        $this->cartService = $cartService;
-        $this->client = $client;
-        $this->requestParameterFactory = $requestParameterFactory;
     }
 
     public function getInstallmentOptions(SalesChannelContext $salesChannelContext, ?RequestDataBag $dataBag = null): SecuredInstallmentOptionsData
@@ -45,7 +36,7 @@ class InstallmentService implements InstallmentServiceInterface
         if (isset($response['addpaydata']) && \is_array($response['addpaydata'])) {
             $optionIndices = [];
             foreach ($response['addpaydata'] as $key => $value) {
-                if (strpos($key, 'installment_option_id_') === 0) {
+                if (str_starts_with($key, 'installment_option_id_')) {
                     $parts = explode('_', $key);
                     $optionIndices[] = (int) end($parts);
                 }

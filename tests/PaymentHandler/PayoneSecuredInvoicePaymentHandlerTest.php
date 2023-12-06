@@ -101,11 +101,11 @@ class PayoneSecuredInvoicePaymentHandlerTest extends TestCase
     ): PayoneSecuredInvoicePaymentHandler {
         return new PayoneSecuredInvoicePaymentHandler(
             $this->getContainer()->get(ConfigReader::class),
+            $this->getContainer()->get('order_line_item.repository'),
+            $this->getRequestStack($dataBag),
             $client,
             $this->getContainer()->get('translator'),
             $dataHandler,
-            $this->getContainer()->get('order_line_item.repository'),
-            $this->getRequestStack($dataBag),
             $requestFactory,
             $deviceFingerprintService
         );

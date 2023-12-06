@@ -42,6 +42,7 @@
             <argument type="service" id="state_machine_transition.repository" />
             <argument type="service" id="PayonePayment\Util\Logger"/>
             <argument type="string">%kernel.project_dir%</argument>
+            <argument type="service" id="payment_method.repository" />
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -55,6 +56,9 @@
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
         </service>
 
         <service id="PayonePayment\Storefront\Controller\Account\AccountMandateController">
@@ -63,6 +67,9 @@
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
             </call>
         </service>
 
@@ -74,6 +81,9 @@
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
         </service>
 
         <service id="PayonePayment\Storefront\Controller\Debit\ManageMandateController">
@@ -82,6 +92,9 @@
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
             </call>
         </service>
 
@@ -95,6 +108,9 @@
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
             </call>
         </service>
 
@@ -114,6 +130,9 @@
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
         </service>
 
         <service id="PayonePayment\Storefront\Controller\Ratepay\RatepayController">
@@ -121,6 +140,9 @@
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
             </call>
         </service>
 

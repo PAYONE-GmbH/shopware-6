@@ -14,23 +14,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WebhookProcessor implements WebhookProcessorInterface
 {
-    private ConfigReaderInterface $configReader;
-
     /**
      * @var WebhookHandlerInterface[]
      */
-    private array $handlers;
-
-    private LoggerInterface $logger;
+    private readonly array $handlers;
 
     public function __construct(
-        ConfigReaderInterface $configReader,
+        private readonly ConfigReaderInterface $configReader,
         \IteratorAggregate $handlers,
-        LoggerInterface $logger
+        private readonly LoggerInterface $logger
     ) {
-        $this->configReader = $configReader;
         $this->handlers = iterator_to_array($handlers);
-        $this->logger = $logger;
     }
 
     public function process(SalesChannelContext $salesChannelContext, Request $request): Response
@@ -60,7 +54,7 @@ class WebhookProcessor implements WebhookProcessorInterface
 
         foreach ($this->handlers as $handler) {
             if (!$handler->supports($salesChannelContext, $data)) {
-                $this->logger->debug(sprintf('Skipping webhook handler %s', \get_class($handler)), $data);
+                $this->logger->debug(sprintf('Skipping webhook handler %s', $handler::class), $data);
 
                 continue;
             }
@@ -68,9 +62,9 @@ class WebhookProcessor implements WebhookProcessorInterface
             try {
                 $handler->process($salesChannelContext, $request);
 
-                $this->logger->info(sprintf('Processed webhook handler %s', \get_class($handler)), $data);
+                $this->logger->info(sprintf('Processed webhook handler %s', $handler::class), $data);
             } catch (\Exception $exception) {
-                $this->logger->error(sprintf('Error during processing of webhook handler %s', \get_class($handler)), [
+                $this->logger->error(sprintf('Error during processing of webhook handler %s', $handler::class), [
                     'message' => $exception->getMessage(),
                     'file' => $exception->getFile(),
                     'line' => $exception->getLine(),

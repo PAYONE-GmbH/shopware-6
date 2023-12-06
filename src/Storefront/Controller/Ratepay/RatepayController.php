@@ -5,31 +5,25 @@ declare(strict_types=1);
 namespace PayonePayment\Storefront\Controller\Ratepay;
 
 use PayonePayment\Components\Ratepay\Installment\InstallmentServiceInterface;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class RatepayController extends StorefrontController
 {
-    private InstallmentServiceInterface $installmentService;
-
-    public function __construct(InstallmentServiceInterface $installmentService)
+    public function __construct(private readonly InstallmentServiceInterface $installmentService)
     {
-        $this->installmentService = $installmentService;
     }
 
-    /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/ratepay/installment/calculation", name="frontend.payone.ratepay.installment.calculation", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
-     */
+    #[Route(path: '/payone/ratepay/installment/calculation', name: 'frontend.payone.ratepay.installment.calculation', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
     public function calculation(RequestDataBag $dataBag, SalesChannelContext $context): Response
     {
         try {
             $installmentPlan = $this->installmentService->getInstallmentCalculatorData($context, $dataBag);
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             throw new \RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 

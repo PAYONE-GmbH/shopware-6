@@ -14,13 +14,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 trait ConfigurationHelper
 {
-    /**
-     * @param array|bool|float|int|string|null $configValue
-     */
     protected function setPayoneConfig(
         ContainerInterface $container,
         string $configKey,
-        $configValue
+        array|bool|float|int|string|null $configValue
     ): void {
         $systemConfigService = $container->get(SystemConfigService::class);
         $systemConfigService->set('PayonePayment.settings.' . $configKey, $configValue);
@@ -39,12 +36,10 @@ trait ConfigurationHelper
         $criteria = new Criteria();
         $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('iso', 'DE')]));
         $countriesToDisable = $countryRepository->searchIds($criteria, $context);
-        $countryRepository->update(array_map(static function (string $id) {
-            return [
-                'id' => $id,
-                'active' => false,
-            ];
-        }, $countriesToDisable->getIds()), $context);
+        $countryRepository->update(array_map(static fn (string $id) => [
+            'id' => $id,
+            'active' => false,
+        ], $countriesToDisable->getIds()), $context);
 
         $configurations = $this->getValidRatepayProfileConfigurations();
 

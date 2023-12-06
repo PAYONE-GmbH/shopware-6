@@ -35,10 +35,12 @@ use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityD
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Test\TestCaseBase\SessionTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
+use Shopware\Core\Test\TestDefaults;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoader;
 use Shopware\Storefront\Test\Page\StorefrontPageTestBehaviour;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -49,13 +51,14 @@ trait PayoneTestBehavior
 {
     use IntegrationTestBehaviour;
     use StorefrontPageTestBehaviour;
+    use SessionTestBehaviour;
 
     /**
      * @deprecated use `createCartWithProduct`
      */
     protected function fillCart(string $contextToken, float $totalPrice): Cart
     {
-        $cart = $this->getContainer()->get(CartService::class)->createNew($contextToken);
+        $cart = static::getContainer()->get(CartService::class)->createNew($contextToken);
 
         $productId = $this->createProduct($totalPrice);
         $cart->add(new LineItem('lineItem1', LineItem::PRODUCT_LINE_ITEM_TYPE, $productId));
@@ -70,8 +73,8 @@ trait PayoneTestBehavior
      */
     protected function createCartWithProduct(SalesChannelContext $context, float $itemPrice, int $qty): Cart
     {
-        $cartService = $this->getContainer()->get(CartService::class);
-        $cartItemCalculator = $this->getContainer()->get(Calculator::class);
+        $cartService = static::getContainer()->get(CartService::class);
+        $cartItemCalculator = static::getContainer()->get(Calculator::class);
 
         $cart = $cartService->createNew($context->getToken());
 
@@ -110,13 +113,13 @@ trait PayoneTestBehavior
             'visibilities' => [
                 [
                     'id' => $productId,
-                    'salesChannelId' => Defaults::SALES_CHANNEL,
+                    'salesChannelId' => TestDefaults::SALES_CHANNEL,
                     'visibility' => ProductVisibilityDefinition::VISIBILITY_ALL,
                 ],
             ],
         ];
 
-        $this->getContainer()->get('product.repository')->create([$product], Context::createDefaultContext());
+        static::getContainer()->get('product.repository')->create([$product], Context::createDefaultContext());
 
         return $productId;
     }
@@ -139,7 +142,7 @@ trait PayoneTestBehavior
             $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         }
 
-        $orderFetcher = $this->getContainer()->get(OrderFetcher::class);
+        $orderFetcher = static::getContainer()->get(OrderFetcher::class);
         $orderId = $this->placeRandomOrder($salesChannelContext);
 
         return $orderFetcher->getOrderById($orderId, $salesChannelContext->getContext());
@@ -152,7 +155,7 @@ trait PayoneTestBehavior
         return new RatepayProfileStruct(
             '88880103',
             'EUR',
-            Defaults::SALES_CHANNEL,
+            TestDefaults::SALES_CHANNEL,
             $paymentHandler,
             $requestAction
         );
@@ -276,6 +279,20 @@ trait PayoneTestBehavior
 
     protected function getPageLoader(): CheckoutConfirmPageLoader
     {
-        return $this->getContainer()->get(CheckoutConfirmPageLoader::class);
+        return static::getContainer()->get(CheckoutConfirmPageLoader::class);
+    }
+
+    protected function getRequestWithSession(array $sessionVariables): Request
+    {
+        $session = $this->getSession();
+
+        foreach ($sessionVariables as $key => $value) {
+            $session->set($key, $value);
+        }
+
+        $request = new Request();
+        $request->setSession($session);
+
+        return $request;
     }
 }

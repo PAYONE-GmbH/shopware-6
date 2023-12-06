@@ -17,30 +17,18 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    protected EntityRepositoryInterface $currencyRepository;
-
-    protected CurrencyPrecisionInterface $currencyPrecision;
-
-    protected CartHasherInterface $cartHasher;
-
-    protected ConfigReaderInterface $configReader;
-
     public function __construct(
-        CartHasherInterface $cartHasher,
-        ConfigReaderInterface $configReader,
-        EntityRepositoryInterface $currencyRepository,
-        CurrencyPrecisionInterface $currencyPrecision
+        protected CartHasherInterface $cartHasher,
+        protected ConfigReaderInterface $configReader,
+        protected EntityRepository $currencyRepository,
+        protected CurrencyPrecisionInterface $currencyPrecision
     ) {
-        $this->cartHasher = $cartHasher;
-        $this->configReader = $configReader;
-        $this->currencyRepository = $currencyRepository;
-        $this->currencyPrecision = $currencyPrecision;
     }
 
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
@@ -147,9 +135,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
             return null;
         }
 
-        $transactions->sort(static function (OrderTransactionEntity $a, OrderTransactionEntity $b) {
-            return $a->getCreatedAt() <=> $b->getCreatedAt();
-        });
+        $transactions->sort(static fn (OrderTransactionEntity $a, OrderTransactionEntity $b) => $a->getCreatedAt() <=> $b->getCreatedAt());
         /** @var OrderTransactionEntity $orderTransaction */
         $orderTransaction = $transactions->last();
 

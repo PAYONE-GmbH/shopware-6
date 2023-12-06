@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Installer;
 
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
@@ -15,14 +14,14 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigInstaller implements InstallerInterface
 {
-    public const CONFIG_FIELD_ACCOUNT_ID = 'accountId';
-    public const CONFIG_FIELD_MERCHANT_ID = 'merchantId';
-    public const CONFIG_FIELD_PORTAL_ID = 'portalId';
-    public const CONFIG_FIELD_PORTAL_KEY = 'portalKey';
-    public const CONFIG_FIELD_TRANSACTION_MODE = 'transactionMode';
-    public const CONFIG_FIELD_PAYOLUTION_INVOICING_TRANSFER_COMPANY_DATA = 'payolutionInvoicingTransferCompanyData';
-    public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_NAME = 'payolutionInstallmentChannelName';
-    public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_PASSWORD = 'payolutionInstallmentChannelPassword';
+    final public const CONFIG_FIELD_ACCOUNT_ID = 'accountId';
+    final public const CONFIG_FIELD_MERCHANT_ID = 'merchantId';
+    final public const CONFIG_FIELD_PORTAL_ID = 'portalId';
+    final public const CONFIG_FIELD_PORTAL_KEY = 'portalKey';
+    final public const CONFIG_FIELD_TRANSACTION_MODE = 'transactionMode';
+    final public const CONFIG_FIELD_PAYOLUTION_INVOICING_TRANSFER_COMPANY_DATA = 'payolutionInvoicingTransferCompanyData';
+    final public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_NAME = 'payolutionInstallmentChannelName';
+    final public const CONFIG_FIELD_PAYOLUTION_INSTALLMENT_CHANNEL_PASSWORD = 'payolutionInstallmentChannelPassword';
 
     private const STATE_MACHINE_TRANSITION_ACTION_PAY = 'pay';
     private const STATE_MACHINE_TRANSITION_ACTION_PAY_PARTIALLY = 'pay_partially';
@@ -68,54 +67,36 @@ class ConfigInstaller implements InstallerInterface
         'paymentStatusInvoice' => [self::STATE_MACHINE_TRANSITION_ACTION_PAY => StateMachineTransitionActions::ACTION_PAID],
     ];
 
-    private SystemConfigService $systemConfigService;
-
-    public function __construct(SystemConfigService $systemConfigService)
+    public function __construct(private readonly SystemConfigService $systemConfigService)
     {
-        $this->systemConfigService = $systemConfigService;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function install(InstallContext $context): void
     {
-        $this->setDefaultValues($context->getContext());
+        $this->setDefaultValues();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function update(UpdateContext $context): void
     {
-        $this->setDefaultValues($context->getContext());
+        $this->setDefaultValues();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function uninstall(UninstallContext $context): void
     {
         // Nothing to do here
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function activate(ActivateContext $context): void
     {
         // Nothing to do here
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function deactivate(DeactivateContext $context): void
     {
         // Nothing to do here
     }
 
-    private function setDefaultValues(Context $context): void
+    private function setDefaultValues(): void
     {
         $domain = 'PayonePayment.settings.';
 

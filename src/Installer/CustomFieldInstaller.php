@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Installer;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
@@ -15,29 +15,24 @@ use Shopware\Core\System\CustomField\CustomFieldTypes;
 
 class CustomFieldInstaller implements InstallerInterface
 {
-    public const CAPTURED_QUANTITY = 'payone_captured_quantity';
-    public const REFUNDED_QUANTITY = 'payone_refunded_quantity';
-    public const CUSTOMER_PHONE_NUMBER = 'payone_customer_phone_number';
-    public const CUSTOMER_BIRTHDAY = 'payone_customer_birthday';
+    final public const CAPTURED_QUANTITY = 'payone_captured_quantity';
+    final public const REFUNDED_QUANTITY = 'payone_refunded_quantity';
+    final public const CUSTOMER_PHONE_NUMBER = 'payone_customer_phone_number';
+    final public const CUSTOMER_BIRTHDAY = 'payone_customer_birthday';
 
-    public const FIELDSET_ID_ORDER_TRANSACTION = 'aacbcf9bedfb4827853b75c5fd278d3f';
-    public const FIELDSET_ID_ORDER_LINE_ITEM = '12f3f06c895e11eabc550242ac130003';
-    public const FIELDSET_ID_PAYMENT_METHOD = 'ed39626e94fd4dfe9d81976fdbcdb06c';
-    public const FIELDSET_ID_CUSTOMER = '8e4a0b8f7eb04272ad874f3b22cf4935';
+    final public const FIELDSET_ID_ORDER_TRANSACTION = 'aacbcf9bedfb4827853b75c5fd278d3f';
+    final public const FIELDSET_ID_ORDER_LINE_ITEM = '12f3f06c895e11eabc550242ac130003';
+    final public const FIELDSET_ID_PAYMENT_METHOD = 'ed39626e94fd4dfe9d81976fdbcdb06c';
+    final public const FIELDSET_ID_CUSTOMER = '8e4a0b8f7eb04272ad874f3b22cf4935';
 
-    private EntityRepositoryInterface $customFieldRepository;
+    private readonly array $customFields;
 
-    private EntityRepositoryInterface $customFieldSetRepository;
+    private readonly array $customFieldSets;
 
-    private array $customFields;
-
-    private array $customFieldSets;
-
-    public function __construct(EntityRepositoryInterface $customFieldSetRepository, EntityRepositoryInterface $customFieldRepository)
-    {
-        $this->customFieldSetRepository = $customFieldSetRepository;
-        $this->customFieldRepository = $customFieldRepository;
-
+    public function __construct(
+        private readonly EntityRepository $customFieldSetRepository,
+        private readonly EntityRepository $customFieldRepository
+    ) {
         $this->customFieldSets = [
             [
                 'id' => self::FIELDSET_ID_PAYMENT_METHOD,

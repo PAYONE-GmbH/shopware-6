@@ -28,11 +28,9 @@ class CheckoutConfirmIDealEventListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
-     */
-    public function hideIDealForNonNlCustomers($event): void
-    {
+    public function hideIDealForNonNlCustomers(
+        AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event
+    ): void {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 
         if (
@@ -79,9 +77,7 @@ class CheckoutConfirmIDealEventListener implements EventSubscriberInterface
     private function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection
     {
         return $paymentMethods->filter(
-            static function (PaymentMethodEntity $paymentMethod) use ($paymentMethodId) {
-                return $paymentMethod->getId() !== $paymentMethodId;
-            }
+            static fn (PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId
         );
     }
 }

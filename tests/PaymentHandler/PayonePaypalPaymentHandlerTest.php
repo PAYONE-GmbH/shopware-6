@@ -14,7 +14,7 @@ use PayonePayment\TestCaseBase\Mock\ConfigReaderMock;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -71,12 +71,12 @@ class PayonePaypalPaymentHandlerTest extends TestCase
 
         return new PayonePaypalPaymentHandler(
             $configReader,
+            $this->createMock(EntityRepository::class),
+            $this->getRequestStack($dataBag),
             $client,
             $translator,
-            new TransactionDataHandler($this->createMock(EntityRepositoryInterface::class), new CurrencyPrecision()),
-            $this->createMock(EntityRepositoryInterface::class),
+            new TransactionDataHandler($this->createMock(EntityRepository::class), new CurrencyPrecision()),
             new PaymentStateHandler($translator),
-            $this->getRequestStack($dataBag),
             $requestFactory
         );
     }

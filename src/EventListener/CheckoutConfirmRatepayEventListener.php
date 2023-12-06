@@ -14,29 +14,20 @@ use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPage;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
+use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPage;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
-use Shopware\Storefront\Page\Page;
-use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
 {
-    protected SystemConfigService $systemConfigService;
-
-    protected InstallmentServiceInterface $installmentService;
-
-    protected ProfileServiceInterface $profileService;
-
     public function __construct(
-        SystemConfigService $systemConfigService,
-        InstallmentServiceInterface $installmentService,
-        ProfileServiceInterface $profileService
+        protected SystemConfigService $systemConfigService,
+        protected InstallmentServiceInterface $installmentService,
+        protected ProfileServiceInterface $profileService
     ) {
-        $this->systemConfigService = $systemConfigService;
-        $this->installmentService = $installmentService;
-        $this->profileService = $profileService;
     }
 
     public static function getSubscribedEvents(): array
@@ -56,16 +47,10 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function hidePaymentMethodsForCompanies(PageLoadedEvent $event): void
-    {
+    public function hidePaymentMethodsForCompanies(
+        CheckoutConfirmPageLoadedEvent|AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent $event
+    ): void {
         $page = $event->getPage();
-
-        if (
-            !method_exists($page, 'getPaymentMethods')
-            || !method_exists($page, 'setPaymentMethods')
-        ) {
-            return;
-        }
 
         if (!$this->customerHasCompanyAddress($event->getSalesChannelContext())) {
             return;
@@ -76,16 +61,10 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         $page->setPaymentMethods($paymentMethods);
     }
 
-    public function hidePaymentMethodsByProfiles(PageLoadedEvent $event): void
-    {
+    public function hidePaymentMethodsByProfiles(
+        CheckoutConfirmPageLoadedEvent|AccountEditOrderPageLoadedEvent $event
+    ): void {
         $page = $event->getPage();
-
-        if (
-            !method_exists($page, 'getPaymentMethods')
-            || !method_exists($page, 'setPaymentMethods')
-        ) {
-            return;
-        }
 
         $paymentMethods = $page->getPaymentMethods();
 
@@ -103,9 +82,8 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         $page->setPaymentMethods($paymentMethods);
     }
 
-    public function addPayonePageData(PageLoadedEvent $event): void
+    public function addPayonePageData(CheckoutConfirmPageLoadedEvent|AccountEditOrderPageLoadedEvent $event): void
     {
-        /** @var Page $page */
         $page = $event->getPage();
         $context = $event->getSalesChannelContext();
 
@@ -117,9 +95,7 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
     protected function removePaymentMethods(PaymentMethodCollection $paymentMethods, array $paymentHandler): PaymentMethodCollection
     {
         return $paymentMethods->filter(
-            static function (PaymentMethodEntity $paymentMethod) use ($paymentHandler) {
-                return !\in_array($paymentMethod->getHandlerIdentifier(), $paymentHandler, true);
-            }
+            static fn (PaymentMethodEntity $paymentMethod) => !\in_array($paymentMethod->getHandlerIdentifier(), $paymentHandler, true)
         );
     }
 
@@ -140,15 +116,10 @@ class CheckoutConfirmRatepayEventListener implements EventSubscriberInterface
         return !empty($billingAddress->getCompany());
     }
 
-    protected function addInstallmentCalculatorData(Page $page, SalesChannelContext $context): void
-    {
-        if (
-            !method_exists($page, 'getPaymentMethods')
-            || !method_exists($page, 'setPaymentMethods')
-        ) {
-            return;
-        }
-
+    protected function addInstallmentCalculatorData(
+        CheckoutConfirmPage|AccountEditOrderPage $page,
+        SalesChannelContext $context
+    ): void {
         $installmentCalculator = $this->installmentService->getInstallmentCalculatorData($context);
 
         if ($installmentCalculator === null) {

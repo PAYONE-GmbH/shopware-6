@@ -16,36 +16,30 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class CaptureTransactionHandler extends AbstractTransactionHandler implements CaptureTransactionHandlerInterface
 {
-    private TransactionStatusServiceInterface $transactionStatusService;
-
     public function __construct(
         RequestParameterFactory $requestFactory,
         PayoneClientInterface $client,
         TransactionDataHandlerInterface $dataHandler,
-        TransactionStatusServiceInterface $transactionStatusService,
-        EntityRepositoryInterface $transactionRepository,
-        EntityRepositoryInterface $lineItemRepository,
+        private readonly TransactionStatusServiceInterface $transactionStatusService,
+        EntityRepository $transactionRepository,
+        EntityRepository $lineItemRepository,
         CurrencyPrecisionInterface $currencyPrecision
     ) {
         $this->requestFactory = $requestFactory;
         $this->client = $client;
         $this->dataHandler = $dataHandler;
-        $this->transactionStatusService = $transactionStatusService;
         $this->transactionRepository = $transactionRepository;
         $this->lineItemRepository = $lineItemRepository;
         $this->currencyPrecision = $currencyPrecision;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function capture(ParameterBag $parameterBag, Context $context): JsonResponse
     {
         [$requestResponse, $payoneResponse] = $this->handleRequest($parameterBag, AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE, $context);
@@ -56,7 +50,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
 
         $this->updateTransactionData($parameterBag, (float) $parameterBag->get('amount'));
         $this->updateClearingBankAccountData($payoneResponse);
-        $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
+        $this->saveOrderLineItemData($parameterBag->all('orderLines'), $context);
 
         /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
         $payoneTransactionData = $this->paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);

@@ -12,30 +12,20 @@ use PayonePayment\StoreApi\Route\AbstractCardRoute;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
-use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
 {
-    private RequestParameterFactory $requestParameterFactory;
-
-    private EntityRepositoryInterface $languageRepository;
-
-    private AbstractCardRoute $cardRoute;
-
     public function __construct(
-        RequestParameterFactory $requestParameterFactory,
-        EntityRepositoryInterface $languageRepository,
-        AbstractCardRoute $cardRoute
+        private readonly RequestParameterFactory $requestParameterFactory,
+        private readonly EntityRepository $languageRepository,
+        private readonly AbstractCardRoute $cardRoute
     ) {
-        $this->requestParameterFactory = $requestParameterFactory;
-        $this->languageRepository = $languageRepository;
-        $this->cardRoute = $cardRoute;
     }
 
     public static function getSubscribedEvents(): array
@@ -46,7 +36,7 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function addPayonePageData(PageLoadedEvent $event): void
+    public function addPayonePageData(CheckoutConfirmPageLoadedEvent|AccountEditOrderPageLoadedEvent $event): void
     {
         $page = $event->getPage();
         $context = $event->getSalesChannelContext();
@@ -62,6 +52,7 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
             )
         );
 
+        $savedCards = null;
         if ($context->getCustomer() !== null) {
             $savedCards = $this->cardRoute->load($context)->getSearchResult();
         }
@@ -78,11 +69,11 @@ class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
             $payoneData->assign([
                 'cardRequest' => $cardRequest,
                 'language' => $language,
-                'savedCards' => !empty($savedCards) ? $savedCards : null,
+                'savedCards' => $savedCards,
             ]);
-        }
 
-        $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+            $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+        }
     }
 
     private function getCustomerLanguage(Context $context): string

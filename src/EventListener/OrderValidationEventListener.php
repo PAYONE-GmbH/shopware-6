@@ -16,14 +16,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class OrderValidationEventListener implements EventSubscriberInterface
 {
-    private RequestStack $requestStack;
-
-    private PaymentHandlerRegistry $paymentHandlerRegistry;
-
-    public function __construct(RequestStack $requestStack, PaymentHandlerRegistry $paymentHandlerRegistry)
-    {
-        $this->requestStack = $requestStack;
-        $this->paymentHandlerRegistry = $paymentHandlerRegistry;
+    public function __construct(
+        private readonly RequestStack $requestStack,
+        private readonly PaymentHandlerRegistry $paymentHandlerRegistry
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -42,8 +38,8 @@ class OrderValidationEventListener implements EventSubscriberInterface
         }
 
         $salesChannelContext = $this->getSalesChannelContextFromRequest($request);
-        $paymentHandlerIdentifier = $salesChannelContext->getPaymentMethod()->getHandlerIdentifier();
-        $paymentHandler = $this->paymentHandlerRegistry->getHandler($paymentHandlerIdentifier);
+        $paymentMethodId = $salesChannelContext->getPaymentMethod()->getId();
+        $paymentHandler = $this->paymentHandlerRegistry->getPaymentMethodHandler($paymentMethodId);
 
         if ($paymentHandler instanceof AbstractPayonePaymentHandler) {
             $validationDefinitions = $paymentHandler->getValidationDefinitions($salesChannelContext);
@@ -65,7 +61,7 @@ class OrderValidationEventListener implements EventSubscriberInterface
             if ($constraints instanceof DataValidationDefinition) {
                 $parent->addSub($key, $constraints);
             } else {
-                \call_user_func_array([$parent, 'add'], array_merge([$key], $constraints));
+                $parent->add($key, ...$constraints);
             }
         }
     }

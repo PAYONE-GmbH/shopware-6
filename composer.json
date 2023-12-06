@@ -2,7 +2,7 @@
   "name": "payone-gmbh/shopware-6",
   "type": "shopware-platform-plugin",
   "description": "PAYONE Payment Plugin",
-  "version": "4.2.1",
+  "version": "5.0.2",
   "license": "MIT",
   "authors": [
     {
@@ -23,18 +23,19 @@
     "ext-curl": "*",
     "ext-json": "*",
     "sinergi/browser-detector": "^6.1",
-    "shopware/core": ">= 6.4",
-    "shopware/administration": ">= 6.4",
-    "shopware/storefront": ">= 6.4"
+    "shopware/core": "^6.5.0",
+    "shopware/administration": "^6.5.0",
+    "shopware/storefront": "^6.5.0"
   },
   "require-dev": {
     "dms/phpunit-arraysubset-asserts": "^0.3.0",
     "kubawerlos/php-cs-fixer-custom-fixers": "^3.11",
-    "phpstan/phpstan": "1.8.0",
+    "phpstan/phpstan": "^1.10",
     "phpstan/phpstan-phpunit": "1.1.1",
-    "phpstan/phpstan-symfony": "1.2.5",
+    "phpstan/phpstan-symfony": "^1.2",
     "phpunit/phpunit": "^9.5",
-    "symplify/easy-coding-standard": "^10.0"
+    "rector/rector": "^0.17.1",
+    "symplify/easy-coding-standard": "^11.5"
   },
   "autoload": {
     "psr-4": {
@@ -47,7 +48,10 @@
     }
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "symfony/runtime": true
+    }
   },
   "extra": {
     "shopware-plugin-class": "PayonePayment\\PayonePayment",

@@ -6,9 +6,8 @@ namespace PayonePayment\Storefront\Controller\Account;
 
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\AccountOrderController;
 use Shopware\Storefront\Controller\StorefrontController;
@@ -16,10 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(defaults={"_routeScope": {"storefront"}})
- * @RouteScope(scopes={"storefront"})
- */
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class AccountOrderControllerDecorator extends StorefrontController
 {
     /**
@@ -27,13 +23,10 @@ class AccountOrderControllerDecorator extends StorefrontController
      */
     protected $decoratedController;
 
-    protected EntityRepositoryInterface $orderRepository;
-
-    public function __construct(StorefrontController $decoratedController, EntityRepositoryInterface $orderRepository)
+    public function __construct(StorefrontController $decoratedController, protected EntityRepository $orderRepository)
     {
         /** @phpstan-ignore-next-line */
         $this->decoratedController = $decoratedController;
-        $this->orderRepository = $orderRepository;
     }
 
     public function orderOverview(Request $request, SalesChannelContext $context): Response

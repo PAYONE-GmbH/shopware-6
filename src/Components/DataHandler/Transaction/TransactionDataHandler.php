@@ -11,20 +11,16 @@ use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionEx
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class TransactionDataHandler implements TransactionDataHandlerInterface
 {
-    private EntityRepositoryInterface $transactionRepository;
-
-    private CurrencyPrecisionInterface $currencyPrecision;
-
-    public function __construct(EntityRepositoryInterface $transactionRepository, CurrencyPrecisionInterface $currencyPrecision)
-    {
-        $this->transactionRepository = $transactionRepository;
-        $this->currencyPrecision = $currencyPrecision;
+    public function __construct(
+        private readonly EntityRepository $transactionRepository,
+        private readonly CurrencyPrecisionInterface $currencyPrecision
+    ) {
     }
 
     public function getPaymentTransactionByPayoneTransactionId(Context $context, int $payoneTransactionId): ?PaymentTransaction
@@ -60,7 +56,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
         $currentSequenceNumber = $payoneTransactionData->getSequenceNumber();
 
         $newTransactionData['sequenceNumber'] = max((int) $transactionData['sequencenumber'], $currentSequenceNumber);
-        $newTransactionData['transactionState'] = strtolower($transactionData['txaction']);
+        $newTransactionData['transactionState'] = strtolower((string) $transactionData['txaction']);
         $newTransactionData['authorizationType'] = $payoneTransactionData->getAuthorizationType();
 
         $newTransactionData['transactionData'] = array_merge(
@@ -161,7 +157,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
      */
     private function neverChangesCapturableOrRefundableState(array $transactionData): bool
     {
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
 
         // The following TX actions do not affect any capturable or refundable state
         return \in_array($txAction, [
@@ -239,7 +235,7 @@ class TransactionDataHandler implements TransactionDataHandlerInterface
             return 0;
         }
 
-        if (!empty($payoneTransactionData->getCapturedAmount())) {
+        if ($payoneTransactionData->getCapturedAmount() !== null) {
             $currentCapturedAmount = $payoneTransactionData->getCapturedAmount();
         }
 

@@ -55,7 +55,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
 
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
-            \get_class($paymentHandler)
+            $paymentHandler::class
         );
 
         // test if the data handler got called, and if the basic information would be set on the order
@@ -91,7 +91,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
 
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
-            \get_class($paymentHandler)
+            $paymentHandler::class
         );
 
         if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
@@ -121,7 +121,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
 
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
-            \get_class($paymentHandler)
+            $paymentHandler::class
         );
 
         if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
@@ -163,7 +163,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
 
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
-            \get_class($paymentHandler)
+            $paymentHandler::class
         );
 
         if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
@@ -197,7 +197,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
 
         $paymentTransaction = $this->getPaymentTransaction(
             $this->getRandomOrder($salesChannelContext),
-            \get_class($paymentHandler)
+            $paymentHandler::class
         );
 
         if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
@@ -255,15 +255,18 @@ abstract class AbstractPaymentHandlerTest extends TestCase
                 $paymentTransaction->getOrder(),
                 ''
             );
-        } elseif ($paymentHandler instanceof SynchronousPaymentHandlerInterface) {
+
+            return $paymentHandler->pay($struct, $dataBag, $salesChannelContext);
+        }
+
+        if ($paymentHandler instanceof SynchronousPaymentHandlerInterface) {
             $struct = new SyncPaymentTransactionStruct(
                 $paymentTransaction->getOrderTransaction(),
                 $paymentTransaction->getOrder()
             );
+            $paymentHandler->pay($struct, $dataBag, $salesChannelContext);
         } else {
-            throw new \RuntimeException('invalid type of provided payment handler: ' . \get_class($paymentHandler));
+            throw new \RuntimeException('invalid type of provided payment handler: ' . $paymentHandler::class);
         }
-
-        return $paymentHandler->pay($struct, $dataBag, $salesChannelContext);
     }
 }

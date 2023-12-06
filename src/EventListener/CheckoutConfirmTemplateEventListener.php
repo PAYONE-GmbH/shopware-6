@@ -10,7 +10,6 @@ use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
-use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
@@ -23,7 +22,7 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function addPayonePageData(PageLoadedEvent $event): void
+    public function addPayonePageData(CheckoutConfirmPageLoadedEvent|AccountEditOrderPageLoadedEvent $event): void
     {
         $page = $event->getPage();
         $context = $event->getSalesChannelContext();
@@ -44,9 +43,9 @@ class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
             $payoneData->assign([
                 'template' => $template,
             ]);
-        }
 
-        $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+            $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+        }
     }
 
     private function getTemplateFromPaymentMethod(PaymentMethodEntity $paymentMethod): ?string

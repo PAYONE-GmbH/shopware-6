@@ -8,7 +8,7 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class SecuredInstallmentOptionsData extends Struct
 {
-    public const EXTENSION_NAME = 'payoneSecuredInstallmentOptions';
+    final public const EXTENSION_NAME = 'payoneSecuredInstallmentOptions';
 
     /**
      * @var array<SecuredInstallmentOption>

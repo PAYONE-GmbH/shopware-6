@@ -114,12 +114,16 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
             ['payone_last_request', 'the-last-request', 'getLastRequest', 'the-last-request'],
             ['payone_allow_capture', true, 'getAllowCapture', true],
             ['payone_allow_capture', '1', 'getAllowCapture', true],
+            ['payone_allow_capture', 1, 'getAllowCapture', true],
             ['payone_allow_capture', false, 'getAllowCapture', false],
             ['payone_allow_capture', '0', 'getAllowCapture', false],
+            ['payone_allow_capture', 0, 'getAllowCapture', false],
             ['payone_allow_refund', true, 'getAllowRefund', true],
             ['payone_allow_refund', '1', 'getAllowRefund', true],
+            ['payone_allow_refund', 1, 'getAllowRefund', true],
             ['payone_allow_refund', false, 'getAllowRefund', false],
             ['payone_allow_refund', '0', 'getAllowRefund', false],
+            ['payone_allow_refund', 0, 'getAllowRefund', false],
             ['payone_captured_amount', 0, 'getCapturedAmount', 0],
             ['payone_refunded_amount', 0, 'getCapturedAmount', 0], // Test if the default value of payone_captured_amount works
             ['payone_refunded_amount', 0, 'getRefundedAmount', 0],
@@ -127,12 +131,13 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
             ['payone_mandate_identification', 'the-mandate-identification', 'getMandateIdentification', 'the-mandate-identification'],
             ['payone_authorization_type', 'the-authorization-type', 'getAuthorizationType', 'the-authorization-type'],
             ['payone_work_order_id', 'the-work-order-id', 'getWorkOrderId', 'the-work-order-id'],
+            ['payone_work_order_id', null, 'getWorkOrderId', null],
             ['payone_clearing_reference', 'the-clearing-reference', 'getClearingReference', 'the-clearing-reference'],
             ['payone_clearing_type', 'the-clearing-type', 'getClearingType', 'the-clearing-type'],
             ['payone_financing_type', 'the-financing-type', 'getFinancingType', 'the-financing-type'],
             ['payone_capture_mode', 'the-capture-mode', 'getCaptureMode', 'the-capture-mode'],
             ['payone_clearing_bank_account', ['key' => 'value'], 'getClearingBankAccount', ['key' => 'value']],
-            ['payone_used_ratepay_shop_id', 88880103, 'getAdditionalData', ['used_ratepay_shop_id' => '88880103']],
+            ['payone_used_ratepay_shop_id', 88_880_103, 'getAdditionalData', ['used_ratepay_shop_id' => '88880103']],
         ];
     }
 

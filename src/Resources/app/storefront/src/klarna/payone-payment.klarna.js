@@ -39,14 +39,7 @@ export default class PayonePaymentKlarna extends Plugin {
 
     _registerEventListeners() {
         if (this.orderForm) {
-            if (!('csrf' in window) || window.csrf.mode === 'twig') {
-                this.orderForm.addEventListener('submit', this._handleOrderSubmit.bind(this));
-            } else {
-                /**
-                 * @deprecated tag:6.5.0 CSRF will be removed in  6.5.0.0 - we only need to subscribe the `submit`-event.
-                 */
-                this.orderForm.addEventListener('beforeSubmit', this._handleOrderSubmit.bind(this));
-            }
+            this.orderForm.addEventListener('submit', this._handleOrderSubmit.bind(this));
         }
     }
 

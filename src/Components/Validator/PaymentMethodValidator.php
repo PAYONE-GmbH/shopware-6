@@ -11,7 +11,7 @@ class PaymentMethodValidator extends AbstractComparisonValidator
     /**
      * @return bool always fails as the check is done inside a subscriber
      */
-    protected function compareValues($value1, $value2): bool
+    protected function compareValues(mixed $value1, mixed $value2): bool
     {
         return false;
     }
@@ -19,7 +19,7 @@ class PaymentMethodValidator extends AbstractComparisonValidator
     /**
      * {@inheritdoc}
      */
-    protected function getErrorCode()
+    protected function getErrorCode(): ?string
     {
         return PaymentMethod::INVALID_ERROR;
     }

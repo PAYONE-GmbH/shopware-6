@@ -6,10 +6,11 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
+use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -20,39 +21,30 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInterface
 {
-    public const PAYONE_STATE_COMPLETED = 'completed';
-    public const PAYONE_STATE_PENDING = 'pending';
+    final public const PAYONE_STATE_COMPLETED = 'completed';
+    final public const PAYONE_STATE_PENDING = 'pending';
 
-    public const PAYONE_CLEARING_FNC = 'fnc';
-    public const PAYONE_CLEARING_VOR = 'vor';
-    public const PAYONE_CLEARING_REC = 'rec';
+    final public const PAYONE_CLEARING_FNC = 'fnc';
+    final public const PAYONE_CLEARING_VOR = 'vor';
+    final public const PAYONE_CLEARING_REC = 'rec';
 
-    public const PAYONE_FINANCING_PIV = 'PIV';
-    public const PAYONE_FINANCING_PIN = 'PIN';
-    public const PAYONE_FINANCING_PDD = 'PDD';
+    final public const PAYONE_FINANCING_PIV = 'PIV';
+    final public const PAYONE_FINANCING_PIN = 'PIN';
+    final public const PAYONE_FINANCING_PDD = 'PDD';
 
-    public const PAYONE_FINANCING_PYV = 'PYV';
-    public const PAYONE_FINANCING_PYS = 'PYS';
-    public const PAYONE_FINANCING_PYD = 'PYD';
+    final public const PAYONE_FINANCING_PYV = 'PYV';
+    final public const PAYONE_FINANCING_PYS = 'PYS';
+    final public const PAYONE_FINANCING_PYD = 'PYD';
 
-    public const PAYONE_FINANCING_RPV = 'RPV';
-    public const PAYONE_FINANCING_RPS = 'RPS';
-    public const PAYONE_FINANCING_RPD = 'RPD';
-
-    protected ConfigReaderInterface $configReader;
-
-    protected EntityRepositoryInterface $lineItemRepository;
-
-    protected RequestStack $requestStack;
+    final public const PAYONE_FINANCING_RPV = 'RPV';
+    final public const PAYONE_FINANCING_RPS = 'RPS';
+    final public const PAYONE_FINANCING_RPD = 'RPD';
 
     public function __construct(
-        ConfigReaderInterface $configReader,
-        EntityRepositoryInterface $lineItemRepository,
-        RequestStack $requestStack
+        protected ConfigReaderInterface $configReader,
+        protected EntityRepository $lineItemRepository,
+        protected RequestStack $requestStack
     ) {
-        $this->configReader = $configReader;
-        $this->lineItemRepository = $lineItemRepository;
-        $this->requestStack = $requestStack;
     }
 
     public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
@@ -89,7 +81,7 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      */
     final protected static function matchesIsCapturableDefaults(array $transactionData): bool
     {
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
         $price = isset($transactionData['price']) ? ((float) $transactionData['price']) : null;
         $receivable = isset($transactionData['receivable']) ? ((float) $transactionData['receivable']) : null;
 
@@ -109,8 +101,8 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      */
     final protected static function isTransactionAppointedAndCompleted(array $transactionData): bool
     {
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
-        $transactionStatus = isset($transactionData['transaction_status']) ? strtolower($transactionData['transaction_status']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
+        $transactionStatus = isset($transactionData['transaction_status']) ? strtolower((string) $transactionData['transaction_status']) : null;
 
         return $txAction === TransactionStatusService::ACTION_APPOINTED && $transactionStatus === TransactionStatusService::STATUS_COMPLETED;
     }
@@ -141,7 +133,7 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
      */
     final protected static function matchesIsRefundableDefaults(array $transactionData): bool
     {
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
         $receivable = isset($transactionData['receivable']) ? ((float) $transactionData['receivable']) : null;
 
         // Allow refund if capture TX status and receivable indicate we have outstanding funds
@@ -212,17 +204,6 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         $this->lineItemRepository->update($saveData, $context);
     }
 
-    protected function fetchRequestData(): RequestDataBag
-    {
-        $request = $this->requestStack->getCurrentRequest();
-
-        if ($request === null) {
-            throw new \LogicException('missing current request');
-        }
-
-        return new RequestDataBag($request->request->all());
-    }
-
     protected function getMinimumDate(): \DateTimeInterface
     {
         return (new \DateTime())->modify('-18 years')->setTime(0, 0);
@@ -243,5 +224,33 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         }
 
         return !empty($billingAddress->getCompany());
+    }
+
+    final protected function getConfigKeyPrefix(): string
+    {
+        return ConfigurationPrefixes::CONFIGURATION_PREFIXES[static::class];
+    }
+
+    /**
+     * Define this method to return either AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
+     * or AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE that should be used as default authorization
+     * method if it is not configured by shop owner.
+     */
+    abstract protected function getDefaultAuthorizationMethod(): string;
+
+    /**
+     * Override this method to validate the posted data. Throw a PayoneRequestException if validation fails!
+     */
+    protected function validateRequestData(RequestDataBag $dataBag): void
+    {
+    }
+
+    /**
+     * Override this method to define additional transaction data that should be saved to the transaction
+     * data extension
+     */
+    protected function getAdditionalTransactionData(RequestDataBag $dataBag, array $request, array $response): array
+    {
+        return [];
     }
 }

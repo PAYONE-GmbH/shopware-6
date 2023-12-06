@@ -11,7 +11,7 @@ class Migration1625137302AddNotificationTargetTable extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1625137302;
+        return 1_625_137_302;
     }
 
     public function update(Connection $connection): void
@@ -28,16 +28,7 @@ class Migration1625137302AddNotificationTargetTable extends MigrationStep
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;';
 
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-
-            return;
-        }
-
-        if (method_exists($connection, 'exec')) {
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void

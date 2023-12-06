@@ -6,15 +6,14 @@ namespace PayonePayment\Components\DeviceFingerprint;
 
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class AbstractDeviceFingerprintService
 {
-    protected SessionInterface $session;
-
-    public function __construct(SessionInterface $session)
+    public function __construct(protected RequestStack $requestStack)
     {
-        $this->session = $session;
     }
 
     /**
@@ -26,13 +25,13 @@ abstract class AbstractDeviceFingerprintService
 
     public function getDeviceIdentToken(SalesChannelContext $salesChannelContext): string
     {
-        $sessionValue = $this->session->get($this->getSessionVarName());
+        $sessionValue = $this->getSession()?->get($this->getSessionVarName());
 
         if ($sessionValue) {
             $token = $sessionValue;
         } else {
             $token = $this->buildDeviceIdentToken($salesChannelContext);
-            $this->session->set($this->getSessionVarName(), $token);
+            $this->getSession()?->set($this->getSessionVarName(), $token);
         }
 
         return $token;
@@ -40,15 +39,24 @@ abstract class AbstractDeviceFingerprintService
 
     public function isDeviceIdentTokenAlreadyGenerated(): bool
     {
-        return $this->session->get($this->getSessionVarName()) !== null;
+        return $this->getSession()?->get($this->getSessionVarName()) !== null;
     }
 
     public function deleteDeviceIdentToken(): void
     {
-        $this->session->remove($this->getSessionVarName());
+        $this->getSession()?->remove($this->getSessionVarName());
     }
 
     abstract protected function getSessionVarName(): string;
 
     abstract protected function buildDeviceIdentToken(SalesChannelContext $salesChannelContext): string;
+
+    protected function getSession(): ?SessionInterface
+    {
+        try {
+            return $this->requestStack->getSession();
+        } catch (SessionNotFoundException) {
+            return null;
+        }
+    }
 }

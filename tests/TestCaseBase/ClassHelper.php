@@ -8,15 +8,18 @@ use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 
 class ClassHelper
 {
+    /**
+     * @return string[]
+     */
     public static function getPaymentHandlerClasses(): array
     {
         $classList = [];
         $classFiles = glob(__DIR__ . '/../../src/PaymentHandler/*.php');
         foreach ($classFiles as $classFile) {
             if (is_file($classFile)) {
-                preg_match('/(.*).php/', basename($classFile), $matches);
+                preg_match('/(.*).php/', basename((string) $classFile), $matches);
 
-                if ($matches && strpos($matches[1], 'Abstract') === false && strpos($matches[1], 'Interface') === false) {
+                if ($matches && !str_contains($matches[1], 'Abstract') && !str_contains($matches[1], 'Interface')) {
                     $className = 'PayonePayment\\PaymentHandler\\' . $matches[1];
 
                     if (is_subclass_of($className, AbstractPayonePaymentHandler::class)) {
@@ -35,9 +38,9 @@ class ClassHelper
         $classFiles = glob(__DIR__ . '/../../src/PaymentMethod/*.php');
         foreach ($classFiles as $classFile) {
             if (is_file($classFile)) {
-                preg_match('/(.*).php/', basename($classFile), $matches);
+                preg_match('/(.*).php/', basename((string) $classFile), $matches);
 
-                if ($matches && strpos($matches[1], 'Abstract') === false && strpos($matches[1], 'Interface') === false) {
+                if ($matches && !str_contains($matches[1], 'Abstract') && !str_contains($matches[1], 'Interface')) {
                     require_once $classFile;
                     $classList[] = 'PayonePayment\\PaymentMethod\\' . $matches[1];
                 }

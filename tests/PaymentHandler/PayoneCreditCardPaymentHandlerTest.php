@@ -17,7 +17,7 @@ use PayonePayment\TestCaseBase\Mock\ConfigReaderMock;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -37,7 +37,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $client = $this->createMock(PayoneClientInterface::class);
         $client->expects(static::once())->method('request')->willReturn(
             [
-                'status' => '',
+                'status' => 'success',
                 'txid' => '',
                 'userid' => '',
             ]
@@ -77,7 +77,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $client = $this->createMock(PayoneClientInterface::class);
         $client->expects(static::once())->method('request')->willReturn(
             [
-                'status' => '',
+                'status' => 'success',
                 'txid' => '',
                 'userid' => '',
             ]
@@ -130,7 +130,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $client = $this->createMock(PayoneClientInterface::class);
         $client->expects(static::once())->method('request')->willReturn(
             [
-                'status' => '',
+                'status' => 'success',
                 'txid' => '',
                 'userid' => '',
             ]
@@ -202,7 +202,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $client = $this->createMock(PayoneClientInterface::class);
         $client->expects(static::once())->method('request')->willReturn(
             [
-                'status' => '',
+                'status' => 'success',
                 'txid' => '',
                 'userid' => '',
             ]
@@ -278,21 +278,21 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
 
         if (!$dataHandler) {
             $dataHandler = new TransactionDataHandler(
-                $this->createMock(EntityRepositoryInterface::class),
+                $this->createMock(EntityRepository::class),
                 new CurrencyPrecision()
             );
         }
 
         return new PayoneCreditCardPaymentHandler(
             $configReader,
+            $this->createMock(EntityRepository::class),
+            $this->getRequestStack($dataBag),
             $client,
             $translator,
             $dataHandler,
-            $this->createMock(EntityRepositoryInterface::class),
             new PaymentStateHandler($translator),
-            $cardRepository,
-            $this->getRequestStack($dataBag),
-            $requestFactory
+            $requestFactory,
+            $cardRepository
         );
     }
 

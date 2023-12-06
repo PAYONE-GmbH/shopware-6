@@ -11,7 +11,7 @@ class Migration1557926559AddTemporaryRedirectTable extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1557926559;
+        return 1_557_926_559;
     }
 
     public function update(Connection $connection): void
@@ -24,16 +24,7 @@ class Migration1557926559AddTemporaryRedirectTable extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ';
 
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-
-            return;
-        }
-
-        if (method_exists($connection, 'exec')) {
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void

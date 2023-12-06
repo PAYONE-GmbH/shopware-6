@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\PaymentFilter;
 
 use PayonePayment\Components\PaymentFilter\Exception\PaymentMethodNotAllowedException;
+use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
@@ -14,37 +15,16 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 class DefaultPaymentFilterService implements PaymentFilterServiceInterface
 {
     /**
-     * @var class-string<\PayonePayment\PaymentHandler\AbstractPayonePaymentHandler>
-     */
-    private string $paymentHandlerClass;
-
-    private ?array $allowedCountries;
-
-    private ?array $allowedB2bCountries;
-
-    private ?array $allowedCurrencies;
-
-    private float $allowedMinValue;
-
-    private ?float $allowedMaxValue;
-
-    /**
-     * @param class-string<\PayonePayment\PaymentHandler\AbstractPayonePaymentHandler> $paymentHandlerClass
+     * @param class-string<AbstractPayonePaymentHandler> $paymentHandlerClass
      */
     public function __construct(
-        string $paymentHandlerClass,
-        ?array $allowedCountries = null,
-        ?array $allowedB2bCountries = null,
-        ?array $allowedCurrencies = null,
-        float $allowedMinValue = 0.0,
-        ?float $allowedMaxValue = null
+        private readonly string $paymentHandlerClass,
+        private readonly ?array $allowedCountries = null,
+        private readonly ?array $allowedB2bCountries = null,
+        private readonly ?array $allowedCurrencies = null,
+        private readonly float $allowedMinValue = 0.0,
+        private readonly ?float $allowedMaxValue = null
     ) {
-        $this->paymentHandlerClass = $paymentHandlerClass;
-        $this->allowedCountries = $allowedCountries;
-        $this->allowedB2bCountries = $allowedB2bCountries;
-        $this->allowedCurrencies = $allowedCurrencies;
-        $this->allowedMinValue = $allowedMinValue;
-        $this->allowedMaxValue = $allowedMaxValue;
     }
 
     public function filterPaymentMethods(
@@ -69,7 +49,7 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
                 $this->validateMinValue($currentValue);
                 $this->validateMaxValue($currentValue);
             }
-        } catch (PaymentMethodNotAllowedException $e) {
+        } catch (PaymentMethodNotAllowedException) {
             $methodCollection = $this->removePaymentMethod($methodCollection);
         }
 
@@ -94,15 +74,10 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
     {
         $that = $this;
         // filter-method needs a closure (forced anonymous function) so we can not use [$this, 'filterMethod']
-        return $paymentMethodCollection->filter(static function (PaymentMethodEntity $entity) use ($that) {
-            return !$that->canMethodRemoved($entity);
-        });
+        return $paymentMethodCollection->filter(static fn (PaymentMethodEntity $entity) => !$that->canMethodRemoved($entity));
     }
 
-    /**
-     * @param CustomerAddressEntity|OrderAddressEntity|null $address
-     */
-    private function validateAddress($address): void
+    private function validateAddress(CustomerAddressEntity|OrderAddressEntity|null $address): void
     {
         if (!$address) {
             return;
@@ -117,7 +92,7 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
             throw new PaymentMethodNotAllowedException('Country is not allowed');
         }
 
-        if ($address->getCompany() && $this->allowedB2bCountries !== null && !\in_array($country->getIso(), $this->allowedB2bCountries, true)) {
+        if ($this->allowedB2bCountries !== null && $address->getCompany() && !\in_array($country->getIso(), $this->allowedB2bCountries, true)) {
             throw new PaymentMethodNotAllowedException('Country is not allowed for B2B');
         }
     }

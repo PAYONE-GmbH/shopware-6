@@ -16,46 +16,40 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class RefundTransactionHandler extends AbstractTransactionHandler implements RefundTransactionHandlerInterface
 {
-    private TransactionStatusServiceInterface $transactionStatusService;
-
     public function __construct(
         RequestParameterFactory $requestFactory,
         PayoneClientInterface $client,
         TransactionDataHandlerInterface $dataHandler,
-        TransactionStatusServiceInterface $transactionStatusService,
-        EntityRepositoryInterface $transactionRepository,
-        EntityRepositoryInterface $lineItemRepository,
+        private readonly TransactionStatusServiceInterface $transactionStatusService,
+        EntityRepository $transactionRepository,
+        EntityRepository $lineItemRepository,
         CurrencyPrecisionInterface $currencyPrecision
     ) {
         $this->requestFactory = $requestFactory;
         $this->client = $client;
         $this->dataHandler = $dataHandler;
-        $this->transactionStatusService = $transactionStatusService;
         $this->transactionRepository = $transactionRepository;
         $this->lineItemRepository = $lineItemRepository;
         $this->currencyPrecision = $currencyPrecision;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function refund(ParameterBag $parameterBag, Context $context): JsonResponse
     {
-        [$requestResponse,] = $this->handleRequest($parameterBag, AbstractRequestParameterBuilder::REQUEST_ACTION_REFUND, $context);
+        [$requestResponse] = $this->handleRequest($parameterBag, AbstractRequestParameterBuilder::REQUEST_ACTION_REFUND, $context);
 
         if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
         }
 
         $this->updateTransactionData($parameterBag, (float) $parameterBag->get('amount'));
-        $this->saveOrderLineItemData($parameterBag->get('orderLines', []), $context);
+        $this->saveOrderLineItemData($parameterBag->all('orderLines'), $context);
 
         $transitionName = StateMachineTransitionActions::ACTION_REFUND_PARTIALLY;
 

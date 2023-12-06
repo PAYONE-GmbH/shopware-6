@@ -17,18 +17,6 @@ class RedirectHandlerTest extends TestCase
 {
     use KernelTestBehaviour;
 
-    private string $appSecret;
-
-    protected function setUp(): void
-    {
-        $this->appSecret = getenv('APP_SECRET');
-    }
-
-    protected function tearDown(): void
-    {
-        putenv('APP_SECRET=' . $this->appSecret);
-    }
-
     public function testItEncodesUrlWithoutDatabase(): void
     {
         $connection = $this->createMock(Connection::class);
@@ -37,22 +25,21 @@ class RedirectHandlerTest extends TestCase
         $connection->expects(static::once())->method('insert')->with(
             'payone_payment_redirect',
             static::callback(
-                static function (array $parameters): bool {
-                    return $parameters['hash'] === 'MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ=='
-                        && $parameters['url'] === 'the-url';
-                }
+                static fn (array $parameters): bool => $parameters['hash'] === 'MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ=='
+                    && $parameters['url'] === 'the-url'
             )
         );
 
         $redirectHandler = new RedirectHandler(
             $connection,
-            $router
+            $router,
+            $this->getContainer()->getParameter('env.app_secret')
         );
 
         $url = $redirectHandler->encode('the-url');
 
-        static::assertSame(
-            'http://localhost/payone/redirect?hash=MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ%3D%3D',
+        static::assertStringEndsWith(
+            '/payone/redirect?hash=MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ%3D%3D',
             $url
         );
     }
@@ -64,14 +51,15 @@ class RedirectHandlerTest extends TestCase
 
         $redirectHandler = new RedirectHandler(
             $connection,
-            $router
+            $router,
+            $this->getContainer()->getParameter('env.app_secret')
         );
 
         $originalUrl = 'the-url';
         $redirectUrl = $redirectHandler->encode($originalUrl);
 
-        static::assertSame(
-            'http://localhost/payone/redirect?hash=MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ%3D%3D',
+        static::assertStringEndsWith(
+            '/payone/redirect?hash=MWFiMDRkYTZhZmI2NTZmMGFhZmE3NmJjNjJmZWQ2YTQ2ODgyZDU5MTJkMDUwYjI5ZDQyN2VhODJiMmUwYjIwYQ%3D%3D',
             $redirectUrl
         );
 
@@ -94,7 +82,8 @@ class RedirectHandlerTest extends TestCase
 
         $redirectHandler = new RedirectHandler(
             $connection,
-            $router
+            $router,
+            $this->getContainer()->getParameter('env.app_secret')
         );
 
         $originalUrl = $redirectHandler->decode($data['hash']);
@@ -107,8 +96,6 @@ class RedirectHandlerTest extends TestCase
 
     public function testItThrowsExceptionOnEncodingWithMissingSecret(): void
     {
-        putenv('APP_SECRET=');
-
         $connection = $this->createMock(Connection::class);
         $router = $this->getContainer()->get('router.default');
 
@@ -132,7 +119,8 @@ class RedirectHandlerTest extends TestCase
 
         $redirectHandler = new RedirectHandler(
             $connection,
-            $router
+            $router,
+            $this->getContainer()->getParameter('env.app_secret')
         );
 
         $this->expectException(\RuntimeException::class);
@@ -151,7 +139,8 @@ class RedirectHandlerTest extends TestCase
 
         $redirectHandler = new RedirectHandler(
             $connection,
-            $router
+            $router,
+            $this->getContainer()->getParameter('env.app_secret')
         );
 
         $redirectHandler->encode('the-url-2');

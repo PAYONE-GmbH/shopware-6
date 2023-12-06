@@ -10,16 +10,12 @@ use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
-use Shopware\Storefront\Page\PageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
 {
-    private AbstractMandateRoute $mandateRoute;
-
-    public function __construct(AbstractMandateRoute $mandateRoute)
+    public function __construct(private readonly AbstractMandateRoute $mandateRoute)
     {
-        $this->mandateRoute = $mandateRoute;
     }
 
     public static function getSubscribedEvents(): array
@@ -30,7 +26,7 @@ class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function addPayonePageData(PageLoadedEvent $event): void
+    public function addPayonePageData(CheckoutConfirmPageLoadedEvent|AccountEditOrderPageLoadedEvent $event): void
     {
         $page = $event->getPage();
         $context = $event->getSalesChannelContext();
@@ -53,8 +49,8 @@ class CheckoutConfirmDebitEventListener implements EventSubscriberInterface
             $payoneData->assign([
                 'savedMandates' => $savedMandates,
             ]);
-        }
 
-        $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+            $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
+        }
     }
 }

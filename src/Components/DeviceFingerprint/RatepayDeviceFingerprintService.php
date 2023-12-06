@@ -10,18 +10,15 @@ use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class RatepayDeviceFingerprintService extends AbstractDeviceFingerprintService
 {
-    public const SESSION_VAR_NAME = 'payone_ratepay_device_ident_token';
+    final public const SESSION_VAR_NAME = 'payone_ratepay_device_ident_token';
 
-    protected ConfigReaderInterface $configReader;
-
-    public function __construct(SessionInterface $session, ConfigReaderInterface $configReader)
+    public function __construct(RequestStack $requestStack, protected ConfigReaderInterface $configReader)
     {
-        parent::__construct($session);
-        $this->configReader = $configReader;
+        parent::__construct($requestStack);
     }
 
     public function getSupportedPaymentHandlerClasses(): array
@@ -44,7 +41,7 @@ class RatepayDeviceFingerprintService extends AbstractDeviceFingerprintService
                 'v' => $snippetId,
                 't' => $deviceIdentToken,
                 'l' => $location,
-            ])
+            ], \JSON_THROW_ON_ERROR)
         );
 
         $snippet .= sprintf(
@@ -65,7 +62,7 @@ class RatepayDeviceFingerprintService extends AbstractDeviceFingerprintService
 
     protected function buildDeviceIdentToken(SalesChannelContext $salesChannelContext): string
     {
-        $sessionId = $this->session->get('sessionId');
+        $sessionId = $this->getSession()?->get('sessionId') ?? '';
 
         return md5($sessionId . '_' . microtime());
     }

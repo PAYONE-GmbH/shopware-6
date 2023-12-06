@@ -21,7 +21,6 @@ use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
@@ -32,42 +31,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class PayolutionController extends StorefrontController
 {
     private const URL = 'https://payment.payolution.com/payolution-payment/infoport/dataprivacydeclaration?mId=';
 
-    private ConfigReaderInterface $configReader;
-
-    private CartService $cartService;
-
-    private CartHasherInterface $cartHasher;
-
-    private PayoneClientInterface $client;
-
-    private RequestParameterFactory $requestParameterFactory;
-
-    private LoggerInterface $logger;
-
     public function __construct(
-        ConfigReaderInterface $configReader,
-        CartService $cartService,
-        CartHasherInterface $cartHasher,
-        PayoneClientInterface $client,
-        RequestParameterFactory $requestParameterFactory,
-        LoggerInterface $logger
+        private readonly ConfigReaderInterface $configReader,
+        private readonly CartService $cartService,
+        private readonly CartHasherInterface $cartHasher,
+        private readonly PayoneClientInterface $client,
+        private readonly RequestParameterFactory $requestParameterFactory,
+        private readonly LoggerInterface $logger
     ) {
-        $this->configReader = $configReader;
-        $this->cartService = $cartService;
-        $this->cartHasher = $cartHasher;
-        $this->client = $client;
-        $this->requestParameterFactory = $requestParameterFactory;
-        $this->logger = $logger;
     }
 
-    /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/consent", name="frontend.account.payone.payolution.consent", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
-     */
+    #[Route(path: '/payone/consent', name: 'frontend.account.payone.payolution.consent', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['GET'])]
     public function displayContentModal(SalesChannelContext $context): Response
     {
         $companyName = $this->getCompanyName($context);
@@ -92,10 +71,7 @@ class PayolutionController extends StorefrontController
         return new Response($content);
     }
 
-    /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/invoicing/validate", name="frontend.payone.payolution.invoicing.validate", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
-     */
+    #[Route(path: '/payone/invoicing/validate', name: 'frontend.payone.payolution.invoicing.validate', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
     public function validate(RequestDataBag $dataBag, SalesChannelContext $context): JsonResponse
     {
         $cart = $this->cartService->getCart($context->getToken(), $context);
@@ -122,10 +98,7 @@ class PayolutionController extends StorefrontController
         return new JsonResponse($response);
     }
 
-    /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/installment/calculation", name="frontend.payone.payolution.installment.calculation", options={"seo": "false"}, methods={"POST"}, defaults={"XmlHttpRequest": true})
-     */
+    #[Route(path: '/payone/installment/calculation', name: 'frontend.payone.payolution.installment.calculation', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
     public function calculation(RequestDataBag $dataBag, SalesChannelContext $context): JsonResponse
     {
         try {
@@ -144,7 +117,7 @@ class PayolutionController extends StorefrontController
             if ($this->isPreCheckNeeded($cart, $dataBag, $context)) {
                 try {
                     $response = $this->client->request($checkRequest);
-                } catch (PayoneRequestException $exception) {
+                } catch (PayoneRequestException) {
                     throw new \RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
                 }
 
@@ -173,7 +146,7 @@ class PayolutionController extends StorefrontController
 
             try {
                 $calculationResponse = $this->client->request($calculationRequest);
-            } catch (PayoneRequestException $exception) {
+            } catch (PayoneRequestException) {
                 throw new \RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
             }
 
@@ -193,10 +166,7 @@ class PayolutionController extends StorefrontController
         return new JsonResponse($response);
     }
 
-    /**
-     * @RouteScope(scopes={"storefront"})
-     * @Route("/payone/installment/download", name="frontend.payone.payolution.installment.download", options={"seo": "false"}, methods={"GET"}, defaults={"XmlHttpRequest": true})
-     */
+    #[Route(path: '/payone/installment/download', name: 'frontend.payone.payolution.installment.download', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['GET'])]
     public function download(Request $request, SalesChannelContext $context): Response
     {
         $duration = (int) $request->get('duration');
@@ -257,16 +227,12 @@ class PayolutionController extends StorefrontController
     {
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
 
-        switch ($salesChannelContext->getPaymentMethod()->getId()) {
-            case PayonePayolutionInvoicing::UUID:
-                return $configuration->getString('payolutionInvoicingCompanyName');
-            case PayonePayolutionInstallment::UUID:
-                return $configuration->getString('payolutionInstallmentCompanyName');
-            case PayonePayolutionDebit::UUID:
-                return $configuration->getString('payolutionDebitCompanyName');
-            default:
-                return null;
-        }
+        return match ($salesChannelContext->getPaymentMethod()->getId()) {
+            PayonePayolutionInvoicing::UUID => $configuration->getString('payolutionInvoicingCompanyName'),
+            PayonePayolutionInstallment::UUID => $configuration->getString('payolutionInstallmentCompanyName'),
+            PayonePayolutionDebit::UUID => $configuration->getString('payolutionDebitCompanyName'),
+            default => null,
+        };
     }
 
     private function getCreditInformationUrlFromCart(Cart $cart, int $duration): ?string
@@ -294,7 +260,7 @@ class PayolutionController extends StorefrontController
         $data = [];
 
         foreach ($response['addpaydata'] as $key => $value) {
-            $key = str_replace('PaymentDetails_', '', $key);
+            $key = str_replace('PaymentDetails_', '', (string) $key);
             $keys = explode('_', $key);
 
             if (\count($keys) === 4) {

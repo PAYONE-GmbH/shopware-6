@@ -7,7 +7,7 @@ namespace PayonePayment\Components\DeviceFingerprint;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 abstract class AbstractDeviceFingerprintServiceTest extends TestCase
 {
@@ -17,11 +17,14 @@ abstract class AbstractDeviceFingerprintServiceTest extends TestCase
     {
         $serviceClass = $this->getDeviceFingerprintServiceClass();
         $salesChannelContext = $this->getSalesChannelContext();
-        $session = $this->getContainer()->get(SessionInterface::class);
-        $deviceFingerprintService = $this->getDeviceFingerprintService($session);
+
+        $request = $this->getRequestWithSession([]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
+        $deviceFingerprintService = $this->getDeviceFingerprintService($this->getContainer()->get(RequestStack::class));
         $token = $deviceFingerprintService->getDeviceIdentToken($salesChannelContext);
 
-        static::assertSame($token, $session->get($serviceClass::SESSION_VAR_NAME));
+        static::assertSame($token, $request->getSession()->get($serviceClass::SESSION_VAR_NAME));
     }
 
     public function testItReturnsExistingDeviceIdentTokenFromSession(): void
@@ -29,10 +32,12 @@ abstract class AbstractDeviceFingerprintServiceTest extends TestCase
         $serviceClass = $this->getDeviceFingerprintServiceClass();
         $salesChannelContext = $this->getSalesChannelContext();
 
-        $session = $this->getContainer()->get(SessionInterface::class);
-        $session->set($serviceClass::SESSION_VAR_NAME, 'the-device-ident-token');
+        $request = $this->getRequestWithSession([
+            $serviceClass::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
 
-        $deviceFingerprintService = $this->getDeviceFingerprintService($session);
+        $deviceFingerprintService = $this->getDeviceFingerprintService($this->getContainer()->get(RequestStack::class));
         $token = $deviceFingerprintService->getDeviceIdentToken($salesChannelContext);
 
         static::assertSame('the-device-ident-token', $token);
@@ -41,21 +46,26 @@ abstract class AbstractDeviceFingerprintServiceTest extends TestCase
     public function testItDeletesDeviceIdentTokenFromSession(): void
     {
         $serviceClass = $this->getDeviceFingerprintServiceClass();
-        $session = $this->getContainer()->get(SessionInterface::class);
-        $session->set($serviceClass::SESSION_VAR_NAME, 'the-device-ident-token');
 
-        $deviceFingerprintService = $this->getDeviceFingerprintService($session);
+        $request = $this->getRequestWithSession([
+            $serviceClass::SESSION_VAR_NAME => 'the-device-ident-token',
+        ]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
+        $deviceFingerprintService = $this->getDeviceFingerprintService($this->getContainer()->get(RequestStack::class));
         $deviceFingerprintService->deleteDeviceIdentToken();
 
-        static::assertNull($session->get($serviceClass::SESSION_VAR_NAME));
+        static::assertNull($request->getSession()->get($serviceClass::SESSION_VAR_NAME));
     }
 
     public function testItReturnsTrueIfDeviceIdentTokenIsAlreadyGenerated(): void
     {
         $salesChannelContext = $this->getSalesChannelContext();
 
-        $session = $this->getContainer()->get(SessionInterface::class);
-        $deviceFingerprintService = $this->getDeviceFingerprintService($session);
+        $request = $this->getRequestWithSession([]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
+        $deviceFingerprintService = $this->getDeviceFingerprintService($this->getContainer()->get(RequestStack::class));
         $deviceFingerprintService->getDeviceIdentToken($salesChannelContext);
 
         static::assertTrue($deviceFingerprintService->isDeviceIdentTokenAlreadyGenerated());
@@ -63,8 +73,10 @@ abstract class AbstractDeviceFingerprintServiceTest extends TestCase
 
     public function testItReturnsFalseIfDeviceIdentTokenIsNotAlreadyGenerated(): void
     {
-        $session = $this->getContainer()->get(SessionInterface::class);
-        $deviceFingerprintService = $this->getDeviceFingerprintService($session);
+        $request = $this->getRequestWithSession([]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
+        $deviceFingerprintService = $this->getDeviceFingerprintService($this->getContainer()->get(RequestStack::class));
 
         static::assertFalse($deviceFingerprintService->isDeviceIdentTokenAlreadyGenerated());
     }
@@ -73,8 +85,10 @@ abstract class AbstractDeviceFingerprintServiceTest extends TestCase
     {
         $salesChannelContext = $this->getSalesChannelContext();
 
-        $session = $this->getContainer()->get(SessionInterface::class);
-        $deviceFingerprintService = $this->getDeviceFingerprintService($session);
+        $request = $this->getRequestWithSession([]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
+        $deviceFingerprintService = $this->getDeviceFingerprintService($this->getContainer()->get(RequestStack::class));
         $token = $deviceFingerprintService->getDeviceIdentToken($salesChannelContext);
         $snippet = $deviceFingerprintService->getDeviceIdentSnippet($token, $salesChannelContext);
 
@@ -88,7 +102,7 @@ abstract class AbstractDeviceFingerprintServiceTest extends TestCase
 
     abstract protected function getSupportedPaymentHandlerClass(): string;
 
-    abstract protected function getDeviceFingerprintService(SessionInterface $session): AbstractDeviceFingerprintService;
+    abstract protected function getDeviceFingerprintService(RequestStack $requestStack): AbstractDeviceFingerprintService;
 
     abstract protected function getExpectedSnippet(string $token): string;
 

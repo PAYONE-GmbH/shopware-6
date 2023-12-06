@@ -11,22 +11,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AccountMandatePageLoadedEvent extends NestedEvent
 {
-    public const NAME = 'account-payone-mandate.page.loaded';
-
-    protected AccountMandatePage $page;
-
-    protected SalesChannelContext $context;
-
-    protected Request $request;
+    final public const NAME = 'account-payone-mandate.page.loaded';
 
     public function __construct(
-        AccountMandatePage $page,
-        SalesChannelContext $context,
-        Request $request
+        protected AccountMandatePage $page,
+        protected SalesChannelContext $context,
+        protected Request $request
     ) {
-        $this->page = $page;
-        $this->context = $context;
-        $this->request = $request;
     }
 
     public function getName(): string

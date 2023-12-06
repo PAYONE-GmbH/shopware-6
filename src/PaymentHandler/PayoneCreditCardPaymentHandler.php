@@ -9,98 +9,89 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
-use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implements AsynchronousPaymentHandlerInterface
+class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHandler
 {
-    public const REQUEST_PARAM_SAVE_CREDIT_CARD = 'saveCreditCard';
-    public const REQUEST_PARAM_PSEUDO_CARD_PAN = 'pseudoCardPan';
-    public const REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN = 'savedPseudoCardPan';
-    public const REQUEST_PARAM_CARD_EXPIRE_DATE = 'cardExpireDate';
-    public const REQUEST_PARAM_CARD_TYPE = 'cardType';
-    public const REQUEST_PARAM_TRUNCATED_CARD_PAN = 'truncatedCardPan';
-
-    protected PayoneClientInterface $client;
-
-    protected TranslatorInterface $translator;
-
-    private TransactionDataHandlerInterface $dataHandler;
-
-    private PaymentStateHandlerInterface $stateHandler;
-
-    private CardRepositoryInterface $cardRepository;
-
-    private RequestParameterFactory $requestParameterFactory;
+    final public const REQUEST_PARAM_SAVE_CREDIT_CARD = 'saveCreditCard';
+    final public const REQUEST_PARAM_PSEUDO_CARD_PAN = 'pseudoCardPan';
+    final public const REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN = 'savedPseudoCardPan';
+    final public const REQUEST_PARAM_CARD_EXPIRE_DATE = 'cardExpireDate';
+    final public const REQUEST_PARAM_CARD_TYPE = 'cardType';
+    final public const REQUEST_PARAM_TRUNCATED_CARD_PAN = 'truncatedCardPan';
 
     public function __construct(
         ConfigReaderInterface $configReader,
+        EntityRepository $lineItemRepository,
+        RequestStack $requestStack,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
         TransactionDataHandlerInterface $dataHandler,
-        EntityRepositoryInterface $lineItemRepository,
         PaymentStateHandlerInterface $stateHandler,
-        CardRepositoryInterface $cardRepository,
-        RequestStack $requestStack,
-        RequestParameterFactory $requestParameterFactory
+        RequestParameterFactory $requestParameterFactory,
+        protected CardRepositoryInterface $cardRepository
     ) {
-        parent::__construct($configReader, $lineItemRepository, $requestStack);
-
-        $this->client = $client;
-        $this->translator = $translator;
-        $this->dataHandler = $dataHandler;
-        $this->stateHandler = $stateHandler;
-        $this->cardRepository = $cardRepository;
-        $this->requestParameterFactory = $requestParameterFactory;
+        parent::__construct(
+            $configReader,
+            $lineItemRepository,
+            $requestStack,
+            $client,
+            $translator,
+            $dataHandler,
+            $stateHandler,
+            $requestParameterFactory
+        );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
+    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
-        $requestData = $this->fetchRequestData();
+        if (static::isNeverCapturable($payoneTransActionData)) {
+            return false;
+        }
 
-        // Get configured authorization method
-        $authorizationMethod = $this->getAuthorizationMethod(
-            $transaction->getOrder()->getSalesChannelId(),
-            'creditCardAuthorizationMethod',
-            'preauthorization'
-        );
+        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
 
-        $paymentTransaction = PaymentTransaction::fromAsyncPaymentTransactionStruct($transaction, $transaction->getOrder());
+        if ($txAction === TransactionStatusService::ACTION_APPOINTED) {
+            return true;
+        }
 
-        $request = $this->requestParameterFactory->getRequestParameter(
-            new PaymentTransactionStruct(
-                $paymentTransaction,
-                $requestData,
-                $salesChannelContext,
-                __CLASS__,
-                $authorizationMethod
-            )
-        );
+        return static::matchesIsCapturableDefaults($transactionData);
+    }
 
-        try {
-            $response = $this->client->request($request);
-        } catch (PayoneRequestException $exception) {
-            throw new AsyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $exception->getResponse()['error']['CustomerMessage']
-            );
-        } catch (\Throwable $exception) {
+    public static function isRefundable(array $transactionData): bool
+    {
+        if (static::isNeverRefundable($transactionData)) {
+            return false;
+        }
+
+        return static::matchesIsRefundableDefaults($transactionData);
+    }
+
+    protected function getDefaultAuthorizationMethod(): string
+    {
+        return AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE;
+    }
+
+    protected function handleResponse(
+        AsyncPaymentTransactionStruct $transaction,
+        PaymentTransaction $paymentTransaction,
+        RequestDataBag $dataBag,
+        array $request,
+        array $response,
+        SalesChannelContext $salesChannelContext
+    ): void {
+        if (empty($response['status']) || $response['status'] === 'ERROR') {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
@@ -108,14 +99,14 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
         }
 
         $customer = $salesChannelContext->getCustomer();
-        $savedPseudoCardPan = $requestData->get(self::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN);
+        $savedPseudoCardPan = $dataBag->get(self::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN);
 
         if (empty($savedPseudoCardPan)) {
-            $truncatedCardPan = $requestData->get(self::REQUEST_PARAM_TRUNCATED_CARD_PAN);
-            $cardExpireDate = $requestData->get(self::REQUEST_PARAM_CARD_EXPIRE_DATE);
-            $pseudoCardPan = $requestData->get(self::REQUEST_PARAM_PSEUDO_CARD_PAN);
-            $cardType = $requestData->get(self::REQUEST_PARAM_CARD_TYPE);
-            $saveCreditCard = $requestData->get(self::REQUEST_PARAM_SAVE_CREDIT_CARD) === 'on';
+            $truncatedCardPan = $dataBag->get(self::REQUEST_PARAM_TRUNCATED_CARD_PAN);
+            $cardExpireDate = $dataBag->get(self::REQUEST_PARAM_CARD_EXPIRE_DATE);
+            $pseudoCardPan = $dataBag->get(self::REQUEST_PARAM_PSEUDO_CARD_PAN);
+            $cardType = $dataBag->get(self::REQUEST_PARAM_CARD_TYPE);
+            $saveCreditCard = $dataBag->get(self::REQUEST_PARAM_SAVE_CREDIT_CARD) === 'on';
             $expiresAt = \DateTime::createFromFormat('ym', $cardExpireDate);
 
             if (!empty($expiresAt) && $customer !== null && $saveCreditCard) {
@@ -152,49 +143,14 @@ class PayoneCreditCardPaymentHandler extends AbstractPayonePaymentHandler implem
         if ($paymentTransaction->getOrder()->getLineItems() !== null) {
             $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());
         }
+    }
 
-        if (strtolower($response['status']) === 'redirect') {
+    protected function getRedirectResponse(array $request, array $response): RedirectResponse
+    {
+        if (strtolower((string) $response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);
         }
 
         return new RedirectResponse($request['successurl']);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function finalize(AsyncPaymentTransactionStruct $transaction, Request $request, SalesChannelContext $salesChannelContext): void
-    {
-        $this->stateHandler->handleStateResponse($transaction, (string) $request->query->get('state'));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
-    {
-        if (static::isNeverCapturable($payoneTransActionData)) {
-            return false;
-        }
-
-        $txAction = isset($transactionData['txaction']) ? strtolower($transactionData['txaction']) : null;
-
-        if ($txAction === TransactionStatusService::ACTION_APPOINTED) {
-            return true;
-        }
-
-        return static::matchesIsCapturableDefaults($transactionData);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function isRefundable(array $transactionData): bool
-    {
-        if (static::isNeverRefundable($transactionData)) {
-            return false;
-        }
-
-        return static::matchesIsRefundableDefaults($transactionData);
     }
 }

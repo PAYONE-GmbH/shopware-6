@@ -12,8 +12,6 @@ use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\ApplePayTransactionStruct;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Plugin\Exception\DecorationPatternException;
-use Shopware\Core\Framework\Routing\Annotation\ContextTokenRequired;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
@@ -22,50 +20,27 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @RouteScope(scopes={"store-api"})
- * @ContextTokenRequired
- */
+#[Route(defaults: ['_routeScope' => ['store-api']])]
 class ApplePayRoute extends AbstractApplePayRoute
 {
-    public const CERT_FOLDER = '/config/apple-pay-cert/';
-
-    private Client $httpClient;
-
-    private LoggerInterface $logger;
-
-    private RequestParameterFactory $requestParameterFactory;
-
-    private PayoneClientInterface $client;
-
-    private ConfigReaderInterface $configReader;
-
-    private string $kernelDirectory;
+    final public const CERT_FOLDER = '/config/apple-pay-cert/';
 
     public function __construct(
-        Client $httpClient,
-        LoggerInterface $logger,
-        RequestParameterFactory $requestParameterFactory,
-        PayoneClientInterface $client,
-        ConfigReaderInterface $configReader,
-        string $kernelDirectory
+        private readonly Client $httpClient,
+        private readonly LoggerInterface $logger,
+        private readonly RequestParameterFactory $requestParameterFactory,
+        private readonly PayoneClientInterface $client,
+        private readonly ConfigReaderInterface $configReader,
+        private readonly string $kernelDirectory
     ) {
-        $this->httpClient = $httpClient;
-        $this->logger = $logger;
-        $this->requestParameterFactory = $requestParameterFactory;
-        $this->client = $client;
-        $this->configReader = $configReader;
-        $this->kernelDirectory = $kernelDirectory;
     }
 
-    public function getDecorated(): AbstractCardRoute
+    public function getDecorated(): AbstractApplePayRoute
     {
         throw new DecorationPatternException(self::class);
     }
 
-    /**
-     * @Route("/store-api/payone/apple-pay/validate-merchant", name="store-api.payone.apple-pay.validate-merchant", methods={"POST"})
-     */
+    #[Route(path: '/store-api/payone/apple-pay/validate-merchant', name: 'store-api.payone.apple-pay.validate-merchant', defaults: ['_contextTokenRequired' => true], methods: ['POST'])]
     public function validateMerchant(Request $request, SalesChannelContext $context): Response
     {
         $configuration = $this->configReader->read($context->getSalesChannel()->getId());
@@ -112,15 +87,13 @@ class ApplePayRoute extends AbstractApplePayRoute
         }
 
         return new JsonResponse(
-            json_decode($response->getBody()->getContents(), true),
+            json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR),
             $statusCode,
             $response->getHeaders()
         );
     }
 
-    /**
-     * @Route("/store-api/payone/apple-pay/process", name="store-api.payone.apple-pay.process", methods={"POST"})
-     */
+    #[Route(path: '/store-api/payone/apple-pay/process', name: 'store-api.payone.apple-pay.process', defaults: ['_contextTokenRequired' => true], methods: ['POST'])]
     public function process(Request $request, SalesChannelContext $context): Response
     {
         $salesChannelId = $context->getSalesChannel()->getId();
@@ -141,7 +114,7 @@ class ApplePayRoute extends AbstractApplePayRoute
 
         try {
             $response = $this->client->request($payoneRequest);
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             return new JsonResponse([], 402);
         }
 

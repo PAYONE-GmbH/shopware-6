@@ -14,20 +14,11 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
      */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        switch ($arguments->getPaymentMethod()) {
-            case PayonePostfinanceWalletPaymentHandler::class:
-                $type = self::ONLINEBANK_TRANSFER_TYPE_WALLET;
-
-                break;
-            case PayonePostfinanceCardPaymentHandler::class:
-                $type = self::ONLINEBANK_TRANSFER_TYPE_CARD;
-
-                break;
-            default:
-                throw new \RuntimeException('Invalid payment method handler');
-        }
-
-        $billingAddress = $arguments->getPaymentTransaction()->getOrder()->getBillingAddress();
+        $type = match ($arguments->getPaymentMethod()) {
+            PayonePostfinanceWalletPaymentHandler::class => self::ONLINEBANK_TRANSFER_TYPE_WALLET,
+            PayonePostfinanceCardPaymentHandler::class => self::ONLINEBANK_TRANSFER_TYPE_CARD,
+            default => throw new \RuntimeException('Invalid payment method handler'),
+        };
 
         return [
             'request' => $arguments->getAction(),

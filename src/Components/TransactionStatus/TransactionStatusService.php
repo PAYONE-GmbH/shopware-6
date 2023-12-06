@@ -15,7 +15,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefi
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -26,53 +26,38 @@ use Shopware\Core\System\StateMachine\Transition;
 
 class TransactionStatusService implements TransactionStatusServiceInterface
 {
-    public const ACTION_APPOINTED = 'appointed';
-    public const ACTION_PAID = 'paid';
-    public const ACTION_CAPTURE = 'capture';
-    public const ACTION_PARTIAL_CAPTURE = 'partialCapture';
-    public const ACTION_COMPLETED = 'completed';
-    public const ACTION_DEBIT = 'debit';
-    public const ACTION_PARTIAL_DEBIT = 'partialDebit';
-    public const ACTION_CANCELATION = 'cancelation';
-    public const ACTION_FAILED = 'failed';
-    public const ACTION_REDIRECT = 'redirect';
-    public const ACTION_INVOICE = 'invoice';
-    public const ACTION_UNDERPAID = 'underpaid';
-    public const ACTION_TRANSFER = 'transfer';
-    public const ACTION_REMINDER = 'reminder';
-    public const ACTION_VAUTHORIZATION = 'vauthorization';
-    public const ACTION_VSETTLEMENT = 'vsettlement';
+    final public const ACTION_APPOINTED = 'appointed';
+    final public const ACTION_PAID = 'paid';
+    final public const ACTION_CAPTURE = 'capture';
+    final public const ACTION_PARTIAL_CAPTURE = 'partialCapture';
+    final public const ACTION_COMPLETED = 'completed';
+    final public const ACTION_DEBIT = 'debit';
+    final public const ACTION_PARTIAL_DEBIT = 'partialDebit';
+    final public const ACTION_CANCELATION = 'cancelation';
+    final public const ACTION_FAILED = 'failed';
+    final public const ACTION_REDIRECT = 'redirect';
+    final public const ACTION_INVOICE = 'invoice';
+    final public const ACTION_UNDERPAID = 'underpaid';
+    final public const ACTION_TRANSFER = 'transfer';
+    final public const ACTION_REMINDER = 'reminder';
+    final public const ACTION_VAUTHORIZATION = 'vauthorization';
+    final public const ACTION_VSETTLEMENT = 'vsettlement';
 
-    public const STATUS_PREFIX = 'paymentStatus';
-    public const STATUS_COMPLETED = 'completed';
+    final public const STATUS_PREFIX = 'paymentStatus';
+    final public const STATUS_COMPLETED = 'completed';
 
-    public const AUTHORIZATION_TYPE_AUTHORIZATION = 'authorization';
-    public const AUTHORIZATION_TYPE_PREAUTHORIZATION = 'preauthorization';
+    final public const AUTHORIZATION_TYPE_AUTHORIZATION = 'authorization';
+    final public const AUTHORIZATION_TYPE_PREAUTHORIZATION = 'preauthorization';
 
-    public const TRANSACTION_TYPE_GT = 'GT';
-
-    private StateMachineRegistry $stateMachineRegistry;
-
-    private ConfigReaderInterface $configReader;
-
-    private EntityRepositoryInterface $transactionRepository;
-
-    private LoggerInterface $logger;
-
-    private CurrencyPrecisionInterface $currencyPrecision;
+    final public const TRANSACTION_TYPE_GT = 'GT';
 
     public function __construct(
-        StateMachineRegistry $stateMachineRegistry,
-        ConfigReaderInterface $configReader,
-        EntityRepositoryInterface $transactionRepository,
-        LoggerInterface $logger,
-        CurrencyPrecisionInterface $currencyPrecision
+        private readonly StateMachineRegistry $stateMachineRegistry,
+        private readonly ConfigReaderInterface $configReader,
+        private readonly EntityRepository $transactionRepository,
+        private readonly LoggerInterface $logger,
+        private readonly CurrencyPrecisionInterface $currencyPrecision
     ) {
-        $this->stateMachineRegistry = $stateMachineRegistry;
-        $this->configReader = $configReader;
-        $this->transactionRepository = $transactionRepository;
-        $this->logger = $logger;
-        $this->currencyPrecision = $currencyPrecision;
     }
 
     public function transitionByConfigMapping(SalesChannelContext $salesChannelContext, PaymentTransaction $paymentTransaction, array $transactionData): void
@@ -95,7 +80,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         } elseif ($this->isTransactionPartialRefund($transactionData, $currency)) {
             $configurationKey = self::STATUS_PREFIX . ucfirst(self::ACTION_PARTIAL_DEBIT);
         } else {
-            $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower($transactionData['txaction']));
+            $configurationKey = self::STATUS_PREFIX . ucfirst(strtolower((string) $transactionData['txaction']));
         }
 
         $transitionName = $configuration->getString($configurationKey);
@@ -152,7 +137,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
                 ),
                 $context
             );
-        } catch (IllegalTransitionException $exception) {
+        } catch (IllegalTransitionException) {
             /** false-positiv handling (paid -> paid, open -> open) */
             $this->logger->notice(sprintf('Transition %s not possible from state %s for transaction ID %s', $transitionName, $transaction->getStateMachineState()->getTechnicalName(), $transactionId), $transactionData);
         }
@@ -160,7 +145,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPartialPaid(array $transactionData, CurrencyEntity $currency): bool
     {
-        if (!\in_array(strtolower($transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE, self::ACTION_INVOICE], true)) {
+        if (!\in_array(strtolower((string) $transactionData['txaction']), [self::ACTION_DEBIT, self::ACTION_CAPTURE, self::ACTION_INVOICE], true)) {
             return false;
         }
 
@@ -191,7 +176,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     {
         $precision = $this->currencyPrecision->getTotalRoundingPrecision($currency);
 
-        if (strtolower($transactionData['txaction']) !== self::ACTION_DEBIT) {
+        if (strtolower((string) $transactionData['txaction']) !== self::ACTION_DEBIT) {
             return false;
         }
 
@@ -234,6 +219,6 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return \array_key_exists('response', $firstTransaction)
             && \array_key_exists('status', $firstTransaction['response'])
             && $firstTransaction['response']['status'] === strtoupper(self::ACTION_REDIRECT)
-            && strtolower($transactionData['txaction']) === self::ACTION_FAILED;
+            && strtolower((string) $transactionData['txaction']) === self::ACTION_FAILED;
     }
 }

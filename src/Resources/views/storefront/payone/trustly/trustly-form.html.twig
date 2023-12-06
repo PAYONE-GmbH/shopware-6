@@ -13,8 +13,8 @@
     </div>
 
     {% block page_checkout_confirm_payone_card_content_trustly %}
-        <div class="form-row">
-            <div class="form-group {% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
+        <div class="row">
+            <div class="{% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
                 <label class="form-label" for="iban">{{ "PayonePayment.trustly.iban" | trans }}</label>
                 <input class="form-control payone-input" id="iban" name="iban" form="confirmOrderForm" />
             </div>

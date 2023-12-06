@@ -38,7 +38,7 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Language\LanguageEntity;
@@ -48,24 +48,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    private EntityRepositoryInterface $languageRepository;
-
-    private RequestStack $requestStack;
-
-    private EntityRepositoryInterface $salutationRepository;
-
-    private EntityRepositoryInterface $countryRepository;
-
     public function __construct(
-        EntityRepositoryInterface $languageRepository,
-        EntityRepositoryInterface $salutationRepository,
-        EntityRepositoryInterface $countryRepository,
-        RequestStack $requestStack
+        private readonly EntityRepository $languageRepository,
+        private readonly EntityRepository $salutationRepository,
+        private readonly EntityRepository $countryRepository,
+        private readonly RequestStack $requestStack
     ) {
-        $this->languageRepository = $languageRepository;
-        $this->salutationRepository = $salutationRepository;
-        $this->countryRepository = $countryRepository;
-        $this->requestStack = $requestStack;
     }
 
     /**
@@ -104,7 +92,7 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
             'city' => $billingAddress->getCity(),
             'country' => $this->getCustomerCountry($billingAddress, $salesChannelContext->getContext())->getIso(),
             'email' => $salesChannelContext->getCustomer()->getEmail(),
-            'language' => substr($language->getLocale()->getCode(), 0, 2),
+            'language' => substr((string) $language->getLocale()->getCode(), 0, 2),
             'ip' => $this->requestStack->getCurrentRequest() !== null ? $this->requestStack->getCurrentRequest()->getClientIp() : null,
         ];
 

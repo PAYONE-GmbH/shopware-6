@@ -11,7 +11,7 @@ class Migration1561379069AddPayonePaymentCardTable extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1561379069;
+        return 1_561_379_069;
     }
 
     public function update(Connection $connection): void
@@ -41,16 +41,7 @@ class Migration1561379069AddPayonePaymentCardTable extends MigrationStep
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ';
 
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-
-            return;
-        }
-
-        if (method_exists($connection, 'exec')) {
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void

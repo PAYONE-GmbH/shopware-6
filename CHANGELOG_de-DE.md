@@ -41,17 +41,17 @@ Bekannte Inkompatibilitäten
 # 2.0.0
 
 Neue Funktionen
- 
+
 * Neue Zahlungsmethode: Vorauszahlung
 * Neue Zahlungsmethode: Paydirekt
 * Unterstützung des Storno-Zahlungsflusses von Shopware 6.2
- 
+
 Fehlerbehebung(en)
- 
+
 * ein Fehler behoben, durch den bestehende Einstellungen wie die Zuweisung von Zahlungsmethoden nach einem Plugin-Update verloren gehen konnten
 * falsches Vertriebskanal-Routing von PayPal-Express-Zahlungen korrigiert (thx @boxblinkracer)
 * verschiedene kleinere Korrekturen
- 
+
 Wartung
 
 * Kompatibilität für Shopware 6.2.x+
@@ -73,17 +73,17 @@ Fehlerbehebung(en)
 # 2.2.0
 
 Neue Funktionen
- 
+
 * Kompatibilität mit Shopware 6.4.x
- 
+
 Fehlerbehebungen
- 
+
 * API-Test für paydirekt behoben
 * Lieferadresse bei Paypal-Zahlungen immer angeben
-* gefixte Labels für PAYONE Statusmapping (endlich!) 
- 
+* gefixte Labels für PAYONE Statusmapping (endlich!)
+
 Wartung
- 
+
 * getestet mit Shop-Version 6.4.1.0
 * bessere Übersetzungen der Fehlermeldungen
 
@@ -91,17 +91,17 @@ Wartung
 # 2.3.0
 
 Neue Funktionen
- 
+
 * neue PAYONE Berechtigungsverwaltung
 * Status Mapping pro Zahlungsmethode möglich
- 
+
 Fehlerbehebungen
- 
+
 * Fix für die Freischaltung der Schaltfläche "Jetzt kaufen"
 * PayPal Express: Telefonnummer ist kein Pflichtfeld mehr
- 
+
 Wartung
- 
+
 * getestet mit Shopware 6.4.3.1
 * massive Überarbeitungen in der Pluginstruktur
 * Elasticsearch Kompatibilität hergestellt
@@ -181,13 +181,13 @@ Wartung
 # 3.1.0
 
 Neue Funktionen
- 
+
 * Neue Zahlungsart: Rechnung
 * Checkbox für Kreditkartenzahlungen hinzugefügt, um Zahlungsdaten zu speichern
 
 Fehlerbehebungen
- 
-* Der Capturemode Parameter wurde entfernt bei abgeschlossenen Zahlungen 
+
+* Der Capturemode Parameter wurde entfernt bei abgeschlossenen Zahlungen
 * den ZeroAmountCartValidator geupdatet
 * Data Protection Check wird immer aktiviert
 
@@ -202,24 +202,16 @@ Shopware 6.4.10.0
 # 3.2.0
 
 Neue Funktionen
- 
+
 * Neue Zahlungsart: Bancontact
 * Bankgruppen Typen für iDEAL hinzugefügt
 * Regelmäßiges automatisiertes reinigen der redirect Tabelle
 * Zahlungsziel auf den Standardrechnungen für den Rechnungskauf hinzugefügt
- 
+
 Fehlerbehebung
- 
+
 * Versandkosten zu einzelnen Artikeln hinzugefügt
 * Fehler in Regel zur Entfernung des gesicherten Rechnungskaufs behoben
- 
-Wartung
-
-# 4.1.0
- 
-* Umbenennung der Zahlungsarten
-* PAYONE Logo ausgetauscht
-* Getestet mit 6.4.12
 
 # 3.3.0
 
@@ -232,7 +224,7 @@ Neue Funktionen
 Wartung
 
 * Sales Landingpage ins Backend integriert
-* Getestet mit 6.4.14 
+* Getestet mit 6.4.14
 
 # 4.0.0
 
@@ -241,17 +233,17 @@ Neue Funktionen
 * Unterstützung für Shopware 6.3 aufgehoben
 * Allgemeine Code Optimierungen durchgeführt
 
-* Wichtige Änderung: Die Transaktionsdaten von PAYONE Zahlungen 
-wurden bisher immer in den Zusatzfeldern der Bestellungen gespeichert. 
-Da die Zusatzfelder als JSON in der Datenbank gespeichert werden, 
-war das Durchsuchen der Transaktionsdaten bei großen Datenmengen nicht 
-sehr performant. Deshalb wurde für die Transaktionsdaten eine Entity 
-Extension eingerichtet, sodass die Daten in einer extra Datenbanktabelle 
-gespeichert werden, die deutlich performanter durchsucht werden kann. 
-Beim Plugin Update werden die alten Zusatzfelder in die Entity Extension 
-migriert und danach werden die Zusatzfelder gelöscht. Sollten Sie in Ihrem 
-eigenen Code oder zum Beispiel bei der Synchronisation zu externen Systemen 
-unsere Zusatzfelder verwendet haben, müssen Sie das auf die neue Entity 
+* Wichtige Änderung: Die Transaktionsdaten von PAYONE Zahlungen
+wurden bisher immer in den Zusatzfeldern der Bestellungen gespeichert.
+Da die Zusatzfelder als JSON in der Datenbank gespeichert werden,
+war das Durchsuchen der Transaktionsdaten bei großen Datenmengen nicht
+sehr performant. Deshalb wurde für die Transaktionsdaten eine Entity
+Extension eingerichtet, sodass die Daten in einer extra Datenbanktabelle
+gespeichert werden, die deutlich performanter durchsucht werden kann.
+Beim Plugin Update werden die alten Zusatzfelder in die Entity Extension
+migriert und danach werden die Zusatzfelder gelöscht. Sollten Sie in Ihrem
+eigenen Code oder zum Beispiel bei der Synchronisation zu externen Systemen
+unsere Zusatzfelder verwendet haben, müssen Sie das auf die neue Entity
 Extension anpassen.
 
 Fehlerbehebung
@@ -264,7 +256,7 @@ Wartung
 * Getestet mit 6.4.16
 
 ### Lesen der Transaktionsdaten ###
-```        
+```
 $criteria = (new Criteria())
 ->addAssociation(PayonePaymentOrderTransactionExtension::NAME)
 ->addFilter(new EqualsFilter(PayonePaymentOrderTransactionExtension::NAME . '.transactionId', $payoneTransactionId));
@@ -292,21 +284,21 @@ $this->transactionRepository->upsert([[
 # 4.1.0
 
 Neue Funktionen
- 
+
 * Neue Zahlungsart: Klarna Rechnung
 * Neue Zahlungsart: Klarna Sofort
 * Neue Zahlungsart: Klarna Ratenkauf
 * Neue Zahlungsart: P24
 * Der Kreditkarten - Kartentyp wird nun im Adminbereich bei den Bestelldetails angezeigt
- 
+
 Fehlerbehebung
- 
+
 * Fehler in der Weiterleitung behoben, wenn Multi-Saleschannels genutzt werden - Vielen Dank an @patchee500
 * Fehler bei Unzer B2B behoben
 * Fehler beim Refund mit falscher tx_id behoben
- 
+
 Wartung
- 
+
 * Getestet mit: 6.4.17.1
 
 # 4.2.0
@@ -336,12 +328,27 @@ Wartung
 # 4.2.1
 
 Fehlerbehebung
- 
+
 * Fehler beim Capture in Bancontact behoben
 * Schreibfehler in dfp snippet für Payla behoben
 * Fehler txid in Datenbank behoben
 * Fehler Klarna Eventname behoben
- 
+
 Wartung
- 
+
 * Getestet mit 6.4.20.2
+
+# 5.0.2
+
+Neue Funktionen
+
+* Unterstützung für Shopware 6.5 hinzugefügt
+* Unterstützung für Shopware 6.4 aufgehoben
+* Allgemeine Code Optimierungen durchgeführt
+* Falls Sie Klassen und Funktionen des Plugins in eigenen Plugins nutzen oder Code des Plugins erweitern, sollten Sie Ihren Code nach dem Update auf Funktionalität prüfen, da einige Stellen angepasst wurden
+
+Wartung
+
+* Getestet mit 6.5.1.1
+* 1er Lauf getestet mit 6.5.2.1
+* 2ter Lauf getestet mit 6.5.3.0

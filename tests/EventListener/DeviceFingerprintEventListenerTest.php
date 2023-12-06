@@ -24,6 +24,7 @@ use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPage;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\Page;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @covers \PayonePayment\EventListener\DeviceFingerprintEventListener
@@ -34,6 +35,9 @@ class DeviceFingerprintEventListenerTest extends TestCase
 
     public function testItAddsDeviceFingerprintDataExtensionOnCheckoutConfirmPage(): void
     {
+        $request = $this->getRequestWithSession([]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
         $page = new CheckoutConfirmPage();
         $this->setPaymentMethods($page);
 
@@ -52,6 +56,9 @@ class DeviceFingerprintEventListenerTest extends TestCase
 
     public function testItAddsDeviceFingerprintDataExtensionOnAccountEditOrderPage(): void
     {
+        $request = $this->getRequestWithSession([]);
+        $this->getContainer()->get(RequestStack::class)->push($request);
+
         $page = new AccountEditOrderPage();
         $this->setPaymentMethods($page);
 

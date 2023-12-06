@@ -15,8 +15,6 @@ export default class PayonePaymentRatepayInstallment extends Plugin {
     }
 
     init() {
-        this.csrfToken = document.getElementById('payoneCsrfTokenRatepayInstallmentCalculation');
-
         this._client = new HttpClient();
 
         this.ratepayRateInput = DomAccess.querySelector(document, this.options.ratepayRateInputSelector);
@@ -57,11 +55,9 @@ export default class PayonePaymentRatepayInstallment extends Plugin {
 
     _sendRequest(type, value) {
         let requestData = {
-            '_csrf_token': this.csrfToken.value
-        }
-
-        requestData.ratepayInstallmentType = type;
-        requestData.ratepayInstallmentValue = value;
+            ratepayInstallmentType: type,
+            ratepayInstallmentValue: value
+        };
 
         const data = JSON.stringify(requestData);
 

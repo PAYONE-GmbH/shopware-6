@@ -1,17 +1,19 @@
 {% block payone_payolution_installment_selection %}
-    <div class="form-group">
-        <label class="form-label" for="payolutionInstallmentDuration">{{ "PayonePayment.payolution.installment.selectInstallmentsLabel" | trans }}{{ "general.required" | trans }}</label>
+    <div class="row">
+        <div class="col">
+            <label class="form-label" for="payolutionInstallmentDuration">{{ "PayonePayment.payolution.installment.selectInstallmentsLabel" | trans }}{{ "general.required" | trans }}</label>
 
-        <select class="form-control" id="payolutionInstallmentDuration" name="payolutionInstallmentDuration" form="confirmOrderForm">
-            {% for element in addpaydata  %}
-                <option value="{{ element.Duration }}">
-                    {{ "PayonePayment.payolution.installment.select" | trans({
-                        '%duration%': element.Duration,
-                        '%amount%':  element.Installment[0].Amount | currency(element.Currency)
-                    }) }}
-                </option>
-            {% endfor %}
-        </select>
+            <select class="form-control" id="payolutionInstallmentDuration" name="payolutionInstallmentDuration" form="confirmOrderForm">
+                {% for element in addpaydata  %}
+                    <option value="{{ element.Duration }}">
+                        {{ "PayonePayment.payolution.installment.select" | trans({
+                            '%duration%': element.Duration,
+                            '%amount%':  element.Installment[0].Amount | currency(element.Currency)
+                        }) }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
     </div>
 
     {% for element in addpaydata  %}

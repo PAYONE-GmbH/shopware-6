@@ -11,23 +11,14 @@ class Migration1666770470AddCardTypeToCardTable extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1666770470;
+        return 1_666_770_470;
     }
 
     public function update(Connection $connection): void
     {
         $sql = 'ALTER TABLE `payone_payment_card` ADD `card_type` VARCHAR(255) NOT NULL;';
 
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-
-            return;
-        }
-
-        if (method_exists($connection, 'exec')) {
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void

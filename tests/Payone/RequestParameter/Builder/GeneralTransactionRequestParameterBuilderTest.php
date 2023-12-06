@@ -13,7 +13,7 @@ use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -81,7 +81,7 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
         $builder = new GeneralTransactionRequestParameterBuilder(
             $this->createMock(CartHasherInterface::class),
             $this->createMock(ConfigReaderInterface::class),
-            $this->createMock(EntityRepositoryInterface::class),
+            $this->createMock(EntityRepository::class),
             $currencyPrecision
         );
 
@@ -108,7 +108,7 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
         $builder = new GeneralTransactionRequestParameterBuilder(
             $cartHasher,
             $this->createMock(ConfigReaderInterface::class),
-            $this->createMock(EntityRepositoryInterface::class),
+            $this->createMock(EntityRepository::class),
             $this->createMock(CurrencyPrecisionInterface::class)
         );
 
@@ -130,7 +130,7 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
         $builder = new GeneralTransactionRequestParameterBuilder(
             $this->createMock(CartHasherInterface::class),
             $this->createMock(ConfigReaderInterface::class),
-            $this->createMock(EntityRepositoryInterface::class),
+            $this->createMock(EntityRepository::class),
             $this->createMock(CurrencyPrecisionInterface::class)
         );
 
@@ -156,7 +156,7 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
         $builder = new GeneralTransactionRequestParameterBuilder(
             $cartHasher,
             $this->createMock(ConfigReaderInterface::class),
-            $this->createMock(EntityRepositoryInterface::class),
+            $this->createMock(EntityRepository::class),
             $this->createMock(CurrencyPrecisionInterface::class)
         );
 
@@ -178,7 +178,7 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
         $builder = new GeneralTransactionRequestParameterBuilder(
             $this->createMock(CartHasherInterface::class),
             $this->createMock(ConfigReaderInterface::class),
-            $this->createMock(EntityRepositoryInterface::class),
+            $this->createMock(EntityRepository::class),
             $this->createMock(CurrencyPrecisionInterface::class)
         );
 
@@ -214,7 +214,7 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
         $builder = new GeneralTransactionRequestParameterBuilder(
             $this->createMock(CartHasherInterface::class),
             $this->createMock(ConfigReaderInterface::class),
-            $this->createMock(EntityRepositoryInterface::class),
+            $this->createMock(EntityRepository::class),
             $this->createMock(CurrencyPrecisionInterface::class)
         );
 

@@ -15,62 +15,41 @@ use PayonePayment\StoreApi\Route\ApplePayRoute;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Grouping\FieldGrouping;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route(defaults: ['_routeScope' => ['api']])]
 class SettingsController extends AbstractController
 {
     private const REFERENCE_PREFIX_TEST = 'TESTPO-';
 
-    private PayoneClientInterface $client;
-
-    private RequestParameterFactory $requestFactory;
-
-    private EntityRepositoryInterface $stateMachineTransitionRepository;
-
-    private LoggerInterface $logger;
-
-    private string $kernelDirectory;
-
     public function __construct(
-        PayoneClientInterface $client,
-        RequestParameterFactory $requestFactory,
-        EntityRepositoryInterface $stateMachineTransitionRepository,
-        LoggerInterface $logger,
-        string $kernelDirectory
+        private readonly PayoneClientInterface $client,
+        private readonly RequestParameterFactory $requestFactory,
+        private readonly EntityRepository $stateMachineTransitionRepository,
+        private readonly LoggerInterface $logger,
+        private readonly string $kernelDirectory,
+        private readonly EntityRepository $paymentMethodRepository
     ) {
-        $this->client = $client;
-        $this->requestFactory = $requestFactory;
-        $this->stateMachineTransitionRepository = $stateMachineTransitionRepository;
-        $this->logger = $logger;
-        $this->kernelDirectory = $kernelDirectory;
     }
 
-    /**
-     * @RouteScope(scopes={"api"})
-     * @Route("/api/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials", methods={"POST"})
-     * @Route("/api/v{version}/_action/payone_payment/validate-api-credentials", name="api.action.payone_payment.validate.api.credentials.legacy", methods={"POST"})
-     */
+    #[Route(path: '/api/_action/payone_payment/validate-api-credentials', name: 'api.action.payone_payment.validate.api.credentials', methods: ['POST'])]
     public function validateApiCredentials(Request $request, Context $context): JsonResponse
     {
         $testCount = 0;
         $errors = [];
 
-        /** @var EntityRepositoryInterface $paymentMethodRepository */
-        $paymentMethodRepository = $this->get('payment_method.repository');
-
         foreach (ConfigurationPrefixes::CONFIGURATION_PREFIXES as $paymentClass => $configurationPrefix) {
             /** @var PaymentMethodEntity|null $paymentMethod */
             $criteria = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', $paymentClass));
-            $paymentMethod = $paymentMethodRepository->search($criteria, $context)->first();
+            $paymentMethod = $this->paymentMethodRepository->search($criteria, $context)->first();
 
             if (!$paymentMethod || !$paymentMethod->getActive() || \in_array($paymentMethod->getHandlerIdentifier(), Handler\PaymentHandlerGroups::RATEPAY, true)) {
                 continue;
@@ -85,7 +64,7 @@ class SettingsController extends AbstractController
                 $this->client->request($testRequest);
             } catch (PayoneRequestException $e) {
                 $errors[$configurationPrefix] = $e->getResponse()['error']['ErrorMessage'];
-            } catch (\Throwable $exception) {
+            } catch (\Throwable) {
                 $errors[$configurationPrefix] = true;
             }
         }
@@ -102,12 +81,8 @@ class SettingsController extends AbstractController
         ]);
     }
 
-    /**
-     * @RouteScope(scopes={"api"})
-     * @Route("/api/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions", methods={"GET"})
-     * @Route("/api/v{version}/_action/payone_payment/get-state-machine-transition-actions", name="api.action.payone_payment.get.state_machine_transition.actions.legacy", methods={"GET"})
-     */
-    public function getStateMachineTransitionActions(Request $request, Context $context): JsonResponse
+    #[Route(path: '/api/_action/payone_payment/get-state-machine-transition-actions', name: 'api.action.payone_payment.get.state_machine_transition.actions', methods: ['GET'])]
+    public function getStateMachineTransitionActions(Context $context): JsonResponse
     {
         $criteria = (new Criteria())
             ->addAssociation('stateMachine')
@@ -117,24 +92,18 @@ class SettingsController extends AbstractController
         $searchResult = $this->stateMachineTransitionRepository->search($criteria, $context);
         $transitionNames = [];
 
-        if (\count($searchResult->getElements()) > 0) {
-            /** @var StateMachineTransitionEntity $stateMachineAction */
-            foreach ($searchResult->getElements() as $stateMachineAction) {
-                $transitionNames[] = [
-                    'label' => $stateMachineAction->getActionName(),
-                    'value' => $stateMachineAction->getActionName(),
-                ];
-            }
+        /** @var StateMachineTransitionEntity $stateMachineAction */
+        foreach ($searchResult->getElements() as $stateMachineAction) {
+            $transitionNames[] = [
+                'label' => $stateMachineAction->getActionName(),
+                'value' => $stateMachineAction->getActionName(),
+            ];
         }
 
         return new JsonResponse(['data' => $transitionNames, 'total' => \count($transitionNames)]);
     }
 
-    /**
-     * @RouteScope(scopes={"api"})
-     * @Route("/api/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert", methods={"GET"})
-     * @Route("/api/v{version}/_action/payone_payment/check-apple-pay-cert", name="api.action.payone_payment.check.apple_pay_cert.legacy", methods={"GET"})
-     */
+    #[Route(path: '/api/_action/payone_payment/check-apple-pay-cert', name: 'api.action.payone_payment.check.apple_pay_cert', methods: ['GET'])]
     public function checkApplePayCert(): JsonResponse
     {
         if (!file_exists($this->kernelDirectory . ApplePayRoute::CERT_FOLDER . 'merchant_id.key')) {
@@ -157,7 +126,7 @@ class SettingsController extends AbstractController
                     'clearingtype' => 'cc',
                     'amount' => 100,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'cardpan' => '5500000000000004',
                     'pseudocardpan' => '5500000000099999',
                     'cardtype' => 'M',
@@ -178,7 +147,7 @@ class SettingsController extends AbstractController
                     'bankaccountholder' => 'Test Test',
                     'amount' => 100,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'firstname' => 'Test',
                     'lastname' => 'Test',
                     'country' => 'DE',
@@ -193,7 +162,7 @@ class SettingsController extends AbstractController
                     'wallettype' => 'PPE',
                     'amount' => 100,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'firstname' => 'Test',
                     'lastname' => 'Test',
                     'country' => 'DE',
@@ -208,7 +177,7 @@ class SettingsController extends AbstractController
                     'bankcountry' => 'DE',
                     'amount' => 100,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'firstname' => 'Test',
                     'lastname' => 'Test',
                     'country' => 'DE',
@@ -224,7 +193,7 @@ class SettingsController extends AbstractController
                     'bankgrouptype' => 'ARZ_HTB',
                     'amount' => 100,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'firstname' => 'Test',
                     'lastname' => 'Test',
                     'country' => 'AT',
@@ -240,7 +209,7 @@ class SettingsController extends AbstractController
                     'bankgrouptype' => 'ING_BANK',
                     'amount' => 100,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'firstname' => 'Test',
                     'lastname' => 'Test',
                     'country' => 'NL',
@@ -255,7 +224,7 @@ class SettingsController extends AbstractController
                     'bankcountry' => 'BE',
                     'amount' => 100,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'lastname' => 'Test',
                     'country' => 'BE',
                     'successurl' => 'https://www.payone.com',
@@ -272,7 +241,7 @@ class SettingsController extends AbstractController
                     'add_paydata[payment_type]' => 'Payolution-Invoicing',
                     'amount' => 10000,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'birthday' => '19900505',
                     'firstname' => 'Test',
                     'lastname' => 'Test',
@@ -293,7 +262,7 @@ class SettingsController extends AbstractController
                     'add_paydata[payment_type]' => 'Payolution-Debit',
                     'amount' => 10000,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'birthday' => '19900505',
                     'firstname' => 'Test',
                     'lastname' => 'Test',
@@ -316,7 +285,7 @@ class SettingsController extends AbstractController
                     'add_paydata[payment_type]' => 'Payolution-Installment',
                     'amount' => 10000,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'birthday' => '19900505',
                     'firstname' => 'Test',
                     'lastname' => 'Test',
@@ -334,7 +303,7 @@ class SettingsController extends AbstractController
                     'clearingtype' => 'vor',
                     'amount' => 10000,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'firstname' => 'Test',
                     'lastname' => 'Test',
                     'country' => 'DE',
@@ -353,7 +322,7 @@ class SettingsController extends AbstractController
                     'iban' => 'DE00123456782599100004',
                     'amount' => 100,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'firstname' => 'Test',
                     'lastname' => 'Test',
                     'country' => 'DE',
@@ -367,7 +336,7 @@ class SettingsController extends AbstractController
                     'financingtype' => 'POV',
                     'amount' => 10000,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'birthday' => '19900505',
                     'firstname' => 'Test',
                     'lastname' => 'Test',
@@ -386,7 +355,7 @@ class SettingsController extends AbstractController
                     'clearingtype' => 'rec',
                     'amount' => 10000,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'birthday' => '19900505',
                     'firstname' => 'Test',
                     'lastname' => 'Test',
@@ -406,7 +375,7 @@ class SettingsController extends AbstractController
                     'wallettype' => 'PDT',
                     'amount' => 10000,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'add_paydata[action]' => 'checkout',
                     'add_paydata[type]' => 'order',
                     'add_paydata[web_url_shipping_terms]' => 'https://www.payone.com',
@@ -422,7 +391,7 @@ class SettingsController extends AbstractController
                     'clearingtype' => 'vor',
                     'amount' => 10000,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'firstname' => 'Test',
                     'lastname' => 'Test',
                     'country' => 'DE',
@@ -457,7 +426,7 @@ class SettingsController extends AbstractController
                     'bankcountry' => 'PL',
                     'amount' => 100,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'lastname' => 'Test',
                     'country' => 'PL',
                     'successurl' => 'https://www.payone.com',
@@ -473,7 +442,7 @@ class SettingsController extends AbstractController
                     'amount' => 100,
                     'country' => 'DE',
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'lastname' => 'Test',
                     'successurl' => 'https://www.payone.com',
                     'errorurl' => 'https://www.payone.com',
@@ -489,7 +458,7 @@ class SettingsController extends AbstractController
                     'bankcountry' => 'CH',
                     'amount' => 100,
                     'currency' => 'CHF',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'lastname' => 'Test',
                     'country' => 'CH',
                     'successurl' => 'https://www.payone.com',
@@ -505,7 +474,7 @@ class SettingsController extends AbstractController
                     'bankcountry' => 'CH',
                     'amount' => 100,
                     'currency' => 'CHF',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'lastname' => 'Test',
                     'country' => 'CH',
                     'successurl' => 'https://www.payone.com',
@@ -521,7 +490,7 @@ class SettingsController extends AbstractController
                     'amount' => 100,
                     'country' => 'DE',
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'lastname' => 'Test',
                     'successurl' => 'https://www.payone.com',
                     'errorurl' => 'https://www.payone.com',
@@ -539,7 +508,7 @@ class SettingsController extends AbstractController
                     'businessrelation' => 'b2c',
                     'amount' => 10000,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'email' => 'test@example.com',
                     'firstname' => 'Test',
                     'lastname' => 'Test',
@@ -575,7 +544,7 @@ class SettingsController extends AbstractController
                     'businessrelation' => 'b2c',
                     'amount' => 30000,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'email' => 'test@example.com',
                     'bankaccountholder' => 'Test Test',
                     'iban' => 'DE62500105171314583819',
@@ -614,7 +583,7 @@ class SettingsController extends AbstractController
                     'businessrelation' => 'b2c',
                     'amount' => 10000,
                     'currency' => 'EUR',
-                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1000000000000, 9999999999999)),
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
                     'email' => 'test@example.com',
                     'bankaccountholder' => 'Test Test',
                     'iban' => 'DE62500105171314583819',

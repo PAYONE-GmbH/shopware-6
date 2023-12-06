@@ -14,11 +14,8 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class KernelEventListener implements EventSubscriberInterface
 {
-    private ProfileServiceInterface $profileService;
-
-    public function __construct(ProfileServiceInterface $profileService)
+    public function __construct(private readonly ProfileServiceInterface $profileService)
     {
-        $this->profileService = $profileService;
     }
 
     public static function getSubscribedEvents(): array
@@ -62,7 +59,7 @@ class KernelEventListener implements EventSubscriberInterface
         $data = [];
 
         if ($response->getContent()) {
-            $data = json_decode($response->getContent(), true);
+            $data = json_decode((string) $response->getContent(), true, 512, \JSON_THROW_ON_ERROR);
         }
 
         $data['payoneRatepayProfilesUpdateResult'] = [];

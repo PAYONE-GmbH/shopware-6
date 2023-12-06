@@ -11,31 +11,19 @@ class Migration1637576753FixForeignKeyConstraints extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1637576753;
+        return 1_637_576_753;
     }
 
     public function update(Connection $connection): void
     {
         $sql = 'ALTER TABLE payone_payment_card DROP FOREIGN KEY `fk.payone_payment_card.customer_id`;';
 
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-        } elseif (method_exists($connection, 'exec')) {
-            /** method exec() is deprecated and will be removed in future doctrine releases */
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        $connection->executeStatement($sql);
 
         $sql = 'ALTER TABLE payone_payment_card ADD CONSTRAINT `fk.payone_payment_card.customer_id` FOREIGN KEY (`customer_id`)
                 REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;';
 
-        if (method_exists($connection, 'executeStatement')) {
-            $connection->executeStatement($sql);
-        } elseif (method_exists($connection, 'exec')) {
-            /** method exec() is deprecated and will be removed in future doctrine releases */
-            /** @noinspection PhpDeprecationInspection */
-            $connection->exec($sql);
-        }
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void

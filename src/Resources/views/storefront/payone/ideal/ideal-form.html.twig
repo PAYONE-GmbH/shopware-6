@@ -13,13 +13,13 @@
     </div>
 
     {% block page_checkout_confirm_payone_card_content_ideal %}
-        <div class="form-row">
+        <div class="row">
             <div class="col-12">
                 <label class="form-label" for="idealBankGroup">
                     {{ "PayonePayment.ideal.bankGroupFieldLabel" | trans }}{{ "general.required" | trans }}
                 </label>
             </div>
-            <div class="form-group {% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
+            <div class="{% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
                 <select
                     id="idealBankGroup"
                     name="idealBankGroup"
@@ -27,18 +27,20 @@
                     form="confirmOrderForm"
                     required="required"
                 >
-                    <option value="ABN_AMRO_BANK">ABN Amro</option>
+                    <option value="ABN_AMRO_BANK">ABN Amro Bank</option>
                     <option value="ASN_BANK">ASN Bank</option>
-                    <option value="BUNQ_BANK">Bunq</option>
+                    <option value="BUNQ_BANK">Bunq Bank</option>
                     <option value="ING_BANK">ING Bank</option>
-                    <option value="KNAB_BANK">Knab</option>
+                    <option value="KNAB_BANK">Knab Bank</option>
                     <option value="RABOBANK">Rabobank</option>
                     <option value="REVOLUT">Revolut</option>
                     <option value="SNS_BANK">SNS Bank</option>
-                    <option value="SNS_REGIO_BANK">Regio Bank</option>
+                    <option value="SNS_REGIO_BANK">SNS Regio Bank</option>
                     <option value="TRIODOS_BANK">Triodos Bank</option>
-                    <option value="VAN_LANSCHOT_BANKIERS">van Lanschot</option>
-                    <option value="YOURSAFE">Yoursafe B.V</option>
+                    <option value="VAN_LANSCHOT_BANKIERS">Van Lanschot Kempen</option>
+                    <option value="YOURSAFE">Yoursafe</option>
+                    <option value="NATIONALE_NEDERLANDEN">Nationale-Nederlanden</option>
+                    <option value="N26">N26</option>
                 </select>
             </div>
         </div>

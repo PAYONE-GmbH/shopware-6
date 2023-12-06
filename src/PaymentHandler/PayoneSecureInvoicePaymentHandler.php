@@ -21,9 +21,6 @@ class PayoneSecureInvoicePaymentHandler extends AbstractPayoneInvoicePaymentHand
         return $definitions;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (static::isNeverCapturable($payoneTransActionData)) {
@@ -33,9 +30,6 @@ class PayoneSecureInvoicePaymentHandler extends AbstractPayoneInvoicePaymentHand
         return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function isRefundable(array $transactionData): bool
     {
         if (static::isNeverRefundable($transactionData)) {
@@ -43,21 +37,5 @@ class PayoneSecureInvoicePaymentHandler extends AbstractPayoneInvoicePaymentHand
         }
 
         return static::matchesIsRefundableDefaults($transactionData);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getConfigKey(): string
-    {
-        return 'secureInvoiceAuthorizationMethod';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getPaymentMethod(): string
-    {
-        return __CLASS__;
     }
 }

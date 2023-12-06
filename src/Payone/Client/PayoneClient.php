@@ -9,11 +9,8 @@ use Psr\Log\LoggerInterface;
 
 class PayoneClient implements PayoneClientInterface
 {
-    private LoggerInterface $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private readonly LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     /**
@@ -64,7 +61,7 @@ class PayoneClient implements PayoneClientInterface
         ]);
 
         if (empty($data)) {
-            throw new PayoneRequestException('payone returned a empty response', $parameters, $data);
+            throw new PayoneRequestException('payone returned a empty response', $parameters, []);
         }
 
         $response = array_change_key_case($data, \CASE_LOWER);

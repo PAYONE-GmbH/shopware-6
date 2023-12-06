@@ -8,33 +8,24 @@ use PayonePayment\Installer\PaymentMethodInstaller;
 use Psr\Cache\CacheItemPoolInterface;
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelPaymentMethod\SalesChannelPaymentMethodDefinition;
-use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepositoryInterface;
+use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Event\StorefrontRenderEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class StorefrontRenderEventListener implements EventSubscriberInterface
 {
-    private CacheItemPoolInterface $cachePool;
-
-    private SalesChannelRepositoryInterface $paymentMethodRepository;
-
-    private EntityRepositoryInterface $salesChannelRepository;
-
     public function __construct(
-        CacheItemPoolInterface $cachePool,
-        SalesChannelRepositoryInterface $repository,
-        EntityRepositoryInterface $salesChannelRepository
+        private readonly CacheItemPoolInterface $cachePool,
+        private readonly SalesChannelRepository $paymentMethodRepository,
+        private readonly EntityRepository $salesChannelRepository
     ) {
-        $this->cachePool = $cachePool;
-        $this->paymentMethodRepository = $repository;
-        $this->salesChannelRepository = $salesChannelRepository;
     }
 
     public static function getSubscribedEvents(): array
@@ -105,7 +96,7 @@ class StorefrontRenderEventListener implements EventSubscriberInterface
 
         foreach ($primaryKeys as $key) {
             if (\is_array($key)) {
-                $ids = array_merge($ids, array_values($key));
+                $ids = [...$ids, ...array_values($key)];
             } else {
                 $ids[] = $key;
             }

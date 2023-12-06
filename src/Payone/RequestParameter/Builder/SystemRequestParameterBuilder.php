@@ -21,20 +21,11 @@ use Shopware\Core\Framework\Plugin\PluginService;
 
 class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    private PluginService $pluginService;
-
-    private string $shopwareVersion;
-
-    private ConfigReaderInterface $configReader;
-
     public function __construct(
-        PluginService $pluginService,
-        string $shopwareVersion,
-        ConfigReaderInterface $configReader
+        private readonly PluginService $pluginService,
+        private readonly string $shopwareVersion,
+        private readonly ConfigReaderInterface $configReader
     ) {
-        $this->pluginService = $pluginService;
-        $this->shopwareVersion = $shopwareVersion;
-        $this->configReader = $configReader;
     }
 
     /**

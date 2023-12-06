@@ -1,14 +1,12 @@
 <div class="payone-payment ratepay-installment">
-    <input type="hidden" id="payoneCsrfTokenRatepayInstallmentCalculation" value="{{ sw_csrf('frontend.payone.ratepay.installment.calculation', {'mode': 'token'}) }}">
-
     {% block page_checkout_confirm_payone_card_content_ratepay_installment_card %}
         {% set customerCustomFields = context.customer.customFields %}
 
         <div class="card">
             <fieldset>
 
-                <div class="form-row">
-                    <div class="card form-group col-12 col-md-5">
+                <div class="row">
+                    <div class="card col-12 col-md-5">
                         <div class="card-title">
                             {{ "PayonePayment.ratepay.installment.runtime.title" | trans }}
                         </div>
@@ -36,13 +34,13 @@
                         </select>
                     </div>
 
-                    <div class="form-group col-12 col-md-2 d-flex justify-content-center align-items-center">
+                    <div class="col-12 col-md-2 d-flex justify-content-center align-items-center">
                         <span>
                             {{ "PayonePayment.ratepay.installment.inputDivider" | trans }}
                         </span>
                     </div>
 
-                    <div class="card form-group col-12 col-md-5">
+                    <div class="card col-12 col-md-5">
                         <div class="card-title">
                             {{ "PayonePayment.ratepay.installment.rate.title" | trans }}
                         </div>
@@ -55,13 +53,11 @@
                                    form="confirmOrderForm"
                                    type="number"
                                    step="0.01"/>
-                            <div class="input-group-append">
-                                <button type="submit"
-                                        id="payone-ratepay-calculate-installment-btn"
-                                        class="btn btn-primary">
-                                    {{ "PayonePayment.ratepay.installment.rate.buttonText" | trans }}
-                                </button>
-                            </div>
+                            <button type="submit"
+                                    id="payone-ratepay-calculate-installment-btn"
+                                    class="btn btn-primary">
+                                {{ "PayonePayment.ratepay.installment.rate.buttonText" | trans }}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -79,8 +75,8 @@
                 {% endblock %}
 
                 {% if customerCustomFields is null or customerCustomFields['payone_customer_phone_number'] is not defined or customerCustomFields['payone_customer_phone_number'] is empty %}
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
                             <label class="form-label" for="ratepayPhone">{{ "PayonePayment.ratepay.installment.phoneNumber.label" | trans }}{% if not billingAddress.phoneNumber %}{{ "general.required"|trans|sw_sanitize }}{% endif %}</label>
                             <input class="form-control payone-input"
                                    id="ratepayPhone"
@@ -92,8 +88,8 @@
                     </div>
                 {% endif %}
 
-                <div class="form-row">
-                    <div class="form-group col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
                         <label class="form-label" for="ratepayBirthday">{{ "PayonePayment.ratepay.installment.birthday.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
                         <input class="form-control payone-input"
                                id="ratepayBirthday"
@@ -104,8 +100,8 @@
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group col-md-12 collapse show"
+                <div class="row">
+                    <div class="col-md-12 collapse show"
                          id="ratepayIbanContainer">
                         <label class="form-label" for="ratepayIban">{{ "PayonePayment.ratepay.installment.iban.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
                         <input class="form-control payone-input"
@@ -116,7 +112,7 @@
                     </div>
                     <a class="payone-ratepay-installment-iban-toggle"
                        id="ratepayIbanCollapseTrigger"
-                       data-toggle="collapse"
+                       data-bs-toggle="collapse"
                        href="#ratepayIbanContainer"
                        aria-expanded="true"
                        aria-controls="ratepayIbanContainer">

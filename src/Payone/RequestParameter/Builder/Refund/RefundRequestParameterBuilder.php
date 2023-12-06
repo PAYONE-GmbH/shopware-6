@@ -17,11 +17,8 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 
 class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    private CurrencyPrecisionInterface $currencyPrecision;
-
-    public function __construct(CurrencyPrecisionInterface $currencyPrecision)
+    public function __construct(private readonly CurrencyPrecisionInterface $currencyPrecision)
     {
-        $this->currencyPrecision = $currencyPrecision;
     }
 
     /**
