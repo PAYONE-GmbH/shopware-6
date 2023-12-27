@@ -42,7 +42,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\Test\TestDefaults;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoader;
-use Shopware\Storefront\Test\Page\StorefrontPageTestBehaviour;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
