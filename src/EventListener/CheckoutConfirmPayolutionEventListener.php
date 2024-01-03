@@ -41,7 +41,6 @@ class CheckoutConfirmPayolutionEventListener implements EventSubscriberInterface
         $page = $event->getPage();
 
         $paymentMethods = $page->getPaymentMethods();
-        $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionInstallment::UUID);
 
         if ($this->companyNameMissing($event->getSalesChannelContext(), PayonePayolutionInvoicingPaymentHandler::class)) {
             $paymentMethods = $this->removePaymentMethod($paymentMethods, PayonePayolutionInvoicing::UUID);
