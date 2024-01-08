@@ -21,8 +21,8 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
      * @param class-string<AbstractPayonePaymentHandler> $paymentHandlerClass
      */
     public function __construct(
-        private readonly SystemConfigService $systemConfigService,
-        private readonly string $paymentHandlerClass,
+        protected readonly SystemConfigService $systemConfigService,
+        protected readonly string $paymentHandlerClass,
         private readonly ?array $allowedCountries = null,
         private readonly ?array $allowedB2bCountries = null,
         private readonly ?array $allowedCurrencies = null,
