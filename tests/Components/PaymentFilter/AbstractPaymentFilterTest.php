@@ -22,9 +22,18 @@ abstract class AbstractPaymentFilterTest extends TestCase
     use PayoneTestBehavior;
     use ConfigurationHelper;
 
-    public function testItHidesPaymentMethodForNotAllowedCountry(): void
+    /**
+     * @dataProvider dataProviderPaymentHandlerClasses
+     */
+    public function testItHidesPaymentMethodForNotAllowedCountry(string $paymentHandlerClass): void
     {
-        $methods = $this->getPaymentMethods();
+        if (!$this->getDisallowedBillingCountry()) {
+            static::assertTrue(true);
+
+            return;
+        }
+
+        $methods = $this->getPaymentMethods($paymentHandlerClass);
 
         $country = new CountryEntity();
         $country->setIso($this->getDisallowedBillingCountry());
@@ -39,15 +48,24 @@ abstract class AbstractPaymentFilterTest extends TestCase
             $this->getAllowedCurrency()
         );
 
-        $result = $this->getFilterService()->filterPaymentMethods($methods, $filterContext);
+        $result = $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
 
-        static::assertNotInPaymentCollection($this->getPaymentHandlerClass(), $result);
+        static::assertNotInPaymentCollection($paymentHandlerClass, $result);
         static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
     }
 
-    public function testItHidesPaymentMethodForNotAllowedCurrency(): void
+    /**
+     * @dataProvider dataProviderPaymentHandlerClasses
+     */
+    public function testItHidesPaymentMethodForNotAllowedCurrency(string $paymentHandlerClass): void
     {
-        $methods = $this->getPaymentMethods();
+        if (!$this->getDisallowedCurrency()) {
+            static::assertTrue(true);
+
+            return;
+        }
+
+        $methods = $this->getPaymentMethods($paymentHandlerClass);
 
         $country = new CountryEntity();
         $country->setIso($this->getAllowedBillingCountry());
@@ -62,9 +80,9 @@ abstract class AbstractPaymentFilterTest extends TestCase
             $this->getDisallowedCurrency()
         );
 
-        $result = $this->getFilterService()->filterPaymentMethods($methods, $filterContext);
+        $result = $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
 
-        static::assertNotInPaymentCollection($this->getPaymentHandlerClass(), $result);
+        static::assertNotInPaymentCollection($paymentHandlerClass, $result);
         static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
     }
 
@@ -72,9 +90,11 @@ abstract class AbstractPaymentFilterTest extends TestCase
      * @dataProvider notAllowedValues
      * @testdox It hides payment method for not allowed value $notAllowedValue on checkout
      */
-    public function testItHidesPaymentMethodForNotAllowedValueOnCheckout(float $notAllowedValue): void
+    public function testItHidesPaymentMethodForNotAllowedValueOnCheckout(float $notAllowedValue, ?string $paymentHandlerClass = null): void
     {
-        $methods = $this->getPaymentMethods();
+        $paymentHandlerClass ??= $this->getPaymentHandlerClasses()[0];
+
+        $methods = $this->getPaymentMethods($paymentHandlerClass);
 
         $country = new CountryEntity();
         $country->setIso($this->getAllowedBillingCountry());
@@ -97,9 +117,9 @@ abstract class AbstractPaymentFilterTest extends TestCase
             $cart
         );
 
-        $result = $this->getFilterService()->filterPaymentMethods($methods, $filterContext);
+        $result = $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
 
-        static::assertNotInPaymentCollection($this->getPaymentHandlerClass(), $result);
+        static::assertNotInPaymentCollection($paymentHandlerClass, $result);
         static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
     }
 
@@ -107,9 +127,10 @@ abstract class AbstractPaymentFilterTest extends TestCase
      * @dataProvider notAllowedValues
      * @testdox It hides payment method for not allowed value $notAllowedValue on edit order page
      */
-    public function testItHidesPaymentMethodForNotAllowedValueOnEditOrderPage(float $notAllowedValue): void
+    public function testItHidesPaymentMethodForNotAllowedValueOnEditOrderPage(float $notAllowedValue, ?string $paymentHandlerClass = null): void
     {
-        $methods = $this->getPaymentMethods();
+        $paymentHandlerClass ??= $this->getPaymentHandlerClasses()[0];
+        $methods = $this->getPaymentMethods($paymentHandlerClass);
 
         $country = new CountryEntity();
         $country->setIso($this->getAllowedBillingCountry());
@@ -131,15 +152,18 @@ abstract class AbstractPaymentFilterTest extends TestCase
             $order
         );
 
-        $result = $this->getFilterService()->filterPaymentMethods($methods, $filterContext);
+        $result = $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
 
-        static::assertNotInPaymentCollection($this->getPaymentHandlerClass(), $result);
+        static::assertNotInPaymentCollection($paymentHandlerClass, $result);
         static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
     }
 
-    public function testItNotHidesPaymentMethodForAllowedConditionsOnCheckout(): void
+    /**
+     * @dataProvider dataProviderPaymentHandlerClasses
+     */
+    public function testItNotHidesPaymentMethodForAllowedConditionsOnCheckout(string $paymentHandlerClass): void
     {
-        $methods = $this->getPaymentMethods();
+        $methods = $this->getPaymentMethods($paymentHandlerClass);
 
         $country = new CountryEntity();
         $country->setIso($this->getAllowedBillingCountry());
@@ -162,15 +186,18 @@ abstract class AbstractPaymentFilterTest extends TestCase
             $cart
         );
 
-        $result = $this->getFilterService()->filterPaymentMethods($methods, $filterContext);
+        $result = $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
 
-        static::assertInPaymentCollection($this->getPaymentHandlerClass(), $result);
+        static::assertInPaymentCollection($paymentHandlerClass, $result);
         static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
     }
 
-    public function testItNotHidesPaymentMethodForAllowedConditionsOnEditOrderPage(): void
+    /**
+     * @dataProvider dataProviderPaymentHandlerClasses
+     */
+    public function testItNotHidesPaymentMethodForAllowedConditionsOnEditOrderPage(string $paymentHandlerClass): void
     {
-        $methods = $this->getPaymentMethods();
+        $methods = $this->getPaymentMethods($paymentHandlerClass);
 
         $country = new CountryEntity();
         $country->setIso($this->getAllowedBillingCountry());
@@ -192,9 +219,9 @@ abstract class AbstractPaymentFilterTest extends TestCase
             $order
         );
 
-        $result = $this->getFilterService()->filterPaymentMethods($methods, $filterContext);
+        $result = $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
 
-        static::assertInPaymentCollection($this->getPaymentHandlerClass(), $result);
+        static::assertInPaymentCollection($paymentHandlerClass, $result);
         static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
     }
 
@@ -217,13 +244,13 @@ abstract class AbstractPaymentFilterTest extends TestCase
         ];
     }
 
-    abstract protected function getFilterService(): PaymentFilterServiceInterface;
+    abstract protected function getFilterService(?string $paymentHandlerClass = null): PaymentFilterServiceInterface;
 
-    abstract protected function getDisallowedBillingCountry(): string;
+    abstract protected function getDisallowedBillingCountry(): ?string;
 
     abstract protected function getAllowedBillingCountry(): string;
 
-    abstract protected function getDisallowedCurrency(): CurrencyEntity;
+    abstract protected function getDisallowedCurrency(): ?CurrencyEntity;
 
     abstract protected function getAllowedCurrency(): CurrencyEntity;
 
@@ -234,11 +261,19 @@ abstract class AbstractPaymentFilterTest extends TestCase
     abstract protected function getAllowedValue(): float;
 
     /**
-     * @return class-string
+     * @return array<<array<class-string>>
      */
-    abstract protected function getPaymentHandlerClass(): string;
+    abstract protected function getPaymentHandlerClasses(): array;
 
-    protected function getPaymentMethods(): PaymentMethodCollection
+    /**
+     * @return array<<class-string>
+     */
+    final protected function dataProviderPaymentHandlerClasses(): array
+    {
+        return array_map(static fn ($handler) => [$handler], $this->getPaymentHandlerClasses());
+    }
+
+    protected function getPaymentMethods(string $paymentHandlerClass): PaymentMethodCollection
     {
         $paymentMethod1 = new PaymentMethodEntity();
         $paymentMethod1->setId(Uuid::randomHex());
@@ -246,7 +281,7 @@ abstract class AbstractPaymentFilterTest extends TestCase
 
         $paymentMethod2 = new PaymentMethodEntity();
         $paymentMethod2->setId(Uuid::randomHex());
-        $paymentMethod2->setHandlerIdentifier($this->getPaymentHandlerClass());
+        $paymentMethod2->setHandlerIdentifier($paymentHandlerClass);
 
         return new PaymentMethodCollection([
             $paymentMethod1,
@@ -254,17 +289,17 @@ abstract class AbstractPaymentFilterTest extends TestCase
         ]);
     }
 
-    protected static function assertInPaymentCollection(string $paymentHandler, PaymentMethodCollection $paymentMethods): void
+    protected static function assertInPaymentCollection(string $paymentHandler, PaymentMethodCollection $paymentMethods, string $message = ''): void
     {
         static::assertSame(1, $paymentMethods->filter(
             static fn (PaymentMethodEntity $paymentMethod) => $paymentMethod->getHandlerIdentifier() === $paymentHandler
-        )->count());
+        )->count(), $message);
     }
 
-    protected static function assertNotInPaymentCollection(string $paymentHandler, PaymentMethodCollection $paymentMethods): void
+    protected static function assertNotInPaymentCollection(string $paymentHandler, PaymentMethodCollection $paymentMethods, string $message = ''): void
     {
         static::assertSame(0, $paymentMethods->filter(
             static fn (PaymentMethodEntity $paymentMethod) => $paymentMethod->getHandlerIdentifier() === $paymentHandler
-        )->count());
+        )->count(), $message);
     }
 }

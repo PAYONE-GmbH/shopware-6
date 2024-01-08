@@ -12,7 +12,7 @@ use Shopware\Core\System\Currency\CurrencyEntity;
  */
 class SecuredInstallmentPaymentFilterTest extends AbstractPaymentFilterTest
 {
-    protected function getFilterService(): PaymentFilterServiceInterface
+    protected function getFilterService(?string $paymentHandlerClass = null): PaymentFilterServiceInterface
     {
         return $this->getContainer()->get('payone.payment_filter_method.secured_installment');
     }
@@ -58,8 +58,8 @@ class SecuredInstallmentPaymentFilterTest extends AbstractPaymentFilterTest
         return 300.0;
     }
 
-    protected function getPaymentHandlerClass(): string
+    protected function getPaymentHandlerClasses(): array
     {
-        return PayoneSecuredInstallmentPaymentHandler::class;
+        return [PayoneSecuredInstallmentPaymentHandler::class];
     }
 }
