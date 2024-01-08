@@ -33,19 +33,9 @@ class PayonePaymentWebhookLogEntity extends Entity
         return $this->order;
     }
 
-    public function setOrder(?OrderEntity $order): void
-    {
-        $this->order = $order;
-    }
-
     public function getOrderId(): string
     {
         return $this->orderId;
-    }
-
-    public function setOrderId(string $orderId): void
-    {
-        $this->orderId = $orderId;
     }
 
     public function getTransactionId(): string
@@ -53,19 +43,9 @@ class PayonePaymentWebhookLogEntity extends Entity
         return $this->transactionId;
     }
 
-    public function setTransactionId(string $transactionId): void
-    {
-        $this->transactionId = $transactionId;
-    }
-
     public function getTransactionState(): string
     {
         return $this->transactionState;
-    }
-
-    public function setTransactionState(string $transactionState): void
-    {
-        $this->transactionState = $transactionState;
     }
 
     public function getSequenceNumber(): int
@@ -73,19 +53,9 @@ class PayonePaymentWebhookLogEntity extends Entity
         return $this->sequenceNumber;
     }
 
-    public function setSequenceNumber(int $sequenceNumber): void
-    {
-        $this->sequenceNumber = $sequenceNumber;
-    }
-
     public function getClearingType(): string
     {
         return $this->clearingType;
-    }
-
-    public function setClearingType(string $clearingType): void
-    {
-        $this->clearingType = $clearingType;
     }
 
     public function getWebhookDetails(): array
@@ -93,18 +63,8 @@ class PayonePaymentWebhookLogEntity extends Entity
         return $this->webhookDetails;
     }
 
-    public function setWebhookDetails(array $webhookDetails): void
-    {
-        $this->webhookDetails = $webhookDetails;
-    }
-
     public function getWebhookDateTime(): \DateTimeInterface
     {
         return $this->webhookDateTime;
-    }
-
-    public function setWebhookDateTime(\DateTimeInterface $webhookDateTime): void
-    {
-        $this->webhookDateTime = $webhookDateTime;
     }
 }
