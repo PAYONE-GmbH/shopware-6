@@ -12,7 +12,7 @@ use Shopware\Core\System\Currency\CurrencyEntity;
  */
 class KlarnaPaymentFilterTest extends AbstractPaymentFilterTest
 {
-    protected function getFilterService(): PaymentFilterServiceInterface
+    protected function getFilterService(?string $paymentHandlerClass = null): PaymentFilterServiceInterface
     {
         return $this->getContainer()->get('payone.payment_filter_method.klarna');
     }
@@ -58,8 +58,8 @@ class KlarnaPaymentFilterTest extends AbstractPaymentFilterTest
         return 100.0;
     }
 
-    protected function getPaymentHandlerClass(): string
+    protected function getPaymentHandlerClasses(): array
     {
-        return PayoneKlarnaInvoicePaymentHandler::class;
+        return [PayoneKlarnaInvoicePaymentHandler::class];
     }
 }
