@@ -147,5 +147,25 @@
             <tag name="payone.payment_method.filter"/>
         </service>
 
+        <service id="payone.payment_filter_method.payolution.invoice"
+                 class="PayonePayment\Components\PaymentFilter\PayolutionPaymentMethodFilter">
+            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler</argument>
+            <tag name="payone.payment_method.filter"/>
+        </service>
+
+        <service id="payone.payment_filter_method.payolution.debit"
+                 class="PayonePayment\Components\PaymentFilter\PayolutionPaymentMethodFilter">
+            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler</argument>
+            <tag name="payone.payment_method.filter"/>
+        </service>
+
+        <service id="payone.payment_filter_method.payolution.installment"
+                 class="PayonePayment\Components\PaymentFilter\PayolutionPaymentMethodFilter">
+            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler</argument>
+            <tag name="payone.payment_method.filter"/>
+        </service>
     </services>
 </container>
