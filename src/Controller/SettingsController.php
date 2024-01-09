@@ -51,7 +51,9 @@ class SettingsController extends AbstractController
             $criteria = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', $paymentClass));
             $paymentMethod = $this->paymentMethodRepository->search($criteria, $context)->first();
 
-            if (!$paymentMethod || !$paymentMethod->getActive() || \in_array($paymentMethod->getHandlerIdentifier(), Handler\PaymentHandlerGroups::RATEPAY, true)) {
+            if (!$paymentMethod instanceof PaymentMethodEntity
+                || !$paymentMethod->getActive()
+                || \in_array($paymentMethod->getHandlerIdentifier(), Handler\PaymentHandlerGroups::RATEPAY, true)) {
                 continue;
             }
 

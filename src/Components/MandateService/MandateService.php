@@ -117,6 +117,9 @@ class MandateService implements MandateServiceInterface
             new EqualsFilter('customerId', $customer->getId())
         );
 
-        return $this->mandateRepository->search($criteria, $context)->first();
+        /** @var PayonePaymentMandateEntity|null $mandate */
+        $mandate = $this->mandateRepository->search($criteria, $context)->first();
+
+        return $mandate;
     }
 }

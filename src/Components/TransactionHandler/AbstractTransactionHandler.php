@@ -198,6 +198,9 @@ abstract class AbstractTransactionHandler
         $criteria->addAssociation('order.deliveries');
         $criteria->addAssociation('paymentMethod');
 
-        return $this->transactionRepository->search($criteria, $this->context)->first();
+        /** @var OrderTransactionEntity|null $transaction */
+        $transaction = $this->transactionRepository->search($criteria, $this->context)->first();
+
+        return $transaction;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Storefront\Controller\Account;
 
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -77,6 +78,7 @@ class AccountOrderControllerDecorator extends StorefrontController
         $criteria = new Criteria([$orderId]);
         $criteria->addAssociation('transactions.paymentMethod');
 
+        /** @var OrderEntity|null $order */
         $order = $this->orderRepository->search($criteria, $context)->first();
 
         if ($order && $order->getTransactions()) {

@@ -171,7 +171,7 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         $salutation = $this->salutationRepository->search($criteria, $context)->first();
 
-        if ($salutation === null) {
+        if (!$salutation instanceof SalutationEntity) {
             throw new \RuntimeException('missing order customer salutation');
         }
 

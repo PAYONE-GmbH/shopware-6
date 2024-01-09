@@ -28,7 +28,10 @@ class OrderFetcher implements OrderFetcherInterface
         $criteria = $this->getOrderCriteria();
         $criteria->addFilter(new EqualsFilter('id', $orderId));
 
-        return $this->orderRepository->search($criteria, $context)->first();
+        /** @var OrderEntity|null $order */
+        $order = $this->orderRepository->search($criteria, $context)->first();
+
+        return $order;
     }
 
     public function getOrderBillingAddress(OrderEntity $order): OrderAddressEntity

@@ -211,9 +211,12 @@ class PaymentMethodInstaller implements InstallerInterface
 
     private function findPaymentMethodEntity(string $id, Context $context): ?PaymentMethodEntity
     {
-        return $this->paymentMethodRepository
+        /** @var PaymentMethodEntity|null $paymentMethod */
+        $paymentMethod = $this->paymentMethodRepository
             ->search(new Criteria([$id]), $context)
             ->first();
+
+        return $paymentMethod;
     }
 
     private function upsertPaymentMethod(PaymentMethodInterface $paymentMethod, Context $context): void
