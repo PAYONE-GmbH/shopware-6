@@ -40,6 +40,7 @@ class WebhookLogDataHandler implements WebhookLogDataHandlerInterface
         } catch (\Exception $exception) {
             $this->logger->error('Failed to create webhook log', [
                 'message' => $exception->getMessage(),
+                'data' => $webhookLog,
                 'trace' => $exception->getTraceAsString(),
             ]);
         }

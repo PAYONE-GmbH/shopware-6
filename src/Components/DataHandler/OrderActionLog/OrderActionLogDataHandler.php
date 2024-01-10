@@ -47,6 +47,7 @@ class OrderActionLogDataHandler implements OrderActionLogDataHandlerInterface
         } catch (\Exception $exception) {
             $this->logger->error('Failed to create order action log', [
                 'message' => $exception->getMessage(),
+                'data' => $orderActionLog,
                 'trace' => $exception->getTraceAsString(),
             ]);
         }
