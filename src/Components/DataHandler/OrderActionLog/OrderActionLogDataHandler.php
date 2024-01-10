@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\DataHandler\OrderActionLog;
 
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -11,7 +12,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 class OrderActionLogDataHandler implements OrderActionLogDataHandlerInterface
 {
     public function __construct(
-        protected readonly EntityRepository $orderActionLogRepository
+        protected readonly EntityRepository $orderActionLogRepository,
+        protected readonly LoggerInterface $logger
     ) {
     }
 
@@ -40,6 +42,13 @@ class OrderActionLogDataHandler implements OrderActionLogDataHandlerInterface
             'requestDateTime' => new \DateTime(),
         ];
 
-        $this->orderActionLogRepository->create([$orderActionLog], $context);
+        try {
+            $this->orderActionLogRepository->create([$orderActionLog], $context);
+        } catch (\Exception $exception) {
+            $this->logger->error('Failed to create order action log', [
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+        }
     }
 }
