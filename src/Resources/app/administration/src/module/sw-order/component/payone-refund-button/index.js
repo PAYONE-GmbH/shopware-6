@@ -61,7 +61,7 @@ export default {
         refundedAmount() {
             if (!this.transaction.extensions
                 || !this.transaction.extensions.payonePaymentOrderTransactionData
-                || this.transaction.extensions.payonePaymentOrderTransactionData.refundedAmount) {
+                || !this.transaction.extensions.payonePaymentOrderTransactionData.refundedAmount) {
                 return 0;
             }
 

@@ -21,6 +21,7 @@
                     <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.remainingAmount')" :value="remainingAmount | payone_currency(order.currency.shortName, decimalPrecision)"></sw-text-field>
                     <sw-number-field required="required" numberType="float" :digits="order.decimal_precision" :label="$tc('sw-order.payone-payment.modal.refund.amount')"
                                      v-model="refundAmount"
+                                     @input-change="(value) => refundAmount = value"
                                      :min="0"
                                      :max="maxRefundAmount"></sw-number-field>
                 </sw-container>
