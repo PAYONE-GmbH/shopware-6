@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\PaymentMethod\PayonePaypalExpress;
+
 interface PaymentHandlerGroups
 {
     public const RATEPAY = [
@@ -17,8 +19,13 @@ interface PaymentHandlerGroups
         PayoneSecuredInvoicePaymentHandler::class,
         PayoneSecuredInstallmentPaymentHandler::class,
     ];
+
     public const POSTFINANCE = [
         PayonePostfinanceCardPaymentHandler::class,
         PayonePostfinanceWalletPaymentHandler::class,
+    ];
+
+    public const GENERIC_EXPRESS = [
+        PayonePaypalExpress::UUID => PayonePaypalExpressPaymentHandler::class,
     ];
 }

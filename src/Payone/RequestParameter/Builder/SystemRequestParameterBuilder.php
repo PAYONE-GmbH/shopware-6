@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\GenericExpressCheckout\Struct\CreateExpressCheckoutSessionStruct;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
-use PayonePayment\Payone\RequestParameter\Struct\CheckoutDetailsStruct;
 use PayonePayment\Payone\RequestParameter\Struct\CreditCardCheckStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
@@ -29,7 +29,7 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
     }
 
     /**
-     * @param CheckoutDetailsStruct|CreditCardCheckStruct|FinancialTransactionStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments
+     * @param CreateExpressCheckoutSessionStruct|CreditCardCheckStruct|FinancialTransactionStruct|GetFileStruct|PaymentTransactionStruct|PayolutionAdditionalActionStruct $arguments
      */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {

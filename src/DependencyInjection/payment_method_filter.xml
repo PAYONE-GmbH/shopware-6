@@ -174,5 +174,12 @@
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler</argument>
             <tag name="payone.payment_method.filter"/>
         </service>
+
+        <service id="payone.payment_filter_method.paypal_express"
+                 class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService"
+                 parent="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
+            <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler</argument>
+            <tag name="payone.payment_method.filter"/>
+        </service>
     </services>
 </container>

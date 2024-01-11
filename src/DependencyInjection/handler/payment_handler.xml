@@ -47,6 +47,11 @@
                  abstract="true">
         </service>
 
+        <service id="PayonePayment\Components\GenericExpressCheckout\PaymentHandler\AbstractGenericExpressCheckoutPaymentHandler"
+                 parent="PayonePayment\PaymentHandler\AbstractAsynchronousPayonePaymentHandler"
+                 abstract="true">
+        </service>
+
         <service id="PayonePayment\PaymentHandler\PayoneAlipayPaymentHandler"
                  parent="PayonePayment\PaymentHandler\AbstractAsynchronousPayonePaymentHandler">
 
@@ -147,7 +152,7 @@
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler"
-                 parent="PayonePayment\PaymentHandler\AbstractAsynchronousPayonePaymentHandler">
+                 parent="PayonePayment\Components\GenericExpressCheckout\PaymentHandler\AbstractGenericExpressCheckoutPaymentHandler">
 
             <tag name="shopware.payment.method.async" />
         </service>

@@ -114,18 +114,16 @@
             </call>
         </service>
 
-        <service id="PayonePayment\Storefront\Controller\Paypal\PaypalExpressController">
-            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
-            <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\RegisterRoute" />
-            <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\AccountService" />
-            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory" />
-            <argument type="service" id="salutation.repository"/>
-            <argument type="service" id="country.repository"/>
-            <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher" />
-            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher" />
-            <argument type="service" id="Shopware\Storefront\Framework\Routing\Router"/>
-            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory"/>
+        <service id="PayonePayment\Storefront\Controller\GenericExpressController">
+            <argument key="$client" type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument key="$registerRoute" type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\RegisterRoute" />
+            <argument key="$accountService" type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\AccountService" />
+            <argument key="$salesChannelContextFactory" type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory" />
+            <argument key="$salesChannelContextSwitcher" type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher" />
+            <argument key="$requestParameterFactory" type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory"/>
+            <argument key="$cartExtensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService"/>
+            <argument key="$customerRegistrationUtil" type="service" id="PayonePayment\Components\GenericExpressCheckout\CustomerRegistrationUtil"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

@@ -26,10 +26,6 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="PayonePayment\EventListener\CheckoutConfirmPaypalExpressEventListener">
-            <tag name="kernel.event_subscriber"/>
-        </service>
-
         <service id="PayonePayment\EventListener\CheckoutConfirmRatepayEventListener">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="PayonePayment\Components\Ratepay\Installment\InstallmentService" />
