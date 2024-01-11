@@ -8,6 +8,7 @@ use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
+use PayonePayment\Payone\RequestParameter\Struct\ClientApiRequest;
 use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
@@ -45,6 +46,29 @@ class RequestParameterFactoryTest extends TestCase
             ],
             $parameters
         );
+        static::assertArrayHasKey('key', $parameters);
+        static::assertArrayNotHasKey('hash', $parameters);
+    }
+
+    public function testItReturnsCorrectRequestParametersWithHash(): void
+    {
+        $factory = new RequestParameterFactory([
+            $this->getSupportedParameterBuilder([
+                'key' => 'value',
+                'key-1' => 'value-1',
+                'key-2' => 'value-2',
+            ]),
+            $this->getSupportedParameterBuilder([
+                'key-2' => 'other-value',
+                'key-3' => 'value-3',
+            ]),
+            $this->getNotSupportedParameterBuilder(),
+        ]);
+
+        $parameters = $factory->getRequestParameter(new class() extends AbstractRequestParameterStruct implements ClientApiRequest {
+        });
+
+        static::assertArrayNotHasKey('key', $parameters);
         static::assertArrayHasKey('hash', $parameters);
     }
 
