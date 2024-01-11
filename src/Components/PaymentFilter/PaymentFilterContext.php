@@ -15,6 +15,8 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentFilterContext extends Struct
 {
+    final public const FLAG_SKIP_EC_REQUIRED_DATA_VALIDATION = 'skip_express_checkout_required_data_validation';
+
     private bool $_areAddressesIdentical;
 
     public function __construct(
@@ -23,7 +25,8 @@ class PaymentFilterContext extends Struct
         private readonly CustomerAddressEntity|OrderAddressEntity|null $shippingAddress = null,
         private readonly ?CurrencyEntity $currency = null,
         private readonly ?OrderEntity $order = null,
-        private readonly ?Cart $cart = null
+        private readonly ?Cart $cart = null,
+        private readonly array $flags = []
     ) {
     }
 
@@ -82,5 +85,10 @@ class PaymentFilterContext extends Struct
         }
 
         return $this->_areAddressesIdentical = true;
+    }
+
+    public function getFlag(string $key): bool
+    {
+        return $this->flags[$key] ?? false;
     }
 }

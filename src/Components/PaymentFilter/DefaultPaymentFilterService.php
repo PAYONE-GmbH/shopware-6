@@ -8,6 +8,8 @@ use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\ConfigReader\Exception\ConfigurationPrefixMissingException;
 use PayonePayment\Components\PaymentFilter\Exception\PaymentMethodNotAllowedException;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
+use PayonePayment\PaymentHandler\PaymentHandlerGroups;
+use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
@@ -52,6 +54,9 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
 
         // Validate and remove all supported payment methods if necessary
         try {
+            if ($filterContext->getFlag(PaymentFilterContext::FLAG_SKIP_EC_REQUIRED_DATA_VALIDATION) !== true) {
+                $this->validateGenericExpressCheckout($filterContext);
+            }
             $this->validateCurrency($currency);
             $this->validateAddress($billingAddress);
 
@@ -104,11 +109,11 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
             return;
         }
 
-        if ($this->allowedCountries !== null && !\in_array($country->getIso(), $this->allowedCountries, true)) {
+        if ($this->allowedCountries !== null && empty($address->getCompany()) && !\in_array($country->getIso(), $this->allowedCountries, true)) {
             throw new PaymentMethodNotAllowedException('Country is not allowed');
         }
 
-        if ($this->allowedB2bCountries !== null && $address->getCompany() && !\in_array($country->getIso(), $this->allowedB2bCountries, true)) {
+        if ($this->allowedB2bCountries !== null && !empty($address->getCompany()) && !\in_array($country->getIso(), $this->allowedB2bCountries, true)) {
             throw new PaymentMethodNotAllowedException('Country is not allowed for B2B');
         }
     }
@@ -170,6 +175,24 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
                 'It is not permitted to use a different shipping address',
                 new PaymentMethodCollection($disallowedPaymentMethods)
             );
+        }
+    }
+
+    private function validateGenericExpressCheckout(PaymentFilterContext $filterContext): void
+    {
+        if (\in_array($this->paymentHandlerClass, PaymentHandlerGroups::GENERIC_EXPRESS, true) === false) {
+            // payment handler is not a generic express-checkout
+            return;
+        }
+
+        if ($filterContext->getSalesChannelContext()->getPaymentMethod()->getHandlerIdentifier() === $this->paymentHandlerClass) {
+            $extensionData = $filterContext->getCart()?->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
+
+            if (!$extensionData instanceof CheckoutCartPaymentData || empty($extensionData->getWorkorderId())) {
+                throw new PaymentMethodNotAllowedException('payment is a generic express-checkout which has not been initialized yet.');
+            }
+        } else {
+            throw new PaymentMethodNotAllowedException('payment is a generic express-checkout which has not been initialized yet.');
         }
     }
 }

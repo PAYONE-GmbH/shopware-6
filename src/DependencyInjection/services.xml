@@ -119,5 +119,17 @@
         </service>
         <service id="PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureServiceInterface"
                  alias="PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureService" />
+
+        <service id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService">
+            <argument key="$cartHasher" type="service" id="PayonePayment\Components\CartHasher\CartHasherInterface" />
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+        </service>
+
+        <service id="PayonePayment\Components\GenericExpressCheckout\CustomerRegistrationUtil">
+            <argument key="$translator" type="service" id="translator" />
+            <argument key="$countryRepository" type="service" id="country.repository" />
+            <argument key="$salutationRepository" type="service" id="salutation.repository" />
+        </service>
+
     </services>
 </container>

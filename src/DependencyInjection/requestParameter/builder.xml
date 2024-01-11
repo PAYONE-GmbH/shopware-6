@@ -62,6 +62,22 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <service id="PayonePayment\Components\GenericExpressCheckout\RequestParameterBuilder\CreateCheckoutSessionParameterBuilder">
+            <argument key="$currencyPrecision" type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
+            <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler"/>
+            <argument key="$router" type="service" id="router"/>
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+
+            <tag name="payone_request_builder" />
+        </service>
+
+        <service id="PayonePayment\Components\GenericExpressCheckout\RequestParameterBuilder\GetCheckoutSessionParameterBuilder">
+            <argument key="$currencyPrecision" type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+
+            <tag name="payone_request_builder" />
+        </service>
+
         <!-- Paypal -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Paypal\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
@@ -90,20 +106,12 @@
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalExpress\GetCheckoutDetailsRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="currency.repository"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
             <tag name="payone_request_builder" />
         </service>
 
-        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalExpress\SetCheckoutDetailsRequestParameterBuilder"
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalExpress\CreateCheckoutSessionParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="currency.repository"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
             <tag name="payone_request_builder" />
         </service>
