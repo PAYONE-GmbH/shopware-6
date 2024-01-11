@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter;
 
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
+use PayonePayment\Payone\RequestParameter\Struct\ClientApiRequest;
 use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
 
 class RequestParameterFactory
@@ -51,6 +52,12 @@ class RequestParameterFactory
     {
         if ($arguments instanceof GetFileStruct) {
             unset($parameters['aid'], $parameters['hash']);
+        }
+
+        if ($arguments instanceof ClientApiRequest) {
+            unset($parameters['key']);
+        } else {
+            unset($parameters['hash']);
         }
 
         return $parameters;

@@ -7,7 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Struct;
 use PayonePayment\Payone\RequestParameter\Struct\Traits\SalesChannelContextTrait;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class CreditCardCheckStruct extends AbstractRequestParameterStruct
+class CreditCardCheckStruct extends AbstractRequestParameterStruct implements ClientApiRequest
 {
     use SalesChannelContextTrait;
 
