@@ -90,6 +90,7 @@
 
         <service id="payone.payment_filter_method.secured_invoice"
                  class="PayonePayment\Components\PaymentFilter\PayoneBNPLPaymentMethodFilter">
+            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler</argument>
             <argument key="$allowedCountries" type="collection">
                 <argument>DE</argument>
@@ -107,6 +108,7 @@
 
         <service id="payone.payment_filter_method.secured_installment"
                  class="PayonePayment\Components\PaymentFilter\PayoneBNPLPaymentMethodFilter">
+            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler</argument>
             <argument key="$allowedCountries" type="collection">
                 <argument>DE</argument>
@@ -124,6 +126,7 @@
 
         <service id="payone.payment_filter_method.secured_direct_debit"
                  class="PayonePayment\Components\PaymentFilter\PayoneBNPLPaymentMethodFilter">
+            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayoneSecuredDirectDebitPaymentHandler</argument>
             <argument key="$allowedCountries" type="collection">
                 <argument>DE</argument>
