@@ -4322,6 +4322,12 @@
             <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
         </input-field>
 
+        <input-field type="bool">
+            <name>securedInvoiceAllowDifferentShippingAddress</name>
+            <label>Allow a different delivery address (Attention: has to be enabled in the PAYONE account)</label>
+            <label lang="de-DE">Abweichende Lieferadresse zulassen (Hinweis: Muss im PAYONE-Konto freigeschaltet sein!)</label>
+        </input-field>
+
         <input-field type="single-select">
             <name>securedInvoicePaymentStatusAppointed</name>
             <label>Transition for APPOINTED</label>
@@ -4475,6 +4481,12 @@
             <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
         </input-field>
 
+        <input-field type="bool">
+            <name>securedInstallmentAllowDifferentShippingAddress</name>
+            <label>Allow a different delivery address (Attention: has to be enabled in the PAYONE account)</label>
+            <label lang="de-DE">Abweichende Lieferadresse zulassen (Hinweis: Muss im PAYONE-Konto freigeschaltet sein!)</label>
+        </input-field>
+
         <input-field type="single-select">
             <name>securedInstallmentPaymentStatusAppointed</name>
             <label>Transition for APPOINTED</label>
@@ -4626,6 +4638,12 @@
             <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
             <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
             <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>securedDirectDebitAllowDifferentShippingAddress</name>
+            <label>Allow a different delivery address (Attention: has to be enabled in the PAYONE account)</label>
+            <label lang="de-DE">Abweichende Lieferadresse zulassen (Hinweis: Muss im PAYONE-Konto freigeschaltet sein!)</label>
         </input-field>
 
         <input-field type="single-select">
