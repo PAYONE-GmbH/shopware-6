@@ -121,6 +121,11 @@ class DefaultPaymentFilterServiceTest extends TestCase
         $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, null, null, null);
         $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
         static::assertCount(3, $result->getElements(), 'no payment method should be removed, cause no country filter is provided');
+
+        $billingAddress->getCountry()->setIso('FR');
+        $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, [], ['FR'], null);
+        $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
+        static::assertNotContainsOnly(\stdClass::class, $result->getElements(), false, 'payment method stdclass should be removed, because country FR is only allowed for B2B customers and not B2C customers.');
     }
 
     public function testB2B(): void
@@ -168,6 +173,11 @@ class DefaultPaymentFilterServiceTest extends TestCase
         $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, null, null, null);
         $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
         static::assertCount(3, $result->getElements(), 'no payment method should be removed, cause no country filter is provided');
+
+        $billingAddress->getCountry()->setIso('FR');
+        $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, ['FR'], [], null);
+        $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
+        static::assertNotContainsOnly(\stdClass::class, $result->getElements(), false, 'payment method stdclass should be removed, because country FR is only allowed for B2C customers and not B2B customers.');
     }
 
     public function testDifferentShippingAddress(): void

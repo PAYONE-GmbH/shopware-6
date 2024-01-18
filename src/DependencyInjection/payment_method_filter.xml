@@ -198,6 +198,18 @@
                 <argument>HU</argument>
                 <argument>DK</argument>
             </argument>
+            <argument key="$allowedB2bCountries" type="collection">
+                <argument>DE</argument>
+                <argument>FR</argument>
+                <argument>IT</argument>
+                <argument>ES</argument>
+                <argument>LU</argument>
+                <argument>NL</argument>
+                <argument>SE</argument>
+                <argument>PT</argument>
+                <argument>HU</argument>
+                <argument>DK</argument>
+            </argument>
             <argument key="$allowedCurrencies" type="collection">
                 <argument>EUR</argument>
             </argument>
