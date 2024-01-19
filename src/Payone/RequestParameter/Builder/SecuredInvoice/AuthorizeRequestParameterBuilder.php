@@ -13,6 +13,8 @@ use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressCollection;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -55,6 +57,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         $this->applyPhoneParameter($order, $parameters, $dataBag->get('securedInvoicePhone') ?? '', $context);
         $this->applyBirthdayParameter($order, $parameters, $dataBag->get('payoneInvoiceBirthday') ?? '', $context);
+        $this->applyB2bParameters($order, $parameters);
 
         return $parameters;
     }
@@ -81,5 +84,35 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         return $order;
+    }
+
+    protected function applyB2bParameters(OrderEntity $order, array &$parameters): void
+    {
+        /** @var OrderAddressCollection $addresses */
+        $addresses = $order->getAddresses();
+        /** @var OrderAddressEntity $billingAddress */
+        $billingAddress = $addresses->get($order->getBillingAddressId());
+
+        if ($billingAddress === null) {
+            return;
+        }
+
+        $company = $billingAddress->getCompany();
+        if ($company === null) {
+            return;
+        }
+
+        $parameters['businessrelation'] = 'b2b';
+        $parameters['company'] = $company;
+
+        if ($billingAddress->getVatId()) {
+            $parameters['vatid'] = $billingAddress->getVatId();
+        } else {
+            $vatIds = $order->getOrderCustomer()?->getVatIds();
+
+            if (\is_array($vatIds) && isset($vatIds[0])) {
+                $parameters['vatid'] = $vatIds[0];
+            }
+        }
     }
 }
