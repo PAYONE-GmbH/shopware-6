@@ -88,10 +88,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     protected function applyB2bParameters(OrderEntity $order, array &$parameters): void
     {
-        /** @var OrderAddressCollection $addresses */
-        $addresses = $order->getAddresses();
-        /** @var OrderAddressEntity $billingAddress */
-        $billingAddress = $addresses->get($order->getBillingAddressId());
+        $billingAddress = $order->getAddresses()?->get($order->getBillingAddressId());
 
         if ($billingAddress === null) {
             return;
