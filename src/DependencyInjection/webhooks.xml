@@ -24,7 +24,6 @@
             <argument type="service" id="payone_payment_notification_forward.repository" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
             <argument type="service" id="messenger.bus.shopware"/>
-<!--            <argument type="service" id="PayonePayment\Util\NotificationForwardLogger" />-->
 
             <tag name="payone.webhook.handler" />
         </service>
