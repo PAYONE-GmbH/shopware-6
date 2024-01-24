@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\MessageBus\MessageHandler;
 
+use Monolog\Level;
+use Monolog\Logger;
 use PayonePayment\DataAbstractionLayer\Entity\NotificationForward\PayonePaymentNotificationForwardEntity;
 use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetEntity;
 use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardCommand;
-use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
 class NotificationForwardHandler implements MessageSubscriberInterface
 {
     public function __construct(
         private readonly EntityRepository $notificationForwardRepository,
-        private readonly LoggerInterface $logger
+        private readonly Logger  $logger
     ) {
     }
 
@@ -52,6 +54,14 @@ class NotificationForwardHandler implements MessageSubscriberInterface
 
         $this->updateResponses($multiHandle, $notificationForwards, $forwardRequests, $message->getContext());
 
+        foreach ($forwardRequests as $id => $handle) {
+            $responseInfo = curl_getinfo($handle);
+            $responseContent = curl_multi_getcontent($handle);
+            $this->statusLogger($responseInfo, $responseContent, $id);
+            curl_multi_remove_handle($multiHandle, $handle);
+            curl_close($handle);
+        }
+
         curl_multi_close($multiHandle);
     }
 
@@ -71,10 +81,10 @@ class NotificationForwardHandler implements MessageSubscriberInterface
     }
 
     private function updateResponses(
-        \CurlMultiHandle $multiHandle,
+        \CurlMultiHandle   $multiHandle,
         EntitySearchResult $notificationForwards,
-        array $forwardRequests,
-        Context $context
+        array              $forwardRequests,
+        Context            $context
     ): void {
         $data = [];
 
@@ -110,12 +120,14 @@ class NotificationForwardHandler implements MessageSubscriberInterface
 
             $forwardRequests[$id] = curl_init();
 
-            $serialize = unserialize($forward->getContent(), []);
-            /** @var array<int, string>|string|false $content */
-            $content = mb_convert_encoding((string) $serialize, 'ISO-8859-1', 'UTF-8');
+            $content = unserialize($forward->getContent(), []);
 
             if (!\is_array($content)) {
                 continue;
+            }
+
+            foreach ($content as $key => $value) {
+                $content[$key] = mb_convert_encoding($value, 'ISO-8859-1', 'UTF-8');
             }
 
             curl_setopt($forwardRequests[$id], \CURLOPT_URL, $target->getUrl());
@@ -136,7 +148,7 @@ class NotificationForwardHandler implements MessageSubscriberInterface
 
     private function buildHeaders(
         PayonePaymentNotificationForwardEntity $forward,
-        PayonePaymentNotificationTargetEntity $target
+        PayonePaymentNotificationTargetEntity  $target
     ): array {
         $headers = [
             'X-Forwarded-For: ' . $forward->getIp(),
@@ -148,5 +160,24 @@ class NotificationForwardHandler implements MessageSubscriberInterface
         }
 
         return $headers;
+    }
+
+    private function statusLogger(array $responseInfo, ?string $responseContent, string $id): void
+    {
+        $statusCode = $responseInfo['http_code'];
+
+        $response = new Response($responseContent, $statusCode, $responseInfo);
+        $logLevel = $response->isSuccessful() ? 'info' : 'error';
+        $statusText = Response::$statusTexts[$statusCode] ?? 'Unknown Status Code';
+
+        $this->logger->addRecord(
+            Level::fromName($logLevel),
+            'Forwarding notification - ' . $statusText,
+            [
+                'id' => $id,
+                'information' => $responseInfo,
+                'content' => $response->getContent(),
+            ]
+        );
     }
 }
