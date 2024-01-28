@@ -112,7 +112,7 @@ class NotificationForwardHandler implements MessageSubscriberInterface
 
             $serialize = unserialize($forward->getContent(), []);
             /** @var array<int, string>|string|false $content */
-            $content = mb_convert_encoding((string) $serialize, 'ISO-8859-1', 'UTF-8');
+            $content = mb_convert_encoding($serialize, 'ISO-8859-1', 'UTF-8');
 
             if (!\is_array($content)) {
                 continue;
