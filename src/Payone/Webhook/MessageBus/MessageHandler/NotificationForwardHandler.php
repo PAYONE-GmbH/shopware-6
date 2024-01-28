@@ -20,7 +20,7 @@ class NotificationForwardHandler implements MessageSubscriberInterface
 {
     public function __construct(
         private readonly EntityRepository $notificationForwardRepository,
-        private readonly Logger  $logger
+        private readonly Logger $logger
     ) {
     }
 
@@ -81,10 +81,10 @@ class NotificationForwardHandler implements MessageSubscriberInterface
     }
 
     private function updateResponses(
-        \CurlMultiHandle   $multiHandle,
+        \CurlMultiHandle $multiHandle,
         EntitySearchResult $notificationForwards,
-        array              $forwardRequests,
-        Context            $context
+        array $forwardRequests,
+        Context $context
     ): void {
         $data = [];
 
@@ -146,7 +146,7 @@ class NotificationForwardHandler implements MessageSubscriberInterface
 
     private function buildHeaders(
         PayonePaymentNotificationForwardEntity $forward,
-        PayonePaymentNotificationTargetEntity  $target
+        PayonePaymentNotificationTargetEntity $target
     ): array {
         $headers = [
             'X-Forwarded-For: ' . $forward->getIp(),
