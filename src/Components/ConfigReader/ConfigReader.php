@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\ConfigReader;
 
+use PayonePayment\Components\ConfigReader\Exception\ConfigurationPrefixMissingException;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Struct\Configuration;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -18,6 +19,10 @@ class ConfigReader implements ConfigReaderInterface
 
     public static function getConfigKeyByPaymentHandler(string $paymentHandler, string $configuration): string
     {
+        if (!isset(ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentHandler])) {
+            throw new ConfigurationPrefixMissingException(sprintf('No configuration prefix for payment handler "%s" found!', $paymentHandler));
+        }
+
         return self::SYSTEM_CONFIG_DOMAIN . ConfigurationPrefixes::CONFIGURATION_PREFIXES[$paymentHandler] . $configuration;
     }
 
