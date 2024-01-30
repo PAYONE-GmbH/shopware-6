@@ -31,6 +31,11 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext
     ): PaymentMethodCollection {
+        $supportedPaymentMethods = $this->getSupportedPaymentMethods($methodCollection);
+        if ($supportedPaymentMethods->count() === 0) {
+            return $methodCollection;
+        }
+
         $currency = $filterContext->getCurrency();
         $billingAddress = $filterContext->getBillingAddress();
 
@@ -50,31 +55,26 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
                 $this->validateMaxValue($currentValue);
             }
         } catch (PaymentMethodNotAllowedException) {
-            $methodCollection = $this->removePaymentMethod($methodCollection);
+            $methodCollection = $this->removePaymentMethods($methodCollection, $supportedPaymentMethods);
         }
 
         return $methodCollection;
     }
 
-    /**
-     * returns true, if the method should be filtered out.
-     *
-     * @internal method needs to be public, so it can be called by `removePaymentMethod`
-     */
-    public function canMethodRemoved(PaymentMethodEntity $paymentMethod): bool
+    protected function getSupportedPaymentMethods(PaymentMethodCollection $paymentMethodCollection): PaymentMethodCollection
     {
         $refClass = new \ReflectionClass($this->paymentHandlerClass);
 
-        return $refClass->isAbstract()
+        return $paymentMethodCollection->filter(fn (PaymentMethodEntity $paymentMethod) => $refClass->isAbstract()
             ? is_subclass_of($paymentMethod->getHandlerIdentifier(), $this->paymentHandlerClass)
-            : $paymentMethod->getHandlerIdentifier() === $this->paymentHandlerClass;
+            : $paymentMethod->getHandlerIdentifier() === $this->paymentHandlerClass);
     }
 
-    protected function removePaymentMethod(PaymentMethodCollection $paymentMethodCollection): PaymentMethodCollection
-    {
-        $that = $this;
-        // filter-method needs a closure (forced anonymous function) so we can not use [$this, 'filterMethod']
-        return $paymentMethodCollection->filter(static fn (PaymentMethodEntity $entity) => !$that->canMethodRemoved($entity));
+    protected function removePaymentMethods(
+        PaymentMethodCollection $paymentMethodCollection,
+        PaymentMethodCollection $toBeRemoved
+    ): PaymentMethodCollection {
+        return $paymentMethodCollection->filter(static fn (PaymentMethodEntity $entity) => !$toBeRemoved->has($entity->getUniqueIdentifier()));
     }
 
     private function validateAddress(CustomerAddressEntity|OrderAddressEntity|null $address): void

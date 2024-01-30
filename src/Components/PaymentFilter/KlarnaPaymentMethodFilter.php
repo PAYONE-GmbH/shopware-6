@@ -14,8 +14,13 @@ class KlarnaPaymentMethodFilter extends DefaultPaymentFilterService
     {
         $methodCollection = parent::filterPaymentMethods($methodCollection, $filterContext);
 
+        $supportedPaymentMethods = $this->getSupportedPaymentMethods($methodCollection);
+        if ($supportedPaymentMethods->count() === 0) {
+            return $methodCollection;
+        }
+
         if ($this->hasCustomProducts($filterContext)) {
-            $methodCollection = $this->removePaymentMethod($methodCollection);
+            $methodCollection = $this->removePaymentMethods($methodCollection, $supportedPaymentMethods);
         }
 
         return $methodCollection;

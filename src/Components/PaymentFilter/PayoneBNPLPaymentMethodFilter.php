@@ -15,6 +15,11 @@ class PayoneBNPLPaymentMethodFilter extends DefaultPaymentFilterService
     {
         $methodCollection = parent::filterPaymentMethods($methodCollection, $filterContext);
 
+        $supportedPaymentMethods = $this->getSupportedPaymentMethods($methodCollection);
+        if ($supportedPaymentMethods->count() === 0) {
+            return $methodCollection;
+        }
+
         $billingAddress = $filterContext->getBillingAddress();
         $shippingAddress = $filterContext->getShippingAddress();
 
@@ -22,11 +27,11 @@ class PayoneBNPLPaymentMethodFilter extends DefaultPaymentFilterService
         if ($billingAddress instanceof OrderAddressEntity
             && $shippingAddress instanceof OrderAddressEntity
             && !AddressCompare::areOrderAddressesIdentical($billingAddress, $shippingAddress)) {
-            $methodCollection = $this->removePaymentMethod($methodCollection);
+            $methodCollection = $this->removePaymentMethods($methodCollection, $supportedPaymentMethods);
         } elseif ($billingAddress instanceof CustomerAddressEntity
             && $shippingAddress instanceof CustomerAddressEntity
             && !AddressCompare::areCustomerAddressesIdentical($billingAddress, $shippingAddress)) {
-            $methodCollection = $this->removePaymentMethod($methodCollection);
+            $methodCollection = $this->removePaymentMethods($methodCollection, $supportedPaymentMethods);
         }
 
         return $methodCollection;
