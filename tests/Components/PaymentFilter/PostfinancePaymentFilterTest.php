@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\EventListener;
+namespace PayonePayment\Components\PaymentFilter;
 
-use PayonePayment\Components\PaymentFilter\PaymentFilterServiceInterface;
 use PayonePayment\PaymentHandler\PayonePostfinanceCardPaymentHandler;
 use Shopware\Core\System\Currency\CurrencyEntity;
 

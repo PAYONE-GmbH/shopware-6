@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
+use PayonePayment\Components\ConfigReader\ConfigReader;
+use PayonePayment\Components\ConfigReader\Exception\ConfigurationPrefixMissingException;
 use PayonePayment\Components\PaymentFilter\Exception\PaymentMethodNotAllowedException;
+use PayonePayment\Core\Utils\AddressCompare;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class DefaultPaymentFilterService implements PaymentFilterServiceInterface
 {
@@ -18,6 +22,7 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
      * @param class-string<AbstractPayonePaymentHandler> $paymentHandlerClass
      */
     public function __construct(
+        private readonly SystemConfigService $systemConfigService,
         private readonly string $paymentHandlerClass,
         private readonly ?array $allowedCountries = null,
         private readonly ?array $allowedB2bCountries = null,
@@ -46,6 +51,7 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
             $currentValue = $filterContext->getOrder()->getPrice()->getTotalPrice();
         }
 
+        // Validate and remove all supported payment methods if necessary
         try {
             $this->validateCurrency($currency);
             $this->validateAddress($billingAddress);
@@ -55,7 +61,16 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
                 $this->validateMaxValue($currentValue);
             }
         } catch (PaymentMethodNotAllowedException) {
-            $methodCollection = $this->removePaymentMethods($methodCollection, $supportedPaymentMethods);
+            return $this->removePaymentMethods($methodCollection, $supportedPaymentMethods);
+        }
+
+        // Validate and remove a specific payment method if necessary
+        foreach ($supportedPaymentMethods as $paymentMethod) {
+            try {
+                $this->validateDifferentShippingAddress($paymentMethod, $filterContext);
+            } catch (PaymentMethodNotAllowedException) {
+                $methodCollection = $this->removePaymentMethods($methodCollection, new PaymentMethodCollection([$paymentMethod]));
+            }
         }
 
         return $methodCollection;
@@ -115,6 +130,44 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
     {
         if ($this->allowedMaxValue !== null && $currentValue > $this->allowedMaxValue) {
             throw new PaymentMethodNotAllowedException('The current cart/order value is higher than the allowed max value');
+        }
+    }
+
+    private function validateDifferentShippingAddress(PaymentMethodEntity $paymentMethod, PaymentFilterContext $filterContext): void
+    {
+        try {
+            $configKey = ConfigReader::getConfigKeyByPaymentHandler(
+                $paymentMethod->getHandlerIdentifier(),
+                'AllowDifferentShippingAddress'
+            );
+        } catch (ConfigurationPrefixMissingException) {
+            return;
+        }
+
+        $differentShippingAddressAllowed = $this->systemConfigService->get(
+            $configKey,
+            $filterContext->getSalesChannelContext()->getSalesChannelId()
+        );
+
+        // There is no configuration for this payment method or a different shipping address is allowed, skip validation
+        if ($differentShippingAddressAllowed === null || $differentShippingAddressAllowed === true) {
+            return;
+        }
+
+        // Different billing and shipping addresses are not allowed
+        $billingAddress = $filterContext->getBillingAddress();
+        $shippingAddress = $filterContext->getShippingAddress();
+
+        if ($billingAddress instanceof OrderAddressEntity
+            && $shippingAddress instanceof OrderAddressEntity
+            && !AddressCompare::areOrderAddressesIdentical($billingAddress, $shippingAddress)) {
+            throw new PaymentMethodNotAllowedException('It is not permitted to use a different shipping address');
+        }
+
+        if ($billingAddress instanceof CustomerAddressEntity
+            && $shippingAddress instanceof CustomerAddressEntity
+            && !AddressCompare::areCustomerAddressesIdentical($billingAddress, $shippingAddress)) {
+            throw new PaymentMethodNotAllowedException('It is not permitted to use a different shipping address');
         }
     }
 }
