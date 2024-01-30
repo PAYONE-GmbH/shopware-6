@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
+use PayonePayment\Components\ConfigReader\ConfigReader;
+use PayonePayment\Components\ConfigReader\Exception\ConfigurationPrefixMissingException;
 use PayonePayment\Components\PaymentFilter\Exception\PaymentMethodNotAllowedException;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
@@ -11,6 +13,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class DefaultPaymentFilterService implements PaymentFilterServiceInterface
 {
@@ -18,6 +21,7 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
      * @param class-string<AbstractPayonePaymentHandler> $paymentHandlerClass
      */
     public function __construct(
+        private readonly SystemConfigService $systemConfigService,
         private readonly string $paymentHandlerClass,
         private readonly ?array $allowedCountries = null,
         private readonly ?array $allowedB2bCountries = null,
@@ -31,7 +35,8 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext
     ): PaymentMethodCollection {
-        if ($this->getSupportedPaymentMethods($methodCollection)->getElements() === []) {
+        $supportedPaymentMethods = $this->getSupportedPaymentMethods($methodCollection);
+        if ($supportedPaymentMethods->getElements() === []) {
             return $methodCollection;
         }
 
@@ -45,6 +50,7 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
             $currentValue = $filterContext->getOrder()->getPrice()->getTotalPrice();
         }
 
+        // Validate and remove all supported payment methods if necessary
         try {
             $this->validateCurrency($currency);
             $this->validateAddress($billingAddress);
@@ -53,9 +59,13 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
                 $this->validateMinValue($currentValue);
                 $this->validateMaxValue($currentValue);
             }
+
+            // Validate and remove a specific payment method if necessary
+            $this->validateDifferentShippingAddress($supportedPaymentMethods, $filterContext);
+
             $this->additionalChecks($methodCollection, $filterContext);
-        } catch (PaymentMethodNotAllowedException) {
-            $methodCollection = $this->removePaymentMethods($methodCollection);
+        } catch (PaymentMethodNotAllowedException $paymentMethodNotAllowedException) {
+            $methodCollection = $this->removePaymentMethods($methodCollection, $paymentMethodNotAllowedException->getDisallowedPaymentMethodCollection());
         }
 
         return $methodCollection;
@@ -76,9 +86,9 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
             : $paymentMethod->getHandlerIdentifier() === $this->paymentHandlerClass);
     }
 
-    private function removePaymentMethods(PaymentMethodCollection $paymentMethodCollection): PaymentMethodCollection
+    private function removePaymentMethods(PaymentMethodCollection $paymentMethodCollection, ?PaymentMethodCollection $itemsToRemove = null): PaymentMethodCollection
     {
-        $itemsToRemove = $this->getSupportedPaymentMethods($paymentMethodCollection);
+        $itemsToRemove = $itemsToRemove ?: $this->getSupportedPaymentMethods($paymentMethodCollection);
 
         return $paymentMethodCollection->filter(static fn (PaymentMethodEntity $entity) => !$itemsToRemove->has($entity->getUniqueIdentifier()));
     }
@@ -121,6 +131,45 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
     {
         if ($this->allowedMaxValue !== null && $currentValue > $this->allowedMaxValue) {
             throw new PaymentMethodNotAllowedException('The current cart/order value is higher than the allowed max value');
+        }
+    }
+
+    private function validateDifferentShippingAddress(PaymentMethodCollection $paymentMethods, PaymentFilterContext $filterContext): void
+    {
+        // addresses are already identical - it is not required to check if it is allowed if they are identical or not
+        if ($filterContext->areAddressesIdentical()) {
+            return;
+        }
+
+        $disallowedPaymentMethods = [];
+
+        foreach ($paymentMethods as $paymentMethod) {
+            try {
+                $configKey = ConfigReader::getConfigKeyByPaymentHandler(
+                    $paymentMethod->getHandlerIdentifier(),
+                    'AllowDifferentShippingAddress'
+                );
+            } catch (ConfigurationPrefixMissingException) {
+                continue;
+            }
+
+            /** @var boolean|null $differentShippingAddressAllowed */
+            $differentShippingAddressAllowed = $this->systemConfigService->get(
+                $configKey,
+                $filterContext->getSalesChannelContext()->getSalesChannelId()
+            );
+
+            // if configuration value is null, the payment method should be removed.
+            if ($differentShippingAddressAllowed === false) {
+                $disallowedPaymentMethods[] = $paymentMethod;
+            }
+        }
+
+        if ($disallowedPaymentMethods !== []) {
+            throw new PaymentMethodNotAllowedException(
+                'It is not permitted to use a different shipping address',
+                new PaymentMethodCollection($disallowedPaymentMethods)
+            );
         }
     }
 }

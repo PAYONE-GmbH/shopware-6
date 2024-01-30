@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
+use PayonePayment\Components\ConfigReader\ConfigReader;
+use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\TestCaseBase\Mock\PaymentHandler\PaymentHandlerMock;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 /**
  * @covers \PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService
@@ -50,23 +54,25 @@ class DefaultPaymentFilterServiceTest extends TestCase
             $euroCurrency
         );
 
-        $filterService = new DefaultPaymentFilterService(PaymentHandlerMock::class, ['DE'], null, ['EUR']);
+        $systemConfigService = $this->createMock(SystemConfigService::class);
+
+        $filterService = new DefaultPaymentFilterService($systemConfigService, PaymentHandlerMock::class, ['DE'], null, ['EUR']);
         $result = $filterService->filterPaymentMethods($methodCollection, $chfFilterContext);
         static::assertCount(2, $result->getElements(), 'first payment method should be removed, cause service should only process first payment method, and the currency is not allowed');
 
-        $filterService = new DefaultPaymentFilterService(\stdClass::class, ['DE'], null, ['EUR']);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, ['DE'], null, ['EUR']);
         $result = $filterService->filterPaymentMethods($methodCollection, $chfFilterContext);
         static::assertCount(1, $result->getElements(), 'second and third payment method should be removed, cause service should only process second/third payment method, and the currency is not allowed');
 
-        $filterService = new DefaultPaymentFilterService(PaymentHandlerMock::class, ['DE'], null, ['EUR']);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, PaymentHandlerMock::class, ['DE'], null, ['EUR']);
         $result = $filterService->filterPaymentMethods($methodCollection, $euroFilterContext);
         static::assertCount(3, $result->getElements(), 'no payment method should be removed, cause the currency is allowed for the first method');
 
-        $filterService = new DefaultPaymentFilterService(\stdClass::class, ['DE'], null, ['EUR']);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, ['DE'], null, ['EUR']);
         $result = $filterService->filterPaymentMethods($methodCollection, $euroFilterContext);
         static::assertCount(3, $result->getElements(), 'no payment method should be removed, cause the currency is allowed for the second and the method');
 
-        $filterService = new DefaultPaymentFilterService(\stdClass::class, ['DE'], null, null);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, ['DE'], null, null);
         $result = $filterService->filterPaymentMethods($methodCollection, $euroFilterContext);
         static::assertCount(3, $result->getElements(), 'no payment method should be removed, cause no currency filter is provided');
     }
@@ -90,27 +96,29 @@ class DefaultPaymentFilterServiceTest extends TestCase
             $currency
         );
 
+        $systemConfigService = $this->createMock(SystemConfigService::class);
+
         $billingAddress->getCountry()->setIso('DE');
-        $filterService = new DefaultPaymentFilterService(PaymentHandlerMock::class, ['FR'], null, null);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, PaymentHandlerMock::class, ['FR'], null, null);
         $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
         static::assertCount(2, $result->getElements(), 'first payment method should be removed, cause service should only process first payment method, and the country is not allowed');
 
         $billingAddress->getCountry()->setIso('DE');
-        $filterService = new DefaultPaymentFilterService(\stdClass::class, ['FR'], null, null);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, ['FR'], null, null);
         $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
         static::assertCount(1, $result->getElements(), 'second and third payment method should be removed, cause service should only process second/third payment method, and the country is not allowed');
 
         $billingAddress->getCountry()->setIso('FR');
-        $filterService = new DefaultPaymentFilterService(PaymentHandlerMock::class, ['FR'], null, null);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, PaymentHandlerMock::class, ['FR'], null, null);
         $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
         static::assertCount(3, $result->getElements(), 'no payment method should be removed, cause the country is allowed for the first method');
 
         $billingAddress->getCountry()->setIso('FR');
-        $filterService = new DefaultPaymentFilterService(\stdClass::class, ['FR'], null, null);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, ['FR'], null, null);
         $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
         static::assertCount(3, $result->getElements(), 'no payment method should be removed, cause the country is allowed for the second and the method');
 
-        $filterService = new DefaultPaymentFilterService(\stdClass::class, null, null, null);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, null, null, null);
         $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
         static::assertCount(3, $result->getElements(), 'no payment method should be removed, cause no country filter is provided');
     }
@@ -135,29 +143,108 @@ class DefaultPaymentFilterServiceTest extends TestCase
             $currency
         );
 
+        $systemConfigService = $this->createMock(SystemConfigService::class);
+
         $billingAddress->getCountry()->setIso('DE');
-        $filterService = new DefaultPaymentFilterService(PaymentHandlerMock::class, null, ['FR'], null);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, PaymentHandlerMock::class, null, ['FR'], null);
         $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
         static::assertCount(2, $result->getElements(), 'first payment method should be removed, cause service should only process first payment method, and the country is not allowed');
 
         $billingAddress->getCountry()->setIso('DE');
-        $filterService = new DefaultPaymentFilterService(\stdClass::class, null, ['FR'], null);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, null, ['FR'], null);
         $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
         static::assertCount(1, $result->getElements(), 'second and third payment method should be removed, cause service should only process second/third payment method, and the country is not allowed');
 
         $billingAddress->getCountry()->setIso('FR');
-        $filterService = new DefaultPaymentFilterService(PaymentHandlerMock::class, null, ['FR'], null);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, PaymentHandlerMock::class, null, ['FR'], null);
         $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
         static::assertCount(3, $result->getElements(), 'no payment method should be removed, cause the country is allowed for the first method');
 
         $billingAddress->getCountry()->setIso('FR');
-        $filterService = new DefaultPaymentFilterService(\stdClass::class, null, ['FR'], null);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, null, ['FR'], null);
         $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
         static::assertCount(3, $result->getElements(), 'no payment method should be removed, cause the country is allowed for the second and th method');
 
-        $filterService = new DefaultPaymentFilterService(\stdClass::class, null, null, null);
+        $filterService = new DefaultPaymentFilterService($systemConfigService, \stdClass::class, null, null, null);
         $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
         static::assertCount(3, $result->getElements(), 'no payment method should be removed, cause no country filter is provided');
+    }
+
+    public function testDifferentShippingAddress(): void
+    {
+        $method = new PaymentMethodEntity();
+        $method->setUniqueIdentifier(Uuid::randomHex());
+        $method->setHandlerIdentifier(PayoneSecuredInvoicePaymentHandler::class);
+
+        $methodCollection = $this->getMethodCollection();
+        $methodCollection->add($method);
+
+        $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
+
+        $differentShippingAddress = new CustomerAddressEntity();
+        $differentShippingAddress->setId(Uuid::randomHex());
+        $differentShippingAddress->setFirstName('Different Firstname');
+        $salesChannelContext->getCustomer()->setActiveShippingAddress($differentShippingAddress);
+
+        $currency = $this->createMock(CurrencyEntity::class);
+        $currency->method('getIsoCode')->willReturn('EUR');
+
+        $filterContext = new PaymentFilterContext(
+            $salesChannelContext,
+            $salesChannelContext->getCustomer()->getActiveBillingAddress(),
+            $salesChannelContext->getCustomer()->getActiveShippingAddress(),
+            $currency
+        );
+
+        $configKey = ConfigReader::getConfigKeyByPaymentHandler(
+            PayoneSecuredInvoicePaymentHandler::class,
+            'AllowDifferentShippingAddress'
+        );
+
+        $systemConfigService = $this->createMock(SystemConfigService::class);
+        $systemConfigService
+            ->expects(static::once())
+            ->method('get')
+            ->with(
+                static::equalTo($configKey),
+                static::equalTo($salesChannelContext->getSalesChannelId())
+            )
+            ->willReturn(null)
+        ;
+
+        $filterService = new DefaultPaymentFilterService($systemConfigService, PayoneSecuredInvoicePaymentHandler::class, null, null, null);
+        $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
+        static::assertCount(4, $result->getElements(), 'no payment method should be removed, because no configuration exists');
+
+        $systemConfigService = $this->createMock(SystemConfigService::class);
+        $systemConfigService
+            ->expects(static::once())
+            ->method('get')
+            ->with(
+                static::equalTo($configKey),
+                static::equalTo($salesChannelContext->getSalesChannelId())
+            )
+            ->willReturn(true)
+        ;
+
+        $filterService = new DefaultPaymentFilterService($systemConfigService, PayoneSecuredInvoicePaymentHandler::class, null, null, null);
+        $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
+        static::assertCount(4, $result->getElements(), 'no payment method should be removed, because a different shipping address is allowed');
+
+        $systemConfigService = $this->createMock(SystemConfigService::class);
+        $systemConfigService
+            ->expects(static::once())
+            ->method('get')
+            ->with(
+                static::equalTo($configKey),
+                static::equalTo($salesChannelContext->getSalesChannelId())
+            )
+            ->willReturn(false)
+        ;
+
+        $filterService = new DefaultPaymentFilterService($systemConfigService, PayoneSecuredInvoicePaymentHandler::class, null, null, null);
+        $result = $filterService->filterPaymentMethods($methodCollection, $filterContext);
+        static::assertCount(3, $result->getElements(), 'payment method should be removed, because a different shipping address is not allowed');
     }
 
     private function getMethodCollection(): PaymentMethodCollection

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
+use PayonePayment\Core\Utils\AddressCompare;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -14,6 +15,8 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PaymentFilterContext extends Struct
 {
+    private bool $_areAddressesIdentical;
+
     public function __construct(
         private readonly SalesChannelContext $salesChannelContext,
         private readonly CustomerAddressEntity|OrderAddressEntity|null $billingAddress = null,
@@ -52,5 +55,32 @@ class PaymentFilterContext extends Struct
     public function getCart(): ?Cart
     {
         return $this->cart;
+    }
+
+    public function areAddressesIdentical(): bool
+    {
+        if (isset($this->_areAddressesIdentical)) {
+            return $this->_areAddressesIdentical;
+        }
+
+        $billingAddress = $this->getBillingAddress();
+        $shippingAddress = $this->getShippingAddress();
+
+        if ($billingAddress instanceof OrderAddressEntity
+            && $shippingAddress instanceof OrderAddressEntity
+            && $billingAddress->getId() !== $shippingAddress->getId()
+            && !AddressCompare::areOrderAddressesIdentical($billingAddress, $shippingAddress)
+        ) {
+            return $this->_areAddressesIdentical = false;
+        }
+
+        if ($billingAddress instanceof CustomerAddressEntity
+            && $shippingAddress instanceof CustomerAddressEntity
+            && $billingAddress->getId() !== $shippingAddress->getId()
+            && !AddressCompare::areCustomerAddressesIdentical($billingAddress, $shippingAddress)) {
+            return $this->_areAddressesIdentical = false;
+        }
+
+        return $this->_areAddressesIdentical = true;
     }
 }
