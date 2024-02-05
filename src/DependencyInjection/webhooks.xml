@@ -30,7 +30,8 @@
 
         <service id="PayonePayment\Payone\Webhook\MessageBus\MessageHandler\NotificationForwardHandler">
             <argument type="service" id="payone_payment_notification_forward.repository" />
-            <argument type="service" id="PayonePayment\Util\NotificationForwardLogger" />
+            <argument key="$logger" type="service" id="monolog.logger.payone_transaction_forward" />
+
             <tag name="messenger.message_handler"/>
         </service>
     </services>

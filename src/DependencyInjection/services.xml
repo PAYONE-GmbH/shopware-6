@@ -17,7 +17,6 @@
         <import resource="webhooks.xml"/>
         <import resource="requestParameter/*.xml"/>
         <import resource="payment_method_filter.xml"/>
-        <import resource="logger.xml"/>
     </imports>
 
     <parameters>
@@ -66,6 +65,12 @@
             <argument type="service" id="PayonePayment\Util\Logger" />
         </service>
         <service id="PayonePayment\Payone\Client\PayoneClientInterface" alias="PayonePayment\Payone\Client\PayoneClient"/>
+
+        <service id="PayonePayment\Util\Logger" class="Monolog\Logger">
+            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+
+            <argument type="string">payone_payment</argument>
+        </service>
 
         <service id="payone.app_system.guzzle" class="GuzzleHttp\Client">
         </service>
