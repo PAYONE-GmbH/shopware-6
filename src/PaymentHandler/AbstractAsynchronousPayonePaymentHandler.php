@@ -103,6 +103,13 @@ abstract class AbstractAsynchronousPayonePaymentHandler extends AbstractPayonePa
             $salesChannelContext
         );
 
+        $this->orderActionLogDataHandler->createOrderActionLog(
+            $transaction->getOrder(),
+            $request,
+            $response,
+            $salesChannelContext->getContext()
+        );
+
         if ($this->deviceFingerprintService instanceof AbstractDeviceFingerprintService) {
             $this->deviceFingerprintService->deleteDeviceIdentToken();
         }
@@ -147,12 +154,6 @@ abstract class AbstractAsynchronousPayonePaymentHandler extends AbstractPayonePa
         );
 
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->orderActionLogDataHandler->createOrderActionLog(
-            $transaction->getOrder(),
-            $request,
-            $response,
-            $salesChannelContext->getContext()
-        );
     }
 
     protected function getRedirectResponse(array $request, array $response): RedirectResponse

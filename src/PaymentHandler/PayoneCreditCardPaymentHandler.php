@@ -142,12 +142,6 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
             ],
         ]);
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->orderActionLogDataHandler->createOrderActionLog(
-            $transaction->getOrder(),
-            $request,
-            $response,
-            $salesChannelContext->getContext()
-        );
 
         if ($paymentTransaction->getOrder()->getLineItems() !== null) {
             $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());

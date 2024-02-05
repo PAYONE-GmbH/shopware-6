@@ -48,6 +48,7 @@ class PayoneApplePayPaymentHandler extends AbstractSynchronousPayonePaymentHandl
 
         $data = $this->preparePayoneOrderTransactionData($request, $response);
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        // special case: the request has been already processed before the payment handler has been executed. Now we will log the previous request/response
         $this->orderActionLogDataHandler->createOrderActionLog(
             $transaction->getOrder(),
             $request,

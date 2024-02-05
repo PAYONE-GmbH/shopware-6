@@ -54,12 +54,6 @@ class PayonePaypalPaymentHandler extends AbstractAsynchronousPayonePaymentHandle
 
         $data = $this->preparePayoneOrderTransactionData($request, $response);
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->orderActionLogDataHandler->createOrderActionLog(
-            $transaction->getOrder(),
-            $request,
-            $response,
-            $salesChannelContext->getContext()
-        );
     }
 
     protected function getRedirectResponse(array $request, array $response): RedirectResponse

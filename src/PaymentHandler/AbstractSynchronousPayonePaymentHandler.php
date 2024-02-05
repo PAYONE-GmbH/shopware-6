@@ -99,6 +99,13 @@ abstract class AbstractSynchronousPayonePaymentHandler extends AbstractPayonePay
             $salesChannelContext
         );
 
+        $this->orderActionLogDataHandler->createOrderActionLog(
+            $transaction->getOrder(),
+            $request,
+            $response,
+            $salesChannelContext->getContext()
+        );
+
         if ($this->deviceFingerprintService instanceof AbstractDeviceFingerprintService) {
             $this->deviceFingerprintService->deleteDeviceIdentToken();
         }
@@ -133,11 +140,5 @@ abstract class AbstractSynchronousPayonePaymentHandler extends AbstractPayonePay
         );
 
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
-        $this->orderActionLogDataHandler->createOrderActionLog(
-            $transaction->getOrder(),
-            $request,
-            $response,
-            $salesChannelContext->getContext()
-        );
     }
 }
