@@ -144,5 +144,15 @@
             </call>
         </service>
 
+        <service id="PayonePayment\Storefront\Controller\AmazonPay\AmazonRedirectController" autowire="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
+            <tag name="controller.service_arguments" />
+        </service>
+
     </services>
 </container>

@@ -116,11 +116,11 @@
             <argument key="$requestParameterFactory" type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument key="$logger" type="service" id="PayonePayment\Util\Logger" />
             <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
-            <argument key="$languageRepository" type="service" id="language.repository" />
             <argument key="$paymentFilterService" type="service" id="payone.payment_filter_method.amazonpay.express" />
             <argument key="$cartExtensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService"/>
             <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
             <argument key="$connection" type="service" id="Doctrine\DBAL\Connection"/>
+            <argument key="$buttonConfiguration" type="service" id="PayonePayment\Components\AmazonPay\ButtonConfiguration"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 

@@ -254,7 +254,8 @@
         </service>
 
         <service id="PayonePayment\PaymentHandler\PayoneAmazonPayPaymentHandler"
-                 parent="PayonePayment\PaymentHandler\AbstractAsynchronousPayonePaymentHandler">
+                 parent="PayonePayment\PaymentHandler\AbstractAsynchronousPayonePaymentHandler"
+                 autowire="true">
 
             <tag name="shopware.payment.method.async" />
         </service>

@@ -1,0 +1,6 @@
+{% block component_payone_amazonpay_express_button %}
+    <div style="visibility:hidden!important;"
+         id="AmazonPayExpressButton-{{ location }}"
+         data-payone-payment-amazon-pay-redirect
+         data-payone-payment-amazon-pay-redirect-options='{{ buttonConfiguration|json_encode }}'></div>
+{% endblock %}

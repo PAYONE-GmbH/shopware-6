@@ -131,5 +131,9 @@
             <argument key="$salutationRepository" type="service" id="salutation.repository" />
         </service>
 
+        <service id="PayonePayment\Components\AmazonPay\ButtonConfiguration" autowire="true">
+            <argument key="$languageRepository" type="service" id="language.repository" />
+        </service>
+
     </services>
 </container>

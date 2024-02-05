@@ -24,7 +24,10 @@ class AuthorizePaymentRequestParameterTest extends TestCase
         /** @var RequestParameterFactory $factory */
         $factory = $this->getContainer()->get(RequestParameterFactory::class);
 
-        $dataBag = new RequestDataBag();
+        $dataBag = new RequestDataBag([
+            'payonePhone' => '012345789',
+        ]);
+
         $struct = $this->getPaymentTransactionStruct(
             $dataBag,
             PayoneAmazonPayPaymentHandler::class,
@@ -59,6 +62,27 @@ class AuthorizePaymentRequestParameterTest extends TestCase
         static::assertIsString($requestParams['lastname']);
         static::assertArrayHasKey('shipping_lastname', $requestParams);
         static::assertIsString($requestParams['shipping_lastname']);
+    }
+
+    /**
+     * @dataProvider authorizeActions
+     */
+    public function testIfExceptionOnMissingPhoneNumber(string $authMethod): void
+    {
+        /** @var RequestParameterFactory $factory */
+        $factory = $this->getContainer()->get(RequestParameterFactory::class);
+
+        $dataBag = new RequestDataBag();
+
+        $struct = $this->getPaymentTransactionStruct(
+            $dataBag,
+            PayoneAmazonPayPaymentHandler::class,
+            $authMethod
+        );
+
+        $this->expectException(\RuntimeException::class); // bad method - but this is the actual exception, which got thrown.
+        $this->expectExceptionMessage('missing phone number');
+        $factory->getRequestParameter($struct);
     }
 
     protected static function authorizeActions(): array

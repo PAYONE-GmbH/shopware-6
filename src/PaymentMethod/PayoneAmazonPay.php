@@ -19,7 +19,7 @@ class PayoneAmazonPay extends AbstractPaymentMethod
 
     protected string $paymentHandler = PayoneAmazonPayPaymentHandler::class;
 
-    protected ?string $template = null;
+    protected ?string $template = '@PayonePayment/storefront/payone/amazon-pay/amazon-pay-form.html.twig';
 
     protected array $translations = [
         'de-DE' => [

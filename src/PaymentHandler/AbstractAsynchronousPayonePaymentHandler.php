@@ -114,7 +114,7 @@ abstract class AbstractAsynchronousPayonePaymentHandler extends AbstractPayonePa
             $this->deviceFingerprintService->deleteDeviceIdentToken();
         }
 
-        return $this->getRedirectResponse($request, $response);
+        return $this->getRedirectResponse($salesChannelContext, $request, $response);
     }
 
     public function finalize(
@@ -156,7 +156,7 @@ abstract class AbstractAsynchronousPayonePaymentHandler extends AbstractPayonePa
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
     }
 
-    protected function getRedirectResponse(array $request, array $response): RedirectResponse
+    protected function getRedirectResponse(SalesChannelContext $context, array $request, array $response): RedirectResponse
     {
         return new RedirectResponse($response['redirecturl']);
     }

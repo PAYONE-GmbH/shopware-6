@@ -579,6 +579,7 @@
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\Amazon\AuthorizeRequestParameterBuilder">
             <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+            <argument key="$customerRepository" type="service" id="customer.repository" />
             <tag name="payone_request_builder"/>
         </service>
 
