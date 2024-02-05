@@ -101,7 +101,7 @@
             },
             "consentCheckbox": {
                 "introduction": "Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an die payolution GmbH, Am Euro Platz 2, 1120 Wien bin ich einverstanden.",
-                "textWithLink": "Meine <a href=\"%link%\" data-url=\"%link%\" data-modal-class=\"payolution\" data-toggle=\"modal\" title=\"Einwilligung\">Einwilligung</a> kann ich jederzeit mit Wirkung für die Zukunft wiederrufen."
+                "textWithLink": "Meine <a data-toggle=\"modal\" data-bs-toggle=\"modal\" data-url=\"%link%\" href=\"%link%\" title=\"Einwilligung\">Einwilligung</a> kann ich jederzeit mit Wirkung für die Zukunft wiederrufen."
             },
             "mandateCheckbox": {
                 "textWithLink": "Hiermit erteile ich das <a href=\"%link%\" target=\"_blank\" title=\"Paysafe Pay Later SEPA-Mandat\">SEPA-Lastschriftmandat</a>."
