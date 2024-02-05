@@ -5,7 +5,7 @@ import PayonePaymentPayolutionInstallment from './payolution-installment/payone-
 import PayonePaymentApplePay from "./apple-pay/payone-payment.apple-pay";
 import PayonePaymentRatepayInstallment from "./ratepay-installment/payone-payment.ratepay-installment";
 import PayonePaymentKlarna from "./klarna/payone-payment.klarna";
-import "./amazon-pay-express";
+import "./amazon-pay";
 
 const PluginManager = window.PluginManager;
 

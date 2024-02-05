@@ -1,0 +1,19 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_header %}{% endblock %}
+{% block base_navigation %}{% endblock %}
+{% block base_offcanvas_navigation %}{% endblock %}
+{% block base_footer %}{% endblock %}
+{% block base_scroll_up %}{% endblock %}
+{% block base_cookie_permission %}{% endblock %}
+{% block base_pseudo_modal %}{% endblock %}
+
+{% block base_content %}
+    {% block page_payone_amazon_pay_redirect_content %}
+        {% sw_include '@PayonePayment/storefront/payone/amazon-pay/amazon-redirect.html.twig' with {
+            location: 'redirect',
+            buttonConfiguration: amazonPayButtonConfiguration,
+            checkoutInit: true
+        } %}
+    {% endblock %}
+{% endblock %}

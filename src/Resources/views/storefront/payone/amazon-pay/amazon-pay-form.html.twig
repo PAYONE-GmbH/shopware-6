@@ -1,0 +1,19 @@
+<div class="payone-payment amazon-pay">
+    {% block page_checkout_confirm_payone_card_title_amazon_pay %}
+        <div class="card-title mb-2">
+            {{ "PayonePayment.checkoutConfirmPage.defaultCardTitle" | trans }}
+        </div>
+    {% endblock %}
+
+    {% block page_checkout_confirm_payone_card_content_amazon_pay %}
+        {% set customerCustomFields = context.customer.customFields %}
+
+        <div class="card">
+            <fieldset>
+                {% sw_include '@PayonePayment/storefront/payone/phone-number-input.html.twig' with {
+                    showAlways: true
+                } %}
+            </fieldset>
+        </div>
+    {% endblock %}
+</div>

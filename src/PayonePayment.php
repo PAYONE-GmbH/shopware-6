@@ -109,12 +109,13 @@ class PayonePayment extends Plugin
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
 
-        $connection->executeStatement('DROP TABLE payone_payment_card');
-        $connection->executeStatement('DROP TABLE payone_payment_redirect');
-        $connection->executeStatement('DROP TABLE payone_payment_mandate');
-        $connection->executeStatement('DROP TABLE payone_payment_notification_forward');
-        $connection->executeStatement('DROP TABLE payone_payment_notification_target');
-        $connection->executeStatement('DROP TABLE payone_payment_order_transaction_data');
+        $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_card');
+        $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_redirect');
+        $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_mandate');
+        $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_notification_forward');
+        $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_notification_target');
+        $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_order_transaction_data');
+        $connection->executeStatement('DROP TABLE IF EXISTS payone_amazon_redirect');
     }
 
     public function executeComposerCommands(): bool

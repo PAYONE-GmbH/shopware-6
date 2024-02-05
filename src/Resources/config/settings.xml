@@ -4792,6 +4792,13 @@
         </input-field>
 
         <input-field>
+            <name>amazonPayAmazonMerchantId</name>
+            <label>Amazon Merchant ID</label>
+            <helpText>This is not the same Merchant ID as the PAYONE merchant ID. This merchant ID is a separate ID.</helpText>
+            <helpText lang="de-DE">Dies ist nicht die PAYONE Händler ID. Diese Händler ID ist eine zusätzliche ID.</helpText>
+        </input-field>
+
+        <input-field>
             <name>amazonPayStoreName</name>
             <label>Merchant store name</label>
             <helpText>Setting this parameter will override the default value configured in Seller Central (US, EU, JP). The store name is shared in buyer communication and in the buyer transaction history on the Amazon Pay website. (max. length: 50)</helpText>

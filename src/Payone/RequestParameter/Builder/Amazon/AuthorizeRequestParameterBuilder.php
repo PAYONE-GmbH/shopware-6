@@ -9,12 +9,14 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\PaymentHandler\PayoneAmazonPayPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class AuthorizeRequestParameterBuilder extends AbstractAmazonRequestParameterBuilder
 {
     public function __construct(
-        private readonly ConfigReaderInterface $configReader
+        private readonly ConfigReaderInterface $configReader,
+        protected readonly EntityRepository $customerRepository
     ) {
     }
 
@@ -23,14 +25,23 @@ class AuthorizeRequestParameterBuilder extends AbstractAmazonRequestParameterBui
      */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        return [
+        $parameters = [
             'request' => $arguments->getAction(),
             'clearingtype' => self::CLEARING_TYPE,
             'wallettype' => self::WALLET_TYPE,
             'add_paydata[storename]' => $this->getStoreName($arguments->getSalesChannelContext(), $arguments->getPaymentMethod()),
-            'add_paydata[checkoutMode]' => 'PlaceOrder',
+            'add_paydata[checkoutMode]' => 'ProcessOrder',
             'add_paydata[productType]' => 'PayAndShip',
         ];
+
+        $this->applyPhoneParameter(
+            $arguments->getPaymentTransaction()->getOrder(),
+            $parameters,
+            $arguments->getRequestData(),
+            $arguments->getSalesChannelContext()->getContext()
+        );
+
+        return $parameters;
     }
 
     public function supports(AbstractRequestParameterStruct $arguments): bool

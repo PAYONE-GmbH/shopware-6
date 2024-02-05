@@ -148,7 +148,7 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
         }
     }
 
-    protected function getRedirectResponse(array $request, array $response): RedirectResponse
+    protected function getRedirectResponse(SalesChannelContext $context, array $request, array $response): RedirectResponse
     {
         if (strtolower((string) $response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);

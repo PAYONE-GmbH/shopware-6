@@ -17,7 +17,7 @@
 
     {% block page_checkout_payone_amazonpay_express_button %}
         {% if page.extensions.payoneAmazonPayExpressButton %}
-            {% sw_include '@PayonePayment/storefront/component/checkout/amazon-pay-express-button.html.twig' with {
+            {% sw_include '@PayonePayment/storefront/payone/amazon-pay/amazon-pay-express-button.html.twig' with {
                 location: 'cart',
                 buttonConfiguration: page.extensions.payoneAmazonPayExpressButton
             } %}

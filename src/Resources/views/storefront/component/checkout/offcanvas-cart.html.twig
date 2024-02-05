@@ -15,7 +15,7 @@
 
     {% if page.extensions.payoneAmazonPayExpressButton %}
         {% block utilities_offcanvas_payone_amazonpay_express_button %}
-            {% sw_include '@PayonePayment/storefront/component/checkout/amazon-pay-express-button.html.twig' with {
+            {% sw_include '@PayonePayment/storefront/payone/amazon-pay/amazon-pay-express-button.html.twig' with {
                 location: 'offcanvas',
                 buttonConfiguration: page.extensions.payoneAmazonPayExpressButton
             } %}
