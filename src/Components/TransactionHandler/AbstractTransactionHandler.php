@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\TransactionHandler;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
+use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
@@ -28,7 +29,7 @@ abstract class AbstractTransactionHandler
 
     protected PayoneClientInterface $client;
 
-    protected TransactionDataHandlerInterface $dataHandler;
+    protected TransactionDataHandlerInterface $transactionDataHandler;
 
     protected EntityRepository $transactionRepository;
 
@@ -37,6 +38,8 @@ abstract class AbstractTransactionHandler
     protected PaymentTransaction $paymentTransaction;
 
     protected CurrencyPrecisionInterface $currencyPrecision;
+
+    protected OrderActionLogDataHandlerInterface $orderActionLogDataHandler;
 
     public function handleRequest(ParameterBag $parameterBag, string $action, Context $context): array
     {
@@ -93,10 +96,17 @@ abstract class AbstractTransactionHandler
         try {
             $response = $this->client->request($request);
 
-            $this->dataHandler->logResponse($this->paymentTransaction, $this->context, [
+            $this->transactionDataHandler->logResponse($this->paymentTransaction, $this->context, [
                 'request' => $request,
                 'response' => $response,
             ]);
+
+            $this->orderActionLogDataHandler->createOrderActionLog(
+                $this->paymentTransaction->getOrder(),
+                $request,
+                $response,
+                $this->context
+            );
 
             return [
                 new JsonResponse(['status' => true]),
@@ -141,8 +151,8 @@ abstract class AbstractTransactionHandler
             }
         }
 
-        $this->dataHandler->incrementSequenceNumber($this->paymentTransaction, $transactionData);
-        $this->dataHandler->saveTransactionData($this->paymentTransaction, $this->context, $transactionData);
+        $this->transactionDataHandler->incrementSequenceNumber($this->paymentTransaction, $transactionData);
+        $this->transactionDataHandler->saveTransactionData($this->paymentTransaction, $this->context, $transactionData);
     }
 
     protected function saveOrderLineItemData(array $orderLines, Context $context): void

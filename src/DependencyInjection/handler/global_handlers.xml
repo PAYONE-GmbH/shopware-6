@@ -9,6 +9,7 @@
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface" />
             <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="order_line_item.repository" />
@@ -19,6 +20,7 @@
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface" />
             <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService" />
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="order_line_item.repository" />
@@ -37,6 +39,17 @@
         </service>
         <service id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" alias="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler"/>
 
+        <service id="PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandler">
+            <argument type="service" id="payone_payment_order_action_log.repository" />
+            <argument type="service" id="PayonePayment\Util\Logger" />
+        </service>
+        <service id="PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface" alias="PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandler"/>
+
+        <service id="PayonePayment\Components\DataHandler\WebhookLog\WebhookLogDataHandler">
+            <argument type="service" id="payone_payment_webhook_log.repository" />
+            <argument type="service" id="PayonePayment\Util\Logger" />
+        </service>
+        <service id="PayonePayment\Components\DataHandler\WebhookLog\WebhookLogDataHandlerInterface" alias="PayonePayment\Components\DataHandler\WebhookLog\WebhookLogDataHandler"/>
 
         <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler">
             <argument type="service" id="translator" />

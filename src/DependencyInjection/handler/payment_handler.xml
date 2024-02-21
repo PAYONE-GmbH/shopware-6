@@ -15,7 +15,8 @@
                  abstract="true">
             <argument key="$client" type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument key="$translator" type="service" id="translator" />
-            <argument key="$dataHandler" type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument key="$transactionDataHandler" type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
+            <argument key="$orderActionLogDataHandler" type="service" id="PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface" />
             <argument key="$stateHandler" type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
             <argument key="$requestParameterFactory" type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory"/>
         </service>
@@ -25,7 +26,8 @@
                  abstract="true">
             <argument key="$client" type="service" id="PayonePayment\Payone\Client\PayoneClient" />
             <argument key="$translator" type="service" id="translator" />
-            <argument key="$dataHandler" type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument key="$transactionDataHandler" type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
+            <argument key="$orderActionLogDataHandler" type="service" id="PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface" />
             <argument key="$requestParameterFactory" type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory"/>
         </service>
 

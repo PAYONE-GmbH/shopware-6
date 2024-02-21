@@ -1,5 +1,26 @@
 {% block sw_order_detail_payone %}
-<div class="sw-order-detail-payone" v-if="order">
-    <payone-payment-management :order="order" @reload-entity-data="reloadEntityData"></payone-payment-management>
-</div>
+    <div class="sw-order-detail-payone" v-if="order">
+        {% block sw_order_detail_payone_general %}
+            <payone-payment-management
+                    :order="order"
+                    @reload-entity-data="reloadEntityData"
+            />
+        {% endblock %}
+
+        {% block sw_order_detail_payone_order_action_log %}
+            <payone-payment-order-action-log
+                    ref="payoneOrderActionLogs"
+                    :order="order"
+                    @reload-entity-data="reloadEntityData"
+            />
+        {% endblock %}
+
+        {% block sw_order_detail_payone_webhook_log %}
+            <payone-payment-webhook-log
+                    ref="payoneWebhookLogs"
+                    :order="order"
+                    @reload-entity-data="reloadEntityData"
+            />
+        {% endblock %}
+    </div>
 {% endblock %}

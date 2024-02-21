@@ -56,7 +56,7 @@ class PayonePaypalExpressPaymentHandler extends AbstractAsynchronousPayonePaymen
             'workOrderId' => $dataBag->get('workorder'),
         ]);
 
-        $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
     }
 
     protected function getRedirectResponse(array $request, array $response): RedirectResponse

@@ -1,0 +1,85 @@
+{% block payone_payment_order_action_log %}
+    <sw-card
+            class="payone-payment-order-action-log-card"
+            position-identifier="payone-payment-order-action-log-card"
+            :title="$tc('sw-order.payone-payment.orderActionLog.cardTitle')"
+    >
+        <sw-data-grid
+                v-if="orderActionLogs.length > 0"
+                :showSelection="false"
+                :dataSource="orderActionLogs"
+                :columns="orderActionLogColumns"
+                :isLoading="isLoading"
+        >
+            <template #column-amount="{ item }">
+                {{ (item.amount / 100) | currency(order.currency.isoCode) }}
+            </template>
+
+            <template #column-requestDateTime="{ item }">
+                {{ item.requestDateTime | date }}
+            </template>
+
+            <template #actions="{ item }">
+                <sw-context-menu-item @click="openRequest(item)">
+                    {{ $tc('sw-order.payone-payment.orderActionLog.contextMenu.openRequestDetails') }}
+                </sw-context-menu-item>
+                <sw-context-menu-item @click="openResponse(item)">
+                    {{ $tc('sw-order.payone-payment.orderActionLog.contextMenu.openResponseDetails') }}
+                </sw-context-menu-item>
+            </template>
+
+            <template #action-modals="{ item }">
+                <sw-modal
+                        v-if="showRequestDetails"
+                        :title="$tc('sw-order.payone-payment.orderActionLog.requestDetailsModal.title')"
+                        variant="large"
+                        @modal-close="onCloseRequestModal"
+                >
+                    <sw-button variant="primary" @click="downloadAsTxt(showRequestDetails, 'request', item.transactionId)">
+                        {{ $tc('sw-order.payone-payment.orderActionLog.requestDetailsModal.downloadButton') }}
+                    </sw-button>
+                    <sw-data-grid
+                            :showSelection="false"
+                            :showActions="false"
+                            :dataSource="toKeyValueSource(showRequestDetails)"
+                            :columns="keyValueColumns"
+                            :isLoading="isLoading"
+                    >
+                    </sw-data-grid>
+                </sw-modal>
+                <sw-modal
+                        v-if="showResponseDetails"
+                        :title="$tc('sw-order.payone-payment.orderActionLog.responseDetailsModal.title')"
+                        variant="large"
+                        @modal-close="onCloseResponseModal"
+                >
+                    <sw-button variant="primary" @click="downloadAsTxt(showResponseDetails, 'response', item.transactionId)">
+                        {{ $tc('sw-order.payone-payment.orderActionLog.responseDetailsModal.downloadButton') }}
+                    </sw-button>
+                    <sw-data-grid
+                            :showSelection="false"
+                            :showActions="false"
+                            :dataSource="toKeyValueSource(showResponseDetails)"
+                            :columns="keyValueColumns"
+                            :isLoading="isLoading"
+                    >
+                    </sw-data-grid>
+                </sw-modal>
+            </template>
+        </sw-data-grid>
+
+        <sw-empty-state
+                v-else
+                :absolute="false"
+                :title="$tc('sw-order.payone-payment.orderActionLog.emptyState.title')"
+                :subline="$tc('sw-order.payone-payment.orderActionLog.emptyState.subline')"
+        >
+            <template #icon>
+                <img
+                        :src="'/administration/static/img/empty-states/order-empty-state.svg' | asset"
+                        :alt="$tc('sw-order.payone-payment.orderActionLog.emptyState.title')"
+                >
+            </template>
+        </sw-empty-state>
+    </sw-card>
+{% endblock %}

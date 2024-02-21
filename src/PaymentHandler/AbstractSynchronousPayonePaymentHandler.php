@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\DeviceFingerprint\AbstractDeviceFingerprintService;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
@@ -29,7 +30,8 @@ abstract class AbstractSynchronousPayonePaymentHandler extends AbstractPayonePay
         RequestStack $requestStack,
         protected readonly PayoneClientInterface $client,
         protected readonly TranslatorInterface $translator,
-        protected readonly TransactionDataHandlerInterface $dataHandler,
+        protected readonly TransactionDataHandlerInterface $transactionDataHandler,
+        protected readonly OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
         protected readonly RequestParameterFactory $requestParameterFactory,
         protected readonly ?AbstractDeviceFingerprintService $deviceFingerprintService = null
     ) {
@@ -97,6 +99,13 @@ abstract class AbstractSynchronousPayonePaymentHandler extends AbstractPayonePay
             $salesChannelContext
         );
 
+        $this->orderActionLogDataHandler->createOrderActionLog(
+            $transaction->getOrder(),
+            $request,
+            $response,
+            $salesChannelContext->getContext()
+        );
+
         if ($this->deviceFingerprintService instanceof AbstractDeviceFingerprintService) {
             $this->deviceFingerprintService->deleteDeviceIdentToken();
         }
@@ -130,6 +139,6 @@ abstract class AbstractSynchronousPayonePaymentHandler extends AbstractPayonePay
             $this->getAdditionalTransactionData($dataBag, $request, $response)
         );
 
-        $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
     }
 }

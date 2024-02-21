@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
@@ -37,7 +38,8 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
         RequestStack $requestStack,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
+        TransactionDataHandlerInterface $transactionDataHandler,
+        OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
         PaymentStateHandlerInterface $stateHandler,
         RequestParameterFactory $requestParameterFactory,
         protected CardRepositoryInterface $cardRepository
@@ -48,7 +50,8 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
             $requestStack,
             $client,
             $translator,
-            $dataHandler,
+            $transactionDataHandler,
+            $orderActionLogDataHandler,
             $stateHandler,
             $requestParameterFactory
         );
@@ -138,7 +141,7 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
                 'card_type' => $cardType,
             ],
         ]);
-        $this->dataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+        $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
 
         if ($paymentTransaction->getOrder()->getLineItems() !== null) {
             $this->setLineItemCustomFields($paymentTransaction->getOrder()->getLineItems(), $salesChannelContext->getContext());

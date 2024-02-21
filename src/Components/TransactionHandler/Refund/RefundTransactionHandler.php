@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\TransactionHandler\Refund;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
+use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
@@ -26,7 +27,8 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
     public function __construct(
         RequestParameterFactory $requestFactory,
         PayoneClientInterface $client,
-        TransactionDataHandlerInterface $dataHandler,
+        TransactionDataHandlerInterface $transactionDataHandler,
+        OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
         private readonly TransactionStatusServiceInterface $transactionStatusService,
         EntityRepository $transactionRepository,
         EntityRepository $lineItemRepository,
@@ -34,7 +36,8 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
     ) {
         $this->requestFactory = $requestFactory;
         $this->client = $client;
-        $this->dataHandler = $dataHandler;
+        $this->transactionDataHandler = $transactionDataHandler;
+        $this->orderActionLogDataHandler = $orderActionLogDataHandler;
         $this->transactionRepository = $transactionRepository;
         $this->lineItemRepository = $lineItemRepository;
         $this->currencyPrecision = $currencyPrecision;

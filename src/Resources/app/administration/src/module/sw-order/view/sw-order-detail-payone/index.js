@@ -21,6 +21,8 @@ export default {
 
     methods: {
         reloadEntityData() {
+            this.$refs.payoneOrderActionLogs.reloadActionLogs();
+            this.$refs.payoneWebhookLogs.reloadWebhookLogs();
             this.$emit('reload-entity-data');
         },
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\MandateService\MandateServiceInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
@@ -29,7 +30,8 @@ class PayoneDebitPaymentHandler extends AbstractSynchronousPayonePaymentHandler
         RequestStack $requestStack,
         PayoneClientInterface $client,
         TranslatorInterface $translator,
-        TransactionDataHandlerInterface $dataHandler,
+        TransactionDataHandlerInterface $transactionDataHandler,
+        OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
         RequestParameterFactory $requestParameterFactory,
         protected MandateServiceInterface $mandateService
     ) {
@@ -39,7 +41,8 @@ class PayoneDebitPaymentHandler extends AbstractSynchronousPayonePaymentHandler
             $requestStack,
             $client,
             $translator,
-            $dataHandler,
+            $transactionDataHandler,
+            $orderActionLogDataHandler,
             $requestParameterFactory
         );
     }

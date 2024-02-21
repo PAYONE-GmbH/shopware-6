@@ -12,9 +12,17 @@
 
         <service id="PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler">
             <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService"/>
-            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
             <argument type="service" id="PayonePayment\Util\Logger" />
             <argument type="service" id="PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureServiceInterface" />
+
+            <tag name="payone.webhook.handler" />
+        </service>
+
+        <service id="PayonePayment\Payone\Webhook\Handler\WebhookLogHandler">
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\WebhookLog\WebhookLogDataHandlerInterface" />
+            <argument type="service" id="PayonePayment\Util\Logger" />
 
             <tag name="payone.webhook.handler" />
         </service>
@@ -22,7 +30,7 @@
         <service id="PayonePayment\Payone\Webhook\Handler\NotificationForwardHandler">
             <argument type="service" id="payone_payment_notification_target.repository"/>
             <argument type="service" id="payone_payment_notification_forward.repository" />
-            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
             <argument type="service" id="messenger.bus.shopware"/>
 
             <tag name="payone.webhook.handler" />
