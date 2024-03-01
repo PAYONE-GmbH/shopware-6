@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
+use PayonePayment\Components\PaymentFilter\Exception\PaymentMethodNotAllowedException;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector;
 
 class KlarnaPaymentMethodFilter extends DefaultPaymentFilterService
 {
-    public function filterPaymentMethods(PaymentMethodCollection $methodCollection, PaymentFilterContext $filterContext): PaymentMethodCollection
+    protected function additionalChecks(PaymentMethodCollection $methodCollection, PaymentFilterContext $filterContext): void
     {
-        $methodCollection = parent::filterPaymentMethods($methodCollection, $filterContext);
-
         if ($this->hasCustomProducts($filterContext)) {
-            $methodCollection = $this->removePaymentMethod($methodCollection);
+            throw new PaymentMethodNotAllowedException('PAYONE does not support custom products within Klarna payments');
         }
-
-        return $methodCollection;
     }
 
     private function hasCustomProducts(PaymentFilterContext $filterContext): bool

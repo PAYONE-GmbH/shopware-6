@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
+use PayonePayment\Components\PaymentFilter\Exception\PaymentMethodNotAllowedException;
 use PayonePayment\Core\Utils\AddressCompare;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -11,24 +12,19 @@ use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 
 class PayoneBNPLPaymentMethodFilter extends DefaultPaymentFilterService
 {
-    public function filterPaymentMethods(PaymentMethodCollection $methodCollection, PaymentFilterContext $filterContext): PaymentMethodCollection
+    protected function additionalChecks(PaymentMethodCollection $methodCollection, PaymentFilterContext $filterContext): void
     {
-        $methodCollection = parent::filterPaymentMethods($methodCollection, $filterContext);
-
         $billingAddress = $filterContext->getBillingAddress();
         $shippingAddress = $filterContext->getShippingAddress();
 
-        // Different billing and shipping addresses are not allowed for secured invoice
         if ($billingAddress instanceof OrderAddressEntity
             && $shippingAddress instanceof OrderAddressEntity
             && !AddressCompare::areOrderAddressesIdentical($billingAddress, $shippingAddress)) {
-            $methodCollection = $this->removePaymentMethod($methodCollection);
+            throw new PaymentMethodNotAllowedException('Different billing and shipping addresses are not allowed for secured invoice');
         } elseif ($billingAddress instanceof CustomerAddressEntity
             && $shippingAddress instanceof CustomerAddressEntity
             && !AddressCompare::areCustomerAddressesIdentical($billingAddress, $shippingAddress)) {
-            $methodCollection = $this->removePaymentMethod($methodCollection);
+            throw new PaymentMethodNotAllowedException('Different billing and shipping addresses are not allowed for secured invoice');
         }
-
-        return $methodCollection;
     }
 }
