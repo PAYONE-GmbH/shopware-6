@@ -33,13 +33,19 @@ class ResendNotifyHandler
 
         /** @var PayonePaymentNotificationQueueEntity $notification */
         foreach ($notificationQueue as $notification) {
-            $messageDecode = base64_decode($notification->getMessage() ?: '', true);
-            /** @var NotificationForwardCommand $message */
-            $message = unserialize($messageDecode, []);
+            $messageDecode = null;
+            if ($notification->getMessage() !== null) {
+                $messageDecode = base64_decode($notification->getMessage(), true);
+            }
+            if ($messageDecode !== null) {
+                /** @var NotificationForwardCommand $message */
+                $message = unserialize($messageDecode, []);
 
-            $this->notificationForwardHandler->handle($message, true);
-            $this->notificationQueueRepository->delete([['id' => $notification->getId()]], Context::createDefaultContext());
+                $this->notificationForwardHandler->handle($message, true);
+                $this->notificationQueueRepository->delete([['id' => $notification->getId()]], Context::createDefaultContext());
+            }
         }
+
         echo 'current time: ' . $currentDate->format(Defaults::STORAGE_DATE_TIME_FORMAT) . "\n";
     }
 }
