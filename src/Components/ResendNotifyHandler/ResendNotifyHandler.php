@@ -35,7 +35,7 @@ class ResendNotifyHandler
         foreach ($notificationQueue as $notification) {
             $messageDecode = null;
             if ($notification->getMessage() !== null) {
-                $messageDecode = base64_decode($notification->getMessage(), true);
+                $messageDecode = base64_decode($notification->getMessage());
             }
             if ($messageDecode !== null) {
                 /** @var NotificationForwardCommand $message */
