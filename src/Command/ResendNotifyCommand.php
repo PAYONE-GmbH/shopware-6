@@ -2,10 +2,10 @@
 
 namespace PayonePayment\Command;
 
+use PayonePayment\Components\ResendNotifyHandler\ResendNotifyHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use PayonePayment\Components\ResendNotifyHandler\ResendNotifyHandler;
 
 class ResendNotifyCommand extends Command
 {
@@ -13,8 +13,7 @@ class ResendNotifyCommand extends Command
 
     public function __construct(
         private readonly ResendNotifyHandler $resendNotifyHandler
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -22,7 +21,6 @@ class ResendNotifyCommand extends Command
     {
         $this->setDescription('Send notification forwarding queue');
     }
-
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

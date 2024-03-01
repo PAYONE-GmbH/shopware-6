@@ -53,12 +53,12 @@ class PayonePaymentNotificationQueueEntity extends Entity
         $this->message = $message;
     }
 
-    public function getLastExecutionTime(): ?\DateTimeInterface
+    public function getLastExecutionTime(): \DateTimeInterface
     {
         return $this->lastExecutionTime;
     }
 
-    public function setLastExecutionTime(?\DateTimeInterface $lastExecutionTime): void
+    public function setLastExecutionTime(\DateTimeInterface $lastExecutionTime): void
     {
         $this->lastExecutionTime = $lastExecutionTime;
     }

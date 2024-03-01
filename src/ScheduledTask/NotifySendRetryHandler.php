@@ -10,7 +10,6 @@ use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
 
 class NotifySendRetryHandler extends ScheduledTaskHandler
 {
-
     public function __construct(
         EntityRepository $scheduledTaskRepository,
         private readonly ResendNotifyHandler $resendNotifyHandler

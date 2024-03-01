@@ -18,7 +18,6 @@ use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
 class NotificationForwardHandler implements MessageSubscriberInterface
 {
-
     public function __construct(
         private readonly EntityRepository $notificationForwardRepository,
         private readonly EntityRepository $notificationQueueRepository,
@@ -61,8 +60,11 @@ class NotificationForwardHandler implements MessageSubscriberInterface
             $responseInfo = curl_getinfo($handle);
             $responseContent = curl_multi_getcontent($handle);
             $this->statusLogger($responseInfo, $responseContent, $id);
-            if(!$isResendMessage) {
-                $this->createNotificationQueue($responseInfo, $message, $id, $notificationForwards->get($id));
+            if (!$isResendMessage) {
+                $notificationForward = $notificationForwards->get($id);
+                if ($notificationForward instanceof PayonePaymentNotificationForwardEntity) {
+                    $this->createNotificationQueue($responseInfo, $message, $id, $notificationForward);
+                }
             }
 
             curl_multi_remove_handle($multiHandle, $handle);
@@ -135,6 +137,7 @@ class NotificationForwardHandler implements MessageSubscriberInterface
 
             if (!\is_array($content)) {
                 $this->logger->error('Could not convert content to array', ['id' => $id]);
+
                 continue;
             }
 
@@ -170,16 +173,17 @@ class NotificationForwardHandler implements MessageSubscriberInterface
         return $headers;
     }
 
-    private function createNotificationQueue($responseInfo, $message, $notificationForwardId, $forwardRequest): void
+    private function createNotificationQueue(array $responseInfo, NotificationForwardCommand $message, string $notificationForwardId, PayonePaymentNotificationForwardEntity $notificationForward): void
     {
         $this->logger->info('Creating notification queue', ['id' => $notificationForwardId]);
 
-        $resendNotificationStatus = $forwardRequest->getNotificationTarget()?->getResendNotificationStatus();
-        if (!in_array($responseInfo['http_code'], $resendNotificationStatus, true)) {
+
+        $resendNotificationStatus = $notificationForward->getNotificationTarget()?->getResendNotificationStatus() ?? [];
+        if (!\in_array($responseInfo['http_code'], $resendNotificationStatus, true)) {
             return;
         }
 
-        $resendNotificationTime = $forwardRequest->getNotificationTarget()?->getResendNotificationTime();
+        $resendNotificationTime = $notificationForward->getNotificationTarget()?->getResendNotificationTime();
 
         if ($resendNotificationTime === null) {
             return;
@@ -188,6 +192,7 @@ class NotificationForwardHandler implements MessageSubscriberInterface
         foreach ($resendNotificationTime as $time) {
             $nextExecutionTime = new \DateTime();
             $nextExecutionTime->modify("+$time minutes");
+
             try {
                 $this->notificationQueueRepository->create([
                     [
@@ -198,11 +203,11 @@ class NotificationForwardHandler implements MessageSubscriberInterface
                         'nextExecutionTime' => $nextExecutionTime,
                     ],
                 ], $message->getContext());
-            }catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('Could not create notification queue', [
                     'notificationForwardId' => $notificationForwardId,
                     'nextExecutionTime' => $nextExecutionTime->format('Y-m-d H:i:s'),
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ]);
             }
         }
