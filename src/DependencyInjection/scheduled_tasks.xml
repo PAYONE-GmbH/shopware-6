@@ -14,5 +14,15 @@
             <argument type="service" id="PayonePayment\Util\Logger" />
             <tag name="messenger.message_handler" />
         </service>
+
+        <service id="PayonePayment\ScheduledTask\NotifySendRetry">
+            <tag name="shopware.scheduled.task" />
+        </service>
+
+        <service id="PayonePayment\ScheduledTask\NotifySendRetryHandler">
+            <argument type="service" id="scheduled_task.repository" />
+            <argument type="service" id="PayonePayment\Components\ResendNotifyHandler\ResendNotifyHandler"/>
+            <tag name="messenger.message_handler" />
+        </service>
     </services>
 </container>

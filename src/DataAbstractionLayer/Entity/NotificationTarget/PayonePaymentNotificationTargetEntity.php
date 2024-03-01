@@ -17,8 +17,13 @@ class PayonePaymentNotificationTargetEntity extends Entity
 
     protected array $txactions;
 
-    protected ?string $username = null;
+    protected bool $resendNotification;
 
+    protected array $resendNotificationTime;
+
+    protected array $resendNotificationStatus;
+
+    protected ?string $username = null;
     protected ?string $password = null;
 
     public function getUrl(): string
@@ -70,4 +75,34 @@ class PayonePaymentNotificationTargetEntity extends Entity
     {
         $this->password = $password;
     }
+
+    public function getResendNotification(): bool
+    {
+        return $this->resendNotification;
+    }
+
+    public function setResendNotification(bool $resendNotification): void
+    {
+        $this->resendNotification = $resendNotification;
+    }
+
+    public function setResendNotificationTime(array $resendNotificationTime): void
+    {
+        $this->resendNotificationTime = $resendNotificationTime;
+    }
+    public function getResendNotificationTime(): array
+    {
+        return $this->resendNotificationTime;
+    }
+
+    public function setResendNotificationStatus(array $resendNotificationStatus): void
+    {
+        $this->resendNotificationStatus = $resendNotificationStatus;
+    }
+
+    public function getResendNotificationStatus(): array
+    {
+        return $this->resendNotificationStatus;
+    }
+
 }

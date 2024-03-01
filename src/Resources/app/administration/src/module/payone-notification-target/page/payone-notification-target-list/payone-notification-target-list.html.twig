@@ -73,6 +73,15 @@
                                     {{ renderTxactions(item.txactions) }}
                                 </template>
                             {% endblock %}
+
+                            {% block payone_notification_target_list_grid_columns_is_resend_notification %}
+                                <template #column-resendNotification="{ item }">
+                                    <sw-icon v-if="item.resendNotification" name="regular-checkmark-xs" small class="is--active"></sw-icon>
+                                    <sw-icon v-else name="regular-times-s" small class="is--inactive"></sw-icon>
+                                </template>
+                            {% endblock %}
+
+
                         {% endblock %}
                     </sw-entity-listing>
                 {% endblock %}

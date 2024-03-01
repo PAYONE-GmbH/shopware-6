@@ -20,6 +20,10 @@
             <tag name="shopware.entity.definition" entity="payone_payment_notification_forward"/>
         </service>
 
+        <service id="PayonePayment\DataAbstractionLayer\Entity\NotificationQueue\PayonePaymentNotificationQueueDefinition">
+            <tag name="shopware.entity.definition" entity="payone_payment_notification_queue"/>
+        </service>
+
         <service id="PayonePayment\DataAbstractionLayer\Entity\OrderActionLog\PayonePaymentOrderActionLogDefinition">
             <tag name="shopware.entity.definition" entity="payone_payment_order_action_log"/>
         </service>

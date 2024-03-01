@@ -21,16 +21,30 @@
                     "url": "Url",
                     "isBasicAuth": "Basic Auth",
                     "txactions": "txactions",
+                    "resendNotification": "Benachrichtigung erneut senden",
+                    "resendNotificationTime": "Zeit für erneutes Senden der Benachrichtigung",
+                    "resendNotificationStatus": "Benachrichtigung erneut senden, wenn Status gleich:",
                     "buttonSave": "Speichern",
                     "buttonCancel": "Abbrechen",
                     "username": "Benutzer",
                     "password": "Passwort"
+                },
+                "resendNotificationTimeValues": {
+                    "xMinutes": "{Wert} Minuten",
+                    "xHour": "{Wert} Stunde",
+                    "xHours": "{Wert} Stunden"
+                },
+                "messages": {
+                    "notificationSaveErrorMessageRequiredUserPassInvalid": "Bitte geben Sie einen gültigen Benutzernamen und ein gültiges Passwort ein.",
+                    "notificationSaveErrorMessageRequiredResendNotificationTimeInvalid": "Bitte geben Sie eine Zeit für erneutes Senden der Benachrichtigung ein.",
+                    "notificationSaveErrorMessageRequiredResendNotificationStatusInvalid": "Bitte geben Sie einen Status für erneutes Senden der Benachrichtigung ein."
                 }
             },
             "columns": {
                 "url": "Url",
                 "isBasicAuth": "Basic Auth",
-                "txactions": "txactions"
+                "txactions": "txactions",
+                "resendNotification": "Benachrichtigung erneut senden",
             },
             "actions": {
                 "requeue": "Erneut senden"

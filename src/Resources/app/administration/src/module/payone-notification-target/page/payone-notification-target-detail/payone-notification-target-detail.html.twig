@@ -41,7 +41,6 @@
                                           columns="repeat(auto-fit, minmax(250px, 1fr))"
                                           gap="0 30px">
                                 <div class="payone-notification-target-detail__base-info-wrapper">
-
                                     {% block payone_notification_target_detail_base_info_field_url %}
                                         <sw-field type="text"
                                                   :label="$tc('payonePayment.notificationTarget.detail.label.url')"
@@ -100,6 +99,43 @@
                                             ]"
                                             @change="updateSelection"
                                             :value="notificationTarget.txactions">
+                                        </sw-multi-select>
+                                    {% endblock %}
+
+                                    {% block payone_notification_target_detail_base_info_field_is_resend_notification %}
+                                        <sw-checkbox-field :label="$tc('payonePayment.notificationTarget.detail.label.resendNotification')"
+                                                           name="resendNotification"
+                                                           v-model="notificationTarget.resendNotification">
+                                        </sw-checkbox-field>
+                                    {% endblock %}
+
+                                    {% block payone_notification_target_detail_base_info_field_resend_notification_times %}
+                                        <sw-multi-select
+                                                v-if="notificationTarget.resendNotification"
+                                                :label="$tc('payonePayment.notificationTarget.detail.label.resendNotificationTime')"
+                                                :options="[
+                                                { value: 5, label: getTimeValueTranslate(5,'minutes') },
+                                                { value: 10, label: getTimeValueTranslate(10,'minutes') },
+                                                { value: 15, label: getTimeValueTranslate(15,'minutes') },
+                                                { value: 30, label: getTimeValueTranslate(30,'minutes') },
+                                                { value: 60, label: $tc('payonePayment.notificationTarget.detail.resendNotificationTimeValues.xHour',0, { value: '1' }) },
+                                                { value: 120, label: getTimeValueTranslate(2,'hours') },
+                                                { value: 240, label: getTimeValueTranslate(4,'hours') },
+                                                { value: 480, label: getTimeValueTranslate(8,'hours') },
+                                                { value: 720, label: getTimeValueTranslate(12,'hours') },
+                                            ]"
+                                                @change="updateResendNotificationTime"
+                                                :value="notificationTarget.resendNotificationTime">
+                                        </sw-multi-select>
+                                    {% endblock %}
+
+                                    {% block payone_notification_target_detail_base_info_field_resend_notification_status %}
+                                        <sw-multi-select
+                                                v-if="notificationTarget.resendNotification"
+                                                :label="$tc('payonePayment.notificationTarget.detail.label.resendNotificationStatus')"
+                                                :options="resendNotificationOptionValues"
+                                                @change="updateResendNotificationStatus"
+                                                :value="notificationTarget.resendNotificationStatus">
                                         </sw-multi-select>
                                     {% endblock %}
 

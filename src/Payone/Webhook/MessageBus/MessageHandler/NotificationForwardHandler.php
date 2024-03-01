@@ -18,8 +18,10 @@ use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
 class NotificationForwardHandler implements MessageSubscriberInterface
 {
+
     public function __construct(
         private readonly EntityRepository $notificationForwardRepository,
+        private readonly EntityRepository $notificationQueueRepository,
         private readonly Logger $logger
     ) {
     }
@@ -29,7 +31,7 @@ class NotificationForwardHandler implements MessageSubscriberInterface
         $this->handle($message);
     }
 
-    public function handle(NotificationForwardCommand $message): void
+    public function handle(NotificationForwardCommand $message, bool $isResendMessage = false): void
     {
         $notificationForwards = $this->getNotificationForwards($message->getNotificationTargetIds(), $message->getContext());
         $multiHandle = curl_multi_init();
@@ -40,6 +42,7 @@ class NotificationForwardHandler implements MessageSubscriberInterface
 
         if (empty($forwardRequests)) {
             curl_multi_close($multiHandle);
+            $this->logger->error('No notification targets found');
 
             return;
         }
@@ -58,6 +61,10 @@ class NotificationForwardHandler implements MessageSubscriberInterface
             $responseInfo = curl_getinfo($handle);
             $responseContent = curl_multi_getcontent($handle);
             $this->statusLogger($responseInfo, $responseContent, $id);
+            if(!$isResendMessage) {
+                $this->createNotificationQueue($responseInfo, $message, $id, $notificationForwards->get($id));
+            }
+
             curl_multi_remove_handle($multiHandle, $handle);
             curl_close($handle);
         }
@@ -115,6 +122,8 @@ class NotificationForwardHandler implements MessageSubscriberInterface
             $target = $forward->getNotificationTarget();
 
             if ($target === null || empty($target->getUrl())) {
+                $this->logger->error('No target found for notification forward', ['id' => $id]);
+
                 continue;
             }
 
@@ -125,6 +134,7 @@ class NotificationForwardHandler implements MessageSubscriberInterface
             $content = mb_convert_encoding($serialize, 'ISO-8859-1', 'UTF-8');
 
             if (!\is_array($content)) {
+                $this->logger->error('Could not convert content to array', ['id' => $id]);
                 continue;
             }
 
@@ -158,6 +168,44 @@ class NotificationForwardHandler implements MessageSubscriberInterface
         }
 
         return $headers;
+    }
+
+    private function createNotificationQueue($responseInfo, $message, $notificationForwardId, $forwardRequest): void
+    {
+        $this->logger->info('Creating notification queue', ['id' => $notificationForwardId]);
+
+        $resendNotificationStatus = $forwardRequest->getNotificationTarget()?->getResendNotificationStatus();
+        if (!in_array($responseInfo['http_code'], $resendNotificationStatus, true)) {
+            return;
+        }
+
+        $resendNotificationTime = $forwardRequest->getNotificationTarget()?->getResendNotificationTime();
+
+        if ($resendNotificationTime === null) {
+            return;
+        }
+
+        foreach ($resendNotificationTime as $time) {
+            $nextExecutionTime = new \DateTime();
+            $nextExecutionTime->modify("+$time minutes");
+            try {
+                $this->notificationQueueRepository->create([
+                    [
+                        'notificationTargetId' => $notificationForwardId,
+                        'responseHttpCode' => $responseInfo['http_code'],
+                        'message' => base64_encode(serialize($message)),
+                        'lastExecutionTime' => new \DateTime(),
+                        'nextExecutionTime' => $nextExecutionTime,
+                    ],
+                ], $message->getContext());
+            }catch (\Exception $e) {
+                $this->logger->error('Could not create notification queue', [
+                    'notificationForwardId' => $notificationForwardId,
+                    'nextExecutionTime' => $nextExecutionTime->format('Y-m-d H:i:s'),
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
     }
 
     private function statusLogger(array $responseInfo, ?string $responseContent, string $id): void

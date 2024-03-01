@@ -55,5 +55,10 @@
             <argument type="service" id="translator" />
         </service>
         <service id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface" alias="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler"/>
+
+        <service id="PayonePayment\Components\ResendNotifyHandler\ResendNotifyHandler">
+            <argument type="service" id="payone_payment_notification_queue.repository" />
+            <argument type="service" id="PayonePayment\Payone\Webhook\MessageBus\MessageHandler\NotificationForwardHandler" />
+        </service>
     </services>
 </container>

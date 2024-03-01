@@ -21,16 +21,30 @@
                     "url": "Url",
                     "isBasicAuth": "Basic Auth",
                     "txactions": "txactions",
+                    "resendNotification": "Resend notification",
+                    "resendNotificationTime": "Resend notification time",
+                    "resendNotificationStatus": "Resend notification if status equal:",
                     "buttonSave": "Save",
                     "buttonCancel": "Cancel",
                     "username": "Username",
                     "password": "Password"
+                },
+                "resendNotificationTimeValues": {
+                    "xMinutes": "{value} minutes",
+                    "xHour": "{value} hour",
+                    "xHours": "{value} hours"
+                },
+                "messages": {
+                    "notificationSaveErrorMessageRequiredUserPassInvalid": "Please enter a valid username and password.",
+                    "notificationSaveErrorMessageRequiredResendNotificationTimeInvalid": "Please enter a resend notification time.",
+                    "notificationSaveErrorMessageRequiredResendNotificationStatusInvalid": "Please enter a resend notification status."
                 }
             },
             "columns": {
                 "url": "Url",
                 "isBasicAuth": "Basic Auth",
-                "txactions": "txactions"
+                "txactions": "txactions",
+                "resendNotification": "Resend notification"
             },
             "actions": {
                 "requeue": "Requeue"

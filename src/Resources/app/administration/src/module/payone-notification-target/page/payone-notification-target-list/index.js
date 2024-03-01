@@ -45,6 +45,11 @@ export default {
                     property: 'txactions',
                     label: 'payonePayment.notificationTarget.columns.txactions'
                 },
+                {
+                    dataIndex: 'resendNotification',
+                    property: 'resendNotification',
+                    label: 'payonePayment.notificationTarget.columns.resendNotification'
+                },
             ];
         },
         repository() {

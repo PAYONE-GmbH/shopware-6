@@ -42,6 +42,9 @@ class PayonePaymentNotificationTargetDefinition extends EntityDefinition
             (new JsonField('txactions', 'txactions')),
             (new StringField('username', 'username')),
             (new StringField('password', 'password')),
+            (new BoolField('resend_notification', 'resendNotification')),
+            (new JsonField('resend_notification_time', 'resendNotificationTime')),
+            (new JsonField('resend_notification_status', 'resendNotificationStatus')),
         ]);
     }
 }

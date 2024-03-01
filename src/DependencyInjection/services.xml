@@ -17,6 +17,7 @@
         <import resource="webhooks.xml"/>
         <import resource="requestParameter/*.xml"/>
         <import resource="payment_method_filter.xml"/>
+        <import resource="commands.xml"/>
     </imports>
 
     <parameters>
