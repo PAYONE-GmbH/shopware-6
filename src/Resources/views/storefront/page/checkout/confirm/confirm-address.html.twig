@@ -1,0 +1,13 @@
+{% sw_extends '@Storefront/storefront/page/checkout/confirm/confirm-address.html.twig' %}
+
+{% block page_checkout_confirm_address_shipping_actions %}
+    {% if not page.extensions.payone or not page.extensions.payone.preventAddressEdit %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_checkout_confirm_address_billing_actions %}
+    {% if not page.extensions.payone or not page.extensions.payone.preventAddressEdit %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

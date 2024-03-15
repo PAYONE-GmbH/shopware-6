@@ -20,6 +20,7 @@
 
     <import resource="@PayonePayment/Storefront/Controller/Ratepay/RatepayController.php" type="annotation"/>
     <import resource="@PayonePayment/Storefront/Controller/AmazonPay/AmazonRedirectController.php" type="annotation"/>
+    <import resource="@PayonePayment/Storefront/Controller/CheckoutController.php" type="annotation"/>
 
     <!-- Store-Api routes -->
     <import resource="@PayonePayment/StoreApi/Route/CardRoute.php" type="annotation" />

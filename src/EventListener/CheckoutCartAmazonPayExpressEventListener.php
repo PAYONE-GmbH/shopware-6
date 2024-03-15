@@ -27,6 +27,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelPaymentMethod\SalesChannelPaymentMethodDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Checkout\Cart\CheckoutCartPageLoadedEvent;
+use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Offcanvas\OffcanvasCartPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -81,7 +82,7 @@ class CheckoutCartAmazonPayExpressEventListener implements EventSubscriberInterf
                 currency: $event->getSalesChannelContext()->getCurrency(),
                 cart: $event->getPage()->getCart(),
                 flags: [
-                    PaymentFilterContext::FLAG_SKIP_EC_REQUIRED_DATA_VALIDATION => true,
+                    PaymentFilterContext::FLAG_SKIP_EC_REQUIRED_DATA_VALIDATION,
                 ]
             )
         );

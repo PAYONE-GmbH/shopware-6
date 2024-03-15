@@ -154,5 +154,10 @@
             <tag name="controller.service_arguments" />
         </service>
 
+        <service id="PayonePayment\Storefront\Controller\CheckoutController" autowire="true">
+            <argument key="$translator" type="service" id="translator"/>
+            <tag name="controller.service_arguments" />
+        </service>
+
     </services>
 </container>

@@ -1,0 +1,14 @@
+{% sw_extends '@Storefront/storefront/page/checkout/confirm/confirm-payment.html.twig' %}
+
+{% block page_checkout_change_payment_form %}
+    {{ parent() }}
+
+    {% block page_checkout_change_payment_form_payone_back_to_standard_checkout %}
+        {% if page.extensions.payone and page.extensions.payone.showExitExpressCheckoutLink|default(false) %}
+            <div class="card-actions">
+                <a href="{{ url('frontend.payone.delete-checkout-data') }}">{{ 'PayonePayment.checkoutConfirmPage.back-to-standard-checkout' | trans }}</a>
+            </div>
+        {% endif %}
+    {% endblock %}
+
+{% endblock %}

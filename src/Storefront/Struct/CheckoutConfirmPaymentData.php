@@ -25,6 +25,10 @@ class CheckoutConfirmPaymentData extends Struct
 
     protected ?EntitySearchResult $savedMandates = null;
 
+    protected bool $showExitExpressCheckoutLink = false;
+
+    protected bool $preventAddressEdit = false;
+
     public function getCardRequest(): array
     {
         return $this->cardRequest;
@@ -58,5 +62,15 @@ class CheckoutConfirmPaymentData extends Struct
     public function getSavedMandates(): ?EntitySearchResult
     {
         return $this->savedMandates;
+    }
+
+    public function isshowExitExpressCheckoutLink(): bool
+    {
+        return $this->showExitExpressCheckoutLink;
+    }
+
+    public function isPreventAddressEdit(): bool
+    {
+        return $this->preventAddressEdit;
     }
 }

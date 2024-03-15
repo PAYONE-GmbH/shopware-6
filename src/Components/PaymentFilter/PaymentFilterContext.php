@@ -19,6 +19,9 @@ class PaymentFilterContext extends Struct
 
     private bool $_areAddressesIdentical;
 
+    /**
+     * @param string[] $flags
+     */
     public function __construct(
         private readonly SalesChannelContext $salesChannelContext,
         private readonly CustomerAddressEntity|OrderAddressEntity|null $billingAddress = null,
@@ -87,8 +90,8 @@ class PaymentFilterContext extends Struct
         return $this->_areAddressesIdentical = true;
     }
 
-    public function getFlag(string $key): bool
+    public function hasFlag(string $key): bool
     {
-        return $this->flags[$key] ?? false;
+        return \in_array($key, $this->flags, true);
     }
 }
