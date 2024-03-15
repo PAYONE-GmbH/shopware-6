@@ -4,152 +4,66 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\MessageBus\MessageHandler;
 
-use Monolog\Level;
-use Monolog\Logger;
-use PayonePayment\DataAbstractionLayer\Entity\NotificationForward\PayonePaymentNotificationForwardEntity;
 use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetEntity;
-use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardCommand;
+use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardMessage;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-class NotificationForwardHandler implements MessageSubscriberInterface
+#[AsMessageHandler(handles: NotificationForwardMessage::class)]
+class NotificationForwardHandler
 {
     public function __construct(
+        private readonly EntityRepository $forwardTargetRepository,
         private readonly EntityRepository $notificationForwardRepository,
-        private readonly Logger $logger
+        private readonly LoggerInterface $logger,
     ) {
     }
 
-    public function __invoke(NotificationForwardCommand $message): void
+    public function __invoke(NotificationForwardMessage $message): void
     {
-        $this->handle($message);
-    }
-
-    public function handle(NotificationForwardCommand $message): void
-    {
-        $notificationForwards = $this->getNotificationForwards($message->getNotificationTargetIds(), $message->getContext());
-        $multiHandle = curl_multi_init();
-
-        $this->logger->info('Forwarding notifications', array_keys($notificationForwards->getElements()));
-
-        $forwardRequests = $this->getForwardRequests($multiHandle, $notificationForwards);
-
-        if (empty($forwardRequests)) {
-            curl_multi_close($multiHandle);
-
+        $target = $this->forwardTargetRepository->search(new Criteria([$message->getNotificationTargetId()]), Context::createDefaultContext())->first();
+        if (!$target instanceof PayonePaymentNotificationTargetEntity) {
+            // should never occur - just to be safe.
             return;
         }
 
-        do {
-            $status = curl_multi_exec($multiHandle, $active);
+        $ch = curl_init();
+        curl_setopt($ch, \CURLOPT_URL, $target->getUrl());
+        curl_setopt($ch, \CURLOPT_HEADER, false);
+        curl_setopt($ch, \CURLOPT_POST, true);
+        curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, \CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, \CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, \CURLOPT_POSTFIELDS, http_build_query($message->getRequestData()));
+        curl_setopt($ch, \CURLOPT_FAILONERROR, true);
+        curl_setopt($ch, \CURLOPT_HTTPHEADER, $this->buildHeaders($message, $target));
 
-            if ($active) {
-                curl_multi_select($multiHandle);
-            }
-        } while ($active && $status === \CURLM_OK);
+        $responseContent = (string)curl_exec($ch);
+        $responseInfo = curl_getinfo($ch);
+        curl_close($ch);
 
-        $this->updateResponses($multiHandle, $notificationForwards, $forwardRequests, $message->getContext());
-
-        foreach ($forwardRequests as $id => $handle) {
-            $responseInfo = curl_getinfo($handle);
-            $responseContent = curl_multi_getcontent($handle);
-            $this->statusLogger($responseInfo, $responseContent, $id);
-            curl_multi_remove_handle($multiHandle, $handle);
-            curl_close($handle);
-        }
-
-        curl_multi_close($multiHandle);
+        $this->statusLogger($responseInfo, $responseContent, $message);
+        $this->saveNotificationForward($responseInfo, $responseContent, $message);
     }
 
     public static function getHandledMessages(): iterable
     {
         return [
-            NotificationForwardCommand::class,
+            NotificationForwardMessage::class,
         ];
     }
 
-    private function getNotificationForwards(array $ids, Context $context): EntitySearchResult
-    {
-        $criteria = new Criteria($ids);
-        $criteria->addAssociation('notificationTarget');
-
-        return $this->notificationForwardRepository->search($criteria, $context);
-    }
-
-    private function updateResponses(
-        \CurlMultiHandle $multiHandle,
-        EntitySearchResult $notificationForwards,
-        array $forwardRequests,
-        Context $context
-    ): void {
-        $data = [];
-
-        /** @var PayonePaymentNotificationForwardEntity $forward */
-        foreach ($notificationForwards as $forward) {
-            $id = $forward->getId();
-            $response = curl_multi_getcontent($forwardRequests[$id]);
-
-            $data[] = [
-                'id' => $id,
-                'response' => (!empty($response)) ? $response : 'NO_RESPONSE',
-            ];
-
-            curl_multi_remove_handle($multiHandle, $forwardRequests[$id]);
-        }
-
-        $this->notificationForwardRepository->update($data, $context);
-    }
-
-    private function getForwardRequests(\CurlMultiHandle $multiHandle, EntitySearchResult $notificationForwards): array
-    {
-        $forwardRequests = [];
-
-        /** @var PayonePaymentNotificationForwardEntity $forward */
-        foreach ($notificationForwards as $forward) {
-            $id = $forward->getId();
-
-            $target = $forward->getNotificationTarget();
-
-            if ($target === null || empty($target->getUrl())) {
-                continue;
-            }
-
-            $forwardRequests[$id] = curl_init();
-
-            $serialize = unserialize($forward->getContent(), []);
-            /** @var array<int, string>|string|false $content */
-            $content = mb_convert_encoding($serialize, 'ISO-8859-1', 'UTF-8');
-
-            if (!\is_array($content)) {
-                continue;
-            }
-
-            curl_setopt($forwardRequests[$id], \CURLOPT_URL, $target->getUrl());
-            curl_setopt($forwardRequests[$id], \CURLOPT_HEADER, false);
-            curl_setopt($forwardRequests[$id], \CURLOPT_POST, true);
-            curl_setopt($forwardRequests[$id], \CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($forwardRequests[$id], \CURLOPT_TIMEOUT, 10);
-            curl_setopt($forwardRequests[$id], \CURLOPT_CONNECTTIMEOUT, 10);
-            curl_setopt($forwardRequests[$id], \CURLOPT_POSTFIELDS, http_build_query($content));
-            curl_setopt($forwardRequests[$id], \CURLOPT_FAILONERROR, true);
-            curl_setopt($forwardRequests[$id], \CURLOPT_HTTPHEADER, $this->buildHeaders($forward, $target));
-
-            curl_multi_add_handle($multiHandle, $forwardRequests[$id]);
-        }
-
-        return $forwardRequests;
-    }
-
     private function buildHeaders(
-        PayonePaymentNotificationForwardEntity $forward,
+        NotificationForwardMessage $message,
         PayonePaymentNotificationTargetEntity $target
     ): array {
         $headers = [
-            'X-Forwarded-For: ' . $forward->getIp(),
+            'X-Forwarded-For: ' . $message->getClientIp(),
         ];
 
         if ($target->isBasicAuth() === true) {
@@ -160,22 +74,37 @@ class NotificationForwardHandler implements MessageSubscriberInterface
         return $headers;
     }
 
-    private function statusLogger(array $responseInfo, ?string $responseContent, string $id): void
+    private function statusLogger(array $responseInfo, string $responseContent, NotificationForwardMessage $message): void
     {
-        $statusCode = $responseInfo['http_code'];
-
-        $response = new Response($responseContent, $statusCode, $responseInfo);
+        $response = new Response($responseContent, $responseInfo['http_code'], $responseInfo);
         $logLevel = $response->isSuccessful() ? 'info' : 'error';
-        $statusText = Response::$statusTexts[$statusCode] ?? 'Unknown Status Code';
 
-        $this->logger->addRecord(
-            Level::fromName($logLevel),
-            'Forwarding notification - ' . $statusText,
-            [
-                'id' => $id,
-                'information' => $responseInfo,
-                'content' => $response->getContent(),
-            ]
-        );
+        $logContext = [
+            'message' => [
+                'target-id' => $message->getNotificationTargetId(),
+                'transaction-id' => $message->getPaymentTransactionId(),
+                'request-data' => $message->getRequestData(),
+                'client-ip' => $message->getClientIp(),
+            ],
+            'response' => [
+                'status' => $responseInfo['http_code'],
+                'content' => $responseContent,
+            ],
+        ];
+
+        $this->logger->{$logLevel}('Notification has been forwarded', $logContext);
+    }
+
+    private function saveNotificationForward(string $responseContent, NotificationForwardMessage $message): void
+    {
+        $this->notificationForwardRepository->upsert([[
+            'id' => Uuid::randomHex(),
+            'notificationTargetId' => $message->getNotificationTargetId(),
+            'ip' => $message->getClientIp(),
+            'txaction' => $message->getRequestData()['txaction'] ?? '',
+            'response' => $responseContent,
+            'transactionId' => $message->getPaymentTransactionId(),
+            'content' => json_encode($message->getRequestData()),
+        ]], Context::createDefaultContext());
     }
 }
