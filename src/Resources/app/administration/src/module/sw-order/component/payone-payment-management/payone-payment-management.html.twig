@@ -54,11 +54,6 @@
                             :showHeader="false"
                             table>
 
-                        <template #column-response="{ item }">
-                            <span v-if="item.updatedAt">{{ item.response }}</span>
-                            <span v-else></span>
-                        </template>
-
                         <template #column-updatedAt="{ item }">
                             {{ item.updatedAt| date({ hour: '2-digit', minute: '2-digit' }) }}
                         </template>
