@@ -54,7 +54,7 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
 
         // Validate and remove all supported payment methods if necessary
         try {
-            if ($filterContext->getFlag(PaymentFilterContext::FLAG_SKIP_EC_REQUIRED_DATA_VALIDATION) !== true) {
+            if ($filterContext->hasFlag(PaymentFilterContext::FLAG_SKIP_EC_REQUIRED_DATA_VALIDATION) !== true) {
                 $this->validateGenericExpressCheckout($filterContext);
             }
             $this->validateCurrency($currency);

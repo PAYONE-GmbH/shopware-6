@@ -48,7 +48,9 @@
         "checkoutConfirmPage": {
             "defaultCardTitle": "Zahlungsinformationen",
             "save": "Daten für zukünftige Nutzung speichern",
-            "saveMandate": "Lastschrift-Mandat für zukünftige Nutzung speichern"
+            "saveMandate": "Lastschrift-Mandat für zukünftige Nutzung speichern",
+            "back-to-standard-checkout": "Zahlungsart ändern",
+            "express-checkout-canceled": "Der Express-Checkout wurde abgebrochen."
         },
         "checkoutFinishPage": {
             "mandateIdentification": "SEPA-Lastschriftmandat"

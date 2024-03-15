@@ -48,7 +48,9 @@
         "checkoutConfirmPage": {
             "defaultCardTitle": "Payment Information",
             "save": "Save data for future use",
-            "saveMandate": "Save direct debit mandate for future use"
+            "saveMandate": "Save direct debit mandate for future use",
+            "back-to-standard-checkout": "Change payment method",
+            "express-checkout-canceled": "The express checkout has been cancelled."
         },
         "checkoutFinishPage": {
             "mandateIdentification": "Direct Debit Mandate"

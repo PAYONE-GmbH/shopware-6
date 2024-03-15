@@ -223,5 +223,9 @@
             <tag name="payone.payment_method.filter"/>
         </service>
 
+        <service id="PayonePayment\Components\PaymentFilter\GenericExpressCheckoutFilterOther">
+            <tag name="payone.payment_method.filter"/>
+        </service>
+
     </services>
 </container>
