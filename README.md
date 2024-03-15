@@ -38,7 +38,7 @@ a test account for you!
 ## Documentation
 
 Please refer to our extensive online documentation at
-https://docs.payone.com/display/public/INT/Shopware+6+Plugin 
+https://docs.payone.com/integration/plugins/integration-guide-shopware-6
 
 ## Support and Contact
 
