@@ -12,7 +12,8 @@ class NotificationForwardMessage implements AsyncMessageInterface
         private readonly string $notificationTargetId,
         private readonly array $requestData,
         private readonly string $paymentTransactionId,
-        private readonly string $clientIp
+        private readonly string $clientIp,
+        private int $attempt = 1
     ) {
     }
 
@@ -34,5 +35,15 @@ class NotificationForwardMessage implements AsyncMessageInterface
     public function getClientIp(): string
     {
         return $this->clientIp;
+    }
+
+    public function getAttempt(): int
+    {
+        return $this->attempt;
+    }
+
+    public function setAttempt(int $attempt): void
+    {
+        $this->attempt = $attempt;
     }
 }
