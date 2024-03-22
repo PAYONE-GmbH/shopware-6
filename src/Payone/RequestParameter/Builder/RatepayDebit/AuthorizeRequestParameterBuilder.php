@@ -53,7 +53,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'add_paydata[device_token]' => $this->deviceFingerprintService->getDeviceIdentToken($salesChannelContext),
         ];
 
-        $this->applyPhoneParameter($order, $parameters, $dataBag->get('ratepayPhone') ?? '', $context);
+        $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
         $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
 
         if ($order->getLineItems() !== null) {

@@ -31,7 +31,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
-            'securedInvoicePhone' => '0123456789',
+            'payonePhone' => '0123456789',
             'payoneInvoiceBirthday' => '2000-01-01',
         ]);
 
@@ -94,7 +94,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
-            'securedInvoicePhone' => '0123456789',
+            'payonePhone' => '0123456789',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
@@ -163,7 +163,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
-            'securedInvoicePhone' => '0123456789',
+            'payonePhone' => '0123456789',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
@@ -207,7 +207,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
-            'securedInvoicePhone' => '0123456789',
+            'payonePhone' => '0123456789',
             'payoneInvoiceBirthday' => '2000-01-01',
         ]);
 

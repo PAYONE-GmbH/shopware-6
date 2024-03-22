@@ -35,7 +35,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
-            'ratepayPhone' => '0123456789',
+            'payonePhone' => '0123456789',
             'ratepayBirthday' => '2000-01-01',
         ]);
 

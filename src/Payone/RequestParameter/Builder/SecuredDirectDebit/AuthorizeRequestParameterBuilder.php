@@ -60,7 +60,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order, $context));
         }
 
-        $this->applyPhoneParameter($order, $parameters, $dataBag->get('securedDirectDebitPhone') ?? '', $context);
+        $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
         $this->applyBirthdayParameter($order, $parameters, $dataBag->get('securedDirectDebitBirthday') ?? '', $context);
 
         return $parameters;

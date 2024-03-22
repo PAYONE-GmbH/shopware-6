@@ -36,7 +36,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
         $dataBag = new RequestDataBag([
             'ratepayIban' => 'DE81500105177147426471',
-            'ratepayPhone' => '0123456789',
+            'payonePhone' => '0123456789',
             'ratepayBirthday' => '2000-01-01',
         ]);
 
