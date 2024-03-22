@@ -32,8 +32,13 @@
             <argument type="tagged_iterator" tag="payone.payment_method.filter"/>
         </service>
 
-        <service id="payone.payment_filter_method.klarna" class="PayonePayment\Components\PaymentFilter\KlarnaPaymentMethodFilter">
+        <service id="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
             <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+        </service>
+
+        <service id="payone.payment_filter_method.klarna"
+                 class="PayonePayment\Components\PaymentFilter\KlarnaPaymentMethodFilter"
+                 parent="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler</argument>
             <argument key="$allowedCountries" type="collection">
                 <argument>AT</argument>
@@ -61,8 +66,9 @@
             <tag name="payone.payment_method.filter"/>
         </service>
 
-        <service id="payone.payment_filter_method.postfinance" class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
-            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+        <service id="payone.payment_filter_method.postfinance"
+                 class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService"
+                 parent="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\AbstractPostfinancePaymentHandler</argument>
             <argument key="$allowedCountries" type="collection">
                 <argument>CH</argument>
@@ -76,8 +82,9 @@
             <tag name="payone.payment_method.filter"/>
         </service>
 
-        <service id="payone.payment_filter_method.przelewy24" class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
-            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+        <service id="payone.payment_filter_method.przelewy24"
+                 class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService"
+                 parent="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler</argument>
             <argument key="$allowedCountries" type="collection">
                 <argument>PL</argument>
@@ -92,8 +99,8 @@
         </service>
 
         <service id="payone.payment_filter_method.secured_invoice"
-                 class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
-            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+                 class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService"
+                 parent="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler</argument>
             <argument key="$allowedCountries" type="collection">
                 <argument>DE</argument>
@@ -112,8 +119,8 @@
         </service>
 
         <service id="payone.payment_filter_method.secured_installment"
-                 class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
-            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+                 class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService"
+                 parent="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler</argument>
             <argument key="$allowedCountries" type="collection">
                 <argument>DE</argument>
@@ -130,8 +137,8 @@
         </service>
 
         <service id="payone.payment_filter_method.secured_direct_debit"
-                 class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
-            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+                 class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService"
+                 parent="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayoneSecuredDirectDebitPaymentHandler</argument>
             <argument key="$allowedCountries" type="collection">
                 <argument>DE</argument>
@@ -148,22 +155,22 @@
         </service>
 
         <service id="payone.payment_filter_method.payolution.invoice"
-                 class="PayonePayment\Components\PaymentFilter\PayolutionPaymentMethodFilter">
-            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+                 class="PayonePayment\Components\PaymentFilter\PayolutionPaymentMethodFilter"
+                 parent="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler</argument>
             <tag name="payone.payment_method.filter"/>
         </service>
 
         <service id="payone.payment_filter_method.payolution.debit"
-                 class="PayonePayment\Components\PaymentFilter\PayolutionPaymentMethodFilter">
-            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+                 class="PayonePayment\Components\PaymentFilter\PayolutionPaymentMethodFilter"
+                 parent="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler</argument>
             <tag name="payone.payment_method.filter"/>
         </service>
 
         <service id="payone.payment_filter_method.payolution.installment"
-                 class="PayonePayment\Components\PaymentFilter\PayolutionPaymentMethodFilter">
-            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+                 class="PayonePayment\Components\PaymentFilter\PayolutionPaymentMethodFilter"
+                 parent="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler</argument>
             <tag name="payone.payment_method.filter"/>
         </service>
