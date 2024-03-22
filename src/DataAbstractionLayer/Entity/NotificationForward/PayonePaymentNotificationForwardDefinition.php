@@ -45,7 +45,7 @@ class PayonePaymentNotificationForwardDefinition extends EntityDefinition
 
             (new StringField('ip', 'ip')),
             (new StringField('txaction', 'txaction')),
-            (new StringField('response', 'response')),
+            (new LongTextField('response', 'response')),
 
             new FkField('transaction_id', 'transactionId', OrderTransactionDefinition::class),
             new OneToOneAssociationField('transaction', 'transaction_id', 'id', OrderTransactionDefinition::class, false),

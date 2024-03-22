@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
-use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardCommand;
+use PayonePayment\DataAbstractionLayer\Entity\NotificationForward\PayonePaymentNotificationForwardEntity;
+use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardMessage;
 use PayonePayment\Payone\Webhook\Processor\WebhookProcessorInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,10 +36,18 @@ class WebhookController extends StorefrontController
     public function reQueueForward(Request $request, Context $context): Response
     {
         $id = $request->get('notificationForwardId');
-        $newId = Uuid::randomHex();
 
-        $this->notificationForwardRepository->clone($id, $context, $newId);
-        $this->messageBus->dispatch(new NotificationForwardCommand([$newId], $context));
+        /** @var PayonePaymentNotificationForwardEntity|null $entity */
+        $entity = $this->notificationForwardRepository->search(new Criteria([$id]), $context)->first();
+        if ($entity instanceof PayonePaymentNotificationForwardEntity) {
+            $message = new NotificationForwardMessage(
+                $entity->getNotificationTargetId(),
+                json_decode($entity->getContent(), true),
+                $entity->getTransactionId(),
+                $entity->getIp()
+            );
+            $this->messageBus->dispatch($message);
+        }
 
         return $this->createActionResponse($request);
     }
