@@ -9,6 +9,7 @@ use PayonePayment\PaymentHandler as Handler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\Amazon\AbstractAmazonRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
 use PayonePayment\StoreApi\Route\ApplePayRoute;
@@ -607,6 +608,19 @@ class SettingsController extends AbstractController
                     'shipping_lastname' => 'Test',
                     'shipping_street' => 'Mustergasse 5',
                     'shipping_zip' => '10969',
+                    'successurl' => 'https://www.payone.com',
+                    'errorurl' => 'https://www.payone.com',
+                    'backurl' => 'https://www.payone.com',
+                ];
+
+            case Handler\PayoneAmazonPayPaymentHandler::class:
+                return [
+                    'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
+                    'add_paydata[action]' => 'createCheckoutSessionPayload',
+                    'clearingtype' => AbstractAmazonRequestParameterBuilder::CLEARING_TYPE,
+                    'wallettype' => AbstractAmazonRequestParameterBuilder::WALLET_TYPE,
+                    'amount' => 100,
+                    'currency' => 'EUR',
                     'successurl' => 'https://www.payone.com',
                     'errorurl' => 'https://www.payone.com',
                     'backurl' => 'https://www.payone.com',

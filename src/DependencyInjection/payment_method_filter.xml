@@ -181,5 +181,27 @@
             <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler</argument>
             <tag name="payone.payment_method.filter"/>
         </service>
+
+        <service id="payone.payment_filter_method.amazonpay"
+                 class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService"
+                 parent="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
+            <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayoneAmazonPayPaymentHandler</argument>
+            <argument key="$allowedCountries" type="collection">
+                <argument>DE</argument>
+                <argument>FR</argument>
+                <argument>IT</argument>
+                <argument>ES</argument>
+                <argument>LU</argument>
+                <argument>NL</argument>
+                <argument>SE</argument>
+                <argument>PT</argument>
+                <argument>HU</argument>
+                <argument>DK</argument>
+            </argument>
+            <argument key="$allowedCurrencies" type="collection">
+                <argument>EUR</argument>
+            </argument>
+            <tag name="payone.payment_method.filter"/>
+        </service>
     </services>
 </container>

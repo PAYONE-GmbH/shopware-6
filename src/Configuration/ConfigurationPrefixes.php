@@ -39,6 +39,7 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_SECURED_INVOICE = 'securedInvoice';
     public const CONFIGURATION_PREFIX_SECURED_INSTALLMENT = 'securedInstallment';
     public const CONFIGURATION_PREFIX_SECURED_DIRECT_DEBIT = 'securedDirectDebit';
+    public const CONFIGURATION_PREFIX_AMAZON_PAY = 'amazonPay';
 
     public const CONFIGURATION_PREFIXES = [
         Handler\PayoneApplePayPaymentHandler::class => self::CONFIGURATION_PREFIX_APPLE_PAY,
@@ -72,5 +73,6 @@ interface ConfigurationPrefixes
         Handler\PayoneSecuredInvoicePaymentHandler::class => self::CONFIGURATION_PREFIX_SECURED_INVOICE,
         Handler\PayoneSecuredInstallmentPaymentHandler::class => self::CONFIGURATION_PREFIX_SECURED_INSTALLMENT,
         Handler\PayoneSecuredDirectDebitPaymentHandler::class => self::CONFIGURATION_PREFIX_SECURED_DIRECT_DEBIT,
+        Handler\PayoneAmazonPayPaymentHandler::class => self::CONFIGURATION_PREFIX_AMAZON_PAY,
     ];
 }

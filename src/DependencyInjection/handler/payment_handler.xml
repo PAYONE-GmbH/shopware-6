@@ -252,5 +252,11 @@
 
             <tag name="shopware.payment.method.async" />
         </service>
+
+        <service id="PayonePayment\PaymentHandler\PayoneAmazonPayPaymentHandler"
+                 parent="PayonePayment\PaymentHandler\AbstractAsynchronousPayonePaymentHandler">
+
+            <tag name="shopware.payment.method.async" />
+        </service>
     </services>
 </container>

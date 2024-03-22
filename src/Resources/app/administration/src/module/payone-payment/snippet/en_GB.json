@@ -71,7 +71,8 @@
                 "alipay": "The API credentials for PAYONE Alipay are not valid.",
                 "securedInvoice": "The API credentials for PAYONE Secured Invoice are not valid.",
                 "securedInstallment": "The API credentials for PAYONE Secured Installment are not valid.",
-                "securedDirectDebit": "The API credentials for PAYONE Secured Direct Debit are not valid."
+                "securedDirectDebit": "The API credentials for PAYONE Secured Direct Debit are not valid.",
+                "amazonPay": "The API credentials for PAYONE Amazon pay are not valid."
             }
         },
         "supportModal": {
