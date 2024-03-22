@@ -8,6 +8,7 @@ use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler;
 use PayonePayment\PaymentHandler\AbstractPostfinancePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneAlipayPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneAmazonPayPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneEpsPaymentHandler;
@@ -63,6 +64,7 @@ class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayonePrzelewy24PaymentHandler::class:
             case PayoneWeChatPayPaymentHandler::class:
             case PayoneAlipayPaymentHandler::class:
+            case PayoneAmazonPayPaymentHandler::class:
                 return true;
         }
 

@@ -577,6 +577,12 @@
             <tag name="payone_request_builder"/>
         </service>
 
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Amazon\AuthorizeRequestParameterBuilder">
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+
+            <tag name="payone_request_builder"/>
+        </service>
+
         <!-- Capture -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Capture\CaptureRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
