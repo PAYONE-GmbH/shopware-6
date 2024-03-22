@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
+use PayonePayment\PaymentHandler\PayoneAmazonPayExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneAmazonPayPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaydirektPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
@@ -65,6 +66,7 @@ class ShippingInformationRequestParameterBuilder extends AbstractRequestParamete
                 PayoneSecuredInstallmentPaymentHandler::class,
                 PayoneSecuredDirectDebitPaymentHandler::class,
                 PayoneAmazonPayPaymentHandler::class,
+                PayoneAmazonPayExpressPaymentHandler::class,
             ],
             true
         );

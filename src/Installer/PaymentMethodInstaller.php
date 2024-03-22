@@ -8,6 +8,7 @@ use Doctrine\DBAL\Connection;
 use PayonePayment\PaymentMethod\PaymentMethodInterface;
 use PayonePayment\PaymentMethod\PayoneAlipay;
 use PayonePayment\PaymentMethod\PayoneAmazonPay;
+use PayonePayment\PaymentMethod\PayoneAmazonPayExpress;
 use PayonePayment\PaymentMethod\PayoneApplePay;
 use PayonePayment\PaymentMethod\PayoneBancontact;
 use PayonePayment\PaymentMethod\PayoneCreditCard;
@@ -86,6 +87,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneSecuredInstallment::class => '9c4d04f6ad4b4a2787e3812c56b6153b',
         PayoneSecuredDirectDebit::class => '72c4c88b918441848e20081de67a16c4',
         PayoneAmazonPay::class => 'ae2b29f0b99d4ba9852063d84d198180',
+        PayoneAmazonPayExpress::class => 'd310a86cdaf14dd6b69bcf2b98f23268',
     ];
 
     final public const HANDLER_IDENTIFIER_ROOT_NAMESPACE = 'PayonePayment';
@@ -123,6 +125,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneSecuredInstallment::class,
         PayoneSecuredDirectDebit::class,
         PayoneAmazonPay::class,
+        PayoneAmazonPayExpress::class,
     ];
 
     final public const AFTER_ORDER_PAYMENT_METHODS = [

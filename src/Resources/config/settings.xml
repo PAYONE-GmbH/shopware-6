@@ -4771,6 +4771,26 @@
             <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
         </input-field>
 
+        <input-field type="single-select">
+            <name>amazonPayAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Use this option to set the authorization method for this payment type.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
         <input-field>
             <name>amazonPayStoreName</name>
             <label>Merchant store name</label>
@@ -4872,6 +4892,207 @@
 
         <input-field type="single-select">
             <name>amazonPayPaymentStatusFailed</name>
+            <label>Transition for FAILED</label>
+            <label lang="de-DE">Statuswechsel für FAILED</label>
+        </input-field>
+    </card>
+
+    <card>
+        <title>PAYONE Amazon Pay Express</title>
+        <title lang="de-DE">PAYONE Amazon Pay Express</title>
+
+        <name>payment_amazon_pay_express</name>
+
+        <input-field>
+            <name>amazonPayExpressMerchantId</name>
+            <label>Merchant ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>amazonPayExpressAccountId</name>
+            <label>Account ID</label>
+            <helpText>Uses the basic configuration value if nothing is entered here.</helpText>
+            <helpText lang="de-DE">Nutzt den Wert der Grundeinstellungen, falls nichts eingetragen wird.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>amazonPayExpressPortalId</name>
+            <label>Portal ID</label>
+            <helpText>You need an ID to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen eine ID zu einem separates Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field>
+            <name>amazonPayExpressPortalKey</name>
+            <label>Key</label>
+            <helpText>You need a key to a separate payment gateway to use this payment method.</helpText>
+            <helpText lang="de-DE">Sie benötigen einen Schlüssel zu einem separaten Zahlungsportal um diese Zahlart verwenden zu können.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Use this option to set the authorization method for this payment type.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field>
+            <name>amazonPayExpressAmazonMerchantId</name>
+            <label>Amazon Merchant ID</label>
+            <helpText>This is not the same Merchant ID as the PAYONE merchant ID. This merchant ID is a separate ID.</helpText>
+            <helpText lang="de-DE">Dies ist nicht die PAYONE Händler ID. Diese Händler ID ist eine zusätzliche ID.</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>amazonPayExpressRestrictPOBoxes</name>
+            <label>Disallow delivery to Postoffice boxes</label>
+            <label lang="de-DE">Verbiete Zustellung an Postfilialen</label>
+            <helpText>Enabling this option will prevent the user from selecting post offices for delivery.</helpText>
+            <helpText lang="de-DE">Die Aktivierung dieser Option verhindert, dass der Benutzer Postfilialen für die Zustellung auswählen kann.</helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>amazonPayExpressRestrictPackstations</name>
+            <label>Disallow delivery to Packstations</label>
+            <label lang="de-DE">Verbiete Zustellung an Packstationen</label>
+            <helpText>Enabling this option will prevent the user from selecting pack-stations for delivery.</helpText>
+            <helpText lang="de-DE">Die Aktivierung dieser Option verhindert, dass der Benutzer Packstationen für die Zustellung auswählen kann.</helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressButtonColorCart</name>
+            <label>Cart: Button Color</label>
+            <label lang="de-DE">Warenkorb: Button</label>
+            <options>
+                <option>
+                    <id>Gold</id>
+                    <name>Gold</name>
+                    <name lang="de-DE">Gold</name>
+                </option>
+                <option>
+                    <id>LightGray</id>
+                    <name>Light Gray</name>
+                    <name lang="de-DE">Hellgrau</name>
+                </option>
+                <option>
+                    <id>DarkGray</id>
+                    <name>Dark Gray</name>
+                    <name lang="de-DE">Dunkelgrau</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>amazonPayExpressProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusAppointed</name>
+            <label>Transition for APPOINTED</label>
+            <label lang="de-DE">Statuswechsel für APPOINTED</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusCapture</name>
+            <label>Transition for CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusPartialCapture</name>
+            <label>Transition for PARTIAL_CAPTURE</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_CAPTURE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusPaid</name>
+            <label>Transition for PAID</label>
+            <label lang="de-DE">Statuswechsel für PAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusUnderpaid</name>
+            <label>Transition for UNDERPAID</label>
+            <label lang="de-DE">Statuswechsel für UNDERPAID</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusCancelation</name>
+            <label>Transition for CANCELLATION</label>
+            <label lang="de-DE">Statuswechsel für CANCELLATION</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusRefund</name>
+            <label>Transition for REFUND</label>
+            <label lang="de-DE">Statuswechsel für REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusPartialRefund</name>
+            <label>Transition for PARTIAL_REFUND</label>
+            <label lang="de-DE">Statuswechsel für PARTIAL_REFUND</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusDebit</name>
+            <label>Transition for DEBIT</label>
+            <label lang="de-DE">Statuswechsel für DEBIT</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusReminder</name>
+            <label>Transition for REMINDER</label>
+            <label lang="de-DE">Statuswechsel für REMINDER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusVauthorization</name>
+            <label>Transition for VAuthorization</label>
+            <label lang="de-DE">Statuswechsel für VAuthorization</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusVsettlement</name>
+            <label>Transition for VSettlement</label>
+            <label lang="de-DE">Statuswechsel für VSettlement</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusTransfer</name>
+            <label>Transition for TRANSFER</label>
+            <label lang="de-DE">Statuswechsel für TRANSFER</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusInvoice</name>
+            <label>Transition for INVOICE</label>
+            <label lang="de-DE">Statuswechsel für INVOICE</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>amazonPayExpressPaymentStatusFailed</name>
             <label>Transition for FAILED</label>
             <label lang="de-DE">Statuswechsel für FAILED</label>
         </input-field>

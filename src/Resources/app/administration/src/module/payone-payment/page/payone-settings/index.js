@@ -64,6 +64,7 @@ export default {
                 'payment_secured_installment': true,
                 'payment_secured_direct_debit': true,
                 'payment_amazon_pay': true,
+                'payment_amazon_pay_express': true,
             },
         };
     },
@@ -145,6 +146,7 @@ export default {
                 'securedInstallment',
                 'securedDirectDebit',
                 'amazonPay',
+                'amazonPayExpress',
             ];
         },
 

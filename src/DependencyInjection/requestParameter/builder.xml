@@ -579,6 +579,35 @@
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\Amazon\AuthorizeRequestParameterBuilder">
             <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <!-- Amazon Pay Express -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\AmazonPayExpress\CreateCheckoutSessionRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument key="$salesChannelRepository" type="service" id="sales_channel.repository" />
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\AmazonPayExpress\GetCheckoutSessionDetailsRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\AmazonPayExpress\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\AmazonPayExpress\UpdateCheckoutSessionParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument key="$currencyPrecision" type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface" />
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
 
             <tag name="payone_request_builder"/>
         </service>
