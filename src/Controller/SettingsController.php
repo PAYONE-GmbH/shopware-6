@@ -613,6 +613,7 @@ class SettingsController extends AbstractController
                     'backurl' => 'https://www.payone.com',
                 ];
 
+            case Handler\PayoneAmazonPayExpressPaymentHandler::class:
             case Handler\PayoneAmazonPayPaymentHandler::class:
                 return [
                     'request' => AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,

@@ -110,5 +110,19 @@
             <argument type="service" id="PayonePayment\Components\DeviceFingerprint\DeviceFingerprintServiceCollectionInterface" />
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="PayonePayment\EventListener\CheckoutCartAmazonPayExpressEventListener">
+            <argument key="$payoneClient" type="service" id="PayonePayment\Payone\Client\PayoneClientInterface" />
+            <argument key="$requestParameterFactory" type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument key="$logger" type="service" id="PayonePayment\Util\Logger" />
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+            <argument key="$languageRepository" type="service" id="language.repository" />
+            <argument key="$paymentFilterService" type="service" id="payone.payment_filter_method.amazonpay.express" />
+            <argument key="$cartExtensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService"/>
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+            <argument key="$connection" type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
     </services>
 </container>

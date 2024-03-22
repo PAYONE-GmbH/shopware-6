@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\PaymentMethod\PayoneAmazonPayExpress;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
 
 interface PaymentHandlerGroups
@@ -27,5 +28,6 @@ interface PaymentHandlerGroups
 
     public const GENERIC_EXPRESS = [
         PayonePaypalExpress::UUID => PayonePaypalExpressPaymentHandler::class,
+        PayoneAmazonPayExpress::UUID => PayoneAmazonPayExpressPaymentHandler::class,
     ];
 }

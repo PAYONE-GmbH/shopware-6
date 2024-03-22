@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 use PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler;
 use PayonePayment\PaymentHandler\AbstractPostfinancePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneAlipayPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneAmazonPayExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneAmazonPayPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
@@ -148,6 +149,7 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
             case PayoneSecuredInstallmentPaymentHandler::class:
             case PayoneSecuredDirectDebitPaymentHandler::class:
             case PayoneAmazonPayPaymentHandler::class:
+            case PayoneAmazonPayExpressPaymentHandler::class:
                 return true;
         }
 

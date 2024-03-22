@@ -1,0 +1,6 @@
+{% block component_payone_amazonpay_express_button %}
+    <div id="AmazonPayExpressButton-{{ location }}"
+         data-payone-payment-amazon-pay-express-button
+         data-payone-payment-amazon-pay-express-button-options='{{ buttonConfiguration|json_encode }}'
+         class="payone-amazon-pay-button"></div>
+{% endblock %}

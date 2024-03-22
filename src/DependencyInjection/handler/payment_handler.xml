@@ -258,5 +258,11 @@
 
             <tag name="shopware.payment.method.async" />
         </service>
+
+        <service id="PayonePayment\PaymentHandler\PayoneAmazonPayExpressPaymentHandler"
+                 parent="PayonePayment\Components\GenericExpressCheckout\PaymentHandler\AbstractGenericExpressCheckoutPaymentHandler">
+
+            <tag name="shopware.payment.method.async" />
+        </service>
     </services>
 </container>

@@ -203,5 +203,13 @@
             </argument>
             <tag name="payone.payment_method.filter"/>
         </service>
+
+        <service id="payone.payment_filter_method.amazonpay.express"
+                 class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService"
+                 parent="payone.payment_filter_method.amazonpay">
+            <argument key="$paymentHandlerClass">PayonePayment\PaymentHandler\PayoneAmazonPayExpressPaymentHandler</argument>
+            <tag name="payone.payment_method.filter"/>
+        </service>
+
     </services>
 </container>
