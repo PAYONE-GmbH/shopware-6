@@ -30,7 +30,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
         $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
-            'securedDirectDebitPhone' => '0123456789',
+            'payonePhone' => '0123456789',
             'securedDirectDebitBirthday' => '2000-01-01',
             'securedDirectDebitIban' => 'DE85500105173716329595',
         ]);

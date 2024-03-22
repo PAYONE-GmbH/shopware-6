@@ -30,7 +30,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
         $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
-            'securedInvoicePhone' => '0123456789',
+            'payonePhone' => '0123456789',
             'payoneInvoiceBirthday' => '2000-01-01',
         ]);
 

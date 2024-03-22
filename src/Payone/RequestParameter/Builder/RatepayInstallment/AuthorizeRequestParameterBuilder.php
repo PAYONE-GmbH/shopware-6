@@ -69,7 +69,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
             $parameters['add_paydata[debit_paytype]'] = 'BANK-TRANSFER';
         }
 
-        $this->applyPhoneParameter($order, $parameters, $dataBag->get('ratepayPhone') ?? '', $context);
+        $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
         $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
 
         if ($order->getLineItems() !== null) {

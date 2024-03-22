@@ -9,7 +9,9 @@ use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 abstract class AbstractRequestParameterBuilder
 {
@@ -85,8 +87,10 @@ abstract class AbstractRequestParameterBuilder
         }
     }
 
-    protected function applyPhoneParameter(OrderEntity $order, array &$parameters, string $submittedPhoneNumber, Context $context): void
+    protected function applyPhoneParameter(OrderEntity $order, array &$parameters, ParameterBag $dataBag, Context $context): void
     {
+        $submittedPhoneNumber = $dataBag->get('payonePhone');
+
         if (property_exists($this, 'customerRepository') === false) {
             throw new \RuntimeException('customer repository injection missing');
         }
