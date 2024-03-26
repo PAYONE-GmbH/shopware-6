@@ -35,6 +35,8 @@ class CreateCheckoutSessionRequestParametersTest extends TestCase
             PayoneAmazonPayExpressPaymentHandler::class
         ));
 
+        static::assertArrayHasKey('request', $requestParams);
+        static::assertEquals('genericpayment', $requestParams['request']);
         static::assertArrayHasKey('clearingtype', $requestParams);
         static::assertEquals('wlt', $requestParams['clearingtype']);
         static::assertArrayHasKey('wallettype', $requestParams);
@@ -48,6 +50,7 @@ class CreateCheckoutSessionRequestParametersTest extends TestCase
         static::assertArrayHasKey('backurl', $requestParams);
         static::assertArrayHasKey('errorurl', $requestParams);
         static::assertArrayNotHasKey('add_paydata[specialRestrictions]', $requestParams);
+        static::assertArrayHasKey('add_paydata[platform_id]', $requestParams);
     }
 
     /**

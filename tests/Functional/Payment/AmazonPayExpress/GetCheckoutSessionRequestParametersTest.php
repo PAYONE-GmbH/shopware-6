@@ -35,5 +35,6 @@ class GetCheckoutSessionRequestParametersTest extends TestCase
         static::assertEquals('getCheckoutSession', $requestParams['add_paydata[action]']);
         static::assertArrayHasKey('workorderid', $requestParams);
         static::assertEquals('woi-123456', $requestParams['workorderid']);
+        static::assertArrayHasKey('add_paydata[platform_id]', $requestParams);
     }
 }
