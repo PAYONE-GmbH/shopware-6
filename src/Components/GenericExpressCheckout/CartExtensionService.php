@@ -27,12 +27,19 @@ class CartExtensionService
         $cartData = new CheckoutCartPaymentData();
 
         $cartData->assign(array_filter([
-            'workOrderId' => $workOrderId,
-            'cartHash' => $this->cartHasher->generate($cart, $context),
+            CheckoutCartPaymentData::DATA_WORK_ORDER_ID => $workOrderId,
+            CheckoutCartPaymentData::DATA_CART_HASH => $this->cartHasher->generate($cart, $context),
         ]));
 
         $cart->addExtension(CheckoutCartPaymentData::EXTENSION_NAME, $cartData);
 
         $this->cartService->recalculate($cart, $context);
+    }
+
+    public function getCartExtension(Cart $cart): ?CheckoutCartPaymentData
+    {
+        $extension = $cart->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
+
+        return $extension instanceof CheckoutCartPaymentData ? $extension : null;
     }
 }

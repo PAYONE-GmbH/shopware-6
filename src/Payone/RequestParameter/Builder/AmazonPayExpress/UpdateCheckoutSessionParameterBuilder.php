@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\AmazonPayExpress;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\Amazon\AbstractAmazonRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\AmazonPayExpressUpdateCheckoutSessionStruct;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
@@ -29,6 +30,8 @@ class UpdateCheckoutSessionParameterBuilder extends AbstractRequestParameterBuil
 
         return [
             'request' => self::REQUEST_ACTION_GENERIC_PAYMENT,
+            'clearingtype' => AbstractAmazonRequestParameterBuilder::CLEARING_TYPE,
+            'wallettype' => AbstractAmazonRequestParameterBuilder::WALLET_TYPE,
             'add_paydata[action]' => 'updateCheckoutSession',
             'amount' => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency' => $currency->getIsoCode(),

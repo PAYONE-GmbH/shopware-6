@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\EventListener;
+namespace PayonePayment\Components\AmazonPay\EventListener;
 
 use Doctrine\DBAL\Connection;
 use Exception;
 use PayonePayment\Components\AmazonPay\ButtonConfiguration;
-use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\GenericExpressCheckout\CartExtensionService;
 use PayonePayment\Components\GenericExpressCheckout\Struct\CreateExpressCheckoutSessionStruct;
 use PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService;
@@ -27,17 +26,15 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelPaymentMethod\SalesChannelPaymentMethodDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Checkout\Cart\CheckoutCartPageLoadedEvent;
-use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Offcanvas\OffcanvasCartPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class CheckoutCartAmazonPayExpressEventListener implements EventSubscriberInterface
+class CheckoutCartEventListener implements EventSubscriberInterface
 {
     public function __construct(
         private readonly RequestParameterFactory $requestParameterFactory,
         private readonly PayoneClientInterface $payoneClient,
         private readonly LoggerInterface $logger,
-        private readonly ConfigReaderInterface $configReader,
         private readonly DefaultPaymentFilterService $paymentFilterService,
         private readonly CartExtensionService $cartExtensionService,
         private readonly CartService $cartService,
@@ -93,8 +90,6 @@ class CheckoutCartAmazonPayExpressEventListener implements EventSubscriberInterf
 
         //$location = (($event instanceof CheckoutCartPageLoadedEvent || $event instanceof OffcanvasCartPageLoadedEvent) ? 'Cart' : null);
         $location = 'Cart'; // at the moment, only cart is supported
-
-        $config = $this->configReader->read($event->getSalesChannelContext()->getSalesChannelId());
 
         try {
             $requestStruct = new CreateExpressCheckoutSessionStruct(
