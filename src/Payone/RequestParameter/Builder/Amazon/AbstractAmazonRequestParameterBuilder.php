@@ -12,6 +12,7 @@ abstract class AbstractAmazonRequestParameterBuilder extends AbstractRequestPara
 {
     final public const CLEARING_TYPE = parent::CLEARING_TYPE_WALLET;
     final public const WALLET_TYPE = 'AMP';
+    final public const PLATFORM_ID = 'A1JKLSC6LUW5EW';
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {

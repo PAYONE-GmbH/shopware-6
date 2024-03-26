@@ -7,9 +7,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder\AmazonPayExpress;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\GenericExpressCheckout\Struct\CreateExpressCheckoutSessionStruct;
 use PayonePayment\Configuration\ConfigurationPrefixes;
-use PayonePayment\PaymentHandler\PayoneAmazonPayExpressPaymentHandler;
-use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
-use PayonePayment\Payone\RequestParameter\Builder\Amazon\AbstractAmazonRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -30,12 +27,11 @@ class CreateCheckoutSessionRequestParameterBuilder extends AbstractRequestParame
      */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $requestParameters = [
+        $requestParameters = array_merge(parent::getRequestParameter($arguments), [
+            'request' => self::REQUEST_ACTION_GENERIC_PAYMENT,
             'add_paydata[action]' => 'createCheckoutSessionPayload',
-            'clearingtype' => AbstractAmazonRequestParameterBuilder::CLEARING_TYPE,
-            'wallettype' => AbstractAmazonRequestParameterBuilder::WALLET_TYPE,
             'add_paydata[addressRestrictions_type]' => 'Allowed',
-        ];
+        ]);
 
         foreach ($this->getCountryCodes($arguments->getSalesChannelContext()) as $index => $countryCode) {
             $requestParameters['add_paydata[addressRestrictions_country_' . $index . ']'] = $countryCode;
@@ -62,8 +58,7 @@ class CreateCheckoutSessionRequestParameterBuilder extends AbstractRequestParame
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        return $arguments instanceof CreateExpressCheckoutSessionStruct
-            && $arguments->getPaymentMethod() === PayoneAmazonPayExpressPaymentHandler::class;
+        return parent::supports($arguments) && $arguments instanceof CreateExpressCheckoutSessionStruct;
     }
 
     private function getCountryCodes(SalesChannelContext $context): array

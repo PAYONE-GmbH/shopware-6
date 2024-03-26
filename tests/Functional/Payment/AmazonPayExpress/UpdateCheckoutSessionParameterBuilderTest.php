@@ -39,5 +39,6 @@ class UpdateCheckoutSessionParameterBuilderTest extends TestCase
         static::assertIsString($requestParams['currency']);
         static::assertArrayHasKey('workorderid', $requestParams);
         static::assertEquals('test-123', $requestParams['workorderid']);
+        static::assertArrayHasKey('add_paydata[platform_id]', $requestParams);
     }
 }

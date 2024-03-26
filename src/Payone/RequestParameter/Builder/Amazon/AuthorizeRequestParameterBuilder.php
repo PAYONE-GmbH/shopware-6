@@ -29,6 +29,7 @@ class AuthorizeRequestParameterBuilder extends AbstractAmazonRequestParameterBui
             'request' => $arguments->getAction(),
             'clearingtype' => self::CLEARING_TYPE,
             'wallettype' => self::WALLET_TYPE,
+            'add_paydata[platform_id]' => self::PLATFORM_ID,
             'add_paydata[storename]' => $this->getStoreName($arguments->getSalesChannelContext(), $arguments->getPaymentMethod()),
             'add_paydata[checkoutMode]' => 'ProcessOrder',
             'add_paydata[productType]' => 'PayAndShip',

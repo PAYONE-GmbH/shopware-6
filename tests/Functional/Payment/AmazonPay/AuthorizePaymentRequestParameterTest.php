@@ -54,6 +54,7 @@ class AuthorizePaymentRequestParameterTest extends TestCase
         static::assertIsString($requestParams['backurl']);
         static::assertArrayHasKey('errorurl', $requestParams);
         static::assertIsString($requestParams['errorurl']);
+        static::assertArrayHasKey('add_paydata[platform_id]', $requestParams);
 
         // test only a few customer fields
         static::assertArrayHasKey('email', $requestParams);
