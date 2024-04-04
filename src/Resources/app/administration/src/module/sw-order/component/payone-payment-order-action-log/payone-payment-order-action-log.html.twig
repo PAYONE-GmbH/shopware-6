@@ -12,11 +12,11 @@
                 :isLoading="isLoading"
         >
             <template #column-amount="{ item }">
-                {{ (item.amount / 100) | currency(order.currency.isoCode) }}
+                {{ currencyFilter(item.amount / 100, order.currency.isoCode) }}
             </template>
 
             <template #column-requestDateTime="{ item }">
-                {{ item.requestDateTime | date }}
+                {{ dateFilter(item.requestDateTime, { hour: '2-digit', minute: '2-digit' }) }}
             </template>
 
             <template #actions="{ item }">
@@ -76,7 +76,7 @@
         >
             <template #icon>
                 <img
-                        :src="'/administration/static/img/empty-states/order-empty-state.svg' | asset"
+                        :src="assetFilter('/administration/static/img/empty-states/order-empty-state.svg')"
                         :alt="$tc('sw-order.payone-payment.orderActionLog.emptyState.title')"
                 >
             </template>

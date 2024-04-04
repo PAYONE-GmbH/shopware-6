@@ -1,7 +1,7 @@
 import template from './payone-capture-button.html.twig';
 import './payone-capture-button.scss';
 
-const { Mixin } = Shopware;
+const { Mixin, Filter } = Shopware;
 
 export default {
     template,
@@ -24,6 +24,14 @@ export default {
     },
 
     computed: {
+        currencyFilter() {
+            return Filter.getByName('currency');
+        },
+
+        payoneCurrencyFilter() {
+            return Filter.getByName('payone_currency');
+        },
+
         decimalPrecision() {
             if (!this.order || !this.order.currency) {
                 return 2;

@@ -1,7 +1,7 @@
 import template from './payone-refund-button.html.twig';
 import './payone-refund-button.scss';
 
-const { Mixin } = Shopware;
+const { Mixin, Filter } = Shopware;
 
 export default {
     template,
@@ -36,6 +36,14 @@ export default {
     },
 
     computed: {
+        currencyFilter() {
+            return Filter.getByName('currency');
+        },
+
+        payoneCurrencyFilter() {
+            return Filter.getByName('payone_currency');
+        },
+
         decimalPrecision() {
             if (!this.order || !this.order.currency) {
                 return 2;

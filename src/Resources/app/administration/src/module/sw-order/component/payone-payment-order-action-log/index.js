@@ -1,6 +1,7 @@
 import template from './payone-payment-order-action-log.html.twig';
 
 const {Criteria} = Shopware.Data;
+const { Filter } = Shopware;
 
 export default {
     template,
@@ -26,6 +27,22 @@ export default {
     computed: {
         orderActionLogRepository() {
             return this.repositoryFactory.create('payone_payment_order_action_log');
+        },
+
+        dateFilter() {
+            return Filter.getByName('date');
+        },
+
+        currencyFilter() {
+            return Filter.getByName('currency');
+        },
+
+        assetFilter() {
+            return Filter.getByName('asset');
+        },
+
+        payoneCurrencyFilter() {
+            return Filter.getByName('payone_currency');
         },
 
         orderActionLogColumns() {

@@ -1,6 +1,8 @@
 import template from './payone-order-items.html.twig';
 import './payone-order-items.scss';
 
+const {Filter} = Shopware;
+
 export default {
     template,
 
@@ -17,11 +19,13 @@ export default {
     },
 
     computed: {
+        currencyFilter: () => Filter.getByName('currency'),
+
         orderItems() {
             const data = [];
 
             this.order.lineItems.forEach((order_item) => {
-                const price = this.$options.filters.currency(
+                const price = this.currencyFilter(
                     order_item.totalPrice,
                     this.order.currency.shortName,
                     this.order.decimal_precision
@@ -68,7 +72,7 @@ export default {
                     quantity: 1,
                     disabled: false,
                     selected: false,
-                    price: this.$options.filters.currency(this.order.shippingCosts.totalPrice, this.order.currency.shortName, this.order.decimal_precision),
+                    price: this.currencyFilter(this.order.shippingCosts.totalPrice, this.order.currency.shortName, this.order.decimal_precision),
                     orderItem: {}
                 });
             }

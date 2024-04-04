@@ -1,6 +1,7 @@
 import template from './payone-payment-webhook-log.html.twig';
 
 const {Criteria} = Shopware.Data;
+const { Filter } = Shopware;
 
 export default {
     template,
@@ -25,6 +26,14 @@ export default {
     computed: {
         webhookLogRepository() {
             return this.repositoryFactory.create('payone_payment_webhook_log');
+        },
+
+        assetFilter() {
+            return Filter.getByName('asset');
+        },
+
+        dateFilter() {
+            return Filter.getByName('date');
         },
 
         webhookLogColumns() {
