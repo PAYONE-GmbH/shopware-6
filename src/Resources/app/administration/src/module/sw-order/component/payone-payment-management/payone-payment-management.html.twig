@@ -55,7 +55,7 @@
                             table>
 
                         <template #column-updatedAt="{ item }">
-                            {{ item.updatedAt| date({ hour: '2-digit', minute: '2-digit' }) }}
+                            {{ dateFilter(item.updatedAt, { hour: '2-digit', minute: '2-digit' }) }}
                         </template>
 
                         <template #actions="{ item }">

@@ -12,7 +12,7 @@
                 :isLoading="isLoading"
         >
             <template #column-webhookDateTime="{ item }">
-                {{ item.webhookDateTime | date({ hour: '2-digit', minute: '2-digit' }) }}
+                {{ dateFilter(item.webhookDateTime, { hour: '2-digit', minute: '2-digit' }) }}
             </template>
 
             <template #actions="{ item }">
@@ -51,7 +51,7 @@
         >
             <template #icon>
                 <img
-                        :src="'/administration/static/img/empty-states/order-empty-state.svg' | asset"
+                        :src="assetFilter('/administration/static/img/empty-states/order-empty-state.svg')"
                         :alt="$tc('sw-order.payone-payment.webhookLog.emptyState.title')"
                 >
             </template>

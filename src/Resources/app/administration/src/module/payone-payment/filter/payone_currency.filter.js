@@ -1,16 +1,11 @@
 const { Filter } = Shopware;
-const { currency } = Shopware.Utils.format;
 
-Filter.register('payone_currency', (value, format, decimalPrecision, decimalPlaces) => {
+Filter.register('payone_currency', (value, format, decimalPlaces) => {
     if (value === null) {
         return '-';
     }
 
-    if (!decimalPrecision) {
-        decimalPrecision = 0;
-    }
+    value /= 100;
 
-    value /= (10 ** decimalPrecision);
-
-    return currency(value, format, decimalPlaces);
+    return Filter.getByName('currency')(value, format, decimalPlaces);
 });

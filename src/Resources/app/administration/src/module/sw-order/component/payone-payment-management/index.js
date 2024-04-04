@@ -1,8 +1,9 @@
 import template from './payone-payment-management.html.twig';
 import './payone-payment-management.scss';
 
-const {Mixin} = Shopware;
+const {Mixin, Filter} = Shopware;
 const {Criteria} = Shopware.Data;
+
 export default {
     template,
 
@@ -26,6 +27,10 @@ export default {
     },
 
     computed: {
+        dateFilter() {
+            return Filter.getByName('date');
+        },
+
         payoneTransactions: function () {
             return this.order.transactions.filter(transaction => this.isPayoneTransaction(transaction)).sort((a, b) => { // newest transaction first
                 if (a.createdAt < b.createdAt) {
