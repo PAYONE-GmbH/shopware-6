@@ -114,7 +114,7 @@
         <service id="PayonePayment\Components\AmazonPay\EventListener\CheckoutCartEventListener">
             <argument key="$payoneClient" type="service" id="PayonePayment\Payone\Client\PayoneClientInterface" />
             <argument key="$requestParameterFactory" type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
-            <argument key="$logger" type="service" id="PayonePayment\Util\Logger" />
+            <argument key="$logger" type="service" id="monolog.logger.payone" />
             <argument key="$paymentFilterService" type="service" id="payone.payment_filter_method.amazonpay.express" />
             <argument key="$cartExtensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService"/>
             <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>

@@ -1,7 +1,14 @@
 monolog:
-    channels: [ "payone_transaction_forward" ]
+    channels:
+        - payone
+        - payone_transaction_forward
 
     handlers:
+        payoneLogger:
+            type: rotating_file
+            path: "%kernel.logs_dir%/payone.log"
+            level: info
+            channels: [ "payone" ]
         payoneTransactionForwardLogger:
             type: rotating_file
             path: "%kernel.logs_dir%/payone_transaction_forward.log"

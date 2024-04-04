@@ -49,7 +49,7 @@
             <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="PayonePayment\Util\Logger" />
+            <argument type="service" id="monolog.logger.payone" />
             <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
         </service>
 
@@ -62,15 +62,9 @@
         <service id="PayonePayment\Components\Helper\OrderFetcherInterface" alias="PayonePayment\Components\Helper\OrderFetcher"/>
 
         <service id="PayonePayment\Payone\Client\PayoneClient">
-            <argument type="service" id="PayonePayment\Util\Logger" />
+            <argument type="service" id="monolog.logger.payone" />
         </service>
         <service id="PayonePayment\Payone\Client\PayoneClientInterface" alias="PayonePayment\Payone\Client\PayoneClient"/>
-
-        <service id="PayonePayment\Util\Logger" class="Monolog\Logger">
-            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
-
-            <argument type="string">payone_payment</argument>
-        </service>
 
         <service id="payone.app_system.guzzle" class="GuzzleHttp\Client">
         </service>
@@ -115,7 +109,7 @@
         <service id="PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureService">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
             <argument type="service" id="PayonePayment\Components\TransactionHandler\Capture\CaptureTransactionHandler" />
-            <argument type="service" id="PayonePayment\Util\Logger" />
+            <argument type="service" id="monolog.logger.payone" />
         </service>
         <service id="PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureServiceInterface"
                  alias="PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureService" />
