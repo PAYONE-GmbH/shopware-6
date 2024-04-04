@@ -20,6 +20,7 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandler
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
@@ -98,14 +99,21 @@ abstract class AbstractPaymentHandlerTest extends TestCase
             $paymentHandler::class
         );
 
+        $this->expectedPaymentInterruptedException($paymentHandler);
+        $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
+    }
+
+    protected function expectedPaymentInterruptedException(AbstractPayonePaymentHandler $paymentHandler)
+    {
         if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
-            $expectedException = AsyncPaymentProcessException::class;
+            $expectedException = class_exists(AsyncPaymentProcessException::class) ? AsyncPaymentProcessException::class : PaymentException::class;
+        } else if ($paymentHandler instanceof SynchronousPaymentHandlerInterface) {
+            $expectedException = class_exists(SyncPaymentProcessException::class) ? SyncPaymentProcessException::class : PaymentException::class;
         } else {
-            $expectedException = SyncPaymentProcessException::class;
+            throw new \RuntimeException('invalid payment handler ' . $paymentHandler::class);
         }
 
         $this->expectException($expectedException);
-        $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
     }
 
     public function testItThrowsExceptionOnInvalidStatus(): void
@@ -128,13 +136,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
             $paymentHandler::class
         );
 
-        if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
-            $expectedException = AsyncPaymentProcessException::class;
-        } else {
-            $expectedException = SyncPaymentProcessException::class;
-        }
-
-        $this->expectException($expectedException);
+        $this->expectedPaymentInterruptedException($paymentHandler);
         $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
     }
 
@@ -170,13 +172,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
             $paymentHandler::class
         );
 
-        if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
-            $expectedException = AsyncPaymentProcessException::class;
-        } else {
-            $expectedException = SyncPaymentProcessException::class;
-        }
-
-        $this->expectException($expectedException);
+        $this->expectedPaymentInterruptedException($paymentHandler);
         $this->expectExceptionMessageMatches('/.*test-customer-message.*/');
         $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
     }
@@ -204,13 +200,7 @@ abstract class AbstractPaymentHandlerTest extends TestCase
             $paymentHandler::class
         );
 
-        if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
-            $expectedException = AsyncPaymentProcessException::class;
-        } else {
-            $expectedException = SyncPaymentProcessException::class;
-        }
-
-        $this->expectException($expectedException);
+        $this->expectedPaymentInterruptedException($paymentHandler);
         $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
     }
 

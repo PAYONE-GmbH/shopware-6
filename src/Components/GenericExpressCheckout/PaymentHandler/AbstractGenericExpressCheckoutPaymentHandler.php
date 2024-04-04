@@ -9,6 +9,7 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -42,10 +43,22 @@ abstract class AbstractGenericExpressCheckoutPaymentHandler extends AbstractAsyn
         SalesChannelContext $salesChannelContext
     ): void {
         if (empty($response['status']) || $response['status'] === 'ERROR') {
-            throw new AsyncPaymentProcessException(
-                $transaction->getOrderTransaction()->getId(),
-                $this->translator->trans('PayonePayment.errorMessages.genericError')
-            );
+            if (class_exists(PaymentException::class)) {
+                throw PaymentException::asyncProcessInterrupted(
+                    $transaction->getOrderTransaction()->getId(),
+                    $this->translator->trans('PayonePayment.errorMessages.genericError')
+                );
+            } elseif (class_exists(AsyncPaymentProcessException::class)) {
+                // required for shopware version <= 6.5.3
+                // @phpstan-ignore-next-line
+                throw new AsyncPaymentProcessException(
+                    $transaction->getOrderTransaction()->getId(),
+                    $this->translator->trans('PayonePayment.errorMessages.genericError')
+                );
+            }
+
+            // should never occur. Just to be safe.
+            throw new \RuntimeException('payment process interrupted.');
         }
 
         $data = $this->preparePayoneOrderTransactionData($request, $response, [

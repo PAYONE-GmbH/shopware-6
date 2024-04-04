@@ -7,9 +7,10 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -172,5 +173,18 @@ abstract class AbstractRequestParameterBuilder
         if ($birthday instanceof \DateTimeInterface) {
             $parameters['birthday'] = $birthday->format('Ymd');
         }
+    }
+
+    protected function orderNotFoundException(string $orderId): \Throwable
+    {
+        if (class_exists(PaymentException::class)) {
+            return PaymentException::invalidOrder($orderId);
+        } elseif (class_exists(InvalidOrderException::class)) {
+            // required for shopware version <= 6.5.3
+            throw new InvalidOrderException($orderId); // @phpstan-ignore-line
+        }
+
+        // should never occur, just to be safe.
+        throw new \RuntimeException('invalid order ' . $orderId);
     }
 }

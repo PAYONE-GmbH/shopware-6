@@ -253,4 +253,6 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     {
         return [];
     }
+
+    abstract protected function createPaymentException(string $orderTransactionId, string $errorMessage, ?\Throwable $e): \Throwable;
 }

@@ -32,7 +32,7 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
         $transactionData = $arguments->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
         if ($transactionData === null) {
-            throw new InvalidOrderException($order->getId());
+            throw $this->orderNotFoundException($order->getId());
         }
 
         if ($totalAmount === null) {
@@ -40,15 +40,15 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if (empty($transactionData->getTransactionId())) {
-            throw new InvalidOrderException($order->getId());
+            throw $this->orderNotFoundException($order->getId());
         }
 
         if ($transactionData->getSequenceNumber() === null) {
-            throw new InvalidOrderException($order->getId());
+            throw $this->orderNotFoundException($order->getId());
         }
 
         if ($transactionData->getSequenceNumber() < 0) {
-            throw new InvalidOrderException($order->getId());
+            throw $this->orderNotFoundException($order->getId());
         }
 
         //TODO: fix set refunded amount

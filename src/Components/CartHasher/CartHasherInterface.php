@@ -8,8 +8,6 @@ use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
-use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -20,9 +18,6 @@ interface CartHasherInterface
 
     public function validate(Cart|OrderEntity $entity, string $cartHash, SalesChannelContext $context): bool;
 
-    /**
-     * @throws AsyncPaymentProcessException|SyncPaymentProcessException
-     */
     public function validateRequest(
         RequestDataBag $requestDataBag,
         AsyncPaymentTransactionStruct|SyncPaymentTransactionStruct $paymentTransaction,

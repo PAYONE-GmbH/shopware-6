@@ -10,6 +10,7 @@ use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
@@ -48,7 +49,22 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $iban = $dataBag->get('iban');
 
         if (empty($iban) || !\is_string($iban)) {
-            throw new AsyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'Missing iban parameter.');
+            if (class_exists(PaymentException::class)) {
+                throw PaymentException::asyncProcessInterrupted(
+                    $transaction->getOrderTransaction()->getId(),
+                    'Missing iban parameter.'
+                );
+            } elseif (class_exists(AsyncPaymentProcessException::class)) {
+                // required for shopware version <= 6.5.3
+                // @phpstan-ignore-next-line
+                throw new AsyncPaymentProcessException(
+                    $transaction->getOrderTransaction()->getId(),
+                    'Missing iban parameter.'
+                );
+            }
+
+            // should never occur. Just to be safe.
+            throw new \RuntimeException('payment process interrupted. Missing iban parameter.');
         }
 
         return $iban;
