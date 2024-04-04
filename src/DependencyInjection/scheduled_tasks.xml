@@ -11,7 +11,7 @@
         <service id="PayonePayment\ScheduledTask\RedirectCleanUpHandler">
             <argument type="service" id="scheduled_task.repository" />
             <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler"/>
-            <argument type="service" id="PayonePayment\Util\Logger" />
+            <argument type="service" id="monolog.logger.payone" />
             <tag name="messenger.message_handler" />
         </service>
     </services>

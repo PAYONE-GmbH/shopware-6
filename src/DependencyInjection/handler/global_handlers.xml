@@ -41,13 +41,13 @@
 
         <service id="PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandler">
             <argument type="service" id="payone_payment_order_action_log.repository" />
-            <argument type="service" id="PayonePayment\Util\Logger" />
+            <argument type="service" id="monolog.logger.payone" />
         </service>
         <service id="PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface" alias="PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandler"/>
 
         <service id="PayonePayment\Components\DataHandler\WebhookLog\WebhookLogDataHandler">
             <argument type="service" id="payone_payment_webhook_log.repository" />
-            <argument type="service" id="PayonePayment\Util\Logger" />
+            <argument type="service" id="monolog.logger.payone" />
         </service>
         <service id="PayonePayment\Components\DataHandler\WebhookLog\WebhookLogDataHandlerInterface" alias="PayonePayment\Components\DataHandler\WebhookLog\WebhookLogDataHandler"/>
 

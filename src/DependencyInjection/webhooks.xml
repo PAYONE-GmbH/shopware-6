@@ -7,13 +7,13 @@
         <service id="PayonePayment\Payone\Webhook\Processor\WebhookProcessor">
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument type="tagged" tag="payone.webhook.handler" />
-            <argument type="service" id="PayonePayment\Util\Logger" />
+            <argument key="$logger" type="service" id="monolog.logger.payone" />
         </service>
 
         <service id="PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler">
             <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService"/>
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
-            <argument type="service" id="PayonePayment\Util\Logger" />
+            <argument type="service" id="monolog.logger.payone" />
             <argument type="service" id="PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureServiceInterface" />
 
             <tag name="payone.webhook.handler" />
@@ -22,7 +22,7 @@
         <service id="PayonePayment\Payone\Webhook\Handler\WebhookLogHandler">
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
             <argument type="service" id="PayonePayment\Components\DataHandler\WebhookLog\WebhookLogDataHandlerInterface" />
-            <argument type="service" id="PayonePayment\Util\Logger" />
+            <argument type="service" id="monolog.logger.payone" />
 
             <tag name="payone.webhook.handler" />
         </service>
