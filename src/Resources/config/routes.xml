@@ -2,28 +2,6 @@
 <routes xmlns="http://symfony.com/schema/routing"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
-
-    <import resource="@PayonePayment/Controller/WebhookController.php" type="annotation"/>
-    <import resource="@PayonePayment/Controller/RefundController.php" type="annotation"/>
-    <import resource="@PayonePayment/Controller/CaptureController.php" type="annotation"/>
-    <import resource="@PayonePayment/Controller/RedirectController.php" type="annotation"/>
-    <import resource="@PayonePayment/Controller/SettingsController.php" type="annotation"/>
-
-    <import resource="@PayonePayment/Storefront/Controller/Account/AccountCardController.php" type="annotation"/>
-    <import resource="@PayonePayment/Storefront/Controller/Account/AccountMandateController.php" type="annotation"/>
-
-    <import resource="@PayonePayment/Storefront/Controller/Debit/ManageMandateController.php" type="annotation"/>
-
-    <import resource="@PayonePayment/Storefront/Controller/GenericExpressController.php" type="annotation"/>
-
-    <import resource="@PayonePayment/Storefront/Controller/Payolution/PayolutionController.php" type="annotation"/>
-
-    <import resource="@PayonePayment/Storefront/Controller/Ratepay/RatepayController.php" type="annotation"/>
-    <import resource="@PayonePayment/Storefront/Controller/AmazonPay/AmazonRedirectController.php" type="annotation"/>
-    <import resource="@PayonePayment/Storefront/Controller/CheckoutController.php" type="annotation"/>
-
-    <!-- Store-Api routes -->
-    <import resource="@PayonePayment/StoreApi/Route/CardRoute.php" type="annotation" />
-    <import resource="@PayonePayment/StoreApi/Route/MandateRoute.php" type="annotation" />
-    <import resource="@PayonePayment/StoreApi/Route/ApplePayRoute.php" type="annotation" />
+    <import resource="../../**/Controller/**/*" type="attribute" />
+    <import resource="../../StoreApi/Route/*" type="attribute" />
 </routes>
