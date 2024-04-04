@@ -17,6 +17,7 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 
 /**
@@ -107,7 +108,12 @@ class CaptureRequestParameterBuilderTest extends TestCase
         $builder = $this->getContainer()->get(CaptureRequestParameterBuilder::class);
         $struct->getPaymentTransaction()->getOrderTransaction()->removeExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        $this->expectException(InvalidOrderException::class);
+        if (class_exists(PaymentException::class)) {
+            $this->expectException(PaymentException::class);
+        } else {
+            $this->expectException(InvalidOrderException::class);
+        }
+
         $builder->getRequestParameter($struct);
     }
 
@@ -131,7 +137,12 @@ class CaptureRequestParameterBuilderTest extends TestCase
         ]);
         $struct->getPaymentTransaction()->getOrderTransaction()->addExtension(PayonePaymentOrderTransactionExtension::NAME, $extension);
 
-        $this->expectException(InvalidOrderException::class);
+        if (class_exists(PaymentException::class)) {
+            $this->expectException(PaymentException::class);
+        } else {
+            $this->expectException(InvalidOrderException::class);
+        }
+
         $builder->getRequestParameter($struct);
     }
 
@@ -155,7 +166,12 @@ class CaptureRequestParameterBuilderTest extends TestCase
         ]);
         $struct->getPaymentTransaction()->getOrderTransaction()->addExtension(PayonePaymentOrderTransactionExtension::NAME, $extension);
 
-        $this->expectException(InvalidOrderException::class);
+        if (class_exists(PaymentException::class)) {
+            $this->expectException(PaymentException::class);
+        } else {
+            $this->expectException(InvalidOrderException::class);
+        }
+
         $builder->getRequestParameter($struct);
     }
 

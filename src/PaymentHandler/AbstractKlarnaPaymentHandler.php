@@ -58,7 +58,7 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractAsynchronousPayonePa
         $authToken = $dataBag->get('payoneKlarnaAuthorizationToken');
 
         if (!$authToken) {
-            throw new AsyncPaymentProcessException(
+            throw $this->createPaymentException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );

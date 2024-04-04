@@ -15,7 +15,6 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -95,7 +94,7 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
         SalesChannelContext $salesChannelContext
     ): void {
         if (empty($response['status']) || $response['status'] === 'ERROR') {
-            throw new AsyncPaymentProcessException(
+            throw $this->createPaymentException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );

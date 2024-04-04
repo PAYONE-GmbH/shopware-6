@@ -21,14 +21,14 @@ class PayoneApplePayPaymentHandler extends AbstractSynchronousPayonePaymentHandl
         $response = json_decode((string) $dataBag->get('response', '{}'), true, 512, \JSON_THROW_ON_ERROR);
 
         if ($response === null || !\array_key_exists('status', $response) || !\array_key_exists('txid', $response)) {
-            throw new SyncPaymentProcessException(
+            throw $this->createPaymentException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
 
         if ($response['status'] !== 'APPROVED' && $response['status'] !== 'PENDING') {
-            throw new SyncPaymentProcessException(
+            throw $this->createPaymentException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );

@@ -18,7 +18,6 @@ use PayonePayment\PaymentHandler\PayoneWeChatPayPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
 class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
@@ -49,15 +48,15 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         if ($transactionData === null) {
-            throw new InvalidOrderException($order->getId());
+            throw $this->orderNotFoundException($order->getId());
         }
 
         if ($transactionData->getSequenceNumber() === null) {
-            throw new InvalidOrderException($order->getId());
+            throw $this->orderNotFoundException($order->getId());
         }
 
         if ($transactionData->getSequenceNumber() < 0) {
-            throw new InvalidOrderException($order->getId());
+            throw $this->orderNotFoundException($order->getId());
         }
 
         /** @var CurrencyEntity $currency */

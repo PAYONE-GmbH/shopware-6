@@ -7,7 +7,6 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -46,7 +45,7 @@ class PayonePaypalPaymentHandler extends AbstractAsynchronousPayonePaymentHandle
         SalesChannelContext $salesChannelContext
     ): void {
         if (empty($response['status']) || $response['status'] === 'ERROR') {
-            throw new AsyncPaymentProcessException(
+            throw $this->createPaymentException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );

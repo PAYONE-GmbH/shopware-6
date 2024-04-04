@@ -8,5 +8,5 @@ use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 
 interface PaymentStateHandlerInterface
 {
-    public function handleStateResponse(AsyncPaymentTransactionStruct $transaction, string $state): void;
+    public function handleStateResponse(AsyncPaymentTransactionStruct $transaction, string|null $state): void;
 }

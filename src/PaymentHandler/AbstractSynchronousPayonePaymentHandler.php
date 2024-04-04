@@ -16,6 +16,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -48,7 +49,7 @@ abstract class AbstractSynchronousPayonePaymentHandler extends AbstractPayonePay
         } catch (PayoneRequestException) {
             $this->beforeException();
 
-            throw new SyncPaymentProcessException(
+            throw $this->createPaymentException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
@@ -77,14 +78,14 @@ abstract class AbstractSynchronousPayonePaymentHandler extends AbstractPayonePay
         } catch (PayoneRequestException $exception) {
             $this->beforeException();
 
-            throw new SyncPaymentProcessException(
+            throw $this->createPaymentException(
                 $transaction->getOrderTransaction()->getId(),
                 $exception->getResponse()['error']['CustomerMessage']
             );
         } catch (\Throwable) {
             $this->beforeException();
 
-            throw new SyncPaymentProcessException(
+            throw $this->createPaymentException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
@@ -127,7 +128,7 @@ abstract class AbstractSynchronousPayonePaymentHandler extends AbstractPayonePay
         SalesChannelContext $salesChannelContext
     ): void {
         if (empty($response['status']) || $response['status'] === 'ERROR') {
-            throw new SyncPaymentProcessException(
+            throw $this->createPaymentException(
                 $transaction->getOrderTransaction()->getId(),
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
@@ -140,5 +141,18 @@ abstract class AbstractSynchronousPayonePaymentHandler extends AbstractPayonePay
         );
 
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
+    }
+
+    protected function createPaymentException(string $orderTransactionId, string $errorMessage, ?\Throwable $e = null): \Throwable
+    {
+        if (class_exists(PaymentException::class)) {
+            return PaymentException::asyncProcessInterrupted($orderTransactionId, $errorMessage, $e);
+        } elseif (class_exists(SyncPaymentProcessException::class)) {
+            // required for shopware version <= 6.5.3
+            throw new SyncPaymentProcessException($orderTransactionId, $errorMessage, $e);  // @phpstan-ignore-line
+        }
+
+        // should never occur, just to be safe.
+        throw new \RuntimeException('payment process was interrupted ' . $orderTransactionId);
     }
 }

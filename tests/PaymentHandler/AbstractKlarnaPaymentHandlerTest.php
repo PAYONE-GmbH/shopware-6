@@ -13,9 +13,6 @@ use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
-use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -39,13 +36,7 @@ abstract class AbstractKlarnaPaymentHandlerTest extends AbstractPaymentHandlerTe
             $paymentHandler::class
         );
 
-        if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
-            $expectedException = AsyncPaymentProcessException::class;
-        } else {
-            $expectedException = SyncPaymentProcessException::class;
-        }
-
-        $this->expectException($expectedException);
+        $this->expectedPaymentInterruptedException($paymentHandler);
         $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
     }
 
