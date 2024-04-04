@@ -19,4 +19,6 @@ interface PaymentMethodInterface
     public function getTranslations(): array;
 
     public function getPosition(): int;
+
+    public function getTechnicalName(): string;
 }

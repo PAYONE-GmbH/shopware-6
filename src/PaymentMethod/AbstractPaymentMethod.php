@@ -54,4 +54,9 @@ abstract class AbstractPaymentMethod implements PaymentMethodInterface
     {
         return $this->position;
     }
+
+    final public function getTechnicalName(): string
+    {
+        return \constant(static::class . '::TECHNICAL_NAME');
+    }
 }

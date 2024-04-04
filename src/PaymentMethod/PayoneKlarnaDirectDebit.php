@@ -11,6 +11,8 @@ class PayoneKlarnaDirectDebit extends AbstractPayoneKlarna
 {
     final public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
+    final public const TECHNICAL_NAME = 'payone_klarna_direct_debit';
+
     protected string $id = self::UUID;
 
     protected string $name = 'PAYONE Klarna Sofort bezahlen'; // do not replace this by an english wording. (this is the product name)

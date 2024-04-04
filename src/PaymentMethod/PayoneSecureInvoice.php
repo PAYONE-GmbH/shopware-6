@@ -10,6 +10,9 @@ use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 class PayoneSecureInvoice extends AbstractPaymentMethod
 {
     final public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
+
+    final public const TECHNICAL_NAME = 'payone_secure_invoice';
+
     final public const BUSINESSRELATION_B2B = 'b2b';
     final public const BUSINESSRELATION_B2C = 'b2c';
 
