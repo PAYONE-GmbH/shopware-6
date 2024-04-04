@@ -11,6 +11,8 @@ class PayoneKlarnaInvoice extends AbstractPayoneKlarna
 {
     final public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
+    final public const TECHNICAL_NAME = 'payone_klarna_invoice';
+
     protected string $id = self::UUID;
 
     protected string $name = 'PAYONE Klarna Rechnung'; // do not replace this by an english wording. (this is the product name)

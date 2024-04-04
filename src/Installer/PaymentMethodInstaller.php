@@ -40,9 +40,11 @@ use PayonePayment\PaymentMethod\PayoneSofortBanking;
 use PayonePayment\PaymentMethod\PayoneTrustly;
 use PayonePayment\PaymentMethod\PayoneWeChatPay;
 use PayonePayment\PayonePayment;
+use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -158,7 +160,8 @@ class PaymentMethodInstaller implements InstallerInterface
         private readonly EntityRepository $paymentMethodRepository,
         private readonly EntityRepository $salesChannelRepository,
         private readonly EntityRepository $paymentMethodSalesChannelRepository,
-        private readonly Connection $connection
+        private readonly Connection $connection,
+        private readonly PaymentMethodDefinition $paymentMethodDefinition
     ) {
     }
 
@@ -237,6 +240,10 @@ class PaymentMethodInstaller implements InstallerInterface
             'pluginId' => $pluginId,
             'afterOrderEnabled' => \in_array($paymentMethod::class, self::AFTER_ORDER_PAYMENT_METHODS, true),
         ];
+
+        if ($this->paymentMethodDefinition->getField('technicalName') instanceof Field) {
+            $data['technicalName'] = $paymentMethod->getTechnicalName();
+        }
 
         // Find existing payment method by ID for update / install decision
         $paymentMethodEntity = $this->findPaymentMethodEntity($paymentMethod->getId(), $context);

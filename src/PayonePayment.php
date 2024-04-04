@@ -9,6 +9,7 @@ use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Installer\RuleInstaller\RuleInstallerSecureInvoice;
+use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -177,13 +178,16 @@ class PayonePayment extends Plugin
         $paymentMethodSalesChannelRepository = $this->container->get('sales_channel_payment_method.repository');
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
+        /** @var PaymentMethodDefinition $paymentMethodDefinition */
+        $paymentMethodDefinition = $this->container->get(PaymentMethodDefinition::class);
 
         return new PaymentMethodInstaller(
             $pluginIdProvider,
             $paymentMethodRepository,
             $salesChannelRepository,
             $paymentMethodSalesChannelRepository,
-            $connection
+            $connection,
+            $paymentMethodDefinition
         );
     }
 

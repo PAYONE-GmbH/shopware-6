@@ -11,6 +11,8 @@ class PayonePaypal extends AbstractPaymentMethod
 {
     final public const UUID = PaymentMethodInstaller::PAYMENT_METHOD_IDS[self::class];
 
+    final public const TECHNICAL_NAME = 'payone_paypal';
+
     protected string $id = self::UUID;
 
     protected string $name = 'PAYONE PayPal';
