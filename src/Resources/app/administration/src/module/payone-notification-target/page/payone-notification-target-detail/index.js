@@ -28,7 +28,8 @@ export default {
         return {
             notificationTarget: null,
             isLoading: false,
-            isSaveSuccessful: false
+            isSaveSuccessful: false,
+            processSuccess: false,
         };
     },
 
@@ -59,10 +60,6 @@ export default {
     },
 
     methods: {
-        updateSelection(value) {
-            this.notificationTarget.txactions = value;
-        },
-
         createdComponent() {
             if (this.notificationTargetId) {
                 this.loadEntityData();

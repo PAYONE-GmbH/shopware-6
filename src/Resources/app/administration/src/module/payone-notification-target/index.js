@@ -9,8 +9,7 @@ Shopware.Module.register('payone-notification-target', {
     name: 'PayoneNotificationTarget',
     title: 'payonePayment.notificationTarget.module.title',
     description: 'payonePayment.notificationTarget.module.title',
-    color: '#3596d6',
-    icon: 'default-shopping-paper-bag-product',
+    icon: 'regular-cog',
 
     snippets: {
         'de-DE': deDE,
