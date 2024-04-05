@@ -17,7 +17,7 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractSynchronousPayonePa
     {
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
-        $definitions['ratepayBirthday'] = [new NotBlank(), new Birthday(['value' => $this->getMinimumDate()])];
+        $definitions['ratepayBirthday'] = [new NotBlank(), new Birthday()];
         $definitions['ratepayIban'] = [new Iban()];
 
         return $definitions;

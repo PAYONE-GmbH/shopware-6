@@ -36,7 +36,7 @@ class OrderValidationEventListenerTest extends TestCase
 
         $definitions = [
             'iban' => [new NotBlank(), new Iban()],
-            'birthday' => [new NotBlank(), new Birthday(['value' => (new \DateTime())->modify('-18 years')->setTime(0, 0)])],
+            'birthday' => [new NotBlank(), new Birthday()],
             'sub' => new DataValidationDefinition(),
         ];
 
