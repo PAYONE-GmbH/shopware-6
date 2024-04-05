@@ -6,15 +6,6 @@
             :showActions="false"
             :showSelection="true"
             v-on:select-item="onSelectItem">
-
-            <template #column-product="{ item, isInlineEdit }">
-                {{ item.product }}
-            </template>
-
-            <template #column-price="{ item, isInlineEdit }">
-                {{ item.price }}
-            </template>
-
             <template #column-quantity="{ item, isInlineEdit }">
                 <sw-field
                     :value="item.quantity"
