@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\Validator\Birthday;
-use PayonePayment\Components\Validator\PaymentMethod;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -22,12 +21,6 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractSynchronousPayoneP
         // if the customer has a company address, the birthday is not required
         if ($salesChannelContext->getCustomer()?->getDefaultBillingAddress()?->getCompany() === null) {
             $definitions['payolutionBirthday'] = [new NotBlank(), new Birthday()];
-        }
-
-        $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-
-        if (!$configuration->get('payolutionInvoicingTransferCompanyData') && $this->customerHasCompanyAddress($salesChannelContext)) {
-            $definitions['payonePaymentMethod'] = [new PaymentMethod(['value' => $salesChannelContext->getPaymentMethod()])];
         }
 
         return $definitions;

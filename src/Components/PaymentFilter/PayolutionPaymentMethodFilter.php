@@ -15,13 +15,17 @@ class PayolutionPaymentMethodFilter extends DefaultPaymentFilterService
     protected function additionalChecks(PaymentMethodCollection $methodCollection, PaymentFilterContext $filterContext): void
     {
         if (empty($this->getPaymentHandlerConfiguration($filterContext->getSalesChannelContext(), 'CompanyName'))) {
-            throw new PaymentMethodNotAllowedException('Payolution: missing merchant-company name.');
+            throw new PaymentMethodNotAllowedException('Unzer: missing configuration: merchant-company name.');
         }
 
-        if ($this->paymentHandlerClass === PayonePayolutionInvoicingPaymentHandler::class
-            && !($this->getPaymentHandlerConfiguration($filterContext->getSalesChannelContext(), 'TransferCompanyData'))
-        ) {
-            throw new PaymentMethodNotAllowedException('Payolution Invoicing: Missing configuration.');
+        if (!empty($filterContext->getBillingAddress()?->getCompany())) {
+            if ($this->paymentHandlerClass === PayonePayolutionInvoicingPaymentHandler::class) {
+                if (!($this->getPaymentHandlerConfiguration($filterContext->getSalesChannelContext(), 'TransferCompanyData'))) {
+                    throw new PaymentMethodNotAllowedException('Unzer Invoice: B2B is not allowed by configuration.');
+                }
+            } else {
+                throw new PaymentMethodNotAllowedException('Unzer: B2B is only allowed for invoice (if enabled).');
+            }
         }
     }
 

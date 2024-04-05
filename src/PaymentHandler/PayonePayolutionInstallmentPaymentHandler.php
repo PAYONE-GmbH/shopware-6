@@ -9,7 +9,6 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\Validator\Birthday;
-use PayonePayment\Components\Validator\PaymentMethod;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -62,10 +61,6 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractSynchronousPayon
 
         $definitions['payolutionConsent'] = [new NotBlank()];
         $definitions['payolutionBirthday'] = [new NotBlank(), new Birthday()];
-
-        if ($this->customerHasCompanyAddress($salesChannelContext)) {
-            $definitions['payonePaymentMethod'] = [new PaymentMethod(['value' => $salesChannelContext->getPaymentMethod()])];
-        }
 
         return $definitions;
     }
