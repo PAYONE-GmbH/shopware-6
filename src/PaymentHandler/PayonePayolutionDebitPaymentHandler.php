@@ -4,12 +4,23 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PayonePayolutionDebitPaymentHandler extends AbstractSynchronousPayonePaymentHandler
 {
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    {
+        $definitions = parent::getValidationDefinitions($salesChannelContext);
+
+        $definitions['payolutionConsent'] = [new NotBlank()];
+        $definitions['payolutionMandate'] = [new NotBlank()];
+
+        return $definitions;
+    }
+
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (static::isNeverCapturable($payoneTransActionData)) {
@@ -26,17 +37,6 @@ class PayonePayolutionDebitPaymentHandler extends AbstractSynchronousPayonePayme
         }
 
         return static::matchesIsRefundableDefaults($transactionData);
-    }
-
-    protected function validateRequestData(RequestDataBag $dataBag): void
-    {
-        if ($dataBag->get('payolutionConsent') !== 'on') {
-            throw new PayoneRequestException('No payolutionConsent');
-        }
-
-        if ($dataBag->get('payolutionMandate') !== 'on') {
-            throw new PayoneRequestException('No payolutionMandate');
-        }
     }
 
     protected function getDefaultAuthorizationMethod(): string
