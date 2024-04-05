@@ -4,22 +4,42 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\Validator;
 
-use Symfony\Component\Validator\Constraints\AbstractComparison;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 
-/**
- * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
- */
-class Birthday extends AbstractComparison
+class Birthday extends LessThanOrEqual
 {
-    final public const TOO_HIGH_ERROR = 'ac2f93c6-f906-47c9-8b09-6f7cf41f4f49';
+    /**
+     * @var int
+     */
+    final public const LEGAL_AGE = 18;
 
+    /**
+     * @var string
+     */
+    final public const INVALID_AGE = 'ac2f93c6-f906-47c9-8b09-6f7cf41f4f49';
+
+    /**
+     * @var array<string, string>
+     */
     protected const ERROR_NAMES = [
-        self::TOO_HIGH_ERROR => 'PAYONE_BIRTHDAY_NOT_VALID',
+        self::TOO_HIGH_ERROR => self::INVALID_AGE,
     ];
 
     /**
-     * @phpstan-ignore-next-line
+     * @var string[]
+     * @deprecated since Symfony 6.1, use const ERROR_NAMES instead
      */
-    public $message = 'This value should be less than or equal to {{ compared_value }}.';
+    protected static $errorNames = self::ERROR_NAMES;
+
+    public function __construct(mixed $options = null)
+    {
+        $options ??= [];
+        $options['value'] = sprintf('-%d years', self::LEGAL_AGE);
+        parent::__construct($options);
+    }
+
+    public function validatedBy(): string
+    {
+        return BirthdayValidator::class;
+    }
 }

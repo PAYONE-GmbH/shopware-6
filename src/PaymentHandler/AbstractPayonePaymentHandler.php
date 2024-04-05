@@ -204,11 +204,6 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
         $this->lineItemRepository->update($saveData, $context);
     }
 
-    protected function getMinimumDate(): \DateTimeInterface
-    {
-        return (new \DateTime())->modify('-18 years')->setTime(0, 0);
-    }
-
     protected function customerHasCompanyAddress(SalesChannelContext $salesChannelContext): bool
     {
         $customer = $salesChannelContext->getCustomer();

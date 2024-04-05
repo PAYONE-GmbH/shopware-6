@@ -4,32 +4,26 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\Validator;
 
-use Symfony\Component\Validator\Constraints\AbstractComparisonValidator;
+use DateTime;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\LessThanOrEqualValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class BirthdayValidator extends AbstractComparisonValidator
+class BirthdayValidator extends LessThanOrEqualValidator
 {
-    /**
-     * @param string            $value1
-     * @param \DateTimeInterface $value2
-     *
-     * @return bool true if value1 is lower than value2, false otherwise
-     */
-    protected function compareValues($value1, $value2): bool
+    public function validate(mixed $value, Constraint $constraint): void
     {
-        if (empty($value1)) {
-            return false;
+        if (!$constraint instanceof Birthday) {
+            throw new UnexpectedTypeException($constraint, Birthday::class);
         }
 
-        $birthday = \DateTime::createFromFormat('Y-m-d', $value1);
+        $value = ($value ? DateTime::createFromFormat('Y-m-d', $value) : null) ?: null;
 
-        return $birthday < $value2;
-    }
+        if (!$value instanceof DateTime) {
+            // if value is null the comparison `null < DateTime` will be result into true.
+            $value = new DateTime(); // `now` is not allowed by constraint
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function getErrorCode(): ?string
-    {
-        return Birthday::TOO_HIGH_ERROR;
+        parent::validate($value, $constraint);
     }
 }

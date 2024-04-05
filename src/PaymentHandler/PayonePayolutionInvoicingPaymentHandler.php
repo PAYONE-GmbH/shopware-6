@@ -21,7 +21,7 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractSynchronousPayoneP
 
         // if the customer has a company address, the birthday is not required
         if ($salesChannelContext->getCustomer()?->getDefaultBillingAddress()?->getCompany() === null) {
-            $definitions['payolutionBirthday'] = [new NotBlank(), new Birthday(['value' => $this->getMinimumDate()])];
+            $definitions['payolutionBirthday'] = [new NotBlank(), new Birthday()];
         }
 
         $configuration = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
