@@ -99,7 +99,7 @@ trait PayoneTestBehavior
         $product = [
             'id' => $productId,
             'name' => 'Test product',
-            'productNumber' => '123456789',
+            'productNumber' => $productId,
             'stock' => 1,
             'price' => [
                 ['currencyId' => Defaults::CURRENCY, 'gross' => $price, 'net' => $price, 'linked' => false],
