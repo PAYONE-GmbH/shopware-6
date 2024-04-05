@@ -6,7 +6,7 @@
             "descriptionTextModule": "Settings for PAYONE",
             "headlines": {
                 "ratepayProfiles": "Profile",
-                "ratepayProfileConfigurations": "Profil-Konfigurationen"
+                "ratepayProfileConfigurations": "Profile configuration"
             },
             "label": {
                 "shopId": "Shop-ID",
@@ -16,8 +16,7 @@
                 "shippingCountry": "Shipping Country",
                 "minBasket": "Min. Basket",
                 "maxBasket": "Max. Basket",
-                "reloadConfigBtn": "Reload Profile Configuration",
-                "reloadConfigInfo": "(Plugin Configuration Changes will be saved first)"
+                "reloadConfigInfo": "Profile-Configuration got automatically updated during saving the plugin configuration"
             },
             "actions": {
                 "addShop": "Add Shop-ID"

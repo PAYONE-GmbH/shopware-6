@@ -40,7 +40,7 @@
         <sw-button-process @click="onTest"
                            :isLoading="isTesting"
                            :processSuccess="isTestSuccessful"
-                           :disabled="credentialsMissing || isLoading">
+                           :disabled="isLoading">
             {{ $tc('payone-payment.settingsForm.test') }}
         </sw-button-process>
         {% endblock %}
@@ -148,77 +148,27 @@
         </sw-modal>
 
         <sw-card-view>
-            <sw-system-config
+            <payone-payment-settings
                     class="payone-config__wrapper"
                     ref="systemConfig"
-                    salesChannelSwitchable
+                    sales-channel-switchable
                     inherit
-                    @config-changed="onConfigChange"
                     domain="PayonePayment.settings">
 
                 <template #beforeElements="{card, config}">
-                    <div v-if="isCollapsible(card)" class="payone-config__collapsible-container" v-bind:class="{'collapsed': isCollapsed(card)}" >
-                        <a class="payone-config__collapsible-handle" @click="toggleCollapsible(card)">
-                            <sw-icon small v-if="isCollapsed(card)" name="regular-chevron-down-xxs" class="payone-config__collapsible-handle-open"></sw-icon>
-                            <sw-icon small v-if="!isCollapsed(card)" name="regular-chevron-up-xxs" class="payone-config__collapsible-handle-close"></sw-icon>
+                    <div v-if="card.setShowFields !== undefined" class="payone-config__collapsible-container" v-bind:class="{'collapsed': !card.showFields}" >
+                        <a class="payone-config__collapsible-handle" @click="card.setShowFields(!card.showFields)">
+                            <sw-icon small v-if="!card.showFields" name="regular-chevron-down-xxs" class="payone-config__collapsible-handle-open"></sw-icon>
+                            <sw-icon small v-if="card.showFields" name="regular-chevron-up-xxs" class="payone-config__collapsible-handle-close"></sw-icon>
                         </a>
                     </div>
+
+                    <sw-alert v-if="card.showFields && card.name === 'payment_apple_pay' && !isApplePayCertConfigured"
+                              variant="info" appearance="default" :showIcon="true" :closable="false">
+                        <span v-html="$tc('payone-payment.applePay.cert.notification')"></span>
+                    </sw-alert>
                 </template>
-
-                <template #card-element="{element, config, card}">
-                    <div v-show="displayField(element, config, card)">
-                        <sw-alert v-if="element.name === 'PayonePayment.settings.applePayCertPassphrase' && !isApplePayCertConfigured"
-                            variant="info" appearance="default" :showIcon="true" :closable="false">
-                            <span v-html="$tc('payone-payment.applePay.cert.notification')"></span>
-                        </sw-alert>
-
-                        <sw-form-field-renderer
-                            v-if="element.name.startsWith('PayonePayment.settings.paymentStatus')"
-                            :config="{
-                                componentName: 'sw-single-select',
-                                label: getInlineSnippet(getElementBind(getBind(element, config)).config.label),
-                                helpText: getInlineSnippet(getElementBind(getBind(element, config)).config.helpText),
-                                options: stateMachineTransitionActions,
-                            }"
-                            v-model="config[element.name]"
-                        />
-
-                        <sw-form-field-renderer
-                            v-else-if="!element.name.includes('PaymentStatus')"
-                            v-bind="getElementBind(getBind(element, config))"
-                            v-model="config[element.name]"
-                        />
-
-                        <div v-if="element.name.includes('ProfileConfigurations')">
-                            <button class="sw-button payone-config-reaload__btn"
-                                    @click="onSave">{{ $tc('payone-payment.general.label.reloadConfigBtn') }}</button>
-                            <p class="payone-config-reaload__info">{{ $tc('payone-payment.general.label.reloadConfigInfo') }}</p>
-                        </div>
-
-                    </div>
-                </template>
-
-                <template #afterElements="{card, config}">
-                    <sw-switch-field v-if="isVisiblePaymentMethodCard(card)"
-                                     v-model="displayStatusMapping[card.name]"
-                                     :label="$tc('payone-payment.settingsForm.labelShowSpecificStatusMapping')"
-                                     :helpText="$tc('payone-payment.settingsForm.helpTextShowSpecificStatusMapping')"></sw-switch-field>
-
-                    <div v-if="config">
-                        <template v-for="element in card.elements">
-                            <sw-form-field-renderer
-                                v-if="element.name.includes('PaymentStatus') && displayStatusMapping[card.name]"
-                                :config="{
-                                    componentName: 'sw-single-select',
-                                    label: getInlineSnippet(getElementBind(getBind(element, config)).config.label),
-                                    helpText: getInlineSnippet(getElementBind(getBind(element, config)).config.helpText),
-                                    options: stateMachineTransitionActions,
-                                }"
-                                v-model="config[element.name]" />
-                        </template>
-                    </div>
-                </template>
-            </sw-system-config>
+            </payone-payment-settings>
         </sw-card-view>
     </template>
     {% endblock %}
