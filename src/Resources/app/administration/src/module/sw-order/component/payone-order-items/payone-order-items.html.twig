@@ -7,15 +7,15 @@
             :showSelection="true"
             v-on:select-item="onSelectItem">
 
-            <template slot="column-product" slot-scope="{ item, isInlineEdit}">
+            <template #column-product="{ item, isInlineEdit }">
                 {{ item.product }}
             </template>
 
-            <template slot="column-price" slot-scope="{ item, isInlineEdit}">
+            <template #column-price="{ item, isInlineEdit }">
                 {{ item.price }}
             </template>
 
-            <template slot="column-quantity" slot-scope="{ item, isInlineEdit }">
+            <template #column-quantity="{ item, isInlineEdit }">
                 <sw-field
                     :value="item.quantity"
                     type="number"

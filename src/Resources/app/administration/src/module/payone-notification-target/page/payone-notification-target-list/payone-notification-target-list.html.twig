@@ -2,7 +2,7 @@
     <sw-page class="sw-review-list">
 
         {% block payone_notification_target_list_smart_bar_header %}
-            <template slot="smart-bar-header">
+            <template #smart-bar-header>
                 {% block payone_notification_target_list_smart_bar_header_title %}
                     <h2>
 
@@ -33,7 +33,7 @@
         {% endblock %}
 
         {% block payone_notification_target_list_content %}
-            <template slot="content">
+            <template #content>
 
                 {% block payone_notification_target_list_content_list %}
                     <sw-entity-listing
@@ -87,7 +87,7 @@
         {% endblock %}
 
         {% block payone_notification_target_list_sidebar %}
-            <template slot="sidebar">
+            <template #sidebar>
                 <sw-sidebar>
 
                     {% block payone_notification_target_list_sidebar_refresh %}
