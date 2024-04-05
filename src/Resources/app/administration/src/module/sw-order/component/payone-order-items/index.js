@@ -7,78 +7,18 @@ export default {
     template,
 
     props: {
+        items: {
+            type: Array,
+            required: true
+        },
         order: {
             type: Object,
             required: true
-        },
-
-        mode: {
-            type: String,
-            required: false
         }
     },
 
     computed: {
         currencyFilter: () => Filter.getByName('currency'),
-
-        orderItems() {
-            const data = [];
-
-            this.order.lineItems.forEach((order_item) => {
-                const price = this.currencyFilter(
-                    order_item.totalPrice,
-                    this.order.currency.shortName,
-                    this.order.decimal_precision
-                );
-
-                let disabled = false;
-                let quantity = order_item.quantity;
-
-                if(order_item.customFields) {
-                    if ('refund' === this.mode) {
-                        if(order_item.customFields.payone_captured_quantity &&
-                            0 > order_item.customFields.payone_captured_quantity) {
-                            quantity = order_item.customFields.payone_captured_quantity;
-                        }
-
-                        if(order_item.customFields.payone_refunded_quantity) {
-                            quantity -= order_item.customFields.payone_refunded_quantity;
-                        }
-                    } else if ('capture' === this.mode && order_item.customFields.payone_captured_quantity &&
-                        0 < order_item.customFields.payone_captured_quantity) {
-                        quantity -= order_item.customFields.payone_captured_quantity;
-                    }
-                }
-
-                if (1 > quantity) {
-                    disabled = true;
-                }
-
-                data.push({
-                    id: order_item.id,
-                    product: order_item.label,
-                    quantity: quantity,
-                    disabled: disabled,
-                    selected: false,
-                    price: price,
-                    orderItem: order_item
-                });
-            });
-
-            if (this.order.shippingCosts.totalPrice > 0) {
-                data.push({
-                    id: 'shipping',
-                    product: this.$tc('sw-order.payone-payment.modal.shippingCosts'),
-                    quantity: 1,
-                    disabled: false,
-                    selected: false,
-                    price: this.currencyFilter(this.order.shippingCosts.totalPrice, this.order.currency.shortName, this.order.decimal_precision),
-                    orderItem: {}
-                });
-            }
-
-            return data;
-        },
 
         orderItemColumns() {
             return [
@@ -102,12 +42,11 @@ export default {
     },
 
     methods: {
-        onSelectItem(selection, item, selected) {
-            this.$emit('select-item', item.id, selected);
+        updateSelection(selection) {
+            const selectionIds = Object.keys(selection);
+            this.items.forEach(item => {
+                item.selected = selectionIds.includes(item.id);
+            });
         },
-
-        onChangeQuantity(value, id) {
-            this.$emit('change-quantity', id, value);
-        }
     }
 };

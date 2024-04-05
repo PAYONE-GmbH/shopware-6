@@ -1,24 +1,30 @@
 {% block payone_payment_details %}
     <div class="payone-order-items">
-        <payone-data-grid
-            :dataSource="orderItems"
+        <sw-data-grid
+            :dataSource="items"
             :columns="orderItemColumns"
             :showActions="false"
             :showSelection="true"
-            v-on:select-item="onSelectItem">
+            @selection-change="updateSelection"
+            :isRecordSelectable="(item) => !item.disabled"
+        >
             <template #column-quantity="{ item, isInlineEdit }">
-                <sw-field
-                    :value="item.quantity"
+                <sw-number-field
+                    v-model:value="item.quantity"
                     type="number"
+                    :step="1"
                     :min="0"
-                    :disabled="item.disabled"
-                    :max="item.quantity"
+                    :disabled="item.disabled || !item.selected"
+                    :max="item.maxQuantity"
                     slot="inline-edit"
                     size="small"
-                    placeholder=0
-                    v-on:change="onChangeQuantity($event, item.id)">
-                </sw-field>
+                    placeholder="0"
+                ></sw-number-field>
             </template>
-        </payone-data-grid>
+
+            <template #column-price="{ item }">
+                {{ currencyFilter(item.unit_price, order.currency.shortName) }}
+            </template>
+        </sw-data-grid>
     </div>
 {% endblock %}

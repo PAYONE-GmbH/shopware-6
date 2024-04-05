@@ -7,7 +7,6 @@ Shopware.Component.register('payone-refund-button', () => import('./component/pa
 Shopware.Component.register('sw-order-detail-payone', () => import('./view/sw-order-detail-payone'));
 
 Shopware.Component.override('sw-order-detail', () => import('./page/sw-order-detail'));
-Shopware.Component.extend('payone-data-grid', 'sw-data-grid', () => import('./component/payone-data-grid'));
 
 Shopware.Module.register('sw-order-detail-tab-payone', {
   routeMiddleware(next, currentRoute) {
