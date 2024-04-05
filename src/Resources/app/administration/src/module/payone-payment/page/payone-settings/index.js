@@ -1,8 +1,7 @@
 import template from './payone-settings.html.twig';
 import './style.scss';
 
-const { Mixin } = Shopware;
-const { object, types } = Shopware.Utils;
+const {Mixin} = Shopware;
 
 export default {
     template,
@@ -12,7 +11,7 @@ export default {
         Mixin.getByName('sw-inline-snippet')
     ],
 
-    inject: [ 'PayonePaymentSettingsService' ],
+    inject: ['PayonePaymentSettingsService'],
 
     data() {
         return {
@@ -21,62 +20,14 @@ export default {
             isSaveSuccessful: false,
             isTestSuccessful: false,
             isApplePayCertConfigured: true,
-            config: {},
-            merchantIdFilled: false,
-            accountIdFilled: false,
-            portalIdFilled: false,
-            portalKeyFilled: false,
-            showValidationErrors: false,
             isSupportModalOpen: false,
             stateMachineTransitionActions: [],
             displayStatusMapping: {},
-            collapsibleState: {
-                'status_mapping': true,
-                'payment_credit_card': true,
-                'payment_paypal': true,
-                'payment_paypal_express': true,
-                'payment_debit': true,
-                'payment_sofort': true,
-                'payment_payolution_installment': true,
-                'payment_payolution_invoicing': true,
-                'payment_payolution_debit': true,
-                'payment_eps': true,
-                'payment_ideal': true,
-                'payment_paydirekt': true,
-                'payment_prepayment': true,
-                'payment_trustly': true,
-                'payment_secure_invoice': true,
-                'payment_open_invoice': true,
-                'payment_apple_pay': true,
-                'payment_bancontact': true,
-                'payment_ratepay_debit': true,
-                'payment_ratepay_installment': true,
-                'payment_ratepay_invoicing': true,
-                'payment_klarna_invoice': true,
-                'payment_klarna_direct_debit': true,
-                'payment_klarna_installment': true,
-                'payment_przelewy24': true,
-                'payment_we_chat_pay': true,
-                'payment_postfinanceCard': true,
-                'payment_postfinanceWallet': true,
-                'payment_alipay': true,
-                'payment_secured_invoice': true,
-                'payment_secured_installment': true,
-                'payment_secured_direct_debit': true,
-                'payment_amazon_pay': true,
-                'payment_amazon_pay_express': true,
-            },
         };
     },
 
     created() {
         this.createdComponent();
-    },
-
-    computed: {
-        credentialsMissing: function() {
-            return !this.merchantIdFilled || !this.accountIdFilled || !this.portalIdFilled || !this.portalKeyFilled;
-        }
     },
 
     metaInfo() {
@@ -87,95 +38,10 @@ export default {
 
     methods: {
         createdComponent() {
-            let me = this;
-
-            this.PayonePaymentSettingsService.getStateMachineTransitionActions()
-                .then((result) => {
-                    result.data.forEach((element) => {
-                        let translationKey = 'payone-payment.transitionActionNames.' + element.label;
-                        let translationValue = me.$t(translationKey);
-
-                        if (translationValue === translationKey) {
-                            translationValue = element.label;
-                        }
-
-                        me.stateMachineTransitionActions.push({
-                            "label": translationValue,
-                            "value": element.value,
-                        })
-                    });
-                });
-
             this.PayonePaymentSettingsService.hasApplePayCert()
                 .then((result) => {
                     this.isApplePayCertConfigured = result;
                 });
-        },
-
-        paymentMethodPrefixes() {
-            return [
-                'creditCard',
-                'debit',
-                'paypal',
-                'paypalExpress',
-                'payolutionInvoicing',
-                'payolutionInstallment',
-                'payolutionDebit',
-                'sofort',
-                'eps',
-                'iDeal',
-                'paydirekt',
-                'prepayment',
-                'trustly',
-                'secureInvoice',
-                'openInvoice',
-                'applePay',
-                'bancontact',
-                'ratepayDebit',
-                'ratepayInstallment',
-                'ratepayInvoicing',
-                'klarnaInvoice',
-                'klarnaDirectDebit',
-                'klarnaInstallment',
-                'przelewy24',
-                'weChatPay',
-                'postfinanceCard',
-                'postfinanceWallet',
-                'alipay',
-                'securedInvoice',
-                'securedInstallment',
-                'securedDirectDebit',
-                'amazonPay',
-                'amazonPayExpress',
-            ];
-        },
-
-        isVisiblePaymentMethodCard(card) {
-            return card.name.startsWith('payment') && !this.isCollapsed(card);
-        },
-
-        isCollapsible(card) {
-            return card.name in this.collapsibleState;
-        },
-
-        displayField(element, config, card) {
-            if (!(card.name in this.collapsibleState)) {
-                return true;
-            }
-
-            return !this.collapsibleState[card.name];
-        },
-
-        isCollapsed(card) {
-            return this.collapsibleState[card.name];
-        },
-
-        toggleCollapsible(card) {
-            if (!(card.name in this.collapsibleState)) {
-                return;
-            }
-
-            this.collapsibleState[card.name] = !this.collapsibleState[card.name];
         },
 
         saveFinish() {
@@ -186,30 +52,17 @@ export default {
             this.isTestSuccessful = false;
         },
 
-        onConfigChange(config) {
-            this.config = config;
-
-            this.checkCredentialsFilled();
-
-            this.showValidationErrors = false;
-        },
-
-        checkCredentialsFilled() {
-            this.merchantIdFilled = !!this.getConfigValue('merchantId');
-            this.accountIdFilled = !!this.getConfigValue('accountId');
-            this.portalIdFilled = !!this.getConfigValue('portalId');
-            this.portalKeyFilled = !!this.getConfigValue('portalKey');
-        },
-
         getConfigValue(field) {
-            const defaultConfig = this.$refs.systemConfig.actualConfigData.null;
+            const actualConfig = this.$refs.systemConfig.actualConfigData;
+            const defaultConfig = actualConfig.null;
             const salesChannelId = this.$refs.systemConfig.currentSalesChannelId;
 
             if (salesChannelId === null) {
-                return this.config[`PayonePayment.settings.${field}`];
+                return actualConfig.null[`PayonePayment.settings.${field}`];
             }
-            return this.config[`PayonePayment.settings.${field}`]
-                    || defaultConfig[`PayonePayment.settings.${field}`];
+
+            return actualConfig[salesChannelId][`PayonePayment.settings.${field}`]
+                || defaultConfig[`PayonePayment.settings.${field}`];
         },
 
         getPaymentConfigValue(field, prefix) {
@@ -220,19 +73,12 @@ export default {
         },
 
         onSave() {
-            if (this.credentialsMissing) {
-                this.showValidationErrors = true;
-                return;
-            }
-
             this.isSaveSuccessful = false;
             this.isLoading = true;
             this.$refs.systemConfig.saveAll().then((response) => {
                 this.handleRatepayProfileUpdates(response);
-
-                this.isLoading = false;
                 this.isSaveSuccessful = true;
-            }).catch(() => {
+            }).finally(() => {
                 this.isLoading = false;
             });
         },
@@ -242,12 +88,18 @@ export default {
             this.isTestSuccessful = false;
 
             let credentials = {};
-            this.paymentMethodPrefixes().forEach((prefix) => {
-                credentials[prefix] = {
-                    merchantId: this.getPaymentConfigValue('merchantId', prefix),
-                    accountId: this.getPaymentConfigValue('accountId', prefix),
-                    portalId: this.getPaymentConfigValue('portalId', prefix),
-                    portalKey: this.getPaymentConfigValue('portalKey', prefix)
+            this.$refs.systemConfig.config.forEach((cards) => {
+                const match = cards.name.match(/^payment_(.+)$/);
+                const paymentMethodKey = match ? match[1] : null
+                if (!paymentMethodKey) {
+                    return;
+                }
+
+                credentials[paymentMethodKey] = {
+                    merchantId: this.getPaymentConfigValue('merchantId', paymentMethodKey),
+                    accountId: this.getPaymentConfigValue('accountId', paymentMethodKey),
+                    portalId: this.getPaymentConfigValue('portalId', paymentMethodKey),
+                    portalKey: this.getPaymentConfigValue('portalKey', paymentMethodKey)
                 };
             });
 
@@ -265,8 +117,8 @@ export default {
                     });
                     this.isTestSuccessful = true;
                 } else {
-                    for(let key in errors) {
-                        if(errors.hasOwnProperty(key)) {
+                    for (let key in errors) {
+                        if (errors.hasOwnProperty(key)) {
                             this.createNotificationError({
                                 title: this.$tc('payone-payment.settingsForm.titleError'),
                                 message: this.$tc('payone-payment.settingsForm.messageTestError.' + key)
@@ -281,94 +133,13 @@ export default {
                         }
                     }
                 }
-                this.isTesting = false;
-            }).catch((errorResponse) => {
+            }).finally((errorResponse) => {
                 this.createNotificationError({
                     title: this.$tc('payone-payment.settingsForm.titleError'),
                     message: this.$tc('payone-payment.settingsForm.messageTestError.general')
                 });
                 this.isTesting = false;
             });
-        },
-
-        getBind(element, config) {
-            let originalElement;
-
-            if (config !== this.config) {
-                this.config = config;
-            }
-
-            if (this.showValidationErrors) {
-                if (element.name === 'PayonePayment.settings.merchantId' && !this.merchantIdFilled) {
-                    element.config.error = {
-                        code: 1,
-                        detail: this.$tc('payone-payment.messageNotBlank')
-                    };
-                }
-                if (element.name === 'PayonePayment.settings.accountId' && !this.accountIdFilled) {
-                    element.config.error = {
-                        code: 1,
-                        detail: this.$tc('payone-payment.messageNotBlank')
-                    };
-                }
-                if (element.name === 'PayonePayment.settings.portalId' && !this.portalIdFilled) {
-                    element.config.error = {
-                        code: 1,
-                        detail: this.$tc('payone-payment.messageNotBlank')
-                    };
-                }
-                if (element.name === 'PayonePayment.settings.portalKey' && !this.portalKeyFilled) {
-                    element.config.error = {
-                        code: 1,
-                        detail: this.$tc('payone-payment.messageNotBlank')
-                    };
-                }
-            }
-
-            this.$refs.systemConfig.config.forEach((configElement) => {
-                configElement.elements.forEach((child) => {
-                    if (child.name === element.name) {
-                        originalElement = child;
-                        return;
-                    }
-                });
-            });
-
-            return originalElement || element;
-        },
-
-        getElementBind(element) {
-            const bind = object.deepCopyObject(element);
-
-            // Add inherited values
-            if (this.currentSalesChannelId !== null
-                && this.inherit
-                && this.actualConfigData.hasOwnProperty('null')
-                && this.actualConfigData.null[bind.name] !== null) {
-                if (bind.type === 'single-select' || bind.config.componentName === 'sw-entity-single-select') {
-                    // Add inherited placeholder option
-                    bind.placeholder = this.$tc('sw-settings.system-config.inherited');
-                } else if (bind.type === 'bool') {
-                    // Add inheritedValue for checkbox fields to restore the inherited state
-                    bind.config.inheritedValue = this.actualConfigData.null[bind.name] || false;
-                } else if (bind.type === 'password') {
-                    // Add inherited placeholder and mark placeholder as password so the rendering element
-                    // can choose to hide it
-                    bind.placeholderIsPassword = true;
-                    bind.placeholder = `${this.actualConfigData.null[bind.name]}`;
-                } else if (bind.type !== 'multi-select' && !types.isUndefined(this.actualConfigData.null[bind.name])) {
-                    // Add inherited placeholder
-                    bind.placeholder = `${this.actualConfigData.null[bind.name]}`;
-                }
-            }
-
-            // Add select properties
-            if (['single-select', 'multi-select'].includes(bind.type)) {
-                bind.config.labelProperty = 'name';
-                bind.config.valueProperty = 'id';
-            }
-
-            return bind;
         },
 
         handleRatepayProfileUpdates(response) {
@@ -378,8 +149,8 @@ export default {
                 const resultBySalesChannel = response.payoneRatepayProfilesUpdateResult[salesChannelId];
 
                 this.$root.$emit(
-                  'payone-ratepay-profiles-update-result',
-                  resultBySalesChannel
+                    'payone-ratepay-profiles-update-result',
+                    resultBySalesChannel
                 );
 
                 if (!Array.isArray(resultBySalesChannel.errors)) {

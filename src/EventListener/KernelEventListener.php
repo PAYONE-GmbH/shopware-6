@@ -30,7 +30,9 @@ class KernelEventListener implements EventSubscriberInterface
         $route = $event->getRequest()->get('_route');
         $response = $event->getResponse();
 
-        if ($route === 'api.action.core.save.system-config.batch') {
+        if ($route === 'api.action.core.save.system-config.batch'
+            && ($response->getStatusCode() === Response::HTTP_OK || $response->getStatusCode() === Response::HTTP_NO_CONTENT)
+        ) {
             $results = [];
             $configurations = $event->getRequest()->request->all();
 
@@ -81,6 +83,5 @@ class KernelEventListener implements EventSubscriberInterface
         }
 
         $response->setData($data);
-        $response->setStatusCode(Response::HTTP_OK);
     }
 }

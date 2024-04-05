@@ -1,13 +1,15 @@
-.payone-ratepay-profile-configurations {
+.payone-ratepay-profile-configuration {
     margin-top: 20px;
 
-    @media screen and (min-width: 768px) {
-        width: 50%;
-    }
-
-    .payone-ratepay-profile-configuration--headline {
+    &--headline {
         font-weight: 600;
         margin-top: 20px;
+    }
+
+    &--items {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+        gap: 1rem;
     }
 
     .sw-description-list {

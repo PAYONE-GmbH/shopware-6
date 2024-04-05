@@ -1,6 +1,7 @@
 import deDE from './snippet/de_DE.json';
 import enGB from './snippet/en_GB.json';
 import './filter/payone_currency.filter';
+import './component/payone-payment-settings';
 
 Shopware.Component.register('payone-payment-plugin-icon', () => import('./component/payone-payment-plugin-icon'));
 Shopware.Component.register('payone-ratepay-profile-configurations', () => import('./component/payone-ratepay-profile-configurations'));
@@ -14,7 +15,7 @@ Shopware.Module.register('payone-payment', {
     description: 'payone-payment.general.descriptionTextModule',
     version: '1.0.0',
     targetVersion: '1.0.0',
-    icon: 'default-action-settings',
+    icon: 'regular-cog',
 
     snippets: {
         'de-DE': deDE,

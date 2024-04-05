@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class SettingsTest extends TestCase
 {
-    public function testIfDefaultSettingsExistsForPaymentMethods(): void
+    public function testIfDefaultSettingsDoesNotExistsForPaymentMethods(): void
     {
         $configFile = __DIR__ . '/../../../src/Resources/config/settings.xml';
         if (!is_file($configFile) || !is_readable($configFile)) {
@@ -22,55 +22,43 @@ class SettingsTest extends TestCase
         $prefixes = ConfigurationPrefixes::CONFIGURATION_PREFIXES;
 
         foreach ($prefixes as $prefix) {
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sMerchantId', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sAccountId', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPortalId', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPortalKey', $prefix)));
-            //self::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sAuthorizationMethod', $prefix))); // is not supported by all methods
-            //self::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sProvideNarrativeText', $prefix))); // is not supported by all methods
-            if (str_starts_with((string) $prefix, 'ratepay')) {
-                // skip status checks
-                continue;
-            }
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusAppointed', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusCapture', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusPartialCapture', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusPaid', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusUnderpaid', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusCancelation', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusPartialRefund', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusDebit', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusReminder', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusVauthorization', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusVsettlement', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusInvoice', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusFailed', $prefix)));
-            static::assertThat($xmlArray, new ConfigKeyMatches('name', sprintf('%sPaymentStatusPartialRefund', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sMerchantId', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sAccountId', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPortalId', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPortalKey', $prefix)));
+
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusAppointed', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusCapture', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusPartialCapture', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusPaid', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusUnderpaid', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusCancelation', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusPartialRefund', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusDebit', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusReminder', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusVauthorization', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusVsettlement', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusInvoice', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusFailed', $prefix)));
+            static::assertThat($xmlArray, new ConfigKeyShouldNotExist(sprintf('%sPaymentStatusPartialRefund', $prefix)));
         }
     }
 }
 
-class ConfigKeyMatches extends Constraint
+class ConfigKeyShouldNotExist extends Constraint
 {
     /**
-     * @param int|string $key
-     * @param int|string $value
+     * @param int|string $configKey
      */
-    public function __construct(private $key, private $value)
+    public function __construct(private string $configKey)
     {
     }
 
-    /**
-     * Returns a string representation of the constraint.
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
     public function toString(): string
     {
         return sprintf(
-            'config key exists %s with value %s',
-            $this->exporter()->export($this->key),
-            $this->exporter()->export($this->value)
+            'config key does NOT exists: %s',
+            $this->exporter()->export($this->configKey)
         );
     }
 
@@ -80,29 +68,19 @@ class ConfigKeyMatches extends Constraint
             foreach ($configArray['card'] as $card) {
                 if (\is_array($card) && isset($card['input-field'])) {
                     foreach ($card['input-field'] as $fields) {
-                        if ($fields[$this->key] === $this->value) {
-                            return true;
+                        if (($fields['name'] ?? null) == $this->configKey) {
+                            return false;
                         }
                     }
                 }
             }
         }
 
-        return false;
+        return true;
     }
 
-    /**
-     * Returns the description of the failure.
-     *
-     * The beginning of failure messages is "Failed asserting that" in most
-     * cases. This method should return the second part of that sentence.
-     *
-     * @param mixed $other evaluated value or object
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
     protected function failureDescription(mixed $other): string
     {
-        return 'an array ' . $this->toString();
+        return $this->toString();
     }
 }

@@ -60,8 +60,7 @@ export default {
 
     watch: {
         profiles(profiles) {
-            this.$emit('input', profiles);
-            this.$emit('change', profiles);
+            this.$emit('update:value', profiles);
         },
     },
 
