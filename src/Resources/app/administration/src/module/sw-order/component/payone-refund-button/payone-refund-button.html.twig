@@ -7,12 +7,7 @@
         </sw-container>
 
         <sw-modal v-if="showRefundModal" @modal-close="closeRefundModal" :title="$tc(`sw-order.payone-payment.modal.refund.title`)" class="payone-payment-detail--refund-modal">
-            <payone-order-items
-                    :order="order"
-                    mode="refund"
-                    v-on:select-item="onSelectItem"
-                    v-on:change-quantity="onChangeQuantity">
-            </payone-order-items>
+            <payone-order-items :order="order" :items="items"></payone-order-items>
 
             <div class="payone-payment-detail--refund-modal--content">
                 <sw-container columns="1fr 1fr" gap="0 32px">
@@ -20,8 +15,7 @@
                     <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.refund.refunded')" :value="payoneCurrencyFilter(refundedAmount, order.currency.shortName)"></sw-text-field>
                     <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.remainingAmount')" :value="payoneCurrencyFilter(remainingAmount, order.currency.shortName)"></sw-text-field>
                     <sw-number-field required="required" numberType="float" :digits="order.decimal_precision" :label="$tc('sw-order.payone-payment.modal.refund.amount')"
-                                     v-model="refundAmount"
-                                     @input-change="(value) => refundAmount = value"
+                                     v-model:value="refundAmount"
                                      :min="0"
                                      :max="maxRefundAmount"></sw-number-field>
                 </sw-container>

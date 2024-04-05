@@ -1,7 +1,7 @@
 import template from './payone-capture-button.html.twig';
 import './payone-capture-button.scss';
 
-const { Mixin, Filter } = Shopware;
+const {Mixin, Filter} = Shopware;
 
 export default {
     template,
@@ -10,7 +10,7 @@ export default {
         Mixin.getByName('notification')
     ],
 
-    inject: ['PayonePaymentService', 'repositoryFactory'],
+    inject: ['PayonePaymentService'],
 
     props: {
         order: {
@@ -21,6 +21,18 @@ export default {
             type: Object,
             required: true
         }
+    },
+
+    data() {
+        return {
+            isLoading: false,
+            hasError: false,
+            showCaptureModal: false,
+            isCaptureSuccessful: false,
+            captureAmount: 0.0,
+            includeShippingCosts: false,
+            items: [],
+        };
     },
 
     computed: {
@@ -49,13 +61,7 @@ export default {
         },
 
         capturedAmount() {
-            if (!this.transaction.extensions
-                || !this.transaction.extensions.payonePaymentOrderTransactionData
-                || !this.transaction.extensions.payonePaymentOrderTransactionData.capturedAmount) {
-                return 0;
-            }
-
-            return this.transaction.extensions.payonePaymentOrderTransactionData.capturedAmount;
+            return this.transaction?.extensions?.payonePaymentOrderTransactionData?.capturedAmount ?? 0;
         },
 
         remainingAmount() {
@@ -67,24 +73,15 @@ export default {
         },
 
         buttonEnabled() {
-            if (!this.transaction.extensions
-                || !this.transaction.extensions.payonePaymentOrderTransactionData) {
+            if (!this.transaction?.extensions?.payonePaymentOrderTransactionData) {
                 return false;
             }
 
             return (this.remainingAmount > 0 && this.capturedAmount > 0) || this.transaction.extensions.payonePaymentOrderTransactionData.allowCapture;
         },
 
-        isItemSelected() {
-            let returnValue = false;
-
-            this.selection.forEach((selection) => {
-                if (selection.selected) {
-                    returnValue = true;
-                }
-            });
-
-            return returnValue;
+        selectedItems() {
+            return this.items.filter(item => item.selected && item.quantity > 0);
         },
 
         hasRemainingShippingCosts() {
@@ -103,47 +100,53 @@ export default {
                 }
             });
 
-            if (this.capturedAmount - Math.round(capturedPositionAmount) >= shippingCosts) {
-                return false;
-            }
-
-            return true;
+            return this.capturedAmount - Math.round(capturedPositionAmount) < shippingCosts;
         }
     },
 
-    data() {
-        return {
-            isLoading: false,
-            hasError: false,
-            showCaptureModal: false,
-            isCaptureSuccessful: false,
-            selection: [],
-            captureAmount: 0.0,
-            includeShippingCosts: false
-        };
-    },
-
     methods: {
-        calculateCaptureAmount() {
+        calculateActionAmount() {
             let amount = 0;
 
-            this.selection.forEach((selection) => {
-                if (selection.selected) {
-                    amount += selection.unit_price * selection.quantity;
-                }
+            this.selectedItems.forEach((selection) => {
+                amount += selection.unit_price * selection.quantity;
             });
 
-            if (amount > this.remainingAmount) {
-                amount = this.remainingAmount;
-            }
-
-            this.captureAmount = amount;
+            this.captureAmount = amount > this.remainingAmount ? this.remainingAmount : amount;
         },
 
         openCaptureModal() {
             this.showCaptureModal = true;
             this.isCaptureSuccessful = false;
-            this.selection = [];
+            this.initItems();
+        },
+
+        initItems() {
+            this.items = this.order.lineItems.map((orderItem) => {
+                const qty = orderItem.quantity - (orderItem.customFields?.payone_captured_quantity ?? 0);
+
+                return {
+                    id: orderItem.id,
+                    quantity: qty,
+                    maxQuantity: qty,
+                    unit_price: orderItem.unitPrice,
+                    selected: false,
+                    product: orderItem.label,
+                    disabled: qty <= 0,
+                };
+            });
+
+            if (this.order.shippingCosts.totalPrice > 0) {
+                this.items.push({
+                    id: 'shipping',
+                    quantity: 1,
+                    maxQuantity: 1,
+                    unit_price: this.order.shippingCosts.totalPrice,
+                    selected: false,
+                    disabled: false,
+                    product: this.$tc('sw-order.payone-payment.modal.shippingCosts'),
+                });
+            }
         },
 
         closeCaptureModal() {
@@ -167,22 +170,21 @@ export default {
 
             this.isLoading = true;
 
-            this.selection.forEach((selection) => {
-                this.order.lineItems.forEach((order_item) => {
-                    if (order_item.id === selection.id && selection.selected && 0 < selection.quantity) {
-                        const copy = { ...order_item },
-                            taxRate = copy.tax_rate / (10 ** request.decimalPrecision);
+            this.selectedItems.forEach((selection) => {
+                if (selection.id === 'shipping') {
+                    request.includeShippingCosts = true;
+                } else {
+                    const orderLineItem = this.order.lineItems.find(lineItem => lineItem.id === selection.id);
+                    if (orderLineItem) {
+                        const copy = {...orderLineItem};
+                        const taxRate = copy.tax_rate / (10 ** request.decimalPrecision);
 
-                        copy.quantity         = selection.quantity;
-                        copy.total_amount     = copy.unit_price * copy.quantity;
+                        copy.quantity = selection.quantity;
+                        copy.total_amount = copy.unit_price * copy.quantity;
                         copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
 
                         request.orderLines.push(copy);
                     }
-                });
-
-                if (selection.id === 'shipping' && selection.selected && 0 < selection.quantity) {
-                    request.includeShippingCosts = true;
                 }
             });
 
@@ -206,20 +208,13 @@ export default {
 
             this.isLoading = true;
 
-            this.order.lineItems.forEach((order_item) => {
-                let quantity = order_item.quantity;
-
-                if (order_item.customFields && order_item.customFields.payone_captured_quantity
-                    && 0 < order_item.customFields.payone_captured_quantity) {
-                    quantity -= order_item.customFields.payone_captured_quantity;
-                }
-
-                request.orderLines.push({
-                    id: order_item.id,
-                    quantity: quantity,
-                    unit_price: order_item.unitPrice,
+            request.orderLines = this.order.lineItems.map((orderItem) => {
+                return {
+                    id: orderItem.id,
+                    quantity: orderItem.quantity - (orderItem.customFields?.payone_captured_quantity ?? 0),
+                    unit_price: orderItem.unitPrice,
                     selected: false
-                });
+                };
             });
 
             this.executeCapture(request);
@@ -249,60 +244,13 @@ export default {
                 });
             });
         },
-
-        onSelectItem(id, selected) {
-            if (this.selection.length === 0) {
-                this._populateSelectionProperty();
-            }
-
-            this.selection.forEach((selection) => {
-                if (selection.id === id) {
-                    selection.selected = selected;
-                }
-            });
-
-            this.calculateCaptureAmount();
-        },
-
-        onChangeQuantity(id, quantity) {
-            if (this.selection.length === 0) {
-                this._populateSelectionProperty();
-            }
-
-            this.selection.forEach((selection) => {
-                if (selection.id === id) {
-                    selection.quantity = quantity;
-                }
-            });
-
-            this.calculateCaptureAmount();
-        },
-
-        _populateSelectionProperty() {
-            this.order.lineItems.forEach((order_item) => {
-                let quantity = order_item.quantity;
-
-                if (order_item.customFields && order_item.customFields.payone_captured_quantity
-                    && 0 < order_item.customFields.payone_captured_quantity) {
-                    quantity -= order_item.customFields.payone_captured_quantity;
-                }
-
-                this.selection.push({
-                    id: order_item.id,
-                    quantity: quantity,
-                    unit_price: order_item.unitPrice,
-                    selected: false
-                });
-            });
-
-            if (this.order.shippingCosts.totalPrice > 0) {
-                this.selection.push({
-                    id: 'shipping',
-                    quantity: 1,
-                    unit_price: this.order.shippingCosts.totalPrice,
-                    selected: false
-                });
-            }
+    },
+    watch: {
+        items: {
+            handler() {
+                this.calculateActionAmount();
+            },
+            deep: true,
         }
     }
 };

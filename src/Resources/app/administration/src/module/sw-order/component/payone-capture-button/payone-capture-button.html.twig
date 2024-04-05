@@ -7,12 +7,7 @@
         </sw-container>
 
         <sw-modal v-if="showCaptureModal" @modal-close="closeCaptureModal" :title="$tc(`sw-order.payone-payment.modal.capture.title`)" class="payone-payment-detail--capture-modal">
-            <payone-order-items
-                    :order="order"
-                    mode="capture"
-                    v-on:select-item="onSelectItem"
-                    v-on:change-quantity="onChangeQuantity">
-            </payone-order-items>
+            <payone-order-items :order="order" :items="items"></payone-order-items>
 
             <div class="payone-payment-detail--capture-modal--content">
                 <sw-container columns="1fr 1fr" gap="0 32px">
@@ -20,8 +15,7 @@
                     <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.capture.captured')" :value="payoneCurrencyFilter(capturedAmount, order.currency.shortName)"></sw-text-field>
                     <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.remainingAmount')" :value="payoneCurrencyFilter(remainingAmount, order.currency.shortName)"></sw-text-field>
                     <sw-number-field required="required" numberType="float" :digits="order.decimal_precision" :label="$tc('sw-order.payone-payment.modal.capture.amount')"
-                                     v-model="captureAmount"
-                                     @input-change="(value) => captureAmount = value"
+                                     v-model:value="captureAmount"
                                      :min="0"
                                      :max="maxCaptureAmount"></sw-number-field>
                 </sw-container>
@@ -32,11 +26,11 @@
                     {{ $tc('sw-order.payone-payment.modal.close') }}
                 </sw-button>
 
-                <sw-button-process :isLoading="isLoading" :processSuccess="isCaptureSuccessful" @process-finish="onCaptureFinished()" :disabled="isLoading || captureAmount <= 0 || !isItemSelected" variant="primary" @click="captureOrder">
+                <sw-button-process :isLoading="isLoading" :processSuccess="isCaptureSuccessful" @process-finish="onCaptureFinished()" :disabled="isLoading || captureAmount <= 0" variant="primary" @click="captureOrder">
                     {{ $tc('sw-order.payone-payment.modal.capture.submit') }}
                 </sw-button-process>
 
-                <sw-button-process :isLoading="isLoading" :processSuccess="isCaptureSuccessful" @process-finish="onCaptureFinished()" :disabled="isLoading" variant="primary" @click="captureFullOrder">
+                <sw-button-process :isLoading="isLoading" :processSuccess="isCaptureSuccessful" @process-finish="onCaptureFinished()" :disabled="isLoading || remainingAmount <= 0" variant="primary" @click="captureFullOrder">
                     {{ $tc('sw-order.payone-payment.modal.capture.fullSubmit') }}
                 </sw-button-process>
             </template>
