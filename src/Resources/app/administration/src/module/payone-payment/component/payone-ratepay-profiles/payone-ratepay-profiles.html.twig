@@ -52,7 +52,7 @@
                             {% endblock %}
 
                             {% block payone_ratepay_shop_ids_bulk_actions %}
-                                <template slot="actions" slot-scope="{ item }">
+                                <template #actions="{ item }">
                                     {% block sw_settings_units_content_grid_column_menu_delete %}
                                         <sw-context-menu-item @click="onDeleteSelectedItem(item)" variant="danger">
                                             {{ $tc('global.default.delete') }}
