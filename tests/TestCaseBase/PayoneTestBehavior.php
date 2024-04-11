@@ -284,6 +284,7 @@ trait PayoneTestBehavior
     protected function getRequestWithSession(array $sessionVariables): Request
     {
         $session = $this->getSession();
+        $session->clear(); // make sure that session is empty
 
         foreach ($sessionVariables as $key => $value) {
             $session->set($key, $value);

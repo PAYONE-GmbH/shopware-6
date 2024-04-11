@@ -50,8 +50,12 @@ class DeviceFingerprintEventListenerTest extends TestCase
 
         $event = new CheckoutConfirmPageLoadedEvent($page, $salesChannelContext, new Request());
         $listener->addDeviceFingerprintData($event);
-
         static::assertTrue($event->getPage()->hasExtension(DeviceFingerprintData::EXTENSION_NAME));
+
+        $page->removeExtension(DeviceFingerprintData::EXTENSION_NAME);
+        $event = new CheckoutConfirmPageLoadedEvent($page, $salesChannelContext, new Request());
+        $listener->addDeviceFingerprintData($event);
+        static::assertFalse($event->getPage()->hasExtension(DeviceFingerprintData::EXTENSION_NAME), 'DFP should not be added to page-struct, because it has already generated in the previous test.');
     }
 
     public function testItAddsDeviceFingerprintDataExtensionOnAccountEditOrderPage(): void
@@ -71,8 +75,12 @@ class DeviceFingerprintEventListenerTest extends TestCase
 
         $event = new AccountEditOrderPageLoadedEvent($page, $salesChannelContext, new Request());
         $listener->addDeviceFingerprintData($event);
-
         static::assertTrue($event->getPage()->hasExtension(DeviceFingerprintData::EXTENSION_NAME));
+
+        $page->removeExtension(DeviceFingerprintData::EXTENSION_NAME);
+        $event = new AccountEditOrderPageLoadedEvent($page, $salesChannelContext, new Request());
+        $listener->addDeviceFingerprintData($event);
+        static::assertFalse($event->getPage()->hasExtension(DeviceFingerprintData::EXTENSION_NAME), 'DFP should not be added to page-struct, because it has already generated in the previous test.');
     }
 
     protected function setPaymentMethods(Page $page): void
