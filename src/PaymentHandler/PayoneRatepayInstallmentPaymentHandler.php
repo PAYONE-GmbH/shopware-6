@@ -17,8 +17,15 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractSynchronousPayonePa
     {
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
+        $definitions['payonePhone'] = [new NotBlank()];
         $definitions['ratepayBirthday'] = [new NotBlank(), new Birthday()];
         $definitions['ratepayIban'] = [new Iban()];
+
+        $definitions['ratepayInstallmentAmount'] = [new NotBlank()];
+        $definitions['ratepayInstallmentNumber'] = [new NotBlank()];
+        $definitions['ratepayLastInstallmentAmount'] = [new NotBlank()];
+        $definitions['ratepayInterestRate'] = [new NotBlank()];
+        $definitions['ratepayTotalAmount'] = [new NotBlank()];
 
         return $definitions;
     }
