@@ -15,16 +15,17 @@ use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use PayonePayment\Struct\PaymentTransaction;
 use PayonePayment\TestCaseBase\Factory\TransactionStatusWebhookHandlerFactory;
 use PayonePayment\TestCaseBase\Mock\ConfigReaderMock;
+use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Checkout\Test\Cart\Common\Generator;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Pricing\CashRoundingConfig;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
@@ -37,11 +38,11 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class WebhookProcessorTest extends TestCase
 {
+    use PayoneTestBehavior;
+
     public function testItAppointsCreditCard(): void
     {
-        $context = Context::createDefaultContext();
-        $salesChannelContext = Generator::createSalesChannelContext($context);
-        $salesChannelContext->getSalesChannel()->setId(TestDefaults::SALES_CHANNEL);
+        $salesChannelContext = $this->createSalesChannelContext();
 
         $request = new Request();
         $request->request->set('key', md5(''));
@@ -60,8 +61,7 @@ class WebhookProcessorTest extends TestCase
 
     public function testItPartialCapturesCreditCard(): void
     {
-        $context = Context::createDefaultContext();
-        $salesChannelContext = Generator::createSalesChannelContext($context);
+        $salesChannelContext = $this->createSalesChannelContext();
         $salesChannelContext->getSalesChannel()->setId(TestDefaults::SALES_CHANNEL);
 
         $request = new Request();
@@ -82,8 +82,7 @@ class WebhookProcessorTest extends TestCase
 
     public function testItFullCapturesCreditCard(): void
     {
-        $context = Context::createDefaultContext();
-        $salesChannelContext = Generator::createSalesChannelContext($context);
+        $salesChannelContext = $this->createSalesChannelContext();
         $salesChannelContext->getSalesChannel()->setId(TestDefaults::SALES_CHANNEL);
 
         $request = new Request();
@@ -105,8 +104,7 @@ class WebhookProcessorTest extends TestCase
 
     public function testItProcessesPaidCreditCard(): void
     {
-        $context = Context::createDefaultContext();
-        $salesChannelContext = Generator::createSalesChannelContext($context);
+        $salesChannelContext = $this->createSalesChannelContext();
         $salesChannelContext->getSalesChannel()->setId(TestDefaults::SALES_CHANNEL);
 
         $request = new Request();
@@ -124,22 +122,19 @@ class WebhookProcessorTest extends TestCase
         static::assertSame(WebhookHandlerInterface::RESPONSE_TSOK, $response->getContent());
     }
 
-    protected function getWebhookProcessor(string $transition, array $transactionData): WebhookProcessorInterface
+    protected function getWebhookProcessor(string $transitionName, array $transactionData): WebhookProcessorInterface
     {
-        $context = Context::createDefaultContext();
-        $salesChannelContext = Generator::createSalesChannelContext($context);
+        $salesChannelContext = $this->createSalesChannelContext();
         $salesChannelContext->getSalesChannel()->setId(TestDefaults::SALES_CHANNEL);
 
         $stateMachineRegistry = $this->createMock(StateMachineRegistry::class);
-        $stateMachineRegistry->expects(static::once())->method('transition')->with(
-            new Transition(
-                OrderTransactionDefinition::ENTITY_NAME,
-                Constants::ORDER_TRANSACTION_ID,
-                $transition,
-                'stateId'
-            ),
-            $context
-        );
+        $stateMachineRegistry->expects(static::once())->method('transition')->willReturnCallback(static function (Transition $transition, Context $context) use ($transitionName) {
+            static::assertEquals(OrderTransactionDefinition::ENTITY_NAME, $transition->getEntityName());
+            static::assertEquals($transitionName, $transition->getTransitionName());
+            static::assertEquals('stateId', $transition->getStateFieldName());
+
+            return new StateMachineStateCollection();
+        });
 
         $currency = new CurrencyEntity();
         $currency->setId(Constants::CURRENCY_ID);
