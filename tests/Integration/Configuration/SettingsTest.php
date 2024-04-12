@@ -50,7 +50,7 @@ class ConfigKeyShouldNotExist extends Constraint
     /**
      * @param int|string $configKey
      */
-    public function __construct(private string $configKey)
+    public function __construct(private readonly string $configKey)
     {
     }
 
@@ -68,7 +68,7 @@ class ConfigKeyShouldNotExist extends Constraint
             foreach ($configArray['card'] as $card) {
                 if (\is_array($card) && isset($card['input-field'])) {
                     foreach ($card['input-field'] as $fields) {
-                        if (($fields['name'] ?? null) == $this->configKey) {
+                        if (($fields['name'] ?? null) === $this->configKey) {
                             return false;
                         }
                     }
