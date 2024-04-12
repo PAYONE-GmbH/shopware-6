@@ -130,8 +130,6 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFieldsTest extends
             ['payone_captured_amount', 0, 'getRefundedAmount', 0], // Test if the default value of payone_refunded_amount works
             ['payone_mandate_identification', 'the-mandate-identification', 'getMandateIdentification', 'the-mandate-identification'],
             ['payone_authorization_type', 'the-authorization-type', 'getAuthorizationType', 'the-authorization-type'],
-            ['payone_work_order_id', 'the-work-order-id', 'getWorkOrderId', 'the-work-order-id'],
-            ['payone_work_order_id', null, 'getWorkOrderId', null],
             ['payone_clearing_reference', 'the-clearing-reference', 'getClearingReference', 'the-clearing-reference'],
             ['payone_clearing_type', 'the-clearing-type', 'getClearingType', 'the-clearing-type'],
             ['payone_financing_type', 'the-financing-type', 'getFinancingType', 'the-financing-type'],

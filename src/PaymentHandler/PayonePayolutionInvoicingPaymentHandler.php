@@ -52,7 +52,6 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractSynchronousPayoneP
     protected function getAdditionalTransactionData(RequestDataBag $dataBag, array $request, array $response): array
     {
         return [
-            'workOrderId' => $dataBag->get('workorder'),
             'clearingReference' => $response['addpaydata']['clearing_reference'],
             'captureMode' => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
             'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,

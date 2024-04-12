@@ -46,7 +46,6 @@ class PayonePrepaymentPaymentHandler extends AbstractSynchronousPayonePaymentHan
     protected function getAdditionalTransactionData(RequestDataBag $dataBag, array $request, array $response): array
     {
         return [
-            'workOrderId' => $dataBag->get('workorder'),
             'clearingType' => self::PAYONE_CLEARING_VOR,
             // Store clearing bank account information as custom field of the transaction in order to
             // use this data for payment instructions of an invoice or similar.

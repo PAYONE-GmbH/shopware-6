@@ -35,7 +35,6 @@ class Migration1638289341AddOrderTransActionDataTable extends MigrationStep
             `refunded_amount` INT(11) NULL DEFAULT \'0\',
             `mandate_identification` VARCHAR(255) NULL,
             `authorization_type` VARCHAR(255) NULL,
-            `work_order_id` VARCHAR(255) NULL,
             `clearing_reference` VARCHAR(255) NULL,
             `clearing_type` VARCHAR(255) NULL,
             `financing_type` VARCHAR(255) NULL,
