@@ -16,7 +16,7 @@ class Birthday extends LessThanOrEqual
     /**
      * @var string
      */
-    final public const INVALID_AGE = 'ac2f93c6-f906-47c9-8b09-6f7cf41f4f49';
+    final public const INVALID_AGE = 'PAYONE_BIRTHDAY_NOT_VALID';
 
     /**
      * @var array<string, string>
