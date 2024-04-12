@@ -13,6 +13,10 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/tests',
     ]);
 
+    $rectorConfig->bootstrapFiles([
+        __DIR__ . '/../../../vendor/autoload.php'
+    ]);
+
     // define sets of rules
     $rectorConfig->sets([
         LevelSetList::UP_TO_PHP_81
