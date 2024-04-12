@@ -40,8 +40,6 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
 
     protected ?string $authorizationType = null;
 
-    protected ?string $workOrderId = null;
-
     protected ?string $clearingReference = null;
 
     protected ?string $clearingType = null;
@@ -122,11 +120,6 @@ class PayonePaymentOrderTransactionDataEntity extends Entity
     public function getAuthorizationType(): ?string
     {
         return $this->authorizationType;
-    }
-
-    public function getWorkOrderId(): ?string
-    {
-        return $this->workOrderId;
     }
 
     public function getClearingReference(): ?string

@@ -59,7 +59,6 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractSynchronousPayonePa
         $clearingReference = $response['addpaydata']['clearing_reference'] ?? $response['clearing']['Reference'];
 
         return [
-            'workOrderId' => $dataBag->get('workorder'),
             'clearingReference' => $clearingReference,
             'captureMode' => AbstractPayonePaymentHandler::PAYONE_STATE_COMPLETED,
             'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,

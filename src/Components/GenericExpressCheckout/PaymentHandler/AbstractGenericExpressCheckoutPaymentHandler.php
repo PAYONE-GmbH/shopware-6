@@ -61,9 +61,7 @@ abstract class AbstractGenericExpressCheckoutPaymentHandler extends AbstractAsyn
             throw new \RuntimeException('payment process interrupted.');
         }
 
-        $data = $this->preparePayoneOrderTransactionData($request, $response, [
-            'workOrderId' => $dataBag->get('workorder'),
-        ]);
+        $data = $this->preparePayoneOrderTransactionData($request, $response);
 
         $this->transactionDataHandler->saveTransactionData($paymentTransaction, $salesChannelContext->getContext(), $data);
     }

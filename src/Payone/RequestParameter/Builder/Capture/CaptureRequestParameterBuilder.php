@@ -71,10 +71,6 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
             'capturemode' => $this->getCaptureMode($arguments),
         ];
 
-        if ($transactionData->getWorkOrderId() !== null) {
-            $parameters['workorderid'] = $transactionData->getWorkOrderId();
-        }
-
         if (!empty($transactionData->getCaptureMode())) {
             $parameters['capturemode'] = $transactionData->getCaptureMode();
         }

@@ -18,7 +18,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
     {
         $sql = 'INSERT INTO `payone_payment_order_transaction_data`
                 (id, order_transaction_id, order_transaction_version_id, transaction_id, transaction_data, sequence_number, transaction_state, user_id, last_request,
-                allow_capture, allow_refund, captured_amount, refunded_amount, mandate_identification, authorization_type, work_order_id,
+                allow_capture, allow_refund, captured_amount, refunded_amount, mandate_identification, authorization_type,
                 clearing_reference, clearing_type, financing_type, capture_mode, clearing_bank_account, additional_data, created_at)
                 SELECT UNHEX(LOWER(CONCAT(
                     LPAD(HEX(FLOOR(RAND() * 0xffff)), 4, \'0\'),
@@ -45,7 +45,6 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
                     IFNULL(CAST(JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_refunded_amount\')) as SIGNED), 0) as refunded_amount,
                     JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_mandate_identification\')) as mandate_identification,
                     JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_authorization_type\')) as authorization_type,
-                    NULLIF(JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_work_order_id\')), \'null\') as work_order_id,
                     JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_clearing_reference\')) as clearing_reference,
                     JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_clearing_type\')) as clearing_type,
                     JSON_UNQUOTE(JSON_EXTRACT(custom_fields, \'$.payone_financing_type\')) as financing_type,

@@ -141,15 +141,6 @@ class PayonePaymentOrderTransactionDataEntityTest extends TestCase
         static::assertSame('the-authorization-type', $entity->getAuthorizationType());
     }
 
-    public function testItSetsAndReturnsWorkOrderId(): void
-    {
-        $entity = new PayonePaymentOrderTransactionDataEntity();
-        $entity->assign([
-            'workOrderId' => 'the-work-order-id',
-        ]);
-        static::assertSame('the-work-order-id', $entity->getWorkOrderId());
-    }
-
     public function testItSetsAndReturnsClearingReference(): void
     {
         $entity = new PayonePaymentOrderTransactionDataEntity();
@@ -225,7 +216,6 @@ class PayonePaymentOrderTransactionDataEntityTest extends TestCase
             'refundedAmount' => 1,
             'mandateIdentification' => 'the-mandate-identification',
             'authorizationType' => 'the-authorization-type',
-            'workOrderId' => 'thw-work-order-id',
             'clearingReference' => 'the-clearing-reference',
             'clearingType' => 'the-clearing-type',
             'financingType' => 'the-financing-type',

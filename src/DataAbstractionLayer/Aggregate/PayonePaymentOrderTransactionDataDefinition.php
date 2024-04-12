@@ -54,7 +54,6 @@ class PayonePaymentOrderTransactionDataDefinition extends EntityDefinition
                 new IntField('refunded_amount', 'refundedAmount', null, null),
                 new StringField('mandate_identification', 'mandateIdentification', 255),
                 new StringField('authorization_type', 'authorizationType', 255),
-                new StringField('work_order_id', 'workOrderId', 255),
                 new StringField('clearing_reference', 'clearingReference', 255),
                 new StringField('clearing_type', 'clearingType', 255),
                 new StringField('financing_type', 'financingType', 255),

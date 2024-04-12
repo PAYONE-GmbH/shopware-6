@@ -191,7 +191,6 @@ class CaptureRequestParameterBuilderTest extends TestCase
         /** @var PayonePaymentOrderTransactionDataEntity $extension */
         $extension = $struct->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
         $extension->assign([
-            'workOrderId' => '123',
             'captureMode' => CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED,
             'clearingType' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
         ]);
@@ -201,7 +200,6 @@ class CaptureRequestParameterBuilderTest extends TestCase
 
         Assert::assertArraySubset(
             [
-                'workorderid' => 123,
                 'capturemode' => CaptureRequestParameterBuilder::CAPTUREMODE_COMPLETED,
                 'clearingtype' => AbstractPayonePaymentHandler::PAYONE_CLEARING_FNC,
             ],

@@ -64,8 +64,8 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
 
             if ($extension !== null) {
                 $payoneData->assign([
-                    'workOrderId' => $extension->getWorkorderId(),
-                    'cartHash' => $extension->getCartHash(),
+                    CheckoutCartPaymentData::DATA_WORK_ORDER_ID => $extension->getWorkorderId(),
+                    CheckoutCartPaymentData::DATA_CART_HASH => $extension->getCartHash(),
                 ]);
             }
             $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
