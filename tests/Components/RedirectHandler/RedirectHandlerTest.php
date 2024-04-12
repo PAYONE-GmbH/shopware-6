@@ -129,12 +129,12 @@ class RedirectHandlerTest extends TestCase
         $redirectHandler->decode('the-hash');
     }
 
-    /**
-     * @depends testItEncodesUrlWithDatabase
-     */
     public function testItCleansUpOldUrls(): void
     {
+        /** @var Connection $connection */
         $connection = $this->getContainer()->get(Connection::class);
+        $connection->executeStatement('TRUNCATE payone_payment_redirect'); // make sure table is empty
+
         $router = $this->getContainer()->get('router.default');
 
         $redirectHandler = new RedirectHandler(
@@ -143,6 +143,7 @@ class RedirectHandlerTest extends TestCase
             $this->getContainer()->getParameter('env.app_secret')
         );
 
+        $redirectHandler->encode('the-url-1');
         $redirectHandler->encode('the-url-2');
 
         $countQuery = 'SELECT COUNT(*) FROM payone_payment_redirect';
