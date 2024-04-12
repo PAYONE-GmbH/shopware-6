@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "@shopware-ag/e2e-testsuite-platform": "^8.0.0",
+    "cypress": "^13.7.2",
+    "cypress-iframe": "^1.0.1",
+    "ibankit": "^1.6.3"
+  }
+}

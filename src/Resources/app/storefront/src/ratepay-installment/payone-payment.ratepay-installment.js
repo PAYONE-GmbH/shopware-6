@@ -37,8 +37,8 @@ export default class PayonePaymentRatepayInstallment extends Plugin {
             this.ratepayRuntimeInput.addEventListener('change', this._handleInstallmentRuntimeChange.bind(this));
         }
 
-        $(this.options.ratepayIbanContainerSelector).on('shown.bs.collapse', this._handleOpenedIbanContainer.bind(this));
-        $(this.options.ratepayIbanContainerSelector).on('hidden.bs.collapse', this._handleClosedIbanContainer.bind(this));
+        document.querySelector(this.options.ratepayIbanContainerSelector).addEventListener('shown.bs.collapse', () => (this.ratepayIbanInput.required = true));
+        document.querySelector(this.options.ratepayIbanContainerSelector).addEventListener('hidden.bs.collapse', () => (this.ratepayIbanInput.required = false));
     }
 
     _handleCalculateInstallmentButtonClick() {
@@ -78,13 +78,5 @@ export default class PayonePaymentRatepayInstallment extends Plugin {
 
         this.ratepayRuntimeInput.value = this.ratepayInstallmentTable.dataset.ratepayNumberOfRates;
         this.ratepayRateInput.value = this.ratepayInstallmentTable.dataset.ratepayRate;
-    }
-
-    _handleOpenedIbanContainer() {
-        this.ratepayIbanInput.required = true;
-    }
-
-    _handleClosedIbanContainer() {
-        this.ratepayIbanInput.required = false;
     }
 }
