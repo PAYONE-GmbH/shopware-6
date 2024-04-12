@@ -1,122 +1,146 @@
 name: Tests
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
-  workflow_dispatch:
+    push:
+        branches:
+            - master
+    pull_request:
+        branches:
+            - master
+    workflow_dispatch:
 
 env:
-  MODULE_NAME: PayonePayment
-  COMPOSER_NAME: payone-gmbh/shopware-6
-  TEST_DATABASE_URL: "mysql://root:root@127.0.0.1:3306/shopware"
+    MODULE_NAME: PayonePayment
+    MODULE_DIR: custom/plugins/PayonePayment
+    COMPOSER_NAME: payone-gmbh/shopware-6
+    TEST_DATABASE_URL: "mysql://root:root@127.0.0.1:3306/shopware"
+
+permissions:
+    contents: read
 
 jobs:
-  ci-current:
-    name: SW ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }}, MySQL ${{ matrix.mysql-versions }}
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 15
-      fail-fast: false
-      matrix:
-        php-versions: [ '8.1', '8.2' ]
-        mysql-versions: [ '5.7', '8.0' ]
-        shopware-versions: [ 'v6.5.0.0', 'v6.5.1.0', 'v6.5.2.0', 'v6.5.3.0', 'v6.5.4.0', 'v6.5.5.0', 'v6.5.6.0', 'v6.5.7.3', 'v6.6.0.0' ]
-        include:
-          -   php-versions: "8.3"
-              mysql-versions: "8.0"
-              shopware-versions: "v6.6.0.0"
-        exclude:
-          -   php-versions: "8.1"
-              shopware-versions: "v6.6.0.0"
-          -   mysql-versions: "5.7"
-              shopware-versions: "v6.6.0.0"
-    services:
-      mysql:
-        image: mysql:${{ matrix.mysql-versions }}
-        env:
-          MYSQL_DATABASE: shopware
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-          - 3306:3306
+    ci-current:
+        name: SW ${{ matrix.shopware-version }}, PHP ${{ matrix.php-version }}, MySQL ${{ matrix.mysql-version }}
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                php-version: [ '8.1', '8.2' ]
+                mysql-version: [ '5.7', '8.0' ]
+                shopware-version: [ 'v6.5.0.0', 'v6.5.1.0', 'v6.5.2.0', 'v6.5.3.0', 'v6.5.4.0', 'v6.5.5.0', 'v6.5.6.0', 'v6.5.7.3', 'v6.6.0.0', 'v6.6.1.0' ]
+                include:
+                    -   php-version: "8.3"
+                        mysql-version: "8.0"
+                        shopware-version: "v6.6.0.0"
+                    -   php-version: "8.3"
+                        mysql-version: "8.0"
+                        shopware-version: "v6.6.1.0"
+                exclude:
+                    -   php-version: "8.1"
+                        shopware-version: "v6.6.0.0"
+                    -   mysql-version: "5.7"
+                        shopware-version: "v6.6.0.0"
+                    -   php-version: "8.1"
+                        shopware-version: "v6.6.1.0"
+                    -   mysql-version: "5.7"
+                        shopware-version: "v6.6.1.0"
+            fail-fast: false
+            max-parallel: 10
+        services:
+            mysql:
+                image: mysql:${{ matrix.mysql-version }}
+                env:
+                    MYSQL_DATABASE: shopware
+                    MYSQL_ROOT_PASSWORD: root
+                ports:
+                    - 3306:3306
+        steps:
 
-    steps:
-      - name: Install PHP
-        uses: shivammathur/setup-php@master
-        with:
-          php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium, pdo_mysql
-          tools: composer:2.2
+            -   name: Install PHP
+                uses: shivammathur/setup-php@master
+                with:
+                    php-version: ${{ matrix.php-version }}
+                    extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium, pdo_mysql
+                    tools: composer:2.2
 
-      - name: "Check PHP Version"
-        run: php -v
+            -   name: "Check PHP Version"
+                run: php -v
 
-      - name: "Check Composer Version"
-        run: composer -V
+            -   name: "Check Composer Version"
+                run: composer -V
 
-      - name: "Check PHP Extensions"
-        run: php -m
+            -   name: "Check PHP Extensions"
+                run: php -m
 
-      - name: "checkout Shopware"
-        uses: actions/checkout@v3
-        with:
-          repository: shopware/production
-          ref: 'flex'
+            -   name: "checkout Shopware"
+                uses: actions/checkout@v3
+                with:
+                    repository: shopware/production
+                    ref: ${{ matrix.shopware-version }}
 
-      - name: "Checkout ${{ env.COMPOSER_NAME }}"
-        uses: actions/checkout@v3
-        with:
-          path: custom/plugins/${{ env.MODULE_NAME }}
+            -   name: "Checkout ${{ env.COMPOSER_NAME }}"
+                uses: actions/checkout@v3
+                with:
+                    path: ${{ env.MODULE_DIR }}
 
-      - name: "Get composer cache directory"
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+            -   name: "Get composer cache directory"
+                id: composer-cache
+                run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-      - name: "Cache Composer dependencies"
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ matrix.operating-system }}-${{ matrix.php-versions }}-${{ matrix.shopware-versions }}-${{ hashFiles('**/composer.lock') }}
+            -   name: "Cache Composer dependencies"
+                uses: actions/cache@v3
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ${{ matrix.operating-system }}-${{ matrix.php-version }}-${{ matrix.shopware-version }}-${{ hashFiles('**/composer.lock') }}
 
-      - name: "Install Shopware dependencies"
-        # Install Shopware with --no-dev to prevent that dev-tools of the module got in conflict with the tools of shopware
-        run: |
-          composer req shopware/administration:${{ matrix.shopware-versions }} shopware/core:${{ matrix.shopware-versions }} shopware/elasticsearch:${{ matrix.shopware-versions }} shopware/storefront:${{ matrix.shopware-versions }} --no-update
-          composer install --no-dev
+            -   name: "Install Shopware dependencies"
+                # Install Shopware with --no-dev to prevent that dev-tools of the module got in conflict with the tools of shopware
+                run: |
+                    composer req shopware/core:${{ matrix.shopware-version }} shopware/administration:* shopware/storefront:* --no-update
+                    composer remove shopware/elasticsearch --no-update
+                    composer install
 
-      - name: "Install ${{ env.COMPOSER_NAME }}"
-        run: composer req ${{ env.COMPOSER_NAME }}
+            -   name: "Install ${{ env.COMPOSER_NAME }}"
+                run: |
+                    composer config prefer-stable true
+                    composer config minimum-stability dev
+                    composer config repositories.local-plugins '{ "type": "path", "url": "custom/plugins/*", "options": { "symlink": true } }'
+                    composer req ${{ env.COMPOSER_NAME }} --no-scripts
 
-      - name: "Install DEV-Tools"
-        working-directory: custom/plugins/${{ env.MODULE_NAME }}
-        run: |
-          composer remove shopware/* --no-update
-          composer install
+            -   name: "Install DEV-Tools"
+                working-directory: ${{ env.MODULE_DIR }}
+                run: |
+                    composer remove shopware/* --no-update
+                    composer install
 
-      - name: "Run PHPStan"
-        working-directory: custom/plugins/${{ env.MODULE_NAME }}
-        run: ./vendor/bin/phpstan
+            -   name: "Run PHPStan"
+                working-directory: ${{ env.MODULE_DIR }}
+                run: ./vendor/bin/phpstan
 
-      - name: "Check Code style (easy-coding-style)"
-        working-directory: custom/plugins/${{ env.MODULE_NAME }}
-        run: ./vendor/bin/ecs
+            -   name: "Check Code style (easy-coding-style)"
+                working-directory: ${{ env.MODULE_DIR }}
+                run: ./vendor/bin/ecs
 
-      - name: "Check Code style (rector)"
-        working-directory: custom/plugins/${{ env.MODULE_NAME }}
-        run: ./vendor/bin/rector --dry-run
+            -   name: "Check Code style (rector)"
+                working-directory: ${{ env.MODULE_DIR }}
+                run: ./vendor/bin/rector --dry-run
 
-      - name: "Install Shopware"
-        run: |
-          echo APP_ENV=dev >> .env
-          echo APP_URL=http://localhost >> .env
-          echo DATABASE_URL=${{ env.TEST_DATABASE_URL }} >> .env
-          echo APP_SECRET=secretf0rt3st >> .env
-          bin/console system:install --basic-setup
+                  # Workaround. The variables are required for shopware to work properly during unit-testing
+            -   name: "Install Shopware for unit-testing"
+                run: |
+                    echo DATABASE_URL=${{ env.TEST_DATABASE_URL }} >> .env
+                    echo MAILER_DSN=null://null >> .env
+                    echo OPENSEARCH_URL=http://localhost:9200 >> .env
+                    echo LOCK_DSN=flock >> .env
+                    echo MAILER_DSN=null://null >> .env
+                    echo APP_SECRET=se$cr$t >> .env
+                    echo REDIS_CACHE_HOST=127.0.0.1 >> .env
+                    echo REDIS_CACHE_PORT=123 >> .env
+                    echo REDIS_SESSION_HOST=127.0.0.1 >> .env
+                    echo REDIS_SESSION_PORT=123 >> .env
+                    echo SHOPWARE_HTTP_CACHE_ENABLED=0 >> .env
+                    echo STOREFRONT_PROXY_URL=http://localhost:80 >> .env
+                    bin/console system:install --basic-setup
 
-      - name: "Run PHPUnit Tests"
-        working-directory: custom/plugins/${{ env.MODULE_NAME }}
-        run: ./vendor/bin/phpunit --testdox
-
+            -   name: "Run PHPUnit Tests"
+                working-directory: custom/plugins/${{ env.MODULE_NAME }}
+                run: SYMFONY_DEPRECATIONS_HELPER=disabled ./vendor/bin/phpunit --testdox
