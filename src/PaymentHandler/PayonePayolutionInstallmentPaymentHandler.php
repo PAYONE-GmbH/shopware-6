@@ -9,6 +9,7 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\Validator\Birthday;
+use PayonePayment\Components\Validator\Iban;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
@@ -61,6 +62,11 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractSynchronousPayon
 
         $definitions['payolutionConsent'] = [new NotBlank()];
         $definitions['payolutionBirthday'] = [new NotBlank(), new Birthday()];
+
+        $definitions['payolutionInstallmentDuration'] = [new NotBlank()];
+        $definitions['payolutionAccountOwner'] = [new NotBlank()];
+        $definitions['payolutionIban'] = [new NotBlank(), new Iban()];
+        $definitions['payolutionBic'] = [new NotBlank()];
 
         return $definitions;
     }

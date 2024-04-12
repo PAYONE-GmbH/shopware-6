@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PayoneSecuredInvoicePaymentHandler extends AbstractSynchronousPayonePaymentHandler
 {
@@ -25,6 +28,16 @@ class PayoneSecuredInvoicePaymentHandler extends AbstractSynchronousPayonePaymen
         }
 
         return static::matchesIsRefundableDefaults($transactionData);
+    }
+
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    {
+        $definitions = parent::getValidationDefinitions($salesChannelContext);
+
+        $definitions['payonePhone'] = [new NotBlank()];
+        $definitions['payoneInvoiceBirthday'] = [new NotBlank(), new Birthday()];
+
+        return $definitions;
     }
 
     protected function getDefaultAuthorizationMethod(): string

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
+use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Components\Validator\Iban;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -34,7 +35,9 @@ class PayoneSecuredDirectDebitPaymentHandler extends AbstractSynchronousPayonePa
     {
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
+        $definitions['payonePhone'] = [new NotBlank()];
         $definitions['securedDirectDebitIban'] = [new NotBlank(), new Iban()];
+        $definitions['securedDirectDebitBirthday'] = [new NotBlank(), new Birthday()];
 
         return $definitions;
     }

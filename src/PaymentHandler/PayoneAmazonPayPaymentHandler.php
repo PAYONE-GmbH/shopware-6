@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneAmazonPayPaymentHandler extends AbstractAsynchronousPayonePaymentHandler
@@ -54,6 +55,15 @@ class PayoneAmazonPayPaymentHandler extends AbstractAsynchronousPayonePaymentHan
         }
 
         return strtolower((string)$transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
+    }
+
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    {
+        $definitions = parent::getValidationDefinitions($salesChannelContext);
+
+        $definitions['payonePhone'] = [new NotBlank()];
+
+        return $definitions;
     }
 
     public static function isRefundable(array $transactionData): bool
