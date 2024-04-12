@@ -103,19 +103,6 @@ abstract class AbstractPaymentHandlerTest extends TestCase
         $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
     }
 
-    protected function expectedPaymentInterruptedException(AbstractPayonePaymentHandler $paymentHandler)
-    {
-        if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
-            $expectedException = class_exists(AsyncPaymentProcessException::class) ? AsyncPaymentProcessException::class : PaymentException::class;
-        } else if ($paymentHandler instanceof SynchronousPaymentHandlerInterface) {
-            $expectedException = class_exists(SyncPaymentProcessException::class) ? SyncPaymentProcessException::class : PaymentException::class;
-        } else {
-            throw new \RuntimeException('invalid payment handler ' . $paymentHandler::class);
-        }
-
-        $this->expectException($expectedException);
-    }
-
     public function testItThrowsExceptionOnInvalidStatus(): void
     {
         $client = $this->createMock(PayoneClientInterface::class);
@@ -202,6 +189,19 @@ abstract class AbstractPaymentHandlerTest extends TestCase
 
         $this->expectedPaymentInterruptedException($paymentHandler);
         $this->performPayment($paymentHandler, $paymentTransaction, $dataBag, $salesChannelContext);
+    }
+
+    protected function expectedPaymentInterruptedException(AbstractPayonePaymentHandler $paymentHandler): void
+    {
+        if ($paymentHandler instanceof AsynchronousPaymentHandlerInterface) {
+            $expectedException = class_exists(AsyncPaymentProcessException::class) ? AsyncPaymentProcessException::class : PaymentException::class;
+        } elseif ($paymentHandler instanceof SynchronousPaymentHandlerInterface) {
+            $expectedException = class_exists(SyncPaymentProcessException::class) ? SyncPaymentProcessException::class : PaymentException::class;
+        } else {
+            throw new \RuntimeException('invalid payment handler ' . $paymentHandler::class);
+        }
+
+        $this->expectException($expectedException);
     }
 
     /**

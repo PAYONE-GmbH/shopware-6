@@ -6,9 +6,8 @@ namespace PayonePayment\TestCaseBase\Mock\PaymentHandler;
 
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
-use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
-
+use Shopware\Core\Checkout\Payment\PaymentException;
 
 class PaymentHandlerMock extends AbstractPayonePaymentHandler
 {
