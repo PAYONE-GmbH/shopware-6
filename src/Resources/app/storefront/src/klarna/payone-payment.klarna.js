@@ -1,4 +1,5 @@
 import Plugin from 'src/plugin-system/plugin.class';
+import ButtonLoadingIndicator from 'src/utility/loading-indicator/button-loading-indicator.util';
 
 export default class PayonePaymentKlarna extends Plugin {
     static options = {
@@ -20,6 +21,7 @@ export default class PayonePaymentKlarna extends Plugin {
         document.body.appendChild(scriptTag);
 
         this.orderForm = document.getElementById(this.options.selectorFormId);
+        this.confirmFormSubmit = this.orderForm.querySelector('button[type=submit]');
         this._registerEventListeners();
     }
 
@@ -32,8 +34,7 @@ export default class PayonePaymentKlarna extends Plugin {
             container: this.options.selectorContainer,
             payment_method_category: this.options.paymentMethodIdentifier
         }, (res) => {
-            this.confirmFormSubmit.disabled = false;
-            ElementLoadingIndicatorUtil.remove(this.el);
+            (new ButtonLoadingIndicator(this.confirmFormSubmit)).remove();
         });
     }
 
