@@ -18,23 +18,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
 class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParameterBuilder
 {
-    public function __construct(
-        OrderFetcherInterface $orderFetcher,
-        ProfileServiceInterface $profileService,
-        AbstractDeviceFingerprintService $deviceFingerprintService,
-        EntityRepository $customerRepository,
-        LineItemHydratorInterface $lineItemHydrator,
-        protected CurrencyPrecisionInterface $currencyPrecision
-    ) {
-        parent::__construct(
-            $orderFetcher,
-            $profileService,
-            $deviceFingerprintService,
-            $customerRepository,
-            $lineItemHydrator
-        );
-    }
-
     /**
      * @param PaymentTransactionStruct $arguments
      */
@@ -53,11 +36,11 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
             'clearingtype' => self::CLEARING_TYPE_FINANCING,
             'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
-            'add_paydata[installment_amount]' => $this->currencyPrecision->getRoundedTotalAmount((float) $dataBag->get('ratepayInstallmentAmount'), $currency),
+            'add_paydata[installment_amount]' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount((float) $dataBag->get('ratepayInstallmentAmount'), $currency),
             'add_paydata[installment_number]' => (int) $dataBag->get('ratepayInstallmentNumber'),
-            'add_paydata[last_installment_amount]' => $this->currencyPrecision->getRoundedTotalAmount((float) $dataBag->get('ratepayLastInstallmentAmount'), $currency),
-            'add_paydata[interest_rate]' => $this->currencyPrecision->getRoundedTotalAmount((float) $dataBag->get('ratepayInterestRate'), $currency),
-            'add_paydata[amount]' => $this->currencyPrecision->getRoundedTotalAmount((float) $dataBag->get('ratepayTotalAmount'), $currency),
+            'add_paydata[last_installment_amount]' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount((float) $dataBag->get('ratepayLastInstallmentAmount'), $currency),
+            'add_paydata[interest_rate]' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount((float) $dataBag->get('ratepayInterestRate'), $currency),
+            'add_paydata[amount]' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount((float) $dataBag->get('ratepayTotalAmount'), $currency),
             'add_paydata[shop_id]' => $profile->getShopId(),
             'add_paydata[device_token]' => $this->deviceFingerprintService->getDeviceIdentToken($salesChannelContext),
         ];
@@ -73,7 +56,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
         $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
 
         if ($order->getLineItems() !== null) {
-            $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order, $context));
+            $parameters = array_merge($parameters, $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context));
         }
 
         return $parameters;

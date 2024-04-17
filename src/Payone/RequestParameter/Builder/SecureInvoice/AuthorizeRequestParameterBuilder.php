@@ -7,18 +7,13 @@ namespace PayonePayment\Payone\RequestParameter\Builder\SecureInvoice;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    public function __construct(
-        protected LineItemHydratorInterface $lineItemHydrator,
-        protected EntityRepository $currencyRepository
-    ) {
-    }
-
     /**
      * @param PaymentTransactionStruct $arguments
      */
@@ -37,7 +32,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         ];
 
         if ($order->getLineItems() !== null) {
-            $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order, $context));
+            $parameters = array_merge($parameters, $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context));
         }
 
         return $parameters;

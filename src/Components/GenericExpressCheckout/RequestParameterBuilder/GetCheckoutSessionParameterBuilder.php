@@ -8,15 +8,17 @@ use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\GenericExpressCheckout\Struct\GetCheckoutSessionStruct;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 
 class GetCheckoutSessionParameterBuilder extends AbstractRequestParameterBuilder
 {
     public function __construct(
-        private readonly CurrencyPrecisionInterface $currencyPrecision,
+        RequestBuilderServiceAccessor $serviceAccessor,
         private readonly CartService $cartService
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     /**
@@ -30,7 +32,7 @@ class GetCheckoutSessionParameterBuilder extends AbstractRequestParameterBuilder
         return [
             'request' => self::REQUEST_ACTION_GENERIC_PAYMENT,
             'workorderid' => $arguments->getWorkorderId(),
-            'amount' => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
+            'amount' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency' => $currency->getIsoCode(),
         ];
     }

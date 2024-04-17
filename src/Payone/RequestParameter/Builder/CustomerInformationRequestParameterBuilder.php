@@ -20,10 +20,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 class CustomerInformationRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    public function __construct(private readonly EntityRepository $orderAddressRepository)
-    {
-    }
-
     /**
      * @param PaymentTransactionStruct $arguments
      */
@@ -81,7 +77,7 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
         $criteria = new Criteria([$order->getBillingAddressId()]);
 
         /** @var OrderAddressEntity|null $address */
-        $address = $this->orderAddressRepository->search($criteria, $context)->first();
+        $address = $this->serviceAccessor->orderAddressRepository->search($criteria, $context)->first();
 
         if ($address === null) {
             throw new \RuntimeException('missing order customer billing address');

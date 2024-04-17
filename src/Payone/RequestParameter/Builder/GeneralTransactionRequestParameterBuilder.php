@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
@@ -17,18 +16,17 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     public function __construct(
+        RequestBuilderServiceAccessor $serviceAccessor,
         protected CartHasherInterface $cartHasher,
-        protected ConfigReaderInterface $configReader,
-        protected EntityRepository $currencyRepository,
-        protected CurrencyPrecisionInterface $currencyPrecision
+        protected ConfigReaderInterface $configReader
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
@@ -41,7 +39,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         $currency = $this->getOrderCurrency($paymentTransaction->getOrder(), $salesChannelContext->getContext());
 
         $parameters = [
-            'amount' => $this->currencyPrecision->getRoundedTotalAmount($paymentTransaction->getOrder()->getAmountTotal(), $currency),
+            'amount' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount($paymentTransaction->getOrder()->getAmountTotal(), $currency),
             'currency' => $currency->getIsoCode(),
             'reference' => $this->getReferenceNumber($paymentTransaction, true),
             'workorderid' => $this->getWorkOrderId($paymentTransaction, $requestData, $salesChannelContext),

@@ -7,9 +7,11 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
+use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\TestCaseBase\ClassHelper;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -68,6 +70,7 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
         $struct->getPaymentTransaction()->getOrder()->setCurrency($currency);
         $struct->getPaymentTransaction()->getOrder()->setAmountTotal(100.1);
 
+        /** @var MockObject&CurrencyPrecisionInterface $currencyPrecision */
         $currencyPrecision = $this->createMock(CurrencyPrecisionInterface::class);
         $currencyPrecision
             ->expects(static::once())
@@ -79,10 +82,16 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
             ->willReturn(10010);
 
         $builder = new GeneralTransactionRequestParameterBuilder(
+            new RequestBuilderServiceAccessor(
+                $this->getContainer()->get('customer.repository'),
+                $this->getContainer()->get('order_address.repository'),
+                $this->getContainer()->get('customer_address.repository'),
+                $this->getContainer()->get('currency.repository'),
+                $currencyPrecision,
+                $this->getContainer()->get(LineItemHydratorInterface::class)
+            ),
             $this->createMock(CartHasherInterface::class),
-            $this->createMock(ConfigReaderInterface::class),
-            $this->createMock(EntityRepository::class),
-            $currencyPrecision
+            $this->createMock(ConfigReaderInterface::class)
         );
 
         $parameters = $builder->getRequestParameter($struct);
@@ -106,10 +115,9 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
         $cartHasher->expects(static::once())->method('validate')->willReturn(true);
 
         $builder = new GeneralTransactionRequestParameterBuilder(
+            $this->getContainer()->get(RequestBuilderServiceAccessor::class),
             $cartHasher,
-            $this->createMock(ConfigReaderInterface::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(CurrencyPrecisionInterface::class)
+            $this->createMock(ConfigReaderInterface::class)
         );
 
         $parameters = $builder->getRequestParameter($struct);
@@ -127,12 +135,7 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
             AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
         );
 
-        $builder = new GeneralTransactionRequestParameterBuilder(
-            $this->createMock(CartHasherInterface::class),
-            $this->createMock(ConfigReaderInterface::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(CurrencyPrecisionInterface::class)
-        );
+        $builder = $this->getContainer()->get(GeneralTransactionRequestParameterBuilder::class);
 
         $parameters = $builder->getRequestParameter($struct);
 
@@ -154,10 +157,9 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
         $cartHasher->expects(static::once())->method('validate')->willReturn(false);
 
         $builder = new GeneralTransactionRequestParameterBuilder(
+            $this->getContainer()->get(RequestBuilderServiceAccessor::class),
             $cartHasher,
-            $this->createMock(ConfigReaderInterface::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(CurrencyPrecisionInterface::class)
+            $this->createMock(ConfigReaderInterface::class)
         );
 
         $parameters = $builder->getRequestParameter($struct);
@@ -175,12 +177,7 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
 
         $struct->getPaymentTransaction()->getOrder()->setOrderNumber('the-order-number');
 
-        $builder = new GeneralTransactionRequestParameterBuilder(
-            $this->createMock(CartHasherInterface::class),
-            $this->createMock(ConfigReaderInterface::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(CurrencyPrecisionInterface::class)
-        );
+        $builder = $this->getContainer()->get(GeneralTransactionRequestParameterBuilder::class);
 
         $parameters = $builder->getRequestParameter($struct);
 
@@ -211,12 +208,7 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
             )
         );
 
-        $builder = new GeneralTransactionRequestParameterBuilder(
-            $this->createMock(CartHasherInterface::class),
-            $this->createMock(ConfigReaderInterface::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(CurrencyPrecisionInterface::class)
-        );
+        $builder = $this->getContainer()->get(GeneralTransactionRequestParameterBuilder::class);
 
         $parameters = $builder->getRequestParameter($struct);
 

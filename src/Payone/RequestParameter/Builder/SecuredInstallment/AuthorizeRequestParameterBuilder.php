@@ -11,6 +11,7 @@ use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -20,12 +21,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     public function __construct(
+        RequestBuilderServiceAccessor $serviceAccessor,
         protected OrderFetcherInterface $orderFetcher,
-        protected AbstractDeviceFingerprintService $deviceFingerprintService,
-        protected CurrencyPrecisionInterface $currencyPrecision,
-        protected LineItemHydratorInterface $lineItemHydrator,
-        protected EntityRepository $customerRepository
+        protected AbstractDeviceFingerprintService $deviceFingerprintService
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     /**
@@ -50,7 +50,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PIN,
             'request' => self::REQUEST_ACTION_AUTHORIZE,
             'add_paydata[device_token]' => $this->deviceFingerprintService->getDeviceIdentToken($salesChannelContext),
-            'amount' => $this->currencyPrecision->getRoundedTotalAmount($order->getAmountTotal(), $currency),
+            'amount' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount($order->getAmountTotal(), $currency),
             'currency' => $currency->getIsoCode(),
             'bankaccountholder' => $customer->getFirstName() . ' ' . $customer->getLastName(),
             'iban' => $dataBag->get('securedInstallmentIban'),
@@ -58,7 +58,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         ];
 
         if ($order->getLineItems() !== null) {
-            $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order, $context));
+            $parameters = array_merge($parameters, $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context));
         }
 
         $this->applyPhoneParameter($order, $parameters, $dataBag, $context);

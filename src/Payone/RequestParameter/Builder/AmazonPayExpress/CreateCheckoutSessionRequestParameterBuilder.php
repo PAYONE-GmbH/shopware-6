@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\AmazonPayExpress;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\GenericExpressCheckout\Struct\CreateExpressCheckoutSessionStruct;
 use PayonePayment\Configuration\ConfigurationPrefixes;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,9 +18,11 @@ use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 class CreateCheckoutSessionRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     public function __construct(
+        RequestBuilderServiceAccessor $serviceAccessor,
         private readonly EntityRepository $salesChannelRepository,
         private readonly ConfigReaderInterface $configReader
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     /**

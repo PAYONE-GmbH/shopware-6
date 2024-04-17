@@ -12,6 +12,7 @@ use PayonePayment\Components\Ratepay\Profile\ProfileServiceInterface;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -22,12 +23,12 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     public function __construct(
+        RequestBuilderServiceAccessor $serviceAccessor,
         protected OrderFetcherInterface $orderFetcher,
         protected ProfileServiceInterface $profileService,
-        protected AbstractDeviceFingerprintService $deviceFingerprintService,
-        protected EntityRepository $customerRepository,
-        protected LineItemHydratorInterface $lineItemHydrator
+        protected AbstractDeviceFingerprintService $deviceFingerprintService
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     /**
@@ -57,7 +58,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
 
         if ($order->getLineItems() !== null) {
-            $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order, $context));
+            $parameters = array_merge($parameters, $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context));
         }
 
         return $parameters;

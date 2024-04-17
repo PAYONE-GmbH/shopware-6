@@ -38,7 +38,7 @@ class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParam
         $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
 
         if ($order->getLineItems() !== null) {
-            $parameters = array_merge($parameters, $this->lineItemHydrator->mapOrderLines($currency, $order, $context));
+            $parameters = array_merge($parameters, $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context));
         }
 
         return $parameters;

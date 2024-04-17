@@ -28,10 +28,6 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
     final public const SETTLEACCOUNT_AUTO = 'auto';
     final public const SETTLEACCOUNT_NO = 'no';
 
-    public function __construct(private readonly CurrencyPrecisionInterface $currencyPrecision)
-    {
-    }
-
     /**
      * @param FinancialTransactionStruct $arguments
      */
@@ -66,7 +62,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
             'request' => self::REQUEST_ACTION_CAPTURE,
             'txid' => $transactionData->getTransactionId(),
             'sequencenumber' => $transactionData->getSequenceNumber() + 1,
-            'amount' => $this->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
+            'amount' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
             'currency' => $currency->getIsoCode(),
             'capturemode' => $this->getCaptureMode($arguments),
         ];

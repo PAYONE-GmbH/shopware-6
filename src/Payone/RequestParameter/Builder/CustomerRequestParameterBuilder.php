@@ -51,11 +51,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     public function __construct(
+        RequestBuilderServiceAccessor $serviceAccessor,
         private readonly EntityRepository $languageRepository,
         private readonly EntityRepository $salutationRepository,
         private readonly EntityRepository $countryRepository,
         private readonly RequestStack $requestStack
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     /**

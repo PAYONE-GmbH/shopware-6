@@ -6,6 +6,9 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\Checkout\Payment\PaymentException;
@@ -42,6 +45,11 @@ abstract class AbstractRequestParameterBuilder
     final public const CLEARING_TYPE_ONLINE_BANK_TRANSFER = 'sb';
     final public const CLEARING_TYPE_INVOICE = 'rec';
 
+    public function __construct(
+        protected readonly RequestBuilderServiceAccessor $serviceAccessor
+    ) {
+    }
+
     abstract public function getRequestParameter(AbstractRequestParameterStruct $arguments): array;
 
     /**
@@ -55,10 +63,6 @@ abstract class AbstractRequestParameterBuilder
             return $order->getCurrency();
         }
 
-        if (property_exists($this, 'currencyRepository') === false) {
-            throw new \RuntimeException('currency repository injection missing');
-        }
-
         $currencyId = $context->getCurrencyId();
 
         if ($order !== null) {
@@ -68,7 +72,7 @@ abstract class AbstractRequestParameterBuilder
         $criteria = new Criteria([$currencyId]);
 
         /** @var CurrencyEntity|null $currency */
-        $currency = $this->currencyRepository->search($criteria, $context)->first();
+        $currency = $this->serviceAccessor->currencyRepository->search($criteria, $context)->first();
 
         if ($currency === null) {
             throw new \RuntimeException('missing order currency entity');
@@ -92,10 +96,6 @@ abstract class AbstractRequestParameterBuilder
     {
         $submittedPhoneNumber = $dataBag->get('payonePhone');
 
-        if (property_exists($this, 'customerRepository') === false) {
-            throw new \RuntimeException('customer repository injection missing');
-        }
-
         if (!$order->getOrderCustomer()) {
             throw new \RuntimeException('missing order customer');
         }
@@ -113,7 +113,7 @@ abstract class AbstractRequestParameterBuilder
             // Update the phone number that is stored at the customer
             $customFieldPhoneNumber = $submittedPhoneNumber;
             $customerCustomFields[CustomFieldInstaller::CUSTOMER_PHONE_NUMBER] = $customFieldPhoneNumber;
-            $this->customerRepository->update(
+            $this->serviceAccessor->customerRepository->update(
                 [
                     [
                         'id' => $customer->getId(),
@@ -154,7 +154,7 @@ abstract class AbstractRequestParameterBuilder
             // Update the birthday that is stored at the customer
             $customFieldBirthday = $submittedBirthday;
             $customerCustomFields[CustomFieldInstaller::CUSTOMER_BIRTHDAY] = $customFieldBirthday;
-            $this->customerRepository->update(
+            $this->serviceAccessor->customerRepository->update(
                 [
                     [
                         'id' => $customer->getId(),

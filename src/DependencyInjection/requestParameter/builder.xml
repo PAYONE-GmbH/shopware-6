@@ -4,15 +4,28 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <defaults>
+            <bind key="$cartHasher" type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
+            <bind key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+            <bind key="$orderFetcher" type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
+            <bind key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+        </defaults>
+
         <service id="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder" abstract="true">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor">
+            <argument key="$customerRepository" type="service" id="customer.repository"/>
+            <argument key="$currencyRepository" type="service" id="currency.repository"/>
+            <argument key="$customerAddressRepository" type="service" id="customer_address.repository"/>
+            <argument key="$orderAddressRepository" type="service" id="order_address.repository"/>
+            <argument key="$currencyPrecision" type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
+            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="currency.repository"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
             <tag name="payone_request_builder" priority="100" />
         </service>
@@ -31,49 +44,45 @@
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\ReturnUrlRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler"/>
+            <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\SystemRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="Shopware\Core\Framework\Plugin\PluginService"/>
-            <argument>%kernel.shopware_version%</argument>
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
+            <argument key="$pluginService" type="service" id="Shopware\Core\Framework\Plugin\PluginService"/>
+            <argument key="$shopwareVersion">%kernel.shopware_version%</argument>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\CustomerRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="language.repository"/>
-            <argument type="service" id="salutation.repository"/>
-            <argument type="service" id="country.repository"/>
-            <argument type="service" id="request_stack"/>
+            <argument key="$languageRepository" type="service" id="language.repository"/>
+            <argument key="$salutationRepository" type="service" id="salutation.repository"/>
+            <argument key="$countryRepository" type="service" id="country.repository"/>
+            <argument key="$requestStack" type="service" id="request_stack"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\OrderLinesRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
-        <service id="PayonePayment\Components\GenericExpressCheckout\RequestParameterBuilder\CreateCheckoutSessionParameterBuilder">
-            <argument key="$currencyPrecision" type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
+        <service id="PayonePayment\Components\GenericExpressCheckout\RequestParameterBuilder\CreateCheckoutSessionParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler"/>
             <argument key="$router" type="service" id="router"/>
-            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
 
             <tag name="payone_request_builder" />
         </service>
 
-        <service id="PayonePayment\Components\GenericExpressCheckout\RequestParameterBuilder\GetCheckoutSessionParameterBuilder">
-            <argument key="$currencyPrecision" type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
-            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+        <service id="PayonePayment\Components\GenericExpressCheckout\RequestParameterBuilder\GetCheckoutSessionParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
 
             <tag name="payone_request_builder" />
         </service>
@@ -196,20 +205,12 @@
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\PayolutionInstallment\PreCheckRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="currency.repository"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
             <tag name="payone_request_builder" />
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\PayolutionInstallment\CalculationRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="currency.repository"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
             <tag name="payone_request_builder" />
         </service>
@@ -217,26 +218,19 @@
         <!-- Payolution Invoicing -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\PayolutionInvoicing\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
+
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\PayolutionInvoicing\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\PayolutionInvoicing\PreCheckRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="currency.repository"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
             <tag name="payone_request_builder" />
         </service>
@@ -309,23 +303,18 @@
         <!-- Secure Invoice -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\SecureInvoice\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
-            <argument type="service" id="currency.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\SecureInvoice\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
-            <argument type="service" id="currency.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\CustomerInformationRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="order_address.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>
@@ -333,35 +322,29 @@
         <!-- Open Invoice -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\OpenInvoice\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
-            <argument type="service" id="currency.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\OpenInvoice\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
-            <argument type="service" id="currency.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <!-- Apple Pay -->
-        <service id="PayonePayment\Payone\RequestParameter\Builder\ApplePay\AuthorizeRequestParameterBuilder">
-            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
-            <argument type="service" id="Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface"/>
-            <argument type="service" id="order.repository"/>
+        <service id="PayonePayment\Payone\RequestParameter\Builder\ApplePay\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+            <argument key="$numberRangeValueGenerator" type="service" id="Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface"/>
+            <argument key="$orderRepository" type="service" id="order.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
-        <service id="PayonePayment\Payone\RequestParameter\Builder\ApplePay\PreAuthorizeRequestParameterBuilder">
-            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
-            <argument type="service" id="Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface"/>
-            <argument type="service" id="order.repository"/>
+        <service id="PayonePayment\Payone\RequestParameter\Builder\ApplePay\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\ApplePay\AuthorizeRequestParameterBuilder">
+            <argument key="$numberRangeValueGenerator" type="service" id="Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface"/>
+            <argument key="$orderRepository" type="service" id="order.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>
@@ -369,11 +352,8 @@
         <!-- Ratepay Debit -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcher"/>
-            <argument type="service" id="PayonePayment\Components\Ratepay\Profile\ProfileService"/>
-            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\RatepayDeviceFingerprintService"/>
-            <argument type="service" id="customer.repository"/>
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
+            <argument key="$profileService" type="service" id="PayonePayment\Components\Ratepay\Profile\ProfileService"/>
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Components\DeviceFingerprint\RatepayDeviceFingerprintService"/>
 
             <tag name="payone_request_builder"/>
         </service>
@@ -393,17 +373,12 @@
         <!-- Ratepay Installment -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\AuthorizeRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment\CalculationRequestParameterBuilder"
-                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="currency.repository"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
+                 parent="PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder">
 
             <tag name="payone_request_builder" />
         </service>
@@ -440,18 +415,21 @@
         </service>
 
         <!-- Klarna -->
-        <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\CreateSessionRequestParameterBuilder">
-            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
-            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\CreateSessionRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
             <tag name="payone_request_builder"/>
         </service>
-        <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\AuthorizeRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
             <tag name="payone_request_builder"/>
         </service>
-        <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\FinancingTypeParameterBuilder">
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Klarna\FinancingTypeParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
             <tag name="payone_request_builder"/>
         </service>
 
@@ -463,7 +441,9 @@
         </service>
 
         <!-- Postfinance -->
-        <service id="PayonePayment\Payone\RequestParameter\Builder\Postfinance\AuthorizeRequestParameterBuilder">
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Postfinance\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
             <tag name="payone_request_builder"/>
         </service>
 
@@ -489,22 +469,13 @@
         <!-- Secured Direct Debit -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredDirectDebit\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
-            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
-            <argument type="service" id="customer.repository"/>
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredDirectDebit\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\SecuredDirectDebit\AuthorizeRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
-            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
-            <argument type="service" id="customer.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>
@@ -512,22 +483,13 @@
         <!-- Secured Invoice -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredInvoice\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
-            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
-            <argument type="service" id="customer.repository"/>
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredInvoice\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\SecuredInvoice\AuthorizeRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
-            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
-            <argument type="service" id="customer.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>
@@ -535,31 +497,19 @@
         <!-- Secured Installment -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredInstallment\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
-            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
-            <argument type="service" id="customer.repository"/>
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredInstallment\PreAuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\SecuredInstallment\AuthorizeRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Helper\OrderFetcherInterface"/>
-            <argument type="service" id="PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
-            <argument type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
-            <argument type="service" id="customer.repository"/>
 
             <tag name="payone_request_builder"/>
         </service>
 
-        <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredInstallment\InstallmentOptionsRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\CartHasher\CartHasher"/>
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader"/>
-            <argument type="service" id="currency.repository"/>
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
+        <service id="PayonePayment\Payone\RequestParameter\Builder\SecuredInstallment\InstallmentOptionsRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder">
 
             <tag name="payone_request_builder"/>
         </service>
@@ -577,9 +527,10 @@
             <tag name="payone_request_builder"/>
         </service>
 
-        <service id="PayonePayment\Payone\RequestParameter\Builder\Amazon\AuthorizeRequestParameterBuilder">
-            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
-            <argument key="$customerRepository" type="service" id="customer.repository" />
+        <!-- Amazon Pay -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\Amazon\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
             <tag name="payone_request_builder"/>
         </service>
 
@@ -587,11 +538,9 @@
         <service id="PayonePayment\Payone\RequestParameter\Builder\AmazonPayExpress\CreateCheckoutSessionRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
             <argument key="$salesChannelRepository" type="service" id="sales_channel.repository" />
-            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
 
             <tag name="payone_request_builder"/>
         </service>
-
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\AmazonPayExpress\GetCheckoutSessionDetailsRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
@@ -607,8 +556,6 @@
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\AmazonPayExpress\UpdateCheckoutSessionParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument key="$currencyPrecision" type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface" />
-            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
 
             <tag name="payone_request_builder"/>
         </service>
@@ -616,7 +563,6 @@
         <!-- Capture -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Capture\CaptureRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
             <tag name="payone_request_builder"/>
         </service>
@@ -624,7 +570,6 @@
         <!-- Refund -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Refund\RefundRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-            <argument type="service" id="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
             <tag name="payone_request_builder"/>
         </service>
@@ -632,12 +577,14 @@
         <!-- Get File -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Mandate\GetFileRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
             <tag name="payone_request_builder"/>
         </service>
 
         <!-- Manage Mandate -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Mandate\ManageMandateRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
             <tag name="payone_request_builder"/>
         </service>
 

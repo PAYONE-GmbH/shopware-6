@@ -31,7 +31,7 @@ class CalculationRequestParameterBuilder extends GeneralTransactionRequestParame
             'add_paydata[action]' => 'calculation',
             'clearingtype' => self::CLEARING_TYPE_FINANCING,
             'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_RPS,
-            'amount' => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
+            'amount' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency' => $currency->getIsoCode(),
             'add_paydata[shop_id]' => $profile->getShopId(),
             'add_paydata[customer_allow_credit_inquiry]' => 'yes',
@@ -39,7 +39,7 @@ class CalculationRequestParameterBuilder extends GeneralTransactionRequestParame
 
         if ($installmentType === self::INSTALLMENT_TYPE_RATE) {
             $parameters['add_paydata[calculation_type]'] = 'calculation-by-rate';
-            $parameters['add_paydata[rate]'] = $this->currencyPrecision->getRoundedTotalAmount(
+            $parameters['add_paydata[rate]'] = $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount(
                 (float) $dataBag->get('ratepayInstallmentValue'),
                 $currency
             );

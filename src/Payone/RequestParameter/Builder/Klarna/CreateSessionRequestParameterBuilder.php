@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Klarna;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\Helper\OrderFetcherInterface;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\KlarnaCreateSessionStruct;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
@@ -16,11 +17,11 @@ use Shopware\Core\Framework\Context;
 class CreateSessionRequestParameterBuilder extends AbstractKlarnaParameterBuilder
 {
     public function __construct(
+        RequestBuilderServiceAccessor $serviceAccessor,
         private readonly CartService $cartService,
-        private readonly LineItemHydratorInterface $lineItemHydrator,
-        private readonly CurrencyPrecisionInterface $currencyPrecision,
         private readonly OrderFetcherInterface $orderFetcher
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     /**
@@ -35,19 +36,19 @@ class CreateSessionRequestParameterBuilder extends AbstractKlarnaParameterBuilde
             $order = $this->getOrder($order->getId(), $context); // make sure, all required associations are loaded
             $totalAmount = $order->getPrice()->getTotalPrice();
             $currency = $this->getOrderCurrency($order, $context);
-            $lineItems = $this->lineItemHydrator->mapOrderLines($currency, $order, $context);
+            $lineItems = $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context);
         } else {
             $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
             $totalAmount = $cart->getPrice()->getTotalPrice();
             $currency = $salesChannelContext->getCurrency();
-            $lineItems = $this->lineItemHydrator->mapCartLines($cart, $salesChannelContext);
+            $lineItems = $this->serviceAccessor->lineItemHydrator->mapCartLines($cart, $salesChannelContext);
         }
 
         $parameters = [
             'request' => self::REQUEST_ACTION_GENERIC_PAYMENT,
             'add_paydata[action]' => 'start_session',
             'clearingtype' => self::CLEARING_TYPE_FINANCING,
-            'amount' => $this->currencyPrecision->getRoundedTotalAmount($totalAmount, $salesChannelContext->getCurrency()),
+            'amount' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount($totalAmount, $salesChannelContext->getCurrency()),
             'currency' => $currency->getIsoCode(),
         ];
 

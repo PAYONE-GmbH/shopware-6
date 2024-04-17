@@ -26,7 +26,7 @@ class InstallmentOptionsRequestParameterBuilder extends GeneralTransactionReques
             'add_paydata[businessRelation]' => 'b2c',
             'clearingtype' => self::CLEARING_TYPE_FINANCING,
             'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PIN,
-            'amount' => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
+            'amount' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency' => $currency->getIsoCode(),
         ];
     }
