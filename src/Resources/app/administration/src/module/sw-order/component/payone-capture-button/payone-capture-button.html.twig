@@ -12,12 +12,12 @@
             <div class="payone-payment-detail--capture-modal--content">
                 <sw-container columns="1fr 1fr" gap="0 32px">
                     <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.orderAmount')" :value="currencyFilter(transaction.amount.totalPrice, order.currency.shortName)"></sw-text-field>
-                    <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.capture.captured')" :value="payoneCurrencyFilter(capturedAmount, order.currency.shortName)"></sw-text-field>
-                    <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.remainingAmount')" :value="payoneCurrencyFilter(remainingAmount, order.currency.shortName)"></sw-text-field>
-                    <sw-number-field required="required" numberType="float" :digits="order.decimal_precision" :label="$tc('sw-order.payone-payment.modal.capture.amount')"
+                    <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.capture.captured')" :value="currencyFilter(capturedAmount, order.currency.shortName)"></sw-text-field>
+                    <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.remainingAmount')" :value="currencyFilter(remainingAmount, order.currency.shortName)"></sw-text-field>
+                    <sw-number-field required="required" numberType="float" :digits="decimalPrecision" :label="$tc('sw-order.payone-payment.modal.capture.amount')"
                                      v-model:value="captureAmount"
                                      :min="0"
-                                     :max="maxCaptureAmount"></sw-number-field>
+                                     :max="remainingAmount"></sw-number-field>
                 </sw-container>
             </div>
 

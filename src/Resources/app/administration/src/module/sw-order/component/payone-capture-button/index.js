@@ -44,6 +44,10 @@ export default {
             return Filter.getByName('payone_currency');
         },
 
+        orderTotalPrice() {
+            return this.transaction.amount.totalPrice;
+        },
+
         decimalPrecision() {
             if (!this.order || !this.order.currency) {
                 return 2;
@@ -56,20 +60,12 @@ export default {
             }
         },
 
-        totalTransactionAmount() {
-            return Math.round(this.transaction.amount.totalPrice * (10 ** this.decimalPrecision), 0);
-        },
-
         capturedAmount() {
-            return this.transaction?.extensions?.payonePaymentOrderTransactionData?.capturedAmount ?? 0;
+            return this.toFixedPrecision((this.transaction?.extensions?.payonePaymentOrderTransactionData?.capturedAmount ?? 0) / 100);
         },
 
         remainingAmount() {
-            return this.totalTransactionAmount - this.capturedAmount;
-        },
-
-        maxCaptureAmount() {
-            return this.remainingAmount / (10 ** this.decimalPrecision);
+            return this.toFixedPrecision(this.orderTotalPrice - this.capturedAmount);
         },
 
         buttonEnabled() {
@@ -77,7 +73,7 @@ export default {
                 return false;
             }
 
-            return (this.remainingAmount > 0 && this.capturedAmount > 0) || this.transaction.extensions.payonePaymentOrderTransactionData.allowCapture;
+            return this.remainingAmount > 0 || this.transaction.extensions.payonePaymentOrderTransactionData.allowCapture;
         },
 
         selectedItems() {
@@ -89,22 +85,15 @@ export default {
                 return false;
             }
 
-            const shippingCosts = this.order.shippingCosts.totalPrice * (10 ** this.decimalPrecision);
-
-            let capturedPositionAmount = 0;
-
-            this.order.lineItems.forEach((order_item) => {
-                if (order_item.customFields && order_item.customFields.payone_captured_quantity
-                    && 0 < order_item.customFields.payone_captured_quantity) {
-                    capturedPositionAmount += order_item.customFields.payone_captured_quantity * order_item.unitPrice * (10 ** this.decimalPrecision);
-                }
-            });
-
-            return this.capturedAmount - Math.round(capturedPositionAmount) < shippingCosts;
+            return this.toFixedPrecision(this.capturedAmount + this.order.shippingCosts.totalPrice) <= this.orderTotalPrice;
         }
     },
 
     methods: {
+        toFixedPrecision(value) {
+            return Math.round(value * (10 ** this.decimalPrecision)) / (10 ** this.decimalPrecision);
+        },
+
         calculateActionAmount() {
             let amount = 0;
 
@@ -112,7 +101,7 @@ export default {
                 amount += selection.unit_price * selection.quantity;
             });
 
-            this.captureAmount = amount > this.remainingAmount ? this.remainingAmount : amount;
+            this.captureAmount = this.toFixedPrecision(amount > this.remainingAmount ? this.remainingAmount : amount);
         },
 
         openCaptureModal() {
@@ -177,19 +166,18 @@ export default {
                     const orderLineItem = this.order.lineItems.find(lineItem => lineItem.id === selection.id);
                     if (orderLineItem) {
                         const copy = {...orderLineItem};
-                        const taxRate = copy.tax_rate / (10 ** request.decimalPrecision);
 
                         copy.quantity = selection.quantity;
                         copy.total_amount = copy.unit_price * copy.quantity;
-                        copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
+                        copy.total_tax_amount = copy.total_amount - (copy.total_amount / (1 + (copy.tax_rate / 100)));
 
                         request.orderLines.push(copy);
                     }
                 }
             });
 
-            if (this.remainingAmount < (request.amount * (10 ** this.decimalPrecision))) {
-                request.amount = this.remainingAmount / (10 ** this.decimalPrecision);
+            if (this.remainingAmount < request.amount) {
+                request.amount = this.remainingAmount;
             }
 
             this.executeCapture(request)
@@ -200,7 +188,7 @@ export default {
                 orderTransactionId: this.transaction.id,
                 payone_order_id: this.transaction.extensions.payonePaymentOrderTransactionData.transactionId,
                 salesChannel: this.order.salesChannel,
-                amount: this.remainingAmount / (10 ** this.decimalPrecision),
+                amount: this.remainingAmount,
                 orderLines: [],
                 complete: true,
                 includeShippingCosts: this.hasRemainingShippingCosts

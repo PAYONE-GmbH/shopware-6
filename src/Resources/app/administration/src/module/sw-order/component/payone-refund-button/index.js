@@ -44,6 +44,10 @@ export default {
             return Filter.getByName('payone_currency');
         },
 
+        orderTotalPrice() {
+            return this.transaction.amount.totalPrice;
+        },
+
         decimalPrecision() {
             if (!this.order || !this.order.currency) {
                 return 2;
@@ -56,17 +60,24 @@ export default {
             }
         },
 
+        transactionData() {
+            return this.transaction?.extensions?.payonePaymentOrderTransactionData ?? {
+                capturedAmount: 0,
+                refundedAmount: 0,
+                allowRefund: false
+            };
+        },
+
+        capturedAmount() {
+            return this.toFixedPrecision((this.transaction?.extensions?.payonePaymentOrderTransactionData?.capturedAmount ?? 0) / 100);
+        },
+
         remainingAmount() {
-            const data = this.transaction?.extensions?.payonePaymentOrderTransactionData ?? {};
-            return (data.capturedAmount ?? 0) - (data.refundedAmount ?? 0);
+            return (this.transactionData.capturedAmount ?? 0) - (this.transactionData.refundedAmount ?? 0);
         },
 
         refundedAmount() {
-            return this.transaction?.extensions?.payonePaymentOrderTransactionData?.refundedAmount ?? 0;
-        },
-
-        maxRefundAmount() {
-            return this.remainingAmount / (10 ** this.decimalPrecision);
+            return this.transactionData.refundedAmount ?? 0;
         },
 
         buttonEnabled() {
@@ -74,7 +85,7 @@ export default {
                 return false;
             }
 
-            return (this.remainingAmount > 0 && this.refundedAmount > 0) || this.transaction.extensions.payonePaymentOrderTransactionData.allowRefund;
+            return this.remainingAmount > 0 || this.transactionData.allowRefund;
         },
 
         selectedItems() {
@@ -86,22 +97,15 @@ export default {
                 return false;
             }
 
-            const shippingCosts = this.order.shippingCosts.totalPrice * (10 ** this.decimalPrecision);
-
-            let refundedPositionAmount = 0;
-
-            this.order.lineItems.forEach((order_item) => {
-                if (order_item.customFields && order_item.customFields.payone_refunded_quantity
-                    && 0 < order_item.customFields.payone_refunded_quantity) {
-                    refundedPositionAmount += order_item.customFields.payone_refunded_quantity * order_item.unitPrice * (10 ** this.decimalPrecision);
-                }
-            });
-
-            return this.refundedAmount - Math.round(refundedPositionAmount) < shippingCosts;
+            return this.toFixedPrecision(this.refundedAmount + this.order.shippingCosts.totalPrice) <= this.capturedAmount;
         }
     },
 
     methods: {
+        toFixedPrecision(value) {
+            return Math.round(value * (10 ** this.decimalPrecision)) / (10 ** this.decimalPrecision);
+        },
+
         calculateActionAmount() {
             let amount = 0;
 
@@ -109,7 +113,7 @@ export default {
                 amount += selection.unit_price * selection.quantity;
             });
 
-            this.refundAmount = amount > this.remainingAmount ? this.remainingAmount : amount;
+            this.refundAmount = this.toFixedPrecision(amount > this.remainingAmount ? this.remainingAmount : amount);
         },
 
         openRefundModal() {
@@ -176,19 +180,18 @@ export default {
                     const orderLineItem = this.order.lineItems.find(lineItem => lineItem.id === selection.id);
                     if (orderLineItem) {
                         const copy = {...orderLineItem};
-                        const taxRate = copy.tax_rate / (10 ** request.decimalPrecision);
 
                         copy.quantity = selection.quantity;
                         copy.total_amount = copy.unit_price * copy.quantity;
-                        copy.total_tax_amount = Math.round(copy.total_amount / (100 + taxRate) * taxRate);
+                        copy.total_tax_amount = copy.total_amount - (copy.total_amount / (1 + (copy.tax_rate / 100)));
 
                         request.orderLines.push(copy);
                     }
                 }
             });
 
-            if (this.remainingAmount < (request.amount * (10 ** this.decimalPrecision))) {
-                request.amount = this.remainingAmount / (10 ** this.decimalPrecision);
+            if (this.remainingAmount < request.amount) {
+                request.amount = this.remainingAmount;
             }
 
             this.executeRefund(request);
