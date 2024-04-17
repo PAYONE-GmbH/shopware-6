@@ -30,8 +30,8 @@ class CalculationRequestParameterBuilder extends GeneralTransactionRequestParame
             'workorderid' => $arguments->getWorkorderId(),
         ];
 
-        if (!empty($dataBag->get('payolutionBirthday'))) {
-            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
+        if (!empty($dataBag->get('payoneBirthday'))) {
+            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payoneBirthday'));
 
             if (!empty($birthday)) {
                 $parameters['birthday'] = $birthday->format('Ymd');

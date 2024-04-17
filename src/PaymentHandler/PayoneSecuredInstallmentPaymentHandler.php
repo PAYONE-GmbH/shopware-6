@@ -21,7 +21,7 @@ class PayoneSecuredInstallmentPaymentHandler extends AbstractSynchronousPayonePa
             $definitions['payonePhone'] = [new NotBlank()];
         }
         $definitions['securedInstallmentIban'] = [new NotBlank(), new Iban()];
-        $definitions['securedInstallmentBirthday'] = [new NotBlank(), new Birthday()];
+        $definitions['payoneBirthday'] = [new NotBlank(), new Birthday()];
         $definitions['securedInstallmentOptionId'] = [new NotBlank()];
 
         return $definitions;

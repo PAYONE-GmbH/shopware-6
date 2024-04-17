@@ -182,7 +182,7 @@ class PreCheckRequestParameterBuilderTest extends TestCase
         $cart = $this->fillCart($salesChannelContext->getToken(), 100);
 
         $dataBag = new RequestDataBag([
-            'payolutionBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
         ]);
 
         return new PayolutionAdditionalActionStruct(

@@ -40,7 +40,7 @@ class PayoneSecuredDirectDebitPaymentHandler extends AbstractSynchronousPayonePa
         }
 
         $definitions['securedDirectDebitIban'] = [new NotBlank(), new Iban()];
-        $definitions['securedDirectDebitBirthday'] = [new NotBlank(), new Birthday()];
+        $definitions['payoneBirthday'] = [new NotBlank(), new Birthday()];
 
         return $definitions;
     }

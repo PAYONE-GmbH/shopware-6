@@ -10,7 +10,6 @@ use PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParam
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameterBuilder
 {
@@ -35,7 +34,13 @@ class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameter
             'workorderid' => $arguments->getWorkorderId(),
         ];
 
-        $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
+        if (!empty($dataBag->get('payoneBirthday'))) {
+            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payoneBirthday'));
+
+            if (!empty($birthday)) {
+                $parameters['birthday'] = $birthday->format('Ymd');
+            }
+        }
 
         if ($this->transferCompanyData($salesChannelContext)) {
             $this->provideCompanyParams($parameters, $salesChannelContext);
@@ -54,17 +59,6 @@ class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameter
         $action = $arguments->getAction();
 
         return $paymentMethod === PayonePayolutionInvoicingPaymentHandler::class && $action === self::REQUEST_ACTION_PAYOLUTION_PRE_CHECK;
-    }
-
-    protected function applyBirthdayParameterWithoutCustomField(array &$parameters, ParameterBag $dataBag): void
-    {
-        if (!empty($dataBag->get('payolutionBirthday'))) {
-            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
-
-            if (!empty($birthday)) {
-                $parameters['birthday'] = $birthday->format('Ymd');
-            }
-        }
     }
 
     protected function transferCompanyData(SalesChannelContext $context): bool

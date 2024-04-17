@@ -3,6 +3,9 @@
         "general": {
             "phoneNumber": {
                 "label": "Phone number"
+            },
+            "birthday": {
+                "label": "Date of birth"
             }
         },
         "errorMessages": {
@@ -69,9 +72,6 @@
             "cardTitleInvoicing": "Paysafe Pay Later Invoice",
             "cardTitleInstallment": "Paysafe Pay Later Installment",
             "cardTitleDebit": "Paysafe Pay Later Debit",
-            "birthday": {
-                "label": "Date of birth"
-            },
             "accountHolder": {
                 "label": "Account Holder"
             },
@@ -139,9 +139,6 @@
         },
         "secureInvoice": {
             "cardTitle": "Payone secure invoice",
-            "birthday": {
-                "label": "Date of birth"
-            },
             "document": {
                 "clearingReference": "Reference: %reference%",
                 "invoicingDescription": "Please transfer the outstanding amount to the following bank account:",
@@ -155,9 +152,6 @@
         },
         "openInvoice": {
             "cardTitle": "Payone open invoice",
-            "birthday": {
-                "label": "Date of birth"
-            },
             "document": {
                 "clearingReference": "Reference: %reference%",
                 "invoicingDescription": "Please transfer the outstanding amount to the following bank account:",
@@ -175,9 +169,6 @@
             "debit": {
                 "iban": {
                     "label": "IBAN"
-                },
-                "birthday": {
-                    "label": "Date of birth"
                 }
             },
             "installment": {
@@ -186,9 +177,6 @@
                     "label": "IBAN",
                     "linkTextNoDirectDebit": "I would like to make the installments myself and not pay by direct debit",
                     "linkTextDirectDebit": "I would like to pay the installments conveniently by direct debit"
-                },
-                "birthday": {
-                    "label": "Date of birth"
                 },
                 "runtime": {
                     "title": "Runtime",
@@ -223,27 +211,16 @@
                     "interestAmountText": "Interest amount",
                     "interestAmountDescription": "Sum of money resulting from the interest rate"
                 }
-            },
-            "invoice": {
-                "birthday": {
-                    "label": "Date of birth"
-                }
             }
         },
         "securedInvoice": {
             "general": {
                 "consentText": "By placing this order, I agree to the <a href=\"https://legal.paylater.payone.com/en/terms-of-payment.html\" title=\"https://legal.paylater.payone.com/en/terms-of-payment.html\" target=\"_blank\">supplementary payment terms</a> and the performance of a risk assessment for the selected payment method. I am aware of the <a href=\"https://legal.paylater.payone.com/en/data-protection-payments.html\" title=\"https://legal.paylater.payone.com/en/data-protection-payments.html\" target=\"_blank\">supplementary data protection notice</a>."
-            },
-            "birthday": {
-                "label": "Date of birth"
             }
         },
         "securedInstallment": {
             "general": {
                 "consentText": "By placing this order, I agree to the <a href=\"https://legal.paylater.payone.com/en/terms-of-payment.html\" title=\"https://legal.paylater.payone.com/en/terms-of-payment.html\" target=\"_blank\">supplementary payment terms</a> and the performance of a risk assessment for the selected payment method. I am aware of the <a href=\"https://legal.paylater.payone.com/en/data-protection-payments.html\" title=\"https://legal.paylater.payone.com/en/data-protection-payments.html\" target=\"_blank\">supplementary data protection notice</a>."
-            },
-            "birthday": {
-                "label": "Date of birth"
             },
             "iban": {
                 "label": "IBAN"
@@ -261,9 +238,6 @@
         "securedDirectDebit": {
             "general": {
                 "consentText": "By placing this order, I agree to the <a href=\"https://legal.paylater.payone.com/en/terms-of-payment.html\" title=\"https://legal.paylater.payone.com/en/terms-of-payment.html\" target=\"_blank\">supplementary payment terms</a> and the performance of a risk assessment for the selected payment method. I am aware of the <a href=\"https://legal.paylater.payone.com/en/data-protection-payments.html\" title=\"https://legal.paylater.payone.com/en/data-protection-payments.html\" target=\"_blank\">supplementary data protection notice</a>."
-            },
-            "birthday": {
-                "label": "Date of birth"
             },
             "iban": {
                 "label": "IBAN"

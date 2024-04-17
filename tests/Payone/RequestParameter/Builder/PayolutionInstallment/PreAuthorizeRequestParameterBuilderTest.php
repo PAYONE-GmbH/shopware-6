@@ -28,7 +28,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
             'payolutionBic' => 'ABCD1111',
             'payolutionAccountOwner' => 'Tester Test',
             'payolutionInstallmentDuration' => 12,
-            'payolutionBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(

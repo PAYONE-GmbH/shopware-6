@@ -45,8 +45,8 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
             return $parameters;
         }
 
-        if (!empty($dataBag->get('payoneInvoiceBirthday'))) {
-            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payoneInvoiceBirthday'));
+        if (!empty($dataBag->get('payoneBirthday'))) {
+            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payoneBirthday'));
 
             if (!empty($birthday)) {
                 $parameters['birthday'] = $birthday->format('Ymd');

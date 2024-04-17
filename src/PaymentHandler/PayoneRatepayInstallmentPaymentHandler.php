@@ -20,7 +20,7 @@ class PayoneRatepayInstallmentPaymentHandler extends AbstractSynchronousPayonePa
         if (empty($salesChannelContext->getCustomer()?->getActiveBillingAddress()?->getPhoneNumber())) {
             $definitions['payonePhone'] = [new NotBlank()];
         }
-        $definitions['ratepayBirthday'] = [new NotBlank(), new Birthday()];
+        $definitions['payoneBirthday'] = [new NotBlank(), new Birthday()];
         $definitions['ratepayIban'] = [new Iban()];
 
         $definitions['ratepayInstallmentAmount'] = [new NotBlank()];

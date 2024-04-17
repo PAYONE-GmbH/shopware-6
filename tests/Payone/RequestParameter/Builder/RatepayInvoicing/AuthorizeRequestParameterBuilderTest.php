@@ -35,7 +35,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
         $dataBag = new RequestDataBag([
             'payonePhone' => '0123456789',
-            'ratepayBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
@@ -73,7 +73,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
-            'ratepayBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(

@@ -17,7 +17,7 @@ describe('Secured Installment', () => {
             return cy.checkoutConfirmFailValidation(
                 () => {
                     cy.get('#securedInstallmentIban').clear().type(IBAN.random(CountryCode.DE).toString());
-                    cy.get('#securedInstallmentBirthday').clear().type('2025-01-01');
+                    cy.get('#payoneBirthday').clear().type('2025-01-01');
                     cy.get('#payonePhone').clear().type('012345789');
                     cy.get('[name=securedInstallmentOptionId]').first().click();
                 }
@@ -30,7 +30,7 @@ describe('Secured Installment', () => {
             return cy.checkoutConfirmFailValidation(
                 () => {
                     cy.get('#securedInstallmentIban').clear().type('test-test');
-                    cy.get('#securedInstallmentBirthday').clear().type('1990-01-01');
+                    cy.get('#payoneBirthday').clear().type('1990-01-01');
                     cy.get('#payonePhone').clear().type('012345789');
                     cy.get('[name=securedInstallmentOptionId]').first().click();
                 }
@@ -41,7 +41,7 @@ describe('Secured Installment', () => {
     function processPayment() {
         return cy.checkoutConfirmAndComplete(() => {
             cy.get('#securedInstallmentIban').clear().type(IBAN.random(CountryCode.DE).toString());
-            cy.get('#securedInstallmentBirthday').clear().type('1990-01-01');
+            cy.get('#payoneBirthday').clear().type('1990-01-01');
             cy.get('#payonePhone').clear().type('012345789');
             cy.get('[name=securedInstallmentOptionId]').first().click();
         });

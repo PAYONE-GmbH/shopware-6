@@ -21,7 +21,7 @@ describe('Unzer Debit', () => {
             cy.get('#payolutionIban').type(IBAN.random(CountryCode.DE).toString());
             cy.get('#payolutionBic').type('DEUTDEFF500');
 
-            cy.get('#payolutionBirthday').type('1990-01-01');
+            cy.get('#payoneBirthday').type('1990-01-01');
             cy.get('#payolutionConsent').check();
             cy.get('#payolutionMandate').check();
         });

@@ -31,7 +31,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
 
         $dataBag = new RequestDataBag([
             'payonePhone' => '0123456789',
-            'securedInstallmentBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
             'securedInstallmentIban' => 'DE85500105173716329595',
             'securedInstallmentOptionId' => 'the-option-id',
         ]);

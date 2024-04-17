@@ -17,7 +17,6 @@ class CustomFieldInstaller implements InstallerInterface
 {
     final public const CAPTURED_QUANTITY = 'payone_captured_quantity';
     final public const REFUNDED_QUANTITY = 'payone_refunded_quantity';
-    final public const CUSTOMER_BIRTHDAY = 'payone_customer_birthday';
 
     final public const FIELDSET_ID_ORDER_TRANSACTION = 'aacbcf9bedfb4827853b75c5fd278d3f';
     final public const FIELDSET_ID_ORDER_LINE_ITEM = '12f3f06c895e11eabc550242ac130003';
