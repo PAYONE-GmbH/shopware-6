@@ -7,7 +7,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder\PaypalExpress;
 use PayonePayment\Components\GenericExpressCheckout\Struct\CreateExpressCheckoutSessionStruct;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
-use PayonePayment\Payone\RequestParameter\Builder\Amazon\AbstractAmazonRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 
 class CreateCheckoutSessionParameterBuilder extends AbstractRequestParameterBuilder

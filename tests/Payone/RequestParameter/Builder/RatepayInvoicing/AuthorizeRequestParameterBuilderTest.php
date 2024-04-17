@@ -7,7 +7,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing;
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\DeviceFingerprint\RatepayDeviceFingerprintService;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;

@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder\RatepayDebit;
 
 use PayonePayment\Components\DeviceFingerprint\AbstractDeviceFingerprintService;
 use PayonePayment\Components\Helper\OrderFetcherInterface;
-use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\Components\Ratepay\Profile\Profile;
 use PayonePayment\Components\Ratepay\Profile\ProfileServiceInterface;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
@@ -17,7 +16,6 @@ use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder

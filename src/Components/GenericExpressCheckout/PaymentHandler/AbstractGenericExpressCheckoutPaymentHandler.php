@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\Components\GenericExpressCheckout\PaymentHandler;
 
 use PayonePayment\PaymentHandler\AbstractAsynchronousPayonePaymentHandler;
-use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;

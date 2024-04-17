@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\SecuredDirectDebit;
 
-use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\DeviceFingerprint\AbstractDeviceFingerprintService;
 use PayonePayment\Components\Helper\OrderFetcherInterface;
-use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredDirectDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -16,7 +14,6 @@ use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {

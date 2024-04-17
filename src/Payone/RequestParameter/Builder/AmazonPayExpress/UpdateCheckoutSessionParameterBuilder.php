@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\AmazonPayExpress;
 
-use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\AmazonPayExpressUpdateCheckoutSessionStruct;

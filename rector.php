@@ -17,6 +17,8 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/../../../vendor/autoload.php'
     ]);
 
+    $rectorConfig->removeUnusedImports();
+
     // define sets of rules
     $rectorConfig->sets([
         LevelSetList::UP_TO_PHP_81
