@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\Capture;
 
-use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;

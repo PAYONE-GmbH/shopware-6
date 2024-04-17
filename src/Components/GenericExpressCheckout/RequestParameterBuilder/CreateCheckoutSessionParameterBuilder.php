@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\GenericExpressCheckout\RequestParameterBuilder;
 
-use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\GenericExpressCheckout\Struct\CreateExpressCheckoutSessionStruct;
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;

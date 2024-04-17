@@ -4,17 +4,11 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment;
 
-use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
-use PayonePayment\Components\DeviceFingerprint\AbstractDeviceFingerprintService;
-use PayonePayment\Components\Helper\OrderFetcherInterface;
-use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
-use PayonePayment\Components\Ratepay\Profile\ProfileServiceInterface;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\RatepayDebit\AuthorizeRequestParameterBuilder as RatepayDebitAuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
 class AuthorizeRequestParameterBuilder extends RatepayDebitAuthorizeRequestParameterBuilder
 {

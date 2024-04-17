@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\Klarna;
 
-use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\Helper\OrderFetcherInterface;
-use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\KlarnaCreateSessionStruct;

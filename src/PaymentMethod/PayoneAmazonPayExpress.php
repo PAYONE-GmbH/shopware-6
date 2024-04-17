@@ -6,7 +6,6 @@ namespace PayonePayment\PaymentMethod;
 
 use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\PaymentHandler\PayoneAmazonPayExpressPaymentHandler;
-use PayonePayment\PaymentHandler\PayoneWeChatPayPaymentHandler;
 
 class PayoneAmazonPayExpress extends AbstractPaymentMethod
 {

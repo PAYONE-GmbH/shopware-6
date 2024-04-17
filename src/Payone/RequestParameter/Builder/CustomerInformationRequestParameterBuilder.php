@@ -15,7 +15,6 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 class CustomerInformationRequestParameterBuilder extends AbstractRequestParameterBuilder

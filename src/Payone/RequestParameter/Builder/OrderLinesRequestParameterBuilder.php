@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
-use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\PaymentHandler\AbstractPostfinancePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneAlipayPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;

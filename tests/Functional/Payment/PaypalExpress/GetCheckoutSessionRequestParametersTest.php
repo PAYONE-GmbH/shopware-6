@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\Functional\Payment\PaypalExpress;
 
 use PayonePayment\Components\GenericExpressCheckout\Struct\GetCheckoutSessionStruct;
-use PayonePayment\PaymentHandler\PayoneAmazonPayExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;

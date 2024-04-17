@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\OpenInvoice;
 
-use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\PaymentHandler\PayoneOpenInvoicePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
-use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {

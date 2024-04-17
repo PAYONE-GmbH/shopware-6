@@ -7,7 +7,6 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 

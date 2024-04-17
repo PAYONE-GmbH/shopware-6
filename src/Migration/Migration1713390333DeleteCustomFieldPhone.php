@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PayonePayment\Migration;
 
 use Doctrine\DBAL\Connection;
-use Shopware\Core\Framework\Migration\InheritanceUpdaterTrait;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
 class Migration1713390333DeleteCustomFieldPhone extends MigrationStep

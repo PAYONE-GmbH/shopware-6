@@ -8,7 +8,6 @@ use PayonePayment\Components\CartHasher\CartHasher;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
-use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class CartExtensionService

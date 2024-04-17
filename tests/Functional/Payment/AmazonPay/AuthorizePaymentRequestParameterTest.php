@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Functional\Payment\AmazonPay;
 
-use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\PaymentHandler\PayoneAmazonPayPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;

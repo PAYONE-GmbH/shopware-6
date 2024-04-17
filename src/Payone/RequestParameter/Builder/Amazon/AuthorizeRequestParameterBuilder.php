@@ -10,7 +10,6 @@ use PayonePayment\PaymentHandler\PayoneAmazonPayPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class AuthorizeRequestParameterBuilder extends AbstractAmazonRequestParameterBuilder
