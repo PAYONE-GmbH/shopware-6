@@ -116,53 +116,6 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $builder->getRequestParameter($struct);
     }
 
-    public function testItAddsCorrectAuthorizeParametersWithSavedPhoneNumber(): void
-    {
-        $request = $this->getRequestWithSession([
-            PayoneBNPLDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
-        ]);
-        $this->getContainer()->get(RequestStack::class)->push($request);
-
-        $dataBag = new RequestDataBag([
-            'securedDirectDebitBirthday' => '2000-01-01',
-            'securedDirectDebitIban' => 'DE85500105173716329595',
-        ]);
-
-        $struct = $this->getPaymentTransactionStruct(
-            $dataBag,
-            $this->getValidPaymentHandler(),
-            $this->getValidRequestAction()
-        );
-
-        $builder = $this->getContainer()->get($this->getParameterBuilder());
-
-        // Save phone number on customer custom fields
-        $this->getContainer()->get('customer.repository')->update([
-            [
-                'id' => $struct->getPaymentTransaction()->getOrder()->getOrderCustomer()->getCustomerId(),
-                'customFields' => [
-                    CustomFieldInstaller::CUSTOMER_PHONE_NUMBER => '0123456789',
-                ],
-            ],
-        ], $struct->getSalesChannelContext()->getContext());
-
-        $parameters = $builder->getRequestParameter($struct);
-
-        Assert::assertArraySubset(
-            [
-                'request' => $this->getValidRequestAction(),
-                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PDD,
-                'telephonenumber' => '0123456789',
-                'birthday' => '20000101',
-                'bankaccountholder' => 'Max Mustermann',
-                'iban' => 'DE85500105173716329595',
-                'it[1]' => LineItemHydrator::TYPE_GOODS,
-            ],
-            $parameters
-        );
-    }
-
     public function testItAddsCorrectAuthorizeParametersWithSavedBirthday(): void
     {
         $request = $this->getRequestWithSession([

@@ -34,7 +34,9 @@ class PayoneSecuredInvoicePaymentHandler extends AbstractSynchronousPayonePaymen
     {
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
-        $definitions['payonePhone'] = [new NotBlank()];
+        if (empty($salesChannelContext->getCustomer()?->getActiveBillingAddress()?->getPhoneNumber())) {
+            $definitions['payonePhone'] = [new NotBlank()];
+        }
         $definitions['payoneInvoiceBirthday'] = [new NotBlank(), new Birthday()];
 
         return $definitions;

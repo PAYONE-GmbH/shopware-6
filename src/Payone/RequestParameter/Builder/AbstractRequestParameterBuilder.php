@@ -94,49 +94,67 @@ abstract class AbstractRequestParameterBuilder
 
     protected function applyPhoneParameter(OrderEntity $order, array &$parameters, ParameterBag $dataBag, Context $context): void
     {
-        $submittedPhoneNumber = $dataBag->get('payonePhone');
+        $phoneNumber = $dataBag->get('payonePhone');
 
-        if (!$order->getOrderCustomer()) {
-            throw new \RuntimeException('missing order customer');
+        $orderAddress = $order->getBillingAddress();
+        if ($orderAddress === null) {
+            /** @var OrderAddressEntity|null $orderAddress */
+            $orderAddress = $this->serviceAccessor->orderAddressRepository->search(new Criteria([$order->getBillingAddressId()]), $context)->first();
         }
 
-        $customer = $order->getOrderCustomer()->getCustomer();
-
-        if (!$customer) {
-            throw new \RuntimeException('missing customer');
+        if (!$orderAddress) {
+            throw new \RuntimeException('missing billing address');
         }
 
-        $customerCustomFields = $customer->getCustomFields() ?? [];
-        $customFieldPhoneNumber = $customerCustomFields[CustomFieldInstaller::CUSTOMER_PHONE_NUMBER] ?? null;
+        $phoneNumber = !empty($phoneNumber) ? $phoneNumber : $orderAddress->getPhoneNumber();
 
-        if (!empty($submittedPhoneNumber) && $submittedPhoneNumber !== $customFieldPhoneNumber) {
-            // Update the phone number that is stored at the customer
-            $customFieldPhoneNumber = $submittedPhoneNumber;
-            $customerCustomFields[CustomFieldInstaller::CUSTOMER_PHONE_NUMBER] = $customFieldPhoneNumber;
-            $this->serviceAccessor->customerRepository->update(
+        if (empty($phoneNumber)) {
+            throw new \RuntimeException('missing phone number');
+        }
+
+        if ($phoneNumber !== $orderAddress->getPhoneNumber()) {
+            // update phone number in ORDER-Address
+            $this->serviceAccessor->orderAddressRepository->update(
                 [
                     [
-                        'id' => $customer->getId(),
-                        'customFields' => $customerCustomFields,
+                        'id' => $orderAddress->getId(),
+                        'phoneNumber' => $phoneNumber,
                     ],
                 ],
                 $context
             );
         }
 
-        if (!$customFieldPhoneNumber) {
-            throw new \RuntimeException('missing phone number');
+        $customer = $order->getOrderCustomer()?->getCustomer();
+        if ($customer instanceof CustomerEntity) {
+            $customerAddress = $customer->getDefaultBillingAddress();
+            if ($customerAddress === null) {
+                /** @var CustomerAddressEntity|null $customerAddress */
+                $customerAddress = $this->serviceAccessor->customerAddressRepository->search(
+                    new Criteria([$customer->getDefaultBillingAddressId()]),
+                    $context
+                )->first();
+
+                if ($customerAddress instanceof CustomerAddressEntity && $phoneNumber !== $customerAddress->getPhoneNumber()) {
+                    // update phone number in CUSTOMER-Address
+                    $this->serviceAccessor->customerAddressRepository->update(
+                        [
+                            [
+                                'id' => $customerAddress->getId(),
+                                'phoneNumber' => $phoneNumber,
+                            ],
+                        ],
+                        $context
+                    );
+                }
+            }
         }
 
-        $parameters['telephonenumber'] = $customerCustomFields[CustomFieldInstaller::CUSTOMER_PHONE_NUMBER];
+        $parameters['telephonenumber'] = $phoneNumber;
     }
 
     protected function applyBirthdayParameter(OrderEntity $order, array &$parameters, string $submittedBirthday, Context $context): void
     {
-        if (property_exists($this, 'customerRepository') === false) {
-            throw new \RuntimeException('customer repository injection missing');
-        }
-
         if (!$order->getOrderCustomer()) {
             throw new \RuntimeException('missing order customer');
         }

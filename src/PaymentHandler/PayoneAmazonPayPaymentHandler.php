@@ -61,7 +61,9 @@ class PayoneAmazonPayPaymentHandler extends AbstractAsynchronousPayonePaymentHan
     {
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
-        $definitions['payonePhone'] = [new NotBlank()];
+        if (empty($salesChannelContext->getCustomer()?->getActiveBillingAddress()?->getPhoneNumber())) {
+            $definitions['payonePhone'] = [new NotBlank()];
+        }
 
         return $definitions;
     }
