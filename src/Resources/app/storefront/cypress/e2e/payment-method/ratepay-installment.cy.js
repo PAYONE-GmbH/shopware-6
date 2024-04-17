@@ -17,7 +17,7 @@ describe('Ratepay Installment', () => {
         cy.preparePaymentCheckout(PAYMENT_METHOD_ID).then(() => {
             return cy.checkoutConfirmFailValidation(
                 () => {
-                    cy.get('#ratepayBirthday').type('2050-01-01');
+                    cy.get('#payoneBirthday').type('2050-01-01');
                     cy.get('#payonePhone').type('012345789');
                     cy.get('#ratepayIban').type(IBAN.random(CountryCode.DE).toString());
                 }
@@ -29,7 +29,7 @@ describe('Ratepay Installment', () => {
         cy.preparePaymentCheckout(PAYMENT_METHOD_ID).then(() => {
             return cy.checkoutConfirmFailValidation(
                 () => {
-                    cy.get('#ratepayBirthday').type('1990-01-01');
+                    cy.get('#payoneBirthday').type('1990-01-01');
                     cy.get('#payonePhone').type('012345789');
                     cy.get('#ratepayIban').type('invalid-iban');
                 }
@@ -39,7 +39,7 @@ describe('Ratepay Installment', () => {
 
     function processPayment() {
         return cy.checkoutConfirmAndComplete(() => {
-            cy.get('#ratepayBirthday').clear().type('1990-01-01');
+            cy.get('#payoneBirthday').clear().type('1990-01-01');
             cy.get('#payonePhone').clear().type('012345789');
             cy.get('#ratepayIban').clear().type(IBAN.random(CountryCode.DE).toString());
 

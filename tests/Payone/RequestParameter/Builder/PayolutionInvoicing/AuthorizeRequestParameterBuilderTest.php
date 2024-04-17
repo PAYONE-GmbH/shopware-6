@@ -26,7 +26,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     public function testItAddsCorrectAuthorizeParameters(): void
     {
         $dataBag = new RequestDataBag([
-            'payolutionBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
@@ -58,7 +58,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $dataBag = new RequestDataBag([
-            'payolutionBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
@@ -102,7 +102,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $dataBag = new RequestDataBag([
-            'payolutionBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
@@ -146,7 +146,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $dataBag = new RequestDataBag([
-            'payolutionBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(

@@ -15,7 +15,7 @@ describe('Ratepay Invoice', () => {
         cy.preparePaymentCheckout(PAYMENT_METHOD_ID).then(() => {
             return cy.checkoutConfirmFailValidation(
                 () => {
-                    cy.get('#ratepayBirthday').type('2050-01-01')
+                    cy.get('#payoneBirthday').type('2050-01-01')
                     cy.get('#payonePhone').type('012345789')
                 }
             ).then(() => {
@@ -26,7 +26,7 @@ describe('Ratepay Invoice', () => {
 
     function processPayment() {
         return cy.checkoutConfirmAndComplete(() => {
-            cy.get('#ratepayBirthday').type('1990-01-01');
+            cy.get('#payoneBirthday').type('1990-01-01');
             cy.get('#payonePhone').type('012345789')
         });
     }

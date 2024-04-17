@@ -7,9 +7,7 @@
         {% endblock %}
 
         {% block page_checkout_confirm_payone_card_content_secure_invoice %}
-            {% sw_include '@Storefront/storefront/payone/secure-invoice/birthDay.html.twig' with {
-                style: 'wide'
-            } %}
+            {% sw_include '@PayonePayment/storefront/payone/birthday-input.html.twig' %}
         {% endblock %}
     </div>
 {% endif %}

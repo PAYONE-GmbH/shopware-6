@@ -8,7 +8,6 @@ use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -27,7 +26,12 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'bic' => $dataBag->get('payolutionBic'),
         ];
 
-        $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
+        $this->applyBirthdayParameter(
+            $arguments->getPaymentTransaction()->getOrder(),
+            $parameters,
+            $dataBag,
+            $arguments->getSalesChannelContext()->getContext()
+        );
 
         return $parameters;
     }
@@ -42,16 +46,5 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         $action = $arguments->getAction();
 
         return $paymentMethod === PayonePayolutionDebitPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
-    }
-
-    protected function applyBirthdayParameterWithoutCustomField(array &$parameters, ParameterBag $dataBag): void
-    {
-        if (!empty($dataBag->get('payolutionBirthday'))) {
-            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payolutionBirthday'));
-
-            if (!empty($birthday)) {
-                $parameters['birthday'] = $birthday->format('Ymd');
-            }
-        }
     }
 }

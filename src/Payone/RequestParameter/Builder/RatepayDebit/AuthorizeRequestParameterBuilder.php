@@ -16,7 +16,6 @@ use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -53,7 +52,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         ];
 
         $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
-        $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
+        $this->applyBirthdayParameter($order, $parameters, $dataBag, $context);
 
         if ($order->getLineItems() !== null) {
             $parameters = array_merge($parameters, $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context));
@@ -95,16 +94,5 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         return $profile;
-    }
-
-    protected function applyBirthdayParameterWithoutCustomField(array &$parameters, ParameterBag $dataBag): void
-    {
-        if (!empty($dataBag->get('ratepayBirthday'))) {
-            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('ratepayBirthday'));
-
-            if (!empty($birthday)) {
-                $parameters['birthday'] = $birthday->format('Ymd');
-            }
-        }
     }
 }

@@ -58,7 +58,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
-        $this->applyBirthdayParameter($order, $parameters, $dataBag->get('securedDirectDebitBirthday') ?? '', $context);
+        $this->applyBirthdayParameter($order, $parameters, $dataBag, $context);
 
         return $parameters;
     }

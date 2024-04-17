@@ -29,7 +29,7 @@ export default class PayonePaymentPayolutionInvoicing extends Plugin {
         }
 
         this._validateField(event, 'payolutionConsent');
-        this._validateInput(event, 'payolutionBirthday');
+        this._validateInput(event, 'payoneBirthday');
 
         if (event.defaultPrevented) {
             return;
@@ -136,10 +136,10 @@ export default class PayonePaymentPayolutionInvoicing extends Plugin {
     }
 
     _getRequestData() {
-        const birthday = document.getElementById('payolutionBirthday');
+        const birthday = document.getElementById('payoneBirthday');
 
         return {
-            'payolutionBirthday': birthday.value
+            'payoneBirthday': birthday.value
         };
     }
 }

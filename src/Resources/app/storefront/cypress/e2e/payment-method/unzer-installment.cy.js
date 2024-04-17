@@ -47,7 +47,7 @@ describe('Unzer Installment', () => {
 
     function fillCheckoutWithCorrectData() {
         cy.intercept('payone/installment/calculation').as('calcRequest');
-        cy.get('#payolutionBirthday').type('1990-01-01');
+        cy.get('#payoneBirthday').type('1990-01-01');
         cy.get('#payolutionConsent').check();
         cy.get('#checkInstallmentButton').click();
         cy.wait('@calcRequest');

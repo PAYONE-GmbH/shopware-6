@@ -11,20 +11,7 @@
         <div class="card">
             <fieldset>
                 {% sw_include '@PayonePayment/storefront/payone/phone-number-input.html.twig' %}
-
-                {% if customerCustomFields is null or customerCustomFields['payone_customer_birthday'] is not defined or customerCustomFields['payone_customer_birthday'] is empty %}
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label class="form-label" for="securedDirectDebitBirthday">{{ "PayonePayment.securedDirectDebit.birthday.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
-                            <input class="form-control payone-input"
-                                   id="securedDirectDebitBirthday"
-                                   name="securedDirectDebitBirthday"
-                                   type="date"
-                                   form="confirmOrderForm"
-                                   required="required"/>
-                        </div>
-                    </div>
-                {% endif %}
+                {% sw_include '@PayonePayment/storefront/payone/birthday-input.html.twig' %}
 
                 <div class="row">
                     <div class="col-md-12">

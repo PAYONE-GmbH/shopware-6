@@ -10,20 +10,8 @@
 
         <div class="card">
             <fieldset>
-                <div class="row">
-                    <div class="col-md-12">
-                        <label class="form-label" for="ratepayBirthday">{{ "PayonePayment.ratepay.invoice.birthday.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
-                        <input class="form-control payone-input"
-                               id="ratepayBirthday"
-                               name="ratepayBirthday"
-                               type="date"
-                               form="confirmOrderForm"
-                               required="required"/>
-                    </div>
-                </div>
-
+                {% sw_include '@PayonePayment/storefront/payone/birthday-input.html.twig' %}
                 {% sw_include '@PayonePayment/storefront/payone/phone-number-input.html.twig' %}
-
             </fieldset>
 
             <div class="col-md-12">

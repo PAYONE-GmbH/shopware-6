@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
@@ -92,7 +91,7 @@ abstract class AbstractRequestParameterBuilder
         }
     }
 
-    protected function applyPhoneParameter(OrderEntity $order, array &$parameters, ParameterBag $dataBag, Context $context): void
+    protected function applyPhoneParameter(OrderEntity $order, array &$parameters, ParameterBag $dataBag, Context $context, bool $isOptional = false): void
     {
         $phoneNumber = $dataBag->get('payonePhone');
 
@@ -109,7 +108,11 @@ abstract class AbstractRequestParameterBuilder
         $phoneNumber = !empty($phoneNumber) ? $phoneNumber : $orderAddress->getPhoneNumber();
 
         if (empty($phoneNumber)) {
-            throw new \RuntimeException('missing phone number');
+            if (!$isOptional) {
+                throw new \RuntimeException('missing phone number');
+            }
+
+            return;
         }
 
         if ($phoneNumber !== $orderAddress->getPhoneNumber()) {
@@ -153,8 +156,11 @@ abstract class AbstractRequestParameterBuilder
         $parameters['telephonenumber'] = $phoneNumber;
     }
 
-    protected function applyBirthdayParameter(OrderEntity $order, array &$parameters, string $submittedBirthday, Context $context): void
+    protected function applyBirthdayParameter(OrderEntity $order, array &$parameters, ParameterBag $dataBag, Context $context, bool $isOptional = false): void
     {
+        $birthday = $dataBag->get('payoneBirthday');
+        $birthday = \is_string($birthday) ? \DateTime::createFromFormat('Y-m-d', $birthday) ?: null : null;
+
         if (!$order->getOrderCustomer()) {
             throw new \RuntimeException('missing order customer');
         }
@@ -165,32 +171,29 @@ abstract class AbstractRequestParameterBuilder
             throw new \RuntimeException('missing customer');
         }
 
-        $customerCustomFields = $customer->getCustomFields() ?? [];
-        $customFieldBirthday = $customerCustomFields[CustomFieldInstaller::CUSTOMER_BIRTHDAY] ?? null;
-
-        if (!empty($submittedBirthday) && $submittedBirthday !== $customFieldBirthday) {
-            // Update the birthday that is stored at the customer
-            $customFieldBirthday = $submittedBirthday;
-            $customerCustomFields[CustomFieldInstaller::CUSTOMER_BIRTHDAY] = $customFieldBirthday;
+        if ($birthday instanceof \DateTime && $birthday->getTimestamp() !== $customer->getBirthday()?->getTimestamp()) {
             $this->serviceAccessor->customerRepository->update(
                 [
                     [
                         'id' => $customer->getId(),
-                        'customFields' => $customerCustomFields,
+                        'birthday' => $birthday,
                     ],
                 ],
                 $context
             );
+        } else {
+            $birthday = $birthday instanceof \DateTimeInterface ? $birthday : $customer->getBirthday();
         }
 
-        if (!$customFieldBirthday) {
-            throw new \RuntimeException('missing birthday');
+        if (!$birthday instanceof \DateTimeInterface) {
+            if (!$isOptional) {
+                throw new \RuntimeException('missing birthday');
+            }
+
+            return;
         }
 
-        $birthday = \DateTime::createFromFormat('Y-m-d', $customFieldBirthday);
-        if ($birthday instanceof \DateTimeInterface) {
-            $parameters['birthday'] = $birthday->format('Ymd');
-        }
+        $parameters['birthday'] = $birthday->format('Ymd');
     }
 
     protected function orderNotFoundException(string $orderId): \Throwable

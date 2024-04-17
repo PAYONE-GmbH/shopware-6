@@ -26,7 +26,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
         $dataBag = new RequestDataBag([
             'payolutionIban' => 'DE81500105177147426471',
             'payolutionBic' => 'ABCD1111',
-            'payolutionBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(

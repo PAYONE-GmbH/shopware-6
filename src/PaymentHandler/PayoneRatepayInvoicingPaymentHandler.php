@@ -16,7 +16,7 @@ class PayoneRatepayInvoicingPaymentHandler extends AbstractSynchronousPayonePaym
     {
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
-        $definitions['ratepayBirthday'] = [new NotBlank(), new Birthday()];
+        $definitions['payoneBirthday'] = [new NotBlank(), new Birthday()];
 
         return $definitions;
     }

@@ -42,7 +42,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
         $dataBag = new RequestDataBag([
             'ratepayIban' => 'DE81500105177147426471',
             'payonePhone' => '0123456789',
-            'ratepayBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
             'ratepayInstallmentAmount' => '100',
             'ratepayInstallmentNumber' => '24',
             'ratepayLastInstallmentAmount' => '101',

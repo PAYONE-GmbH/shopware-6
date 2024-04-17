@@ -51,7 +51,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
-        $this->applyBirthdayParameter($order, $parameters, $dataBag->get('payoneInvoiceBirthday') ?? '', $context);
+        $this->applyBirthdayParameter($order, $parameters, $dataBag, $context);
         $this->applyB2bParameters($order, $parameters);
 
         return $parameters;

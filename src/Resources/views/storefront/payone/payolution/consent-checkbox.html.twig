@@ -1,24 +1,7 @@
 {% block payone_payolution_consent_checkbox %}
 
     {% if context.customer.activeBillingAddress and context.customer.activeBillingAddress.company is empty %}
-    <div class="row consent-row">
-        <div class="col-12">
-            <label class="form-label" for="payolutionBirthday">
-                {{ "PayonePayment.payolution.birthday.label" | trans }}{{ "general.required" | trans }}
-            </label>
-        </div>
-
-        <div class="{% if style == 'wide'%}col-12{% else %}col-4{% endif %}">
-            <input
-                type="date"
-                id="payolutionBirthday"
-                name="payolutionBirthday"
-                class="form-control{% if formViolations.getViolations('/payolutionBirthday') is not empty %} is-invalid{% endif %}"
-                form="confirmOrderForm"
-                required="required"
-            />
-        </div>
-    </div>
+        {% sw_include '@PayonePayment/storefront/payone/birthday-input.html.twig' %}
     {% endif %}
 
     <div class="row consent-row">

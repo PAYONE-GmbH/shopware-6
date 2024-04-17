@@ -32,7 +32,7 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         this._hideErrorBox();
 
         this._validateField(event, 'payolutionConsent');
-        this._validateInput(event, 'payolutionBirthday');
+        this._validateInput(event, 'payoneBirthday');
 
         if (event.defaultPrevented) {
             return;
@@ -141,7 +141,7 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
 
     _handleOrderSubmit(event) {
         this._validateField(event, 'payolutionConsent');
-        this._validateInput(event, 'payolutionBirthday');
+        this._validateInput(event, 'payoneBirthday');
         this._validateInput(event, 'payolutionAccountOwner');
         this._validateInput(event, 'payolutionIban');
         this._validateInput(event, 'payolutionBic');
@@ -225,12 +225,12 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
     }
 
     _getRequestData() {
-        const birthday = document.getElementById('payolutionBirthday');
+        const birthday = document.getElementById('payoneBirthday');
         const workorder = document.getElementById('payoneWorkOrder');
         const carthash = document.getElementById('payoneCartHash');
 
         return {
-            'payolutionBirthday': birthday.value,
+            'payoneBirthday': birthday.value,
             'workorder': workorder.value,
             'carthash': carthash.value
         };

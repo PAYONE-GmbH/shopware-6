@@ -19,7 +19,7 @@ describe('Secured Direct Debit', () => {
             return cy.checkoutConfirmFailValidation(
                 () => {
                     cy.get('#securedDirectDebitIban').type('invalid-iban');
-                    cy.get('#securedDirectDebitBirthday').type('1990-01-01');
+                    cy.get('#payoneBirthday').type('1990-01-01');
                     cy.get('#payonePhone').type('012345789');
                 }
             ).then(() => {
@@ -33,7 +33,7 @@ describe('Secured Direct Debit', () => {
             return cy.checkoutConfirmFailValidation(
                 () => {
                     cy.get('#securedDirectDebitIban').type(IBAN.random(CountryCode.DE).toString());
-                    cy.get('#securedDirectDebitBirthday').type('2050-01-01');
+                    cy.get('#payoneBirthday').type('2050-01-01');
                     cy.get('#payonePhone').type('012345789');
                 }
             ).then(() => {
@@ -47,7 +47,7 @@ describe('Secured Direct Debit', () => {
     function processPayment() {
         return cy.checkoutConfirmAndComplete(() => {
             cy.get('#securedDirectDebitIban').type(IBAN.random(CountryCode.DE).toString());
-            cy.get('#securedDirectDebitBirthday').type('1990-01-01');
+            cy.get('#payoneBirthday').type('1990-01-01');
             cy.get('#payonePhone').type('012345789');
         });
     }

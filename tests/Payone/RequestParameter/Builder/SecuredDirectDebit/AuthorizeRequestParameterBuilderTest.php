@@ -7,7 +7,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder\SecuredDirectDebit;
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
-use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredDirectDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -32,7 +31,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
 
         $dataBag = new RequestDataBag([
             'payonePhone' => '0123456789',
-            'securedDirectDebitBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
             'securedDirectDebitIban' => 'DE85500105173716329595',
         ]);
 
@@ -72,7 +71,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
-            'securedDirectDebitBirthday' => '2000-01-01',
+            'payoneBirthday' => '2000-01-01',
             'securedDirectDebitIban' => 'DE85500105173716329595',
         ]);
 
@@ -114,53 +113,6 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->expectExceptionMessage('missing birthday');
 
         $builder->getRequestParameter($struct);
-    }
-
-    public function testItAddsCorrectAuthorizeParametersWithSavedBirthday(): void
-    {
-        $request = $this->getRequestWithSession([
-            PayoneBNPLDeviceFingerprintService::SESSION_VAR_NAME => 'the-device-ident-token',
-        ]);
-        $this->getContainer()->get(RequestStack::class)->push($request);
-
-        $dataBag = new RequestDataBag([
-            'payonePhone' => '0123456789',
-            'securedDirectDebitIban' => 'DE85500105173716329595',
-        ]);
-
-        $struct = $this->getPaymentTransactionStruct(
-            $dataBag,
-            $this->getValidPaymentHandler(),
-            $this->getValidRequestAction()
-        );
-
-        $builder = $this->getContainer()->get($this->getParameterBuilder());
-
-        // Save phone number on customer custom fields
-        $this->getContainer()->get('customer.repository')->update([
-            [
-                'id' => $struct->getPaymentTransaction()->getOrder()->getOrderCustomer()->getCustomerId(),
-                'customFields' => [
-                    CustomFieldInstaller::CUSTOMER_BIRTHDAY => '2000-01-01',
-                ],
-            ],
-        ], $struct->getSalesChannelContext()->getContext());
-
-        $parameters = $builder->getRequestParameter($struct);
-
-        Assert::assertArraySubset(
-            [
-                'request' => $this->getValidRequestAction(),
-                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_FINANCING,
-                'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PDD,
-                'telephonenumber' => '0123456789',
-                'birthday' => '20000101',
-                'bankaccountholder' => 'Max Mustermann',
-                'iban' => 'DE85500105173716329595',
-                'it[1]' => LineItemHydrator::TYPE_GOODS,
-            ],
-            $parameters
-        );
     }
 
     protected function getParameterBuilder(): string

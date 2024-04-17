@@ -1,0 +1,14 @@
+<div class="row">
+    <div class="col-md-12">
+        <label class="form-label" for="payoneBirthday">{{ "PayonePayment.general.birthday.label" | trans }}{{ "general.required"|trans|sw_sanitize }}</label>
+        <input class="form-control payone-input{% if formViolations.getViolations('/payoneBirthday') is not empty %} is-invalid{% endif %}"
+               id="payoneBirthday"
+               name="payoneBirthday"
+               type="date"
+               form="confirmOrderForm"
+               {% if context.customer.birthday %}
+                   value="{{ context.customer.birthday|date('Y-m-d') }}"
+               {% endif %}
+               required="required"/>
+    </div>
+</div>

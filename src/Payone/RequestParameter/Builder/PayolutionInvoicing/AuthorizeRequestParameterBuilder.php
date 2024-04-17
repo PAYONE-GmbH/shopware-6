@@ -42,7 +42,12 @@ class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestPa
             'request' => self::REQUEST_ACTION_AUTHORIZE,
         ];
 
-        $this->applyBirthdayParameterWithoutCustomField($parameters, $dataBag);
+        $this->applyBirthdayParameter(
+            $arguments->getPaymentTransaction()->getOrder(),
+            $parameters,
+            $dataBag,
+            $arguments->getSalesChannelContext()->getContext()
+        );
 
         if ($this->transferCompanyData($salesChannelContext)) {
             $this->provideCompanyParams($paymentTransaction->getOrder()->getId(), $parameters, $salesChannelContext->getContext());

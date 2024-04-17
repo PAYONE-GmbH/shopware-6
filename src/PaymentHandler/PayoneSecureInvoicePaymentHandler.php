@@ -15,7 +15,7 @@ class PayoneSecureInvoicePaymentHandler extends AbstractPayoneInvoicePaymentHand
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
         if (!$this->customerHasCompanyAddress($salesChannelContext)) {
-            $definitions['payoneInvoiceBirthday'] = [new NotBlank(), new Birthday()];
+            $definitions['payoneBirthday'] = [new NotBlank(), new Birthday()];
         }
 
         return $definitions;

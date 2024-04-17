@@ -15,7 +15,7 @@ describe('Unzer Invoice', () => {
 
     function processPayment() {
         return cy.checkoutConfirmAndComplete(() => {
-            cy.get('#payolutionBirthday').type('1990-01-01');
+            cy.get('#payoneBirthday').type('1990-01-01');
             cy.get('#payolutionConsent').check();
         });
     }

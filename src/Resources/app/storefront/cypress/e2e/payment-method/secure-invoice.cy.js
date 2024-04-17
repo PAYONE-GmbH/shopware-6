@@ -11,7 +11,7 @@ describe('Secure Invoice', () => {
         cy.preparePaymentCheckout(PAYMENT_METHOD_ID).then(() => {
             return cy.checkoutConfirmFailValidation(
                 () => {
-                    cy.get('#payoneInvoiceBirthday').type('2050-01-01');
+                    cy.get('#payoneBirthday').type('2050-01-01');
                 }
             ).then(() => {
                 return processPayment();
@@ -21,7 +21,7 @@ describe('Secure Invoice', () => {
 
     function processPayment() {
         return cy.checkoutConfirmAndComplete(() => {
-            cy.get('#payoneInvoiceBirthday').type('1990-01-01')
+            cy.get('#payoneBirthday').type('1990-01-01')
         });
     }
 

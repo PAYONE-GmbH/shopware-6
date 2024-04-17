@@ -61,7 +61,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractSynchronousPayon
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
         $definitions['payolutionConsent'] = [new NotBlank()];
-        $definitions['payolutionBirthday'] = [new NotBlank(), new Birthday()];
+        $definitions['payoneBirthday'] = [new NotBlank(), new Birthday()];
 
         $definitions['payolutionInstallmentDuration'] = [new NotBlank()];
         $definitions['payolutionAccountOwner'] = [new NotBlank()];
