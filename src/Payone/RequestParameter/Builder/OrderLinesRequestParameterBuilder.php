@@ -26,10 +26,6 @@ use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
 
 class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    public function __construct(private readonly LineItemHydratorInterface $lineItemHydrator)
-    {
-    }
-
     /**
      * @param FinancialTransactionStruct $arguments
      */
@@ -46,7 +42,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
             return [];
         }
 
-        $parameters = $this->lineItemHydrator->mapPayoneOrderLinesByRequest(
+        $parameters = $this->serviceAccessor->lineItemHydrator->mapPayoneOrderLinesByRequest(
             $currency,
             $paymentTransaction->getOrder(),
             $orderLines,

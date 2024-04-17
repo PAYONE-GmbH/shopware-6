@@ -9,6 +9,7 @@ use PayonePayment\Components\GenericExpressCheckout\Struct\CreateExpressCheckout
 use PayonePayment\Components\RedirectHandler\RedirectHandler;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Storefront\Controller\GenericExpressController;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
@@ -17,11 +18,12 @@ use Symfony\Component\Routing\RouterInterface;
 class CreateCheckoutSessionParameterBuilder extends AbstractRequestParameterBuilder
 {
     public function __construct(
-        private readonly CurrencyPrecisionInterface $currencyPrecision,
+        RequestBuilderServiceAccessor $serviceAccessor,
         private readonly RouterInterface $router,
         private readonly RedirectHandler $redirectHandler,
         private readonly CartService $cartService
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     /**
@@ -35,7 +37,7 @@ class CreateCheckoutSessionParameterBuilder extends AbstractRequestParameterBuil
 
         return [
             'request' => self::REQUEST_ACTION_GENERIC_PAYMENT,
-            'amount' => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
+            'amount' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency' => $currency->getIsoCode(),
             'successurl' => $this->getReturnUrl(GenericExpressController::STATE_SUCCESS, $arguments->getPaymentMethod()),
             'errorurl' => $this->getReturnUrl(GenericExpressController::STATE_ERROR, $arguments->getPaymentMethod()),

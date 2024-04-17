@@ -9,6 +9,7 @@ use PayonePayment\Components\Helper\OrderFetcherInterface;
 use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\PayolutionDebit\AuthorizeRequestParameterBuilder as PayolutionDebitAuthorizeRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -19,9 +20,11 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 class AuthorizeRequestParameterBuilder extends PayolutionDebitAuthorizeRequestParameterBuilder
 {
     public function __construct(
+        RequestBuilderServiceAccessor $serviceAccessor,
         protected ConfigReaderInterface $configReader,
         protected OrderFetcherInterface $orderFetcher
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     /**

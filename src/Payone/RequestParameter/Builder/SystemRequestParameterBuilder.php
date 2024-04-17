@@ -22,10 +22,12 @@ use Shopware\Core\Framework\Plugin\PluginService;
 class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     public function __construct(
+        RequestBuilderServiceAccessor $serviceAccessor,
         private readonly PluginService $pluginService,
         private readonly string $shopwareVersion,
         private readonly ConfigReaderInterface $configReader
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     /**

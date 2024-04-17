@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\Klarna;
 
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends AbstractKlarnaParameterBuilder
 {
-    public function __construct(private readonly LineItemHydratorInterface $lineItemHydrator)
-    {
-    }
-
     /**
      * @param PaymentTransactionStruct $arguments
      */
@@ -30,7 +27,7 @@ class AuthorizeRequestParameterBuilder extends AbstractKlarnaParameterBuilder
         $context = $arguments->getSalesChannelContext()->getContext();
         $order = $arguments->getPaymentTransaction()->getOrder();
         $currency = $this->getOrderCurrency($order, $context);
-        $lineItems = $this->lineItemHydrator->mapOrderLines($currency, $order, $context);
+        $lineItems = $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context);
 
         return array_merge($parameter, $lineItems);
     }

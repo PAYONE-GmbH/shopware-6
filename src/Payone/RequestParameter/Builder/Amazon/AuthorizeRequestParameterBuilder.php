@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Amazon;
 use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\PaymentHandler\PayoneAmazonPayPaymentHandler;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -15,9 +16,10 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 class AuthorizeRequestParameterBuilder extends AbstractAmazonRequestParameterBuilder
 {
     public function __construct(
-        private readonly ConfigReaderInterface $configReader,
-        protected readonly EntityRepository $customerRepository
+        RequestBuilderServiceAccessor $serviceAccessor,
+        private readonly ConfigReaderInterface $configReader
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     /**

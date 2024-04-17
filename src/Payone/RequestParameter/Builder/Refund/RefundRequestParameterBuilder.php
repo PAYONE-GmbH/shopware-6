@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\Refund;
 
-use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
@@ -12,15 +11,10 @@ use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
 class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
-    public function __construct(private readonly CurrencyPrecisionInterface $currencyPrecision)
-    {
-    }
-
     /**
      * @param FinancialTransactionStruct $arguments
      */
@@ -60,7 +54,7 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
             'request' => self::REQUEST_ACTION_DEBIT,
             'txid' => $transactionData->getTransactionId(),
             'sequencenumber' => $transactionData->getSequenceNumber() + 1,
-            'amount' => -1 * $this->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
+            'amount' => -1 * $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
             'currency' => $currency->getIsoCode(),
         ];
 

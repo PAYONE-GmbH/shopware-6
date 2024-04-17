@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\ApplePay;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\ApplePayTransactionStruct;
 use Shopware\Core\Checkout\Cart\Cart;
@@ -27,11 +28,12 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
     public function __construct(
+        RequestBuilderServiceAccessor $serviceAccessor,
         protected CartService $cartService,
-        protected CurrencyPrecisionInterface $currencyPrecision,
         protected NumberRangeValueGeneratorInterface $numberRangeValueGenerator,
         protected EntityRepository $orderRepository
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     /**
@@ -84,7 +86,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'currency' => $currency->getIsoCode(),
             'cardtype' => $this->getCardType($arguments->getRequestData()),
 
-            'amount' => $this->currencyPrecision->getRoundedTotalAmount($amount, $currency),
+            'amount' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount($amount, $currency),
 
             'reference' => substr($this->getReferenceNumber($arguments, $cart, $order), 0, 20),
 

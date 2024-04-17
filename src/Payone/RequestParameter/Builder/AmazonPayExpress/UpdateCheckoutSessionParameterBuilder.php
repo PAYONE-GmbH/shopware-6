@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\AmazonPayExpress;
 
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\AmazonPayExpressUpdateCheckoutSessionStruct;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
@@ -12,9 +13,10 @@ use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 class UpdateCheckoutSessionParameterBuilder extends AbstractRequestParameterBuilder
 {
     public function __construct(
-        private readonly CurrencyPrecisionInterface $currencyPrecision,
+        RequestBuilderServiceAccessor $serviceAccessor,
         private readonly CartService $cartService
     ) {
+        parent::__construct($serviceAccessor);
     }
 
     /**
@@ -29,7 +31,7 @@ class UpdateCheckoutSessionParameterBuilder extends AbstractRequestParameterBuil
         return array_merge(parent::getRequestParameter($arguments), [
             'request' => self::REQUEST_ACTION_GENERIC_PAYMENT,
             'add_paydata[action]' => 'updateCheckoutSession',
-            'amount' => $this->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
+            'amount' => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount($cart->getPrice()->getTotalPrice(), $currency),
             'currency' => $currency->getIsoCode(),
             'workorderid' => $arguments->getWorkorderId(),
         ]);
