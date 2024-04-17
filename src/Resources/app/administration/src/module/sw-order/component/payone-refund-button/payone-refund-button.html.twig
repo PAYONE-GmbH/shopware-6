@@ -14,10 +14,10 @@
                     <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.orderAmount')" :value="currencyFilter(transaction.amount.totalPrice, order.currency.shortName)"></sw-text-field>
                     <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.refund.refunded')" :value="payoneCurrencyFilter(refundedAmount, order.currency.shortName)"></sw-text-field>
                     <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.remainingAmount')" :value="payoneCurrencyFilter(remainingAmount, order.currency.shortName)"></sw-text-field>
-                    <sw-number-field required="required" numberType="float" :digits="order.decimal_precision" :label="$tc('sw-order.payone-payment.modal.refund.amount')"
+                    <sw-number-field required="required" numberType="float" :digits="decimalPrecision" :label="$tc('sw-order.payone-payment.modal.refund.amount')"
                                      v-model:value="refundAmount"
                                      :min="0"
-                                     :max="maxRefundAmount"></sw-number-field>
+                                     :max="remainingAmount"></sw-number-field>
                 </sw-container>
             </div>
 
