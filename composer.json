@@ -78,6 +78,7 @@
     "phpstan": "./vendor/bin/phpstan analyse -n --no-progress",
     "phpunit": "./../../../vendor/bin/phpunit",
     "ecs": "ecs check src tests",
-    "ecs-fix": "ecs check --fix src tests"
+    "ecs-fix": "ecs check --fix src tests",
+    "build": "shopware-cli extension build ."
   }
 }
