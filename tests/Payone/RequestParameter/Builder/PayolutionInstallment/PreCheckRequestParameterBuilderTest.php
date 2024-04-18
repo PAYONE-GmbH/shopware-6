@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\PayolutionInstallment;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
+use PayonePayment\Constants;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
@@ -81,7 +82,7 @@ class PreCheckRequestParameterBuilderTest extends TestCase
                 'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PYS,
                 'add_paydata[action]' => 'pre_check',
                 'add_paydata[payment_type]' => 'Payolution-Installment',
-                'amount' => 10000,
+                'amount' => Constants::DEFAULT_PRODUCT_PRICE * 100,
                 'currency' => 'EUR',
                 'workorderid' => '',
                 'birthday' => '20000101',
@@ -95,7 +96,7 @@ class PreCheckRequestParameterBuilderTest extends TestCase
         string $requestAction = AbstractRequestParameterBuilder::REQUEST_ACTION_PAYOLUTION_PRE_CHECK
     ): PayolutionAdditionalActionStruct {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $cart = $this->fillCart($salesChannelContext->getToken(), 100);
+        $cart = $this->fillCart($salesChannelContext);
 
         $dataBag = new RequestDataBag([
             'payoneBirthday' => '2000-01-01',

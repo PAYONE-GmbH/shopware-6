@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\SecuredInstallment;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
+use PayonePayment\Constants;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
@@ -76,7 +77,7 @@ class InstallmentOptionsRequestParameterBuilderTest extends TestCase
                 'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PIN,
                 'add_paydata[action]' => 'installment_options',
                 'add_paydata[businessRelation]' => 'b2c',
-                'amount' => 30000,
+                'amount' => Constants::DEFAULT_PRODUCT_PRICE * 100,
                 'currency' => 'EUR',
             ],
             $parameters
@@ -88,7 +89,7 @@ class InstallmentOptionsRequestParameterBuilderTest extends TestCase
         string $requestAction = AbstractRequestParameterBuilder::REQUEST_ACTION_SECURED_INSTALLMENT_OPTIONS
     ): SecuredInstallmentOptionsStruct {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $cart = $this->fillCart($salesChannelContext->getToken(), 300);
+        $cart = $this->fillCart($salesChannelContext);
 
         $dataBag = new RequestDataBag([]);
 

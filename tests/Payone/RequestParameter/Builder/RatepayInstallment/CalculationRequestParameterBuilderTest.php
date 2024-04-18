@@ -6,6 +6,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\Ratepay\Profile\ProfileService;
+use PayonePayment\Constants;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
@@ -95,7 +96,7 @@ class CalculationRequestParameterBuilderTest extends TestCase
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
                 'add_paydata[calculation_type]' => 'calculation-by-rate',
                 'add_paydata[rate]' => 1000,
-                'amount' => 10000,
+                'amount' => Constants::DEFAULT_PRODUCT_PRICE * 100,
                 'currency' => 'EUR',
             ],
             $parameters
@@ -119,7 +120,7 @@ class CalculationRequestParameterBuilderTest extends TestCase
                 'add_paydata[customer_allow_credit_inquiry]' => 'yes',
                 'add_paydata[calculation_type]' => 'calculation-by-time',
                 'add_paydata[month]' => 10,
-                'amount' => 10000,
+                'amount' => Constants::DEFAULT_PRODUCT_PRICE * 100,
                 'currency' => 'EUR',
             ],
             $parameters
@@ -133,7 +134,7 @@ class CalculationRequestParameterBuilderTest extends TestCase
         string $requestAction = AbstractRequestParameterBuilder::REQUEST_ACTION_RATEPAY_CALCULATION
     ): RatepayCalculationStruct {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $cart = $this->fillCart($salesChannelContext->getToken(), 100);
+        $cart = $this->fillCart($salesChannelContext);
         $profile = $this->getContainer()->get(ProfileService::class)->getProfileBySalesChannelContext(
             $salesChannelContext,
             $paymentHandler

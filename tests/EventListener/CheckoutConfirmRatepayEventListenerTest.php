@@ -113,7 +113,7 @@ class CheckoutConfirmRatepayEventListenerTest extends TestCase
         $this->setPaymentMethods($page);
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $this->fillCart($salesChannelContext->getToken(), $cartValue);
+        $this->fillCart($salesChannelContext, $cartValue);
 
         $event = new CheckoutConfirmPageLoadedEvent($page, $salesChannelContext, new Request());
         $listener = $this->getContainer()->get(CheckoutConfirmRatepayEventListener::class);
