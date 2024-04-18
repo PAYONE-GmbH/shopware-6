@@ -17,7 +17,7 @@ class CreateSessionRequestParameterBuilderTest extends AbstractKlarna
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
-        $this->createCartWithProduct($salesChannelContext, 123.45, 4);
+        $this->createCartWithProduct($salesChannelContext);
 
         $struct = new KlarnaCreateSessionStruct($salesChannelContext, PayoneKlarnaInvoicePaymentHandler::class);
 

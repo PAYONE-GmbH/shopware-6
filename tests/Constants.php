@@ -27,4 +27,8 @@ interface Constants
     public const PAYONE_TRANSACTION_ID = 'test-transaction-id';
     public const COUNTRY_ID = 'ea3a25f690f848359a4d64c1c46077ea';
     public const SALUTATION_ID = 'c954f5baf0894e95a7ed8b172e59b145';
+
+    public const DEFAULT_PRODUCT_PRICE = 119;
+
+    public const CUSTOMER_ID = '8c7b6ac55c4647bd997451fa3892aa8d';
 }

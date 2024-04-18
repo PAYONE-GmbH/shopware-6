@@ -37,7 +37,7 @@ class InstallmentServiceTest extends TestCase
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $installmentService = $this->getInstallmentService();
-        $this->fillCart($salesChannelContext->getToken(), 100);
+        $this->fillCart($salesChannelContext, 100);
 
         $calculatorData = $installmentService->getInstallmentCalculatorData($salesChannelContext);
 
@@ -69,7 +69,7 @@ class InstallmentServiceTest extends TestCase
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $installmentService = $this->getInstallmentService();
-        $this->fillCart($salesChannelContext->getToken(), 100);
+        $this->fillCart($salesChannelContext, 100);
 
         $dataBag = new RequestDataBag([
             'ratepayInstallmentType' => CalculationRequestParameterBuilder::INSTALLMENT_TYPE_TIME,
@@ -106,7 +106,7 @@ class InstallmentServiceTest extends TestCase
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $installmentService = $this->getInstallmentService();
-        $this->fillCart($salesChannelContext->getToken(), 100);
+        $this->fillCart($salesChannelContext, 100);
 
         $dataBag = new RequestDataBag([
             'ratepayInstallmentType' => CalculationRequestParameterBuilder::INSTALLMENT_TYPE_RATE,

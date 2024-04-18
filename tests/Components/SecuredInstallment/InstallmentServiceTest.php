@@ -25,7 +25,7 @@ class InstallmentServiceTest extends TestCase
         $installmentService = $this->getInstallmentService($client);
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $this->fillCart($salesChannelContext->getToken(), 510.50);
+        $this->fillCart($salesChannelContext);
 
         $installmentOptions = $installmentService->getInstallmentOptions($salesChannelContext);
 
@@ -61,7 +61,7 @@ class InstallmentServiceTest extends TestCase
         $installmentService = $this->getInstallmentService($client);
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $this->fillCart($salesChannelContext->getToken(), 510.50);
+        $this->fillCart($salesChannelContext);
 
         $installmentOptions = $installmentService->getInstallmentOptions($salesChannelContext);
 
@@ -97,7 +97,7 @@ class InstallmentServiceTest extends TestCase
         $installmentService = $this->getInstallmentService($client);
 
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
-        $this->fillCart($salesChannelContext->getToken(), 510.50);
+        $this->fillCart($salesChannelContext);
 
         $installmentOptions = $installmentService->getInstallmentOptions($salesChannelContext);
 

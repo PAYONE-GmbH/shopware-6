@@ -31,9 +31,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionColl
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityDefinition;
 use Shopware\Core\Defaults;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\SessionTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -55,11 +53,14 @@ trait PayoneTestBehavior
     /**
      * @deprecated use `createCartWithProduct`
      */
-    protected function fillCart(string $contextToken, float $totalPrice): Cart
+    protected function fillCart(SalesChannelContext $context, ?float $totalPrice = Constants::DEFAULT_PRODUCT_PRICE): Cart
     {
-        $cart = static::getContainer()->get(CartService::class)->createNew($contextToken);
+        $cart = static::getContainer()->get(CartService::class)->createNew($context->getToken());
 
-        $productId = $this->createProduct($totalPrice);
+        $productId = $this->getRandomProduct($context, 1, false, $totalPrice ? [
+            'price' => [['currencyId' => Defaults::CURRENCY, 'gross' => $totalPrice, 'net' => $totalPrice / 1.19, 'linked' => false]],
+        ] : [])->getId();
+
         $cart->add(new LineItem('lineItem1', LineItem::PRODUCT_LINE_ITEM_TYPE, $productId));
 
         $cart->setPrice($this->createPrice($totalPrice));
@@ -70,14 +71,16 @@ trait PayoneTestBehavior
     /**
      * creates a cart with calculated sums
      */
-    protected function createCartWithProduct(SalesChannelContext $context, float $itemPrice, int $qty): Cart
+    protected function createCartWithProduct(SalesChannelContext $context, float $itemPrice = Constants::DEFAULT_PRODUCT_PRICE, int $qty = 1): Cart
     {
         $cartService = static::getContainer()->get(CartService::class);
         $cartItemCalculator = static::getContainer()->get(Calculator::class);
 
         $cart = $cartService->createNew($context->getToken());
 
-        $productId = $this->createProduct($itemPrice);
+        $productId = $this->getRandomProduct($context, $qty, false, [
+            'price' => [['currencyId' => Defaults::CURRENCY, 'gross' => $itemPrice, 'net' => $itemPrice / 1.19, 'linked' => false]],
+        ])->getId();
 
         $lineItem = (new LineItem('lineItem1', LineItem::PRODUCT_LINE_ITEM_TYPE, $productId, $qty))
             ->setPriceDefinition(new QuantityPriceDefinition($itemPrice, new TaxRuleCollection([]), $qty))
@@ -90,37 +93,6 @@ trait PayoneTestBehavior
         $cart->setLineItems($lineItems);
 
         return $cart;
-    }
-
-    protected function createProduct(float $price): string
-    {
-        $productId = Uuid::randomHex();
-
-        $product = [
-            'id' => $productId,
-            'name' => 'Test product',
-            'productNumber' => $productId,
-            'stock' => 1,
-            'price' => [
-                ['currencyId' => Defaults::CURRENCY, 'gross' => $price, 'net' => $price, 'linked' => false],
-            ],
-            'manufacturer' => ['id' => $productId, 'name' => 'shopware AG'],
-            'tax' => ['id' => $productId, 'name' => 'testTaxRate', 'taxRate' => 0],
-            'categories' => [
-                ['id' => $productId, 'name' => 'Test category'],
-            ],
-            'visibilities' => [
-                [
-                    'id' => $productId,
-                    'salesChannelId' => TestDefaults::SALES_CHANNEL,
-                    'visibility' => ProductVisibilityDefinition::VISIBILITY_ALL,
-                ],
-            ],
-        ];
-
-        static::getContainer()->get('product.repository')->create([$product], Context::createDefaultContext());
-
-        return $productId;
     }
 
     protected function createPrice(float $price): CartPrice

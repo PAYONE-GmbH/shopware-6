@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Functional\Payment\PaypalExpress;
 
 use PayonePayment\Components\GenericExpressCheckout\Struct\CreateExpressCheckoutSessionStruct;
+use PayonePayment\Constants;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
@@ -25,7 +26,7 @@ class CreateCheckoutSessionRequestParametersTest extends TestCase
 
         $context = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         // cart got stored automatically in the CartService, which is reused in the plugin
-        $this->createCartWithProduct($context, 200, 2);
+        $this->createCartWithProduct($context);
 
         $requestParams = $factory->getRequestParameter(new CreateExpressCheckoutSessionStruct(
             $context,
@@ -37,7 +38,7 @@ class CreateCheckoutSessionRequestParametersTest extends TestCase
         static::assertArrayHasKey('wallettype', $requestParams);
         static::assertEquals('PPE', $requestParams['wallettype']);
         static::assertArrayHasKey('amount', $requestParams);
-        static::assertEquals(400 * 100, $requestParams['amount']);
+        static::assertEquals(Constants::DEFAULT_PRODUCT_PRICE * 100, $requestParams['amount']);
         static::assertArrayHasKey('currency', $requestParams);
         static::assertArrayHasKey('add_paydata[action]', $requestParams);
         static::assertEquals('setexpresscheckout', $requestParams['add_paydata[action]']);

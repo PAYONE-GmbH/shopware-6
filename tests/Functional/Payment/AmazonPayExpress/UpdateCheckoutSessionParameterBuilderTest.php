@@ -21,7 +21,7 @@ class UpdateCheckoutSessionParameterBuilderTest extends TestCase
         $context = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
 
         // cart got stored automatically in the CartService, which is reused in the plugin
-        $this->createCartWithProduct($context, 200, 2);
+        $this->createCartWithProduct($context);
 
         $struct = new AmazonPayExpressUpdateCheckoutSessionStruct($context, 'test-123');
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\TestCaseBase;
 
+use PayonePayment\Constants;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\CartRuleLoader;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
@@ -14,7 +15,9 @@ use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Test\TestCaseBase\TaxAddToSalesChannelTestBehaviour;
@@ -24,6 +27,7 @@ use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Shopware\Core\Test\TestDefaults;
 use Shopware\Storefront\Page\PageLoadedEvent;
 use Shopware\Storefront\Pagelet\PageletLoadedEvent;
@@ -99,23 +103,30 @@ trait StorefrontPageTestBehaviour
      */
     protected function getRandomProduct(SalesChannelContext $context, ?int $stock = 1, ?bool $isCloseout = false, array $config = []): ProductEntity
     {
-        $id = Uuid::randomHex();
-        $productNumber = Uuid::randomHex();
+        $productNumber = 'phpunit-' . md5(json_encode([$stock, $isCloseout, $config]));
+
         $productRepository = $this->getContainer()->get('product.repository');
 
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('productNumber', $productNumber));
+        $criteria->setLimit(1);
+        $product = $productRepository->search($criteria, $context->getContext())->first();
+
+        if ($product instanceof ProductEntity) {
+            return $product;
+        }
+
+        $id = Uuid::randomHex();
+        $itemPrice = Constants::DEFAULT_PRODUCT_PRICE;
         $data = [
             'id' => $id,
             'productNumber' => $productNumber,
             'stock' => $stock,
             'name' => StorefrontPageTestConstants::PRODUCT_NAME,
-            'price' => [['currencyId' => Defaults::CURRENCY, 'gross' => 15, 'net' => 10, 'linked' => false]],
-            'manufacturer' => ['name' => 'test'],
-            'tax' => ['id' => Uuid::randomHex(), 'name' => 'test', 'taxRate' => 15],
+            'price' => [['currencyId' => Defaults::CURRENCY, 'gross' => $itemPrice, 'net' => $itemPrice / 1.19, 'linked' => false]],
+            'tax' => ['id' => '2abf31f1c4d94effb0e42c9bdcab0dd0', 'name' => 'test', 'taxRate' => 19],
             'active' => true,
             'isCloseout' => $isCloseout,
-            'categories' => [
-                ['id' => Uuid::randomHex(), 'name' => 'asd'],
-            ],
             'visibilities' => [
                 ['salesChannelId' => $context->getSalesChannel()->getId(), 'visibility' => ProductVisibilityDefinition::VISIBILITY_ALL],
             ],
@@ -143,6 +154,7 @@ trait StorefrontPageTestBehaviour
         $countryId = $this->getValidCountryId();
         $snippetSetId = $this->getSnippetSetIdForLocale('en-GB');
         $data = [
+            'id' => 'd70c06716f8848b685f8faa7ff1bbeae',
             'typeId' => Defaults::SALES_CHANNEL_TYPE_STOREFRONT,
             'name' => 'store front',
             'accessKey' => AccessKeyHelper::generateAccessKey('sales-channel'),
@@ -178,6 +190,7 @@ trait StorefrontPageTestBehaviour
         $countryId = $this->getValidCountryId();
         $snippetSetId = $this->getSnippetSetIdForLocale('en-GB');
         $data = [
+            'id' => '5339bf0dc99f4579a69119a021453085',
             'typeId' => Defaults::SALES_CHANNEL_TYPE_STOREFRONT,
             'name' => 'store front',
             'accessKey' => AccessKeyHelper::generateAccessKey('sales-channel'),
@@ -207,16 +220,14 @@ trait StorefrontPageTestBehaviour
         ]);
     }
 
-    /**
-     * @param array<string, mixed>|null $salesChannelData
-     */
-    protected function createSalesChannelContext(?array $salesChannelData = null): SalesChannelContext
+    protected function createSalesChannelContext(): SalesChannelContext
     {
         $paymentMethodId = $this->getValidPaymentMethodId();
         $shippingMethodId = $this->getAvailableShippingMethod()->getId();
         $countryId = $this->getValidCountryId();
         $snippetSetId = $this->getSnippetSetIdForLocale('en-GB');
         $data = [
+            'id' => '626f01c28ba640bfb49c42ff41762e57',
             'typeId' => Defaults::SALES_CHANNEL_TYPE_STOREFRONT,
             'name' => 'store front',
             'accessKey' => AccessKeyHelper::generateAccessKey('sales-channel'),
@@ -242,10 +253,6 @@ trait StorefrontPageTestBehaviour
             ],
         ];
 
-        if ($salesChannelData) {
-            $data = array_merge($data, $salesChannelData);
-        }
-
         return $this->createContext($data, []);
     }
 
@@ -260,12 +267,37 @@ trait StorefrontPageTestBehaviour
 
     private function createCustomer(): CustomerEntity
     {
-        $customerId = Uuid::randomHex();
-        $addressId = Uuid::randomHex();
+        $context = Context::createDefaultContext();
+        $addressId = '43419bb9d20d436ab096a902c5452544';
+
+        /** @var EntityRepository $customerRepo */
+        $customerRepo = $this->getContainer()->get('customer.repository');
+
+        $criteria = new Criteria([Constants::CUSTOMER_ID]);
+        $criteria->addAssociation('defaultBillingAddress');
+        $customer = $customerRepo->search($criteria, $context)->first();
+
+        if ($customer instanceof CustomerEntity) {
+            // make sure that phoneNumber is not set (which may have been happened through other tests.
+            if ($customer->getDefaultBillingAddress()->getPhoneNumber()) {
+                /** @var EntityRepository $addressRepo */
+                $addressRepo = $this->getContainer()->get('customer_address.repository');
+                $addressRepo->upsert([['id' => $customer->getDefaultBillingAddressId(), 'phoneNumber' => null]], $context);
+                $customer->getDefaultBillingAddress()->assign(['phoneNumber' => null]);
+            }
+
+            // make sure that birthday is not set (which may have been happened through other tests.
+            if ($customer->getBirthday()) {
+                $customerRepo->upsert([['id' => $customer->getId(), 'birthday' => null]], $context);
+                $customer->assign(['birthday' => null]);
+            }
+
+            return $customer;
+        }
 
         $data = [
             [
-                'id' => $customerId,
+                'id' => Constants::CUSTOMER_ID,
                 'salesChannelId' => TestDefaults::SALES_CHANNEL,
                 'defaultShippingAddress' => [
                     'id' => $addressId,
@@ -289,13 +321,10 @@ trait StorefrontPageTestBehaviour
             ],
         ];
 
-        $repo = $this->getContainer()->get('customer.repository');
+        $customerRepo->create($data, $context);
 
-        $repo->create($data, Context::createDefaultContext());
-
-        $result = $repo->search(new Criteria([$customerId]), Context::createDefaultContext());
         /** @var CustomerEntity $customer */
-        $customer = $result->first();
+        $customer = $customerRepo->search(new Criteria([Constants::CUSTOMER_ID]), Context::createDefaultContext())->first();
 
         return $customer;
     }
@@ -307,13 +336,22 @@ trait StorefrontPageTestBehaviour
     private function createContext(array $salesChannel, array $options): SalesChannelContext
     {
         $factory = $this->getContainer()->get(SalesChannelContextFactory::class);
+        /** @var EntityRepository $salesChannelRepository */
         $salesChannelRepository = $this->getContainer()->get('sales_channel.repository');
 
-        $salesChannelId = Uuid::randomHex();
-        $salesChannel['id'] = $salesChannelId;
-        $salesChannel['customerGroupId'] = TestDefaults::FALLBACK_CUSTOMER_GROUP;
+        $salesChannelEntity = null;
+        if (isset($salesChannel['id'])) {
+            $salesChannelEntity = $salesChannelRepository->search(new Criteria([$salesChannel['id']]), Context::createDefaultContext())->first();
+        }
 
-        $salesChannelRepository->create([$salesChannel], Context::createDefaultContext());
+        $salesChannelId = $salesChannel['id'] ?? Uuid::randomHex();
+
+        if (!$salesChannelEntity instanceof SalesChannelEntity) {
+            $salesChannel['id'] = $salesChannelId;
+            $salesChannel['customerGroupId'] = TestDefaults::FALLBACK_CUSTOMER_GROUP;
+
+            $salesChannelRepository->create([$salesChannel], Context::createDefaultContext());
+        }
 
         $context = $factory->create(Uuid::randomHex(), $salesChannelId, $options);
 
