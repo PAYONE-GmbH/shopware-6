@@ -9,6 +9,7 @@ use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\RequestConstants;
 use PayonePayment\TestCaseBase\ConfigurationHelper;
 use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
     public function testItAddsCorrectAuthorizeParameters(): void
     {
         $dataBag = new RequestDataBag([
-            'payoneBirthday' => '2000-01-01',
+            RequestConstants::BIRTHDAY => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
@@ -58,7 +59,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $dataBag = new RequestDataBag([
-            'payoneBirthday' => '2000-01-01',
+            RequestConstants::BIRTHDAY => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
@@ -102,7 +103,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $dataBag = new RequestDataBag([
-            'payoneBirthday' => '2000-01-01',
+            RequestConstants::BIRTHDAY => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
@@ -146,7 +147,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         );
 
         $dataBag = new RequestDataBag([
-            'payoneBirthday' => '2000-01-01',
+            RequestConstants::BIRTHDAY => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(

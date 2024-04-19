@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\RequestConstants;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -16,7 +17,7 @@ class PayoneRatepayInvoicingPaymentHandler extends AbstractSynchronousPayonePaym
     {
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
-        $definitions['payoneBirthday'] = [new NotBlank(), new Birthday()];
+        $definitions[RequestConstants::BIRTHDAY] = [new NotBlank(), new Birthday()];
 
         return $definitions;
     }

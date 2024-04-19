@@ -8,6 +8,7 @@ use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\RequestConstants;
 use PayonePayment\TestCaseBase\ConfigurationHelper;
 use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
         $dataBag = new RequestDataBag([
             'payolutionIban' => 'DE81500105177147426471',
             'payolutionBic' => 'ABCD1111',
-            'payoneBirthday' => '2000-01-01',
+            RequestConstants::BIRTHDAY => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(

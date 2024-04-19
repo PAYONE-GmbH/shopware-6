@@ -13,6 +13,7 @@ use PayonePayment\Components\Validator\Iban;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\RequestConstants;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -61,7 +62,7 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractSynchronousPayon
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
         $definitions['payolutionConsent'] = [new NotBlank()];
-        $definitions['payoneBirthday'] = [new NotBlank(), new Birthday()];
+        $definitions[RequestConstants::BIRTHDAY] = [new NotBlank(), new Birthday()];
 
         $definitions['payolutionInstallmentDuration'] = [new NotBlank()];
         $definitions['payolutionAccountOwner'] = [new NotBlank()];

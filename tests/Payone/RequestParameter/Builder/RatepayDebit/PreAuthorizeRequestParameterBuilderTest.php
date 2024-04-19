@@ -10,6 +10,7 @@ use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\RequestConstants;
 use PayonePayment\TestCaseBase\ConfigurationHelper;
 use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
@@ -35,8 +36,8 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
 
         $dataBag = new RequestDataBag([
             'ratepayIban' => 'DE81500105177147426471',
-            'payonePhone' => '0123456789',
-            'payoneBirthday' => '2000-01-01',
+            RequestConstants::PHONE => '0123456789',
+            RequestConstants::BIRTHDAY => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(

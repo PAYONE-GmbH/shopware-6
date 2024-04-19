@@ -8,6 +8,7 @@ use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\RequestConstants;
 use PayonePayment\TestCaseBase\ConfigurationHelper;
 use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
@@ -28,7 +29,7 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
             'payolutionBic' => 'ABCD1111',
             'payolutionAccountOwner' => 'Tester Test',
             'payolutionInstallmentDuration' => 12,
-            'payoneBirthday' => '2000-01-01',
+            RequestConstants::BIRTHDAY => '2000-01-01',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(

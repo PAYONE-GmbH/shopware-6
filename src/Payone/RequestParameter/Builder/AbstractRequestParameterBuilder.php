@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
+use PayonePayment\RequestConstants;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -93,7 +94,7 @@ abstract class AbstractRequestParameterBuilder
 
     protected function applyPhoneParameter(OrderEntity $order, array &$parameters, ParameterBag $dataBag, Context $context, bool $isOptional = false): void
     {
-        $phoneNumber = $dataBag->get('payonePhone');
+        $phoneNumber = $dataBag->get(RequestConstants::PHONE);
 
         $orderAddress = $order->getBillingAddress();
         if ($orderAddress === null) {
@@ -158,7 +159,7 @@ abstract class AbstractRequestParameterBuilder
 
     protected function applyBirthdayParameter(OrderEntity $order, array &$parameters, ParameterBag $dataBag, Context $context, bool $isOptional = false): void
     {
-        $birthday = $dataBag->get('payoneBirthday');
+        $birthday = $dataBag->get(RequestConstants::BIRTHDAY);
         $birthday = \is_string($birthday) ? \DateTime::createFromFormat('Y-m-d', $birthday) ?: null : null;
 
         if (!$order->getOrderCustomer()) {
