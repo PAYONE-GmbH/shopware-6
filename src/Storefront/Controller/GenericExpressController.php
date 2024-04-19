@@ -12,7 +12,6 @@ use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
-use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use RuntimeException;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Customer\SalesChannel\AbstractRegisterRoute;
@@ -90,7 +89,7 @@ class GenericExpressController extends StorefrontController
             throw new RuntimeException('generic express checkout: No redirect URL has been given for payment method id ' . $paymentMethodId);
         }
 
-        $this->cartExtensionService->addCartExtension($cart, $context, $response['workorderid']);
+        $this->cartExtensionService->addCartExtensionForExpressCheckout($cart, $context, $paymentMethodId, $response['workorderid']);
 
         return new RedirectResponse($response['redirecturl']);
     }
@@ -113,8 +112,7 @@ class GenericExpressController extends StorefrontController
 
         $cart = $this->cartService->getCart($context->getToken(), $context);
 
-        /** @var CheckoutCartPaymentData|null $cartExtension */
-        $cartExtension = $cart->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
+        $cartExtension = $this->cartExtensionService->getCartExtensionForExpressCheckout($cart, $paymentMethodId);
 
         if ($cartExtension === null) {
             throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
