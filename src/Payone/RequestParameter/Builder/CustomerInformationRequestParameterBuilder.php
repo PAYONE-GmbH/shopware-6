@@ -12,6 +12,7 @@ use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentMethod\PayoneSecureInvoice;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use PayonePayment\RequestConstants;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
@@ -45,8 +46,8 @@ class CustomerInformationRequestParameterBuilder extends AbstractRequestParamete
             return $parameters;
         }
 
-        if (!empty($dataBag->get('payoneBirthday'))) {
-            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payoneBirthday'));
+        if (!empty($dataBag->get(RequestConstants::BIRTHDAY))) {
+            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get(RequestConstants::BIRTHDAY));
 
             if (!empty($birthday)) {
                 $parameters['birthday'] = $birthday->format('Ymd');

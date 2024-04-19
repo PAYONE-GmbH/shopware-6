@@ -8,6 +8,7 @@ use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
+use PayonePayment\RequestConstants;
 
 class CalculationRequestParameterBuilder extends GeneralTransactionRequestParameterBuilder
 {
@@ -30,8 +31,8 @@ class CalculationRequestParameterBuilder extends GeneralTransactionRequestParame
             'workorderid' => $arguments->getWorkorderId(),
         ];
 
-        if (!empty($dataBag->get('payoneBirthday'))) {
-            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payoneBirthday'));
+        if (!empty($dataBag->get(RequestConstants::BIRTHDAY))) {
+            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get(RequestConstants::BIRTHDAY));
 
             if (!empty($birthday)) {
                 $parameters['birthday'] = $birthday->format('Ymd');

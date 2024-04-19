@@ -7,6 +7,7 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use PayonePayment\RequestConstants;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
@@ -46,7 +47,7 @@ class AbstractRequestParameterBuilderTest extends TestCase
 
         $struct = $this->getPaymentTransactionStruct(
             new RequestDataBag([
-                'payonePhone' => '123456789',
+                RequestConstants::PHONE => '123456789',
             ]),
             PayoneSecureInvoicePaymentHandler::class,
             ''
@@ -100,7 +101,7 @@ class AbstractRequestParameterBuilderTest extends TestCase
 
         $struct = $this->getPaymentTransactionStruct(
             new RequestDataBag([
-                'payonePhone' => '123456789',
+                RequestConstants::PHONE => '123456789',
             ]),
             PayoneSecureInvoicePaymentHandler::class,
             ''
@@ -147,7 +148,7 @@ class AbstractRequestParameterBuilderTest extends TestCase
 
         $struct = $this->getPaymentTransactionStruct(
             new RequestDataBag([
-                'payoneBirthday' => 'invalid-value',
+                RequestConstants::BIRTHDAY => 'invalid-value',
             ]),
             PayoneSecureInvoicePaymentHandler::class,
             ''
@@ -164,7 +165,7 @@ class AbstractRequestParameterBuilderTest extends TestCase
 
         $struct = $this->getPaymentTransactionStruct(
             new RequestDataBag([
-                'payoneBirthday' => '2000-04-20',
+                RequestConstants::BIRTHDAY => '2000-04-20',
             ]),
             PayoneSecureInvoicePaymentHandler::class,
             ''
@@ -216,7 +217,7 @@ class AbstractRequestParameterBuilderTest extends TestCase
 
         $struct = $this->getPaymentTransactionStruct(
             new RequestDataBag([
-                'payoneBirthday' => '2000-04-20',
+                RequestConstants::BIRTHDAY => '2000-04-20',
             ]),
             PayoneSecureInvoicePaymentHandler::class,
             ''

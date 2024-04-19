@@ -10,6 +10,7 @@ use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\RequestConstants;
 use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -30,8 +31,8 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
-            'payonePhone' => '0123456789',
-            'payoneBirthday' => '2000-01-01',
+            RequestConstants::PHONE => '0123456789',
+            RequestConstants::BIRTHDAY => '2000-01-01',
             'securedInstallmentIban' => 'DE85500105173716329595',
             'securedInstallmentOptionId' => 'the-option-id',
         ]);
@@ -73,7 +74,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
-            'payoneBirthday' => '2000-01-01',
+            RequestConstants::BIRTHDAY => '2000-01-01',
             'securedInstallmentIban' => 'DE85500105173716329595',
             'securedInstallmentOptionId' => 'the-option-id',
         ]);
@@ -100,7 +101,7 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
         $this->getContainer()->get(RequestStack::class)->push($request);
 
         $dataBag = new RequestDataBag([
-            'payonePhone' => '0123456789',
+            RequestConstants::PHONE => '0123456789',
             'securedInstallmentIban' => 'DE85500105173716329595',
             'securedInstallmentOptionId' => 'the-option-id',
         ]);

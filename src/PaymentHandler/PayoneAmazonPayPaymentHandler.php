@@ -15,6 +15,7 @@ use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\RequestConstants;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -62,7 +63,7 @@ class PayoneAmazonPayPaymentHandler extends AbstractAsynchronousPayonePaymentHan
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
         if (empty($salesChannelContext->getCustomer()?->getActiveBillingAddress()?->getPhoneNumber())) {
-            $definitions['payonePhone'] = [new NotBlank()];
+            $definitions[RequestConstants::PHONE] = [new NotBlank()];
         }
 
         return $definitions;

@@ -9,6 +9,7 @@ use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
+use PayonePayment\RequestConstants;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameterBuilder
@@ -34,8 +35,8 @@ class PreCheckRequestParameterBuilder extends GeneralTransactionRequestParameter
             'workorderid' => $arguments->getWorkorderId(),
         ];
 
-        if (!empty($dataBag->get('payoneBirthday'))) {
-            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get('payoneBirthday'));
+        if (!empty($dataBag->get(RequestConstants::BIRTHDAY))) {
+            $birthday = \DateTime::createFromFormat('Y-m-d', $dataBag->get(RequestConstants::BIRTHDAY));
 
             if (!empty($birthday)) {
                 $parameters['birthday'] = $birthday->format('Ymd');

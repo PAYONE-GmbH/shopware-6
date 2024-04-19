@@ -7,6 +7,7 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Components\Validator\Iban;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\RequestConstants;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -18,10 +19,10 @@ class PayoneSecuredInstallmentPaymentHandler extends AbstractSynchronousPayonePa
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
         if (empty($salesChannelContext->getCustomer()?->getActiveBillingAddress()?->getPhoneNumber())) {
-            $definitions['payonePhone'] = [new NotBlank()];
+            $definitions[RequestConstants::PHONE] = [new NotBlank()];
         }
         $definitions['securedInstallmentIban'] = [new NotBlank(), new Iban()];
-        $definitions['payoneBirthday'] = [new NotBlank(), new Birthday()];
+        $definitions[RequestConstants::BIRTHDAY] = [new NotBlank(), new Birthday()];
         $definitions['securedInstallmentOptionId'] = [new NotBlank()];
 
         return $definitions;

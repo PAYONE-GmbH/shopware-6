@@ -11,6 +11,7 @@ use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
+use PayonePayment\RequestConstants;
 use PayonePayment\TestCaseBase\ConfigurationHelper;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
@@ -99,7 +100,7 @@ class PreCheckRequestParameterBuilderTest extends TestCase
         $cart = $this->fillCart($salesChannelContext);
 
         $dataBag = new RequestDataBag([
-            'payoneBirthday' => '2000-01-01',
+            RequestConstants::BIRTHDAY => '2000-01-01',
         ]);
 
         return new PayolutionAdditionalActionStruct(

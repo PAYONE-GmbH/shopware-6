@@ -7,6 +7,7 @@ namespace PayonePayment\Functional\Payment\AmazonPay;
 use PayonePayment\PaymentHandler\PayoneAmazonPayPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\RequestConstants;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -24,7 +25,7 @@ class AuthorizePaymentRequestParameterTest extends TestCase
         $factory = $this->getContainer()->get(RequestParameterFactory::class);
 
         $dataBag = new RequestDataBag([
-            'payonePhone' => '012345789',
+            RequestConstants::PHONE => '012345789',
         ]);
 
         $struct = $this->getPaymentTransactionStruct(
