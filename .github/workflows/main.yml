@@ -59,8 +59,9 @@ jobs:
                 uses: shivammathur/setup-php@master
                 with:
                     php-version: ${{ matrix.php-version }}
-                    extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium, pdo_mysql
+                    extensions: mbstring, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium, pdo_mysql
                     tools: composer:2.2
+                    coverage: none # we should implement code-coverage-report in the future if we have more tests for everything
 
             -   name: "Check PHP Version"
                 run: php -v
