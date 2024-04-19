@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Storefront\Controller;
 
-use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
-use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
+use PayonePayment\Components\GenericExpressCheckout\CartExtensionService;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -19,7 +18,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CheckoutController
 {
     public function __construct(
-        private readonly CartService $cartService,
+        private readonly CartExtensionService $extensionService,
         private readonly RouterInterface $router,
         private readonly TranslatorInterface $translator
     ) {
@@ -30,9 +29,7 @@ class CheckoutController
         Request $request,
         SalesChannelContext $salesChannelContext
     ): Response {
-        $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
-        $cart->removeExtension(CheckoutCartPaymentData::EXTENSION_NAME);
-        $this->cartService->recalculate($cart, $salesChannelContext);
+        $this->extensionService->removeExtensionData($salesChannelContext);
 
         $session = $request->getSession();
         if (method_exists($session, 'getFlashBag')) {

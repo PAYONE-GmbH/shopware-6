@@ -102,9 +102,10 @@ class CheckoutCartEventListener implements EventSubscriberInterface
             if ($response['status'] === 'OK') {
                 $this->setInitializedPaymentResponse($event->getSalesChannelContext(), $event->getPage()->getCart(), $requestData, $response);
 
-                $this->cartExtensionService->addCartExtension(
+                $this->cartExtensionService->addCartExtensionForExpressCheckout(
                     $event->getPage()->getCart(),
                     $event->getSalesChannelContext(),
+                    PayoneAmazonPayExpress::UUID,
                     $response['workorderid']
                 );
 
