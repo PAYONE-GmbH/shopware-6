@@ -32,6 +32,10 @@
             <argument type="tagged_iterator" tag="payone.payment_method.filter"/>
         </service>
 
+        <service id="PayonePayment\Components\PaymentFilter\TotalPriceFilter">
+            <tag name="payone.payment_method.filter" priority="1000"/>
+        </service>
+
         <service id="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService">
             <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
         </service>
