@@ -12,6 +12,7 @@ use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\RequestConstants;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -100,10 +101,10 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractAsynchronousPayonePa
     {
         $dataBag = clone $dataBag; // prevent modifying the original object
         $allowedParameters = [
-            'workorder',
+            RequestConstants::WORK_ORDER_ID,
             'payonePaymentMethod',
             'payoneKlarnaAuthorizationToken',
-            'carthash',
+            RequestConstants::CART_HASH,
         ];
         foreach ($dataBag->keys() as $key) {
             if (!\in_array($key, $allowedParameters, true)) {

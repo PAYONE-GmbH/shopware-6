@@ -12,6 +12,7 @@ use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionEx
 use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
+use PayonePayment\RequestConstants;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -95,7 +96,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
         ParameterBag $dataBag,
         SalesChannelContext $context
     ): ?string {
-        $cartHash = $dataBag->get('carthash');
+        $cartHash = $dataBag->get(RequestConstants::CART_HASH);
 
         if ($cartHash === null) {
             return null;
@@ -105,7 +106,7 @@ class GeneralTransactionRequestParameterBuilder extends AbstractRequestParameter
             return null;
         }
 
-        return $dataBag->get('workorder');
+        return $dataBag->get(RequestConstants::WORK_ORDER_ID);
     }
 
     private function getLatestReferenceNumber(PaymentTransaction $transaction): ?string

@@ -9,6 +9,7 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
+use PayonePayment\RequestConstants;
 use PayonePayment\TestCaseBase\ClassHelper;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -103,8 +104,8 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
     {
         $struct = $this->getPaymentTransactionStruct(
             new RequestDataBag([
-                'carthash' => 'the-hash',
-                'workorder' => 'the-workorder',
+                RequestConstants::CART_HASH => 'the-hash',
+                RequestConstants::WORK_ORDER_ID => 'the-workorder',
             ]),
             PayoneCreditCardPaymentHandler::class,
             AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
@@ -128,7 +129,7 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
     {
         $struct = $this->getPaymentTransactionStruct(
             new RequestDataBag([
-                'workorder' => 'the-workorder',
+                RequestConstants::WORK_ORDER_ID => 'the-workorder',
             ]),
             PayoneCreditCardPaymentHandler::class,
             AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
@@ -145,8 +146,8 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
     {
         $struct = $this->getPaymentTransactionStruct(
             new RequestDataBag([
-                'carthash' => 'the-hash',
-                'workorder' => 'the-workorder',
+                RequestConstants::CART_HASH => 'the-hash',
+                RequestConstants::WORK_ORDER_ID => 'the-workorder',
             ]),
             PayoneCreditCardPaymentHandler::class,
             AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
