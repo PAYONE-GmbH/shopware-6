@@ -8,6 +8,7 @@ use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\PaymentHandler\PayoneAmazonPayExpressPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\RequestConstants;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
@@ -33,8 +34,8 @@ class AuthorizePaymentRequestParameterTest extends TestCase
             $authMethod
         );
 
-        $struct->getRequestData()->set('carthash', $cartHasher->generate($struct->getPaymentTransaction()->getOrder(), $struct->getSalesChannelContext()));
-        $struct->getRequestData()->set('workorder', 'ABCDEF12345678');
+        $struct->getRequestData()->set(RequestConstants::CART_HASH, $cartHasher->generate($struct->getPaymentTransaction()->getOrder(), $struct->getSalesChannelContext()));
+        $struct->getRequestData()->set(RequestConstants::WORK_ORDER_ID, 'ABCDEF12345678');
 
         $requestParams = $factory->getRequestParameter($struct);
 

@@ -17,6 +17,7 @@ use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
+use PayonePayment\RequestConstants;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Cart\Cart;
@@ -122,14 +123,14 @@ class PayolutionController extends StorefrontController
                 }
 
                 // will be used inside the calculation request
-                $dataBag->set('workorder', $response['workorderid']);
+                $dataBag->set(RequestConstants::WORK_ORDER_ID, $response['workorderid']);
 
                 $response['carthash'] = $this->cartHasher->generate($cart, $context);
             } else {
                 $response = [
                     'status' => 'OK',
-                    'workorderid' => $dataBag->get('workorder'),
-                    'carthash' => $dataBag->get('carthash'),
+                    'workorderid' => $dataBag->get(RequestConstants::WORK_ORDER_ID),
+                    'carthash' => $dataBag->get(RequestConstants::CART_HASH),
                 ];
             }
 
@@ -140,7 +141,7 @@ class PayolutionController extends StorefrontController
                     $context,
                     PayonePayolutionInstallmentPaymentHandler::class,
                     AbstractRequestParameterBuilder::REQUEST_ACTION_PAYOLUTION_CALCULATION,
-                    $dataBag->get('workorder')
+                    $dataBag->get(RequestConstants::WORK_ORDER_ID)
                 )
             );
 
@@ -302,13 +303,13 @@ class PayolutionController extends StorefrontController
 
     private function isPreCheckNeeded(Cart $cart, RequestDataBag $dataBag, SalesChannelContext $context): bool
     {
-        $cartHash = $dataBag->get('carthash');
+        $cartHash = $dataBag->get(RequestConstants::CART_HASH);
 
         if (!$this->cartHasher->validate($cart, $cartHash, $context)) {
             return true;
         }
 
-        if (empty($dataBag->get('workorder'))) {
+        if (empty($dataBag->get(RequestConstants::WORK_ORDER_ID))) {
             return true;
         }
 

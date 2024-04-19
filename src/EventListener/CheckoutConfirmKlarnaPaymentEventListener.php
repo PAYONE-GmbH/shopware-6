@@ -7,6 +7,7 @@ namespace PayonePayment\EventListener;
 use PayonePayment\Components\KlarnaSessionService\KlarnaSessionServiceInterface;
 use PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
+use PayonePayment\RequestConstants;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
@@ -79,7 +80,7 @@ class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterf
 
         // when user is changing the payment method, no custom params will be sent to the payment handler.
         // so we need to transfer the parameters, which are required for the payment handler from the storefront-request to the api-request in the background.
-        $paramsToTransfer = ['workorder', 'carthash', 'payoneKlarnaAuthorizationToken'];
+        $paramsToTransfer = [RequestConstants::WORK_ORDER_ID, RequestConstants::CART_HASH, 'payoneKlarnaAuthorizationToken'];
         foreach ($paramsToTransfer as $key) {
             if ($event->getStorefrontRequest()->request->has($key)) {
                 $event->getStoreApiRequest()->request->set($key, $event->getStorefrontRequest()->request->get($key));
