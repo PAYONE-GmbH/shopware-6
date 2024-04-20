@@ -6,6 +6,7 @@ namespace PayonePayment\Storefront\Controller\Payolution;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\Helper\OrderFetcher;
 use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
@@ -21,7 +22,9 @@ use PayonePayment\RequestConstants;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Cart\Cart;
+use Shopware\Core\Checkout\Cart\Order\OrderConverter;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
@@ -29,6 +32,7 @@ use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -43,7 +47,9 @@ class PayolutionController extends StorefrontController
         private readonly CartHasherInterface $cartHasher,
         private readonly PayoneClientInterface $client,
         private readonly RequestParameterFactory $requestParameterFactory,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly OrderFetcher $orderFetcher,
+        private readonly OrderConverter $orderConverter
     ) {
     }
 
@@ -99,11 +105,19 @@ class PayolutionController extends StorefrontController
         return new JsonResponse($response);
     }
 
-    #[Route(path: '/payone/installment/calculation', name: 'frontend.payone.payolution.installment.calculation', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
-    public function calculation(RequestDataBag $dataBag, SalesChannelContext $context): JsonResponse
+    #[Route(path: '/payone/installment/calculation/{orderId}', name: 'frontend.payone.payolution.installment.calculation', options: ['seo' => false], defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
+    public function calculation(RequestDataBag $dataBag, SalesChannelContext $context, ?string $orderId = null): JsonResponse
     {
         try {
-            $cart = $this->cartService->getCart($context->getToken(), $context);
+            if ($orderId) {
+                $order = $this->orderFetcher->getOrderById($orderId, $context->getContext());
+                if (!$order instanceof OrderEntity) {
+                    throw new NotFoundHttpException();
+                }
+                $cart = $this->orderConverter->convertToCart($order, $context->getContext());
+            } else {
+                $cart = $this->cartService->getCart($context->getToken(), $context);
+            }
 
             $checkRequest = $this->requestParameterFactory->getRequestParameter(
                 new PayolutionAdditionalActionStruct(

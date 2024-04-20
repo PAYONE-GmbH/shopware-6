@@ -53,6 +53,13 @@
             </div>
         </div>
 
-        <div id="payone-configuration" data-is-payone-payolution-installment="true" data-calculation-url="{{ path('frontend.payone.payolution.installment.calculation') }}"></div>
+        <div id="payone-configuration"
+             data-is-payone-payolution-installment="true"
+             {% if activeRoute == 'frontend.account.edit-order.page' %}/
+                data-calculation-url="{{ path('frontend.payone.payolution.installment.calculation', { orderId: page.order.id }) }}"
+             {% else %}
+                 data-calculation-url="{{ path('frontend.payone.payolution.installment.calculation') }}"
+             {% endif %}
+        ></div>
     {% endblock %}
 </div>
