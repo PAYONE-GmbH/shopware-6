@@ -17,6 +17,8 @@ class PayonePayolutionInvoicingPaymentHandler extends AbstractSynchronousPayoneP
     {
         $definitions = parent::getValidationDefinitions($salesChannelContext);
 
+        $definitions[RequestConstants::WORK_ORDER_ID] = [new NotBlank()];
+
         $definitions['payolutionConsent'] = [new NotBlank()];
 
         // if the customer has a company address, the birthday is not required
