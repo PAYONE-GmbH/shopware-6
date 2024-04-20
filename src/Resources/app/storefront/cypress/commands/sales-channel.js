@@ -77,14 +77,12 @@ Cypress.Commands.add('allowCurrencyForSalesChannel', (isoCode) => {
         })
     }).then(() => {
         cy.visit('/'); // navigate to home, to make sure dropdown is visible
-        cy.get('.top-bar .currencies-menu').should($el => {
-            if ($el.length === 0) {
-                // if not exist, the currency is already selected, because it is the default
-                return;
+        cy.get('body').then($body => {
+            if ($body.find('.top-bar .currencies-menu').length) {
+                cy.get('.top-bar .currencies-menu > .dropdown-toggle').click();
+                cy.get('.top-bar .currencies-menu [title="' + isoCode + '"]').click();
             }
-            cy.get('.top-bar .currencies-menu > .dropdown-toggle').click();
-            cy.get('.top-bar .currencies-menu [title="' + isoCode + '"]').click();
-        })
+        });
     })
 });
 
