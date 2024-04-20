@@ -8,12 +8,14 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\Installer\CustomFieldInstaller;
+use PayonePayment\RequestConstants;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\Blank;
 
 /**
  * A base class for payment handlers which implements common processing
@@ -49,7 +51,10 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
 
     public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
     {
-        return [];
+        return [
+            RequestConstants::WORK_ORDER_ID => [new Blank()], // workorder-id is mostly not required.
+            RequestConstants::CART_HASH => [new Blank()], // cart-hash is mostly not required.
+        ];
     }
 
     /**

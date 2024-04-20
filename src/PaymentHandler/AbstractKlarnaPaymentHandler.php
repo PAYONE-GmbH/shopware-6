@@ -19,6 +19,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractKlarnaPaymentHandler extends AbstractAsynchronousPayonePaymentHandler
@@ -46,6 +47,14 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractAsynchronousPayonePa
             $stateHandler,
             $requestParameterFactory
         );
+    }
+
+    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    {
+        return array_merge(parent::getValidationDefinitions($salesChannelContext), [
+            RequestConstants::WORK_ORDER_ID => [new NotBlank()],
+            RequestConstants::CART_HASH => [new NotBlank()],
+        ]);
     }
 
     public function pay(
