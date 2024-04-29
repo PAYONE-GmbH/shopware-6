@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor;
 use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\DeviceFingerprint\AbstractDeviceFingerprintService;
@@ -34,6 +35,7 @@ abstract class AbstractSynchronousPayonePaymentHandler extends AbstractPayonePay
         protected readonly TransactionDataHandlerInterface $transactionDataHandler,
         protected readonly OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
         protected readonly RequestParameterFactory $requestParameterFactory,
+        protected readonly CustomerDataPersistor $customerDataPersistor,
         protected readonly ?AbstractDeviceFingerprintService $deviceFingerprintService = null
     ) {
         parent::__construct($configReader, $lineItemRepository, $requestStack);
@@ -54,6 +56,8 @@ abstract class AbstractSynchronousPayonePaymentHandler extends AbstractPayonePay
                 $this->translator->trans('PayonePayment.errorMessages.genericError')
             );
         }
+
+        $this->customerDataPersistor->save($transaction->getOrder(), $dataBag, $salesChannelContext->getContext());
 
         $paymentTransaction = PaymentTransaction::fromSyncPaymentTransactionStruct($transaction, $transaction->getOrder());
 

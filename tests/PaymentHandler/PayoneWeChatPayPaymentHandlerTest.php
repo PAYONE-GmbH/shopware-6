@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\ConfigReader\ConfigReader;
+use PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor;
 use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
@@ -190,7 +191,8 @@ class PayoneWeChatPayPaymentHandlerTest extends TestCase
             $transactionDataHandler,
             $orderActionLogDataHandler,
             $stateHandler,
-            $requestFactory
+            $requestFactory,
+            $this->createMock(CustomerDataPersistor::class)
         );
     }
 

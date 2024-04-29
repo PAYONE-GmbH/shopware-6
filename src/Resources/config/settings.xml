@@ -50,6 +50,14 @@
             </options>
             <required>true</required>
         </input-field>
+
+        <input-field type="bool">
+            <name>saveUserEnteredDataToCustomer</name>
+            <label>Save user entered data to customer</label>
+            <label lang="de-DE">Vom Kunden eingegebene Daten im Kundenaccount speichern</label>
+            <helpText>When activated, the data entered by the customer into the fields provided by PAYONE will be saved in the customer account, allowing them to be directly reused for future orders.</helpText>
+            <helpText lang="de-DE">Wenn aktiviert, werden die Daten, welche der Kunde in die von PAYONE bereitgestellten Felder, eingibt, in den Kundenaccount gespeichert, sodass diese bei weiteren Bestellungen direkt wiederverwendet werden können.</helpText>
+        </input-field>
     </card>
 
     <card>

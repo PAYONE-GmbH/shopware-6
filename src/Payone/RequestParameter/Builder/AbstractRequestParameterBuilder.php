@@ -6,8 +6,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\RequestConstants;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
-use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidOrderException;
@@ -96,17 +94,14 @@ abstract class AbstractRequestParameterBuilder
     {
         $phoneNumber = $dataBag->get(RequestConstants::PHONE);
 
-        $orderAddress = $order->getBillingAddress();
-        if ($orderAddress === null) {
-            /** @var OrderAddressEntity|null $orderAddress */
-            $orderAddress = $this->serviceAccessor->orderAddressRepository->search(new Criteria([$order->getBillingAddressId()]), $context)->first();
+        if (empty($phoneNumber)) {
+            $orderAddress = $order->getBillingAddress();
+            if ($orderAddress === null) {
+                /** @var OrderAddressEntity|null $orderAddress */
+                $orderAddress = $this->serviceAccessor->orderAddressRepository->search(new Criteria([$order->getBillingAddressId()]), $context)->first();
+            }
+            $phoneNumber = $orderAddress?->getPhoneNumber();
         }
-
-        if (!$orderAddress) {
-            throw new \RuntimeException('missing billing address');
-        }
-
-        $phoneNumber = !empty($phoneNumber) ? $phoneNumber : $orderAddress->getPhoneNumber();
 
         if (empty($phoneNumber)) {
             if (!$isOptional) {
@@ -114,44 +109,6 @@ abstract class AbstractRequestParameterBuilder
             }
 
             return;
-        }
-
-        if ($phoneNumber !== $orderAddress->getPhoneNumber()) {
-            // update phone number in ORDER-Address
-            $this->serviceAccessor->orderAddressRepository->update(
-                [
-                    [
-                        'id' => $orderAddress->getId(),
-                        'phoneNumber' => $phoneNumber,
-                    ],
-                ],
-                $context
-            );
-        }
-
-        $customer = $order->getOrderCustomer()?->getCustomer();
-        if ($customer instanceof CustomerEntity) {
-            $customerAddress = $customer->getDefaultBillingAddress();
-            if ($customerAddress === null) {
-                /** @var CustomerAddressEntity|null $customerAddress */
-                $customerAddress = $this->serviceAccessor->customerAddressRepository->search(
-                    new Criteria([$customer->getDefaultBillingAddressId()]),
-                    $context
-                )->first();
-
-                if ($customerAddress instanceof CustomerAddressEntity && $phoneNumber !== $customerAddress->getPhoneNumber()) {
-                    // update phone number in CUSTOMER-Address
-                    $this->serviceAccessor->customerAddressRepository->update(
-                        [
-                            [
-                                'id' => $customerAddress->getId(),
-                                'phoneNumber' => $phoneNumber,
-                            ],
-                        ],
-                        $context
-                    );
-                }
-            }
         }
 
         $parameters['telephonenumber'] = $phoneNumber;
@@ -162,29 +119,7 @@ abstract class AbstractRequestParameterBuilder
         $birthday = $dataBag->get(RequestConstants::BIRTHDAY);
         $birthday = \is_string($birthday) ? \DateTime::createFromFormat('Y-m-d', $birthday) ?: null : null;
 
-        if (!$order->getOrderCustomer()) {
-            throw new \RuntimeException('missing order customer');
-        }
-
-        $customer = $order->getOrderCustomer()->getCustomer();
-
-        if (!$customer) {
-            throw new \RuntimeException('missing customer');
-        }
-
-        if ($birthday instanceof \DateTime && $birthday->getTimestamp() !== $customer->getBirthday()?->getTimestamp()) {
-            $this->serviceAccessor->customerRepository->update(
-                [
-                    [
-                        'id' => $customer->getId(),
-                        'birthday' => $birthday,
-                    ],
-                ],
-                $context
-            );
-        } else {
-            $birthday = $birthday instanceof \DateTimeInterface ? $birthday : $customer->getBirthday();
-        }
+        $birthday = $birthday instanceof \DateTimeInterface ? $birthday : $order->getOrderCustomer()?->getCustomer()?->getBirthday();
 
         if (!$birthday instanceof \DateTimeInterface) {
             if (!$isOptional) {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor;
 use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\MandateService\MandateServiceInterface;
@@ -33,6 +34,7 @@ class PayoneDebitPaymentHandler extends AbstractSynchronousPayonePaymentHandler
         TransactionDataHandlerInterface $transactionDataHandler,
         OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
         RequestParameterFactory $requestParameterFactory,
+        CustomerDataPersistor $customerDataPersistor,
         protected MandateServiceInterface $mandateService
     ) {
         parent::__construct(
@@ -43,7 +45,8 @@ class PayoneDebitPaymentHandler extends AbstractSynchronousPayonePaymentHandler
             $translator,
             $transactionDataHandler,
             $orderActionLogDataHandler,
-            $requestParameterFactory
+            $requestParameterFactory,
+            $customerDataPersistor
         );
     }
 

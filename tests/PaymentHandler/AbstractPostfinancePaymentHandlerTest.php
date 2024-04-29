@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\ConfigReader\ConfigReader;
+use PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor;
 use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
@@ -80,7 +81,8 @@ abstract class AbstractPostfinancePaymentHandlerTest extends AbstractPaymentHand
             $transactionDataHandler ?? $this->createMock(TransactionDataHandlerInterface::class),
             $orderActionLogDataHandler ?? $this->createMock(OrderActionLogDataHandlerInterface::class),
             $container->get(PaymentStateHandler::class),
-            $requestFactory
+            $requestFactory,
+            $this->createMock(CustomerDataPersistor::class)
         );
     }
 }

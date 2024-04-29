@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor;
 use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
@@ -34,6 +35,7 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractAsynchronousPayonePa
         OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
         PaymentStateHandlerInterface $stateHandler,
         RequestParameterFactory $requestParameterFactory,
+        CustomerDataPersistor $customerDataPersistor,
         protected CartHasherInterface $cartHasher
     ) {
         parent::__construct(
@@ -45,7 +47,8 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractAsynchronousPayonePa
             $transactionDataHandler,
             $orderActionLogDataHandler,
             $stateHandler,
-            $requestParameterFactory
+            $requestParameterFactory,
+            $customerDataPersistor
         );
     }
 

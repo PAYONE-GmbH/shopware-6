@@ -19,6 +19,7 @@
             <argument key="$orderActionLogDataHandler" type="service" id="PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface" />
             <argument key="$stateHandler" type="service" id="PayonePayment\Components\PaymentStateHandler\PaymentStateHandler" />
             <argument key="$requestParameterFactory" type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory"/>
+            <argument key="$customerDataPersistor" type="service" id="PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor"/>
         </service>
 
         <service id="PayonePayment\PaymentHandler\AbstractSynchronousPayonePaymentHandler"
@@ -29,6 +30,7 @@
             <argument key="$transactionDataHandler" type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
             <argument key="$orderActionLogDataHandler" type="service" id="PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface" />
             <argument key="$requestParameterFactory" type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory"/>
+            <argument key="$customerDataPersistor" type="service" id="PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor"/>
         </service>
 
         <service id="PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler"
