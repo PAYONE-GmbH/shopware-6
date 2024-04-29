@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor;
 use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
@@ -41,6 +42,7 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
         OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
         PaymentStateHandlerInterface $stateHandler,
         RequestParameterFactory $requestParameterFactory,
+        CustomerDataPersistor $customerDataPersistor,
         protected CardRepositoryInterface $cardRepository
     ) {
         parent::__construct(
@@ -52,7 +54,8 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
             $transactionDataHandler,
             $orderActionLogDataHandler,
             $stateHandler,
-            $requestParameterFactory
+            $requestParameterFactory,
+            $customerDataPersistor
         );
     }
 

@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\CardRepository\CardRepositoryInterface;
 use PayonePayment\Components\Currency\CurrencyPrecision;
+use PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor;
 use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
@@ -295,6 +296,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
             $orderActionLogDataHandler ?? $this->createMock(OrderActionLogDataHandlerInterface::class),
             new PaymentStateHandler($translator),
             $requestFactory,
+            $this->createMock(CustomerDataPersistor::class),
             $cardRepository
         );
     }

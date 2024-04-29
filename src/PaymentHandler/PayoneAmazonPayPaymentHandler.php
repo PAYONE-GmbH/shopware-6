@@ -7,6 +7,7 @@ namespace PayonePayment\PaymentHandler;
 use Doctrine\DBAL\Connection;
 use PayonePayment\Components\AmazonPay\ButtonConfiguration;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
+use PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor;
 use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\DeviceFingerprint\AbstractDeviceFingerprintService;
@@ -40,13 +41,14 @@ class PayoneAmazonPayPaymentHandler extends AbstractAsynchronousPayonePaymentHan
         OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
         PaymentStateHandlerInterface $stateHandler,
         RequestParameterFactory $requestParameterFactory,
+        CustomerDataPersistor $customerDataPersistor,
         private readonly RouterInterface $router,
         private readonly Connection $connection,
         private readonly ButtonConfiguration $buttonConfiguration,
         private readonly EncoderInterface $encoder,
         ?AbstractDeviceFingerprintService $deviceFingerprintService = null
     ) {
-        parent::__construct($configReader, $lineItemRepository, $requestStack, $client, $translator, $transactionDataHandler, $orderActionLogDataHandler, $stateHandler, $requestParameterFactory, $deviceFingerprintService);
+        parent::__construct($configReader, $lineItemRepository, $requestStack, $client, $translator, $transactionDataHandler, $orderActionLogDataHandler, $stateHandler, $requestParameterFactory, $customerDataPersistor, $deviceFingerprintService);
     }
 
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool

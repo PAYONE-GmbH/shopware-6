@@ -129,5 +129,11 @@
             <argument key="$languageRepository" type="service" id="language.repository" />
         </service>
 
+        <service id="PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor" autowire="true">
+            <argument key="$orderAddressRepository" type="service" id="order_address.repository" />
+            <argument key="$customerRepository" type="service" id="customer.repository" />
+            <argument key="$customerAddressRepository" type="service" id="customer_address.repository" />
+        </service>
+
     </services>
 </container>

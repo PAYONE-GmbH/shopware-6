@@ -6,6 +6,7 @@ namespace PayonePayment\PaymentHandler;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\ConfigReader\ConfigReader;
+use PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor;
 use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService;
@@ -114,6 +115,7 @@ class PayoneSecuredInvoicePaymentHandlerTest extends TestCase
             $transactionDataHandler,
             $orderActionLogDataHandler,
             $requestFactory,
+            $this->createMock(CustomerDataPersistor::class),
             $deviceFingerprintService
         );
     }

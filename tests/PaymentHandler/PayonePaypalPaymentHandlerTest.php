@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\Currency\CurrencyPrecision;
+use PayonePayment\Components\CustomerDataPersistor\CustomerDataPersistor;
 use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandler;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandler;
@@ -82,7 +83,8 @@ class PayonePaypalPaymentHandlerTest extends TestCase
             new TransactionDataHandler($this->createMock(EntityRepository::class), new CurrencyPrecision()),
             $orderActionLogDataHandler,
             new PaymentStateHandler($translator),
-            $requestFactory
+            $requestFactory,
+            $this->createMock(CustomerDataPersistor::class)
         );
     }
 
