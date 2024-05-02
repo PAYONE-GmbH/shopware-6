@@ -61,6 +61,8 @@ export default {
     watch: {
         profiles(profiles) {
             this.$emit('update:value', profiles);
+            this.$emit('input', profiles); // required for SW 6.5.x compatibility
+            this.$emit('change', profiles); // required for SW 6.5.x compatibility
         },
     },
 
