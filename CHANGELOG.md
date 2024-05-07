@@ -364,3 +364,27 @@ Maintenance
 * Tested with 6.5.1.1
 * 1st run tested with 6.5.2.1
 * 2nd run tested with 6.5.3.0
+
+# 6.0.0
+
+New Features
+ 
+* compatibility with SW 6.6 established
+* improved refund handling on order detail page
+* new logging function on order detail page
+* new payment method: Amazon Pay Express
+* new payment method: Amazon Pay
+* implement B2B payments for BNPL Secured Invoice
+
+Bugfixes   
+
+* updated the iDEAL issuer list
+* fixed birthday field in Unzer B2B
+* updated the hash method
+* removed paydirekt and updated giropay
+* fixed notification forwarding
+* fixed notification logging 
+
+Maintenance
+ 
+* tested with 6.5.8.9 and 6.6.1.2

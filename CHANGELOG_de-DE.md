@@ -352,3 +352,26 @@ Wartung
 * Getestet mit 6.5.1.1
 * 1er Lauf getestet mit 6.5.2.1
 * 2ter Lauf getestet mit 6.5.3.0
+
+# 6.0.0
+
+Neue Funktionen
+ 
+* Unterstützung für Shopware 6.6 hinzugefügt
+* Verbesserung der Refundfunktion auf der Bestelldetailsseite
+* Neue Loggingfunktion auf der Bestelldetailsseite
+* neue Zahlungsart: Amazon Pay Express
+* neue Zahlungsart: Amazon Pay
+* B2B Zahlungen für BNPL gesicherter Rechnungskauf
+
+Fehlerbehebung   
+
+* iDEAL Bankliste geupdated
+* Fehler beim Geburtstagsfeld in Unzer B2B behoben
+* Hash Methode upgedated
+* notification forwarding repariert
+* notification logging repariert
+
+Wartung
+ 
+* getestet mit 6.5.8.9 und 6.6.1.2
