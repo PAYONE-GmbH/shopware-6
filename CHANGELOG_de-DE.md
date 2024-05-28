@@ -375,3 +375,9 @@ Fehlerbehebung
 Wartung
  
 * getestet mit 6.5.8.9 und 6.6.1.2
+
+# 6.0.1
+
+Fehlerbehebung
+
+* alte .js Datei entfernt

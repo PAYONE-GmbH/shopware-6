@@ -388,3 +388,9 @@ Bugfixes
 Maintenance
  
 * tested with 6.5.8.9 and 6.6.1.2
+
+# 6.0.1
+
+Bugfix
+
+* removed old .js file
