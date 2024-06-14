@@ -263,7 +263,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             $items[] = $this->getRequestItem(
                 self::TYPE_SHIPMENT,
                 '', // got be filled by `addShippingItemsToItemList`
-                $shippingMethod->getName() ?? '',
+                $shippingMethod->getTranslation('name') ?? '',
                 $shipmentPosition->getPrice(),
                 1,
                 $shipmentPosition->getTaxRate()
