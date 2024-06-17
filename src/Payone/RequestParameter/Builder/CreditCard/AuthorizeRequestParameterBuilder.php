@@ -26,7 +26,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 
         return [
             'clearingtype' => self::CLEARING_TYPE_CREDIT_CARD,
-            'request' => self::REQUEST_ACTION_AUTHORIZE,
+            'request' => $arguments->getAction(),
             'pseudocardpan' => $pseudoCardPan,
             'cardtype' => $cardType,
         ];
@@ -38,9 +38,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             return false;
         }
 
-        $paymentMethod = $arguments->getPaymentMethod();
-        $action = $arguments->getAction();
-
-        return $paymentMethod === PayoneCreditCardPaymentHandler::class && $action === self::REQUEST_ACTION_AUTHORIZE;
+        return $arguments->getPaymentMethod() === PayoneCreditCardPaymentHandler::class
+            && in_array($arguments->getAction(), [self::REQUEST_ACTION_PREAUTHORIZE, self::REQUEST_ACTION_AUTHORIZE]);
     }
 }

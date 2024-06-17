@@ -1,0 +1,67 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PayonePayment\Payone\RequestParameter\Builder\CreditCard;
+
+use DMS\PHPUnitExtensions\ArraySubset\Assert;
+use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
+use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\TestCaseBase\PaymentTransactionParameterBuilderTestTrait;
+use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+
+/**
+ * @covers \PayonePayment\Payone\RequestParameter\Builder\CreditCard\AuthorizeRequestParameterBuilder
+ */
+class AuthorizeRequestParameterBuilderTest extends TestCase
+{
+    use PaymentTransactionParameterBuilderTestTrait;
+
+    public function testItAddsCorrectPreAuthorizeParameters(): void
+    {
+        $dataBag = new RequestDataBag([
+            'pseudoCardPan' => 'my-pan',
+            'cardType' => 'my-card-type',
+        ]);
+
+        $struct = $this->getPaymentTransactionStruct(
+            $dataBag,
+            $this->getValidPaymentHandler(),
+            $this->getValidRequestAction()
+        );
+
+        $builder = $this->getContainer()->get($this->getParameterBuilder());
+        $parameters = $builder->getRequestParameter($struct);
+
+        Assert::assertArraySubset(
+            [
+                'clearingtype' => AbstractRequestParameterBuilder::CLEARING_TYPE_CREDIT_CARD,
+                'request' => $this->getValidRequestAction(),
+                'pseudocardpan' => 'my-pan',
+                'cardtype' => 'my-card-type',
+            ],
+            $parameters
+        );
+    }
+
+    protected function getParameterBuilder(): string
+    {
+        return AuthorizeRequestParameterBuilder::class;
+    }
+
+    protected function getValidPaymentHandler(): string
+    {
+        return PayoneCreditCardPaymentHandler::class;
+    }
+
+    protected function getValidRequestAction(): string
+    {
+        return AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE;
+    }
+
+    protected function getInvalidRequestAction(): string
+    {
+        return AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE;
+    }
+}
