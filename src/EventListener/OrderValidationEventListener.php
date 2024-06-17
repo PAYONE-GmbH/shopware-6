@@ -42,7 +42,7 @@ class OrderValidationEventListener implements EventSubscriberInterface
         $paymentHandler = $this->paymentHandlerRegistry->getPaymentMethodHandler($paymentMethodId);
 
         if ($paymentHandler instanceof AbstractPayonePaymentHandler) {
-            $validationDefinitions = $paymentHandler->getValidationDefinitions($salesChannelContext);
+            $validationDefinitions = $paymentHandler->getValidationDefinitions($event->getData(), $salesChannelContext);
 
             if ($validationDefinitions !== []) {
                 $this->addSubConstraints($event->getDefinition(), $validationDefinitions);

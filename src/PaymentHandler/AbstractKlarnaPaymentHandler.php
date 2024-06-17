@@ -16,6 +16,7 @@ use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\RequestConstants;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -52,9 +53,9 @@ abstract class AbstractKlarnaPaymentHandler extends AbstractAsynchronousPayonePa
         );
     }
 
-    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
-        return array_merge(parent::getValidationDefinitions($salesChannelContext), [
+        return array_merge(parent::getValidationDefinitions($dataBag, $salesChannelContext), [
             RequestConstants::WORK_ORDER_ID => [new NotBlank()],
             RequestConstants::CART_HASH => [new NotBlank()],
         ]);

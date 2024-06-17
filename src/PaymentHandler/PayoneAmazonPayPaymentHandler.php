@@ -19,6 +19,7 @@ use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\RequestConstants;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -60,9 +61,9 @@ class PayoneAmazonPayPaymentHandler extends AbstractAsynchronousPayonePaymentHan
         return strtolower((string)$transactionData['txaction']) === TransactionStatusService::ACTION_PAID;
     }
 
-    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
-        $definitions = parent::getValidationDefinitions($salesChannelContext);
+        $definitions = parent::getValidationDefinitions($dataBag, $salesChannelContext);
 
         if (empty($salesChannelContext->getCustomer()?->getActiveBillingAddress()?->getPhoneNumber())) {
             $definitions[RequestConstants::PHONE] = [new NotBlank()];

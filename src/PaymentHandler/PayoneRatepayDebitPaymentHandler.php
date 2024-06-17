@@ -8,15 +8,16 @@ use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\Components\Validator\Iban;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\RequestConstants;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PayoneRatepayDebitPaymentHandler extends AbstractSynchronousPayonePaymentHandler
 {
-    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
-        $definitions = parent::getValidationDefinitions($salesChannelContext);
+        $definitions = parent::getValidationDefinitions($dataBag, $salesChannelContext);
 
         $definitions['ratepayIban'] = [new NotBlank(), new Iban()];
         $definitions[RequestConstants::BIRTHDAY] = [new NotBlank(), new Birthday()];
