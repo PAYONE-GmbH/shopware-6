@@ -39,12 +39,6 @@
         </service>
         <service id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" alias="PayonePayment\Components\ConfigReader\ConfigReader"/>
 
-        <service id="PayonePayment\Components\MandateService\MandateService">
-            <argument type="service" id="payone_payment_mandate.repository" />
-            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
-            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
-        </service>
-
         <service id="PayonePayment\Components\TransactionStatus\TransactionStatusService">
             <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
             <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />

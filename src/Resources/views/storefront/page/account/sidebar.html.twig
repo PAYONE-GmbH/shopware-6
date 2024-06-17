@@ -20,22 +20,4 @@
             </a>
         {% endif %}
     {% endblock %}
-
-    {% block page_account_sidebar_link_payone_mandate %}
-        {% if constant('PayonePayment\\PaymentMethod\\PayoneDebit::UUID') in activePaymentPaymentMethods %}
-            {% set css_class %}
-                list-group-item
-                list-group-item-action
-                account-aside-item
-
-                {% if controllerName is same as('PayoneAccountMandate') and controllerAction is same as('mandateOverview') %}
-                    is-active
-                {% endif %}
-            {% endset %}
-
-            <a href="{{ path('frontend.account.payone.mandate.page') }}" title="{{ "PayonePayment.mandatePage.menuName" | trans }}" class="{{ css_class }}">
-                {{ "PayonePayment.mandatePage.menuName" | trans }}
-            </a>
-        {% endif %}
-    {% endblock %}
 {% endblock %}
