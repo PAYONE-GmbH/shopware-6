@@ -12,6 +12,7 @@ use PayonePayment\RequestConstants;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -49,7 +50,7 @@ abstract class AbstractPayonePaymentHandler implements PayonePaymentHandlerInter
     ) {
     }
 
-    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
         return [
             RequestConstants::WORK_ORDER_ID => [new Blank()], // workorder-id is mostly not required.

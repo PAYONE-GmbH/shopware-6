@@ -7,14 +7,15 @@ namespace PayonePayment\PaymentHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Components\Validator\Iban;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PayoneTrustlyPaymentHandler extends AbstractAsynchronousPayonePaymentHandler
 {
-    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
-        $definitions = parent::getValidationDefinitions($salesChannelContext);
+        $definitions = parent::getValidationDefinitions($dataBag, $salesChannelContext);
 
         $definitions['iban'] = [new NotBlank(), new Iban()];
 

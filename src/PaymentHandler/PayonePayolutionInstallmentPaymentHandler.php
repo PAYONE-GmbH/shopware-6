@@ -17,6 +17,7 @@ use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\RequestConstants;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -60,9 +61,9 @@ class PayonePayolutionInstallmentPaymentHandler extends AbstractSynchronousPayon
         parent::pay($transaction, $dataBag, $salesChannelContext);
     }
 
-    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
-        $definitions = parent::getValidationDefinitions($salesChannelContext);
+        $definitions = parent::getValidationDefinitions($dataBag, $salesChannelContext);
 
         $definitions[RequestConstants::WORK_ORDER_ID] = [new NotBlank()];
         $definitions[RequestConstants::CART_HASH] = [new NotBlank()];
