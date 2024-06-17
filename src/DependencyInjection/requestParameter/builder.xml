@@ -160,7 +160,7 @@
 
         <!-- Credit Card -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\CreditCard\AuthorizeRequestParameterBuilder"
-                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder" autowire="true">
 
             <tag name="payone_request_builder"/>
         </service>

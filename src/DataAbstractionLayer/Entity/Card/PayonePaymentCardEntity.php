@@ -24,6 +24,11 @@ class PayonePaymentCardEntity extends Entity
 
     protected string $customerId;
 
+    /**
+     * @since 6.2.0
+     */
+    protected string $cardHolder;
+
     public function getPseudoCardPan(): string
     {
         return $this->pseudoCardPan;
@@ -82,5 +87,10 @@ class PayonePaymentCardEntity extends Entity
     public function getCustomerId(): string
     {
         return $this->customerId;
+    }
+
+    public function getCardHolder(): string
+    {
+        return $this->cardHolder;
     }
 }
