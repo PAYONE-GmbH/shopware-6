@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use PayonePayment\Components\CartHasher\CartHasherInterface;
+use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
@@ -88,7 +89,8 @@ class GeneralTransactionRequestParameterBuilderTest extends TestCase
                 $this->getContainer()->get('customer_address.repository'),
                 $this->getContainer()->get('currency.repository'),
                 $currencyPrecision,
-                $this->getContainer()->get(LineItemHydratorInterface::class)
+                $this->getContainer()->get(LineItemHydratorInterface::class),
+                $this->getContainer()->get(ConfigReader::class)
             ),
             $this->createMock(CartHasherInterface::class),
             $this->createMock(ConfigReaderInterface::class)

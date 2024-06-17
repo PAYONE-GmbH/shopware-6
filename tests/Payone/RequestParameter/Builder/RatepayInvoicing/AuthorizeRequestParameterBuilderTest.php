@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder\RatepayInvoicing;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\DeviceFingerprint\RatepayDeviceFingerprintService;
-use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -58,7 +57,6 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
                 'add_paydata[device_token]' => 'the-device-ident-token',
                 'telephonenumber' => '0123456789',
                 'birthday' => '20000101',
-                'it[1]' => LineItemHydrator::TYPE_GOODS,
             ],
             $parameters
         );

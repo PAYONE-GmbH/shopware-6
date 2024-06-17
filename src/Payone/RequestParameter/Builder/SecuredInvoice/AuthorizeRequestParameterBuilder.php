@@ -46,10 +46,6 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'currency' => $currency->getIsoCode(),
         ];
 
-        if ($order->getLineItems() !== null) {
-            $parameters = array_merge($parameters, $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context));
-        }
-
         $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
         $this->applyBirthdayParameter($order, $parameters, $dataBag, $context);
         $this->applyB2bParameters($order, $parameters);
