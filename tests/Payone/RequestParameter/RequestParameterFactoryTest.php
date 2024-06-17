@@ -39,7 +39,7 @@ class RequestParameterFactoryTest extends TestCase
 
         Assert::assertArraySubset(
             [
-                'key' => hash('md5', 'value'),
+                'key' => hash('sha384', 'value'),
                 'key-1' => 'value-1',
                 'key-2' => 'other-value',
                 'key-3' => 'value-3',
@@ -128,7 +128,7 @@ class RequestParameterFactoryTest extends TestCase
 
         Assert::assertArraySubset(
             [
-                'key' => hash('md5', 'value'),
+                'key' => hash('sha384', 'value'),
                 'key-1' => 'value-1',
             ],
             $parameters

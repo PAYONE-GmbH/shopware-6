@@ -72,7 +72,7 @@ class RequestParameterFactory
         }
 
         $this->generateParameterHash($parameters);
-        $parameters['key'] = hash('md5', (string) $parameters['key']);
+        $parameters['key'] = hash('sha384', (string) $parameters['key']);
 
         return array_filter($parameters, static fn ($value) => $value !== null && $value !== '');
     }
