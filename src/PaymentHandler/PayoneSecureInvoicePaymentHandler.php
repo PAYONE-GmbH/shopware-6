@@ -6,14 +6,15 @@ namespace PayonePayment\PaymentHandler;
 
 use PayonePayment\Components\Validator\Birthday;
 use PayonePayment\RequestConstants;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PayoneSecureInvoicePaymentHandler extends AbstractPayoneInvoicePaymentHandler
 {
-    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
-        $definitions = parent::getValidationDefinitions($salesChannelContext);
+        $definitions = parent::getValidationDefinitions($dataBag, $salesChannelContext);
 
         if (!$this->customerHasCompanyAddress($salesChannelContext)) {
             $definitions[RequestConstants::BIRTHDAY] = [new NotBlank(), new Birthday()];
