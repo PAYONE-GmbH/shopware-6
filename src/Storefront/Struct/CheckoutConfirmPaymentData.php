@@ -23,8 +23,6 @@ class CheckoutConfirmPaymentData extends Struct
 
     protected ?string $cartHash = '';
 
-    protected ?EntitySearchResult $savedMandates = null;
-
     protected bool $showExitExpressCheckoutLink = false;
 
     protected bool $preventAddressEdit = false;
@@ -57,11 +55,6 @@ class CheckoutConfirmPaymentData extends Struct
     public function getCartHash(): ?string
     {
         return $this->cartHash;
-    }
-
-    public function getSavedMandates(): ?EntitySearchResult
-    {
-        return $this->savedMandates;
     }
 
     public function isshowExitExpressCheckoutLink(): bool

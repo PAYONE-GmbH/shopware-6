@@ -1,14 +1,16 @@
 {% sw_extends '@Storefront/storefront/page/checkout/finish/finish-details.html.twig' %}
 
-{% block page_checkout_finish_order_dispatch_method %}
+{% block page_checkout_finish_order_payment_method %}
     {{ parent() }}
 
-    {% block payone_payment_mandate_information %}
-        {% if page.extensions.payone.mandate %}
+    {% if page.order and page.order.transactions and page.order.transactions.last %}
+        {% set payoneData = page.order.transactions.last.getExtension('payonePaymentOrderTransactionData') %}
+        {% if payoneData and payoneData.mandateIdentification %}
             <p>
-                <strong>{{ "PayonePayment.checkoutFinishPage.mandateIdentification" | trans }}:</strong>
-                {{ page.extensions.payone.mandate.identification }}
+                <strong>{{ "PayonePayment.checkoutFinishPage.mandateIdentification"|trans|sw_sanitize }}:</strong>
+                {{ payoneData.mandateIdentification }}
             </p>
         {% endif %}
-    {% endblock %}
+    {% endif %}
+
 {% endblock %}

@@ -37,21 +37,9 @@
             "expired": "abgelaufen",
             "expiresAt": "läuft am %expiresAt% ab"
         },
-        "mandatePage": {
-            "menuName": "SEPA-Lastschriftmandate",
-            "pageTitle": "SEPA-Lastschriftmandate",
-            "pageSubTitle": "Hier können Sie die gespeicherten SEPA-Lastschriftmandate verwalten.",
-            "success": "Das SEPA-Lastschriftmandate wurde erfolgreich entfernt.",
-            "error": "Es ist ein Fehler aufgetreten.",
-            "tableIdentification": "Nummer",
-            "tableSignatureDate": "Datum",
-            "downloadButton": "Mandat herunterladen",
-            "noEntries": "Keine SEPA-Lastschriftmandate vorhanden."
-        },
         "checkoutConfirmPage": {
             "defaultCardTitle": "Zahlungsinformationen",
             "save": "Daten für zukünftige Nutzung speichern",
-            "saveMandate": "Lastschrift-Mandat für zukünftige Nutzung speichern",
             "back-to-standard-checkout": "Zahlungsart ändern",
             "express-checkout-canceled": "Der Express-Checkout wurde abgebrochen."
         },

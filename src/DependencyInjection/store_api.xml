@@ -10,10 +10,6 @@
             <argument type="service" id="PayonePayment\Components\CardRepository\CardRepository" />
         </service>
 
-        <service id="PayonePayment\StoreApi\Route\MandateRoute">
-            <argument type="service" id="PayonePayment\Components\MandateService\MandateService" />
-        </service>
-
         <service id="PayonePayment\StoreApi\Route\ApplePayRoute">
             <argument type="service" id="payone.app_system.guzzle" />
             <argument type="service" id="monolog.logger.payone" />

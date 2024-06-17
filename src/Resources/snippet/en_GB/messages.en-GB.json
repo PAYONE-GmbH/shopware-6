@@ -37,21 +37,9 @@
             "expired": "expired",
             "expiresAt": "expires on %expiresAt%"
         },
-        "mandatePage": {
-            "menuName": "Direct Debit Mandates",
-            "pageTitle": "Direct Debit Mandates",
-            "pageSubTitle": "Here you can manage your saved direct debit mandates.",
-            "success": "The saved Direct Debit Mandate was removed successfully.",
-            "error": "An error has occurred.",
-            "tableIdentification": "Nummer",
-            "tableSignatureDate": "Date",
-            "downloadButton": "Download Mandate",
-            "noEntries": "No mandates saved."
-        },
         "checkoutConfirmPage": {
             "defaultCardTitle": "Payment Information",
             "save": "Save data for future use",
-            "saveMandate": "Save direct debit mandate for future use",
             "back-to-standard-checkout": "Change payment method",
             "express-checkout-canceled": "The express checkout has been cancelled."
         },

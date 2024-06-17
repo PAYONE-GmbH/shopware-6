@@ -574,13 +574,6 @@
             <tag name="payone_request_builder"/>
         </service>
 
-        <!-- Get File -->
-        <service id="PayonePayment\Payone\RequestParameter\Builder\Mandate\GetFileRequestParameterBuilder"
-                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-
-            <tag name="payone_request_builder"/>
-        </service>
-
         <!-- Manage Mandate -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\Mandate\ManageMandateRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
