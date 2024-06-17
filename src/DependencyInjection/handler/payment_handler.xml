@@ -87,7 +87,6 @@
 
         <service id="PayonePayment\PaymentHandler\PayoneDebitPaymentHandler"
                  parent="PayonePayment\PaymentHandler\AbstractSynchronousPayonePaymentHandler">
-            <argument key="$mandateService" type="service" id="PayonePayment\Components\MandateService\MandateService" />
 
             <tag name="shopware.payment.method.sync" />
         </service>

@@ -112,7 +112,7 @@ class PayonePayment extends Plugin
 
         $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_card');
         $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_redirect');
-        $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_mandate');
+        $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_mandate'); // legacy table. does not exist anymore.
         $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_notification_forward');
         $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_notification_target');
         $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_order_transaction_data');

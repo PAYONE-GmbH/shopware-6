@@ -19,12 +19,6 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="PayonePayment\EventListener\CheckoutConfirmDebitEventListener">
-            <argument type="service" id="PayonePayment\StoreApi\Route\MandateRoute" />
-
-            <tag name="kernel.event_subscriber"/>
-        </service>
-
         <service id="PayonePayment\EventListener\CheckoutConfirmRatepayEventListener">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="PayonePayment\Components\Ratepay\Installment\InstallmentService" />
@@ -38,13 +32,6 @@
         </service>
 
         <service id="PayonePayment\EventListener\CheckoutConfirmTemplateEventListener">
-            <tag name="kernel.event_subscriber"/>
-        </service>
-
-        <service id="PayonePayment\EventListener\CheckoutFinishEventListener">
-            <argument type="service" id="payone_payment_mandate.repository" />
-            <argument type="service" id="order_transaction.repository" />
-
             <tag name="kernel.event_subscriber"/>
         </service>
 
