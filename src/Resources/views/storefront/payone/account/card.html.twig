@@ -25,6 +25,7 @@
                             <thead>
                                 <tr>
                                     {% block page_payone_account_card_table_header %}
+                                        <th scope="col">{{ "PayonePayment.cardPage.tableHeaderCardHolder" | trans }}</th>
                                         <th scope="col">{{ "PayonePayment.cardPage.tableHeader" | trans }}</th>
                                         <th scope="col">&nbsp;</th>
                                     {% endblock %}
@@ -34,6 +35,7 @@
                                 {% for card in page.cards %}
                                     {% block page_payone_account_card_table_line %}
                                         <tr>
+                                            <td>{{ card.cardHolder }}</td>
                                             <td>
                                                 {% if card.expiresAt <= date() %}<strike>{% endif %}{{ card.truncatedCardPan }}{% if card.expiresAt <= date() %}</strike>{% endif %}
                                                 {% if card.expiresAt <= date() %}

@@ -11,16 +11,19 @@ use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandle
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\PaymentStateHandler\PaymentStateHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
+use PayonePayment\DataAbstractionLayer\Entity\Card\PayonePaymentCardEntity;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHandler
@@ -31,6 +34,7 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
     final public const REQUEST_PARAM_CARD_EXPIRE_DATE = 'cardExpireDate';
     final public const REQUEST_PARAM_CARD_TYPE = 'cardType';
     final public const REQUEST_PARAM_TRUNCATED_CARD_PAN = 'truncatedCardPan';
+    final public const REQUEST_PARAM_CARD_HOLDER = 'cardHolder';
 
     public function __construct(
         ConfigReaderInterface $configReader,
@@ -59,13 +63,36 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
         );
     }
 
+    public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
+    {
+        $definitions = parent::getValidationDefinitions($dataBag, $salesChannelContext);
+
+        // Please note: this is field is only required, for that case, that the card has been already saved, but no
+        // card-holder has been saved (because this field was added in a later version)
+        // with that we want to make sure, that a card-holder is always present.
+        // if a card holder as been already saved, the submitted value will be ignored.
+        // if no card holder has been saved, and no values has been submitted, the next line will cause a validation-error
+        // TODO in the far future: move this into the if-block for the case, if the card has not been saved.
+        // search for the following to-do reference, to adjust the related code: TODO-card-holder-requirement
+        $definitions[self::REQUEST_PARAM_CARD_HOLDER] = [new NotBlank()];
+
+        if (empty($dataBag->get(self::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN))) {
+            $definitions[self::REQUEST_PARAM_PSEUDO_CARD_PAN] = [new NotBlank()];
+            $definitions[self::REQUEST_PARAM_TRUNCATED_CARD_PAN] = [new NotBlank()];
+            $definitions[self::REQUEST_PARAM_CARD_EXPIRE_DATE] = [new NotBlank()];
+            $definitions[self::REQUEST_PARAM_CARD_TYPE] = [new NotBlank()];
+        }
+
+        return $definitions;
+    }
+
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (static::isNeverCapturable($payoneTransActionData)) {
             return false;
         }
 
-        $txAction = isset($transactionData['txaction']) ? strtolower((string) $transactionData['txaction']) : null;
+        $txAction = isset($transactionData['txaction']) ? strtolower((string)$transactionData['txaction']) : null;
 
         if ($txAction === TransactionStatusService::ACTION_APPOINTED) {
             return true;
@@ -106,6 +133,9 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
         $customer = $salesChannelContext->getCustomer();
         $savedPseudoCardPan = $dataBag->get(self::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN);
 
+        // TODO-card-holder-requirement: move the next line into the if-block if the $savedPseudoCardPan is empty (please see credit-card handler)
+        $cardHolder = $dataBag->get(self::REQUEST_PARAM_CARD_HOLDER);
+
         if (empty($savedPseudoCardPan)) {
             $truncatedCardPan = $dataBag->get(self::REQUEST_PARAM_TRUNCATED_CARD_PAN);
             $cardExpireDate = $dataBag->get(self::REQUEST_PARAM_CARD_EXPIRE_DATE);
@@ -117,6 +147,7 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
             if (!empty($expiresAt) && $customer !== null && $saveCreditCard) {
                 $this->cardRepository->saveCard(
                     $customer,
+                    $cardHolder,
                     $truncatedCardPan,
                     $pseudoCardPan,
                     $cardType,
@@ -133,6 +164,11 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
                     $savedPseudoCardPan,
                     $salesChannelContext->getContext()
                 );
+
+                // TODO-card-holder-requirement: remove this if-statement incl. content (please see credit-card handler)
+                if ($savedCard instanceof PayonePaymentCardEntity && empty($savedCard->getCardHolder())) {
+                    $this->cardRepository->saveMissingCardHolder($savedCard->getId(), $customer->getId(), $cardHolder, $salesChannelContext->getContext());
+                }
 
                 $cardType = $savedCard ? $savedCard->getCardType() : '';
             }
@@ -152,7 +188,7 @@ class PayoneCreditCardPaymentHandler extends AbstractAsynchronousPayonePaymentHa
 
     protected function getRedirectResponse(SalesChannelContext $context, array $request, array $response): RedirectResponse
     {
-        if (strtolower((string) $response['status']) === 'redirect') {
+        if (strtolower((string)$response['status']) === 'redirect') {
             return new RedirectResponse($response['redirecturl']);
         }
 

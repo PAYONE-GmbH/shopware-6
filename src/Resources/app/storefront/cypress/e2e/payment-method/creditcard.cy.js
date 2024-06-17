@@ -41,13 +41,14 @@ describe('Credit Card', () => {
         cy.checkoutConfirmAndComplete(
             () => {
                 cy.get('@creditCardPan').then((storedPan) => {
-                    cy.get('#savedpseudocardpan').select(storedPan)
+                    cy.get('#savedpseudocardpan').select(storedPan);
                     cy.get('.credit-card-input').should('not.be.visible');
                 })
             });
     });
 
     function fillIframe(iban = '4111111111111111') {
+        cy.get('#creditCardHolder').type('credit card holder');
         setIframeValue('cardpan', 'input', iban);
         setIframeValue('cardcvc2', 'input', '123');
         setIframeValue('cardexpiremonth', 'select', 5);

@@ -4,24 +4,41 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\CreditCard;
 
+use PayonePayment\Components\CardRepository\CardRepository;
 use PayonePayment\PaymentHandler\PayoneCreditCardPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
+    public function __construct(
+        RequestBuilderServiceAccessor $serviceAccessor,
+        private readonly CardRepository $cardRepository
+    ) {
+        parent::__construct($serviceAccessor);
+    }
+
     /**
      * @param PaymentTransactionStruct $arguments
      */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
+        $cardHolder = $arguments->getRequestData()->get(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_HOLDER);
         $cardType = $arguments->getRequestData()->get(PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_TYPE);
         $pseudoCardPan = $arguments->getRequestData()->get(PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN);
         $savedPseudoCardPan = $arguments->getRequestData()->get(PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN);
 
-        if (!empty($savedPseudoCardPan)) {
-            $pseudoCardPan = $savedPseudoCardPan;
+        $salesChannelContext = $arguments->getSalesChannelContext();
+        if (!empty($savedPseudoCardPan) && !empty($salesChannelContext->getCustomerId())) {
+            $savedCard = $this->cardRepository->getExistingCard(
+                $salesChannelContext->getCustomerId(),
+                $savedPseudoCardPan,
+                $salesChannelContext->getContext()
+            );
+            $pseudoCardPan = $savedCard?->getPseudoCardPan() ?: '';
+            $cardHolder = $savedCard?->getCardHolder() ?: $cardHolder;
         }
 
         return [
@@ -29,6 +46,7 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'request' => $arguments->getAction(),
             'pseudocardpan' => $pseudoCardPan,
             'cardtype' => $cardType,
+            'cardholder' => $cardHolder,
         ];
     }
 
@@ -39,6 +57,6 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
         }
 
         return $arguments->getPaymentMethod() === PayoneCreditCardPaymentHandler::class
-            && in_array($arguments->getAction(), [self::REQUEST_ACTION_PREAUTHORIZE, self::REQUEST_ACTION_AUTHORIZE]);
+            && \in_array($arguments->getAction(), [self::REQUEST_ACTION_PREAUTHORIZE, self::REQUEST_ACTION_AUTHORIZE], true);
     }
 }

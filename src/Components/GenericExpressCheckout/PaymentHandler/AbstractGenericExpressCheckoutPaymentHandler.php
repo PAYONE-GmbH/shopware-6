@@ -10,6 +10,7 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Checkout\Payment\PaymentException;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -26,9 +27,9 @@ abstract class AbstractGenericExpressCheckoutPaymentHandler extends AbstractAsyn
         return static::isTransactionAppointedAndCompleted($transactionData) || static::matchesIsCapturableDefaults($transactionData);
     }
 
-    public function getValidationDefinitions(SalesChannelContext $salesChannelContext): array
+    public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
-        return array_merge(parent::getValidationDefinitions($salesChannelContext), [
+        return array_merge(parent::getValidationDefinitions($dataBag, $salesChannelContext), [
             RequestConstants::WORK_ORDER_ID => [new NotBlank()],
             RequestConstants::CART_HASH => [new NotBlank()],
         ]);
