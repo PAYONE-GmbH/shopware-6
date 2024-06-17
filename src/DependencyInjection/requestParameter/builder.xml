@@ -15,13 +15,11 @@
             <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
         </service>
 
-        <service id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor">
+        <service id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" autowire="true">
             <argument key="$customerRepository" type="service" id="customer.repository"/>
             <argument key="$currencyRepository" type="service" id="currency.repository"/>
             <argument key="$customerAddressRepository" type="service" id="customer_address.repository"/>
             <argument key="$orderAddressRepository" type="service" id="order_address.repository"/>
-            <argument key="$currencyPrecision" type="service" id="PayonePayment\Components\Currency\CurrencyPrecisionInterface"/>
-            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface"/>
         </service>
 
         <service id="PayonePayment\Payone\RequestParameter\Builder\GeneralTransactionRequestParameterBuilder"

@@ -53,10 +53,6 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'iban' => $dataBag->get('securedDirectDebitIban'),
         ];
 
-        if ($order->getLineItems() !== null) {
-            $parameters = array_merge($parameters, $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context));
-        }
-
         $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
         $this->applyBirthdayParameter($order, $parameters, $dataBag, $context);
 

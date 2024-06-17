@@ -58,6 +58,14 @@
             <helpText>When activated, the data entered by the customer into the fields provided by PAYONE will be saved in the customer account, allowing them to be directly reused for future orders.</helpText>
             <helpText lang="de-DE">Wenn aktiviert, werden die Daten, welche der Kunde in die von PAYONE bereitgestellten Felder, eingibt, in den Kundenaccount gespeichert, sodass diese bei weiteren Bestellungen direkt wiederverwendet werden können.</helpText>
         </input-field>
+
+        <input-field type="bool">
+            <name>submitOrderLineItems</name>
+            <label>Send order line-items to gateway</label>
+            <label lang="de-DE">Bestellpositionen übermitteln</label>
+            <helpText>If activated, all order line-items are submitted to the PAYONE gateway. This enables the generation of invoices through PAYONE.</helpText>
+            <helpText lang="de-DE">Wenn aktiviert, werden alle Bestellpositionen an das PAYONE-Gateway übermittelt. Dadurch ist es möglich, Rechnungen direkt über PAYONE zu erstellen.</helpText>
+        </input-field>
     </card>
 
     <card>
