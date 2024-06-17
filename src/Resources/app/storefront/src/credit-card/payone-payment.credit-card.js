@@ -211,10 +211,18 @@ export default class PayonePaymentCreditCard extends Plugin {
     _handleChangeSavedCard() {
         const savedCardPan = document.getElementById('savedpseudocardpan');
 
-        if (savedCardPan.options[savedCardPan.selectedIndex].value) {
+        const selectedOption = savedCardPan.options[savedCardPan.selectedIndex];
+        if (selectedOption.value) {
             [...document.getElementsByClassName('credit-card-input')].forEach(function(element) {
                 element.classList.add('hide')
             });
+
+            if (!selectedOption.dataset.cardHolder?.length) {
+                document.getElementById('card-holder-input-wrapper').classList.remove('hide');
+            } else {
+                // TODO-card-holder-requirement: remove the next line (please see credit-card handler)
+                document.getElementById('creditCardHolder').value = selectedOption.dataset.cardHolder;
+            }
         } else {
             [...document.getElementsByClassName('credit-card-input')].forEach(function(element) {
                 element.classList.remove('hide');

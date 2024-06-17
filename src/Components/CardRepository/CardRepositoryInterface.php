@@ -13,6 +13,7 @@ interface CardRepositoryInterface
 {
     public function saveCard(
         CustomerEntity $customer,
+        string $cardHolder,
         string $truncatedCardPan,
         string $pseudoCardPan,
         string $cardType,
@@ -37,8 +38,14 @@ interface CardRepositoryInterface
     ): void;
 
     public function getExistingCard(
-        CustomerEntity $customer,
+        CustomerEntity|string $customer,
         string $pseudoCardPan,
         Context $context
     ): ?PayonePaymentCardEntity;
+
+    /**
+     * TODO-card-holder-requirement: remove this method (please see credit-card handler)
+     * @deprecated
+     */
+    public function saveMissingCardHolder(string $cardId, string $customerId, mixed $cardHolder, Context $context): void;
 }

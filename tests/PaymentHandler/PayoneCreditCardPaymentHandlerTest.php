@@ -70,6 +70,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
     {
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $dataBag = $this->getDataBag([
+            PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_HOLDER => 'the-card-holder',
             PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN => 'the-card-pan',
             PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN => 'the-pseudo-card-pan',
             PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_TYPE => 'the-card-type',
@@ -88,6 +89,7 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
         $cardRepository->expects(static::once())->method('saveCard')->with(
             $salesChannelContext->getCustomer(),
+            'the-card-holder',
             'the-card-pan',
             'the-pseudo-card-pan',
             'the-card-type',
@@ -211,7 +213,11 @@ class PayoneCreditCardPaymentHandlerTest extends TestCase
         );
 
         $savedCard = new PayonePaymentCardEntity();
-        $savedCard->setCardType('the-card-type');
+        $savedCard->assign([
+            'cardType' => 'the-card-type',
+            'cardHolder' => 'the-card-holder',
+        ]);
+
         $cardRepository = $this->createMock(CardRepositoryInterface::class);
         $cardRepository->expects(static::never())->method('saveCard');
         $cardRepository->expects(static::once())->method('getExistingCard')->willReturn($savedCard);

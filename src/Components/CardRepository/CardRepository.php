@@ -22,6 +22,7 @@ class CardRepository implements CardRepositoryInterface
 
     public function saveCard(
         CustomerEntity $customer,
+        string $cardHolder,
         string $truncatedCardPan,
         string $pseudoCardPan,
         string $cardType,
@@ -39,6 +40,7 @@ class CardRepository implements CardRepositoryInterface
 
         $data = [
             'id' => $card === null ? Uuid::randomHex() : $card->getId(),
+            'cardHolder' => $cardHolder,
             'pseudoCardPan' => $pseudoCardPan,
             'truncatedCardPan' => $truncatedCardPan,
             'cardType' => $cardType,
@@ -96,20 +98,35 @@ class CardRepository implements CardRepositoryInterface
     }
 
     public function getExistingCard(
-        CustomerEntity $customer,
+        CustomerEntity|string $customer,
         string $pseudoCardPan,
         Context $context
     ): ?PayonePaymentCardEntity {
         $criteria = new Criteria();
 
         $criteria->addFilter(
-            new EqualsFilter('payone_payment_card.pseudoCardPan', $pseudoCardPan),
-            new EqualsFilter('payone_payment_card.customerId', $customer->getId())
+            new EqualsFilter('pseudoCardPan', $pseudoCardPan),
+            new EqualsFilter('customerId', \is_string($customer) ? $customer : $customer->getId())
         );
 
         /** @var PayonePaymentCardEntity|null $card */
         $card = $this->cardRepository->search($criteria, $context)->first();
 
         return $card;
+    }
+
+    /**
+     * TODO-card-holder-requirement: remove this method (please see credit-card handler)
+     * @deprecated
+     */
+    public function saveMissingCardHolder(string $cardId, string $customerId, mixed $cardHolder, Context $context): void
+    {
+        $this->cardRepository->upsert([
+            [
+                'id' => $cardId,
+                'customerId' => $customerId,
+                'cardHolder' => $cardHolder,
+            ],
+        ], $context);
     }
 }
