@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder\SecuredInvoice;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService;
-use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -52,7 +51,6 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
                 'add_paydata[device_token]' => 'the-device-ident-token',
                 'telephonenumber' => '0123456789',
                 'birthday' => '20000101',
-                'it[1]' => LineItemHydrator::TYPE_GOODS,
             ],
             $parameters
         );
@@ -149,7 +147,6 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
                 'financingtype' => AbstractPayonePaymentHandler::PAYONE_FINANCING_PIV,
                 'telephonenumber' => '0123456789',
                 'birthday' => '20000101',
-                'it[1]' => LineItemHydrator::TYPE_GOODS,
                 'businessrelation' => 'b2b',
                 'company' => 'The Company',
                 'vatid' => 'DE123456789',

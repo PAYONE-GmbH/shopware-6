@@ -16,18 +16,11 @@ class AuthorizeRequestParameterBuilder extends AbstractKlarnaParameterBuilder
     {
         $dataBag = $arguments->getRequestData();
 
-        $parameter = [
+        return [
             'request' => $arguments->getAction(),
             'clearingtype' => self::CLEARING_TYPE_FINANCING,
             'add_paydata[authorization_token]' => $dataBag->get('payoneKlarnaAuthorizationToken'),
         ];
-
-        $context = $arguments->getSalesChannelContext()->getContext();
-        $order = $arguments->getPaymentTransaction()->getOrder();
-        $currency = $this->getOrderCurrency($order, $context);
-        $lineItems = $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context);
-
-        return array_merge($parameter, $lineItems);
     }
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
