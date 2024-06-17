@@ -165,12 +165,6 @@
             <tag name="payone_request_builder"/>
         </service>
 
-        <service id="PayonePayment\Payone\RequestParameter\Builder\CreditCard\PreAuthorizeRequestParameterBuilder"
-                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
-
-            <tag name="payone_request_builder"/>
-        </service>
-
         <service id="PayonePayment\Payone\RequestParameter\Builder\CreditCard\CreditCardCheckRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
 
