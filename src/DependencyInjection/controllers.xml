@@ -161,5 +161,9 @@
             <tag name="controller.service_arguments" />
         </service>
 
+        <service id="PayonePayment\Components\ApplePay\Controller\CheckoutController" autowire="true">
+            <tag name="controller.service_arguments" />
+        </service>
+
     </services>
 </container>

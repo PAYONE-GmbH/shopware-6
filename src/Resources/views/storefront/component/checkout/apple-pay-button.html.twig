@@ -9,8 +9,8 @@
         <input type="hidden" name="orderId" value="{{ page.order.id }}"/>
 
         <apple-pay-button
-            data-validate-merchant-url="{{ path('store-api.payone.apple-pay.validate-merchant') }}"
-            data-process-payment-url="{{ path('store-api.payone.apple-pay.process') }}"
+            data-validate-merchant-url="{{ path('frontend.payone.apple-pay.validate-merchant') }}"
+            data-process-payment-url="{{ path('frontend.payone.apple-pay.process-payment') }}"
             data-payone-payment-apple-pay-options='{
                 "countryCode": "{{ context.customer.defaultBillingAddress.country.iso }}",
                 "currencyCode": "{{ context.currency.isoCode }}",

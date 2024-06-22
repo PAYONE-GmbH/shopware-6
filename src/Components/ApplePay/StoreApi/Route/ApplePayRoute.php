@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\StoreApi\Route;
+namespace PayonePayment\Components\ApplePay\StoreApi\Route;
 
 use GuzzleHttp\Client;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
