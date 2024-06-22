@@ -14,7 +14,10 @@
             <argument type="service" id="PayonePayment\Components\MandateService\MandateService" />
         </service>
 
-        <service id="PayonePayment\StoreApi\Route\ApplePayRoute">
+        <service id="PayonePayment\Components\ApplePay\StoreApi\Route\AbstractApplePayRoute"
+                 alias="PayonePayment\Components\ApplePay\StoreApi\Route\ApplePayRoute"/>
+
+        <service id="PayonePayment\Components\ApplePay\StoreApi\Route\ApplePayRoute">
             <argument type="service" id="payone.app_system.guzzle" />
             <argument type="service" id="monolog.logger.payone" />
             <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory"/>

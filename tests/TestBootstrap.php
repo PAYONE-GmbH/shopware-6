@@ -33,7 +33,7 @@ if (!class_exists(TestBootstrapper::class)) {
 $classLoser = (new TestBootstrapper())
     ->setProjectDir($projectRoot)
     ->setLoadEnvFile(true)
-    ->setForceInstallPlugins(true)
+    //->setForceInstallPlugins(true)
     ->addCallingPlugin()
     ->setDatabaseUrl($_SERVER['TEST_DATABASE_URL'] ?? null)
     ->bootstrap();
