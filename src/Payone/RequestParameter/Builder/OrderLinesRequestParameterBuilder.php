@@ -22,6 +22,7 @@ use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneWeChatPayPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
+use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
@@ -68,33 +69,39 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
 
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
-        if (!($arguments instanceof FinancialTransactionStruct)) {
-            return false;
-        }
+        if ($arguments instanceof PaymentTransactionStruct) {
+            $config = $this->serviceAccessor->configReader->read($arguments->getPaymentTransaction()->getOrder()->getSalesChannelId());
 
-        $paymentMethod = $arguments->getPaymentMethod();
-
-        switch ($paymentMethod) {
-            case PayonePayolutionDebitPaymentHandler::class:
-            case PayonePayolutionInstallmentPaymentHandler::class:
-            case PayonePayolutionInvoicingPaymentHandler::class:
-            case PayoneSecureInvoicePaymentHandler::class:
-            case PayoneOpenInvoicePaymentHandler::class:
-            case PayoneBancontactPaymentHandler::class:
-            case PayoneRatepayDebitPaymentHandler::class:
-            case PayoneRatepayInstallmentPaymentHandler::class:
-            case PayoneRatepayInvoicingPaymentHandler::class:
-            case PayonePrzelewy24PaymentHandler::class:
-            case PayoneWeChatPayPaymentHandler::class:
-            case PayoneAlipayPaymentHandler::class:
-            case PayoneSecuredInvoicePaymentHandler::class:
-            case PayoneSecuredInstallmentPaymentHandler::class:
-            case PayoneSecuredDirectDebitPaymentHandler::class:
+            if (\in_array($arguments->getAction(), [self::REQUEST_ACTION_AUTHORIZE, self::REQUEST_ACTION_PREAUTHORIZE], true)
+                && $config->get('submitOrderLineItems', false)
+            ) {
                 return true;
+            }
         }
 
-        if (is_subclass_of($arguments->getPaymentMethod(), AbstractPostfinancePaymentHandler::class)) {
-            return true;
+        if ($arguments instanceof FinancialTransactionStruct) {
+            switch ($arguments->getPaymentMethod()) {
+                case PayonePayolutionDebitPaymentHandler::class:
+                case PayonePayolutionInstallmentPaymentHandler::class:
+                case PayonePayolutionInvoicingPaymentHandler::class:
+                case PayoneSecureInvoicePaymentHandler::class:
+                case PayoneOpenInvoicePaymentHandler::class:
+                case PayoneBancontactPaymentHandler::class:
+                case PayoneRatepayDebitPaymentHandler::class:
+                case PayoneRatepayInstallmentPaymentHandler::class:
+                case PayoneRatepayInvoicingPaymentHandler::class:
+                case PayonePrzelewy24PaymentHandler::class:
+                case PayoneWeChatPayPaymentHandler::class:
+                case PayoneAlipayPaymentHandler::class:
+                case PayoneSecuredInvoicePaymentHandler::class:
+                case PayoneSecuredInstallmentPaymentHandler::class:
+                case PayoneSecuredDirectDebitPaymentHandler::class:
+                    return true;
+            }
+
+            if (is_subclass_of($arguments->getPaymentMethod(), AbstractPostfinancePaymentHandler::class)) {
+                return true;
+            }
         }
 
         return false;
