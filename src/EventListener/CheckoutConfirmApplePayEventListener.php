@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
+use PayonePayment\Components\ApplePay\StoreApi\Route\ApplePayRoute;
 use PayonePayment\Core\Utils\PayoneClassLoader;
 use PayonePayment\PaymentMethod\PayoneApplePay;
-use PayonePayment\StoreApi\Route\ApplePayRoute;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
