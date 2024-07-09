@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Controller;
 
+use PayonePayment\Components\ApplePay\StoreApi\Route\ApplePayRoute;
 use PayonePayment\Configuration\ConfigurationPrefixes;
 use PayonePayment\PaymentHandler as Handler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
@@ -12,7 +13,6 @@ use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilde
 use PayonePayment\Payone\RequestParameter\Builder\Amazon\AbstractAmazonRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\TestCredentialsStruct;
-use PayonePayment\StoreApi\Route\ApplePayRoute;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\StoreApi\Route;
+namespace PayonePayment\Components\ApplePay\StoreApi\Route;
 
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
