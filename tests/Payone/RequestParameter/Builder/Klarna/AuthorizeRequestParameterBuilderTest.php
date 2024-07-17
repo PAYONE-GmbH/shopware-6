@@ -47,8 +47,6 @@ class AuthorizeRequestParameterBuilderTest extends AbstractKlarna
         static::assertEquals('test-token', $parameters['add_paydata[authorization_token]']);
 
         static::assertArrayHasKey('clearingtype', $parameters);
-
-        $this->assertLineItemHasBeenSet($parameters);
     }
 
     protected function getStructForTestingSupportMethod(string $paymentHandler): AbstractRequestParameterStruct

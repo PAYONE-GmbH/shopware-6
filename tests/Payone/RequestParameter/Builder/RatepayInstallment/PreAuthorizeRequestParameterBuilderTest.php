@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder\RatepayInstallment;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\DeviceFingerprint\RatepayDeviceFingerprintService;
-use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -77,7 +76,6 @@ class PreAuthorizeRequestParameterBuilderTest extends TestCase
                 'add_paydata[debit_paytype]' => 'DIRECT-DEBIT',
                 'telephonenumber' => '0123456789',
                 'birthday' => '20000101',
-                'it[1]' => LineItemHydrator::TYPE_GOODS,
             ],
             $parameters
         );

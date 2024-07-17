@@ -6,7 +6,6 @@ namespace PayonePayment\Payone\RequestParameter\Builder\SecuredDirectDebit;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use PayonePayment\Components\DeviceFingerprint\PayoneBNPLDeviceFingerprintService;
-use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredDirectDebitPaymentHandler;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
@@ -55,7 +54,6 @@ class AuthorizeRequestParameterBuilderTest extends TestCase
                 'birthday' => '20000101',
                 'bankaccountholder' => 'Max Mustermann',
                 'iban' => 'DE85500105173716329595',
-                'it[1]' => LineItemHydrator::TYPE_GOODS,
             ],
             $parameters
         );

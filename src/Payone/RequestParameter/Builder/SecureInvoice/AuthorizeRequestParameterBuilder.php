@@ -16,23 +16,11 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
      */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $paymentTransaction = $arguments->getPaymentTransaction();
-        $salesChannelContext = $arguments->getSalesChannelContext();
-        $context = $salesChannelContext->getContext();
-        $order = $paymentTransaction->getOrder();
-        $currency = $this->getOrderCurrency($order, $context);
-
-        $parameters = [
+        return [
             'clearingtype' => self::CLEARING_TYPE_INVOICE,
             'clearingsubtype' => 'POV',
             'request' => self::REQUEST_ACTION_AUTHORIZE,
         ];
-
-        if ($order->getLineItems() !== null) {
-            $parameters = array_merge($parameters, $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context));
-        }
-
-        return $parameters;
     }
 
     public function supports(AbstractRequestParameterStruct $arguments): bool

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
+use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydrator;
 use PayonePayment\Constants;
 use PayonePayment\PaymentHandler\PayoneBancontactPaymentHandler;
@@ -18,10 +19,15 @@ use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneRatepayInvoicingPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredDirectDebitPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
+use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecureInvoicePaymentHandler;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
+use stdClass;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -58,19 +64,6 @@ class OrderLinesRequestParameterBuilderTest extends TestCase
             new ParameterBag(),
             $paymentHandler,
             AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE
-        );
-
-        $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
-
-        static::assertFalse($builder->supports($struct));
-    }
-
-    public function testItNotSupportsPaymentRequests(): void
-    {
-        $struct = $this->getPaymentTransactionStruct(
-            new RequestDataBag([]),
-            PayonePayolutionDebitPaymentHandler::class,
-            AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE
         );
 
         $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
@@ -254,6 +247,106 @@ class OrderLinesRequestParameterBuilderTest extends TestCase
         static::assertArrayNotHasKey('it[2]', $parameters);
     }
 
+    public function testItNotSendItemsIfDisabledForOptionalMethods(): void
+    {
+        $configService = $this->getContainer()->get(SystemConfigService::class);
+        $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
+
+        $struct = $this->getPaymentTransactionStruct(
+            new RequestDataBag(),
+            stdClass::class,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE
+        );
+
+        $configService->set(ConfigReader::SYSTEM_CONFIG_DOMAIN . 'submitOrderLineItems', false, $struct->getPaymentTransaction()->getOrder()->getSalesChannelId());
+        static::assertFalse($builder->supports($struct), 'builder should not supports stdclass if configuration (send order items) is disabled.');
+    }
+
+    public function testItSendItemsIfEnabledForOptionalMethods(): void
+    {
+        $configService = $this->getContainer()->get(SystemConfigService::class);
+        $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
+
+        $allowedActions = [
+            AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE,
+        ];
+
+        foreach ($allowedActions as $allowedAction) {
+            $struct = $this->getPaymentTransactionStruct(new RequestDataBag(), stdClass::class, $allowedAction);
+            $configService->set(ConfigReader::SYSTEM_CONFIG_DOMAIN . 'submitOrderLineItems', true, $struct->getPaymentTransaction()->getOrder()->getSalesChannelId());
+
+            static::assertTrue($builder->supports($struct), sprintf('builder should supports stdclass if configuration (send order items) is enabled and action %s is given.', $allowedAction));
+            $parameters = $builder->getRequestParameter($struct);
+
+            foreach (array_values($struct->getPaymentTransaction()->getOrder()->getLineItems()->getElements()) as $index => $lineItem) {
+                static::assertLineItemHasBeenSet($parameters, $index + 1);
+            }
+        }
+    }
+
+    /**
+     * @dataProvider dataProviderPaymentMethodsWithRequiredLineItems
+     */
+    public function testIfSendItemIfOrderLineItemsAreRequired(string $paymentHandler): void
+    {
+        $configService = $this->getContainer()->get(SystemConfigService::class);
+        $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
+
+        $allowedActions = [
+            AbstractRequestParameterBuilder::REQUEST_ACTION_PREAUTHORIZE,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_AUTHORIZE,
+        ];
+
+        foreach ($allowedActions as $allowedAction) {
+            $struct = $this->getPaymentTransactionStruct(new RequestDataBag(), $paymentHandler, $allowedAction);
+            $configService->set(ConfigReader::SYSTEM_CONFIG_DOMAIN . 'submitOrderLineItems', false, $struct->getPaymentTransaction()->getOrder()->getSalesChannelId());
+
+            static::assertTrue($builder->supports($struct), sprintf('builder should always supports %s. Also if configuration (send order items) is disabled.', $paymentHandler));
+            $parameters = $builder->getRequestParameter($struct);
+
+            foreach (array_values($struct->getPaymentTransaction()->getOrder()->getLineItems()->getElements()) as $index => $lineItem) {
+                static::assertLineItemHasBeenSet($parameters, $index + 1);
+            }
+        }
+    }
+
+    public static function dataProviderPaymentMethodsWithRequiredLineItems(): array
+    {
+        return [
+            [PayoneOpenInvoicePaymentHandler::class],
+            [PayoneRatepayDebitPaymentHandler::class],
+            [PayoneRatepayInstallmentPaymentHandler::class],
+            [PayoneRatepayInvoicingPaymentHandler::class],
+            [PayoneSecuredDirectDebitPaymentHandler::class],
+            [PayoneSecuredInstallmentPaymentHandler::class],
+            [PayoneSecuredInvoicePaymentHandler::class],
+            [PayoneSecureInvoicePaymentHandler::class],
+            [PayonePayolutionDebitPaymentHandler::class],
+            [PayonePayolutionInstallmentPaymentHandler::class],
+            [PayonePayolutionInvoicingPaymentHandler::class],
+        ];
+    }
+
+    public function testItNotSendItemsIfEnabledWithDisallowedActionForOptionalMethods(): void
+    {
+        $configService = $this->getContainer()->get(SystemConfigService::class);
+        $builder = $this->getContainer()->get(OrderLinesRequestParameterBuilder::class);
+
+        $disallowedActions = [
+            AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_REFUND,
+            AbstractRequestParameterBuilder::REQUEST_ACTION_GENERIC_PAYMENT,
+            'something-else',
+        ];
+
+        foreach ($disallowedActions as $disallowedAction) {
+            $struct = $this->getPaymentTransactionStruct(new RequestDataBag(), stdClass::class, $disallowedAction);
+            $configService->set(ConfigReader::SYSTEM_CONFIG_DOMAIN . 'submitOrderLineItems', true, $struct->getPaymentTransaction()->getOrder()->getSalesChannelId());
+            static::assertFalse($builder->supports($struct), sprintf('builder should not supports stdclass if configuration (send order items) is enabled and not allowed action %s is given.', $disallowedAction));
+        }
+    }
+
     public function getValidPaymentHandler(): array
     {
         return [
@@ -277,5 +370,17 @@ class OrderLinesRequestParameterBuilderTest extends TestCase
             [PayonePaypalPaymentHandler::class],
             // ...
         ];
+    }
+
+    protected function assertLineItemHasBeenSet(array $parameters, int $index): void
+    {
+        // just verify if the keys exists. Tests for the contents, will be performed by testing the line-item-hydrator
+        $indexStr = "[$index]";
+        static::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_NAME . $indexStr, $parameters);
+        static::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_NUMBER . $indexStr, $parameters);
+        static::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_PRICE . $indexStr, $parameters);
+        static::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_QTY . $indexStr, $parameters);
+        static::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_TAX_RATE . $indexStr, $parameters);
+        static::assertArrayHasKey(LineItemHydrator::PAYONE_ARRAY_KEY_TYPE . $indexStr, $parameters);
     }
 }

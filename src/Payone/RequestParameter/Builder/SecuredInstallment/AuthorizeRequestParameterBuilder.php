@@ -54,10 +54,6 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
             'add_paydata[installment_option_id]' => $dataBag->get('securedInstallmentOptionId'),
         ];
 
-        if ($order->getLineItems() !== null) {
-            $parameters = array_merge($parameters, $this->serviceAccessor->lineItemHydrator->mapOrderLines($currency, $order, $context));
-        }
-
         $this->applyPhoneParameter($order, $parameters, $dataBag, $context);
         $this->applyBirthdayParameter($order, $parameters, $dataBag, $context);
 
