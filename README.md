@@ -14,11 +14,6 @@ This plugin is a complete rewrite of our Shopware 5 plugin and we'd love to hear
 feedback on it! Drop us a message at shopware@payone.com or open an issue if
 you've found a bug.
 
-## Super Bonus for Early Adopters
-
-We'd especially love to hear from you if you plan on going live using the plugin
-so we can assist and show some appreciation to the first adopters. :crown:
-
 ## Installation
 
 The plugin can easily be integrated via Composer:
