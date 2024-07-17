@@ -2,16 +2,16 @@
     "payonePayment": {
         "notificationTarget": {
             "module": {
-                "title": "Payone Notificationweiterleitungen",
-                "buttonTitle": "Notifications"
+                "title": "PAYONE Webhook-Weiterleitungen",
+                "buttonTitle": "Webhook Weiterleitungen"
             },
             "list": {
-                "title": "Notificationweiterleitungen",
+                "title": "Webhook Weiterleitungen",
                 "empty": "Keine Einträge",
                 "buttonCreate": "Weiterleitungsziel anlegen"
             },
             "detail": {
-                "headline": "Notificationweiterleitung",
+                "headline": "Webhook-Weiterleitung",
                 "placeholder": {
                     "url": "Url",
                     "username": "Benutzer",
@@ -36,7 +36,8 @@
                 "requeue": "Erneut senden"
             },
             "messages": {
-                "success": "Die Weiterleitung wurde erfolgreich in Auftrag gegeben."
+                "success": "Die Weiterleitung wurde erfolgreich in Auftrag gegeben.",
+                "successfullySaved": "Das Weiterleitungsziel wurde erfolgreich gespeichert."
             }
         }
     }

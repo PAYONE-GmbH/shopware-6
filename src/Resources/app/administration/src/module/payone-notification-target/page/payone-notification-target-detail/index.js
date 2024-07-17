@@ -116,8 +116,17 @@ export default {
             this.notificationTargetRepository.save(this.notificationTarget, Shopware.Context.api).then(() => {
                 this.isLoading = false;
                 this.isSaveSuccessful = true;
+                this.createNotificationSuccess({
+                    message: this.$tc(
+                        'payonePayment.notificationTarget.messages.successfullySaved'
+                    ),
+                });
+
                 if (this.notificationTargetId === null) {
-                    this.$router.push({ name: 'payone.notification.target.detail', params: { id: this.notificationTarget.id } });
+                    this.$router.push({
+                        name: 'payone.notification.target.detail',
+                        params: {id: this.notificationTarget.id}
+                    });
                     return;
                 }
 
