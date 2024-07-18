@@ -394,3 +394,15 @@ Maintenance
 Bugfix
 
 * removed old .js file
+
+# 6.0.2
+
+Attention: This plugin was developed exclusively for Shopware 6.5! It is not suitable for Shopware 6.6.
+
+Bugfix
+
+* Fix problem with .js error in Shopware 6.5
+
+Maintenance
+
+* tested with Shopware 6.5.18

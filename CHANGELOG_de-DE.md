@@ -381,3 +381,15 @@ Wartung
 Fehlerbehebung
 
 * alte .js Datei entfernt
+
+# 6.0.2
+
+Achtung: Dieses Plugin wurde ausschließlich für Shopware 6.5 entwickelt! Es ist nicht geeignet für Shopware 6.6.
+
+Fehlerbehebung
+
+Problem mit .js Fehler in Shopware 6.5 behoben
+
+Wartung
+
+getestet mit Shopware 6.5.18
