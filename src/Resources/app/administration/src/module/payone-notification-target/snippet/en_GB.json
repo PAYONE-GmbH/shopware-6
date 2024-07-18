@@ -2,16 +2,16 @@
     "payonePayment": {
         "notificationTarget": {
             "module": {
-                "title": "Payone notification forward",
-                "buttonTitle": "Notifications"
+                "title": "PAYONE webhook forward",
+                "buttonTitle": "Webhook forwards"
             },
             "list": {
-                "title": "Notification forward",
+                "title": "Webhook forward",
                 "empty": "No entries",
-                "buttonCreate": "Add new notification target"
+                "buttonCreate": "Add new forward target"
             },
             "detail": {
-                "headline": "Notification forward",
+                "headline": "Webhook forward",
                 "placeholder": {
                     "url": "Url",
                     "username": "Username",
@@ -36,7 +36,8 @@
                 "requeue": "Requeue"
             },
             "messages": {
-                "success": "The notification forward has been successfully queued."
+                "success": "The notification forward has been successfully queued.",
+                "successfullySaved": "The forwarding target has been saved successfully."
             }
         }
     }
