@@ -7,7 +7,24 @@
             :showSelection="true"
             @selection-change="updateSelection"
             :isRecordSelectable="(item) => !item.disabled"
+            :compactMode="false"
         >
+            <template #column-product="{ item, isInlineEdit }">
+                <div>
+                    <div><span>{{ item.product }}</span></div>
+                    <div>
+                        <small style="line-height: 1;" v-if="item.orderItem && item.orderItem.payload">
+                            <div v-if="item.orderItem.payload.options">
+                                <span>{{ $tc('sw-order.payone-payment.modal.productOptions') }}:</span>
+                                <span v-for="option, index in item.orderItem.payload.options">
+                                    {{ option.group }}: {{ option.option }}<template v-if="index < item.orderItem.payload.options.length - 1">, </template>
+                                </span>
+                            </div>
+                            <div>{{ $tc('sw-order.payone-payment.modal.productNumber') }}: {{ item.orderItem.payload.productNumber }}</div>
+                        </small>
+                    </div>
+                </div>
+            </template>
             <template #column-quantity="{ item, isInlineEdit }">
                 <sw-number-field
                     v-model:value="item.quantity"

@@ -1,1 +1,0 @@
-{"version":3,"file":"static/css/170.css","mappings":"AAAA,wCACE,a","sources":["webpack://administration/../../../../../../custom/plugins/PayonePayment/src/Resources/app/administration/src/module/sw-order/component/payone-order-items/payone-order-items.scss"],"sourcesContent":[".payone-order-items .sw-data-grid__bulk {\n  display: none;\n}\n"],"names":[],"sourceRoot":""}

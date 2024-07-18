@@ -135,6 +135,7 @@ export default {
                     unit_price: orderItem.unitPrice,
                     selected: false,
                     product: orderItem.label,
+                    orderItem: orderItem,
                     disabled: qty <= 0,
                 };
             });
