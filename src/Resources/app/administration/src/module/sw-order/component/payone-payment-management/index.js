@@ -125,14 +125,6 @@ export default {
             });
         },
 
-        can(permission) {
-            try {
-                return this.acl.can(permission);
-            } catch (e) {
-                return true;
-            }
-        },
-
         reloadEntityData() {
             this.$emit('reload-entity-data');
         },

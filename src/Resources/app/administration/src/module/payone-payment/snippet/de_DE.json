@@ -127,7 +127,10 @@
         "additional_permissions": {
             "Payone": {
                 "label": "PAYONE",
-                "payone_order_management": "PAYONE Transaktionsmanagement"
+                "payone_order_management": "Transaktionsmanagement",
+                "payone_configuration": "Konfiguration",
+                "payone_webhook_forward": "Webhook Weiterleitung Verwaltung",
+                "payone_webhook_resend": "Webhook Weiterleitung erneut senden"
             }
         }
     }

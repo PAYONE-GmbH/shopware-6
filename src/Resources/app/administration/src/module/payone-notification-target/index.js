@@ -19,9 +19,12 @@ Shopware.Module.register('payone-notification-target', {
     routes: {
         list: {
             component: 'payone-notification-target-list',
-            path: 'list'
+            path: 'list',
+            meta: {
+                privilege: 'payone_payment_notification_target:read'
+            }
         },
-       detail: {
+        detail: {
             component: 'payone-notification-target-detail',
             path: 'detail/:id',
             props: {
@@ -32,14 +35,16 @@ Shopware.Module.register('payone-notification-target', {
                }
             },
             meta: {
-                parentPath: 'payone.notification.target.list'
+                parentPath: 'payone.notification.target.list',
+                privilege: 'payone_payment_notification_target:read'
             }
         },
         create: {
             component: 'payone-notification-target-detail',
             path: 'create',
             meta: {
-                parentPath: 'payone.notification.target.list'
+                parentPath: 'payone.notification.target.list',
+                privilege: 'payone_payment_notification_target:create'
             }
         }
     }

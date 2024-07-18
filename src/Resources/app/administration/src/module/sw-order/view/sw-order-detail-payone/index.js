@@ -6,6 +6,8 @@ const { mapState } = Component.getComponentHelper();
 export default {
     template,
 
+    inject: ['acl'],
+
     props: {
         orderId: {
             type: String,
@@ -21,8 +23,8 @@ export default {
 
     methods: {
         reloadEntityData() {
-            this.$refs.payoneOrderActionLogs.reloadActionLogs();
-            this.$refs.payoneWebhookLogs.reloadWebhookLogs();
+            this.$refs.payoneOrderActionLogs?.reloadActionLogs();
+            this.$refs.payoneWebhookLogs?.reloadWebhookLogs();
             this.$emit('reload-entity-data');
         },
     }

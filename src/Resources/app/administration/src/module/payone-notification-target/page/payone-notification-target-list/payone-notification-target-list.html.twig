@@ -25,7 +25,9 @@
                 {% block payone_notification_target_list_smart_bar_actions %}
                     <sw-button
                         :routerLink="{ name: 'payone.notification.target.create' }"
-                        variant="primary">
+                        variant="primary"
+                        v-if="acl.can('payone_payment_notification_target:create')"
+                    >
                         {{ $tc('payonePayment.notificationTarget.list.buttonCreate') }}
                     </sw-button>
                 {% endblock %}
@@ -48,16 +50,23 @@
                         :disableDataFetching="true"
                         :sortBy="sortBy"
                         :showSelection="false"
-                        :allowInlineEdit="false"
                         :sortDirection="sortDirection"
-                        identifier="payone-notification-target-list">
+                        identifier="payone-notification-target-list"
+                        :allowInlineEdit="false"
+                        :allowBulkEdit="false"
+                        :allowColumnEdit="acl.can('payone_payment_notification_target:update')"
+                        :allowEdit="acl.can('payone_payment_notification_target:update')"
+                        :allowDelete="acl.can('payone_payment_notification_target:delete')"
+                    >
 
                         {% block payone_notification_target_list_grid_columns %}
                             {% block payone_notification_target_list_grid_columns_url %}
                                 <template #column-url="{ item }">
-                                    <router-link :to="{ name: 'payone.notification.target.detail', params: { id: item.id } }">
-                                        {{ item.url  }}
+                                    <router-link :to="{ name: 'payone.notification.target.detail', params: { id: item.id } }"
+                                                 v-if="acl.can('payone_payment_notification_target:update')">
+                                        {{ item.url }}
                                     </router-link>
+                                    <span v-else>{{ item.url }}</span>
                                 </template>
                             {% endblock %}
 
