@@ -331,7 +331,7 @@
                 <sw-card-view>
 
                     {% block payone_notification_target_detail_base_basic_info_card %}
-                        <sw-card :position-identifier="payone-notification-target-detail-content"
+                        <sw-card position-identifier="payone-notification-target-detail-content"
                                  :title="$tc('payonePayment.notificationTarget.detail.headline')"
                                  :isLoading="notificationTargetIsLoading">
                             <template v-if="!notificationTargetIsLoading">
