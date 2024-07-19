@@ -38,13 +38,13 @@ class TotalPriceFilterTest extends TestCase
         );
 
         $cartMock->method('getPrice')->willReturn($this->createPrice(0));
-        $collection = $filter->filterPaymentMethods($this->getMethodCollection(), $context);
+        $filter->filterPaymentMethods($collection = $this->getMethodCollection(), $context);
         static::assertCount(3, $collection->getElements());
         static::assertPaymentMethodCount(3, DefaultPayment::class, $collection);
         static::assertPaymentMethodCount(0, PayonePrepaymentPaymentHandler::class, $collection);
 
         $cartMock->method('getPrice')->willReturn($this->createPrice(-100));
-        $collection = $filter->filterPaymentMethods($this->getMethodCollection(), $context);
+        $filter->filterPaymentMethods($collection = $this->getMethodCollection(), $context);
         static::assertCount(3, $collection->getElements());
         static::assertPaymentMethodCount(3, DefaultPayment::class, $collection);
         static::assertPaymentMethodCount(0, PayonePrepaymentPaymentHandler::class, $collection);
@@ -64,13 +64,13 @@ class TotalPriceFilterTest extends TestCase
         );
 
         $cartMock->method('getPrice')->willReturn($this->createPrice(0));
-        $collection = $filter->filterPaymentMethods($this->getMethodCollection(), $context);
+        $filter->filterPaymentMethods($collection = $this->getMethodCollection(), $context);
         static::assertCount(3, $collection->getElements());
         static::assertPaymentMethodCount(3, DefaultPayment::class, $collection);
         static::assertPaymentMethodCount(0, PayonePrepaymentPaymentHandler::class, $collection);
 
         $cartMock->method('getPrice')->willReturn($this->createPrice(-100));
-        $collection = $filter->filterPaymentMethods($this->getMethodCollection(), $context);
+        $filter->filterPaymentMethods($collection = $this->getMethodCollection(), $context);
         static::assertCount(3, $collection->getElements());
         static::assertPaymentMethodCount(3, DefaultPayment::class, $collection);
         static::assertPaymentMethodCount(0, PayonePrepaymentPaymentHandler::class, $collection);
@@ -90,7 +90,7 @@ class TotalPriceFilterTest extends TestCase
 
         $orderMock->method('getPrice')->willReturn($this->createPrice(100));
 
-        $collection = $filter->filterPaymentMethods($this->getMethodCollection(), $context);
+        $filter->filterPaymentMethods($collection = $this->getMethodCollection(), $context);
         static::assertCount(6, $collection->getElements());
         static::assertPaymentMethodCount(3, DefaultPayment::class, $collection);
         static::assertPaymentMethodCount(3, PayonePrepaymentPaymentHandler::class, $collection);
@@ -110,7 +110,7 @@ class TotalPriceFilterTest extends TestCase
 
         $orderMock->method('getPrice')->willReturn($this->createPrice(100));
 
-        $collection = $filter->filterPaymentMethods($this->getMethodCollection(), $context);
+        $filter->filterPaymentMethods($collection = $this->getMethodCollection(), $context);
         static::assertCount(6, $collection->getElements());
         static::assertPaymentMethodCount(3, DefaultPayment::class, $collection);
         static::assertPaymentMethodCount(3, PayonePrepaymentPaymentHandler::class, $collection);

@@ -16,11 +16,9 @@ class IterablePaymentFilter implements PaymentFilterServiceInterface
     public function filterPaymentMethods(
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext
-    ): PaymentMethodCollection {
+    ): void {
         foreach ($this->services as $service) {
-            $methodCollection = $service->filterPaymentMethods($methodCollection, $filterContext);
+            $service->filterPaymentMethods($methodCollection, $filterContext);
         }
-
-        return $methodCollection;
     }
 }

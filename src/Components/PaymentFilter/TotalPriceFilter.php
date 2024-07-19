@@ -11,19 +11,20 @@ class TotalPriceFilter implements PaymentFilterServiceInterface
     public function filterPaymentMethods(
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext
-    ): PaymentMethodCollection {
+    ): void {
         if ($filterContext->getOrder()) {
             $price = $filterContext->getOrder()->getPrice()->getTotalPrice();
         } elseif ($filterContext->getCart()) {
             $price = $filterContext->getCart()->getPrice()->getTotalPrice();
         } else {
-            return $methodCollection;
+            return;
         }
 
         if ($price <= 0) {
-            return $methodCollection->filter(static fn (PaymentMethodEntity $entity) => !is_subclass_of($entity->getHandlerIdentifier(), AbstractPayonePaymentHandler::class));
+            $idsToRemove = $methodCollection->filter(static fn (PaymentMethodEntity $entity) => is_subclass_of($entity->getHandlerIdentifier(), AbstractPayonePaymentHandler::class))->getIds();
+            foreach ($idsToRemove as $id) {
+                $methodCollection->remove($id);
+            }
         }
-
-        return $methodCollection;
     }
 }

@@ -36,10 +36,10 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
     final public function filterPaymentMethods(
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext
-    ): PaymentMethodCollection {
+    ): void {
         $supportedPaymentMethods = $this->getSupportedPaymentMethods($methodCollection);
         if ($supportedPaymentMethods->getElements() === []) {
-            return $methodCollection;
+            return;
         }
 
         $currency = $filterContext->getCurrency();
@@ -70,10 +70,8 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
 
             $this->additionalChecks($methodCollection, $filterContext);
         } catch (PaymentMethodNotAllowedException $paymentMethodNotAllowedException) {
-            $methodCollection = $this->removePaymentMethods($methodCollection, $paymentMethodNotAllowedException->getDisallowedPaymentMethodCollection());
+            $this->removePaymentMethods($methodCollection, $paymentMethodNotAllowedException->getDisallowedPaymentMethodCollection());
         }
-
-        return $methodCollection;
     }
 
     protected function additionalChecks(
@@ -91,11 +89,13 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
             : $paymentMethod->getHandlerIdentifier() === $this->paymentHandlerClass);
     }
 
-    private function removePaymentMethods(PaymentMethodCollection $paymentMethodCollection, ?PaymentMethodCollection $itemsToRemove = null): PaymentMethodCollection
+    private function removePaymentMethods(PaymentMethodCollection $paymentMethodCollection, ?PaymentMethodCollection $itemsToRemove = null): void
     {
         $itemsToRemove = $itemsToRemove ?: $this->getSupportedPaymentMethods($paymentMethodCollection);
 
-        return $paymentMethodCollection->filter(static fn (PaymentMethodEntity $entity) => !$itemsToRemove->has($entity->getUniqueIdentifier()));
+        foreach ($itemsToRemove->getIds() as $id) {
+            $paymentMethodCollection->remove($id);
+        }
     }
 
     private function validateAddress(CustomerAddressEntity|OrderAddressEntity|null $address): void

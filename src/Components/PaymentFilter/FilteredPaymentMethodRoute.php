@@ -41,33 +41,22 @@ class FilteredPaymentMethodRoute extends AbstractPaymentMethodRoute
         $response = $this->getDecorated()->load($request, $context, $criteria);
 
         $currentRequest = $this->requestStack->getCurrentRequest();
-        if (!$currentRequest) {
-            return $response;
-        }
 
-        if ($request->query->getBoolean('onlyAvailable') || $request->request->getBoolean('onlyAvailable')) {
-            $orderId = $currentRequest->get('orderId');
-            if ($orderId) {
-                $order = $this->orderFetcher->getOrderById($orderId, $context->getContext());
-                if (!$order) {
-                    throw new \RuntimeException('order not found!');
-                }
-                $filterContext = $this->paymentFilterContextFactory->createContextForOrder($order, $context);
-            } else {
-                $filterContext = $this->paymentFilterContextFactory->createContextForCart(
-                    $this->cartService->getCart($context->getToken(), $context),
-                    $context
-                );
+        $orderId = $currentRequest?->get('orderId');
+        if ($orderId) {
+            $order = $this->orderFetcher->getOrderById($orderId, $context->getContext());
+            if (!$order) {
+                throw new \RuntimeException('order not found!');
             }
-
-            $paymentMethods = $response->getPaymentMethods();
-
-            $paymentMethods = $this->iterablePaymentFilter->filterPaymentMethods($paymentMethods, $filterContext);
-
-            $criteria->setIds($paymentMethods->getIds());
-
-            return $this->getDecorated()->load($request, $context, $criteria);
+            $filterContext = $this->paymentFilterContextFactory->createContextForOrder($order, $context);
+        } else {
+            $filterContext = $this->paymentFilterContextFactory->createContextForCart(
+                $this->cartService->getCart($context->getToken(), $context),
+                $context
+            );
         }
+
+        $this->iterablePaymentFilter->filterPaymentMethods($response->getPaymentMethods(), $filterContext);
 
         return $response;
     }

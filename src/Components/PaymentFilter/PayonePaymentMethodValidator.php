@@ -27,7 +27,7 @@ class PayonePaymentMethodValidator implements CartValidatorInterface
 
         $filterContext = $this->paymentFilterContextFactory->createContextForCart($cart, $context);
 
-        $paymentMethods = $this->iterablePaymentFilter->filterPaymentMethods($paymentMethods, $filterContext);
+        $this->iterablePaymentFilter->filterPaymentMethods($paymentMethods, $filterContext);
 
         if ($paymentMethods->count() === 0) {
             $errors->add(

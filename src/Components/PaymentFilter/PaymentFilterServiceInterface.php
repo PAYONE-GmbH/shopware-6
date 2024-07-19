@@ -9,5 +9,5 @@ interface PaymentFilterServiceInterface
     public function filterPaymentMethods(
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext
-    ): PaymentMethodCollection;
+    ): void;
 }
