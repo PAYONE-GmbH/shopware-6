@@ -31,7 +31,8 @@ Shopware.Module.register('payone-payment', {
             component: 'payone-settings',
             path: 'index',
             meta: {
-                parentPath: 'sw.settings.index'
+                parentPath: 'sw.settings.index',
+                privilege: 'payone:configuration'
             }
         }
     },
@@ -42,6 +43,7 @@ Shopware.Module.register('payone-payment', {
         label:  'payone-payment.general.mainMenuItemGeneral',
         group:  'plugins',
         iconComponent: 'payone-payment-plugin-icon',
-        backgroundEnabled: false
+        backgroundEnabled: false,
+        privilege: 'payone:configuration'
     }],
 });

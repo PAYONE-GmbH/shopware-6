@@ -4,6 +4,7 @@
             <payone-payment-management
                     :order="order"
                     @reload-entity-data="reloadEntityData"
+                    v-if="acl.can('Payone.payone_order_management') || acl.can('payone_payment_notification_forward:read')"
             />
         {% endblock %}
 
@@ -12,6 +13,7 @@
                     ref="payoneOrderActionLogs"
                     :order="order"
                     @reload-entity-data="reloadEntityData"
+                    v-if="acl.can('payone_payment_order_action_log:read')"
             />
         {% endblock %}
 
@@ -20,6 +22,7 @@
                     ref="payoneWebhookLogs"
                     :order="order"
                     @reload-entity-data="reloadEntityData"
+                    v-if="acl.can('payone_payment_webhook_log:read')"
             />
         {% endblock %}
     </div>

@@ -1,6 +1,6 @@
 import template from './payone-notification-target-detail.html.twig';
 
-const { Mixin } = Shopware;
+const {Mixin} = Shopware;
 
 export default {
     template,
@@ -78,22 +78,22 @@ export default {
 
                 this.notificationTarget = notificationTarget;
 
-                if(null === notificationTarget.txactions) {
+                if (null === notificationTarget.txactions) {
                     return;
                 }
 
-                if(!notificationTarget.txactions.length) {
+                if (!notificationTarget.txactions.length) {
                     this.notificationTarget.txactions = null;
                 }
             });
         },
 
         isInvalid() {
-            if(this.notificationTarget.isBasicAuth !== true ) {
+            if (this.notificationTarget.isBasicAuth !== true) {
                 return false;
             }
 
-            if(this.notificationTarget.username && this.notificationTarget.password) {
+            if (this.notificationTarget.username && this.notificationTarget.password) {
                 return false;
             }
 
@@ -107,7 +107,7 @@ export default {
         },
 
         onSave() {
-            if(this.isInvalid()) {
+            if (this.isInvalid()) {
                 return;
             }
 
@@ -134,7 +134,7 @@ export default {
         },
 
         onCancel() {
-            this.$router.push({ name: 'payone.notification.target.list' });
+            this.$router.push({name: 'payone.notification.target.list'});
         }
     }
 };

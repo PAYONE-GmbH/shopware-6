@@ -32,13 +32,13 @@
                         </sw-description-list>
                     </sw-container>
 
-                    <sw-container gap="30px" v-if="isActiveTransaction(transaction) && can('Payone.payone_order_management')">
+                    <sw-container gap="30px" v-if="acl.can('Payone.payone_order_management') && isActiveTransaction(transaction)">
                         <payone-capture-button :order="order" :transaction="transaction" v-on:reload="reloadEntityData"></payone-capture-button>
                         <payone-refund-button :order="order" :transaction="transaction" v-on:reload="reloadEntityData"></payone-refund-button>
                     </sw-container>
                 </sw-container>
 
-                <sw-container v-if="hasNotificationForwards(transaction)" gap="10px" class="payone-payment-management-notification-forwards">
+                <sw-container v-if="acl.can('payone_payment_notification_forward:read') && hasNotificationForwards(transaction)" gap="10px" class="payone-payment-management-notification-forwards">
                     <b>{{ $tc('payonePayment.notificationTarget.list.title') }}</b>
 
                     <sw-data-grid
@@ -60,6 +60,7 @@
 
                         <template #actions="{ item }">
                             <sw-context-menu-item
+                                    v-if="acl.can('payone_webhook_resend')"
                                     @click="requeue(item, transaction)">
                                 {{ $tc('payonePayment.notificationTarget.actions.requeue') }}
                             </sw-context-menu-item>

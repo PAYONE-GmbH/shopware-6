@@ -31,7 +31,9 @@
                 variant="ghost"
                 :square="false"
                 :block="false"
-                :isLoading="false">
+                :isLoading="false"
+                v-if="acl.can('payone_payment_notification_target:read')"
+            >
                 {{ $tc('payonePayment.notificationTarget.module.buttonTitle') }}
             </sw-button>
         {% endblock %}

@@ -11,7 +11,7 @@ export default {
         Mixin.getByName('sw-inline-snippet')
     ],
 
-    inject: ['PayonePaymentSettingsService'],
+    inject: ['PayonePaymentSettingsService', 'acl'],
 
     data() {
         return {
