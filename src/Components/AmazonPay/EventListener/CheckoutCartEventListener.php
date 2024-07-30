@@ -69,11 +69,13 @@ class CheckoutCartEventListener implements EventSubscriberInterface
             return;
         }
 
-        $filteredPaymentMethods = $this->paymentFilterService->filterPaymentMethods(
-            new PaymentMethodCollection([(new PaymentMethodEntity())->assign([
-                'id' => PayoneAmazonPayExpress::UUID,
-                'handlerIdentifier' => PayoneAmazonPayExpressPaymentHandler::class,
-            ])]),
+        $paymentMethods = new PaymentMethodCollection([(new PaymentMethodEntity())->assign([
+            'id' => PayoneAmazonPayExpress::UUID,
+            'handlerIdentifier' => PayoneAmazonPayExpressPaymentHandler::class,
+        ])]);
+
+        $this->paymentFilterService->filterPaymentMethods(
+            $paymentMethods,
             new PaymentFilterContext(
                 salesChannelContext: $event->getSalesChannelContext(),
                 currency: $event->getSalesChannelContext()->getCurrency(),
@@ -84,7 +86,7 @@ class CheckoutCartEventListener implements EventSubscriberInterface
             )
         );
 
-        if (!$filteredPaymentMethods->has(PayoneAmazonPayExpress::UUID)) {
+        if (!$paymentMethods->has(PayoneAmazonPayExpress::UUID)) {
             return;
         }
 

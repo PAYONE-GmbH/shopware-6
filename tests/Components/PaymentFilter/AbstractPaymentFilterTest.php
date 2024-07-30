@@ -48,10 +48,10 @@ abstract class AbstractPaymentFilterTest extends TestCase
             $this->getAllowedCurrency()
         );
 
-        $result = $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
+        $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
 
-        static::assertNotInPaymentCollection($paymentHandlerClass, $result);
-        static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
+        static::assertNotInPaymentCollection($paymentHandlerClass, $methods);
+        static::assertInPaymentCollection(PaymentHandlerMock::class, $methods);
     }
 
     /**
@@ -80,10 +80,10 @@ abstract class AbstractPaymentFilterTest extends TestCase
             $this->getDisallowedCurrency()
         );
 
-        $result = $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
+        $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
 
-        static::assertNotInPaymentCollection($paymentHandlerClass, $result);
-        static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
+        static::assertNotInPaymentCollection($paymentHandlerClass, $methods);
+        static::assertInPaymentCollection(PaymentHandlerMock::class, $methods);
     }
 
     /**
@@ -117,10 +117,10 @@ abstract class AbstractPaymentFilterTest extends TestCase
             $cart
         );
 
-        $result = $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
+        $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
 
-        static::assertNotInPaymentCollection($paymentHandlerClass, $result);
-        static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
+        static::assertNotInPaymentCollection($paymentHandlerClass, $methods);
+        static::assertInPaymentCollection(PaymentHandlerMock::class, $methods);
     }
 
     /**
@@ -152,10 +152,10 @@ abstract class AbstractPaymentFilterTest extends TestCase
             $order
         );
 
-        $result = $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
+        $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
 
-        static::assertNotInPaymentCollection($paymentHandlerClass, $result);
-        static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
+        static::assertNotInPaymentCollection($paymentHandlerClass, $methods);
+        static::assertInPaymentCollection(PaymentHandlerMock::class, $methods);
     }
 
     /**
@@ -186,10 +186,10 @@ abstract class AbstractPaymentFilterTest extends TestCase
             $cart
         );
 
-        $result = $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
+        $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
 
-        static::assertInPaymentCollection($paymentHandlerClass, $result);
-        static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
+        static::assertInPaymentCollection($paymentHandlerClass, $methods);
+        static::assertInPaymentCollection(PaymentHandlerMock::class, $methods);
     }
 
     /**
@@ -219,10 +219,10 @@ abstract class AbstractPaymentFilterTest extends TestCase
             $order
         );
 
-        $result = $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
+        $this->getFilterService($paymentHandlerClass)->filterPaymentMethods($methods, $filterContext);
 
-        static::assertInPaymentCollection($paymentHandlerClass, $result);
-        static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
+        static::assertInPaymentCollection($paymentHandlerClass, $methods);
+        static::assertInPaymentCollection(PaymentHandlerMock::class, $methods);
     }
 
     public function notAllowedValues(): \Generator

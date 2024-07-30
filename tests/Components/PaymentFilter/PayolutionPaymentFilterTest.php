@@ -31,23 +31,23 @@ class PayolutionPaymentFilterTest extends AbstractPaymentFilterTest
     {
         $this->setPayoneConfig($this->getContainer(), 'payolutionInvoicingTransferCompanyData', false);
 
-        $methods = $this->getPaymentMethods(PayonePayolutionInvoicingPaymentHandler::class);
-
         $salesChannelContext = $this->createSalesChannelContextWithLoggedInCustomerAndWithNavigation();
         $salesChannelContext->getCustomer()->getActiveBillingAddress()->setCompany('not-empty');
 
         $filterContext = new PaymentFilterContext($salesChannelContext, $salesChannelContext->getCustomer()->getActiveBillingAddress());
         $filterService = $this->getFilterService(PayonePayolutionInvoicingPaymentHandler::class);
 
-        $result = $filterService->filterPaymentMethods($methods, $filterContext);
-        static::assertNotInPaymentCollection(PayonePayolutionInvoicingPaymentHandler::class, $result, 'unzer invoice should be removed, because B2B is not allowed');
-        static::assertInPaymentCollection(PaymentHandlerMock::class, $result, 'the PaymentHandlerMock should be never removed from the available payment-methods');
+        $methods = $this->getPaymentMethods(PayonePayolutionInvoicingPaymentHandler::class);
+        $filterService->filterPaymentMethods($methods, $filterContext);
+        static::assertNotInPaymentCollection(PayonePayolutionInvoicingPaymentHandler::class, $methods, 'unzer invoice should be removed, because B2B is not allowed');
+        static::assertInPaymentCollection(PaymentHandlerMock::class, $methods, 'the PaymentHandlerMock should be never removed from the available payment-methods');
 
         // test again, but now the payment method should be available, because we allow B2B
         $this->setPayoneConfig($this->getContainer(), 'payolutionInvoicingTransferCompanyData', true);
-        $result = $filterService->filterPaymentMethods($methods, $filterContext);
-        static::assertInPaymentCollection(PayonePayolutionInvoicingPaymentHandler::class, $result, 'after enabling the B2B for invoice, the payment method should be available');
-        static::assertInPaymentCollection(PaymentHandlerMock::class, $result, 'the PaymentHandlerMock should be never removed from the available payment-methods');
+        $methods = $this->getPaymentMethods(PayonePayolutionInvoicingPaymentHandler::class);
+        $filterService->filterPaymentMethods($methods, $filterContext);
+        static::assertInPaymentCollection(PayonePayolutionInvoicingPaymentHandler::class, $methods, 'after enabling the B2B for invoice, the payment method should be available');
+        static::assertInPaymentCollection(PaymentHandlerMock::class, $methods, 'the PaymentHandlerMock should be never removed from the available payment-methods');
     }
 
     /**
@@ -66,9 +66,9 @@ class PayolutionPaymentFilterTest extends AbstractPaymentFilterTest
         $filterContext = new PaymentFilterContext($salesChannelContext, $salesChannelContext->getCustomer()->getActiveBillingAddress());
         $filterService = $this->getFilterService($paymentHandler);
 
-        $result = $filterService->filterPaymentMethods($methods, $filterContext);
-        static::assertNotInPaymentCollection($paymentHandler, $result, $paymentHandler . ' should be removed, because B2B is not allowed');
-        static::assertInPaymentCollection(PaymentHandlerMock::class, $result, 'the PaymentHandlerMock should be never removed from the available payment-methods');
+        $filterService->filterPaymentMethods($methods, $filterContext);
+        static::assertNotInPaymentCollection($paymentHandler, $methods, $paymentHandler . ' should be removed, because B2B is not allowed');
+        static::assertInPaymentCollection(PaymentHandlerMock::class, $methods, 'the PaymentHandlerMock should be never removed from the available payment-methods');
     }
 
     public static function dataProviderUnzerGotHiddenOnB2B(): array
@@ -95,14 +95,14 @@ class PayolutionPaymentFilterTest extends AbstractPaymentFilterTest
         $filterService = $this->getFilterService($paymentHandler);
 
         $this->setPayoneConfig($this->getContainer(), 'payolutionInvoicingTransferCompanyData', false);
-        $result = $filterService->filterPaymentMethods($methods, $filterContext);
-        static::assertInPaymentCollection($paymentHandler, $result);
-        static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
+        $filterService->filterPaymentMethods($methods, $filterContext);
+        static::assertInPaymentCollection($paymentHandler, $methods);
+        static::assertInPaymentCollection(PaymentHandlerMock::class, $methods);
 
         $this->setPayoneConfig($this->getContainer(), 'payolutionInvoicingTransferCompanyData', true);
-        $result = $filterService->filterPaymentMethods($methods, $filterContext);
-        static::assertInPaymentCollection($paymentHandler, $result);
-        static::assertInPaymentCollection(PaymentHandlerMock::class, $result);
+        $filterService->filterPaymentMethods($methods, $filterContext);
+        static::assertInPaymentCollection($paymentHandler, $methods);
+        static::assertInPaymentCollection(PaymentHandlerMock::class, $methods);
     }
 
     public static function dataProviderUnzerIsAlwaysAvailableForOnB2C(): array
