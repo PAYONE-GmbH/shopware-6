@@ -76,7 +76,9 @@
                     "product": "Produkt",
                     "quantity": "Anzahl",
                     "price": "Preis"
-                }
+                },
+                "productNumber": "Nummer",
+                "productOptions": "Optionen"
             },
             "general": {
                 "cardTitle": "Allgemein"
