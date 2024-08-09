@@ -11,20 +11,19 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\AccountOrderController;
-use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(defaults: ['_routeScope' => ['storefront']])]
-class AccountOrderControllerDecorator extends StorefrontController
+class AccountOrderControllerDecorator extends AccountOrderController
 {
     /**
      * @var AccountOrderController
      */
     protected $decoratedController;
 
-    public function __construct(StorefrontController $decoratedController, protected EntityRepository $orderRepository)
+    public function __construct(AccountOrderController $decoratedController, protected EntityRepository $orderRepository)
     {
         /** @phpstan-ignore-next-line */
         $this->decoratedController = $decoratedController;
