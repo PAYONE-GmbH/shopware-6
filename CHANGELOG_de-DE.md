@@ -381,3 +381,23 @@ Wartung
 Fehlerbehebung
 
 * alte .js Datei entfernt
+
+# 6.1.0
+
+Neue Funktionen
+ 
+* Einzelartikelübergabe für alle Zahlungsarten aktivierbar
+* Hinzufügen von Artikeldetails auf der Bestellungsdetailseite
+ 
+Fehlerbehebungen
+ 
+* Probleme mit dem Zahlungsfilter behoben
+* Probleme mit der Rechtevergabe behoben
+* Problem mit der Benachrichtigungsweiterleitungs-Detailseite behoben (Danke @hgnb99)
+* Problem mit Apple Pay behoben
+ 
+Wartung
+ 
+* Kreditkarteninhaber hinzufügen
+* Speicherung von SEPA-Mandaten entfernt
+* getestet mit 6.6.5.1
