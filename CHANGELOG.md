@@ -395,7 +395,7 @@ Bugfix
 
 * removed old .js file
 
-# 6.1.0
+# 6.1.1
 
 New Features
  
