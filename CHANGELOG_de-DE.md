@@ -382,7 +382,7 @@ Fehlerbehebung
 
 * alte .js Datei entfernt
 
-# 6.1.0
+# 6.1.1
 
 Neue Funktionen
  
