@@ -394,3 +394,24 @@ Maintenance
 Bugfix
 
 * removed old .js file
+
+# 6.1.2
+
+New Features
+ 
+* enable line items for all payment methods
+* add line item details in order details page
+ 
+Bugfixes
+ 
+* fixed problems with payment filter
+* fixed problems with rights assignment
+* fixed problem with Notification Forward Detail Page (Thanks @hgnb99)
+* fixed problem with Apple Pay
+ 
+Maintenance
+ 
+* add credit card holder
+* removed storage of SEPA mandates
+* edit composer.json
+* tested with 6.6.5.1
