@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Processor;
 
-use PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureServiceInterface;
 use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionStatus\TransactionStatusService;
 use PayonePayment\Constants;
@@ -213,16 +212,12 @@ class WebhookProcessorTest extends TestCase
         $paymentTransaction = PaymentTransaction::fromOrderTransaction($orderTransactionEntity, $orderEntity);
 
         $transactionDataHandler = $this->createMock(TransactionDataHandlerInterface::class);
-        $transactionDataHandler->expects(static::exactly(2))->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
+        $transactionDataHandler->expects(static::exactly(1))->method('getPaymentTransactionByPayoneTransactionId')->willReturn($paymentTransaction);
         $transactionDataHandler->expects(static::once())->method('getTransactionDataFromWebhook')->willReturn($transactionData);
-
-        $automaticCaptureService = $this->createMock(AutomaticCaptureServiceInterface::class);
-        $automaticCaptureService->expects(static::once())->method('captureIfPossible');
 
         $transactionStatusHandler = TransactionStatusWebhookHandlerFactory::createHandler(
             $transactionStatusService,
-            $transactionDataHandler,
-            $automaticCaptureService
+            $transactionDataHandler
         );
 
         return new WebhookProcessor(

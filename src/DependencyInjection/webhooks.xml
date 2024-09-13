@@ -10,21 +10,28 @@
             <argument key="$logger" type="service" id="monolog.logger.payone" />
         </service>
 
-        <service id="PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler">
-            <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService"/>
-            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
-            <argument type="service" id="monolog.logger.payone" />
-            <argument type="service" id="PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureServiceInterface" />
-
-            <tag name="payone.webhook.handler" />
-        </service>
-
         <service id="PayonePayment\Payone\Webhook\Handler\WebhookLogHandler">
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
             <argument type="service" id="PayonePayment\Components\DataHandler\WebhookLog\WebhookLogDataHandlerInterface" />
             <argument type="service" id="monolog.logger.payone" />
 
-            <tag name="payone.webhook.handler" />
+            <tag name="payone.webhook.handler" priority="1000" />
+        </service>
+
+        <service id="PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler">
+            <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService"/>
+            <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
+            <argument type="service" id="monolog.logger.payone" />
+
+            <tag name="payone.webhook.handler" priority="300" />
+        </service>
+
+        <service id="PayonePayment\Payone\Webhook\Handler\PaymentStatusHandler" autowire="true">
+            <tag name="payone.webhook.handler" priority="200" />
+        </service>
+
+        <service id="PayonePayment\Payone\Webhook\Handler\AutoCaptureHandler" autowire="true">
+            <tag name="payone.webhook.handler" priority="100" />
         </service>
 
         <service id="PayonePayment\Payone\Webhook\Handler\NotificationForwardHandler">
@@ -32,11 +39,7 @@
             <argument type="service" id="PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface" />
             <argument type="service" id="messenger.bus.shopware"/>
 
-            <tag name="payone.webhook.handler" />
-        </service>
-
-        <service id="PayonePayment\Payone\Webhook\Handler\PaymentStatusHandler" autowire="true">
-            <tag name="payone.webhook.handler" />
+            <tag name="payone.webhook.handler" priority="0" />
         </service>
 
         <service id="PayonePayment\Payone\Webhook\MessageBus\MessageHandler\NotificationForwardHandler" autowire="true">
