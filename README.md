@@ -25,6 +25,7 @@ The plugin can easily be integrated via Composer:
 
 ```
 composer require payone-gmbh/shopware-6
+php bin/console plugin:refresh
 php bin/console plugin:install PayonePayment
 php bin/console plugin:activate PayonePayment
 php bin/console cache:clear
