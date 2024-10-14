@@ -133,11 +133,12 @@ export default {
                         }
                     }
                 }
-            }).finally((errorResponse) => {
+            }).catch((errorResponse) => {
                 this.createNotificationError({
                     title: this.$tc('payone-payment.settingsForm.titleError'),
                     message: this.$tc('payone-payment.settingsForm.messageTestError.general')
                 });
+            }).finally(() => {
                 this.isTesting = false;
             });
         },
