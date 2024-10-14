@@ -16,6 +16,7 @@ use Symfony\Component\Routing\RouterInterface;
 class RedirectHandlerTest extends TestCase
 {
     use KernelTestBehaviour;
+    private const APP_SECRET = 's$cretf0rt3st';
 
     public function testItEncodesUrlWithoutDatabase(): void
     {
@@ -33,7 +34,7 @@ class RedirectHandlerTest extends TestCase
         $redirectHandler = new RedirectHandler(
             $connection,
             $router,
-            $this->getContainer()->getParameter('env.app_secret')
+            self::APP_SECRET
         );
 
         $url = $redirectHandler->encode('the-url');
@@ -52,7 +53,7 @@ class RedirectHandlerTest extends TestCase
         $redirectHandler = new RedirectHandler(
             $connection,
             $router,
-            $this->getContainer()->getParameter('env.app_secret')
+            self::APP_SECRET
         );
 
         $originalUrl = 'the-url';
@@ -83,7 +84,7 @@ class RedirectHandlerTest extends TestCase
         $redirectHandler = new RedirectHandler(
             $connection,
             $router,
-            $this->getContainer()->getParameter('env.app_secret')
+            self::APP_SECRET
         );
 
         $originalUrl = $redirectHandler->decode($data['hash']);
@@ -120,7 +121,7 @@ class RedirectHandlerTest extends TestCase
         $redirectHandler = new RedirectHandler(
             $connection,
             $router,
-            $this->getContainer()->getParameter('env.app_secret')
+            self::APP_SECRET
         );
 
         $this->expectException(\RuntimeException::class);
@@ -140,7 +141,7 @@ class RedirectHandlerTest extends TestCase
         $redirectHandler = new RedirectHandler(
             $connection,
             $router,
-            $this->getContainer()->getParameter('env.app_secret')
+            self::APP_SECRET
         );
 
         $redirectHandler->encode('the-url-1');
