@@ -164,6 +164,18 @@
             <tag name="shopware.payment.method.async" />
         </service>
 
+        <service id="PayonePayment\PaymentHandler\PayonePaypalV2ExpressPaymentHandler"
+                 parent="PayonePayment\Components\GenericExpressCheckout\PaymentHandler\AbstractGenericExpressCheckoutPaymentHandler">
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
+        <service id="PayonePayment\PaymentHandler\PayonePaypalV2PaymentHandler"
+                 parent="PayonePayment\PaymentHandler\AbstractAsynchronousPayonePaymentHandler">
+
+            <tag name="shopware.payment.method.async" />
+        </service>
+
         <service id="PayonePayment\PaymentHandler\PayonePostfinanceCardPaymentHandler"
                  parent="PayonePayment\PaymentHandler\AbstractPostfinancePaymentHandler">
 
