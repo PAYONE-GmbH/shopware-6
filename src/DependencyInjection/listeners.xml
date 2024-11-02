@@ -36,7 +36,7 @@
         </service>
 
         <service id="PayonePayment\EventListener\StorefrontRenderEventListener">
-            <argument type="service" id="PayonePayment\Components\Helper\ActivePaymentMethodsLoaderInterface"/>
+            <argument key="$activePaymentMethodsLoader" type="service" id="PayonePayment\Components\Helper\ActivePaymentMethodsLoaderInterface"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
@@ -75,10 +75,10 @@
         </service>
 
         <service id="PayonePayment\EventListener\PayPalV2ExpressEventListener">
-            <argument type="service" id="PayonePayment\Components\Helper\ActivePaymentMethodsLoaderInterface"/>
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface"/>
-            <argument type="service" id="router"/>
-            <argument type="service" id="monolog.logger.payone" />
+            <argument key="$activePaymentMethodsLoader" type="service" id="PayonePayment\Components\Helper\ActivePaymentMethodsLoaderInterface"/>
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface"/>
+            <argument key="$router" type="service" id="router"/>
+            <argument key="$logger" type="service" id="monolog.logger.payone" />
             <tag name="kernel.event_subscriber"/>
         </service>
 
