@@ -4,18 +4,24 @@ import HttpClient from "src/service/http-client.service";
 export default class PayonePaymentPayPalV2 extends Plugin {
     static options = {
         sandbox: true,
-        clientId: '',
-        merchantId: '',
-        currency: '',
-        locale: '',
+        clientId: null,
+        merchantId: null,
+        currency: null,
+        locale: null,
         showPayLaterButton: false,
-        createCheckoutSessionUrl: '',
-        onApproveRedirectUrl: '',
-        onCancelRedirectUrl: '',
-        onErrorRedirectUrl: '',
+        createCheckoutSessionUrl: null,
+        onApproveRedirectUrl: null,
+        onCancelRedirectUrl: null,
+        onErrorRedirectUrl: null,
     };
 
     init() {
+        if (!this.options.clientId || !this.options.merchantId || !this.options.currency || !this.options.locale || !this.options.createCheckoutSessionUrl || !this.options.onApproveRedirectUrl || !this.options.onCancelRedirectUrl || !this.options.onErrorRedirectUrl) {
+            console.error('The PayPal v2 Express button could not be initialized because the required options are missing.');
+
+            return;
+        }
+
         this._client = new HttpClient();
 
         this._loadScript();
