@@ -51,9 +51,9 @@
         <service id="PayonePayment\Components\Currency\CurrencyPrecisionInterface" alias="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
         <service id="PayonePayment\Components\Helper\ActivePaymentMethodsLoader">
-            <argument type="service" id="cache.object"/>
-            <argument type="service" id="sales_channel.payment_method.repository"/>
-            <argument type="service" id="sales_channel.repository" />
+            <argument key="$cachePool" type="service" id="cache.object"/>
+            <argument key="$paymentMethodRepository" type="service" id="sales_channel.payment_method.repository"/>
+            <argument key="$salesChannelRepository" type="service" id="sales_channel.repository" />
         </service>
         <service id="PayonePayment\Components\Helper\ActivePaymentMethodsLoaderInterface" alias="PayonePayment\Components\Helper\ActivePaymentMethodsLoader"/>
 
