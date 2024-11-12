@@ -4,20 +4,16 @@ PAYONE Payment for Shopware 6
 [![CI Status](https://github.com/PAYONE-GmbH/shopware-6/workflows/CI/badge.svg?branch=master)](https://github.com/PAYONE-GmbH/shopware-6/actions)
 [![LICENSE](https://img.shields.io/github/license/PAYONE-GmbH/shopware-6.svg)](LICENSE)
 
-This plugin enables merchants to accept payments in a simple and convenient way.
-We offer state-of-the art integration of the most used payment methods directly
-into your checkout. 
+This plugin allows merchants to effortlessly accept payments by integrating the most 
+popular payment methods directly into the checkout process, providing a seamless and user-friendly experience.
 
 ## Open for Feedback
 
-This plugin is a complete rewrite of our Shopware 5 plugin and we'd love to hear your
-feedback on it! Drop us a message at shopware@payone.com or open an issue if
-you've found a bug.
+If you've discovered a bug, please don't hesitate to reach out to us at shopware@payone.com or open an issue.
 
-## Super Bonus for Early Adopters
+## Version compatibility
 
-We'd especially love to hear from you if you plan on going live using the plugin
-so we can assist and show some appreciation to the first adopters. :crown:
+The current plugin is compatible with all versions from 6.6.0 to 6.6.8.2.
 
 ## Installation
 
