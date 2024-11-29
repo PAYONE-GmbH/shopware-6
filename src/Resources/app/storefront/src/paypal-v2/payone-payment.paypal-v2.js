@@ -28,7 +28,7 @@ export default class PayonePaymentPayPalV2 extends Plugin {
     }
 
     _loadScript() {
-        const queryString = `client-id=${this.options.clientId}&merchant-id=${this.options.merchantId}&currency=${this.options.currency}&intent=authorize&locale=${this.options.locale}&commit=true&vault=false&disable-funding=card,sepa,bancontact${this.options.showPayLaterButton ? '&enable-funding=paylater' : ''}`;
+        const queryString = `client-id=${this.options.clientId}&merchant-id=${this.options.merchantId}&currency=${this.options.currency}&intent=authorize&locale=${this.options.locale}&commit=true&vault=false&disable-funding=card,sepa,bancontact${this.options.showPayLaterButton ? '&enable-funding=paylater&commit=false' : ''}`;
         const scriptTag = document.createElement('script');
 
         scriptTag.onload = () => this._renderButtons();
@@ -44,7 +44,6 @@ export default class PayonePaymentPayPalV2 extends Plugin {
 
     _renderButtons() {
         paypal.Buttons({
-
             style: {
                 layout: 'vertical',
                 color: 'gold',
@@ -52,15 +51,10 @@ export default class PayonePaymentPayPalV2 extends Plugin {
                 label: 'checkout',
                 height: 40,
             },
-
             createOrder: this._createOrder.bind(this),
-
             onApprove: this._onApprove.bind(this),
-
             onCancel: this._onCancel.bind(this),
-
             onError: this._onError.bind(this),
-
         }).render('#payone-payment-paypal-v2-button-container');
     }
 
