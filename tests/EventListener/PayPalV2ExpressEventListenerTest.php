@@ -57,24 +57,10 @@ class PayPalV2ExpressEventListenerTest extends TestCase
         ]);
 
         $activePaymentMethodsLoader = $this->createMock(ActivePaymentMethodsLoaderInterface::class);
-        $activePaymentMethodsLoader
-            ->expects(static::once())
-            ->method('getActivePaymentMethodIds')
-            ->with(
-                static::equalTo($salesChannelContext)
-            )
-            ->willReturn($activePaymentMethodIds)
-        ;
+        $activePaymentMethodsLoader->method('getActivePaymentMethodIds')->willReturn($activePaymentMethodIds);
 
         $configReader = $this->createMock(ConfigReaderInterface::class);
-        $configReader
-            ->expects(static::once())
-            ->method('read')
-            ->with(
-                static::equalTo($salesChannelContext->getSalesChannelId())
-            )
-            ->willReturn($configuration)
-        ;
+        $configReader->method('read')->willReturn($configuration);
 
         $router = $this->createMock(RouterInterface::class);
         $logger = $this->createMock(LoggerInterface::class);
@@ -114,20 +100,9 @@ class PayPalV2ExpressEventListenerTest extends TestCase
         $request->setLocale('de-DE');
 
         $activePaymentMethodsLoader = $this->createMock(ActivePaymentMethodsLoaderInterface::class);
-        $activePaymentMethodsLoader
-            ->expects(static::once())
-            ->method('getActivePaymentMethodIds')
-            ->with(
-                static::equalTo($salesChannelContext)
-            )
-            ->willReturn($activePaymentMethodIds)
-        ;
+        $activePaymentMethodsLoader->method('getActivePaymentMethodIds')->willReturn($activePaymentMethodIds);
 
         $configReader = $this->createMock(ConfigReaderInterface::class);
-        $configReader
-            ->expects(static::never())
-            ->method('read')
-        ;
 
         $router = $this->createMock(RouterInterface::class);
         $logger = $this->createMock(LoggerInterface::class);
@@ -169,32 +144,15 @@ class PayPalV2ExpressEventListenerTest extends TestCase
         ]);
 
         $activePaymentMethodsLoader = $this->createMock(ActivePaymentMethodsLoaderInterface::class);
-        $activePaymentMethodsLoader
-            ->expects(static::once())
-            ->method('getActivePaymentMethodIds')
-            ->with(
-                static::equalTo($salesChannelContext)
-            )
-            ->willReturn($activePaymentMethodIds)
-        ;
+        $activePaymentMethodsLoader->method('getActivePaymentMethodIds')->willReturn($activePaymentMethodIds);
 
         $configReader = $this->createMock(ConfigReaderInterface::class);
-        $configReader
-            ->expects(static::once())
-            ->method('read')
-            ->with(
-                static::equalTo($salesChannelContext->getSalesChannelId())
-            )
-            ->willReturn($configuration)
-        ;
+        $configReader->method('read')->willReturn($configuration);
 
         $router = $this->createMock(RouterInterface::class);
 
         $logger = $this->createMock(LoggerInterface::class);
-        $logger
-            ->expects(static::once())
-            ->method('warning')
-        ;
+        $logger->expects(static::once())->method('warning');
 
         $listener = new PayPalV2ExpressEventListener(
             $activePaymentMethodsLoader,

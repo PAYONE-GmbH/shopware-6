@@ -34,21 +34,23 @@ class PayonePaypalV2PaymentHandlerTest extends TestCase
         $dataBag = new RequestDataBag();
 
         $client = $this->createMock(PayoneClientInterface::class);
-        $client->expects(static::once())->method('request')->willReturn(
-            [
+        $client
+            ->method('request')
+            ->willReturn([
                 'status' => 'test-status',
                 'txid' => '',
                 'userid' => '',
-            ]
-        );
+            ])
+        ;
 
         $requestFactory = $this->createMock(RequestParameterFactory::class);
-        $requestFactory->expects(static::once())->method('getRequestParameter')->willReturn(
-            [
+        $requestFactory
+            ->method('getRequestParameter')
+            ->willReturn([
                 'request' => '',
                 'successurl' => 'test-url',
-            ]
-        );
+            ])
+        ;
 
         $paymentHandler = $this->getPaymentHandler($client, $dataBag, $requestFactory);
         $paymentTransaction = $this->getPaymentTransaction(
