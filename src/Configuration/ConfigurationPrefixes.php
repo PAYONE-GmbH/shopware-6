@@ -12,6 +12,8 @@ interface ConfigurationPrefixes
     public const CONFIGURATION_PREFIX_DEBIT = 'debit';
     public const CONFIGURATION_PREFIX_PAYPAL = 'paypal';
     public const CONFIGURATION_PREFIX_PAYPAL_EXPRESS = 'paypalExpress';
+    public const CONFIGURATION_PREFIX_PAYPAL_V2 = 'paypalV2';
+    public const CONFIGURATION_PREFIX_PAYPAL_V2_EXPRESS = 'paypalV2Express';
     public const CONFIGURATION_PREFIX_PAYOLUTION_INVOICING = 'payolutionInvoicing';
     public const CONFIGURATION_PREFIX_PAYOLUTION_INSTALLMENT = 'payolutionInstallment';
     public const CONFIGURATION_PREFIX_PAYOLUTION_DEBIT = 'payolutionDebit';
@@ -48,6 +50,8 @@ interface ConfigurationPrefixes
         Handler\PayoneDebitPaymentHandler::class => self::CONFIGURATION_PREFIX_DEBIT,
         Handler\PayonePaypalPaymentHandler::class => self::CONFIGURATION_PREFIX_PAYPAL,
         Handler\PayonePaypalExpressPaymentHandler::class => self::CONFIGURATION_PREFIX_PAYPAL_EXPRESS,
+        Handler\PayonePaypalV2PaymentHandler::class => self::CONFIGURATION_PREFIX_PAYPAL_V2,
+        Handler\PayonePaypalV2ExpressPaymentHandler::class => self::CONFIGURATION_PREFIX_PAYPAL_V2_EXPRESS,
         Handler\PayonePayolutionInvoicingPaymentHandler::class => self::CONFIGURATION_PREFIX_PAYOLUTION_INVOICING,
         Handler\PayonePayolutionInstallmentPaymentHandler::class => self::CONFIGURATION_PREFIX_PAYOLUTION_INSTALLMENT,
         Handler\PayonePayolutionDebitPaymentHandler::class => self::CONFIGURATION_PREFIX_PAYOLUTION_DEBIT,

@@ -172,6 +172,29 @@ class SettingsController extends AbstractController
                     'successurl' => 'https://www.payone.com',
                 ];
 
+            case Handler\PayonePaypalV2ExpressPaymentHandler::class:
+            case Handler\PayonePaypalV2PaymentHandler::class:
+                return [
+                    'request' => 'preauthorization',
+                    'clearingtype' => 'wlt',
+                    'wallettype' => 'PAL',
+                    'amount' => 100,
+                    'currency' => 'EUR',
+                    'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
+                    'firstname' => 'Test',
+                    'lastname' => 'Test',
+                    'country' => 'DE',
+                    'successurl' => 'https://www.payone.com',
+                    'errorurl' => 'https://www.payone.com',
+                    'backurl' => 'https://www.payone.com',
+                    'shipping_city' => 'Berlin',
+                    'shipping_country' => 'DE',
+                    'shipping_firstname' => 'Test',
+                    'shipping_lastname' => 'Test',
+                    'shipping_street' => 'Mustergasse 5',
+                    'shipping_zip' => '10969',
+                ];
+
             case Handler\PayoneSofortBankingPaymentHandler::class:
                 return [
                     'request' => 'preauthorization',

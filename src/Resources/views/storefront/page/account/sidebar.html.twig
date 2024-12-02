@@ -4,7 +4,7 @@
     {{ parent() }}
 
     {% block page_account_sidebar_link_payone_card %}
-        {% if constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') in activePaymentPaymentMethods %}
+        {% if constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') in activePayonePaymentMethodIds %}
             {% set css_class %}
                 list-group-item
                 list-group-item-action

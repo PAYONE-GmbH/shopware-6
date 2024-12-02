@@ -1,0 +1,13 @@
+{% block component_payone_paypal_v2_button %}
+    {# @var \PayonePayment\Storefront\Struct\PayPalV2ExpressButtonData paypalButtonOptions #}
+    {% set paypalButtonOptions = page.extensions[constant('PayonePayment\\Storefront\\Struct\\PayPalV2ExpressButtonData::EXTENSION_NAME')] %}
+
+    {% block component_payone_paypal_v2_button_container %}
+        {% if paypalButtonOptions %}
+            <div class="payone-payment-paypal-v2"
+                 data-payone-payment-pay-pal-v2-options="{{ paypalButtonOptions|json_encode }}">
+                <div id="payone-payment-paypal-v2-button-container"></div>
+            </div>
+        {% endif %}
+    {% endblock %}
+{% endblock %}
