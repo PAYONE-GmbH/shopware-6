@@ -4,11 +4,21 @@
     {{ parent() }}
 
     {% if not context.customer and page.cart.price.totalPrice > 0 %}
-        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePaymentPaymentMethods %}
+        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePayonePaymentMethodIds %}
             {% block page_checkout_address_payone_paypal_express_button %}
                 <div class="row">
                     <div class="col-5 pb-2">
                         {% sw_include '@PayonePayment/storefront/component/checkout/paypal-button.html.twig' %}
+                    </div>
+                </div>
+            {% endblock %}
+        {% endif %}
+
+        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalV2Express::UUID') in activePayonePaymentMethodIds %}
+            {% block page_checkout_address_payone_paypal_v2_express_button %}
+                <div class="row">
+                    <div class="col-5 pb-2">
+                        {% sw_include '@PayonePayment/storefront/component/checkout/paypal-v2-button.html.twig' %}
                     </div>
                 </div>
             {% endblock %}

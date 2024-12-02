@@ -36,9 +36,7 @@
         </service>
 
         <service id="PayonePayment\EventListener\StorefrontRenderEventListener">
-            <argument type="service" id="cache.object"/>
-            <argument type="service" id="sales_channel.payment_method.repository"/>
-            <argument type="service" id="sales_channel.repository" />
+            <argument type="service" id="PayonePayment\Components\Helper\ActivePaymentMethodsLoaderInterface"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
@@ -73,6 +71,14 @@
 
         <service id="PayonePayment\EventListener\PaypalExpressAddressValidationEventListener">
             <argument type="service" id="request_stack"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="PayonePayment\EventListener\PayPalV2ExpressEventListener">
+            <argument type="service" id="PayonePayment\Components\Helper\ActivePaymentMethodsLoaderInterface"/>
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="monolog.logger.payone" />
             <tag name="kernel.event_subscriber"/>
         </service>
 

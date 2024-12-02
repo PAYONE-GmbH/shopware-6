@@ -22,6 +22,7 @@ use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -44,6 +45,51 @@ class GenericExpressController extends StorefrontController
         private readonly CartExtensionService $cartExtensionService,
         private readonly CustomerRegistrationUtil $customerRegistrationUtil
     ) {
+    }
+
+    #[Route(
+        path: '/payone/express-checkout/create-session/{paymentMethodId}',
+        name: 'frontend.account.payone.express-checkout.generic.create-session',
+        options: ['seo' => false],
+        defaults: ['XmlHttpRequest' => true],
+        methods: ['GET']
+    )]
+    public function createSessionAction(SalesChannelContext $context, string $paymentMethodId): Response
+    {
+        if (!\array_key_exists($paymentMethodId, PaymentHandlerGroups::GENERIC_EXPRESS)) {
+            throw $this->createNotFoundException();
+        }
+
+        $cart = $this->cartService->getCart($context->getToken(), $context);
+
+        $salesChannelDataBag = new DataBag([
+            SalesChannelContextService::PAYMENT_METHOD_ID => $paymentMethodId,
+        ]);
+
+        $this->salesChannelContextSwitcher->update($salesChannelDataBag, $context);
+
+        $setRequest = $this->requestParameterFactory->getRequestParameter(
+            new CreateExpressCheckoutSessionStruct(
+                $context,
+                PaymentHandlerGroups::GENERIC_EXPRESS[$paymentMethodId]
+            )
+        );
+
+        try {
+            $response = $this->client->request($setRequest);
+        } catch (PayoneRequestException) {
+            throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
+        }
+
+        if (!isset($response['addpaydata']['orderId'])) {
+            throw new RuntimeException('generic express checkout: No orderId has been given for payment method id ' . $paymentMethodId);
+        }
+
+        $this->cartExtensionService->addCartExtensionForExpressCheckout($cart, $context, $paymentMethodId, $response['workorderid']);
+
+        return new JsonResponse([
+            'orderId' => $response['addpaydata']['orderId'],
+        ]);
     }
 
     #[Route(

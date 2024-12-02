@@ -25,6 +25,8 @@ use PayonePayment\PaymentMethod\PayonePayolutionInstallment;
 use PayonePayment\PaymentMethod\PayonePayolutionInvoicing;
 use PayonePayment\PaymentMethod\PayonePaypal;
 use PayonePayment\PaymentMethod\PayonePaypalExpress;
+use PayonePayment\PaymentMethod\PayonePaypalV2;
+use PayonePayment\PaymentMethod\PayonePaypalV2Express;
 use PayonePayment\PaymentMethod\PayonePostfinanceCard;
 use PayonePayment\PaymentMethod\PayonePostfinanceWallet;
 use PayonePayment\PaymentMethod\PayonePrepayment;
@@ -62,6 +64,8 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneDebit::class => '1b017bef157b4222b734659361d996fd',
         PayonePaypal::class => '21e157163fdb4aa4862a2109abcd7522',
         PayonePaypalExpress::class => '5ddf648859a84396a98c97a1a92c107f',
+        PayonePaypalV2::class => 'ee2195f621eb466d809cace908163017',
+        PayonePaypalV2Express::class => '57fa8d8c9d3b4e488f5267f624841531',
         PayonePayolutionInstallment::class => '569b46970ad2458ca8f17f1ebb754137',
         PayonePayolutionInvoicing::class => '0407fd0a5c4b4d2bafc88379efe8cf8d',
         PayonePayolutionDebit::class => '700954775fad4a8f92463b3d629c8ad5',
@@ -100,6 +104,8 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneDebit::class,
         PayonePaypal::class,
         PayonePaypalExpress::class,
+        PayonePaypalV2::class,
+        PayonePaypalV2Express::class,
         PayonePayolutionInstallment::class,
         PayonePayolutionInvoicing::class,
         PayonePayolutionDebit::class,
@@ -135,6 +141,7 @@ class PaymentMethodInstaller implements InstallerInterface
         PayoneCreditCard::class,
         PayoneDebit::class,
         PayonePaypal::class,
+        PayonePaypalV2::class,
         PayonePayolutionInstallment::class,
         PayonePayolutionInvoicing::class,
         PayonePayolutionDebit::class,
