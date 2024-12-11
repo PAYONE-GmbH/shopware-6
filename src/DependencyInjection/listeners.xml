@@ -74,6 +74,10 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="PayonePayment\EventListener\PaymentDistinguishableNameEventListener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <service id="PayonePayment\EventListener\PayPalV2ExpressEventListener">
             <argument key="$activePaymentMethodsLoader" type="service" id="PayonePayment\Components\Helper\ActivePaymentMethodsLoaderInterface"/>
             <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface"/>

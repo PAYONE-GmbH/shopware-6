@@ -15,9 +15,9 @@ class PayonePaypalV2 extends AbstractPaymentMethod
 
     protected string $id = self::UUID;
 
-    protected string $name = 'PAYONE PayPal v2';
+    protected string $name = 'PAYONE PayPal';
 
-    protected string $description = 'Pay easily and secure with PayPal v2.';
+    protected string $description = 'Pay easily and secure with PayPal.';
 
     protected string $paymentHandler = PayonePaypalV2PaymentHandler::class;
 
@@ -25,12 +25,12 @@ class PayonePaypalV2 extends AbstractPaymentMethod
 
     protected array $translations = [
         'de-DE' => [
-            'name' => 'PAYONE PayPal v2',
-            'description' => 'Zahlen Sie sicher und bequem mit PayPal v2.',
+            'name' => 'PAYONE PayPal',
+            'description' => 'Zahlen Sie sicher und bequem mit PayPal.',
         ],
         'en-GB' => [
-            'name' => 'PAYONE PayPal v2',
-            'description' => 'Pay easily and secure with PayPal v2.',
+            'name' => 'PAYONE PayPal',
+            'description' => 'Pay easily and secure with PayPal.',
         ],
     ];
 
