@@ -28,7 +28,19 @@ export default class PayonePaymentPayPalV2 extends Plugin {
     }
 
     _loadScript() {
-        const queryString = `client-id=${this.options.clientId}&merchant-id=${this.options.merchantId}&currency=${this.options.currency}&intent=authorize&locale=${this.options.locale}&commit=true&vault=false&disable-funding=card,sepa,bancontact${this.options.showPayLaterButton ? '&enable-funding=paylater&commit=false' : ''}`;
+        const queryString = new URLSearchParams({
+            'client-id': this.options.clientId,
+            'merchant-id': this.options.merchantId,
+            'currency': this.options.currency,
+            'intent': 'authorize',
+            'locale': this.options.locale,
+            'commit': 'false',
+            'vault': 'false',
+            'disable-funding': 'card,sepa,bancontact',
+            ...(this.options.showPayLaterButton ? {
+                'enable-funding': 'paylater',
+            } : {}),
+        }).toString();
         const scriptTag = document.createElement('script');
 
         scriptTag.onload = () => this._renderButtons();
