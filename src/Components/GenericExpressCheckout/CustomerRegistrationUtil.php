@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Components\GenericExpressCheckout;
 
 use PayonePayment\Core\Utils\AddressCompare;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
@@ -14,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Salutation\SalutationEntity;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CustomerRegistrationUtil
@@ -21,7 +23,9 @@ class CustomerRegistrationUtil
     public function __construct(
         private readonly EntityRepository $salutationRepository,
         private readonly EntityRepository $countryRepository,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly SystemConfigService $systemConfigService,
+        private readonly LoggerInterface $logger
     ) {
     }
 
@@ -29,7 +33,7 @@ class CustomerRegistrationUtil
     {
         $salutationId = $this->getSalutationId($context);
 
-        $billingAddress = array_filter([
+        $billingAddress = [
             'salutationId' => $salutationId,
             'company' => $this->extractBillingData($response, 'company'),
             'firstName' => $this->extractBillingData($response, 'firstname'),
@@ -40,9 +44,9 @@ class CustomerRegistrationUtil
             'city' => $this->extractBillingData($response, 'city'),
             'countryId' => $this->getCountryIdByCode($this->extractBillingData($response, 'country') ?? '', $context),
             'phone' => $this->extractBillingData($response, 'telephonenumber'),
-        ]);
+        ];
 
-        $shippingAddress = array_filter([
+        $shippingAddress = [
             'salutationId' => $salutationId,
             'company' => $this->extractShippingData($response, 'company'),
             'firstName' => $this->extractShippingData($response, 'firstname'),
@@ -53,12 +57,18 @@ class CustomerRegistrationUtil
             'city' => $this->extractShippingData($response, 'city'),
             'countryId' => $this->getCountryIdByCode($this->extractShippingData($response, 'country') ?? '', $context),
             'phone' => $this->extractShippingData($response, 'telephonenumber'),
-        ]);
+        ];
 
         $isBillingAddressComplete = $this->hasAddressRequiredData($billingAddress);
         $isShippingAddressComplete = $this->hasAddressRequiredData($shippingAddress);
 
         if (!$isBillingAddressComplete && !$isShippingAddressComplete) {
+            $this->logger->error('PAYONE Express Checkout: The delivery and billing address is incomplete', [
+                'billingAddress' => $billingAddress,
+                'shippingAddress' => $shippingAddress,
+                'requiredFields' => $this->getRequiredFields(),
+            ]);
+
             throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
         }
 
@@ -70,8 +80,8 @@ class CustomerRegistrationUtil
             'guest' => true,
             'salutationId' => $salutationId,
             'email' => $response['addpaydata']['email'],
-            'firstName' => $billingAddress['firstName'], /** @phpstan-ignore offsetAccess.notFound */
-            'lastName' => $billingAddress['lastName'], /** @phpstan-ignore offsetAccess.notFound */
+            'firstName' => $billingAddress['firstName'],
+            'lastName' => $billingAddress['lastName'],
             'acceptedDataProtection' => true,
             'billingAddress' => $billingAddress,
             'shippingAddress' => $shippingAddress,
@@ -160,6 +170,17 @@ class CustomerRegistrationUtil
 
     private function hasAddressRequiredData(array $address): bool
     {
+        foreach ($this->getRequiredFields() as $field) {
+            if (!isset($address[$field])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function getRequiredFields(): array
+    {
         $requiredFields = [
             'firstName',
             'lastName',
@@ -168,12 +189,26 @@ class CustomerRegistrationUtil
             'countryId',
         ];
 
-        foreach ($requiredFields as $field) {
-            if (!isset($address[$field])) {
-                return false;
-            }
+        $phoneRequired = $this->systemConfigService->get('core.loginRegistration.phoneNumberFieldRequired') ?? false;
+        if ($phoneRequired) {
+            $requiredFields[] = 'phone';
         }
 
-        return true;
+        $birthdayRequired = $this->systemConfigService->get('core.loginRegistration.birthdayFieldRequired') ?? false;
+        if ($birthdayRequired) {
+            $requiredFields[] = 'birthday';
+        }
+
+        $additionalAddress1Required = $this->systemConfigService->get('core.loginRegistration.additionalAddressField1Required') ?? false;
+        if ($additionalAddress1Required) {
+            $requiredFields[] = 'additionalAddressLine1';
+        }
+
+        $additionalAddress2Required = $this->systemConfigService->get('core.loginRegistration.additionalAddressField2Required') ?? false;
+        if ($additionalAddress2Required) {
+            $requiredFields[] = 'additionalAddressLine2';
+        }
+
+        return $requiredFields;
     }
 }
