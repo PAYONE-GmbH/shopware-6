@@ -17,6 +17,8 @@ use PayonePayment\PaymentHandler\PayoneIDealPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaydirektPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalV2ExpressPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalV2PaymentHandler;
 use PayonePayment\PaymentHandler\PayonePrzelewy24PaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSofortBankingPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneTrustlyPaymentHandler;
@@ -58,6 +60,8 @@ class ReturnUrlRequestParameterBuilder extends AbstractRequestParameterBuilder
         switch ($paymentMethod) {
             case PayonePaypalPaymentHandler::class:
             case PayonePaypalExpressPaymentHandler::class:
+            case PayonePaypalV2PaymentHandler::class:
+            case PayonePaypalV2ExpressPaymentHandler::class:
             case PayoneSofortBankingPaymentHandler::class:
             case PayoneCreditCardPaymentHandler::class:
             case PayoneTrustlyPaymentHandler::class:
