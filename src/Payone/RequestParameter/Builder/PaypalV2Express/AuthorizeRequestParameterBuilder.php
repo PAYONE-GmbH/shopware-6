@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\RequestParameter\Builder\PaypalV2Express;
 
 use PayonePayment\PaymentHandler\PayonePaypalV2ExpressPaymentHandler;
-use PayonePayment\Payone\RequestParameter\Builder\Paypal\AuthorizeRequestParameterBuilder as PaypalAuthorizeRequestParameterBuilder;
+use PayonePayment\Payone\RequestParameter\Builder\PaypalV2\AuthorizeRequestParameterBuilder as PaypalV2AuthorizeRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
-class AuthorizeRequestParameterBuilder extends PaypalAuthorizeRequestParameterBuilder
+class AuthorizeRequestParameterBuilder extends PaypalV2AuthorizeRequestParameterBuilder
 {
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
