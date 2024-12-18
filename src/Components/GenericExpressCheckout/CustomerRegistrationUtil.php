@@ -13,9 +13,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\Framework\Validation\DataValidationFactoryInterface;
+use Shopware\Core\Framework\Validation\DataValidator;
 use Shopware\Core\System\Country\CountryEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\Salutation\SalutationEntity;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CustomerRegistrationUtil
@@ -24,14 +27,15 @@ class CustomerRegistrationUtil
         private readonly EntityRepository $salutationRepository,
         private readonly EntityRepository $countryRepository,
         private readonly TranslatorInterface $translator,
-        private readonly SystemConfigService $systemConfigService,
+        private readonly DataValidationFactoryInterface $addressValidationFactory,
+        private readonly DataValidator $validator,
         private readonly LoggerInterface $logger
     ) {
     }
 
-    public function getCustomerDataBagFromGetCheckoutSessionResponse(array $response, Context $context): RequestDataBag
+    public function getCustomerDataBagFromGetCheckoutSessionResponse(array $response, SalesChannelContext $salesChannelContext): RequestDataBag
     {
-        $salutationId = $this->getSalutationId($context);
+        $salutationId = $this->getSalutationId($salesChannelContext->getContext());
 
         $billingAddress = [
             'salutationId' => $salutationId,
@@ -42,7 +46,7 @@ class CustomerRegistrationUtil
             'additionalAddressLine1' => $this->extractBillingData($response, 'addressaddition'),
             'zipcode' => $this->extractBillingData($response, 'zip'),
             'city' => $this->extractBillingData($response, 'city'),
-            'countryId' => $this->getCountryIdByCode($this->extractBillingData($response, 'country') ?? '', $context),
+            'countryId' => $this->getCountryIdByCode($this->extractBillingData($response, 'country') ?? '', $salesChannelContext->getContext()),
             'phone' => $this->extractBillingData($response, 'telephonenumber'),
         ];
 
@@ -55,18 +59,22 @@ class CustomerRegistrationUtil
             'additionalAddressLine1' => $this->extractShippingData($response, 'addressaddition'),
             'zipcode' => $this->extractShippingData($response, 'zip'),
             'city' => $this->extractShippingData($response, 'city'),
-            'countryId' => $this->getCountryIdByCode($this->extractShippingData($response, 'country') ?? '', $context),
+            'countryId' => $this->getCountryIdByCode($this->extractShippingData($response, 'country') ?? '', $salesChannelContext->getContext()),
             'phone' => $this->extractShippingData($response, 'telephonenumber'),
         ];
 
-        $isBillingAddressComplete = $this->hasAddressRequiredData($billingAddress);
-        $isShippingAddressComplete = $this->hasAddressRequiredData($shippingAddress);
+        $billingAddressViolations = $this->validateAddress($billingAddress, $salesChannelContext);
+        $shippingAddressViolations = $this->validateAddress($shippingAddress, $salesChannelContext);
+
+        $isBillingAddressComplete = $billingAddressViolations->count() === 0;
+        $isShippingAddressComplete = $shippingAddressViolations->count() === 0;
 
         if (!$isBillingAddressComplete && !$isShippingAddressComplete) {
             $this->logger->error('PAYONE Express Checkout: The delivery and billing address is incomplete', [
                 'billingAddress' => $billingAddress,
                 'shippingAddress' => $shippingAddress,
-                'requiredFields' => $this->getRequiredFields(),
+                'billingAddressViolations' => $billingAddressViolations,
+                'shippingAddressViolations' => $shippingAddressViolations,
             ]);
 
             throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
@@ -168,47 +176,10 @@ class CustomerRegistrationUtil
         return $country->getId();
     }
 
-    private function hasAddressRequiredData(array $address): bool
+    private function validateAddress(array $address, SalesChannelContext $salesChannelContext): ConstraintViolationList
     {
-        foreach ($this->getRequiredFields() as $field) {
-            if (!isset($address[$field])) {
-                return false;
-            }
-        }
+        $validation = $this->addressValidationFactory->create($salesChannelContext);
 
-        return true;
-    }
-
-    private function getRequiredFields(): array
-    {
-        $requiredFields = [
-            'firstName',
-            'lastName',
-            'city',
-            'street',
-            'countryId',
-        ];
-
-        $phoneRequired = $this->systemConfigService->get('core.loginRegistration.phoneNumberFieldRequired') ?? false;
-        if ($phoneRequired) {
-            $requiredFields[] = 'phone';
-        }
-
-        $birthdayRequired = $this->systemConfigService->get('core.loginRegistration.birthdayFieldRequired') ?? false;
-        if ($birthdayRequired) {
-            $requiredFields[] = 'birthday';
-        }
-
-        $additionalAddress1Required = $this->systemConfigService->get('core.loginRegistration.additionalAddressField1Required') ?? false;
-        if ($additionalAddress1Required) {
-            $requiredFields[] = 'additionalAddressLine1';
-        }
-
-        $additionalAddress2Required = $this->systemConfigService->get('core.loginRegistration.additionalAddressField2Required') ?? false;
-        if ($additionalAddress2Required) {
-            $requiredFields[] = 'additionalAddressLine2';
-        }
-
-        return $requiredFields;
+        return $this->validator->getViolations($address, $validation);
     }
 }

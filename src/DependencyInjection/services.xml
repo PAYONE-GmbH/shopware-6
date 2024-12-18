@@ -124,7 +124,8 @@
             <argument key="$translator" type="service" id="translator" />
             <argument key="$countryRepository" type="service" id="country.repository" />
             <argument key="$salutationRepository" type="service" id="salutation.repository" />
-            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument key="$addressValidationFactory" type="service" id="Shopware\Core\Checkout\Customer\Validation\AddressValidationFactory"/>
+            <argument key="$validator" type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
             <argument key="$logger" type="service" id="monolog.logger.payone" />
         </service>
 

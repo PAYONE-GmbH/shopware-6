@@ -136,7 +136,7 @@ class GenericExpressController extends StorefrontController
             throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
-        $customerDataBag = $this->customerRegistrationUtil->getCustomerDataBagFromGetCheckoutSessionResponse($response, $context->getContext());
+        $customerDataBag = $this->customerRegistrationUtil->getCustomerDataBagFromGetCheckoutSessionResponse($response, $context);
         $customerResponse = $this->registerRoute->register($customerDataBag, $context, false);
         $customerId = $customerResponse->getCustomer()->getId();
         $newContextToken = $this->accountService->login($response['addpaydata']['email'], $context, true);

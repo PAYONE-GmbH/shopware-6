@@ -7,7 +7,6 @@ namespace PayonePayment\Components\GenericExpressCheckout;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 
 /**
@@ -19,6 +18,8 @@ class CustomerRegistrationUtilTest extends TestCase
 
     public function testItReturnsCorrectDataWhenBillingDataIsMissingInResponse(): void
     {
+        $salesChannelContext = $this->createSalesChannelContext();
+
         /** @var CustomerRegistrationUtil $util */
         $util = $this->getContainer()->get(CustomerRegistrationUtil::class);
 
@@ -36,7 +37,7 @@ class CustomerRegistrationUtilTest extends TestCase
                 'shipping_country' => 'DE',
                 'shipping_telephonenumber' => '0123456789',
             ],
-        ], Context::createDefaultContext())->all();
+        ], $salesChannelContext)->all();
 
         static::assertArrayHasKey('guest', $data);
         static::assertTrue($data['guest'], 'guest should be always `true`, because the customer did not select if he wan\'t to be a customer');
@@ -67,6 +68,8 @@ class CustomerRegistrationUtilTest extends TestCase
      */
     public function testItReturnsCorrectDataWhenShippingDataIsMissingInResponse(string $billingPrefix): void
     {
+        $salesChannelContext = $this->createSalesChannelContext();
+
         /** @var CustomerRegistrationUtil $util */
         $util = $this->getContainer()->get(CustomerRegistrationUtil::class);
 
@@ -84,7 +87,7 @@ class CustomerRegistrationUtilTest extends TestCase
                 $billingPrefix . 'state' => 'Ohio',
                 $billingPrefix . 'country' => 'DE',
             ],
-        ], Context::createDefaultContext())->all();
+        ], $salesChannelContext)->all();
 
         static::assertArrayHasKey('billingAddress', $data);
         static::assertArrayNotHasKey('shippingAddress', $data, 'shipping address should not be present, because it would be the same as billing address');
@@ -106,6 +109,8 @@ class CustomerRegistrationUtilTest extends TestCase
      */
     public function testItReturnsCorrectDataWhenDifferentShippingAndBillingAreAvailableInResponse(string $billingPrefix): void
     {
+        $salesChannelContext = $this->createSalesChannelContext();
+
         /** @var CustomerRegistrationUtil $util */
         $util = $this->getContainer()->get(CustomerRegistrationUtil::class);
 
@@ -135,7 +140,7 @@ class CustomerRegistrationUtilTest extends TestCase
                 'shipping_state' => 'New York',
                 'shipping_country' => 'AT',
             ],
-        ], Context::createDefaultContext())->all();
+        ], $salesChannelContext)->all();
 
         static::assertArrayHasKey('billingAddress', $data);
         static::assertArrayHasKey('shippingAddress', $data);
@@ -166,6 +171,8 @@ class CustomerRegistrationUtilTest extends TestCase
      */
     public function testItReturnsCorrectDataWhenSameShippingAndBillingAreAvailableInResponse(string $billingPrefix): void
     {
+        $salesChannelContext = $this->createSalesChannelContext();
+
         /** @var CustomerRegistrationUtil $util */
         $util = $this->getContainer()->get(CustomerRegistrationUtil::class);
 
@@ -195,7 +202,7 @@ class CustomerRegistrationUtilTest extends TestCase
                 'shipping_state' => 'Ohio',
                 'shipping_country' => 'DE',
             ],
-        ], Context::createDefaultContext())->all();
+        ], $salesChannelContext)->all();
 
         static::assertArrayHasKey('billingAddress', $data);
         static::assertArrayNotHasKey('shippingAddress', $data, 'shipping address should not be present, because it would be the same as billing address');
@@ -216,6 +223,8 @@ class CustomerRegistrationUtilTest extends TestCase
      */
     public function testItReturnsCorrectDataWhenBillingCompanyIsAvailableInResponse(string $billingPrefix): void
     {
+        $salesChannelContext = $this->createSalesChannelContext();
+
         /** @var CustomerRegistrationUtil $util */
         $util = $this->getContainer()->get(CustomerRegistrationUtil::class);
 
@@ -234,7 +243,7 @@ class CustomerRegistrationUtilTest extends TestCase
                 $billingPrefix . 'state' => 'Ohio',
                 $billingPrefix . 'country' => 'DE',
             ],
-        ], Context::createDefaultContext())->all();
+        ], $salesChannelContext)->all();
 
         static::assertArrayHasKey('billingAddress', $data);
         static::assertEquals('my-company', $data['billingAddress']['company']);
@@ -247,6 +256,8 @@ class CustomerRegistrationUtilTest extends TestCase
      */
     public function testItReturnsCorrectDataWhenNoBillingCompanyIsAvailableInResponse(string $billingPrefix): void
     {
+        $salesChannelContext = $this->createSalesChannelContext();
+
         /** @var CustomerRegistrationUtil $util */
         $util = $this->getContainer()->get(CustomerRegistrationUtil::class);
 
@@ -264,7 +275,7 @@ class CustomerRegistrationUtilTest extends TestCase
                 $billingPrefix . 'state' => 'Ohio',
                 $billingPrefix . 'country' => 'DE',
             ],
-        ], Context::createDefaultContext())->all();
+        ], $salesChannelContext)->all();
 
         static::assertArrayHasKey('billingAddress', $data);
         static::assertNull($data['billingAddress']['company'] ?? null);
@@ -273,6 +284,8 @@ class CustomerRegistrationUtilTest extends TestCase
 
     public function testItReturnsCorrectNameDataForPayPalV1(): void
     {
+        $salesChannelContext = $this->createSalesChannelContext();
+
         /** @var CustomerRegistrationUtil $util */
         $util = $this->getContainer()->get(CustomerRegistrationUtil::class);
 
@@ -300,7 +313,7 @@ class CustomerRegistrationUtilTest extends TestCase
                 'shipping_state' => 'New York',
                 'shipping_country' => 'AT',
             ],
-        ], Context::createDefaultContext())->all();
+        ], $salesChannelContext)->all();
 
         static::assertArrayHasKey('billingAddress', $data);
         static::assertArrayHasKey('firstName', $data);
@@ -320,6 +333,8 @@ class CustomerRegistrationUtilTest extends TestCase
      */
     public function testItThrowsExceptionIfBillingAndShippingAddressAreIncomplete(string $billingPrefix): void
     {
+        $salesChannelContext = $this->createSalesChannelContext();
+
         /** @var CustomerRegistrationUtil $util */
         $util = $this->getContainer()->get(CustomerRegistrationUtil::class);
 
@@ -349,7 +364,7 @@ class CustomerRegistrationUtilTest extends TestCase
                 'shipping_state' => 'Ohio',
                 'shipping_country' => 'DE',
             ],
-        ], Context::createDefaultContext())->all();
+        ], $salesChannelContext)->all();
     }
 
     /**
@@ -358,6 +373,8 @@ class CustomerRegistrationUtilTest extends TestCase
      */
     public function testItTakesCompleteShippingAddressAsBillingAddressIfBillingAddressIsIncomplete(string $billingPrefix): void
     {
+        $salesChannelContext = $this->createSalesChannelContext();
+
         /** @var CustomerRegistrationUtil $util */
         $util = $this->getContainer()->get(CustomerRegistrationUtil::class);
 
@@ -387,7 +404,7 @@ class CustomerRegistrationUtilTest extends TestCase
                 'shipping_state' => 'New York',
                 'shipping_country' => 'AT',
             ],
-        ], Context::createDefaultContext())->all();
+        ], $salesChannelContext)->all();
 
         static::assertArrayHasKey('billingAddress', $data);
         static::assertArrayNotHasKey('shippingAddress', $data, 'shipping address should not be present, because it would be the same as billing address');
@@ -404,6 +421,8 @@ class CustomerRegistrationUtilTest extends TestCase
 
     public function testItRemovesShippingAddressIfShippingAddressIsIncomplete(): void
     {
+        $salesChannelContext = $this->createSalesChannelContext();
+
         /** @var CustomerRegistrationUtil $util */
         $util = $this->getContainer()->get(CustomerRegistrationUtil::class);
 
@@ -432,7 +451,7 @@ class CustomerRegistrationUtilTest extends TestCase
                 'shipping_state' => 'New York',
                 'shipping_country' => 'AT',
             ],
-        ], Context::createDefaultContext())->all();
+        ], $salesChannelContext)->all();
 
         static::assertArrayHasKey('billingAddress', $data);
         static::assertArrayNotHasKey('shippingAddress', $data, 'shipping address should not be present, because it was incomplete');
