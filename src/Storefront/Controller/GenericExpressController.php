@@ -87,11 +87,11 @@ class GenericExpressController extends StorefrontController
             return $this->forwardToRoute('frontend.checkout.confirm.page');
         }
 
-        if (!\array_key_exists('redirecturl', $response)) {
+        if (!isset($response['redirectUrl'])) {
             throw new RuntimeException('generic express checkout: No redirect URL has been given for payment method id ' . $paymentMethodId);
         }
 
-        return new RedirectResponse($response['redirecturl']);
+        return new RedirectResponse($response['redirectUrl']);
     }
 
     #[Route(
