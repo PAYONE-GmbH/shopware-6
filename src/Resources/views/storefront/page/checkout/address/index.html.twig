@@ -4,7 +4,7 @@
     {{ parent() }}
 
     {% if not context.customer and page.cart.price.totalPrice > 0 %}
-        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePayonePaymentMethodIds %}
+        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePayonePaymentMethodIds and constant('PayonePayment\\PaymentMethod\\PayonePaypalV2Express::UUID') not in activePayonePaymentMethodIds %}
             {% block page_checkout_address_payone_paypal_express_button %}
                 <div class="row">
                     <div class="col-5 pb-2">
