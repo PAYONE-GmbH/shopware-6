@@ -12,6 +12,8 @@ use PayonePayment\PaymentHandler\PayonePayolutionInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePayolutionInvoicingPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalExpressPaymentHandler;
 use PayonePayment\PaymentHandler\PayonePaypalPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalV2ExpressPaymentHandler;
+use PayonePayment\PaymentHandler\PayonePaypalV2PaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredDirectDebitPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInstallmentPaymentHandler;
 use PayonePayment\PaymentHandler\PayoneSecuredInvoicePaymentHandler;
@@ -59,6 +61,8 @@ class ShippingInformationRequestParameterBuilder extends AbstractRequestParamete
                 PayonePaydirektPaymentHandler::class,
                 PayonePaypalPaymentHandler::class,
                 PayonePaypalExpressPaymentHandler::class,
+                PayonePaypalV2PaymentHandler::class,
+                PayonePaypalV2ExpressPaymentHandler::class,
                 PayonePayolutionInvoicingPaymentHandler::class,
                 PayonePayolutionDebitPaymentHandler::class,
                 PayonePayolutionInstallmentPaymentHandler::class,

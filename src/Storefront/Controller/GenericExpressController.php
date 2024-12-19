@@ -13,15 +13,18 @@ use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use RuntimeException;
+use Shopware\Core\Checkout\Cart\CartException;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Customer\SalesChannel\AbstractRegisterRoute;
 use Shopware\Core\Checkout\Customer\SalesChannel\AccountService;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
+use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\System\SalesChannel\Context\AbstractSalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
 use Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -47,6 +50,26 @@ class GenericExpressController extends StorefrontController
     }
 
     #[Route(
+        path: '/payone/express-checkout/create-session/{paymentMethodId}',
+        name: 'frontend.account.payone.express-checkout.generic.create-session',
+        options: ['seo' => false],
+        defaults: ['XmlHttpRequest' => true],
+        methods: ['GET']
+    )]
+    public function createSessionAction(SalesChannelContext $context, string $paymentMethodId): Response
+    {
+        $response = $this->createSession($context, $paymentMethodId);
+
+        if (!isset($response['orderId'])) {
+            throw new RuntimeException('generic express checkout: No orderId has been given for payment method id ' . $paymentMethodId);
+        }
+
+        return new JsonResponse([
+            'orderId' => $response['orderId'],
+        ]);
+    }
+
+    #[Route(
         path: '/payone/express-checkout/redirect/{paymentMethodId}',
         name: 'frontend.account.payone.express-checkout.generic.redirect',
         options: ['seo' => false],
@@ -54,44 +77,21 @@ class GenericExpressController extends StorefrontController
     )]
     public function redirectAction(SalesChannelContext $context, string $paymentMethodId): Response
     {
-        if (!\array_key_exists($paymentMethodId, PaymentHandlerGroups::GENERIC_EXPRESS)) {
-            throw $this->createNotFoundException();
-        }
-
-        $cart = $this->cartService->getCart($context->getToken(), $context);
-
         try {
-            $salesChannelDataBag = new DataBag([
-                SalesChannelContextService::PAYMENT_METHOD_ID => $paymentMethodId,
-            ]);
-
-            $this->salesChannelContextSwitcher->update($salesChannelDataBag, $context);
-        } catch (\Throwable $exception) {
+            $response = $this->createSession($context, $paymentMethodId);
+        } catch (ConstraintViolationException $constraintViolationException) {
             return $this->forwardToRoute('frontend.checkout.confirm.page', [
-                'formViolations' => $exception,
+                'formViolations' => $constraintViolationException,
             ]);
+        } catch (CartException) {
+            return $this->forwardToRoute('frontend.checkout.confirm.page');
         }
 
-        $setRequest = $this->requestParameterFactory->getRequestParameter(
-            new CreateExpressCheckoutSessionStruct(
-                $context,
-                PaymentHandlerGroups::GENERIC_EXPRESS[$paymentMethodId]
-            )
-        );
-
-        try {
-            $response = $this->client->request($setRequest);
-        } catch (PayoneRequestException) {
-            throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
-        }
-
-        if (!\array_key_exists('redirecturl', $response)) {
+        if (!isset($response['redirectUrl'])) {
             throw new RuntimeException('generic express checkout: No redirect URL has been given for payment method id ' . $paymentMethodId);
         }
 
-        $this->cartExtensionService->addCartExtensionForExpressCheckout($cart, $context, $paymentMethodId, $response['workorderid']);
-
-        return new RedirectResponse($response['redirecturl']);
+        return new RedirectResponse($response['redirectUrl']);
     }
 
     #[Route(
@@ -136,7 +136,7 @@ class GenericExpressController extends StorefrontController
             throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
         }
 
-        $customerDataBag = $this->customerRegistrationUtil->getCustomerDataBagFromGetCheckoutSessionResponse($response, $context->getContext());
+        $customerDataBag = $this->customerRegistrationUtil->getCustomerDataBagFromGetCheckoutSessionResponse($response, $context);
         $customerResponse = $this->registerRoute->register($customerDataBag, $context, false);
         $customerId = $customerResponse->getCustomer()->getId();
         $newContextToken = $this->accountService->login($response['addpaydata']['email'], $context, true);
@@ -159,5 +159,43 @@ class GenericExpressController extends StorefrontController
         $this->cartExtensionService->addCartExtension($cart, $newContext, $response['workorderid']);
 
         return $this->redirectToRoute('frontend.checkout.confirm.page');
+    }
+
+    /**
+     * @return array{orderId: string|null, redirectUrl: string|null}
+     */
+    private function createSession(SalesChannelContext $context, string $paymentMethodId): array
+    {
+        if (!\array_key_exists($paymentMethodId, PaymentHandlerGroups::GENERIC_EXPRESS)) {
+            throw $this->createNotFoundException();
+        }
+
+        $cart = $this->cartService->getCart($context->getToken(), $context);
+
+        $salesChannelDataBag = new DataBag([
+            SalesChannelContextService::PAYMENT_METHOD_ID => $paymentMethodId,
+        ]);
+
+        $this->salesChannelContextSwitcher->update($salesChannelDataBag, $context);
+
+        $setRequest = $this->requestParameterFactory->getRequestParameter(
+            new CreateExpressCheckoutSessionStruct(
+                $context,
+                PaymentHandlerGroups::GENERIC_EXPRESS[$paymentMethodId]
+            )
+        );
+
+        try {
+            $response = $this->client->request($setRequest);
+        } catch (PayoneRequestException) {
+            throw new RuntimeException($this->trans('PayonePayment.errorMessages.genericError'));
+        }
+
+        $this->cartExtensionService->addCartExtensionForExpressCheckout($cart, $context, $paymentMethodId, $response['workorderid']);
+
+        return [
+            'orderId' => $response['addpaydata']['orderId'] ?? null,
+            'redirectUrl' => $response['redirecturl'] ?? null,
+        ];
     }
 }
