@@ -73,8 +73,8 @@ class CustomerRegistrationUtil
             $this->logger->error('PAYONE Express Checkout: The delivery and billing address is incomplete', [
                 'billingAddress' => $billingAddress,
                 'shippingAddress' => $shippingAddress,
-                'billingAddressViolations' => $billingAddressViolations,
-                'shippingAddressViolations' => $shippingAddressViolations,
+                'billingAddressViolations' => $billingAddressViolations->__toString(),
+                'shippingAddressViolations' => $shippingAddressViolations->__toString(),
             ]);
 
             throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
