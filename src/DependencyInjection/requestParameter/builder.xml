@@ -123,6 +123,44 @@
             <tag name="payone_request_builder" />
         </service>
 
+        <!-- Paypal v2 -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalV2\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalV2\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <!-- Paypal v2 Express -->
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalV2Express\PreAuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalV2Express\AuthorizeRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder"/>
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalV2Express\GetCheckoutDetailsRequestParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder" />
+        </service>
+
+        <service id="PayonePayment\Payone\RequestParameter\Builder\PaypalV2Express\CreateCheckoutSessionParameterBuilder"
+                 parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">
+
+            <tag name="payone_request_builder" />
+        </service>
+
         <!-- Sofort Banking -->
         <service id="PayonePayment\Payone\RequestParameter\Builder\SofortBanking\AuthorizeRequestParameterBuilder"
                  parent="PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder">

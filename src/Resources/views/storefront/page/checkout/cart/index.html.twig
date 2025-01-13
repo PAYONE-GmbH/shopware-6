@@ -4,12 +4,20 @@
     {{ parent() }}
 
     {% if not context.customer %}
-        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePaymentPaymentMethods %}
+        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePayonePaymentMethodIds %}
             {% block page_checkout_payone_paypal_express_button %}
                 <div class="checkout-aside-action">
                     <a href="{{ path('frontend.account.payone.express-checkout.generic.redirect', { paymentMethodId: constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') }) }}" title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}" class="btn btn-block btn-primary">
                         {{ "PayonePayment.paypalExpress.buttonTitle" | trans }}
                     </a>
+                </div>
+            {% endblock %}
+        {% endif %}
+
+        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalV2Express::UUID') in activePayonePaymentMethodIds %}
+            {% block page_checkout_payone_paypal_v2_express_button %}
+                <div class="checkout-aside-action">
+                    {% sw_include '@PayonePayment/storefront/component/checkout/paypal-v2-button.html.twig' %}
                 </div>
             {% endblock %}
         {% endif %}

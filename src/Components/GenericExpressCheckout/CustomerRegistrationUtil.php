@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\GenericExpressCheckout;
 
+use PayonePayment\Core\Utils\AddressCompare;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
@@ -11,8 +13,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\Framework\Validation\DataValidationFactoryInterface;
+use Shopware\Core\Framework\Validation\DataValidator;
 use Shopware\Core\System\Country\CountryEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\Salutation\SalutationEntity;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CustomerRegistrationUtil
@@ -20,48 +26,76 @@ class CustomerRegistrationUtil
     public function __construct(
         private readonly EntityRepository $salutationRepository,
         private readonly EntityRepository $countryRepository,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly DataValidationFactoryInterface $addressValidationFactory,
+        private readonly DataValidator $validator,
+        private readonly LoggerInterface $logger
     ) {
     }
 
-    public function getCustomerDataBagFromGetCheckoutSessionResponse(array $response, Context $context): RequestDataBag
+    public function getCustomerDataBagFromGetCheckoutSessionResponse(array $response, SalesChannelContext $salesChannelContext): RequestDataBag
     {
-        $salutationId = $this->getSalutationId($context);
+        $salutationId = $this->getSalutationId($salesChannelContext->getContext());
+
+        $billingAddress = [
+            'salutationId' => $salutationId,
+            'company' => $this->extractBillingData($response, 'company'),
+            'firstName' => $this->extractBillingData($response, 'firstname'),
+            'lastName' => $this->extractBillingData($response, 'lastname'),
+            'street' => $this->extractBillingData($response, 'street'),
+            'additionalAddressLine1' => $this->extractBillingData($response, 'addressaddition'),
+            'zipcode' => $this->extractBillingData($response, 'zip'),
+            'city' => $this->extractBillingData($response, 'city'),
+            'countryId' => $this->getCountryIdByCode($this->extractBillingData($response, 'country') ?? '', $salesChannelContext->getContext()),
+            'phone' => $this->extractBillingData($response, 'telephonenumber'),
+        ];
+
+        $shippingAddress = [
+            'salutationId' => $salutationId,
+            'company' => $this->extractShippingData($response, 'company'),
+            'firstName' => $this->extractShippingData($response, 'firstname'),
+            'lastName' => $this->extractShippingData($response, 'lastname'),
+            'street' => $this->extractShippingData($response, 'street'),
+            'additionalAddressLine1' => $this->extractShippingData($response, 'addressaddition'),
+            'zipcode' => $this->extractShippingData($response, 'zip'),
+            'city' => $this->extractShippingData($response, 'city'),
+            'countryId' => $this->getCountryIdByCode($this->extractShippingData($response, 'country') ?? '', $salesChannelContext->getContext()),
+            'phone' => $this->extractShippingData($response, 'telephonenumber'),
+        ];
+
+        $billingAddressViolations = $this->validateAddress($billingAddress, $salesChannelContext);
+        $shippingAddressViolations = $this->validateAddress($shippingAddress, $salesChannelContext);
+
+        $isBillingAddressComplete = $billingAddressViolations->count() === 0;
+        $isShippingAddressComplete = $shippingAddressViolations->count() === 0;
+
+        if (!$isBillingAddressComplete && !$isShippingAddressComplete) {
+            $this->logger->error('PAYONE Express Checkout: The delivery and billing address is incomplete', [
+                'billingAddress' => $billingAddress,
+                'shippingAddress' => $shippingAddress,
+                'billingAddressViolations' => $billingAddressViolations->__toString(),
+                'shippingAddressViolations' => $shippingAddressViolations->__toString(),
+            ]);
+
+            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+        }
+
+        if (!$isBillingAddressComplete && $isShippingAddressComplete) {
+            $billingAddress = $shippingAddress;
+        }
 
         $customerData = new RequestDataBag([
             'guest' => true,
             'salutationId' => $salutationId,
             'email' => $response['addpaydata']['email'],
-            'firstName' => $this->extractBillingData($response, 'firstname'),
-            'lastName' => $this->extractBillingData($response, 'lastname'),
+            'firstName' => $billingAddress['firstName'],
+            'lastName' => $billingAddress['lastName'],
             'acceptedDataProtection' => true,
-            'billingAddress' => array_filter([
-                'salutationId' => $salutationId,
-                'company' => $this->extractBillingData($response, 'company'),
-                'firstName' => $this->extractBillingData($response, 'firstname'),
-                'lastName' => $this->extractBillingData($response, 'lastname'),
-                'street' => $this->extractBillingData($response, 'street'),
-                'additionalAddressLine1' => $this->extractBillingData($response, 'addressaddition'),
-                'zipcode' => $this->extractBillingData($response, 'zip'),
-                'city' => $this->extractBillingData($response, 'city'),
-                'countryId' => $this->getCountryIdByCode($this->extractBillingData($response, 'country') ?? '', $context),
-                'phone' => $this->extractBillingData($response, 'telephonenumber'),
-            ]),
-            'shippingAddress' => array_filter([
-                'salutationId' => $salutationId,
-                'company' => $this->extractShippingData($response, 'company'),
-                'firstName' => $this->extractShippingData($response, 'firstname'),
-                'lastName' => $this->extractShippingData($response, 'lastname'),
-                'street' => $this->extractShippingData($response, 'street'),
-                'additionalAddressLine1' => $this->extractShippingData($response, 'addressaddition'),
-                'zipcode' => $this->extractShippingData($response, 'zip'),
-                'city' => $this->extractShippingData($response, 'city'),
-                'countryId' => $this->getCountryIdByCode($this->extractShippingData($response, 'country') ?? '', $context),
-                'phone' => $this->extractShippingData($response, 'telephonenumber'),
-            ]),
+            'billingAddress' => $billingAddress,
+            'shippingAddress' => $shippingAddress,
         ]);
 
-        if ($this->extractBillingData($response, 'company') !== null) {
+        if ($customerData->get('billingAddress')?->get('company') !== null) {
             $customerData->set('accountType', CustomerEntity::ACCOUNT_TYPE_BUSINESS);
         } else {
             $customerData->set('accountType', CustomerEntity::ACCOUNT_TYPE_PRIVATE);
@@ -69,16 +103,16 @@ class CustomerRegistrationUtil
 
         $billingAddress = $customerData->get('billingAddress')?->all() ?: [];
         $shippingAddress = $customerData->get('shippingAddress')?->all() ?: [];
-        if (array_diff($billingAddress, $shippingAddress) === []) {
+        if (!$isShippingAddressComplete || AddressCompare::areRawAddressesIdentical($billingAddress, $shippingAddress)) {
             $customerData->remove('shippingAddress');
         }
 
         return $customerData;
     }
 
-    private function extractBillingData(array $response, string $key, string|null $alternateKey = null): ?string
+    private function extractBillingData(array $response, string $key): ?string
     {
-        // special case: PayPal express: PayPal does not return firstname. so we need to take the firstname from the shipping-data
+        // special case: PayPal v1 express: PayPal does not return firstname. so we need to take the firstname from the shipping-data
         if (($key === 'firstname' || $key === 'lastname')
             && !\array_key_exists('firstname', $response['addpaydata'])
             && isset(
@@ -92,20 +126,16 @@ class CustomerRegistrationUtil
             }
         }
 
-        if ($alternateKey === null
-            && !\array_key_exists('billing_lastname', $response['addpaydata'])
-            && !\array_key_exists('lastname', $response['addpaydata'])
-        ) {
-            // there are no explicit billing-address-details. We assume that there are only shipping details. So we use the shipping details for the billing details too.
-            $alternateKey = 'shipping_' . $key;
-        }
-
-        return $response['addpaydata']['billing_' . $key] ?? $response['addpaydata'][$key] ?? ($alternateKey ? $response['addpaydata'][$alternateKey] : null);
+        // Do not take any values from the shipping address as a fallback for individual fields.
+        // If mandatory fields are missing from the billing address, the complete shipping address is used
+        return $response['addpaydata']['billing_' . $key] ?? $response['addpaydata'][$key] ?? null;
     }
 
-    private function extractShippingData(array $response, string $key, ?string $alternateKey = null): ?string
+    private function extractShippingData(array $response, string $key): ?string
     {
-        return $response['addpaydata']['shipping_' . $key] ?? $response['addpaydata'][$key] ?? $response['addpaydata'][$alternateKey] ?? $this->extractBillingData($response, $key);
+        // Do not take any values from the billing address as a fallback for individual fields.
+        // If mandatory fields are missing from the shipping address, the complete shipping address is removed
+        return $response['addpaydata']['shipping_' . $key] ?? null;
     }
 
     private function getSalutationId(Context $context): string
@@ -144,5 +174,12 @@ class CustomerRegistrationUtil
         }
 
         return $country->getId();
+    }
+
+    private function validateAddress(array $address, SalesChannelContext $salesChannelContext): ConstraintViolationList
+    {
+        $validation = $this->addressValidationFactory->create($salesChannelContext);
+
+        return $this->validator->getViolations($address, $validation);
     }
 }

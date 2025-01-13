@@ -286,6 +286,90 @@
     </card>
 
     <card>
+        <title>PAYONE PayPal v2</title>
+        <title lang="de-DE">PAYONE PayPal v2</title>
+
+        <name>payment_paypalV2</name>
+
+        <input-field type="single-select">
+            <name>paypalV2AuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Use this option to set the authorization method for this payment type.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>paypalV2ProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>PAYONE PayPal Express v2</title>
+        <title lang="de-DE">PAYONE PayPal Express v2</title>
+
+        <name>payment_paypalV2Express</name>
+
+        <input-field type="single-select">
+            <name>paypalV2ExpressAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Use this option to set the authorization method for this payment type.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>paypalV2ExpressProvideNarrativeText</name>
+            <label>Transmit order number in narrative text?</label>
+            <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
+            <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
+            <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+
+        <input-field>
+            <name>paypalV2ExpressPayPalMerchantId</name>
+            <label>PayPal Merchant ID (Live)</label>
+            <label lang="de-DE">PayPal Merchant ID (Live)</label>
+            <helpText>Is used for the express button when the plugin is in live mode. A fixed merchant ID from PAYONE is used in test mode.</helpText>
+            <helpText lang="de-DE">Wird für den Express-Button verwendet, wenn sich das Plugin im Live-Modus befindet. Im Test-Modus wird eine feste Merchant ID von PAYONE verwendet.</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>paypalV2ExpressShowPayLaterButton</name>
+            <label>Show "Pay later" button?</label>
+            <label lang="de-DE">"Später Bezahlen" Button anzeigen?</label>
+        </input-field>
+    </card>
+
+    <card>
         <title>PAYONE Direct Debit</title>
         <title lang="de-DE">PAYONE Lastschrift</title>
 

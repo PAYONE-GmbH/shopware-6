@@ -5,6 +5,7 @@ import PayonePaymentPayolutionInstallment from './payolution-installment/payone-
 import PayonePaymentApplePay from "./apple-pay/payone-payment.apple-pay";
 import PayonePaymentRatepayInstallment from "./ratepay-installment/payone-payment.ratepay-installment";
 import PayonePaymentKlarna from "./klarna/payone-payment.klarna";
+import PayonePaymentPayPalV2 from "./paypal-v2/payone-payment.paypal-v2";
 import "./amazon-pay";
 
 const PluginManager = window.PluginManager;
@@ -16,6 +17,7 @@ PluginManager.register('PayonePaymentPayolutionInstallment', PayonePaymentPayolu
 PluginManager.register('PayonePaymentApplePay', PayonePaymentApplePay, '[data-payone-payment-apple-pay-options]');
 PluginManager.register('PayonePaymentRatepayInstallment', PayonePaymentRatepayInstallment, '[data-is-payone-ratepay-installment]');
 PluginManager.register('PayonePaymentKlarna', PayonePaymentKlarna, '[data-payone-payment-klarna]');
+PluginManager.register('PayonePaymentPayPalV2', PayonePaymentPayPalV2, '[data-payone-payment-pay-pal-v2-options]');
 
 if (module.hot) {
     module.hot.accept();

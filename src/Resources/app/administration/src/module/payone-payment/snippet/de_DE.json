@@ -45,6 +45,8 @@
                 "debit": "Die API-Zugangsdaten für PAYONE Lastschrift sind nicht korrekt.",
                 "paypalExpress": "Die API-Zugangsdaten für PAYONE PayPal Express sind nicht korrekt.",
                 "paypal": "Die API-Zugangsdaten für PAYONE PayPal sind nicht korrekt.",
+                "paypalV2Express": "Die API-Zugangsdaten für PAYONE PayPal Express v2 sind nicht korrekt.",
+                "paypalV2": "Die API-Zugangsdaten für PAYONE PayPal v2 sind nicht korrekt.",
                 "payolutionInstallment": "Die API-Zugangsdaten für PAYONE Unzer Ratenkauf sind nicht korrekt.",
                 "payolutionInvoicing": "Die API-Zugangsdaten für PAYONE Unzer Rechnungskauf sind nicht korrekt.",
                 "payolutionDebit": "Die API-Zugangsdaten für PAYONE Unzer Lastschrift sind nicht korrekt.",

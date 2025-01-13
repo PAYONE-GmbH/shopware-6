@@ -50,6 +50,13 @@
         <service id="PayonePayment\Components\Currency\CurrencyPrecision" />
         <service id="PayonePayment\Components\Currency\CurrencyPrecisionInterface" alias="PayonePayment\Components\Currency\CurrencyPrecision"/>
 
+        <service id="PayonePayment\Components\Helper\ActivePaymentMethodsLoader">
+            <argument key="$cachePool" type="service" id="cache.object"/>
+            <argument key="$paymentMethodRepository" type="service" id="sales_channel.payment_method.repository"/>
+            <argument key="$salesChannelRepository" type="service" id="sales_channel.repository" />
+        </service>
+        <service id="PayonePayment\Components\Helper\ActivePaymentMethodsLoaderInterface" alias="PayonePayment\Components\Helper\ActivePaymentMethodsLoader"/>
+
         <service id="PayonePayment\Components\Helper\OrderFetcher">
             <argument type="service" id="order.repository" />
         </service>
@@ -117,6 +124,9 @@
             <argument key="$translator" type="service" id="translator" />
             <argument key="$countryRepository" type="service" id="country.repository" />
             <argument key="$salutationRepository" type="service" id="salutation.repository" />
+            <argument key="$addressValidationFactory" type="service" id="Shopware\Core\Checkout\Customer\Validation\AddressValidationFactory"/>
+            <argument key="$validator" type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
+            <argument key="$logger" type="service" id="monolog.logger.payone" />
         </service>
 
         <service id="PayonePayment\Components\AmazonPay\ButtonConfiguration" autowire="true">
