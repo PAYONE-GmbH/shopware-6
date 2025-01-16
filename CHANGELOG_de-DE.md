@@ -402,3 +402,19 @@ Wartung
 * Speicherung von SEPA-Mandaten entfernt
 * composer.json angepasst
 * getestet mit 6.6.5.1
+
+# 6.2.0
+
+Neue Funktionen
+ 
+* neue Zahlart: PayPal v2
+* neue Zahlart: PayPal Express v2
+ 
+Fehlerbehebung
+ 
+* zeigt Fehlermeldungen im Backend nur noch bei tatsächlichem Fehler an
+ 
+Wartung
+ 
+* webhooks: Sortierreihenfolge für Handler hinzugefügt
+* getestet mit 6.6.9

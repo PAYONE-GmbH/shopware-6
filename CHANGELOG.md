@@ -415,3 +415,19 @@ Maintenance
 * removed storage of SEPA mandates
 * edit composer.json
 * tested with 6.6.5.1
+
+# 6.2.0
+
+New Features
+ 
+* new payment method: PayPal v2
+* new payment method: PayPal Express v2
+ 
+Bugfix
+ 
+* show error notification in backend only in case of an error
+ 
+Maintenance
+ 
+* webhooks: add sort-order for handlers to prevent wrong order
+* tested with 6.6.9
