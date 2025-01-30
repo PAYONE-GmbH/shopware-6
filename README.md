@@ -39,7 +39,7 @@ https://docs.payone.com/integration/plugins/integration-guide-shopware-6
 ## Support and Contact
 
 PAYONE GmbH  
-Lyoner Straße 9  
+Lyoner Straße 15  
 60528 Frankfurt am Main, Germany  
 Phone +49 431 25968-400  
 shopware@payone.com
