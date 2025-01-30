@@ -39,9 +39,8 @@ https://docs.payone.com/integration/plugins/integration-guide-shopware-6
 ## Support and Contact
 
 PAYONE GmbH  
-Office Kiel  
-Fraunhoferstraße 2–4  
-24118 Kiel, Germany  
+Lyoner Straße 9  
+60528 Frankfurt am Main, Germany  
 Phone +49 431 25968-400  
 shopware@payone.com
 
