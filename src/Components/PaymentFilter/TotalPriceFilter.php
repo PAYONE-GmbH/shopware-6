@@ -14,7 +14,7 @@ class TotalPriceFilter implements PaymentFilterServiceInterface
     ): void {
         if ($filterContext->getOrder()) {
             $price = $filterContext->getOrder()->getPrice()->getTotalPrice();
-        } elseif ($filterContext->getCart()) {
+        } elseif ($filterContext->getCart()?->getLineItems()->count() > 0) {
             $price = $filterContext->getCart()->getPrice()->getTotalPrice();
         } else {
             return;
