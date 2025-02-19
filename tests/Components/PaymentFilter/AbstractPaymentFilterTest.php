@@ -9,6 +9,8 @@ use PayonePayment\TestCaseBase\Mock\PaymentHandler\PaymentHandlerMock;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\Cart;
+use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Cart\LineItem\LineItemCollection;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
@@ -107,6 +109,7 @@ abstract class AbstractPaymentFilterTest extends TestCase
 
         $cart = $this->createMock(Cart::class);
         $cart->method('getPrice')->willReturn($price);
+        $cart->method('getLineItems')->willReturn(new LineItemCollection([$this->createMock(LineItem::class)]));
 
         $filterContext = new PaymentFilterContext(
             $salesChannelContext,
