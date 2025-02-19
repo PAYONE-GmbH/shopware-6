@@ -46,48 +46,43 @@ class CustomerDataPersistor
         $birthday = \is_string($birthday) ? (\DateTime::createFromFormat('Y-m-d', $birthday) ?: null) : null;
 
         if ($birthday instanceof \DateTime && $birthday->getTimestamp() !== $customer->getBirthday()?->getTimestamp()) {
-            $this->customerRepository->update(
+            $this->customerRepository->update([
                 [
-                    [
-                        'id' => $customer->getId(),
-                        'birthday' => $birthday,
-                    ],
+                    'id' => $customer->getId(),
+                    'birthday' => $birthday,
                 ],
-                $context
-            );
+            ], $context);
         }
     }
 
     protected function saveCustomerAddressData(CustomerAddressEntity $customerAddress, RequestDataBag $dataBag, Context $context): void
     {
         $phoneNumber = $dataBag->get(RequestConstants::PHONE);
+        $phoneNumber = \is_string($phoneNumber) ? trim($phoneNumber) : null;
 
-        if ($phoneNumber !== $customerAddress->getPhoneNumber()) {
-            $this->customerAddressRepository->update(
+        if (!empty($phoneNumber) && $phoneNumber !== $customerAddress->getPhoneNumber()) {
+            $this->customerAddressRepository->update([
                 [
-                    [
-                        'id' => $customerAddress->getId(),
-                        'phoneNumber' => $phoneNumber,
-                    ],
+                    'id' => $customerAddress->getId(),
+                    'phoneNumber' => $phoneNumber,
                 ],
-                $context
-            );
+            ], $context);
         }
     }
 
     protected function saveOrderData(OrderEntity $orderEntity, RequestDataBag $dataBag, Context $context): void
     {
         $phoneNumber = $dataBag->get(RequestConstants::PHONE);
+        $phoneNumber = \is_string($phoneNumber) ? trim($phoneNumber) : null;
 
-        $this->orderAddressRepository->update(
-            [
+        if (!empty($phoneNumber)) {
+            $this->orderAddressRepository->update([
                 [
                     'id' => $orderEntity->getBillingAddressId(),
                     'phoneNumber' => $phoneNumber,
                 ],
-            ],
-            $context
-        );
+            ], $context);
+        }
     }
 
     private function getCustomer(OrderEntity $order, Context $context): ?CustomerEntity
