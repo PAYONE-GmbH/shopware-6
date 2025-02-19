@@ -8,6 +8,8 @@ use PayonePayment\PaymentHandler\PayonePrepaymentPaymentHandler;
 use PayonePayment\TestCaseBase\PayoneTestBehavior;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\Cart;
+use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Cart\LineItem\LineItemCollection;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\DefaultPayment;
@@ -36,6 +38,7 @@ class TotalPriceFilterTest extends TestCase
             null,
             $cartMock = $this->createMock(Cart::class)
         );
+        $cartMock->method('getLineItems')->willReturn(new LineItemCollection([$this->createMock(LineItem::class)]));
 
         $cartMock->method('getPrice')->willReturn($this->createPrice(0));
         $filter->filterPaymentMethods($collection = $this->getMethodCollection(), $context);
@@ -62,6 +65,7 @@ class TotalPriceFilterTest extends TestCase
             null,
             $cartMock = $this->createMock(Cart::class)
         );
+        $cartMock->method('getLineItems')->willReturn(new LineItemCollection([$this->createMock(LineItem::class)]));
 
         $cartMock->method('getPrice')->willReturn($this->createPrice(0));
         $filter->filterPaymentMethods($collection = $this->getMethodCollection(), $context);
