@@ -42,6 +42,12 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
             return;
         }
 
+        if ($filterContext->getCart()?->getLineItems()->count() === 0) {
+            // cart do not have any items, so a checkout is not possible.
+            // This makes it possible to still have the payment method as "selected", if the cart ist empty.
+            return;
+        }
+
         $currency = $filterContext->getCurrency();
         $billingAddress = $filterContext->getBillingAddress();
 

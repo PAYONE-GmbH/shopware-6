@@ -22,6 +22,11 @@ class PayonePaymentMethodValidator implements CartValidatorInterface
      */
     public function validate(Cart $cart, ErrorCollection $errors, SalesChannelContext $context): void
     {
+        if ($cart->getLineItems()->count() === 0) {
+            // we do not need to validate a cart, which does not contain any line-items
+            return;
+        }
+
         $paymentMethod = $context->getPaymentMethod();
         $paymentMethods = new PaymentMethodCollection([$paymentMethod]);
 
