@@ -15,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\DataValidationFactoryInterface;
 use Shopware\Core\Framework\Validation\DataValidator;
+use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateEntity;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\Salutation\SalutationEntity;
@@ -26,6 +27,7 @@ class CustomerRegistrationUtil
     public function __construct(
         private readonly EntityRepository $salutationRepository,
         private readonly EntityRepository $countryRepository,
+        private readonly EntityRepository $countryStateRepository,
         private readonly TranslatorInterface $translator,
         private readonly DataValidationFactoryInterface $addressValidationFactory,
         private readonly DataValidator $validator,
@@ -37,6 +39,8 @@ class CustomerRegistrationUtil
     {
         $salutationId = $this->getSalutationId($salesChannelContext->getContext());
 
+        $billingCountry = $this->extractBillingData($response, 'country') ?? '';
+
         $billingAddress = [
             'salutationId' => $salutationId,
             'company' => $this->extractBillingData($response, 'company'),
@@ -46,9 +50,16 @@ class CustomerRegistrationUtil
             'additionalAddressLine1' => $this->extractBillingData($response, 'addressaddition'),
             'zipcode' => $this->extractBillingData($response, 'zip'),
             'city' => $this->extractBillingData($response, 'city'),
-            'countryId' => $this->getCountryIdByCode($this->extractBillingData($response, 'country') ?? '', $salesChannelContext->getContext()),
+            'countryId' => $this->getCountryIdByCode($billingCountry, $salesChannelContext->getContext()),
+            'countryStateId' => $this->getCountryStateIdByCodes(
+                $billingCountry,
+                $this->extractBillingData($response, 'state') ?? '',
+                $salesChannelContext->getContext()
+            ),
             'phone' => $this->extractBillingData($response, 'telephonenumber'),
         ];
+
+        $shippingCountry = $this->extractShippingData($response, 'country') ?? '';
 
         $shippingAddress = [
             'salutationId' => $salutationId,
@@ -59,7 +70,12 @@ class CustomerRegistrationUtil
             'additionalAddressLine1' => $this->extractShippingData($response, 'addressaddition'),
             'zipcode' => $this->extractShippingData($response, 'zip'),
             'city' => $this->extractShippingData($response, 'city'),
-            'countryId' => $this->getCountryIdByCode($this->extractShippingData($response, 'country') ?? '', $salesChannelContext->getContext()),
+            'countryId' => $this->getCountryIdByCode($shippingCountry, $salesChannelContext->getContext()),
+            'countryStateId' => $this->getCountryStateIdByCodes(
+                $shippingCountry,
+                $this->extractShippingData($response, 'state') ?? '',
+                $salesChannelContext->getContext()
+            ),
             'phone' => $this->extractShippingData($response, 'telephonenumber'),
         ];
 
@@ -169,11 +185,24 @@ class CustomerRegistrationUtil
         /** @var CountryEntity|null $country */
         $country = $this->countryRepository->search($criteria, $context)->first();
 
-        if (!$country instanceof CountryEntity) {
+        return $country?->getId();
+    }
+
+    private function getCountryStateIdByCodes(string $countryCode, string $stateCode, Context $context): ?string
+    {
+        if (empty($countryCode) || empty($stateCode)) {
             return null;
         }
 
-        return $country->getId();
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new EqualsFilter('shortCode', sprintf('%s-%s', $countryCode, $stateCode))
+        );
+
+        /** @var CountryStateEntity|null $countryState */
+        $countryState = $this->countryStateRepository->search($criteria, $context)->first();
+
+        return $countryState?->getId();
     }
 
     private function validateAddress(array $address, SalesChannelContext $salesChannelContext): ConstraintViolationList

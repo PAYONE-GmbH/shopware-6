@@ -22,6 +22,19 @@ use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
 
 class ShippingInformationRequestParameterBuilder extends AbstractRequestParameterBuilder
 {
+    private const COUNTRIES_FOR_WHICH_A_STATE_MUST_BE_SPECIFIED = [
+        'US',
+        'CA',
+        'CN',
+        'JP',
+        'MX',
+        'BR',
+        'AR',
+        'ID',
+        'TH',
+        'IN',
+    ];
+
     /**
      * @param PaymentTransactionStruct $arguments
      */
@@ -42,6 +55,20 @@ class ShippingInformationRequestParameterBuilder extends AbstractRequestParamete
                 'shipping_city' => $shippingAddress->getCity(),
                 'shipping_country' => $shippingAddress->getCountry()?->getIso(),
             ]);
+
+            if (\in_array($shippingAddress->getCountry()?->getIso(), self::COUNTRIES_FOR_WHICH_A_STATE_MUST_BE_SPECIFIED, true)) {
+                $countryStateCode = $shippingAddress->getCountryState()?->getShortCode();
+                if ($countryStateCode === null) {
+                    throw new \RuntimeException('missing state in shipping address');
+                }
+
+                $parts = explode('-', $countryStateCode);
+                if (\count($parts) !== 2) {
+                    throw new \RuntimeException('invalid country state code');
+                }
+
+                $parameters['shipping_state'] = $parts[1];
+            }
         }
 
         return $parameters;
