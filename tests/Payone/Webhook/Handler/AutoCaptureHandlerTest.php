@@ -26,9 +26,9 @@ class AutoCaptureHandlerTest extends TestCase
 
         $salesChannelMock = $this->createMock(SalesChannelContext::class);
 
-        static::assertTrue($handler->supports($salesChannelMock, ['txid' => 1, 'txaction' => 'appointed']), 'supports should return true, cause of valid txid nd correct status');
+        static::assertTrue($handler->supports($salesChannelMock, ['txid' => 1, 'txaction' => 'paid']), 'supports should return true, cause of valid txid nd correct status');
 
-        static::assertFalse($handler->supports($salesChannelMock, ['txaction' => 'appointed']), 'supports should return false, cause of missing txid');
+        static::assertFalse($handler->supports($salesChannelMock, ['txaction' => 'paid']), 'supports should return false, cause of missing txid');
         static::assertFalse($handler->supports($salesChannelMock, ['txid' => 1]), 'supports should return false, cause of missing status');
         static::assertFalse($handler->supports($salesChannelMock, []), 'supports should return false, cause of missing data');
         static::assertFalse($handler->supports($salesChannelMock, []), 'supports should return false, cause of missing data');
