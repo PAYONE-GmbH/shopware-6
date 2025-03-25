@@ -35,6 +35,6 @@ class AutoCaptureHandler implements WebhookHandlerInterface
 
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool
     {
-        return isset($data['txid']) && ($data['txaction'] ?? null) === TransactionStatusService::ACTION_APPOINTED;
+        return isset($data['txid']) && ($data['txaction'] ?? null) === TransactionStatusService::ACTION_PAID;
     }
 }
