@@ -79,10 +79,12 @@ jobs:
 
             -   name: "Install Shopware dependencies"
                 # Install Shopware with --no-dev to prevent that dev-tools of the module got in conflict with the tools of shopware
+                # Lock twig to <=3.20 because of an incompatibility to squirrelphp/twig-php-syntax
                 run: |
                     composer req shopware/core:${{ matrix.shopware-version }} shopware/administration:* shopware/storefront:* --no-update
                     composer remove shopware/elasticsearch --no-update
                     composer install
+                    composer require twig/twig:"<=3.20"
 
             -   name: "Install ${{ env.COMPOSER_NAME }}"
                 run: |
