@@ -168,7 +168,7 @@ class DefaultPaymentFilterService implements PaymentFilterServiceInterface
             $differentShippingAddressAllowed = $this->systemConfigService->get(
                 $configKey,
                 $filterContext->getSalesChannelContext()->getSalesChannelId()
-            );
+            ) ?? false;
 
             // if configuration value is null, the payment method should be removed.
             if ($differentShippingAddressAllowed === false) {
