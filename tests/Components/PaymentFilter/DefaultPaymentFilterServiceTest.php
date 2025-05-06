@@ -219,7 +219,7 @@ class DefaultPaymentFilterServiceTest extends TestCase
         $methodCollection = $this->getMethodCollection();
         $methodCollection->add($method);
         $filterService->filterPaymentMethods($methodCollection, $filterContext);
-        static::assertCount(4, $methodCollection->getElements(), 'no payment method should be removed, because no configuration exists');
+        static::assertCount(3, $methodCollection->getElements(), 'payment method should be removed, because in case of missing config the default is "false"');
 
         $systemConfigService = $this->createMock(SystemConfigService::class);
         $systemConfigService
