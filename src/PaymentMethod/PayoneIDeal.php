@@ -21,7 +21,7 @@ class PayoneIDeal extends AbstractPaymentMethod
 
     protected string $paymentHandler = PayoneIDealPaymentHandler::class;
 
-    protected ?string $template = '@Storefront/storefront/payone/ideal/ideal-form.html.twig';
+    protected ?string $template = null;
 
     protected array $translations = [
         'de-DE' => [
