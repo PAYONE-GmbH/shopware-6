@@ -16,13 +16,10 @@ class AuthorizeRequestParameterBuilder extends AbstractRequestParameterBuilder
      */
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $dataBag = $arguments->getRequestData();
-
         return [
             'clearingtype' => self::CLEARING_TYPE_ONLINE_BANK_TRANSFER,
             'onlinebanktransfertype' => 'IDL',
             'bankcountry' => 'NL',
-            'bankgrouptype' => $dataBag->get('idealBankGroup'),
             'request' => self::REQUEST_ACTION_AUTHORIZE,
         ];
     }

@@ -232,7 +232,6 @@ class SettingsController extends AbstractController
                     'clearingtype' => 'sb',
                     'onlinebanktransfertype' => 'IDL',
                     'bankcountry' => 'NL',
-                    'bankgrouptype' => 'ING_BANK',
                     'amount' => 100,
                     'currency' => 'EUR',
                     'reference' => sprintf('%s%d', self::REFERENCE_PREFIX_TEST, random_int(1_000_000_000_000, 9_999_999_999_999)),
