@@ -431,3 +431,18 @@ Maintenance
  
 * webhooks: add sort-order for handlers to prevent wrong order
 * tested with 6.6.9
+
+# 6.3.0
+
+Bugfixes
+
+* Problem with the non-transmitted phone number has been fixed
+* Fixed payment-filter on empty cart
+* Validation of different shipping address has been fixed
+
+Maintenance
+
+* Add state for specific countries
+* Change webhook for prepayment auto capture to 'paid'
+* Remove bankgrouptype parameter for iDEAL
+* tested with 6.6.10.5
