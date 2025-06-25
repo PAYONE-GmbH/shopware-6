@@ -418,3 +418,18 @@ Wartung
  
 * webhooks: Sortierreihenfolge für Handler hinzugefügt
 * getestet mit 6.6.9
+
+# 6.3.0
+
+Fehlerbehebung
+
+* Das Problem mit der nicht übertragenen Telefonnummer wurde behoben
+* Der Fehler im Zahlungsfilter bei leerem Warenkorb wurde behoben
+* Die Validierung verschiedener Versandadressen wurde behoben
+
+Wartung
+
+* Bundesstaaten für bestimmte Länder hinzugefügt
+* Webhook für die automatische Vorkasse auf 'paid' geändert
+* Bankgruppentyp-Parameter für iDEAL entfernt
+* getestet mit 6.6.10.5
