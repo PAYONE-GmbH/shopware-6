@@ -13,7 +13,7 @@ If you've discovered a bug, please don't hesitate to reach out to us at shopware
 
 ## Version compatibility
 
-The current plugin is compatible with all versions from 6.6.0 to 6.6.8.2.
+The current plugin is compatible with all versions from 6.6.0 to 6.6.10.2.
 
 ## Installation
 
