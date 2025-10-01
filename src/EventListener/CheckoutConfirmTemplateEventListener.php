@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\Installer\PaymentMethodInstaller;
+use PayonePayment\PaymentMethod\PaymentMethodInterface;
+use PayonePayment\PaymentMethod\PaymentMethodRegistry;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -12,55 +13,51 @@ use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
+readonly class CheckoutConfirmTemplateEventListener implements EventSubscriberInterface
 {
+    public function __construct(
+        private PaymentMethodRegistry $paymentMethodRegistry,
+    ) {
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'addPayonePageData',
+            CheckoutConfirmPageLoadedEvent::class  => 'addPayonePageData',
             AccountEditOrderPageLoadedEvent::class => 'addPayonePageData',
         ];
     }
 
     public function addPayonePageData(CheckoutConfirmPageLoadedEvent|AccountEditOrderPageLoadedEvent $event): void
     {
-        $page = $event->getPage();
-        $context = $event->getSalesChannelContext();
+        $payonePaymentMethod = $this->getPayonePaymentMethod($event->getSalesChannelContext()->getPaymentMethod());
 
-        if (!$this->isPayonePayment($context->getPaymentMethod())) {
+        if (null === $payonePaymentMethod) {
             return;
         }
 
-        $template = $this->getTemplateFromPaymentMethod($context->getPaymentMethod());
+        $page       = $event->getPage();
+        $template   = $payonePaymentMethod->getTemplate();
+        $payoneData = $page->getExtension(CheckoutCartPaymentData::EXTENSION_NAME) ?? new CheckoutConfirmPaymentData();
 
-        if ($page->hasExtension(CheckoutCartPaymentData::EXTENSION_NAME)) {
-            $payoneData = $page->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
-        } else {
-            $payoneData = new CheckoutConfirmPaymentData();
-        }
-
-        if ($payoneData !== null) {
-            $payoneData->assign([
-                'template' => $template,
-            ]);
-
-            $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
-        }
+        $payoneData->assign([ 'template' => $template ]);
+        $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
     }
 
-    private function getTemplateFromPaymentMethod(PaymentMethodEntity $paymentMethod): ?string
+    /**
+     * @param PaymentMethodEntity $paymentMethod
+     *
+     * @return PaymentMethodInterface|null
+     */
+    private function getPayonePaymentMethod(PaymentMethodEntity $paymentMethod): PaymentMethodInterface|null
     {
-        $method = array_search($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS, true);
-
-        if ($method !== false) {
-            return (new $method())->getTemplate();
+        /** @var PaymentMethodInterface $payonePaymentMethod */
+        foreach ($this->paymentMethodRegistry as $payonePaymentMethod) {
+            if ($payonePaymentMethod::getId() === $paymentMethod->getId()) {
+                return $payonePaymentMethod;
+            }
         }
 
         return null;
-    }
-
-    private function isPayonePayment(PaymentMethodEntity $paymentMethod): bool
-    {
-        return \in_array($paymentMethod->getId(), PaymentMethodInstaller::PAYMENT_METHOD_IDS, true);
     }
 }

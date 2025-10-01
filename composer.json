@@ -2,7 +2,7 @@
   "name": "payone-gmbh/shopware-6",
   "type": "shopware-platform-plugin",
   "description": "PAYONE Payment Plugin",
-  "version": "6.3.1",
+  "version": "6.4.0",
   "license": "MIT",
   "authors": [
     {
@@ -11,31 +11,36 @@
       "homepage": "https://www.payone.com"
     },
     {
-      "name": "Interlutions GmbH",
-      "email": "info@interlutions.de",
-      "homepage": "https://www.interlutions.de",
-      "role": "Contributor"
+      "name": "Net Inventors GmbH",
+      "email": "info@netinventors.de",
+      "homepage": "https://www.netinventors.de",
+      "role": "Manufacturer"
     }
   ],
-  "minimum-stability": "stable",
-  "prefer-stable": true,
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "bamarni/composer-bin-plugin": true,
+      "symfony/runtime": true
+    }
+  },
+  "minimum-stability": "RC",
+  "prefer-stable": false,
   "require": {
+    "php": ">=8.2",
     "ext-curl": "*",
     "ext-json": "*",
-    "sinergi/browser-detector": "^6.1",
-    "shopware/core": "~6.6.0",
-    "shopware/administration": "~6.6.0",
-    "shopware/storefront": "~6.6.0"
+    "nyholm/psr7": "^1.5",
+    "shopware/administration": ">=6.6.5.0 <6.7.0.0",
+    "shopware/core": ">=6.6.5.0 <6.7.0.0",
+    "shopware/storefront": ">=6.6.5.0 <6.7.0.0",
+    "twig/twig": "^3.15",
+    "ua-parser/uap-php": "^3.10"
   },
   "require-dev": {
-    "dms/phpunit-arraysubset-asserts": "^0.3.0",
-    "kubawerlos/php-cs-fixer-custom-fixers": "^3.11",
-    "phpstan/phpstan": "^1.10",
-    "phpstan/phpstan-phpunit": "1.1.1",
-    "phpstan/phpstan-symfony": "^1.2",
-    "phpunit/phpunit": "^9.5",
-    "rector/rector": "^0.17.1",
-    "symplify/easy-coding-standard": "^11.5"
+    "ext-simplexml": "*",
+    "bamarni/composer-bin-plugin": "^1.8",
+    "dms/phpunit-arraysubset-asserts": "^0.3.0"
   },
   "autoload": {
     "psr-4": {
@@ -44,16 +49,15 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "PayonePayment\\": "tests/"
-    }
-  },
-  "config": {
-    "sort-packages": true,
-    "allow-plugins": {
-      "symfony/runtime": true
+      "PayonePayment\\Tests\\": "tests/"
     }
   },
   "extra": {
+    "bamarni-bin": {
+      "bin-links": false,
+      "forward-command": true,
+      "target-directory": "dev-ops"
+    },
     "shopware-plugin-class": "PayonePayment\\PayonePayment",
     "plugin-icon": "src/Resources/public/plugin.png",
     "copyright": "(c) by PAYONE GmbH",
@@ -75,10 +79,6 @@
     }
   },
   "scripts": {
-    "phpstan": "./vendor/bin/phpstan analyse -n --no-progress",
-    "phpunit": "./../../../vendor/bin/phpunit",
-    "ecs": "ecs check src tests",
-    "ecs-fix": "ecs check --fix src tests",
-    "build": "shopware-cli extension build ."
+    "bin": "echo 'bin not installed'"
   }
 }

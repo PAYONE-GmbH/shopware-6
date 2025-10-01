@@ -26,7 +26,7 @@ class NotificationForwardHandler
         private readonly EntityRepository $forwardTargetRepository,
         private readonly EntityRepository $notificationForwardRepository,
         private readonly LoggerInterface $logger,
-        private readonly MessageBusInterface $messageBus
+        private readonly MessageBusInterface $messageBus,
     ) {
     }
 
@@ -49,9 +49,9 @@ class NotificationForwardHandler
         curl_setopt($ch, \CURLOPT_FAILONERROR, true);
         curl_setopt($ch, \CURLOPT_HTTPHEADER, $this->buildHeaders($message, $target));
 
-        $responseContent = (string)curl_exec($ch);
-        $responseInfo = curl_getinfo($ch);
-        $statusCode = curl_getinfo($ch, \CURLINFO_RESPONSE_CODE);
+        $responseContent = (string) curl_exec($ch);
+        $responseInfo    = curl_getinfo($ch);
+        $statusCode      = curl_getinfo($ch, \CURLINFO_RESPONSE_CODE);
         curl_close($ch);
 
         $this->statusLogger($responseInfo, $responseContent, $message);
@@ -61,7 +61,7 @@ class NotificationForwardHandler
             $newMessage = clone $message;
             $newMessage->setAttempt($message->getAttempt() + 1);
             $waitForNextAttempt = self::ATTEMPT_WAIT_TIME_MAPPING[$newMessage->getAttempt()] ?? null;
-            if ($waitForNextAttempt === null) {
+            if (null === $waitForNextAttempt) {
                 return; // too many errors - we will not try it again.
             }
 
@@ -79,13 +79,13 @@ class NotificationForwardHandler
 
     private function buildHeaders(
         NotificationForwardMessage $message,
-        PayonePaymentNotificationTargetEntity $target
+        PayonePaymentNotificationTargetEntity $target,
     ): array {
         $headers = [
             'X-Forwarded-For: ' . $message->getClientIp(),
         ];
 
-        if ($target->isBasicAuth() === true) {
+        if (true === $target->isBasicAuth()) {
             $headers[] = 'Content-Type:application/json';
             $headers[] = 'Authorization: Basic ' . base64_encode($target->getUsername() . ':' . $target->getPassword());
         }
@@ -99,14 +99,14 @@ class NotificationForwardHandler
         $logLevel = $response->isSuccessful() ? 'info' : 'error';
 
         $logContext = [
-            'message' => [
-                'target-id' => $message->getNotificationTargetId(),
+            'message'  => [
+                'target-id'      => $message->getNotificationTargetId(),
                 'transaction-id' => $message->getPaymentTransactionId(),
-                'request-data' => $message->getRequestData(),
-                'client-ip' => $message->getClientIp(),
+                'request-data'   => $message->getRequestData(),
+                'client-ip'      => $message->getClientIp(),
             ],
             'response' => [
-                'status' => $responseInfo['http_code'],
+                'status'  => $responseInfo['http_code'],
                 'content' => $responseContent,
             ],
         ];
@@ -117,13 +117,13 @@ class NotificationForwardHandler
     private function saveNotificationForward(string $responseContent, NotificationForwardMessage $message): void
     {
         $this->notificationForwardRepository->upsert([[
-            'id' => Uuid::randomHex(),
+            'id'                   => Uuid::randomHex(),
             'notificationTargetId' => $message->getNotificationTargetId(),
-            'ip' => $message->getClientIp(),
-            'txaction' => $message->getRequestData()['txaction'] ?? '',
-            'response' => $responseContent,
-            'transactionId' => $message->getPaymentTransactionId(),
-            'content' => json_encode($message->getRequestData()),
+            'ip'                   => $message->getClientIp(),
+            'txaction'             => $message->getRequestData()['txaction'] ?? '',
+            'response'             => $responseContent,
+            'transactionId'        => $message->getPaymentTransactionId(),
+            'content'              => json_encode($message->getRequestData()),
         ]], Context::createDefaultContext());
     }
 }

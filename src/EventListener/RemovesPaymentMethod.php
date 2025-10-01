@@ -13,10 +13,12 @@ trait RemovesPaymentMethod
      * Removes a payment method from the provided collection and
      * returns a filtered collection without the payment method.
      */
-    protected function removePaymentMethod(PaymentMethodCollection $paymentMethods, string $paymentMethodId): PaymentMethodCollection
-    {
+    protected function removePaymentMethod(
+        PaymentMethodCollection $paymentMethods,
+        string $paymentMethodId,
+    ): PaymentMethodCollection {
         return $paymentMethods->filter(
-            static fn (PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId
+            static fn (PaymentMethodEntity $paymentMethod) => $paymentMethod->getId() !== $paymentMethodId,
         );
     }
 }

@@ -9,14 +9,14 @@ use Shopware\Storefront\Page\Page;
 
 class AccountCardPage extends Page
 {
-    protected EntitySearchResult $cards;
+    protected ?EntitySearchResult $cards = null;
 
-    public function getCards(): EntitySearchResult
+    public function getCards(): ?EntitySearchResult
     {
         return $this->cards;
     }
 
-    public function setCards(EntitySearchResult $cards): void
+    public function setCards(?EntitySearchResult $cards): void
     {
         $this->cards = $cards;
     }

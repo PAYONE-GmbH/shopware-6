@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Client\Exception;
 
+/**
+ * @deprecated Use more detailled exeption from \PayonePayment\Payone\HttpClient\Exception\*Exception
+ */
 class PayoneRequestException extends \Exception
 {
     public function __construct(
         string $message,
         private readonly array $request = [],
-        private readonly array $response = []
+        private readonly array $response = [],
     ) {
         parent::__construct($message);
     }

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <!-- Credit Card -->
+        <service id="PayonePayment\Provider\Payone\ResponseHandler\CreditCardResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Service\CardRepositoryService" />
+            <argument type="service" id="order_line_item.repository" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\PaymentHandler\CreditCardPaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Payone\ResponseHandler\CreditCardResponseHandler" />
+            <argument type="service" id="PayonePayment\Service\PaymentStateHandlerService" />
+            <argument type="service" id="payone.request_enricher_chain.pay.payone.credit_card" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <!-- Debit -->
+        <service id="PayonePayment\Provider\Payone\ResponseHandler\DebitResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\PaymentHandler\DebitPaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Payone\ResponseHandler\DebitResponseHandler" />
+            <argument type="service" id="payone.request_enricher_chain.pay.payone.debit" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <!-- Open Invoice -->
+        <service id="PayonePayment\Provider\Payone\ResponseHandler\OpenInvoiceResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\PaymentHandler\OpenInvoicePaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Payone\ResponseHandler\OpenInvoiceResponseHandler" />
+            <argument type="service" id="payone.request_enricher_chain.pay.payone.open_invoice" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <!-- Pre Payment -->
+        <service id="PayonePayment\Provider\Payone\ResponseHandler\PrepaymentResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\PaymentHandler\PrepaymentPaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Payone\ResponseHandler\PrepaymentResponseHandler" />
+            <argument type="service" id="payone.request_enricher_chain.pay.payone.prepayment" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <!-- Secured Direct Debit -->
+        <service id="PayonePayment\Provider\Payone\ResponseHandler\SecuredDirectDebitResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\PaymentHandler\SecuredDirectDebitPaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Payone\ResponseHandler\SecuredDirectDebitResponseHandler" />
+            <argument type="service" id="payone.request_enricher_chain.pay.payone.secured_direct_debit" />
+            <argument type="service" id="PayonePayment\Provider\Payone\DeviceFingerprint\PayoneBNPLDeviceFingerprintService" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <!-- Secured Installment -->
+        <service id="PayonePayment\Provider\Payone\ResponseHandler\SecuredInstallmentResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\PaymentHandler\SecuredInstallmentPaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Payone\ResponseHandler\SecuredInstallmentResponseHandler" />
+            <argument type="service" id="payone.request_enricher_chain.pay.payone.secured_installment" />
+            <argument type="service" id="PayonePayment\Provider\Payone\DeviceFingerprint\PayoneBNPLDeviceFingerprintService" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <!-- Secured Invoice -->
+        <service id="PayonePayment\Provider\Payone\ResponseHandler\SecuredInvoiceResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\PaymentHandler\SecuredInvoicePaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Payone\ResponseHandler\SecuredInvoiceResponseHandler" />
+            <argument type="service" id="payone.request_enricher_chain.pay.payone.secured_invoice" />
+            <argument type="service" id="PayonePayment\Provider\Payone\DeviceFingerprint\PayoneBNPLDeviceFingerprintService" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <!-- Secure Invoice (legacy) -->
+        <service id="PayonePayment\Provider\Payone\ResponseHandler\SecureInvoiceResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\PaymentHandler\SecureInvoicePaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Payone\ResponseHandler\SecureInvoiceResponseHandler" />
+            <argument type="service" id="payone.request_enricher_chain.pay.payone.secure_invoice" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+    </services>
+</container>

@@ -4,26 +4,32 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
-use PayonePayment\Components\Helper\OrderFetcherInterface;
+use PayonePayment\Service\AddressCompareService;
+use PayonePayment\Service\OrderLoaderService;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PaymentFilterContextFactory implements PaymentFilterContextFactoryInterface
+readonly class PaymentFilterContextFactory implements PaymentFilterContextFactoryInterface
 {
-    public function __construct(private readonly OrderFetcherInterface $orderFetcher)
-    {
+    public function __construct(
+        private AddressCompareService $addressCompareService,
+        private OrderLoaderService $orderLoaderService,
+    ) {
     }
 
-    public function createContextForOrder(OrderEntity $order, SalesChannelContext $salesChannelContext): PaymentFilterContext
-    {
+    public function createContextForOrder(
+        OrderEntity $order,
+        SalesChannelContext $salesChannelContext,
+    ): PaymentFilterContext {
         return new PaymentFilterContext(
             $salesChannelContext,
-            $this->orderFetcher->getOrderBillingAddress($order),
-            $this->orderFetcher->getOrderShippingAddress($order),
+            $this->addressCompareService,
+            $this->orderLoaderService->getOrderBillingAddress($order),
+            $this->orderLoaderService->getOrderShippingAddress($order),
             $order->getCurrency(),
             $order,
-            null
+            null,
         );
     }
 
@@ -33,11 +39,12 @@ class PaymentFilterContextFactory implements PaymentFilterContextFactoryInterfac
 
         return new PaymentFilterContext(
             $salesChannelContext,
+            $this->addressCompareService,
             $customer?->getActiveBillingAddress(),
             $customer?->getActiveShippingAddress(),
             $salesChannelContext->getCurrency(),
             null,
-            $cart
+            $cart,
         );
     }
 }

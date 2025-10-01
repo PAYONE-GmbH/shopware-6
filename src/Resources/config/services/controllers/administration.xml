@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Administration\Controller\CaptureController">
+            <argument type="service" id="PayonePayment\Components\TransactionHandler\Capture\CaptureTransactionHandler" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <service id="PayonePayment\Administration\Controller\RefundController">
+            <argument type="service" id="PayonePayment\Components\TransactionHandler\Refund\RefundTransactionHandler" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <service id="PayonePayment\Administration\Controller\SettingsController">
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="state_machine_transition.repository" />
+            <argument type="service" id="monolog.logger.payone" />
+            <argument type="string">%kernel.project_dir%</argument>
+            <argument type="service" id="payment_method.repository" />
+            <argument type="service" id="PayonePayment\RequestParameter\TestRequestParameterEnricher" />
+            <argument type="service" id="payone.request_enricher_chain.test" />
+            <argument type="service" id="PayonePayment\PaymentMethod\PaymentMethodRegistry" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <service id="PayonePayment\Administration\Controller\WebhookController">
+            <argument type="service" id="payone_payment_notification_forward.repository" />
+            <argument type="service" id="messenger.bus.shopware" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+            <tag name="controller.service_arguments" />
+        </service>
+    </services>
+</container>

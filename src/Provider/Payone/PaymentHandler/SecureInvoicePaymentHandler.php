@@ -1,0 +1,93 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PayonePayment\Provider\Payone\PaymentHandler;
+
+use PayonePayment\Components\Validator\Birthday;
+use PayonePayment\PaymentHandler\AbstractPaymentHandler;
+use PayonePayment\PaymentHandler\BasicValidationDefinitionTrait;
+use PayonePayment\PaymentHandler\CustomerHasCompanyAddressTrait;
+use PayonePayment\PaymentHandler\IsCapturableTrait;
+use PayonePayment\PaymentHandler\IsRefundableTrait;
+use PayonePayment\PaymentHandler\NonRedirectResponseTrait;
+use PayonePayment\PaymentHandler\PaymentHandlerPayExecutorInterface;
+use PayonePayment\PaymentHandler\RequestDataValidateTrait;
+use PayonePayment\PaymentHandler\RequestEnricherChainTrait;
+use PayonePayment\PaymentHandler\ResponseHandlerTrait;
+use PayonePayment\Payone\Request\RequestActionEnum;
+use PayonePayment\Payone\Request\RequestConstantsEnum;
+use PayonePayment\Provider\Payone\PaymentMethod\SecureInvoicePaymentMethod;
+use PayonePayment\Provider\Payone\ResponseHandler\SecureInvoiceResponseHandler;
+use PayonePayment\RequestParameter\RequestParameterEnricherChain;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerType;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
+class SecureInvoicePaymentHandler extends AbstractPaymentHandler
+{
+    use BasicValidationDefinitionTrait {
+        BasicValidationDefinitionTrait::getValidationDefinitions as getBasicValidationDefinitions;
+    }
+
+    use CustomerHasCompanyAddressTrait;
+    use IsCapturableTrait;
+    use IsRefundableTrait;
+    use NonRedirectResponseTrait;
+    use ResponseHandlerTrait;
+    use RequestDataValidateTrait;
+    use RequestEnricherChainTrait;
+
+    public function __construct(
+        protected readonly PaymentHandlerPayExecutorInterface $payExecutor,
+        SecureInvoiceResponseHandler $responseHandler,
+        RequestParameterEnricherChain $requestEnricherChain,
+    ) {
+        $this->responseHandler      = $responseHandler;
+        $this->requestEnricherChain = $requestEnricherChain;
+    }
+
+    public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
+    {
+        return PaymentHandlerType::REFUND === $type;
+    }
+
+    public function getConfigKeyPrefix(): string
+    {
+        return SecureInvoicePaymentMethod::getConfigurationPrefix();
+    }
+
+    public function getDefaultAuthorizationMethod(): string
+    {
+        return RequestActionEnum::PREAUTHORIZE->value;
+    }
+
+    public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
+    {
+        $definitions = $this->getBasicValidationDefinitions($dataBag, $salesChannelContext);
+
+        if (!$this->customerHasCompanyAddress($salesChannelContext)) {
+            $definitions[RequestConstantsEnum::BIRTHDAY->value] = [ new NotBlank(), new Birthday() ];
+        }
+
+        return $definitions;
+    }
+
+    public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
+    {
+        if (self::isNeverCapturable($payoneTransActionData)) {
+            return false;
+        }
+
+        return self::isTransactionAppointedAndCompleted($transactionData)
+            || self::matchesIsCapturableDefaults($transactionData)
+        ;
+    }
+
+    public function getPaymentMethodUuid(): string
+    {
+        return SecureInvoicePaymentMethod::getId();
+    }
+}

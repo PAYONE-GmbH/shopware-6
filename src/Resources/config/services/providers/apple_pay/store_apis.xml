@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\ApplePay\StoreApi\Route\ApplePayRoute">
+            <argument type="service" id="PayonePayment\RequestParameter\PaymentRequestEnricher" />
+            <argument type="service" id="payone.request_enricher_chain.pay.apple_pay.standard" />
+            <argument type="service" id="PayonePayment\Provider\ApplePay\PaymentHandler\StandardPaymentHandler" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument type="service" id="payone.app_system.guzzle" />
+            <argument type="service" id="monolog.logger.payone" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="string">%kernel.project_dir%</argument>
+        </service>
+
+        <service
+            id="PayonePayment\Provider\ApplePay\StoreApi\Route\AbstractApplePayRoute"
+            alias="PayonePayment\Provider\ApplePay\StoreApi\Route\ApplePayRoute"
+        />
+    </services>
+</container>

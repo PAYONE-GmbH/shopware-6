@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\DeviceFingerprint;
 
-use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
+use PayonePayment\PaymentHandler\AbstractPaymentHandler;
 
 class DeviceFingerprintServiceCollection implements DeviceFingerprintServiceCollectionInterface
 {
     /**
-     * @var array<class-string<AbstractPayonePaymentHandler>, AbstractDeviceFingerprintService>
+     * @var array<class-string<AbstractPaymentHandler>, AbstractDeviceFingerprintService>
      */
     protected array $services = [];
 
@@ -25,7 +25,7 @@ class DeviceFingerprintServiceCollection implements DeviceFingerprintServiceColl
         }
     }
 
-    public function getForPaymentHandler(string $paymentHandlerClass): ?AbstractDeviceFingerprintService
+    public function getForPaymentHandler(string $paymentHandlerClass): AbstractDeviceFingerprintService|null
     {
         return $this->services[$paymentHandlerClass] ?? null;
     }

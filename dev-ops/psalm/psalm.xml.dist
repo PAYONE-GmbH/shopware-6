@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<psalm
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    resolveFromConfigFile="true"
+    autoloader="./psalm-autoloader.php"
+    errorLevel="1"
+    errorBaseline="./psalm-baseline.xml"
+    findUnusedBaselineEntry="0"
+    findUnusedCode="0"
+>
+    <projectFiles>
+        <directory name="../../src/" />
+
+        <ignoreFiles allowMissingFiles="true">
+            <directory name="../../src/Resources/build/vendor" />
+            <directory name="../../src/Resources/vendor" />
+            <directory name="../../vendor/" />
+        </ignoreFiles>
+    </projectFiles>
+
+    <forbiddenFunctions>
+        <function name="dd" />
+        <function name="die" />
+        <function name="dump" />
+        <function name="exit" />
+        <function name="print_r" />
+        <function name="var_dump" />
+    </forbiddenFunctions>
+
+    <issueHandlers>
+        <!-- Workaroud due to double instantiated autoloader (https://youtrack.jetbrains.com/issue/WI-57977#focus=Comments-27-4635845.0-0) -->
+        <DuplicateClass errorLevel="suppress" />
+
+        <DeprecatedMethod errorLevel="info" />
+        <DeprecatedProperty errorLevel="info" />
+        <DeprecatedFunction errorLevel="info" />
+        
+        <MissingClassConstType errorLevel="suppress" />
+
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <referencedProperty name="Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition::$registry"/>
+                <referencedProperty name="Symfony\Bundle\FrameworkBundle\Controller\AbstractController::$container"/>
+                <referencedProperty name="Symfony\Component\DependencyInjection\ContainerAwareTrait::$container" />
+                <referencedProperty name="Symfony\Component\HttpKernel\Bundle\Bundle::$container" />
+                <referencedProperty name="Symfony\Component\HttpKernel\Bundle\Bundle::$name" />
+            </errorLevel>
+        </PropertyNotSetInConstructor>
+
+        <InternalClass>
+            <errorLevel type="suppress">
+                <referencedClass name="Shopware\Core\Defaults" />
+            </errorLevel>
+        </InternalClass>
+
+        <InternalMethod>
+            <errorLevel type="suppress">
+                <referencedMethod name="Shopware\Core\Framework\Context::createDefaultContext" />
+            </errorLevel>
+        </InternalMethod>
+    </issueHandlers>
+
+    <plugins>
+        <pluginClass class="NetInventors\Shopware6PsalmPlugins\MigrationUpdateDestructiveChecker\MigrationUpdateDestructiveChecker"/>
+        <pluginClass class="NetInventors\Shopware6PsalmPlugins\RequireOnceEnforcer\RequireOnceEnforcer"/>
+
+        <pluginClass class="DQ5Studios\PsalmJunit\Plugin">
+            <filepath>./junit.xml</filepath>
+        </pluginClass>
+    </plugins>
+</psalm>

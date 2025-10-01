@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Installer\RuleInstaller;
 
 use PayonePayment\Installer\InstallerInterface;
-use PayonePayment\PaymentMethod\PayoneSecureInvoice;
+use PayonePayment\Provider\Payone\PaymentMethod\SecureInvoicePaymentMethod;
 use Shopware\Core\Checkout\Customer\Rule\BillingCountryRule;
 use Shopware\Core\Checkout\Customer\Rule\DifferentAddressesRule;
 use Shopware\Core\Framework\Context;
@@ -35,16 +35,20 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     ];
 
     private const RULE_ID = 'bf54529febf323ec7d27256b178207f5';
+
     private const CONDITION_ID_AND = 'f37b1995a4714d0a88249c3e3aa52794';
+
     private const CONDITION_ID_COUNTRY = '23a2158b05a93ddd4a0799074846607c';
+
     private const CONDITION_ID_CURRENCY = '6099e1e292f737aa31c126a73339c92e';
+
     private const CONDITION_ID_DIFFERENT_ADDRESSES = 'f1a5251ffcd09b5dc0befc059dfad9c1';
 
     public function __construct(
         private readonly EntityRepository $ruleRepository,
         private readonly EntityRepository $countryRepository,
         private readonly EntityRepository $currencyRepository,
-        private readonly EntityRepository $paymentMethodRepository
+        private readonly EntityRepository $paymentMethodRepository,
     ) {
     }
 
@@ -74,34 +78,34 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     private function upsertAvailabilityRule(Context $context): void
     {
         $data = [
-            'id' => self::RULE_ID,
-            'name' => 'Payone secure invoice',
-            'priority' => 1,
-            'description' => 'Determines whether or not Payone secure invoice payment is available.',
-            'conditions' => [
+            'id'             => self::RULE_ID,
+            'name'           => 'Payone secure invoice',
+            'priority'       => 1,
+            'description'    => 'Determines whether or not Payone secure invoice payment is available.',
+            'conditions'     => [
                 [
-                    'id' => self::CONDITION_ID_AND,
-                    'type' => AndRule::RULE_NAME,
+                    'id'       => self::CONDITION_ID_AND,
+                    'type'     => AndRule::RULE_NAME,
                     'children' => [
                         [
-                            'id' => self::CONDITION_ID_COUNTRY,
-                            'type' => BillingCountryRule::RULE_NAME,
+                            'id'    => self::CONDITION_ID_COUNTRY,
+                            'type'  => BillingCountryRule::RULE_NAME,
                             'value' => [
-                                'operator' => Rule::OPERATOR_EQ,
+                                'operator'   => Rule::OPERATOR_EQ,
                                 'countryIds' => $this->getCountryIds($context),
                             ],
                         ],
                         [
-                            'id' => self::CONDITION_ID_CURRENCY,
-                            'type' => CurrencyRule::RULE_NAME,
+                            'id'    => self::CONDITION_ID_CURRENCY,
+                            'type'  => CurrencyRule::RULE_NAME,
                             'value' => [
-                                'operator' => Rule::OPERATOR_EQ,
+                                'operator'    => Rule::OPERATOR_EQ,
                                 'currencyIds' => $this->getCurrencyIds($context),
                             ],
                         ],
                         [
-                            'id' => self::CONDITION_ID_DIFFERENT_ADDRESSES,
-                            'type' => DifferentAddressesRule::RULE_NAME,
+                            'id'    => self::CONDITION_ID_DIFFERENT_ADDRESSES,
+                            'type'  => DifferentAddressesRule::RULE_NAME,
                             'value' => [
                                 'isDifferent' => false,
                             ],
@@ -110,7 +114,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
                 ],
             ],
             'paymentMethods' => [
-                ['id' => PayoneSecureInvoice::UUID],
+                ['id' => SecureInvoicePaymentMethod::UUID],
             ],
         ];
 
@@ -118,7 +122,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
             Context::SYSTEM_SCOPE,
             function (Context $context) use ($data): void {
                 $this->ruleRepository->upsert([$data], $context);
-            }
+            },
         );
     }
 
@@ -126,7 +130,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     {
         // Remove rule from payment methods first
         $update = [
-            'id' => PayoneSecureInvoice::UUID,
+            'id'                 => SecureInvoicePaymentMethod::UUID,
             'availabilityRuleId' => null,
         ];
 
@@ -134,7 +138,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
             Context::SYSTEM_SCOPE,
             function (Context $context) use ($update): void {
                 $this->paymentMethodRepository->update([$update], $context);
-            }
+            },
         );
 
         // Delete rule now
@@ -146,7 +150,7 @@ class RuleInstallerSecureInvoice implements InstallerInterface
             Context::SYSTEM_SCOPE,
             function (Context $context) use ($deletion): void {
                 $this->ruleRepository->delete([$deletion], $context);
-            }
+            },
         );
     }
 
@@ -154,12 +158,12 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsAnyFilter('iso', self::VALID_COUNTRIES)
+            new EqualsAnyFilter('iso', self::VALID_COUNTRIES),
         );
 
         $result = $this->countryRepository->searchIds($criteria, $context);
 
-        if ($result->getTotal() === 0) {
+        if (0 === $result->getTotal()) {
             // if country does not exist, enter invalid uuid so rule always fails. empty is not allowed
             return [Uuid::randomHex()];
         }
@@ -171,12 +175,12 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsAnyFilter('isoCode', self::CURRENCIES)
+            new EqualsAnyFilter('isoCode', self::CURRENCIES),
         );
 
         $result = $this->currencyRepository->searchIds($criteria, $context);
 
-        if ($result->getTotal() === 0) {
+        if (0 === $result->getTotal()) {
             // if currency does not exist, enter invalid uuid so rule always fails. empty is not allowed
             return [Uuid::randomHex()];
         }

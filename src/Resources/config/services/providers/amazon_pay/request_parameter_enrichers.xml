@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\AmazonPay\RequestParameter\Enricher\CustomerRequestParameterEnricher">
+            <argument key="$languageRepository" type="service" id="language.repository" />
+            <argument key="$salutationRepository" type="service" id="salutation.repository" />
+            <argument key="$countryRepository" type="service" id="country.repository" />
+            <argument key="$requestStack" type="service" id="request_stack" />
+
+            <tag name="payone.request_enricher.pay.amazon_pay.express" />
+            <tag name="payone.request_enricher.pay.amazon_pay.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\AmazonPay\RequestParameter\Enricher\ReturnUrlRequestParameterEnricher">
+            <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+
+            <tag name="payone.request_enricher.pay.amazon_pay.express" />
+            <tag name="payone.request_enricher.pay.amazon_pay.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\AmazonPay\RequestParameter\Enricher\ShippingInformationRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.amazon_pay.express" />
+            <tag name="payone.request_enricher.pay.amazon_pay.standard" />
+        </service>
+
+        <!-- Amazon Pay -->
+        <service id="PayonePayment\Provider\AmazonPay\RequestParameter\Enricher\Standard\AuthorizeRequestParameterEnricher">
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument key="$orderAddressRepository" type="service" id="order_address.repository" />
+
+            <tag name="payone.request_enricher.pay.amazon_pay.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\AmazonPay\RequestParameter\Enricher\Standard\PreauthorizeRequestParameterEnricher">
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument key="$orderAddressRepository" type="service" id="order_address.repository" />
+
+            <tag name="payone.request_enricher.pay.amazon_pay.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\AmazonPay\RequestParameter\Enricher\Standard\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Amazon Pay Express -->
+        <service id="PayonePayment\Provider\AmazonPay\RequestParameter\Enricher\Express\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.amazon_pay.express" />
+        </service>
+
+        <service id="PayonePayment\Provider\AmazonPay\RequestParameter\Enricher\Express\PreauthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.amazon_pay.express" />
+        </service>
+
+        <service id="PayonePayment\Provider\AmazonPay\RequestParameter\Enricher\Express\CreateCheckoutSessionRequestParameterEnricher">
+            <argument key="$salesChannelRepository" type="service" id="sales_channel.repository" />
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+
+            <tag name="payone.request_enricher.session.amazon.express.create" />
+        </service>
+
+        <service id="PayonePayment\Provider\AmazonPay\RequestParameter\Enricher\Express\GetCheckoutSessionDetailsRequestParameterEnricher">
+            <tag name="payone.request_enricher.session.amazon.express.get" />
+        </service>
+
+        <service id="PayonePayment\Provider\AmazonPay\RequestParameter\Enricher\Express\UpdateCheckoutSessionParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$cartExtensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService" />
+
+            <tag name="payone.request_enricher.session.amazon.express.update" />
+        </service>
+
+        <service id="PayonePayment\Provider\AmazonPay\RequestParameter\Enricher\Express\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+    </services>
+</container>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\CustomerRequestParameterEnricher">
+            <argument key="$languageRepository" type="service" id="language.repository" />
+            <argument key="$salutationRepository" type="service" id="salutation.repository" />
+            <argument key="$countryRepository" type="service" id="country.repository" />
+            <argument key="$requestStack" type="service" id="request_stack" />
+
+            <tag name="payone.request_enricher.pay.payolution.debit" />
+            <tag name="payone.request_enricher.pay.payolution.installment" />
+            <tag name="payone.request_enricher.pay.payolution.invoice" />
+
+            <tag name="payone.request_enricher.calculate.payolution.installment" />
+            <tag name="payone.request_enricher.check.payolution.installment" />
+            <tag name="payone.request_enricher.check.payolution.invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\OrderLinesRequestParameterEnricher">
+            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface" />
+
+            <tag name="payone.request_enricher.pay.payolution.debit" />
+            <tag name="payone.request_enricher.pay.payolution.installment" />
+            <tag name="payone.request_enricher.pay.payolution.invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\ShippingInformationRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.payolution.debit" />
+            <tag name="payone.request_enricher.pay.payolution.installment" />
+            <tag name="payone.request_enricher.pay.payolution.invoice" />
+        </service>
+
+        <!-- Payolution Debit -->
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\Debit\AuthorizeRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+
+            <tag name="payone.request_enricher.pay.payolution.debit" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\Debit\PreAuthorizeRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+
+            <tag name="payone.request_enricher.pay.payolution.debit" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\Debit\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Payolution Installment -->
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\Installment\AuthorizeRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+
+            <tag name="payone.request_enricher.pay.payolution.installment" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\Installment\PreAuthorizeRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+
+            <tag name="payone.request_enricher.pay.payolution.installment" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\Installment\CalculationRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+
+            <tag name="payone.request_enricher.calculate.payolution.installment" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\Installment\PreCheckRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+
+            <tag name="payone.request_enricher.check.payolution.installment" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\Installment\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Payolution Invoice -->
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\Invoice\AuthorizeRequestParameterEnricher">
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+
+            <tag name="payone.request_enricher.pay.payolution.invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\Invoice\PreAuthorizeRequestParameterEnricher">
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+
+            <tag name="payone.request_enricher.pay.payolution.invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\Invoice\PreCheckRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+
+            <tag name="payone.request_enricher.check.payolution.invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\RequestParameter\Enricher\Invoice\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+    </services>
+</container>

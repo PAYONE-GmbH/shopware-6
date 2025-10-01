@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\AmazonPay\EventListener\CheckoutCartEventListener">
+            <argument key="$paymentRequestEnricher" type="service" id="PayonePayment\RequestParameter\PaymentRequestEnricher" />
+            <argument key="$requestEnricherChain" type="service" id="payone.request_enricher_chain.session.amazon.express.create" />
+            <argument key="$paymentHandler" type="service" id="PayonePayment\Provider\AmazonPay\PaymentHandler\ExpressPaymentHandler" />
+            <argument key="$payoneClient" type="service" id="PayonePayment\Payone\Client\PayoneClientInterface" />
+            <argument key="$logger" type="service" id="monolog.logger.payone" />
+            <argument key="$paymentFilterService" type="service" id="payone.payment_filter_method.amazonpay.express" />
+            <argument key="$cartExtensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService" />
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument key="$connection" type="service" id="Doctrine\DBAL\Connection" />
+            <argument key="$buttonConfiguration" type="service" id="PayonePayment\Provider\AmazonPay\ButtonConfiguration" />
+            <argument key="$addressCompareService" type="service" id="PayonePayment\Service\AddressCompareService" />
+
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="PayonePayment\Provider\AmazonPay\EventListener\CheckoutConfirmEventListener">
+            <argument key="$paymentRequestEnricher" type="service" id="PayonePayment\RequestParameter\PaymentRequestEnricher" />
+            <argument key="$requestEnricherChain" type="service" id="payone.request_enricher_chain.session.amazon.express.update" />
+            <argument key="$paymentHandler" type="service" id="PayonePayment\Provider\AmazonPay\PaymentHandler\ExpressPaymentHandler" />
+            <argument key="$payoneClient" type="service" id="PayonePayment\Payone\Client\PayoneClientInterface" />
+            <argument key="$cartExtensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService" />
+            <argument key="$cartHasher" type="service" id="PayonePayment\Service\CartHasherService" />
+
+            <tag name="kernel.event_subscriber" />
+        </service>
+    </services>
+</container>

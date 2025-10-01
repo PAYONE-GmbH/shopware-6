@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Components\PaymentFilter\PaymentFilterContextFactory">
+            <argument type="service" id="PayonePayment\Service\AddressCompareService" />
+            <argument type="service" id="PayonePayment\Service\OrderLoaderService" />
+        </service>
+
+        <service
+            id="PayonePayment\Components\PaymentFilter\PaymentFilterContextFactoryInterface"
+            alias="PayonePayment\Components\PaymentFilter\PaymentFilterContextFactory"
+        />
+
+        <!-- Priority needs to be higher than Shopware\Core\Checkout\Payment\SalesChannel\CachedPaymentMethodRoute -->
+        <service
+            id="PayonePayment\Components\PaymentFilter\FilteredPaymentMethodRoute"
+            decorates="Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRoute"
+            decoration-priority="-1500"
+        >
+            <argument type="service" id="PayonePayment\Components\PaymentFilter\FilteredPaymentMethodRoute.inner" />
+            <argument type="service" id="PayonePayment\Components\PaymentFilter\IterablePaymentFilter" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="PayonePayment\Components\PaymentFilter\PaymentFilterContextFactoryInterface" />
+        </service>
+
+        <service id="PayonePayment\Components\PaymentFilter\PayonePaymentMethodValidator">
+            <argument type="service" id="PayonePayment\Components\PaymentFilter\IterablePaymentFilter" />
+            <argument type="service" id="PayonePayment\Components\PaymentFilter\PaymentFilterContextFactoryInterface" />
+
+            <tag name="shopware.cart.validator" />
+        </service>
+
+        <service id="PayonePayment\Components\PaymentFilter\IterablePaymentFilter">
+            <argument type="tagged_iterator" tag="payone.payment_method.filter" />
+        </service>
+
+        <service id="PayonePayment\Components\PaymentFilter\TotalPriceFilter">
+            <tag name="payone.payment_method.filter" priority="1000" />
+        </service>
+
+        <service id="PayonePayment\Components\PaymentFilter\GenericExpressCheckoutFilterOther">
+            <tag name="payone.payment_method.filter" />
+        </service>
+
+        <service id="PayonePayment\Components\PaymentFilter\FilterNoLongerSupportedPaymentMethods">
+            <argument type="service" id="PayonePayment\PaymentMethod\PaymentMethodRegistry" />
+
+            <tag name="payone.payment_method.filter" />
+        </service>
+    </services>
+</container>

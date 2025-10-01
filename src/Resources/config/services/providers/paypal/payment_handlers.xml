@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\PayPal\PaymentHandler\ExpressPaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\PayPal\ResponseHandler\ExpressResponseHandler" />
+            <argument type="service" id="PayonePayment\Service\PaymentStateHandlerService" />
+            <argument type="service" id="payone.request_enricher_chain.pay.pay_pal.express" />
+            <argument type="service" id="payone.request_enricher_chain.session.pay_pal.express.create" />
+            <argument type="service" id="payone.request_enricher_chain.session.pay_pal.express.get" />
+            <argument type="service" id="payone.request_enricher_chain.session.pay_pal.express.update" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\ResponseHandler\ExpressV2ResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\PaymentHandler\ExpressV2PaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\PayPal\ResponseHandler\ExpressV2ResponseHandler" />
+            <argument type="service" id="PayonePayment\Service\PaymentStateHandlerService" />
+            <argument type="service" id="payone.request_enricher_chain.pay.pay_pal_v2.express" />
+            <argument type="service" id="payone.request_enricher_chain.session.pay_pal_v2.express.create" />
+            <argument type="service" id="payone.request_enricher_chain.session.pay_pal_v2.express.get" />
+            <argument type="service" id="payone.request_enricher_chain.session.pay_pal_v2.express.update" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\ResponseHandler\StandardResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\PaymentHandler\StandardPaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\PayPal\ResponseHandler\StandardResponseHandler" />
+            <argument type="service" id="PayonePayment\Service\PaymentStateHandlerService" />
+            <argument type="service" id="payone.request_enricher_chain.pay.pay_pal.standard" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\ResponseHandler\StandardV2ResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\PaymentHandler\StandardV2PaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\PayPal\ResponseHandler\StandardV2ResponseHandler" />
+            <argument type="service" id="PayonePayment\Service\PaymentStateHandlerService" />
+            <argument type="service" id="payone.request_enricher_chain.pay.pay_pal_v2.standard" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\ResponseHandler\ExpressResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+    </services>
+</container>

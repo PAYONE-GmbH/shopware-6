@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace PayonePayment;
 
 use Doctrine\DBAL\Connection;
+use PayonePayment\DependencyInjection\Compiler\PaymentMethodRegistryCompilerPass;
+use PayonePayment\DependencyInjection\Compiler\RequestEnricherTestCompilerPass;
 use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Installer\PaymentMethodInstaller;
 use PayonePayment\Installer\RuleInstaller\RuleInstallerSecureInvoice;
+use PayonePayment\Provider\Alipay\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass;
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin;
@@ -26,8 +29,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\DirectoryLoader;
 use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Filesystem\Path;
 
 class PayonePayment extends Plugin
 {
@@ -35,23 +38,90 @@ class PayonePayment extends Plugin
 
     public function build(ContainerBuilder $container): void
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/DependencyInjection'));
-        $loader->load('services.xml');
-
         parent::build($container);
 
-        $locator = new FileLocator('Resources/config');
-
+        $locator  = new FileLocator('Resources/config');
         $resolver = new LoaderResolver([
             new YamlFileLoader($container, $locator),
             new GlobFileLoader($container, $locator),
             new DirectoryLoader($container, $locator),
         ]);
 
-        $configLoader = new DelegatingLoader($resolver);
+        (new DelegatingLoader($resolver))->load(
+            Path::join($this->getPath(), '/Resources/config/{packages}/*.yaml'),
+            'glob',
+        );
 
-        $confDir = \rtrim($this->getPath(), '/') . '/Resources/config';
-        $configLoader->load($confDir . '/{packages}/*.yaml', 'glob');
+        $container->addCompilerPass(new PaymentMethodRegistryCompilerPass());
+        $container->addCompilerPass(new RequestEnricherTestCompilerPass());
+
+        $container->addCompilerPass(
+            new MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\AmazonPay\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\ApplePay\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\Bancontact\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\Eps\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\IDeal\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\Klarna\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\Paydirekt\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\Payolution\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\Payone\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\PayPal\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\PostFinance\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\Przelewy24\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\Ratepay\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\SofortBanking\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\Trustly\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\WeChatPay\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
     }
 
     public function install(InstallContext $installContext): void
@@ -117,6 +187,8 @@ class PayonePayment extends Plugin
         $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_notification_target');
         $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_order_transaction_data');
         $connection->executeStatement('DROP TABLE IF EXISTS payone_amazon_redirect');
+        $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_order_action_log');
+        $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_webhook_log');
     }
 
     public function executeComposerCommands(): bool
@@ -144,7 +216,7 @@ class PayonePayment extends Plugin
             $ruleRepository,
             $countryRepository,
             $currencyRepository,
-            $paymentMethodRepository
+            $paymentMethodRepository,
         );
     }
 
@@ -187,7 +259,7 @@ class PayonePayment extends Plugin
             $salesChannelRepository,
             $paymentMethodSalesChannelRepository,
             $connection,
-            $paymentMethodDefinition
+            $paymentMethodDefinition,
         );
     }
 

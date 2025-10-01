@@ -1,7 +1,8 @@
 {% sw_extends '@Storefront/storefront/page/checkout/confirm/index.html.twig' %}
 
+{# shopware-block: 4af14bfe03c7f596186c0ae8a9518892ec60deff157e33869575718fa474f757@v6.6.10.5 #}
 {% block page_checkout_confirm_form_submit %}
-    {% if constant('PayonePayment\\PaymentMethod\\PayoneApplePay::UUID') == context.paymentMethod.id %}
+    {% if constant('PayonePayment\\Provider\\ApplePay\\PaymentMethod\\StandardPaymentMethod::UUID') == context.paymentMethod.id %}
         {% if not page.cart.errors.blockOrder %}
             {% sw_include '@Storefront/storefront/component/checkout/apple-pay-button.html.twig' with {'amount': page.cart.price.totalPrice } %}
         {% endif %}
@@ -28,6 +29,7 @@
     {{ parent() }}
 {% endblock %}
 
+{# shopware-block: 05f6e574cdc97449ee0951de76abff14382a34556fe3517841ae513b2cfc244b@v6.6.10.5 #}
 {% block page_checkout_confirm %}
     {{ parent() }}
 

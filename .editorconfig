@@ -1,0 +1,32 @@
+root = true
+
+[*]
+charset=utf-8
+end_of_line = lf
+insert_final_newline = false
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.php]
+insert_final_newline = true
+
+[{composer.lock,.babelrc,.prettierrc,.stylelintrc,.eslintrc,jest.config,*.json,*.jsb3,*.jsb2,*.bowerrc}]
+indent_style = space
+indent_size = 2
+
+[{tsconfig.lib.json,tsconfig.spec.json,tsconfig.app.json,tsconfig.json,tsconfig.e2e.json}]
+indent_style = space
+indent_size = 2
+
+[*.js.map]
+indent_style = space
+indent_size = 2
+
+[{.analysis_options,*.yml,*.yaml}]
+indent_style = space
+indent_size = 2
+
+[src/Resources/**.json]
+indent_style = space
+indent_size = 4

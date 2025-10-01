@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
@@ -8,6 +10,6 @@ interface PaymentFilterServiceInterface
 {
     public function filterPaymentMethods(
         PaymentMethodCollection $methodCollection,
-        PaymentFilterContext $filterContext
+        PaymentFilterContext $filterContext,
     ): void;
 }

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <imports>
+        <import resource="services/entities.xml" />
+        <import resource="services/store_apis.xml" />
+        <import resource="services/controllers/*.xml" />
+        <import resource="services/device_fingerprints.xml" />
+        <import resource="services/payment_handlers.xml" />
+        <import resource="services/hydrators.xml" />
+        <import resource="services/event_listeners.xml" />
+        <import resource="services/page_loaders.xml" />
+        <import resource="services/scheduled_tasks.xml" />
+        <import resource="services/webhooks.xml" />
+        <import resource="services/deprecated/request_parameter_builders.xml" />
+        <import resource="services/request_parameter_enrichers.xml" />
+        <import resource="services/payment_method_filters.xml" />
+        <import resource="services/providers/**/*.xml" />
+    </imports>
+
+    <parameters>
+        <parameter key="env.app_secret">%env(APP_SECRET)%</parameter>
+    </parameters>
+
+    <services>
+        <!-- Migration done -->
+
+        <service id="PayonePayment\Service\AddressCompareService" />
+
+        <service id="PayonePayment\Cart\Validator\ZeroAmountCartValidator">
+            <argument type="service" id="PayonePayment\Service\CurrencyPrecisionService" />
+
+            <tag name="shopware.cart.validator" />
+        </service>
+
+        <service id="PayonePayment\HttpClient\PayoneApiClient" class="PayonePayment\HttpClient\PayoneApiClient">
+            <argument key="$httpClient" type="service" id="Symfony\Component\HttpClient\Psr18Client" />
+            <argument key="$requestFactory" type="service" id="Psr\Http\Message\RequestFactoryInterface" />
+            <argument key="$streamFactory" type="service" id="Psr\Http\Message\StreamFactoryInterface" />
+            <argument key="$logger" type="service" id="monolog.logger.payone" />
+        </service>
+
+        <service
+            id="PayonePayment\HttpClient\PayoneApiClientInterface"
+            alias="PayonePayment\HttpClient\PayoneApiClient"
+        />
+
+        <service id="PayonePayment\PaymentMethod\PaymentMethodRegistry" />
+
+        <service id="PayonePayment\Service\ActivePaymentMethodsLoaderService">
+            <argument key="$cachePool" type="service" id="cache.object" />
+            <argument key="$paymentMethodRepository" type="service" id="sales_channel.payment_method.repository" />
+            <argument key="$salesChannelRepository" type="service" id="sales_channel.repository" />
+        </service>
+
+        <service id="PayonePayment\Service\CartHasherService">
+            <argument type="service" id="PayonePayment\Service\CurrencyPrecisionService" />
+            <argument>%env.app_secret%</argument>
+        </service>
+
+        <service id="PayonePayment\Service\CardRepositoryService">
+            <argument type="service" id="payone_payment_card.repository" />
+        </service>
+
+        <service id="PayonePayment\Service\CurrencyPrecisionService" />
+
+        <service id="PayonePayment\Service\CustomerDataPersistorService">
+            <argument key="$orderAddressRepository" type="service" id="order_address.repository" />
+            <argument key="$customerRepository" type="service" id="customer.repository" />
+            <argument key="$customerAddressRepository" type="service" id="customer_address.repository" />
+            <argument key="$configService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+        </service>
+
+        <service id="PayonePayment\Service\OrderLoaderService">
+            <argument type="service" id="order.repository" />
+            <argument type="service" id="currency.repository" />
+        </service>
+
+        <service id="PayonePayment\Service\OrderTransactionLoaderService">
+            <argument type="service" id="order_transaction.repository" />
+        </service>
+
+        <!-- In migration -->
+
+        <!-- To migrate -->
+
+        <service id="PayonePayment\Components\ConfigReader\ConfigReader">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument type="service" id="PayonePayment\PaymentMethod\PaymentMethodRegistry" />
+        </service>
+
+        <service
+            id="PayonePayment\Components\ConfigReader\ConfigReaderInterface"
+            alias="PayonePayment\Components\ConfigReader\ConfigReader"
+        />
+
+        <service id="PayonePayment\Components\TransactionStatus\TransactionStatusService">
+            <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="monolog.logger.payone" />
+            <argument type="service" id="PayonePayment\Service\CurrencyPrecisionService" />
+            <argument type="service" id="PayonePayment\PaymentMethod\PaymentMethodRegistry" />
+        </service>
+
+        <service id="PayonePayment\Payone\Client\PayoneClient">
+            <argument type="service" id="monolog.logger.payone" />
+        </service>
+
+        <service
+            id="PayonePayment\Payone\Client\PayoneClientInterface"
+            alias="PayonePayment\Payone\Client\PayoneClient"
+        />
+
+        <service id="payone.app_system.guzzle" class="GuzzleHttp\Client" />
+
+        <service id="PayonePayment\Service\AutomaticCaptureService">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+            <argument type="service" id="PayonePayment\Components\TransactionHandler\Capture\CaptureTransactionHandler" />
+            <argument type="service" id="monolog.logger.payone" />
+            <argument type="service" id="PayonePayment\PaymentMethod\PaymentMethodRegistry" />
+        </service>
+
+        <service id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService">
+            <argument key="$cartHasher" type="service" id="PayonePayment\Service\CartHasherService" />
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+        </service>
+
+        <service id="PayonePayment\Components\GenericExpressCheckout\CustomerRegistrationUtil">
+            <argument key="$translator" type="service" id="translator" />
+            <argument key="$countryRepository" type="service" id="country.repository" />
+            <argument key="$countryStateRepository" type="service" id="country_state.repository" />
+            <argument key="$salutationRepository" type="service" id="salutation.repository" />
+            <argument key="$addressValidationFactory" type="service" id="Shopware\Core\Checkout\Customer\Validation\AddressValidationFactory" />
+            <argument key="$addressCompareService" type="service" id="PayonePayment\Service\AddressCompareService" />
+            <argument key="$validator" type="service" id="Shopware\Core\Framework\Validation\DataValidator" />
+            <argument key="$logger" type="service" id="monolog.logger.payone" />
+        </service>
+    </services>
+</container>

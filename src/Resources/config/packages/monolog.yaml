@@ -9,6 +9,7 @@ monolog:
             path: "%kernel.logs_dir%/payone.log"
             level: info
             channels: [ "payone" ]
+
         payoneTransactionForwardLogger:
             type: rotating_file
             path: "%kernel.logs_dir%/payone_transaction_forward.log"

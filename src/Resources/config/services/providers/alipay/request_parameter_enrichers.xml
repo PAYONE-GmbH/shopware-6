@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\Alipay\RequestParameter\Enricher\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.alipay.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\Alipay\RequestParameter\Enricher\CustomerRequestParameterEnricher">
+            <argument key="$languageRepository" type="service" id="language.repository" />
+            <argument key="$salutationRepository" type="service" id="salutation.repository" />
+            <argument key="$countryRepository" type="service" id="country.repository" />
+            <argument key="$requestStack" type="service" id="request_stack" />
+
+            <tag name="payone.request_enricher.pay.alipay.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\Alipay\RequestParameter\Enricher\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.alipay.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\Alipay\RequestParameter\Enricher\ReturnUrlRequestParameterEnricher">
+            <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+
+            <tag name="payone.request_enricher.pay.alipay.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\Alipay\RequestParameter\Enricher\Standard\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+    </services>
+</container>

@@ -20,12 +20,12 @@ class FinancialTransactionStruct extends AbstractRequestParameterStruct
         protected Context $context,
         ParameterBag $requestData,
         string $paymentMethod,
-        string $action
+        string $action,
     ) {
         $this->paymentTransaction = $paymentTransaction;
-        $this->requestData = $requestData;
-        $this->paymentMethod = $paymentMethod;
-        $this->action = $action;
+        $this->requestData        = $requestData;
+        $this->paymentMethod      = $paymentMethod;
+        $this->action             = $action;
     }
 
     public function getContext(): Context

@@ -4,30 +4,30 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\GenericExpressCheckout;
 
-use PayonePayment\Components\CartHasher\CartHasher;
+use PayonePayment\Service\CartHasherService;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class CartExtensionService
+readonly class CartExtensionService
 {
     public function __construct(
-        private readonly CartHasher $cartHasher,
-        private readonly CartService $cartService,
+        private CartHasherService $cartHasher,
+        private CartService $cartService,
     ) {
     }
 
     public function addCartExtension(
         Cart $cart,
         SalesChannelContext $context,
-        string $workOrderId
+        string $workOrderId,
     ): void {
         $cartData = new CheckoutCartPaymentData();
 
-        $cartData->assign(array_filter([
+        $cartData->assign(\array_filter([
             CheckoutCartPaymentData::DATA_WORK_ORDER_ID => $workOrderId,
-            CheckoutCartPaymentData::DATA_CART_HASH => $this->cartHasher->generate($cart, $context),
+            CheckoutCartPaymentData::DATA_CART_HASH     => $this->cartHasher->generate($cart, $context),
         ]));
 
         $cart->addExtension(CheckoutCartPaymentData::EXTENSION_NAME, $cartData);
@@ -39,13 +39,13 @@ class CartExtensionService
         Cart $cart,
         SalesChannelContext $context,
         string $paymentMethodId,
-        string $workOrderId
+        string $workOrderId,
     ): void {
         $cartData = new CheckoutCartPaymentData();
 
-        $cartData->assign(array_filter([
+        $cartData->assign(\array_filter([
             CheckoutCartPaymentData::DATA_WORK_ORDER_ID => $workOrderId,
-            CheckoutCartPaymentData::DATA_CART_HASH => $this->cartHasher->generate($cart, $context),
+            CheckoutCartPaymentData::DATA_CART_HASH     => $this->cartHasher->generate($cart, $context),
         ]));
 
         $this->removeExtensionData($context, $cart, true); // make sure there is no checkout-data of PAYONE
@@ -54,23 +54,28 @@ class CartExtensionService
         $this->cartService->recalculate($cart, $context);
     }
 
-    public function getCartExtension(Cart $cart): ?CheckoutCartPaymentData
+    public function getCartExtension(Cart $cart): CheckoutCartPaymentData|null
     {
         $extension = $cart->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
 
         return $extension instanceof CheckoutCartPaymentData ? $extension : null;
     }
 
-    public function getCartExtensionForExpressCheckout(Cart $cart, string $paymentMethodId): ?CheckoutCartPaymentData
-    {
+    public function getCartExtensionForExpressCheckout(
+        Cart $cart,
+        string $paymentMethodId,
+    ): CheckoutCartPaymentData|null {
         $extension = $cart->getExtension($this->getExtensionNameForExpressCheckout($paymentMethodId));
 
         return $extension instanceof CheckoutCartPaymentData ? $extension : null;
     }
 
-    public function removeExtensionData(SalesChannelContext $context, ?Cart $cart = null, bool $skipRecalculate = false): void
-    {
-        if ($cart === null) {
+    public function removeExtensionData(
+        SalesChannelContext $context,
+        Cart|null $cart = null,
+        bool $skipRecalculate = false,
+    ): void {
+        if (null === $cart) {
             $cart = $this->cartService->getCart($context->getToken(), $context);
         }
 

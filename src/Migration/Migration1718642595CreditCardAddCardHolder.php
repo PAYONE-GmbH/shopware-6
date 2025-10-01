@@ -17,7 +17,7 @@ class Migration1718642595CreditCardAddCardHolder extends MigrationStep
     public function update(Connection $connection): void
     {
         $connection->executeStatement(
-            <<<SQL
+            <<<'SQL'
             ALTER TABLE `payone_payment_card`
                 ADD `card_holder` VARCHAR(255) NOT NULL AFTER `customer_id`;
             SQL

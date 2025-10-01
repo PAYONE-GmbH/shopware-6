@@ -62,7 +62,7 @@ class PayonePaymentOrderTransactionDataDefinition extends EntityDefinition
                 new JsonField('additional_data', 'additionalData', [], null),
 
                 new OneToOneAssociationField('orderTransaction', 'order_transaction_id', 'id', OrderTransactionDefinition::class, false),
-            ]
+            ],
         );
     }
 }

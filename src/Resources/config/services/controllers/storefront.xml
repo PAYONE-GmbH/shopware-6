@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Storefront\Controller\Account\AccountCardController">
+            <argument type="service" id="PayonePayment\Storefront\Page\Card\AccountCardPageLoader" />
+            <argument type="service" id="PayonePayment\StoreApi\Route\CardRoute" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+            <call method="setTwig">
+                <argument type="service" id="twig" />
+            </call>
+
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <service id="PayonePayment\Storefront\Controller\Debit\ManageMandateController">
+            <argument type="service" id="PayonePayment\Payone\RequestParameter\RequestParameterFactory" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+            <call method="setTwig">
+                <argument type="service" id="twig" />
+            </call>
+
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <service id="PayonePayment\Storefront\Controller\CheckoutController">
+            <argument key="$extensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService" />
+            <argument key="$router" type="service" id="Symfony\Component\Routing\RouterInterface" />
+            <argument key="$translator" type="service" id="translator" />
+
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <service id="PayonePayment\Storefront\Controller\GenericExpressController">
+            <argument key="$paymentRequestEnricher" type="service" id="PayonePayment\RequestParameter\PaymentRequestEnricher" />
+            <argument key="$paymentMethodRegistry" type="service" id="PayonePayment\PaymentMethod\PaymentMethodRegistry" />
+            <argument key="$client" type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument key="$registerRoute" type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\RegisterRoute" />
+            <argument key="$accountService" type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\AccountService" />
+            <argument key="$salesChannelContextFactory" type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory" />
+            <argument key="$salesChannelContextSwitcher" type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher" />
+            <argument key="$cartExtensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService" />
+            <argument key="$customerRegistrationUtil" type="service" id="PayonePayment\Components\GenericExpressCheckout\CustomerRegistrationUtil" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+            <call method="setTwig">
+                <argument type="service" id="twig" />
+            </call>
+
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <service id="PayonePayment\Storefront\Controller\RedirectController">
+            <argument type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <service id="PayonePayment\Storefront\Controller\WebhookController">
+            <argument type="service" id="PayonePayment\Payone\Webhook\Processor\WebhookProcessor" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+            <tag name="controller.service_arguments" />
+        </service>
+    </services>
+</container>

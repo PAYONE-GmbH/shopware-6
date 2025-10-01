@@ -21,7 +21,7 @@ class CheckoutConfirmGenericExpressCheckoutEventListener implements EventSubscri
     public function onCheckoutConfirmLoaded(CheckoutConfirmPageLoadedEvent $event): void
     {
         $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
-        if (\in_array($paymentMethod->getHandlerIdentifier(), PaymentHandlerGroups::GENERIC_EXPRESS, true) === false) {
+        if (false === \in_array($paymentMethod->getHandlerIdentifier(), PaymentHandlerGroups::GENERIC_EXPRESS, true)) {
             // payment handler is not a generic express-checkout
             return;
         }
@@ -29,7 +29,7 @@ class CheckoutConfirmGenericExpressCheckoutEventListener implements EventSubscri
         $extension = $event->getPage()->getExtension(CheckoutConfirmPaymentData::EXTENSION_NAME) ?? new CheckoutConfirmPaymentData();
         $extension->assign([
             'showExitExpressCheckoutLink' => true,
-            'preventAddressEdit' => true,
+            'preventAddressEdit'          => true,
         ]);
         $event->getPage()->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $extension);
     }

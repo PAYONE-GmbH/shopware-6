@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Handler;
 
-use PayonePayment\Components\AutomaticCaptureService\AutomaticCaptureServiceInterface;
-use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
-use PayonePayment\Components\TransactionStatus\TransactionStatusService;
-use PayonePayment\PaymentMethod\PayonePrepayment;
+use PayonePayment\Components\TransactionStatus\Enum\TransactionActionEnum;
+use PayonePayment\DataHandler\TransactionDataHandler;
+use PayonePayment\Provider\Payone\PaymentMethod\PrepaymentPaymentMethod;
+use PayonePayment\Service\AutomaticCaptureService;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
 
-class AutoCaptureHandler implements WebhookHandlerInterface
+readonly class AutoCaptureHandler implements WebhookHandlerInterface
 {
     public function __construct(
-        private readonly TransactionDataHandlerInterface $transactionDataHandler,
-        private readonly AutomaticCaptureServiceInterface $automaticCaptureService
+        private TransactionDataHandler $transactionDataHandler,
+        private AutomaticCaptureService $automaticCaptureService,
     ) {
     }
 
@@ -24,19 +24,21 @@ class AutoCaptureHandler implements WebhookHandlerInterface
     {
         $paymentTransaction = $this->transactionDataHandler->getPaymentTransactionByPayoneTransactionId(
             $salesChannelContext->getContext(),
-            $request->request->getInt('txid')
+            $request->request->getInt('txid'),
         );
 
         if (!$paymentTransaction instanceof PaymentTransaction) {
             return;
         }
 
-        $txAction = $request->request->get('txaction');
+        $txAction        = $request->request->get('txaction');
         $paymentMethodId = $paymentTransaction->getOrderTransaction()->getPaymentMethodId();
 
         // For prepayment, capturing is only permitted for “paid” webhooks. For other payment methods, only the “appointed” webhook may be captured.
-        if (($txAction === TransactionStatusService::ACTION_PAID && $paymentMethodId === PayonePrepayment::UUID)
-            || ($txAction === TransactionStatusService::ACTION_APPOINTED && $paymentMethodId !== PayonePrepayment::UUID)) {
+        if (
+            (TransactionActionEnum::PAID->value === $txAction && PrepaymentPaymentMethod::UUID === $paymentMethodId)
+            || (TransactionActionEnum::APPOINTED->value === $txAction && PrepaymentPaymentMethod::UUID !== $paymentMethodId)
+        ) {
             $this->automaticCaptureService->captureIfPossible($paymentTransaction, $salesChannelContext);
         }
     }
@@ -46,10 +48,10 @@ class AutoCaptureHandler implements WebhookHandlerInterface
         return isset($data['txid']) && \in_array(
             ($data['txaction'] ?? null),
             [
-                TransactionStatusService::ACTION_APPOINTED,
-                TransactionStatusService::ACTION_PAID,
+                 TransactionActionEnum::APPOINTED->value,
+                 TransactionActionEnum::PAID->value,
             ],
-            true
+            true,
         );
     }
 }

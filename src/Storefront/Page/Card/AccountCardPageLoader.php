@@ -11,12 +11,12 @@ use Shopware\Storefront\Page\GenericPageLoader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class AccountCardPageLoader
+readonly class AccountCardPageLoader
 {
     public function __construct(
-        private readonly GenericPageLoader $genericLoader,
-        private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly AbstractCardRoute $cardRoute
+        private GenericPageLoader $genericLoader,
+        private EventDispatcherInterface $eventDispatcher,
+        private AbstractCardRoute $cardRoute,
     ) {
     }
 
@@ -27,15 +27,16 @@ class AccountCardPageLoader
         }
 
         $page = AccountCardPage::createFrom(
-            $this->genericLoader->load($request, $context)
+            $this->genericLoader->load($request, $context),
         );
 
-        $page->setCards(
-            $this->cardRoute->load($context)->getSearchResult()
-        );
+        // Disable storage of credit card data
+        // $page->setCards(
+        //     $this->cardRoute->load($context)->getSearchResult(),
+        // );
 
         $this->eventDispatcher->dispatch(
-            new AccountCardPageLoadedEvent($page, $context, $request)
+            new AccountCardPageLoadedEvent($page, $context, $request),
         );
 
         return $page;

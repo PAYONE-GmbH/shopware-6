@@ -1,0 +1,17 @@
+{
+  "config": {
+    "gitlab-domains": [
+      "gitlab.netinventors.de"
+    ]
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://gitlab.netinventors.de/api/v4/group/2736/-/packages/composer"
+    }
+  ],
+  "require-dev": {
+    "php": ">=8.2",
+    "netinventors/shopware6-taskfile": "6.*"
+  }
+}

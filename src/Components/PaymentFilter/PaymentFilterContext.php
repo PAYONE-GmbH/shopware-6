@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
-use PayonePayment\Core\Utils\AddressCompare;
+use PayonePayment\Service\AddressCompareService;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -17,19 +17,20 @@ class PaymentFilterContext extends Struct
 {
     final public const FLAG_SKIP_EC_REQUIRED_DATA_VALIDATION = 'skip_express_checkout_required_data_validation';
 
-    private bool $_areAddressesIdentical;
+    private bool $areAddressesIdentical;
 
     /**
      * @param string[] $flags
      */
     public function __construct(
         private readonly SalesChannelContext $salesChannelContext,
+        private readonly AddressCompareService $addressCompareService,
         private readonly CustomerAddressEntity|OrderAddressEntity|null $billingAddress = null,
         private readonly CustomerAddressEntity|OrderAddressEntity|null $shippingAddress = null,
-        private readonly ?CurrencyEntity $currency = null,
-        private readonly ?OrderEntity $order = null,
-        private readonly ?Cart $cart = null,
-        private readonly array $flags = []
+        private readonly CurrencyEntity|null $currency = null,
+        private readonly OrderEntity|null $order = null,
+        private readonly Cart|null $cart = null,
+        private readonly array $flags = [],
     ) {
     }
 
@@ -48,46 +49,49 @@ class PaymentFilterContext extends Struct
         return $this->shippingAddress;
     }
 
-    public function getCurrency(): ?CurrencyEntity
+    public function getCurrency(): CurrencyEntity|null
     {
         return $this->currency;
     }
 
-    public function getOrder(): ?OrderEntity
+    public function getOrder(): OrderEntity|null
     {
         return $this->order;
     }
 
-    public function getCart(): ?Cart
+    public function getCart(): Cart|null
     {
         return $this->cart;
     }
 
     public function areAddressesIdentical(): bool
     {
-        if (isset($this->_areAddressesIdentical)) {
-            return $this->_areAddressesIdentical;
+        if (isset($this->areAddressesIdentical)) {
+            return $this->areAddressesIdentical;
         }
 
-        $billingAddress = $this->getBillingAddress();
+        $billingAddress  = $this->getBillingAddress();
         $shippingAddress = $this->getShippingAddress();
 
-        if ($billingAddress instanceof OrderAddressEntity
+        if (
+            $billingAddress instanceof OrderAddressEntity
             && $shippingAddress instanceof OrderAddressEntity
+            && !$this->addressCompareService->areOrderAddressesIdentical($billingAddress, $shippingAddress)
             && $billingAddress->getId() !== $shippingAddress->getId()
-            && !AddressCompare::areOrderAddressesIdentical($billingAddress, $shippingAddress)
         ) {
-            return $this->_areAddressesIdentical = false;
+            return $this->areAddressesIdentical = false;
         }
 
-        if ($billingAddress instanceof CustomerAddressEntity
+        if (
+            $billingAddress instanceof CustomerAddressEntity
             && $shippingAddress instanceof CustomerAddressEntity
+            && !$this->addressCompareService->areCustomerAddressesIdentical($billingAddress, $shippingAddress)
             && $billingAddress->getId() !== $shippingAddress->getId()
-            && !AddressCompare::areCustomerAddressesIdentical($billingAddress, $shippingAddress)) {
-            return $this->_areAddressesIdentical = false;
+        ) {
+            return $this->areAddressesIdentical = false;
         }
 
-        return $this->_areAddressesIdentical = true;
+        return $this->areAddressesIdentical = true;
     }
 
     public function hasFlag(string $key): bool

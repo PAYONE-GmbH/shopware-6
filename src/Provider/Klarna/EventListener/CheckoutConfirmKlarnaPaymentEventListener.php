@@ -1,0 +1,107 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PayonePayment\Provider\Klarna\EventListener;
+
+use PayonePayment\Payone\Client\Exception\PayoneRequestException;
+use PayonePayment\Payone\Request\RequestConstantsEnum;
+use PayonePayment\Provider\Klarna\PaymentHandler\DirectDebitPaymentHandler;
+use PayonePayment\Provider\Klarna\PaymentHandler\InstallmentPaymentHandler;
+use PayonePayment\Provider\Klarna\PaymentHandler\InvoicePaymentHandler;
+use PayonePayment\Provider\Klarna\Service\KlarnaSessionService;
+use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
+use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+readonly class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscriberInterface
+{
+    public function __construct(
+        private TranslatorInterface $translator,
+        private KlarnaSessionService $klarnaSessionService,
+    ) {
+    }
+
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            CheckoutConfirmPageLoadedEvent::class       => ['initiateSession', -20],
+            AccountEditOrderPageLoadedEvent::class      => ['initiateSession', -20],
+            HandlePaymentMethodRouteRequestEvent::class => 'onHandlePaymentMethodRouteRequest',
+        ];
+    }
+
+    public function initiateSession(
+        AccountEditOrderPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event,
+    ): void {
+        $currentPaymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
+
+        if (!$this->isKlarnaPaymentMethod($currentPaymentMethod)) {
+            return;
+        }
+
+        $order = $event instanceof AccountEditOrderPageLoadedEvent ? $event->getPage()->getOrder() : null;
+
+        try {
+            $sessionStruct = $this->klarnaSessionService->createKlarnaSession(
+                $event->getSalesChannelContext(),
+                $order ? $order->getId() : null,
+            );
+
+            $currentExtension = $event->getPage()->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
+
+            if (!$currentExtension) {
+                throw new PayoneRequestException('Extension not available: ' . CheckoutCartPaymentData::EXTENSION_NAME);
+            }
+
+            $currentExtension->assign([
+                'klarnaSessionStruct'                       => $sessionStruct,
+                CheckoutCartPaymentData::DATA_WORK_ORDER_ID => $sessionStruct->getWorkorderId(),
+                CheckoutCartPaymentData::DATA_CART_HASH     => $sessionStruct->getCartHash(),
+            ]);
+        } catch (PayoneRequestException) {
+            $session = $event->getRequest()->getSession();
+            if (method_exists($session, 'getFlashBag')) {
+                $session->getFlashBag()->add(
+                    'danger',
+                    $this->translator->trans('PayonePayment.errorMessages.canNotInitKlarna'),
+                );
+            }
+        }
+    }
+
+    public function onHandlePaymentMethodRouteRequest(HandlePaymentMethodRouteRequestEvent $event): void
+    {
+        if (!$this->isKlarnaPaymentMethod($event->getSalesChannelContext()->getPaymentMethod())) {
+            return;
+        }
+
+        // when user is changing the payment method, no custom params will be sent to the payment handler.
+        // so we need to transfer the parameters, which are required for the payment handler from the storefront-request to the api-request in the background.
+        $paramsToTransfer = [
+            RequestConstantsEnum::WORK_ORDER_ID->value,
+            RequestConstantsEnum::CART_HASH->value,
+            'payoneKlarnaAuthorizationToken',
+        ];
+
+        foreach ($paramsToTransfer as $key) {
+            if ($event->getStorefrontRequest()->request->has($key)) {
+                $event->getStoreApiRequest()->request->set($key, $event->getStorefrontRequest()->request->get($key));
+            }
+        }
+    }
+
+    private function isKlarnaPaymentMethod(PaymentMethodEntity $currentPaymentMethod): bool
+    {
+        return match ($currentPaymentMethod->getHandlerIdentifier()) {
+            DirectDebitPaymentHandler::class,
+            InstallmentPaymentHandler::class,
+            InvoicePaymentHandler::class => true,
+            default                      => false,
+        };
+    }
+}

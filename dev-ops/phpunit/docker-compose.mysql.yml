@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  mysql:
+    container_name: ${PHPUNIT_DB_CONTAINER_NAME}
+    image: 'mysql:8.0.32'
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 'true'
+      MYSQL_USER: 'netinventors'
+      MYSQL_PASSWORD: 'athene'
+      MYSQL_DATABASE: 'shopware_test'
+    command: [ "--log_bin_trust_function_creators=1" ]
+    ports:
+      - '${PHPUNIT_DB_CONTAINER_PORT}:3306'

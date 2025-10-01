@@ -1,8 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
-use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
+use PayonePayment\PaymentHandler\AbstractPaymentHandler;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 
@@ -10,7 +12,7 @@ class TotalPriceFilter implements PaymentFilterServiceInterface
 {
     public function filterPaymentMethods(
         PaymentMethodCollection $methodCollection,
-        PaymentFilterContext $filterContext
+        PaymentFilterContext $filterContext,
     ): void {
         if ($filterContext->getOrder()) {
             $price = $filterContext->getOrder()->getPrice()->getTotalPrice();
@@ -21,7 +23,13 @@ class TotalPriceFilter implements PaymentFilterServiceInterface
         }
 
         if ($price <= 0) {
-            $idsToRemove = $methodCollection->filter(static fn (PaymentMethodEntity $entity) => is_subclass_of($entity->getHandlerIdentifier(), AbstractPayonePaymentHandler::class))->getIds();
+            $idsToRemove = $methodCollection->filter(
+                static fn (PaymentMethodEntity $entity) => \is_subclass_of(
+                    $entity->getHandlerIdentifier(),
+                    AbstractPaymentHandler::class,
+                ),
+            )->getIds();
+
             foreach ($idsToRemove as $id) {
                 $methodCollection->remove($id);
             }

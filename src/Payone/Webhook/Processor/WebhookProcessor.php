@@ -5,24 +5,26 @@ declare(strict_types=1);
 namespace PayonePayment\Payone\Webhook\Processor;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Configuration\ConfigurationPrefixes;
+use PayonePayment\PaymentMethod\PaymentMethodInterface;
+use PayonePayment\PaymentMethod\PaymentMethodRegistry;
 use PayonePayment\Payone\Webhook\Handler\WebhookHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class WebhookProcessor implements WebhookProcessorInterface
+readonly class WebhookProcessor implements WebhookProcessorInterface
 {
     /**
      * @var WebhookHandlerInterface[]
      */
-    private readonly array $handlers;
+    private array $handlers;
 
     public function __construct(
-        private readonly ConfigReaderInterface $configReader,
+        private ConfigReaderInterface $configReader,
         \IteratorAggregate $handlers,
-        private readonly LoggerInterface $logger
+        private LoggerInterface $logger,
+        private PaymentMethodRegistry $paymentMethodRegistry,
     ) {
         $this->handlers = iterator_to_array($handlers);
     }
@@ -31,11 +33,13 @@ class WebhookProcessor implements WebhookProcessorInterface
     {
         $data = $request->request->all();
 
-        $config = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $config     = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $storedKeys = [hash('md5', $config->getString('portalKey'))];
 
-        foreach (ConfigurationPrefixes::CONFIGURATION_PREFIXES as $prefix) {
-            $key = $config->getString(sprintf('%sPortalKey', $prefix));
+        /** @var PaymentMethodInterface $paymentMethod */
+        foreach ($this->paymentMethodRegistry as $paymentMethod) {
+            $prefix = $paymentMethod::getConfigurationPrefix();
+            $key    = $config->getString(sprintf('%sPortalKey', $prefix));
 
             if (empty($key)) {
                 continue;
@@ -66,9 +70,9 @@ class WebhookProcessor implements WebhookProcessorInterface
             } catch (\Exception $exception) {
                 $this->logger->error(sprintf('Error during processing of webhook handler %s', $handler::class), [
                     'message' => $exception->getMessage(),
-                    'file' => $exception->getFile(),
-                    'line' => $exception->getLine(),
-                    'data' => $data,
+                    'file'    => $exception->getFile(),
+                    'line'    => $exception->getLine(),
+                    'data'    => $data,
                 ]);
 
                 $response = WebhookHandlerInterface::RESPONSE_TSNOTOK;

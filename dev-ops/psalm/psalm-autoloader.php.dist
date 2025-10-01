@@ -1,0 +1,11 @@
+<?php
+
+include __DIR__ . '/../../vendor/autoload.php';
+
+if (is_file(__DIR__ . '/../../src/Resources/build/vendor/autoload.php')) {
+    // For development
+    include __DIR__ . '/../../src/Resources/build/vendor/autoload.php';
+} elseif (is_file(__DIR__ . '/../../src/Resources/vendor/autoload.php')) {
+    // For production
+    include __DIR__ . '/../../src/Resources/vendor/autoload.php';
+}

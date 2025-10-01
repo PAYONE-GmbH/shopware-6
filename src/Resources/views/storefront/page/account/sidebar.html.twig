@@ -1,23 +1,25 @@
 {% sw_extends '@Storefront/storefront/page/account/sidebar.html.twig' %}
 
+{# shopware-block: dbe8cc35e1fae25231680bae29ed329535fda910852eb65954b8c93803ef8f4a@v6.6.10.5 #}
 {% block page_account_sidebar_menu_inner %}
     {{ parent() }}
 
-    {% block page_account_sidebar_link_payone_card %}
-        {% if constant('PayonePayment\\PaymentMethod\\PayoneCreditCard::UUID') in activePayonePaymentMethodIds %}
-            {% set css_class %}
-                list-group-item
-                list-group-item-action
-                account-aside-item
+{#    Disable storage of credit card data#}
+{#    {% block page_account_sidebar_link_payone_card %}#}
+{#        {% if constant('PayonePayment\\Provider\\Payone\\PaymentMethod\\CreditCardPaymentMethod::UUID') in activePayonePaymentMethodIds %}#}
+{#            {% set css_class %}#}
+{#                list-group-item#}
+{#                list-group-item-action#}
+{#                account-aside-item#}
 
-                {% if controllerName is same as('PayoneAccountCard') and controllerAction is same as('cardOverview') %}
-                    is-active
-                {% endif %}
-            {% endset %}
+{#                {% if controllerName is same as('PayoneAccountCard') and controllerAction is same as('cardOverview') %}#}
+{#                    is-active#}
+{#                {% endif %}#}
+{#            {% endset %}#}
 
-            <a href="{{ path('frontend.account.payone.card.page') }}" title="{{ "PayonePayment.cardPage.menuName" | trans }}" class="{{ css_class }}">
-                {{ "PayonePayment.cardPage.menuName" | trans }}
-            </a>
-        {% endif %}
-    {% endblock %}
+{#            <a href="{{ path('frontend.account.payone.card.page') }}" title="{{ "PayonePayment.cardPage.menuName" | trans }}" class="{{ css_class }}">#}
+{#                {{ "PayonePayment.cardPage.menuName" | trans }}#}
+{#            </a>#}
+{#        {% endif %}#}
+{#    {% endblock %}#}
 {% endblock %}

@@ -14,14 +14,15 @@ class RedirectCleanUpHandler extends ScheduledTaskHandler
     public function __construct(
         EntityRepository $scheduledTaskRepository,
         private readonly RedirectHandler $redirectHandler,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        LoggerInterface $exceptionLogger,
     ) {
-        parent::__construct($scheduledTaskRepository);
+        parent::__construct($scheduledTaskRepository, $exceptionLogger);
     }
 
     public static function getHandledMessages(): iterable
     {
-        return [RedirectCleanUp::class];
+        return [ RedirectCleanUp::class ];
     }
 
     public function run(): void
@@ -30,6 +31,6 @@ class RedirectCleanUpHandler extends ScheduledTaskHandler
 
         $affectedRows = $this->redirectHandler->cleanup();
 
-        $this->logger->debug(sprintf('Finished cleaning up %d PAYONE Redirects.', $affectedRows));
+        $this->logger->debug(\sprintf('Finished cleaning up %d PAYONE Redirects.', $affectedRows));
     }
 }

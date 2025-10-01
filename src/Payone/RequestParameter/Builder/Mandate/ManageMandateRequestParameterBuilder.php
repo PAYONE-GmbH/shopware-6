@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder\Mandate;
 
+use PayonePayment\PaymentHandler\Enum\PayoneClearingEnum;
+use PayonePayment\Payone\Request\RequestActionEnum;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\ManageMandateStruct;
@@ -16,11 +18,11 @@ class ManageMandateRequestParameterBuilder extends AbstractRequestParameterBuild
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
-            'request' => self::REQUEST_ACTION_MANAGE_MANDATE,
-            'clearingtype' => self::CLEARING_TYPE_DEBIT,
-            'iban' => $arguments->getIban(),
-            'bic' => $arguments->getBic(),
-            'currency' => $arguments->getSalesChannelContext()->getCurrency()->getIsoCode(),
+            'request'      => RequestActionEnum::MANAGE_MANDATE->value,
+            'clearingtype' => PayoneClearingEnum::DEBIT->value,
+            'iban'         => $arguments->getIban(),
+            'bic'          => $arguments->getBic(),
+            'currency'     => $arguments->getSalesChannelContext()->getCurrency()->getIsoCode(),
         ];
     }
 

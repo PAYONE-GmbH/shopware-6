@@ -10,12 +10,12 @@ class PaymentMethodNotAllowedException extends \Exception
 {
     public function __construct(
         string $message,
-        private readonly ?PaymentMethodCollection $disallowedPaymentMethodCollection = null
+        private readonly PaymentMethodCollection|null $disallowedPaymentMethodCollection = null,
     ) {
         parent::__construct($message);
     }
 
-    public function getDisallowedPaymentMethodCollection(): ?PaymentMethodCollection
+    public function getDisallowedPaymentMethodCollection(): PaymentMethodCollection|null
     {
         return $this->disallowedPaymentMethodCollection;
     }

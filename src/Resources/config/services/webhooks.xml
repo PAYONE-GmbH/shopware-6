@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Payone\Webhook\Processor\WebhookProcessor">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="tagged" tag="payone.webhook.handler" />
+            <argument key="$logger" type="service" id="monolog.logger.payone" />
+            <argument key="$paymentMethodRegistry" type="service" id="PayonePayment\PaymentMethod\PaymentMethodRegistry" />
+        </service>
+
+        <service id="PayonePayment\Payone\Webhook\Handler\WebhookLogHandler">
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\DataHandler\WebhookLogDataHandler" />
+            <argument type="service" id="monolog.logger.payone" />
+
+            <tag name="payone.webhook.handler" priority="1000" />
+        </service>
+
+        <service id="PayonePayment\Payone\Webhook\Handler\TransactionStatusWebhookHandler">
+            <argument type="service" id="PayonePayment\Components\TransactionStatus\TransactionStatusService" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+            <argument type="service" id="monolog.logger.payone" />
+
+            <tag name="payone.webhook.handler" priority="300" />
+        </service>
+
+        <service id="PayonePayment\Payone\Webhook\Handler\PaymentStatusHandler">
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+            <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry" />
+
+            <tag name="payone.webhook.handler" priority="200" />
+        </service>
+
+        <service id="PayonePayment\Payone\Webhook\Handler\AutoCaptureHandler">
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Service\AutomaticCaptureService" />
+
+            <tag name="payone.webhook.handler" priority="100" />
+        </service>
+
+        <service id="PayonePayment\Payone\Webhook\Handler\NotificationForwardHandler">
+            <argument type="service" id="payone_payment_notification_target.repository" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+            <argument type="service" id="messenger.bus.shopware" />
+
+            <tag name="payone.webhook.handler" priority="0" />
+        </service>
+
+        <service id="PayonePayment\Payone\Webhook\MessageBus\MessageHandler\NotificationForwardHandler">
+            <argument key="$forwardTargetRepository" type="service" id="payone_payment_notification_target.repository" />
+            <argument key="$notificationForwardRepository" type="service" id="payone_payment_notification_forward.repository" />
+            <argument key="$logger" type="service" id="monolog.logger.payone_transaction_forward" />
+            <argument key="$messageBus" type="service" id="messenger.bus.shopware" />
+
+            <tag name="messenger.message_handler" />
+        </service>
+    </services>
+</container>

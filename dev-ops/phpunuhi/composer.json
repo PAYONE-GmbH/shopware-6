@@ -1,0 +1,10 @@
+{
+    "require-dev": {
+        "boxblinkracer/phpunuhi": "^1.15.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}

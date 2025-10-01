@@ -9,9 +9,9 @@ class TestCredentialsStruct extends AbstractRequestParameterStruct
     public function __construct(
         protected array $parameters,
         string $action = '',
-        string $paymentMethodClass = ''
+        string $paymentMethodClass = '',
     ) {
-        $this->action = $action;
+        $this->action        = $action;
         $this->paymentMethod = $paymentMethodClass;
     }
 

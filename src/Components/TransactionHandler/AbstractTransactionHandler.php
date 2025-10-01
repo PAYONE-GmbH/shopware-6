@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionHandler;
 
-use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
-use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
-use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
+use PayonePayment\DataHandler\OrderActionLogDataHandler;
+use PayonePayment\DataHandler\TransactionDataHandler;
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 use PayonePayment\Payone\Client\PayoneClientInterface;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
+use PayonePayment\Service\CurrencyPrecisionService;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -29,7 +29,7 @@ abstract class AbstractTransactionHandler
 
     protected PayoneClientInterface $client;
 
-    protected TransactionDataHandlerInterface $transactionDataHandler;
+    protected TransactionDataHandler $transactionDataHandler;
 
     protected EntityRepository $transactionRepository;
 
@@ -37,29 +37,29 @@ abstract class AbstractTransactionHandler
 
     protected PaymentTransaction $paymentTransaction;
 
-    protected CurrencyPrecisionInterface $currencyPrecision;
+    protected CurrencyPrecisionService $currencyPrecision;
 
-    protected OrderActionLogDataHandlerInterface $orderActionLogDataHandler;
+    protected OrderActionLogDataHandler $orderActionLogDataHandler;
 
     public function handleRequest(ParameterBag $parameterBag, string $action, Context $context): array
     {
         $this->context = $context;
-        $transaction = $this->getTransaction($parameterBag->get('orderTransactionId', ''));
+        $transaction   = $this->getTransaction($parameterBag->get('orderTransactionId', ''));
 
-        if ($transaction === null) {
+        if (null === $transaction) {
             return [
                 new JsonResponse([
-                    'status' => false,
+                    'status'  => false,
                     'message' => 'payone-payment.error.transaction.notFound',
                 ], Response::HTTP_BAD_REQUEST),
                 null,
             ];
         }
 
-        if ($transaction->getOrder() === null) {
+        if (null === $transaction->getOrder()) {
             return [
                 new JsonResponse([
-                    'status' => false,
+                    'status'  => false,
                     'message' => 'payone-payment.error.transaction.orderNotFound',
                 ], Response::HTTP_BAD_REQUEST),
                 null,
@@ -67,7 +67,7 @@ abstract class AbstractTransactionHandler
         }
 
         /** @var PaymentMethodEntity $paymentMethod */
-        $paymentMethod = $transaction->getPaymentMethod();
+        $paymentMethod            = $transaction->getPaymentMethod();
         $this->paymentTransaction = PaymentTransaction::fromOrderTransaction($transaction, $transaction->getOrder());
 
         return $this->executeRequest(
@@ -77,9 +77,9 @@ abstract class AbstractTransactionHandler
                     $context,
                     $parameterBag,
                     $paymentMethod->getHandlerIdentifier(),
-                    $action
-                )
-            )
+                    $action,
+                ),
+            ),
         );
     }
 
@@ -97,7 +97,7 @@ abstract class AbstractTransactionHandler
             $response = $this->client->request($request);
 
             $this->transactionDataHandler->logResponse($this->paymentTransaction, $this->context, [
-                'request' => $request,
+                'request'  => $request,
                 'response' => $response,
             ]);
 
@@ -105,7 +105,7 @@ abstract class AbstractTransactionHandler
                 $this->paymentTransaction->getOrder(),
                 $request,
                 $response,
-                $this->context
+                $this->context,
             );
 
             return [
@@ -115,18 +115,18 @@ abstract class AbstractTransactionHandler
         } catch (PayoneRequestException $exception) {
             return [
                 new JsonResponse([
-                    'status' => false,
+                    'status'  => false,
                     'message' => $exception->getResponse()['error']['ErrorMessage'],
-                    'code' => $exception->getResponse()['error']['ErrorCode'],
+                    'code'    => $exception->getResponse()['error']['ErrorCode'],
                 ], Response::HTTP_BAD_REQUEST),
                 null,
             ];
         } catch (\Exception $exception) {
             return [
                 new JsonResponse([
-                    'status' => false,
+                    'status'  => false,
                     'message' => $exception->getMessage(),
-                    'code' => 0,
+                    'code'    => 0,
                 ], Response::HTTP_BAD_REQUEST),
                 null,
             ];
@@ -136,14 +136,14 @@ abstract class AbstractTransactionHandler
     protected function updateTransactionData(ParameterBag $parameterBag, float $captureAmount): void
     {
         $transactionData = [];
-        $currency = $this->paymentTransaction->getOrder()->getCurrency();
+        $currency        = $this->paymentTransaction->getOrder()->getCurrency();
 
         if ($parameterBag->has('complete') && $parameterBag->get('complete')) {
             $transactionData[$this->getAllowPropertyName()] = false;
         }
 
-        if ($currency !== null) {
-            $currentCaptureAmount = $this->currencyPrecision->getRoundedTotalAmount($captureAmount, $currency);
+        if (null !== $currency) {
+            $currentCaptureAmount  = $this->currencyPrecision->getRoundedTotalAmount($captureAmount, $currency);
             $alreadyCapturedAmount = $this->getAmount($this->paymentTransaction->getOrderTransaction());
 
             if ($captureAmount) {
@@ -172,7 +172,7 @@ abstract class AbstractTransactionHandler
             }
 
             $saveData[] = [
-                'id' => $orderLine['id'],
+                'id'           => $orderLine['id'],
                 'customFields' => [
                     $this->getQuantityCustomField() => $quantity,
                 ],

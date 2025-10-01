@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\RequestEnricher" />
+
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\Enricher\CustomerRequestParameterEnricher">
+            <argument key="$languageRepository" type="service" id="language.repository" />
+            <argument key="$salutationRepository" type="service" id="salutation.repository" />
+            <argument key="$countryRepository" type="service" id="country.repository" />
+            <argument key="$requestStack" type="service" id="request_stack" />
+
+            <tag name="payone.request_enricher.pay.ratepay.debit" />
+            <tag name="payone.request_enricher.pay.ratepay.installment" />
+            <tag name="payone.request_enricher.pay.ratepay.invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\Enricher\OrderLinesRequestParameterEnricher">
+            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface" />
+
+            <tag name="payone.request_enricher.pay.ratepay.debit" />
+            <tag name="payone.request_enricher.pay.ratepay.installment" />
+            <tag name="payone.request_enricher.pay.ratepay.invoice" />
+        </service>
+
+        <!-- Debit -->
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\Enricher\Debit\AuthorizeRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$profileService" type="service" id="PayonePayment\Provider\Ratepay\Service\ProfileService" />
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Provider\Ratepay\Service\RatepayDeviceFingerprintService" />
+
+            <tag name="payone.request_enricher.pay.ratepay.debit" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\Enricher\Debit\PreAuthorizeRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$profileService" type="service" id="PayonePayment\Provider\Ratepay\Service\ProfileService" />
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Provider\Ratepay\Service\RatepayDeviceFingerprintService" />
+
+            <tag name="payone.request_enricher.pay.ratepay.debit" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\Enricher\Debit\ProfileRequestParameterEnricher">
+            <tag name="payone.request_enricher.profile.ratepay.debit" />
+        </service>
+
+        <!-- Installment -->
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\Enricher\Installment\AuthorizeRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$profileService" type="service" id="PayonePayment\Provider\Ratepay\Service\ProfileService" />
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Provider\Ratepay\Service\RatepayDeviceFingerprintService" />
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+
+            <tag name="payone.request_enricher.pay.ratepay.installment" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\Enricher\Installment\PreAuthorizeRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$profileService" type="service" id="PayonePayment\Provider\Ratepay\Service\ProfileService" />
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Provider\Ratepay\Service\RatepayDeviceFingerprintService" />
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+
+            <tag name="payone.request_enricher.pay.ratepay.installment" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\Enricher\Installment\CalculationRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+
+            <tag name="payone.request_enricher.calculate.ratepay.installment" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\Enricher\Installment\ProfileRequestParameterEnricher">
+            <tag name="payone.request_enricher.profile.ratepay.installment" />
+        </service>
+
+        <!-- Invoice -->
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\Enricher\Invoice\AuthorizeRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$profileService" type="service" id="PayonePayment\Provider\Ratepay\Service\ProfileService" />
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Provider\Ratepay\Service\RatepayDeviceFingerprintService" />
+
+            <tag name="payone.request_enricher.pay.ratepay.invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\Enricher\Invoice\PreAuthorizeRequestParameterEnricher">
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$profileService" type="service" id="PayonePayment\Provider\Ratepay\Service\ProfileService" />
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Provider\Ratepay\Service\RatepayDeviceFingerprintService" />
+
+            <tag name="payone.request_enricher.pay.ratepay.invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\RequestParameter\Enricher\Invoice\ProfileRequestParameterEnricher">
+            <tag name="payone.request_enricher.profile.ratepay.invoice" />
+        </service>
+    </services>
+</container>

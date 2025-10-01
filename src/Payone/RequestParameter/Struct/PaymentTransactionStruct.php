@@ -11,6 +11,9 @@ use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
+/**
+ * @deprecated
+ */
 class PaymentTransactionStruct extends AbstractRequestParameterStruct
 {
     use SalesChannelContextTrait;
@@ -22,12 +25,12 @@ class PaymentTransactionStruct extends AbstractRequestParameterStruct
         RequestDataBag $requestData,
         SalesChannelContext $salesChannelContext,
         string $paymentMethod,
-        string $action = ''
+        string $action = '',
     ) {
-        $this->paymentTransaction = $paymentTransaction;
-        $this->requestData = $requestData;
+        $this->paymentTransaction  = $paymentTransaction;
+        $this->requestData         = $requestData;
         $this->salesChannelContext = $salesChannelContext;
-        $this->paymentMethod = $paymentMethod;
-        $this->action = $action;
+        $this->paymentMethod       = $paymentMethod;
+        $this->action              = $action;
     }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\Payone\Service\SecuredInstallmentService">
+            <argument type="service" id="PayonePayment\RequestParameter\PaymentRequestEnricher" />
+            <argument type="service" id="payone.request_enricher_chain.option.payone.secured_installment.load" />
+            <argument type="service" id="PayonePayment\Provider\Payone\PaymentHandler\SecuredInstallmentPaymentHandler" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+        </service>
+    </services>
+</container>

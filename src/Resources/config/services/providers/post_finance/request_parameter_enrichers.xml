@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\PostFinance\RequestParameter\Enricher\CustomerRequestParameterEnricher">
+            <argument key="$languageRepository" type="service" id="language.repository" />
+            <argument key="$salutationRepository" type="service" id="salutation.repository" />
+            <argument key="$countryRepository" type="service" id="country.repository" />
+            <argument key="$requestStack" type="service" id="request_stack" />
+
+            <tag name="payone.request_enricher.pay.post_finance.card" />
+            <tag name="payone.request_enricher.pay.post_finance.wallet" />
+        </service>
+
+        <service id="PayonePayment\Provider\PostFinance\RequestParameter\Enricher\ReturnUrlRequestParameterEnricher">
+            <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+
+            <tag name="payone.request_enricher.pay.post_finance.card" />
+            <tag name="payone.request_enricher.pay.post_finance.wallet" />
+        </service>
+
+        <!-- Card -->
+        <service id="PayonePayment\Provider\PostFinance\RequestParameter\Enricher\Card\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.post_finance.card" />
+        </service>
+
+        <service id="PayonePayment\Provider\PostFinance\RequestParameter\Enricher\Card\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.post_finance.card" />
+        </service>
+
+        <service id="PayonePayment\Provider\PostFinance\RequestParameter\Enricher\Card\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Wallet -->
+        <service id="PayonePayment\Provider\PostFinance\RequestParameter\Enricher\Wallet\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.post_finance.wallet" />
+        </service>
+
+        <service id="PayonePayment\Provider\PostFinance\RequestParameter\Enricher\Wallet\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.post_finance.wallet" />
+        </service>
+
+        <service id="PayonePayment\Provider\PostFinance\RequestParameter\Enricher\Wallet\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+    </services>
+</container>

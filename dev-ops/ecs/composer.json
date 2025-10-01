@@ -1,0 +1,17 @@
+{
+  "config": {
+    "gitlab-domains": [
+      "gitlab.netinventors.de"
+    ]
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://gitlab.netinventors.de/api/v4/group/2961/-/packages/composer"
+    }
+  ],
+  "require-dev": {
+    "netinventors/ecs-set-list": "^1.0",
+    "symplify/easy-coding-standard": "^12.5.8"
+  }
+}

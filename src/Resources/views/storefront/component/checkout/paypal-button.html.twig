@@ -1,5 +1,5 @@
 {% block component_payone_paypal_button %}
-    <a href="{{ path('frontend.account.payone.express-checkout.generic.redirect', { paymentMethodId: constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') }) }}" title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}">
+    <a href="{{ path('frontend.account.payone.express-checkout.generic.redirect', { paymentMethodId: constant('PayonePayment\\Provider\\PayPal\\PaymentMethod\\ExpressPaymentMethod::UUID') }) }}" title="{{ "PayonePayment.paypalExpress.buttonTitle" | trans }}">
         <img
             src="{{ asset('bundles/payonepayment/payment/paypal/ecs/' ~ ('PayonePayment.paypalExpress.buttonImage' | trans)) }}"
             srcset="{{ asset('bundles/payonepayment/payment/paypal/ecs/' ~ ('PayonePayment.paypalExpress.buttonImage' | trans)) }}, {{ asset('bundles/payonepayment/payment/paypal/ecs/' ~ ('PayonePayment.paypalExpress.buttonImage2x' | trans)) }} 2x"
