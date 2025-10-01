@@ -1,0 +1,23 @@
+<phpunuhi
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="./vendor/boxblinkracer/phpunuhi/config.xsd"
+>
+    <translations>
+        <set name="Administration">
+            <format>
+                <json indent="4" />
+            </format>
+
+            <styles>
+                <style level="0">kebab</style>
+                <style>camel</style>
+                <style>kebab</style>
+            </styles>
+
+            <locales basePath="../../src/Resources/app/administration/src/snippet">
+                <locale name="de-DE">%base_path%/%locale%.json</locale>
+                <locale name="en-GB">%base_path%/%locale%.json</locale>
+            </locales>
+        </set>
+    </translations>
+</phpunuhi>

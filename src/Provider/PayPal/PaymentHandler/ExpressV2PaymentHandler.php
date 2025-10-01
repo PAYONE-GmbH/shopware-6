@@ -1,0 +1,78 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PayonePayment\Provider\PayPal\PaymentHandler;
+
+use PayonePayment\PaymentHandler\AbstractPaymentHandler;
+use PayonePayment\PaymentHandler\ExpressCheckout\ExpressCheckoutPaymentHandlerAwareInterface;
+use PayonePayment\PaymentHandler\ExpressCheckout\ExpressCheckoutSessionEnricherChainsDto;
+use PayonePayment\PaymentHandler\FinalizeTrait;
+use PayonePayment\PaymentHandler\GenericExpressCheckoutTrait;
+use PayonePayment\PaymentHandler\PaymentHandlerPayExecutorInterface;
+use PayonePayment\PaymentHandler\RequestDataValidateTrait;
+use PayonePayment\PaymentHandler\RequestEnricherChainTrait;
+use PayonePayment\PaymentHandler\ResponseHandlerTrait;
+use PayonePayment\Payone\Request\RequestActionEnum;
+use PayonePayment\Provider\PayPal\PaymentMethod\ExpressV2PaymentMethod;
+use PayonePayment\Provider\PayPal\ResponseHandler\ExpressV2ResponseHandler;
+use PayonePayment\RequestParameter\RequestParameterEnricherChain;
+use PayonePayment\Service\PaymentStateHandlerService;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerType;
+use Shopware\Core\Framework\Context;
+
+class ExpressV2PaymentHandler extends AbstractPaymentHandler implements ExpressCheckoutPaymentHandlerAwareInterface
+{
+    use FinalizeTrait;
+    use GenericExpressCheckoutTrait;
+    use ResponseHandlerTrait;
+    use RequestDataValidateTrait;
+    use RequestEnricherChainTrait;
+
+    private ExpressCheckoutSessionEnricherChainsDto $expressCheckoutSessionEnricherChains;
+
+    public function __construct(
+        protected readonly PaymentHandlerPayExecutorInterface $payExecutor,
+        ExpressV2ResponseHandler $responseHandler,
+        PaymentStateHandlerService $stateHandler,
+        RequestParameterEnricherChain $requestEnricherChain,
+        RequestParameterEnricherChain $expressSessionCreaterequestEnricherChain,
+        RequestParameterEnricherChain $expressSessionGetRequestEnricherChain,
+        RequestParameterEnricherChain $expressSessionUpdateRequestEnricherChain,
+    ) {
+        $this->responseHandler      = $responseHandler;
+        $this->requestEnricherChain = $requestEnricherChain;
+        $this->stateHandler         = $stateHandler;
+
+        $this->expressCheckoutSessionEnricherChains = new ExpressCheckoutSessionEnricherChainsDto(
+            $expressSessionCreaterequestEnricherChain,
+            $expressSessionGetRequestEnricherChain,
+            $expressSessionUpdateRequestEnricherChain,
+        );
+    }
+
+    public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
+    {
+        return PaymentHandlerType::REFUND === $type;
+    }
+
+    public function getConfigKeyPrefix(): string
+    {
+        return ExpressV2PaymentMethod::getConfigurationPrefix();
+    }
+
+    public function getDefaultAuthorizationMethod(): string
+    {
+        return RequestActionEnum::PREAUTHORIZE->value;
+    }
+
+    public function getPaymentMethodUuid(): string
+    {
+        return ExpressV2PaymentMethod::getId();
+    }
+
+    public function getExpressCheckoutSessionEnricherChains(): ExpressCheckoutSessionEnricherChainsDto
+    {
+        return $this->expressCheckoutSessionEnricherChains;
+    }
+}

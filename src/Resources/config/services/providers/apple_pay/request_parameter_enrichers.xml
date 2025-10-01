@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\ApplePay\RequestParameter\Enricher\AuthorizeRequestParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument key="$numberRangeValueGenerator" type="service" id="Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface" />
+
+            <tag name="payone.request_enricher.pay.apple_pay.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\ApplePay\RequestParameter\Enricher\PreAuthorizeRequestParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument key="$numberRangeValueGenerator" type="service" id="Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface" />
+
+            <tag name="payone.request_enricher.pay.apple_pay.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\ApplePay\RequestParameter\Enricher\Standard\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+    </services>
+</container>

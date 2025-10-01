@@ -8,36 +8,37 @@
     {% block page_checkout_confirm_payone_card_content_credit_card %}
         <div class="card">
             <fieldset>
-                <input type="hidden" name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_PSEUDO_CARD_PAN') }}" id="pseudocardpan" form="confirmOrderForm">
-                <input type="hidden" name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_TRUNCATED_CARD_PAN') }}" id="truncatedcardpan" form="confirmOrderForm">
-                <input type="hidden" name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_EXPIRE_DATE') }}" id="cardexpiredate" form="confirmOrderForm">
-                <input type="hidden" name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_TYPE') }}" id="cardtype" form="confirmOrderForm">
+                <input type="hidden" name="{{ enum('PayonePayment\\Provider\\Payone\\Enum\\CreditCardRequestParamEnum').PSEUDO_CARD_PAN.value }}" id="pseudocardpan" form="confirmOrderForm">
+                <input type="hidden" name="{{ enum('PayonePayment\\Provider\\Payone\\Enum\\CreditCardRequestParamEnum').TRUNCATED_CARD_PAN.value }}" id="truncatedcardpan" form="confirmOrderForm">
+                <input type="hidden" name="{{ enum('PayonePayment\\Provider\\Payone\\Enum\\CreditCardRequestParamEnum').CARD_EXPIRE_DATE.value }}" id="cardexpiredate" form="confirmOrderForm">
+                <input type="hidden" name="{{ enum('PayonePayment\\Provider\\Payone\\Enum\\CreditCardRequestParamEnum').CARD_TYPE.value }}" id="cardtype" form="confirmOrderForm">
 
                 {% if page.extensions.payone.savedCards.total > 0 %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label" for="savedpseudocardpan">{{ "PayonePayment.creditCard.savedCards" | trans }}</label>
-                            <select class="form-control" id="savedpseudocardpan" name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVED_PSEUDO_CARD_PAN') }}" form="confirmOrderForm">
-                                <option value="">{{ "PayonePayment.creditCard.newCard" | trans }}</option>
+{#                    Disable storage of credit card data#}
+{#                    <div class="row">#}
+{#                        <div class="col-md-6">#}
+{#                            <label class="form-label" for="savedpseudocardpan">{{ "PayonePayment.creditCard.savedCards" | trans }}</label>#}
+{#                            <select class="form-control" id="savedpseudocardpan" name="{{ enum('PayonePayment\\Provider\\Payone\\Enum\\CreditCardRequestParamEnum').SAVED_PSEUDO_CARD_PAN.value }}" form="confirmOrderForm">#}
+{#                                <option value="">{{ "PayonePayment.creditCard.newCard" | trans }}</option>#}
 
-                                {% for card in page.extensions.payone.savedCards %}
-                                    {% if card.expiresAt > date() %}
-                                        {# TODO-card-holder-requirement: remove "data-card-holder" (please see credit-card handler) #}
-                                        <option value="{{ card.pseudoCardPan }}" data-card-holder="{{ card.cardHolder }}">
-                                            {% if card.cardHolder %}{{ card.cardHolder }} / {% endif %}{{ card.truncatedCardPan }}
-                                            ({{ "PayonePayment.cardPage.expiresAt" | trans({'%expiresAt%': card.expiresAt | format_date('medium')}) }})
-                                        </option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
+{#                                {% for card in page.extensions.payone.savedCards %}#}
+{#                                    {% if card.expiresAt > date() %}#}
+{#                                        #}{# TODO-card-holder-requirement: remove "data-card-holder" (please see credit-card handler) #}
+{#                                        <option value="{{ card.pseudoCardPan }}" data-card-holder="{{ card.cardHolder }}">#}
+{#                                            {% if card.cardHolder %}{{ card.cardHolder }} / {% endif %}{{ card.truncatedCardPan }}#}
+{#                                            ({{ "PayonePayment.cardPage.expiresAt" | trans({'%expiresAt%': card.expiresAt | format_date('medium')}) }})#}
+{#                                        </option>#}
+{#                                    {% endif %}#}
+{#                                {% endfor %}#}
+{#                            </select>#}
+{#                        </div>#}
+{#                    </div>#}
                 {% endif %}
 
                 <div class="row credit-card-input" id="card-holder-input-wrapper">
                     <div class="col-md-6">
                         <label class="form-label" for="creditCardHolder">{{ "PayonePayment.creditCard.cardHolder" | trans }}</label>
-                        <input class="form-control" type="text" id="creditCardHolder" name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_CARD_HOLDER') }}" form="confirmOrderForm">
+                        <input class="form-control" type="text" id="creditCardHolder" name="{{ enum('PayonePayment\\Provider\\Payone\\Enum\\CreditCardRequestParamEnum').CARD_HOLDER.value }}" form="confirmOrderForm">
                     </div>
                 </div>
 
@@ -70,21 +71,22 @@
                     </div>
                 </div>
 
-                {% if context.customer and not context.customer.guest %}
-                    <div class="row credit-card-input">
-                        <div class="col-md-6">
-                            <input type="checkbox"
-                                   name="{{ constant('PayonePayment\\PaymentHandler\\PayoneCreditCardPaymentHandler::REQUEST_PARAM_SAVE_CREDIT_CARD') }}"
-                                   id="saveCreditCard"
-                                   form="confirmOrderForm"
-                                   {% if page.extensions.payone.savedCards.total > 0 %}
-                                    checked="checked"
-                                   {% endif %}
-                                   />
-                            <label class="form-label" for="saveCreditCard">{{ "PayonePayment.checkoutConfirmPage.save" | trans }}</label>
-                        </div>
-                    </div>
-                {% endif %}
+{#                {% if context.customer and not context.customer.guest %}#}
+{#                    Disable storage of credit card data#}
+{#                    <div class="row credit-card-input">#}
+{#                        <div class="col-md-6">#}
+{#                            <input type="checkbox"#}
+{#                                   name="{{ enum('PayonePayment\\Provider\\Payone\\Enum\\CreditCardRequestParamEnum').SAVE_CREDIT_CARD.value }}"#}
+{#                                   id="saveCreditCard"#}
+{#                                   form="confirmOrderForm"#}
+{#                                   {% if page.extensions.payone.savedCards.total > 0 %}#}
+{#                                    checked="checked"#}
+{#                                   {% endif %}#}
+{#                                   />#}
+{#                            <label class="form-label" for="saveCreditCard">{{ "PayonePayment.checkoutConfirmPage.save" | trans }}</label>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                {% endif %}#}
 
                 <div class="row">
                     <div class="col-md-12" >

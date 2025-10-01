@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\Ratepay\ResponseHandler\DebitResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\PaymentHandler\DebitPaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Ratepay\ResponseHandler\DebitResponseHandler" />
+            <argument type="service" id="payone.request_enricher_chain.pay.ratepay.debit" />
+            <argument type="service" id="PayonePayment\Provider\Ratepay\Service\RatepayDeviceFingerprintService" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\ResponseHandler\InstallmentResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\PaymentHandler\InstallmentPaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Ratepay\ResponseHandler\InstallmentResponseHandler" />
+            <argument type="service" id="payone.request_enricher_chain.pay.ratepay.installment" />
+            <argument type="service" id="PayonePayment\Provider\Ratepay\Service\RatepayDeviceFingerprintService" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\ResponseHandler\InvoiceResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Ratepay\PaymentHandler\InvoicePaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Ratepay\ResponseHandler\InvoiceResponseHandler" />
+            <argument type="service" id="payone.request_enricher_chain.pay.ratepay.invoice" />
+            <argument type="service" id="PayonePayment\Provider\Ratepay\Service\RatepayDeviceFingerprintService" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+    </services>
+</container>

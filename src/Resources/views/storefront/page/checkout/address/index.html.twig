@@ -1,10 +1,11 @@
 {% sw_extends '@Storefront/storefront/page/checkout/address/index.html.twig' %}
 
+{# shopware-block: 0141f61df9d271e6819fc3c4fa4de66ad4f487f30e7e8dafb1f603737eb1462e@v6.6.10.5 #}
 {% block page_checkout_address_login_toggle %}
     {{ parent() }}
 
     {% if not context.customer and page.cart.price.totalPrice > 0 %}
-        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalExpress::UUID') in activePayonePaymentMethodIds and constant('PayonePayment\\PaymentMethod\\PayonePaypalV2Express::UUID') not in activePayonePaymentMethodIds %}
+        {% if constant('PayonePayment\\Provider\\PayPal\\PaymentMethod\\ExpressPaymentMethod::UUID') in activePayonePaymentMethodIds and constant('PayonePayment\\Provider\\PayPal\\PaymentMethod\\ExpressV2PaymentMethod::UUID') not in activePayonePaymentMethodIds %}
             {% block page_checkout_address_payone_paypal_express_button %}
                 <div class="row">
                     <div class="col-5 pb-2">
@@ -14,7 +15,7 @@
             {% endblock %}
         {% endif %}
 
-        {% if constant('PayonePayment\\PaymentMethod\\PayonePaypalV2Express::UUID') in activePayonePaymentMethodIds %}
+        {% if constant('PayonePayment\\Provider\\PayPal\\PaymentMethod\\ExpressV2PaymentMethod::UUID') in activePayonePaymentMethodIds %}
             {% block page_checkout_address_payone_paypal_v2_express_button %}
                 <div class="row">
                     <div class="col-5 pb-2">

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\GenericExpressCheckout;
 
-use PayonePayment\Core\Utils\AddressCompare;
+use PayonePayment\Service\AddressCompareService;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -22,78 +21,84 @@ use Shopware\Core\System\Salutation\SalutationEntity;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class CustomerRegistrationUtil
+readonly class CustomerRegistrationUtil
 {
     public function __construct(
-        private readonly EntityRepository $salutationRepository,
-        private readonly EntityRepository $countryRepository,
-        private readonly EntityRepository $countryStateRepository,
-        private readonly TranslatorInterface $translator,
-        private readonly DataValidationFactoryInterface $addressValidationFactory,
-        private readonly DataValidator $validator,
-        private readonly LoggerInterface $logger
+        private EntityRepository $salutationRepository,
+        private EntityRepository $countryRepository,
+        private EntityRepository $countryStateRepository,
+        private TranslatorInterface $translator,
+        private DataValidationFactoryInterface $addressValidationFactory,
+        private AddressCompareService $addressCompareService,
+        private DataValidator $validator,
+        private LoggerInterface $logger,
     ) {
     }
 
-    public function getCustomerDataBagFromGetCheckoutSessionResponse(array $response, SalesChannelContext $salesChannelContext): RequestDataBag
-    {
-        $salutationId = $this->getSalutationId($salesChannelContext->getContext());
-
+    public function getCustomerDataBagFromGetCheckoutSessionResponse(
+        array $response,
+        SalesChannelContext $salesChannelContext,
+    ): RequestDataBag {
+        $salutationId   = $this->getSalutationId($salesChannelContext->getContext());
         $billingCountry = $this->extractBillingData($response, 'country') ?? '';
 
         $billingAddress = [
-            'salutationId' => $salutationId,
-            'company' => $this->extractBillingData($response, 'company'),
-            'firstName' => $this->extractBillingData($response, 'firstname'),
-            'lastName' => $this->extractBillingData($response, 'lastname'),
-            'street' => $this->extractBillingData($response, 'street'),
+            'salutationId'           => $salutationId,
+            'company'                => $this->extractBillingData($response, 'company'),
+            'firstName'              => $this->extractBillingData($response, 'firstname'),
+            'lastName'               => $this->extractBillingData($response, 'lastname'),
+            'street'                 => $this->extractBillingData($response, 'street'),
             'additionalAddressLine1' => $this->extractBillingData($response, 'addressaddition'),
-            'zipcode' => $this->extractBillingData($response, 'zip'),
-            'city' => $this->extractBillingData($response, 'city'),
-            'countryId' => $this->getCountryIdByCode($billingCountry, $salesChannelContext->getContext()),
-            'countryStateId' => $this->getCountryStateIdByCodes(
+            'zipcode'                => $this->extractBillingData($response, 'zip'),
+            'city'                   => $this->extractBillingData($response, 'city'),
+            'countryId'              => $this->getCountryIdByCode($billingCountry, $salesChannelContext->getContext()),
+
+            'countryStateId'         => $this->getCountryStateIdByCodes(
                 $billingCountry,
                 $this->extractBillingData($response, 'state') ?? '',
-                $salesChannelContext->getContext()
+                $salesChannelContext->getContext(),
             ),
-            'phone' => $this->extractBillingData($response, 'telephonenumber'),
+
+            'phone'                  => $this->extractBillingData($response, 'telephonenumber'),
         ];
 
         $shippingCountry = $this->extractShippingData($response, 'country') ?? '';
 
         $shippingAddress = [
-            'salutationId' => $salutationId,
-            'company' => $this->extractShippingData($response, 'company'),
-            'firstName' => $this->extractShippingData($response, 'firstname'),
-            'lastName' => $this->extractShippingData($response, 'lastname'),
-            'street' => $this->extractShippingData($response, 'street'),
+            'salutationId'           => $salutationId,
+            'company'                => $this->extractShippingData($response, 'company'),
+            'firstName'              => $this->extractShippingData($response, 'firstname'),
+            'lastName'               => $this->extractShippingData($response, 'lastname'),
+            'street'                 => $this->extractShippingData($response, 'street'),
             'additionalAddressLine1' => $this->extractShippingData($response, 'addressaddition'),
-            'zipcode' => $this->extractShippingData($response, 'zip'),
-            'city' => $this->extractShippingData($response, 'city'),
-            'countryId' => $this->getCountryIdByCode($shippingCountry, $salesChannelContext->getContext()),
-            'countryStateId' => $this->getCountryStateIdByCodes(
+            'zipcode'                => $this->extractShippingData($response, 'zip'),
+            'city'                   => $this->extractShippingData($response, 'city'),
+            'countryId'              => $this->getCountryIdByCode($shippingCountry, $salesChannelContext->getContext()),
+
+            'countryStateId'         => $this->getCountryStateIdByCodes(
                 $shippingCountry,
                 $this->extractShippingData($response, 'state') ?? '',
-                $salesChannelContext->getContext()
+                $salesChannelContext->getContext(),
             ),
-            'phone' => $this->extractShippingData($response, 'telephonenumber'),
+
+            'phone'                  => $this->extractShippingData($response, 'telephonenumber'),
         ];
 
-        $billingAddressViolations = $this->validateAddress($billingAddress, $salesChannelContext);
+        $billingAddressViolations  = $this->validateAddress($billingAddress, $salesChannelContext);
         $shippingAddressViolations = $this->validateAddress($shippingAddress, $salesChannelContext);
 
-        $isBillingAddressComplete = $billingAddressViolations->count() === 0;
-        $isShippingAddressComplete = $shippingAddressViolations->count() === 0;
+        $isBillingAddressComplete  = 0 === $billingAddressViolations->count();
+        $isShippingAddressComplete = 0 === $shippingAddressViolations->count();
 
         if (!$isBillingAddressComplete && !$isShippingAddressComplete) {
             $this->logger->error('PAYONE Express Checkout: The delivery and billing address is incomplete', [
-                'billingAddress' => $billingAddress,
-                'shippingAddress' => $shippingAddress,
-                'billingAddressViolations' => $billingAddressViolations->__toString(),
+                'billingAddress'            => $billingAddress,
+                'shippingAddress'           => $shippingAddress,
+                'billingAddressViolations'  => $billingAddressViolations->__toString(),
                 'shippingAddressViolations' => $shippingAddressViolations->__toString(),
             ]);
 
-            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+            throw new \RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
         }
 
         if (!$isBillingAddressComplete && $isShippingAddressComplete) {
@@ -101,42 +106,50 @@ class CustomerRegistrationUtil
         }
 
         $customerData = new RequestDataBag([
-            'guest' => true,
-            'salutationId' => $salutationId,
-            'email' => $response['addpaydata']['email'],
-            'firstName' => $billingAddress['firstName'],
-            'lastName' => $billingAddress['lastName'],
+            'guest'                  => true,
+            'salutationId'           => $salutationId,
+            'email'                  => $response['addpaydata']['email'],
+            'firstName'              => $billingAddress['firstName'],
+            'lastName'               => $billingAddress['lastName'],
             'acceptedDataProtection' => true,
-            'billingAddress' => $billingAddress,
-            'shippingAddress' => $shippingAddress,
+            'billingAddress'         => $billingAddress,
+            'shippingAddress'        => $shippingAddress,
         ]);
 
-        if ($customerData->get('billingAddress')?->get('company') !== null) {
-            $customerData->set('accountType', CustomerEntity::ACCOUNT_TYPE_BUSINESS);
-        } else {
-            $customerData->set('accountType', CustomerEntity::ACCOUNT_TYPE_PRIVATE);
-        }
+        $accountType = null === $customerData->get('billingAddress')?->get('company')
+            ? CustomerEntity::ACCOUNT_TYPE_PRIVATE
+            : CustomerEntity::ACCOUNT_TYPE_BUSINESS
+        ;
 
-        $billingAddress = $customerData->get('billingAddress')?->all() ?: [];
+        $customerData->set('accountType', $accountType);
+
+        $billingAddress  = $customerData->get('billingAddress')?->all() ?: [];
         $shippingAddress = $customerData->get('shippingAddress')?->all() ?: [];
-        if (!$isShippingAddressComplete || AddressCompare::areRawAddressesIdentical($billingAddress, $shippingAddress)) {
+
+        if (
+            !$isShippingAddressComplete
+            || $this->addressCompareService->areRawAddressesIdentical($billingAddress, $shippingAddress)
+        ) {
             $customerData->remove('shippingAddress');
         }
 
         return $customerData;
     }
 
-    private function extractBillingData(array $response, string $key): ?string
+    private function extractBillingData(array $response, string $key): string|null
     {
         // special case: PayPal v1 express: PayPal does not return firstname. so we need to take the firstname from the shipping-data
-        if (($key === 'firstname' || $key === 'lastname')
+        if (
+            ('firstname' === $key || 'lastname' === $key)
             && !\array_key_exists('firstname', $response['addpaydata'])
             && isset(
                 $response['addpaydata']['lastname'],
                 $response['addpaydata']['shipping_firstname'],
-                $response['addpaydata']['shipping_lastname']
-            )) {
+                $response['addpaydata']['shipping_lastname'],
+            )
+        ) {
             $paypalExpectedLastname = "{$response['addpaydata']['shipping_firstname']} {$response['addpaydata']['shipping_lastname']}";
+
             if ($paypalExpectedLastname === $response['addpaydata']['lastname']) {
                 return $response['addpaydata']['shipping_' . $key];
             }
@@ -147,7 +160,7 @@ class CustomerRegistrationUtil
         return $response['addpaydata']['billing_' . $key] ?? $response['addpaydata'][$key] ?? null;
     }
 
-    private function extractShippingData(array $response, string $key): ?string
+    private function extractShippingData(array $response, string $key): string|null
     {
         // Do not take any values from the billing address as a fallback for individual fields.
         // If mandatory fields are missing from the shipping address, the complete shipping address is removed
@@ -157,30 +170,28 @@ class CustomerRegistrationUtil
     private function getSalutationId(Context $context): string
     {
         $criteria = new Criteria();
-        $criteria->addFilter(
-            new EqualsFilter('salutationKey', 'not_specified')
-        );
+
+        $criteria->addFilter(new EqualsFilter('salutationKey', 'not_specified'));
 
         /** @var SalutationEntity|null $salutation */
         $salutation = $this->salutationRepository->search($criteria, $context)->first();
 
-        if ($salutation === null) {
-            throw new RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
+        if (null === $salutation) {
+            throw new \RuntimeException($this->translator->trans('PayonePayment.errorMessages.genericError'));
         }
 
         return $salutation->getId();
     }
 
-    private function getCountryIdByCode(string $code, Context $context): ?string
+    private function getCountryIdByCode(string $code, Context $context): string|null
     {
         if (empty($code)) {
             return null;
         }
 
         $criteria = new Criteria();
-        $criteria->addFilter(
-            new EqualsFilter('iso', $code)
-        );
+
+        $criteria->addFilter(new EqualsFilter('iso', $code));
 
         /** @var CountryEntity|null $country */
         $country = $this->countryRepository->search($criteria, $context)->first();
@@ -188,16 +199,15 @@ class CustomerRegistrationUtil
         return $country?->getId();
     }
 
-    private function getCountryStateIdByCodes(string $countryCode, string $stateCode, Context $context): ?string
+    private function getCountryStateIdByCodes(string $countryCode, string $stateCode, Context $context): string|null
     {
         if (empty($countryCode) || empty($stateCode)) {
             return null;
         }
 
         $criteria = new Criteria();
-        $criteria->addFilter(
-            new EqualsFilter('shortCode', sprintf('%s-%s', $countryCode, $stateCode))
-        );
+
+        $criteria->addFilter(new EqualsFilter('shortCode', \sprintf('%s-%s', $countryCode, $stateCode)));
 
         /** @var CountryStateEntity|null $countryState */
         $countryState = $this->countryStateRepository->search($criteria, $context)->first();

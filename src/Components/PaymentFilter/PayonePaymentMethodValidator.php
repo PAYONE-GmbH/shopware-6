@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
@@ -9,11 +11,11 @@ use Shopware\Core\Checkout\Payment\Cart\Error\PaymentMethodBlockedError;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class PayonePaymentMethodValidator implements CartValidatorInterface
+readonly class PayonePaymentMethodValidator implements CartValidatorInterface
 {
     public function __construct(
-        private readonly IterablePaymentFilter $iterablePaymentFilter,
-        private readonly PaymentFilterContextFactoryInterface $paymentFilterContextFactory
+        private IterablePaymentFilter $iterablePaymentFilter,
+        private PaymentFilterContextFactoryInterface $paymentFilterContextFactory,
     ) {
     }
 
@@ -22,21 +24,20 @@ class PayonePaymentMethodValidator implements CartValidatorInterface
      */
     public function validate(Cart $cart, ErrorCollection $errors, SalesChannelContext $context): void
     {
-        if ($cart->getLineItems()->count() === 0) {
+        if (0 === $cart->getLineItems()->count()) {
             // we do not need to validate a cart, which does not contain any line-items
             return;
         }
 
-        $paymentMethod = $context->getPaymentMethod();
+        $paymentMethod  = $context->getPaymentMethod();
         $paymentMethods = new PaymentMethodCollection([$paymentMethod]);
-
-        $filterContext = $this->paymentFilterContextFactory->createContextForCart($cart, $context);
+        $filterContext  = $this->paymentFilterContextFactory->createContextForCart($cart, $context);
 
         $this->iterablePaymentFilter->filterPaymentMethods($paymentMethods, $filterContext);
 
-        if ($paymentMethods->count() === 0) {
+        if (0 === $paymentMethods->count()) {
             $errors->add(
-                new PaymentMethodBlockedError((string) $paymentMethod->getTranslation('name'))
+                new PaymentMethodBlockedError((string) $paymentMethod->getTranslation('name')),
             );
         }
     }

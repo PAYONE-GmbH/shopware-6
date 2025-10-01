@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\Hydrator\LineItemHydrator;
 
-use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
+use PayonePayment\Service\CurrencyPrecisionService;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\Delivery\Struct\Delivery;
 use Shopware\Core\Checkout\Cart\Delivery\Struct\DeliveryCollection;
@@ -29,20 +29,28 @@ class LineItemHydrator implements LineItemHydratorInterface
      * @see https://docs.payone.com/display/public/PLATFORM/it%5Bn%5D+-+definition
      */
     final public const TYPE_GOODS = 'goods';
+
     final public const TYPE_VOUCHER = 'voucher';
+
     final public const TYPE_SHIPMENT = 'shipment';
+
     final public const TYPE_HANDLING = 'handling';
 
     final public const PAYONE_ARRAY_KEY_TYPE = 'it';
+
     final public const PAYONE_ARRAY_KEY_NUMBER = 'id';
+
     final public const PAYONE_ARRAY_KEY_PRICE = 'pr';
+
     final public const PAYONE_ARRAY_KEY_QTY = 'no';
+
     final public const PAYONE_ARRAY_KEY_NAME = 'de';
+
     final public const PAYONE_ARRAY_KEY_TAX_RATE = 'va';
 
     public function __construct(
-        private readonly CurrencyPrecisionInterface $currencyPrecision,
-        private readonly EntityRepository $shipmentRepository
+        private readonly CurrencyPrecisionService $currencyPrecision,
+        private readonly EntityRepository $shipmentRepository,
     ) {
     }
 
@@ -50,11 +58,11 @@ class LineItemHydrator implements LineItemHydratorInterface
         CurrencyEntity $currency,
         OrderEntity $order,
         array $requestLines,
-        bool $includeShippingCosts
+        bool $includeShippingCosts,
     ): array {
         $orderLineItems = $order->getLineItems();
 
-        if ($orderLineItems === null) {
+        if (null === $orderLineItems) {
             return [];
         }
 
@@ -67,7 +75,7 @@ class LineItemHydrator implements LineItemHydratorInterface
 
             $lineItem = $orderLineItems->get($orderLine['id']);
 
-            if ($lineItem === null) {
+            if (null === $lineItem) {
                 continue;
             }
 
@@ -81,14 +89,14 @@ class LineItemHydrator implements LineItemHydratorInterface
 
             $requestLineItems[] = $this->getLineItemRequest(
                 $lineItem,
-                $orderLine['quantity']
+                $orderLine['quantity'],
             );
         }
 
         if ($includeShippingCosts && $deliveries = $order->getDeliveries()) {
             $requestLineItems = array_merge(
                 $requestLineItems,
-                $this->getShippingItems($deliveries, $order->getLanguageId())
+                $this->getShippingItems($deliveries, $order->getLanguageId()),
             );
         }
 
@@ -97,21 +105,22 @@ class LineItemHydrator implements LineItemHydratorInterface
 
     public function mapCartLines(Cart $cart, SalesChannelContext $salesChannelContext): array
     {
-        $context = $salesChannelContext->getContext();
+        $context          = $salesChannelContext->getContext();
         $requestLineItems = [];
 
         foreach ($cart->getLineItems() as $lineItem) {
             $requestLineItems[] = $this->getLineItemRequest(
                 $lineItem,
-                $lineItem->getQuantity()
+                $lineItem->getQuantity(),
             );
         }
 
         $deliveries = $cart->getDeliveries();
-        if ($deliveries->count() > 0) {
-            $requestLineItems = array_merge(
+
+        if (0 < $deliveries->count()) {
+            $requestLineItems = \array_merge(
                 $requestLineItems,
-                $this->getShippingItems($deliveries, $context->getLanguageId(), $context)
+                $this->getShippingItems($deliveries, $context->getLanguageId(), $context),
             );
         }
 
@@ -121,9 +130,9 @@ class LineItemHydrator implements LineItemHydratorInterface
     public function mapOrderLines(CurrencyEntity $currency, OrderEntity $order, Context $context): array
     {
         $lineItemCollection = $order->getLineItems();
-        $requestLineItems = [];
+        $requestLineItems   = [];
 
-        if ($lineItemCollection === null) {
+        if (null === $lineItemCollection) {
             return [];
         }
 
@@ -134,27 +143,27 @@ class LineItemHydrator implements LineItemHydratorInterface
 
             $requestLineItems[] = $this->getLineItemRequest(
                 $lineItem,
-                $lineItem->getQuantity()
+                $lineItem->getQuantity(),
             );
         }
 
         if ($deliveries = $order->getDeliveries()) {
-            $requestLineItems = array_merge(
+            $requestLineItems = \array_merge(
                 $requestLineItems,
-                $this->getShippingItems($deliveries, $order->getLanguageId())
+                $this->getShippingItems($deliveries, $order->getLanguageId()),
             );
         }
 
         return $this->convertItemListToPayoneArray($requestLineItems, $currency);
     }
 
-    protected function mapItemType(?string $itemType): string
+    protected function mapItemType(string|null $itemType): string
     {
-        if ($itemType === LineItem::CREDIT_LINE_ITEM_TYPE) {
+        if (LineItem::CREDIT_LINE_ITEM_TYPE === $itemType) {
             return self::TYPE_VOUCHER;
         }
 
-        if ($itemType === PromotionProcessor::LINE_ITEM_TYPE) {
+        if (PromotionProcessor::LINE_ITEM_TYPE === $itemType) {
             return self::TYPE_VOUCHER;
         }
 
@@ -164,9 +173,12 @@ class LineItemHydrator implements LineItemHydratorInterface
     private function isCustomizedProduct(OrderLineItemEntity $lineItemEntity): bool
     {
         try {
-            if (class_exists('Swag\CustomizedProducts\Core\Checkout\CustomizedProductsCartDataCollector')
-                && $lineItemEntity->getType() === CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE
-                && $lineItemEntity->getParentId() === null) {
+            $lineItemType = $lineItemEntity->getType();
+            if (
+                \class_exists(CustomizedProductsCartDataCollector::class)
+                && CustomizedProductsCartDataCollector::CUSTOMIZED_PRODUCTS_TEMPLATE_LINE_ITEM_TYPE === $lineItemType
+                && null === $lineItemEntity->getParentId()
+            ) {
                 return true;
             }
         } catch (\Exception) {
@@ -178,11 +190,12 @@ class LineItemHydrator implements LineItemHydratorInterface
 
     private function getLineItemRequest(
         LineItem|OrderLineItemEntity $lineItemEntity,
-        int $quantity
+        int $quantity,
     ): array {
         $productNumber = \is_array($lineItemEntity->getPayload()) && \array_key_exists('productNumber', $lineItemEntity->getPayload())
             ? $lineItemEntity->getPayload()['productNumber']
-            : null;
+            : null
+        ;
 
         if (!$productNumber) {
             if ($lineItemEntity instanceof LineItem) {
@@ -194,9 +207,10 @@ class LineItemHydrator implements LineItemHydratorInterface
 
         $taxes = $lineItemEntity->getPrice()?->getCalculatedTaxes();
 
-        $taxRate = $taxes === null || $taxes->first() === null
+        $taxRate = null === $taxes || null === $taxes->first()
             ? 0.0
-            : $taxes->first()->getTaxRate();
+            : $taxes->first()->getTaxRate()
+        ;
 
         $unitPrice = null;
         if ($lineItemEntity instanceof LineItem) {
@@ -211,53 +225,57 @@ class LineItemHydrator implements LineItemHydratorInterface
             $lineItemEntity->getLabel() ?? '',
             $unitPrice ?? 0.0,
             $quantity,
-            $taxRate
+            $taxRate,
         );
     }
 
     private function getShippingItems(
         DeliveryCollection|OrderDeliveryCollection $deliveryCollection,
         string $languageId,
-        ?Context $context = null
+        Context|null $context = null,
     ): array {
-        if ($context === null) {
-            $context = Context::createDefaultContext();
+        if (null === $context) {
+            $context = Context::createCLIContext();
         }
 
         /** @var Delivery|OrderDeliveryEntity|null $deliveryEntity */
         $deliveryEntity = $deliveryCollection->first();
 
-        if ($deliveryEntity === null) {
+        if (null === $deliveryEntity) {
             return [];
         }
 
         $shippingCosts = $deliveryEntity->getShippingCosts();
 
-        if ($shippingCosts->getTotalPrice() <= 0 || $shippingCosts->getCalculatedTaxes()->count() === 0) {
+        if ($shippingCosts->getTotalPrice() <= 0 || 0 === $shippingCosts->getCalculatedTaxes()->count()) {
             return [];
         }
 
         $languages = $context->getLanguageIdChain();
 
         if (!\in_array($languageId, $languages, true)) {
-            array_splice($languages, 0, 0, $languageId);
+            \array_splice($languages, 0, 0, $languageId);
 
-            $context->assign(['languageIdChain' => $languages]);
+            $context->assign([ 'languageIdChain' => $languages ]);
         }
 
         $shippingMethod = null;
         if ($deliveryEntity instanceof OrderDeliveryEntity) {
-            $shippingMethod = $this->shipmentRepository->search(new Criteria([$deliveryEntity->getShippingMethodId()]), $context)->first();
+            $shippingMethod = $this->shipmentRepository->search(
+                new Criteria([ $deliveryEntity->getShippingMethodId() ]),
+                $context,
+            )->first();
         } elseif ($deliveryEntity instanceof Delivery) {
             $shippingMethod = $deliveryEntity->getShippingMethod();
         }
 
         /** @var ShippingMethodEntity|null $shippingMethod */
-        if ($shippingMethod === null) {
+        if (null === $shippingMethod) {
             return [];
         }
 
         $items = [];
+
         foreach ($shippingCosts->getCalculatedTaxes() as $shipmentPosition) {
             /** @var CalculatedTax $shipmentPosition */
             $items[] = $this->getRequestItem(
@@ -266,7 +284,7 @@ class LineItemHydrator implements LineItemHydratorInterface
                 $shippingMethod->getTranslation('name') ?? '',
                 $shipmentPosition->getPrice(),
                 1,
-                $shipmentPosition->getTaxRate()
+                $shipmentPosition->getTaxRate(),
             );
         }
 
@@ -283,7 +301,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         foreach ($items as $index => $item) {
             ++$index; // index needs to be greater than 0.
 
-            if ($item['it'] === self::TYPE_SHIPMENT && empty($item['id'])) {
+            if (self::TYPE_SHIPMENT === $item['it'] && empty($item['id'])) {
                 // add product number for shipping (just the index of the item in the list)
                 $item['id'] = $index;
             }
@@ -306,14 +324,14 @@ class LineItemHydrator implements LineItemHydratorInterface
         string $itemName,
         float $itemPrice,
         int $itemQty,
-        float $itemTaxRate
+        float $itemTaxRate,
     ): array {
         return [
-            self::PAYONE_ARRAY_KEY_TYPE => $itemType,
-            self::PAYONE_ARRAY_KEY_NUMBER => $itemNumber,
-            self::PAYONE_ARRAY_KEY_PRICE => $itemPrice,
-            self::PAYONE_ARRAY_KEY_QTY => $itemQty,
-            self::PAYONE_ARRAY_KEY_NAME => $itemName,
+            self::PAYONE_ARRAY_KEY_TYPE     => $itemType,
+            self::PAYONE_ARRAY_KEY_NUMBER   => $itemNumber,
+            self::PAYONE_ARRAY_KEY_PRICE    => $itemPrice,
+            self::PAYONE_ARRAY_KEY_QTY      => $itemQty,
+            self::PAYONE_ARRAY_KEY_NAME     => $itemName,
             self::PAYONE_ARRAY_KEY_TAX_RATE => $itemTaxRate,
         ];
     }

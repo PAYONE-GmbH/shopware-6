@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionHandler\Refund;
 
-use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
-use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
-use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
+use PayonePayment\DataHandler\OrderActionLogDataHandler;
+use PayonePayment\DataHandler\TransactionDataHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\Request\RequestActionEnum;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Service\CurrencyPrecisionService;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -27,25 +27,25 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
     public function __construct(
         RequestParameterFactory $requestFactory,
         PayoneClientInterface $client,
-        TransactionDataHandlerInterface $transactionDataHandler,
-        OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
+        TransactionDataHandler $transactionDataHandler,
+        OrderActionLogDataHandler $orderActionLogDataHandler,
         private readonly TransactionStatusServiceInterface $transactionStatusService,
         EntityRepository $transactionRepository,
         EntityRepository $lineItemRepository,
-        CurrencyPrecisionInterface $currencyPrecision
+        CurrencyPrecisionService $currencyPrecision,
     ) {
-        $this->requestFactory = $requestFactory;
-        $this->client = $client;
-        $this->transactionDataHandler = $transactionDataHandler;
+        $this->requestFactory            = $requestFactory;
+        $this->client                    = $client;
+        $this->transactionDataHandler    = $transactionDataHandler;
         $this->orderActionLogDataHandler = $orderActionLogDataHandler;
-        $this->transactionRepository = $transactionRepository;
-        $this->lineItemRepository = $lineItemRepository;
-        $this->currencyPrecision = $currencyPrecision;
+        $this->transactionRepository     = $transactionRepository;
+        $this->lineItemRepository        = $lineItemRepository;
+        $this->currencyPrecision         = $currencyPrecision;
     }
 
     public function refund(ParameterBag $parameterBag, Context $context): JsonResponse
     {
-        [$requestResponse] = $this->handleRequest($parameterBag, AbstractRequestParameterBuilder::REQUEST_ACTION_REFUND, $context);
+        [ $requestResponse ] = $this->handleRequest($parameterBag, RequestActionEnum::REFUND->value, $context);
 
         if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
@@ -64,7 +64,7 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
             $context,
             $this->paymentTransaction->getOrderTransaction()->getId(),
             $transitionName,
-            $parameterBag->all()
+            $parameterBag->all(),
         );
 
         return $requestResponse;

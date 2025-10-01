@@ -12,6 +12,9 @@ use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Struct\Struct;
 
+/**
+ * @deprecated replace with \PayonePayment\RequestParameter\PaymentRequestDto
+ */
 class PaymentTransaction extends Struct
 {
     protected OrderTransactionEntity $orderTransaction;
@@ -20,7 +23,7 @@ class PaymentTransaction extends Struct
 
     protected array $payoneTransactionData;
 
-    protected ?string $returnUrl = null;
+    protected string|null $returnUrl = null;
 
     public function getPayoneTransactionData(): array
     {
@@ -49,43 +52,57 @@ class PaymentTransaction extends Struct
 
     public static function fromOrderTransaction(OrderTransactionEntity $transaction, OrderEntity $orderEntity): self
     {
-        $transactionStruct = new self();
+        $transactionStruct        = new self();
         $transactionStruct->order = $orderEntity;
 
         /** @var PayonePaymentOrderTransactionDataEntity|null $transactionData */
         $transactionData = $transaction->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        $transactionStruct->payoneTransactionData = $transactionData !== null ? $transactionData->jsonSerialize() : [];
-        $transactionStruct->orderTransaction = $transaction;
+        $transactionStruct->payoneTransactionData = null !== $transactionData ? $transactionData->jsonSerialize() : [];
+        $transactionStruct->orderTransaction      = $transaction;
 
         return $transactionStruct;
     }
 
-    public static function fromAsyncPaymentTransactionStruct(AsyncPaymentTransactionStruct $struct, OrderEntity $orderEntity): self
-    {
-        $transactionStruct = new self();
+    /**
+     * @deprecated
+     */
+    public static function fromAsyncPaymentTransactionStruct(
+        AsyncPaymentTransactionStruct $paymentTransaction,
+        OrderEntity $orderEntity,
+    ): self {
+        $transactionStruct        = new self();
         $transactionStruct->order = $orderEntity;
 
         /** @var PayonePaymentOrderTransactionDataEntity|null $transactionData */
-        $transactionData = $struct->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+        $transactionData = $paymentTransaction->getOrderTransaction()
+            ->getExtension(PayonePaymentOrderTransactionExtension::NAME)
+        ;
 
-        $transactionStruct->payoneTransactionData = $transactionData !== null ? $transactionData->jsonSerialize() : [];
-        $transactionStruct->orderTransaction = $struct->getOrderTransaction();
-        $transactionStruct->returnUrl = $struct->getReturnUrl();
+        $transactionStruct->payoneTransactionData = null !== $transactionData ? $transactionData->jsonSerialize() : [];
+        $transactionStruct->orderTransaction      = $paymentTransaction->getOrderTransaction();
+        $transactionStruct->returnUrl             = $paymentTransaction->getReturnUrl();
 
         return $transactionStruct;
     }
 
-    public static function fromSyncPaymentTransactionStruct(SyncPaymentTransactionStruct $struct, OrderEntity $orderEntity): self
-    {
-        $transactionStruct = new self();
+    /**
+     * @deprecated
+     */
+    public static function fromSyncPaymentTransactionStruct(
+        SyncPaymentTransactionStruct $paymentTransaction,
+        OrderEntity $orderEntity,
+    ): self {
+        $transactionStruct        = new self();
         $transactionStruct->order = $orderEntity;
 
         /** @var PayonePaymentOrderTransactionDataEntity|null $transactionData */
-        $transactionData = $struct->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+        $transactionData = $paymentTransaction->getOrderTransaction()
+            ->getExtension(PayonePaymentOrderTransactionExtension::NAME)
+        ;
 
-        $transactionStruct->payoneTransactionData = $transactionData !== null ? $transactionData->jsonSerialize() : [];
-        $transactionStruct->orderTransaction = $struct->getOrderTransaction();
+        $transactionStruct->payoneTransactionData = null !== $transactionData ? $transactionData->jsonSerialize() : [];
+        $transactionStruct->orderTransaction      = $paymentTransaction->getOrderTransaction();
 
         return $transactionStruct;
     }

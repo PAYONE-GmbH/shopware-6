@@ -11,7 +11,7 @@ class SecuredInstallmentOptionsData extends Struct
     final public const EXTENSION_NAME = 'payoneSecuredInstallmentOptions';
 
     /**
-     * @var array<SecuredInstallmentOption>
+     * @var list<SecuredInstallmentOption>
      */
     protected array $options;
 

@@ -1,0 +1,8 @@
+.dependencies-installation:
+  script:
+    - bin/console plugin:refresh
+    - |
+      requiredPlugins=$(bin/console plugin:list --json | jq -r "map(select(.name != \"$PLUGIN_NAME\")) | .[].name" | paste -sd " " | xargs)
+      if [ "" != "$requiredPlugins" ]; then
+        bin/console plugin:install --activate --no-interaction $requiredPlugins
+      fi

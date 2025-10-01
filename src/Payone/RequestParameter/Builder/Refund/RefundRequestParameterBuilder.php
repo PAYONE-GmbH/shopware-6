@@ -7,10 +7,11 @@ namespace PayonePayment\Payone\RequestParameter\Builder\Refund;
 use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\PaymentHandler\PaymentHandlerGroups;
-use PayonePayment\PaymentHandler\PayoneDebitPaymentHandler;
+use PayonePayment\Payone\Request\RequestActionEnum;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\FinancialTransactionStruct;
+use PayonePayment\Provider\Payone\PaymentHandler\DebitPaymentHandler;
 use Shopware\Core\System\Currency\CurrencyEntity;
 
 class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
@@ -21,15 +22,18 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         $totalAmount = $arguments->getRequestData()->get('amount');
-        $order = $arguments->getPaymentTransaction()->getOrder();
-        /** @var PayonePaymentOrderTransactionDataEntity|null $transactionData */
-        $transactionData = $arguments->getPaymentTransaction()->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
+        $order       = $arguments->getPaymentTransaction()->getOrder();
 
-        if ($transactionData === null) {
+        /** @var PayonePaymentOrderTransactionDataEntity|null $transactionData */
+        $transactionData = $arguments->getPaymentTransaction()->getOrderTransaction()->getExtension(
+            PayonePaymentOrderTransactionExtension::NAME,
+        );
+
+        if (null === $transactionData) {
             throw $this->orderNotFoundException($order->getId());
         }
 
-        if ($totalAmount === null) {
+        if (null === $totalAmount) {
             $totalAmount = $order->getAmountTotal();
         }
 
@@ -37,7 +41,7 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
             throw $this->orderNotFoundException($order->getId());
         }
 
-        if ($transactionData->getSequenceNumber() === null) {
+        if (null === $transactionData->getSequenceNumber()) {
             throw $this->orderNotFoundException($order->getId());
         }
 
@@ -45,33 +49,39 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
             throw $this->orderNotFoundException($order->getId());
         }
 
-        //TODO: fix set refunded amount
+        // TODO: fix set refunded amount
 
         /** @var CurrencyEntity $currency */
         $currency = $order->getCurrency();
 
         $parameters = [
-            'request' => self::REQUEST_ACTION_DEBIT,
-            'txid' => $transactionData->getTransactionId(),
+            'request'        => RequestActionEnum::DEBIT->value,
+            'txid'           => $transactionData->getTransactionId(),
             'sequencenumber' => $transactionData->getSequenceNumber() + 1,
-            'amount' => -1 * $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount((float) $totalAmount, $currency),
-            'currency' => $currency->getIsoCode(),
+            'amount'         => $this->serviceAccessor->currencyPrecision->getRoundedTotalAmount(
+                (float) $totalAmount,
+                $currency,
+            ) * -1,
+            'currency'       => $currency->getIsoCode(),
         ];
 
-        if ($arguments->getPaymentMethod() === PayoneDebitPaymentHandler::class) {
+        if (DebitPaymentHandler::class === $arguments->getPaymentMethod()) {
             $transactions = $transactionData->getTransactionData();
 
             if ($transactions) {
                 $firstTransaction = reset($transactions);
 
-                if (\array_key_exists('request', $firstTransaction) && \array_key_exists('iban', $firstTransaction['request'])) {
+                if (
+                    \array_key_exists('request', $firstTransaction)
+                    && \array_key_exists('iban', $firstTransaction['request'])
+                ) {
                     $parameters['iban'] = $firstTransaction['request']['iban'];
                 }
             }
         }
 
         if (\in_array($arguments->getPaymentMethod(), PaymentHandlerGroups::RATEPAY, true)) {
-            $parameters['settleaccount'] = 'yes';
+            $parameters['settleaccount']        = 'yes';
             $parameters['add_paydata[shop_id]'] = $transactionData->getAdditionalData()['used_ratepay_shop_id'] ?? null;
         }
 
@@ -84,6 +94,6 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
             return false;
         }
 
-        return $arguments->getAction() === self::REQUEST_ACTION_REFUND;
+        return RequestActionEnum::REFUND->value === $arguments->getAction();
     }
 }

@@ -6,5 +6,5 @@ namespace PayonePayment\Components\DeviceFingerprint;
 
 interface DeviceFingerprintServiceCollectionInterface
 {
-    public function getForPaymentHandler(string $paymentHandlerClass): ?AbstractDeviceFingerprintService;
+    public function getForPaymentHandler(string $paymentHandlerClass): AbstractDeviceFingerprintService|null;
 }

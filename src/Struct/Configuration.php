@@ -8,13 +8,17 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class Configuration extends Struct
 {
-    public function __construct(protected array $configuration)
-    {
+    public function __construct(
+        protected array $configuration,
+    ) {
     }
 
-    public function getByPrefix(string $key, string $prefix = '', array|bool|int|string|null $default = ''): array|bool|int|string|null
-    {
-        return $this->get(sprintf('%s%s', $prefix, ucfirst($key)), $default);
+    public function getByPrefix(
+        string $key,
+        string $prefix = '',
+        array|bool|int|string|null $default = '',
+    ): array|bool|int|string|null {
+        return $this->get(\sprintf('%s%s', $prefix, \ucfirst($key)), $default);
     }
 
     public function get(string $key, array|bool|int|string|null $default = ''): array|bool|int|string|null
@@ -34,7 +38,7 @@ class Configuration extends Struct
     {
         $value = $this->get($key, $default);
 
-        if (\is_string($value) === false) {
+        if (false === \is_string($value)) {
             return $default;
         }
 
@@ -45,7 +49,7 @@ class Configuration extends Struct
     {
         $value = $this->get($key, $default);
 
-        if (\is_bool($value) === false) {
+        if (false === \is_bool($value)) {
             return $default;
         }
 

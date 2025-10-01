@@ -6,6 +6,9 @@ namespace PayonePayment\Payone\Client;
 
 use PayonePayment\Payone\Client\Exception\PayoneRequestException;
 
+/**
+ * @deprecated Use \PayonePayment\Payone\HttpClient\PayoneApiClientInterface instead
+ */
 interface PayoneClientInterface
 {
     /**

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\RequestParameter\RequestParameterPayEnricherRegistry" />
+        <service id="PayonePayment\RequestParameter\RequestParameterTestEnricherRegistry" />
+        <service id="PayonePayment\RequestParameter\PaymentRequestEnricher" />
+        <service id="PayonePayment\RequestParameter\TestRequestParameterEnricher" />
+
+        <service id="PayonePayment\RequestParameter\Enricher\GeneralTransactionRequestParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$cartHasher" type="service" id="PayonePayment\Service\CartHasherService" />
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument key="$paymentMethodRegistry" type="service" id="PayonePayment\PaymentMethod\PaymentMethodRegistry" />
+
+            <tag name="payone.request_enricher.pay.general" priority="100" />
+        </service>
+
+        <service id="PayonePayment\RequestParameter\Enricher\SystemRequestParameterEnricher">
+            <argument key="$pluginService" type="service" id="Shopware\Core\Framework\Plugin\PluginService" />
+            <argument key="$shopwareVersion">%kernel.shopware_version%</argument>
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+
+            <tag name="payone.request_enricher.calculate.general" />
+            <tag name="payone.request_enricher.check.general" />
+            <tag name="payone.request_enricher.pay.general" />
+            <tag name="payone.request_enricher.session.general.create" />
+            <tag name="payone.request_enricher.session.general.get" />
+            <tag name="payone.request_enricher.system.general" />
+        </service>
+
+        <service id="PayonePayment\RequestParameter\Enricher\CreateCheckoutSessionParameterEnricher">
+            <argument key="$paymentMethodRegistry" type="service" id="PayonePayment\PaymentMethod\PaymentMethodRegistry" />
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$router" type="service" id="router" />
+            <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+
+            <tag name="payone.request_enricher.session.general.create" />
+        </service>
+
+        <service id="PayonePayment\RequestParameter\Enricher\GetCheckoutSessionParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$cartExtensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService" />
+            <argument key="$translator" type="service" id="translator" />
+
+            <tag name="payone.request_enricher.session.general.get" />
+        </service>
+    </services>
+</container>

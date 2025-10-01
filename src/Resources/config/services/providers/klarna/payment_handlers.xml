@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\Klarna\PaymentHandler\PaymentHandlerPayExecutor">
+            <argument type="service" id="PayonePayment\Service\CartHasherService" />
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
+            <argument type="service" id="PayonePayment\Service\OrderTransactionLoaderService" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\Service\CustomerDataPersistorService" />
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="PayonePayment\RequestParameter\PaymentRequestEnricher" />
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextRestorer" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\DataHandler\OrderActionLogDataHandler" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+        </service>
+
+        <!-- Direct Debit -->
+        <service id="PayonePayment\Provider\Klarna\ResponseHandler\DirectDebitResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\PaymentHandler\DirectDebitPaymentHandler">
+            <argument type="service" id="PayonePayment\Provider\Klarna\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Klarna\ResponseHandler\DirectDebitResponseHandler" />
+            <argument type="service" id="PayonePayment\Service\PaymentStateHandlerService" />
+            <argument type="service" id="payone.request_enricher_chain.pay.klarna.direct_debit" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <!-- Installment -->
+        <service id="PayonePayment\Provider\Klarna\ResponseHandler\InstallmentResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\PaymentHandler\InstallmentPaymentHandler">
+            <argument type="service" id="PayonePayment\Provider\Klarna\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Klarna\ResponseHandler\InstallmentResponseHandler" />
+            <argument type="service" id="PayonePayment\Service\PaymentStateHandlerService" />
+            <argument type="service" id="payone.request_enricher_chain.pay.klarna.installment" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
+        <!-- Invoice -->
+        <service id="PayonePayment\Provider\Klarna\ResponseHandler\InvoiceResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\PaymentHandler\InvoicePaymentHandler">
+            <argument type="service" id="PayonePayment\Provider\Klarna\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Klarna\ResponseHandler\InvoiceResponseHandler" />
+            <argument type="service" id="PayonePayment\Service\PaymentStateHandlerService" />
+            <argument type="service" id="payone.request_enricher_chain.pay.klarna.invoice" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+    </services>
+</container>

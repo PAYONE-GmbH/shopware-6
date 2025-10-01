@@ -4,32 +4,33 @@ declare(strict_types=1);
 
 namespace PayonePayment\PaymentHandler;
 
-use PayonePayment\PaymentMethod\PayoneAmazonPayExpress;
-use PayonePayment\PaymentMethod\PayonePaypalExpress;
-use PayonePayment\PaymentMethod\PayonePaypalV2Express;
+use PayonePayment\Provider;
 
+/**
+ * @deprecated Optimize
+ */
 interface PaymentHandlerGroups
 {
     public const RATEPAY = [
-        PayoneRatepayDebitPaymentHandler::class,
-        PayoneRatepayInstallmentPaymentHandler::class,
-        PayoneRatepayInvoicingPaymentHandler::class,
+        Provider\Ratepay\PaymentHandler\DebitPaymentHandler::class,
+        Provider\Ratepay\PaymentHandler\InstallmentPaymentHandler::class,
+        Provider\Ratepay\PaymentHandler\InvoicePaymentHandler::class,
     ];
 
     public const BNPL = [
-        PayoneSecuredDirectDebitPaymentHandler::class,
-        PayoneSecuredInvoicePaymentHandler::class,
-        PayoneSecuredInstallmentPaymentHandler::class,
+        Provider\Payone\PaymentHandler\SecuredDirectDebitPaymentHandler::class,
+        Provider\Payone\PaymentHandler\SecuredInstallmentPaymentHandler::class,
+        Provider\Payone\PaymentHandler\SecuredInvoicePaymentHandler::class,
     ];
 
     public const POSTFINANCE = [
-        PayonePostfinanceCardPaymentHandler::class,
-        PayonePostfinanceWalletPaymentHandler::class,
+        Provider\PostFinance\PaymentHandler\CardPaymentHandler::class,
+        Provider\PostFinance\PaymentHandler\WalletPaymentHandler::class,
     ];
 
     public const GENERIC_EXPRESS = [
-        PayonePaypalExpress::UUID => PayonePaypalExpressPaymentHandler::class,
-        PayonePaypalV2Express::UUID => PayonePaypalV2ExpressPaymentHandler::class,
-        PayoneAmazonPayExpress::UUID => PayoneAmazonPayExpressPaymentHandler::class,
+        Provider\PayPal\PaymentMethod\ExpressPaymentMethod::UUID    => Provider\PayPal\PaymentHandler\ExpressPaymentHandler::class,
+        Provider\PayPal\PaymentMethod\ExpressV2PaymentMethod::UUID  => Provider\PayPal\PaymentHandler\ExpressV2PaymentHandler::class,
+        Provider\AmazonPay\PaymentMethod\ExpressPaymentMethod::UUID => Provider\AmazonPay\PaymentHandler\ExpressPaymentHandler::class,
     ];
 }

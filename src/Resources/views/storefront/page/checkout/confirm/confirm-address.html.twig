@@ -1,11 +1,13 @@
 {% sw_extends '@Storefront/storefront/page/checkout/confirm/confirm-address.html.twig' %}
 
+{# shopware-block: 67a211d4e67c4b55f717ec45e640f84a246b6794b2f68f7d78b23ccac66bb47d@v6.6.10.5 #}
 {% block page_checkout_confirm_address_shipping_actions %}
     {% if not page.extensions.payone or not page.extensions.payone.preventAddressEdit %}
         {{ parent() }}
     {% endif %}
 {% endblock %}
 
+{# shopware-block: c9e1ee709c5f14c501a76e0dc6d59b8b920a30711e45138143ccded13e2efe98@v6.6.10.5 #}
 {% block page_checkout_confirm_address_billing_actions %}
     {% if not page.extensions.payone or not page.extensions.payone.preventAddressEdit %}
         {{ parent() }}

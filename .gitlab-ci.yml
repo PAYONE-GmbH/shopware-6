@@ -1,0 +1,12 @@
+include:
+  - project: shopware6/deployment-base
+    ref: "6.0-edge"
+    file: .gitlab-ci-template.yml
+variables:
+  PLUGIN_NAME: PayonePayment
+  DISABLE_INCLUDED_PLUGIN_INSTALLER_ANALYSIS: "1"
+  DISABLE_PAGES: "1"
+  DISABLE_STORE_UPDATE: "1"
+  DISABLE_STORE_UPLOAD: "1"
+  VENDOR_NAME: 'payone-gmbh'
+  PACKAGE_NAME_OVERRIDE: 'shopware-6'

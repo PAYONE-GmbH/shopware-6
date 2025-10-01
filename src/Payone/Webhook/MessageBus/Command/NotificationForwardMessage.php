@@ -13,7 +13,7 @@ class NotificationForwardMessage implements AsyncMessageInterface
         private readonly array $requestData,
         private readonly string $paymentTransactionId,
         private readonly string $clientIp,
-        private int $attempt = 1
+        private int $attempt = 1,
     ) {
     }
 

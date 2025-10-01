@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\Payolution\Storefront\Controller\DownloadController">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="monolog.logger.payone" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+            <call method="setTwig">
+                <argument type="service" id="twig" />
+            </call>
+
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\Storefront\Controller\CalculateController">
+            <argument type="service" id="PayonePayment\Provider\Payolution\PaymentHandler\InstallmentPaymentHandler" />
+            <argument type="service" id="PayonePayment\RequestParameter\PaymentRequestEnricher" />
+            <argument type="service" id="payone.request_enricher_chain.calculate.payolution.installment" />
+            <argument type="service" id="payone.request_enricher_chain.check.payolution.installment" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="PayonePayment\Service\CartHasherService" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+            <argument type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Order\OrderConverter" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+            <call method="setTwig">
+                <argument type="service" id="twig" />
+            </call>
+
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\Storefront\Controller\ConsentController">
+            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument type="service" id="monolog.logger.payone" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+            <call method="setTwig">
+                <argument type="service" id="twig" />
+            </call>
+
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payolution\Storefront\Controller\ValidateController">
+            <argument type="service" id="PayonePayment\Provider\Payolution\PaymentHandler\InvoicePaymentHandler" />
+            <argument type="service" id="PayonePayment\RequestParameter\PaymentRequestEnricher" />
+            <argument type="service" id="payone.request_enricher_chain.check.payolution.invoice" />
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+
+            <call method="setTwig">
+                <argument type="service" id="twig" />
+            </call>
+
+            <tag name="controller.service_arguments" />
+        </service>
+    </services>
+</container>

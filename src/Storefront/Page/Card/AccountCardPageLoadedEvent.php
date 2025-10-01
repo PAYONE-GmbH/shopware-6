@@ -16,7 +16,7 @@ class AccountCardPageLoadedEvent extends NestedEvent
     public function __construct(
         protected AccountCardPage $page,
         protected SalesChannelContext $context,
-        protected Request $request
+        protected Request $request,
     ) {
     }
 

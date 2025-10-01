@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\TransactionHandler\Capture;
 
-use PayonePayment\Components\Currency\CurrencyPrecisionInterface;
-use PayonePayment\Components\DataHandler\OrderActionLog\OrderActionLogDataHandlerInterface;
-use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\Components\TransactionHandler\AbstractTransactionHandler;
 use PayonePayment\Components\TransactionStatus\TransactionStatusServiceInterface;
 use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
+use PayonePayment\DataHandler\OrderActionLogDataHandler;
+use PayonePayment\DataHandler\TransactionDataHandler;
 use PayonePayment\Installer\CustomFieldInstaller;
 use PayonePayment\Payone\Client\PayoneClientInterface;
-use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
+use PayonePayment\Payone\Request\RequestActionEnum;
 use PayonePayment\Payone\RequestParameter\RequestParameterFactory;
+use PayonePayment\Service\CurrencyPrecisionService;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -27,25 +27,29 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
     public function __construct(
         RequestParameterFactory $requestFactory,
         PayoneClientInterface $client,
-        TransactionDataHandlerInterface $transactionDataHandler,
-        OrderActionLogDataHandlerInterface $orderActionLogDataHandler,
+        TransactionDataHandler $transactionDataHandler,
+        OrderActionLogDataHandler $orderActionLogDataHandler,
         private readonly TransactionStatusServiceInterface $transactionStatusService,
         EntityRepository $transactionRepository,
         EntityRepository $lineItemRepository,
-        CurrencyPrecisionInterface $currencyPrecision
+        CurrencyPrecisionService $currencyPrecision,
     ) {
-        $this->requestFactory = $requestFactory;
-        $this->client = $client;
-        $this->transactionDataHandler = $transactionDataHandler;
+        $this->requestFactory            = $requestFactory;
+        $this->client                    = $client;
+        $this->transactionDataHandler    = $transactionDataHandler;
         $this->orderActionLogDataHandler = $orderActionLogDataHandler;
-        $this->transactionRepository = $transactionRepository;
-        $this->lineItemRepository = $lineItemRepository;
-        $this->currencyPrecision = $currencyPrecision;
+        $this->transactionRepository     = $transactionRepository;
+        $this->lineItemRepository        = $lineItemRepository;
+        $this->currencyPrecision         = $currencyPrecision;
     }
 
     public function capture(ParameterBag $parameterBag, Context $context): JsonResponse
     {
-        [$requestResponse, $payoneResponse] = $this->handleRequest($parameterBag, AbstractRequestParameterBuilder::REQUEST_ACTION_CAPTURE, $context);
+        [ $requestResponse, $payoneResponse ] = $this->handleRequest(
+            $parameterBag,
+            RequestActionEnum::CAPTURE->value,
+            $context,
+        );
 
         if (!$this->isSuccessResponse($requestResponse)) {
             return $requestResponse;
@@ -57,10 +61,10 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
 
         /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
         $payoneTransactionData = $this->paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
-        $clearingType = $payoneTransactionData->getClearingBankAccount();
+        $clearingType          = $payoneTransactionData->getClearingBankAccount();
 
         // Filter payment methods that do not allow changing transaction status at this point
-        if ($clearingType !== 'vor') {
+        if ('vor' !== $clearingType) {
             // Update the transaction status if PAYONE capture request was approved
             $this->updateTransactionStatus($parameterBag, $context);
         }
@@ -80,7 +84,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
             $context,
             $this->paymentTransaction->getOrderTransaction()->getId(),
             $transitionName,
-            $parameterBag->all()
+            $parameterBag->all(),
         );
     }
 
@@ -120,7 +124,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
         $payoneTransactionData = $this->paymentTransaction->getOrderTransaction()->getExtension(PayonePaymentOrderTransactionExtension::NAME);
 
-        if ($payoneTransactionData->getClearingBankAccount() !== null) {
+        if (null !== $payoneTransactionData->getClearingBankAccount()) {
             $currentClearingBankAccountData = $payoneTransactionData->getClearingBankAccount();
         }
         $newClearingBankAccountData = $payoneResponse['clearing']['BankAccount'] ?? null;
@@ -130,12 +134,12 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
                 $this->paymentTransaction,
                 $this->context,
                 [
-                    'id' => $payoneTransactionData->getId(),
+                    'id'                  => $payoneTransactionData->getId(),
                     'clearingBankAccount' => array_merge(
                         $currentClearingBankAccountData,
-                        $newClearingBankAccountData
+                        $newClearingBankAccountData,
                     ),
-                ]
+                ],
             );
         }
     }

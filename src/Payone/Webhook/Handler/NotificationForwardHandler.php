@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\Webhook\Handler;
 
-use PayonePayment\Components\DataHandler\Transaction\TransactionDataHandlerInterface;
 use PayonePayment\DataAbstractionLayer\Entity\NotificationTarget\PayonePaymentNotificationTargetCollection;
+use PayonePayment\DataHandler\TransactionDataHandler;
 use PayonePayment\Payone\Webhook\MessageBus\Command\NotificationForwardMessage;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -15,12 +15,12 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class NotificationForwardHandler implements WebhookHandlerInterface
+readonly class NotificationForwardHandler implements WebhookHandlerInterface
 {
     public function __construct(
-        private readonly EntityRepository $notificationTargetRepository,
-        private readonly TransactionDataHandlerInterface $transactionDataHandler,
-        private readonly MessageBusInterface $messageBus
+        private EntityRepository $notificationTargetRepository,
+        private TransactionDataHandler $transactionDataHandler,
+        private MessageBusInterface $messageBus,
     ) {
     }
 
@@ -37,13 +37,13 @@ class NotificationForwardHandler implements WebhookHandlerInterface
     {
         $paymentTransactionId = $this->getPaymentTransactionId($request->request->getInt('txid'), $salesChannelContext);
 
-        if ($paymentTransactionId === null) {
+        if (null === $paymentTransactionId) {
             return;
         }
 
         $notificationTargets = $this->getRelevantNotificationTargets($request->request->getAlnum('txaction'), $salesChannelContext);
 
-        if ($notificationTargets === null) {
+        if (null === $notificationTargets) {
             return;
         }
 
@@ -52,7 +52,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
                 $target->getId(),
                 $request->request->all(),
                 $paymentTransactionId,
-                (string)$request->getClientIp()
+                (string) $request->getClientIp(),
             );
 
             $this->messageBus->dispatch($message);
@@ -63,7 +63,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(
-            new ContainsFilter('txactions', $txaction)
+            new ContainsFilter('txactions', $txaction),
         );
 
         $notificationTargets = $this->notificationTargetRepository->search($criteria, $salesChannelContext->getContext());
@@ -86,7 +86,7 @@ class NotificationForwardHandler implements WebhookHandlerInterface
         /** @var PaymentTransaction|null $paymentTransaction */
         $paymentTransaction = $this->transactionDataHandler->getPaymentTransactionByPayoneTransactionId(
             $salesChannelContext->getContext(),
-            $txid
+            $txid,
         );
 
         return $paymentTransaction?->getOrderTransaction()->getId();

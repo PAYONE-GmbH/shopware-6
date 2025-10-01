@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\PaymentHandler\AbstractPayonePaymentHandler;
+use PayonePayment\PaymentHandler\AbstractPaymentHandler;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PaymentHandlerRegistry;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
 use Shopware\Core\Framework\Validation\DataValidationDefinition;
@@ -14,11 +14,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class OrderValidationEventListener implements EventSubscriberInterface
+readonly class OrderValidationEventListener implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly RequestStack $requestStack,
-        private readonly PaymentHandlerRegistry $paymentHandlerRegistry
+        private RequestStack $requestStack,
+        private PaymentHandlerRegistry $paymentHandlerRegistry,
     ) {
     }
 
@@ -33,18 +33,18 @@ class OrderValidationEventListener implements EventSubscriberInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        if ($request === null) {
+        if (null === $request) {
             return;
         }
 
         $salesChannelContext = $this->getSalesChannelContextFromRequest($request);
-        $paymentMethodId = $salesChannelContext->getPaymentMethod()->getId();
-        $paymentHandler = $this->paymentHandlerRegistry->getPaymentMethodHandler($paymentMethodId);
+        $paymentMethodId     = $salesChannelContext->getPaymentMethod()->getId();
+        $paymentHandler      = $this->paymentHandlerRegistry->getPaymentMethodHandler($paymentMethodId);
 
-        if ($paymentHandler instanceof AbstractPayonePaymentHandler) {
+        if ($paymentHandler instanceof AbstractPaymentHandler) {
             $validationDefinitions = $paymentHandler->getValidationDefinitions($event->getData(), $salesChannelContext);
 
-            if ($validationDefinitions !== []) {
+            if ([] !== $validationDefinitions) {
                 $this->addSubConstraints($event->getDefinition(), $validationDefinitions);
             }
         }

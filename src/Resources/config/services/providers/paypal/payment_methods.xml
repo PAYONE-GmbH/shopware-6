@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\PayPal\PaymentMethod\ExpressPaymentMethod">
+            <call method="setPaymentHandler">
+                <argument type="service" id="PayonePayment\Provider\PayPal\PaymentHandler\ExpressPaymentHandler" />
+            </call>
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\PaymentMethod\ExpressV2PaymentMethod">
+            <call method="setPaymentHandler">
+                <argument type="service" id="PayonePayment\Provider\PayPal\PaymentHandler\ExpressV2PaymentHandler" />
+            </call>
+        </service>
+    </services>
+</container>

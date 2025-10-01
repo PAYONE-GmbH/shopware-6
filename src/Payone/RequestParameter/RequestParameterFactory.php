@@ -7,7 +7,6 @@ namespace PayonePayment\Payone\RequestParameter;
 use PayonePayment\Payone\RequestParameter\Builder\AbstractRequestParameterBuilder;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
 use PayonePayment\Payone\RequestParameter\Struct\ClientApiRequest;
-use PayonePayment\Payone\RequestParameter\Struct\GetFileStruct;
 
 class RequestParameterFactory
 {
@@ -23,8 +22,9 @@ class RequestParameterFactory
     /**
      * @param AbstractRequestParameterBuilder[] $requestParameterBuilder
      */
-    public function __construct(private readonly iterable $requestParameterBuilder)
-    {
+    public function __construct(
+        private readonly iterable $requestParameterBuilder,
+    ) {
     }
 
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
@@ -32,7 +32,7 @@ class RequestParameterFactory
         $collectedParameters = [];
 
         foreach ($this->requestParameterBuilder as $builder) {
-            if ($builder->supports($arguments) === true) {
+            if (true === $builder->supports($arguments)) {
                 $collectedParameters[] = $builder->getRequestParameter($arguments);
             }
         }
@@ -50,10 +50,6 @@ class RequestParameterFactory
 
     private function filterParams(AbstractRequestParameterStruct $arguments, array $parameters): array
     {
-        if ($arguments instanceof GetFileStruct) {
-            unset($parameters['aid'], $parameters['hash']);
-        }
-
         if ($arguments instanceof ClientApiRequest) {
             unset($parameters['key']);
         } else {
@@ -74,7 +70,7 @@ class RequestParameterFactory
         $this->generateParameterHash($parameters);
         $parameters['key'] = hash('sha384', (string) $parameters['key']);
 
-        return array_filter($parameters, static fn ($value) => $value !== null && $value !== '');
+        return array_filter($parameters, static fn ($value) => null !== $value && '' !== $value);
     }
 
     private function generateParameterHash(array &$parameters): void

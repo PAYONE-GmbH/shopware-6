@@ -3,7 +3,7 @@
 {% block document_payment_shipping_inner %}
     {{ parent() }}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInstallment::UUID') == order.transactions.last.paymentMethod.id %}
+    {% if constant('PayonePayment\\Provider\\Payolution\\PaymentMethod\\InstallmentPaymentMethod::UUID') == order.transactions.last.paymentMethod.id %}
         {% block document_payment_payone_installment_clearing_reference %}
             {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference %}
                 <br>
@@ -12,7 +12,7 @@
         {% endblock %}
     {% endif %}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.last.paymentMethod.id %}
+    {% if constant('PayonePayment\\Provider\\Payolution\\PaymentMethod\\InvoicePaymentMethod::UUID') == order.transactions.last.paymentMethod.id %}
         {% block document_payment_payone_invoicing_clearing_reference %}
             {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference %}
                 <br>
@@ -33,7 +33,7 @@
         {% endif %}
     {% endif %}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionDebit::UUID') == order.transactions.last.paymentMethod.id %}
+    {% if constant('PayonePayment\\Provider\\Payolution\\PaymentMethod\\DebitPaymentMethod::UUID') == order.transactions.last.paymentMethod.id %}
         {% block document_payment_payone_debit_clearing_reference %}
             {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference %}
                 <br>
@@ -42,7 +42,7 @@
         {% endblock %}
     {% endif %}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePrepayment::UUID') == order.transactions.last.paymentMethod.id %}
+    {% if constant('PayonePayment\\Provider\\Payone\\PaymentMethod\\PrepaymentPaymentMethod::UUID') == order.transactions.last.paymentMethod.id %}
         {% block document_payment_payone_prepayment_clearing_reference %}
             {% if order.transactions.last.payonePaymentOrderTransactionData.clearingBankAccount.Reference %}
                 <br>
@@ -82,8 +82,8 @@
         {% endif %}
     {% endif %}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayoneSecureInvoice::UUID') == order.transactions.last.paymentMethod.id or constant('PayonePayment\\PaymentMethod\\PayoneOpenInvoice::UUID') == order.transactions.last.paymentMethod.id %}        {% block document_payment_payone_secure_invoice_clearing_reference %}
-        {% endblock %}
+    {% if constant('PayonePayment\\Provider\\Payone\\PaymentMethod\\SecureInvoicePaymentMethod::UUID') == order.transactions.last.paymentMethod.id or constant('PayonePayment\\Provider\\Payone\\PaymentMethod\\OpenInvoicePaymentMethod::UUID') == order.transactions.last.paymentMethod.id %}        
+        {% block document_payment_payone_secure_invoice_clearing_reference %}{% endblock %}
 
         {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingBankAccount.Iban %}
             <br>
@@ -129,7 +129,7 @@
 {% block document_footer_bank_name %}
     {{ parent() }}
 
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.last.paymentMethod.id %}
+    {% if constant('PayonePayment\\Provider\\Payolution\\PaymentMethod\\InvoicePaymentMethod::UUID') == order.transactions.last.paymentMethod.id %}
         {% block document_payment_payone_invoicing_footer_clearing_reference %}
             {% if order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference %}
                 <li>{{ 'PayonePayment.payolution.document.clearingReference' | trans({'%reference%': order.transactions.last.extensions.payonePaymentOrderTransactionData.clearingReference}) }}</li>
@@ -139,7 +139,7 @@
 {% endblock %}
 
 {% block document_footer_bank_iban %}
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.last.paymentMethod.id %}
+    {% if constant('PayonePayment\\Provider\\Payolution\\PaymentMethod\\InvoicePaymentMethod::UUID') == order.transactions.last.paymentMethod.id %}
         {% if order.extensions.payone_document %}
             {% block document_payment_payone_invoicing_footer_iban %}
                 <li>{{ 'PayonePayment.payolution.document.iban' | trans({'%iban%': order.extensions.payone_document.iban}) }}</li>
@@ -153,7 +153,7 @@
 {% endblock %}
 
 {% block document_footer_bank_bic %}
-    {% if constant('PayonePayment\\PaymentMethod\\PayonePayolutionInvoicing::UUID') == order.transactions.last.paymentMethod.id %}
+    {% if constant('PayonePayment\\Provider\\Payolution\\PaymentMethod\\InvoicePaymentMethod::UUID') == order.transactions.last.paymentMethod.id %}
         {% if order.extensions.payone_document %}
             {% block document_payment_payone_invoicing_footer_bic %}
                 <li>{{ 'PayonePayment.payolution.document.bic' | trans({'%bic%': order.extensions.payone_document.bic}) }}</li>

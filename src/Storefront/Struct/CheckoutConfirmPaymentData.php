@@ -13,15 +13,15 @@ class CheckoutConfirmPaymentData extends Struct
 
     protected array $cardRequest = [];
 
-    protected ?string $language = null;
+    protected string|null $language = null;
 
-    protected ?EntitySearchResult $savedCards = null;
+    protected EntitySearchResult|null $savedCards = null;
 
-    protected ?string $template = null;
+    protected string|null $template = null;
 
-    protected ?string $workOrderId = null;
+    protected string|null $workOrderId = null;
 
-    protected ?string $cartHash = '';
+    protected string|null $cartHash = '';
 
     protected bool $showExitExpressCheckoutLink = false;
 
@@ -32,27 +32,27 @@ class CheckoutConfirmPaymentData extends Struct
         return $this->cardRequest;
     }
 
-    public function getLanguage(): ?string
+    public function getLanguage(): string|null
     {
         return $this->language;
     }
 
-    public function getSavedCards(): ?EntitySearchResult
+    public function getSavedCards(): EntitySearchResult|null
     {
         return $this->savedCards;
     }
 
-    public function getTemplate(): ?string
+    public function getTemplate(): string|null
     {
         return $this->template;
     }
 
-    public function getWorkOrderId(): ?string
+    public function getWorkOrderId(): string|null
     {
         return $this->workOrderId;
     }
 
-    public function getCartHash(): ?string
+    public function getCartHash(): string|null
     {
         return $this->cartHash;
     }

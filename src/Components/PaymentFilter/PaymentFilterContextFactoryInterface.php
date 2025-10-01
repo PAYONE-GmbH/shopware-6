@@ -10,7 +10,10 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 interface PaymentFilterContextFactoryInterface
 {
-    public function createContextForOrder(OrderEntity $order, SalesChannelContext $salesChannelContext): PaymentFilterContext;
+    public function createContextForOrder(
+        OrderEntity $order,
+        SalesChannelContext $salesChannelContext,
+    ): PaymentFilterContext;
 
     public function createContextForCart(Cart $cart, SalesChannelContext $salesChannelContext): PaymentFilterContext;
 }

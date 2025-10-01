@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\CustomerRequestParameterEnricher">
+            <argument key="$languageRepository" type="service" id="language.repository" />
+            <argument key="$salutationRepository" type="service" id="salutation.repository" />
+            <argument key="$countryRepository" type="service" id="country.repository" />
+            <argument key="$requestStack" type="service" id="request_stack" />
+
+            <tag name="payone.request_enricher.pay.pay_pal.express" />
+            <tag name="payone.request_enricher.pay.pay_pal.standard" />
+            <tag name="payone.request_enricher.pay.pay_pal_v2.express" />
+            <tag name="payone.request_enricher.pay.pay_pal_v2.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\ReturnUrlRequestParameterEnricher">
+            <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+
+            <tag name="payone.request_enricher.pay.pay_pal.express" />
+            <tag name="payone.request_enricher.pay.pay_pal.standard" />
+            <tag name="payone.request_enricher.pay.pay_pal_v2.express" />
+            <tag name="payone.request_enricher.pay.pay_pal_v2.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\ShippingInformationRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.pay_pal.express" />
+            <tag name="payone.request_enricher.pay.pay_pal.standard" />
+            <tag name="payone.request_enricher.pay.pay_pal_v2.express" />
+            <tag name="payone.request_enricher.pay.pay_pal_v2.standard" />
+        </service>
+
+        <!-- Paypal -->
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\Standard\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.pay_pal.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\Standard\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.pay_pal.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\Standard\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Paypal Express -->
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\Express\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.pay_pal.express" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\Express\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.pay_pal.express" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\Express\CreateCheckoutSessionParameterEnricher">
+            <tag name="payone.request_enricher.session.pay_pal.express.create" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\Express\GetCheckoutDetailsRequestParameterEnricher">
+            <tag name="payone.request_enricher.session.pay_pal.express.get" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\Express\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Paypal v2 -->
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\StandardV2\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.pay_pal_v2.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\StandardV2\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.pay_pal_v2.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\StandardV2\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Paypal v2 Express -->
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\ExpressV2\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.pay_pal_v2.express" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\ExpressV2\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.pay_pal_v2.express" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\ExpressV2\CreateCheckoutSessionParameterEnricher">
+            <tag name="payone.request_enricher.session.pay_pal_v2.express.create" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\ExpressV2\GetCheckoutDetailsRequestParameterEnricher">
+            <tag name="payone.request_enricher.session.pay_pal_v2.express.get" />
+        </service>
+
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\ExpressV2\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+    </services>
+</container>

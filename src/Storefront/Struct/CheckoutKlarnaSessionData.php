@@ -10,10 +10,10 @@ class CheckoutKlarnaSessionData extends CheckoutCartPaymentData
         private readonly string $clientToken,
         string $workOrderId,
         private readonly string $paymentMethodIdentifier,
-        string $cartHash
+        string $cartHash,
     ) {
         $this->workOrderId = $workOrderId;
-        $this->cartHash = $cartHash;
+        $this->cartHash    = $cartHash;
     }
 
     public function getClientToken(): string

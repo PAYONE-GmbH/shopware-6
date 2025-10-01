@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\CustomerInformationRequestParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+
+            <tag name="payone.request_enricher.pay.payone.open_invoice" />
+            <tag name="payone.request_enricher.pay.payone.secure_invoice" />
+            <tag name="payone.request_enricher.pay.payone.secured_direct_debit" />
+            <tag name="payone.request_enricher.pay.payone.secured_installment" />
+            <tag name="payone.request_enricher.pay.payone.secured_invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\CustomerRequestParameterEnricher">
+            <argument key="$languageRepository" type="service" id="language.repository" />
+            <argument key="$salutationRepository" type="service" id="salutation.repository" />
+            <argument key="$countryRepository" type="service" id="country.repository" />
+            <argument key="$requestStack" type="service" id="request_stack" />
+
+            <tag name="payone.request_enricher.pay.payone.credit_card" />
+            <tag name="payone.request_enricher.pay.payone.debit" />
+            <tag name="payone.request_enricher.pay.payone.open_invoice" />
+            <tag name="payone.request_enricher.pay.payone.prepayment" />
+            <tag name="payone.request_enricher.pay.payone.secure_invoice" />
+            <tag name="payone.request_enricher.pay.payone.secured_direct_debit" />
+            <tag name="payone.request_enricher.pay.payone.secured_installment" />
+            <tag name="payone.request_enricher.pay.payone.secured_invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\OrderLinesRequestParameterEnricher">
+            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface" />
+
+            <tag name="payone.request_enricher.pay.payone.open_invoice" />
+            <tag name="payone.request_enricher.pay.payone.secure_invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\OrderLinesWithNegativePriceRequestParameterEnricher">
+            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface" />
+
+            <tag name="payone.request_enricher.pay.payone.secured_direct_debit" />
+            <tag name="payone.request_enricher.pay.payone.secured_installment" />
+            <tag name="payone.request_enricher.pay.payone.secured_invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\ReturnUrlRequestParameterEnricher">
+            <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+
+            <tag name="payone.request_enricher.pay.payone.credit_card" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\ShippingInformationRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.payone.secured_direct_debit" />
+            <tag name="payone.request_enricher.pay.payone.secured_installment" />
+            <tag name="payone.request_enricher.pay.payone.secured_invoice" />
+        </service>
+
+        <!-- Credit Card -->
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\CreditCard\AuthorizeRequestParameterEnricher">
+            <argument key="$cardRepository" type="service" id="PayonePayment\Service\CardRepositoryService" />
+
+            <tag name="payone.request_enricher.pay.payone.credit_card" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\CreditCard\PreauthorizeRequestParameterEnricher">
+            <argument key="$cardRepository" type="service" id="PayonePayment\Service\CardRepositoryService" />
+
+            <tag name="payone.request_enricher.pay.payone.credit_card" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\CreditCard\CreditCardCheckRequestParameterEnricher">
+            <tag name="payone.request_enricher.check.payone.credit_card" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\CreditCard\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Debit -->
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\Debit\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.payone.debit" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\Debit\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.payone.debit" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\Debit\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Open Invoice -->
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\OpenInvoice\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.payone.open_invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\OpenInvoice\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.payone.open_invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\OpenInvoice\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Pre Payment -->
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\Prepayment\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.payone.prepayment" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\Prepayment\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Secured Direct Debit -->
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecuredDirectDebit\AuthorizeRequestParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Provider\Payone\DeviceFingerprint\PayoneBNPLDeviceFingerprintService" />
+            <argument key="$orderAddressRepository" type="service" id="order_address.repository" />
+
+            <tag name="payone.request_enricher.pay.payone.secured_direct_debit" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecuredDirectDebit\PreAuthorizeRequestParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Provider\Payone\DeviceFingerprint\PayoneBNPLDeviceFingerprintService" />
+            <argument key="$orderAddressRepository" type="service" id="order_address.repository" />
+
+            <tag name="payone.request_enricher.pay.payone.secured_direct_debit" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecuredDirectDebit\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Secured Installment -->
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecuredInstallment\AuthorizeRequestParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Provider\Payone\DeviceFingerprint\PayoneBNPLDeviceFingerprintService" />
+            <argument key="$orderAddressRepository" type="service" id="order_address.repository" />
+
+            <tag name="payone.request_enricher.pay.payone.secured_installment" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecuredInstallment\PreAuthorizeRequestParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Provider\Payone\DeviceFingerprint\PayoneBNPLDeviceFingerprintService" />
+            <argument key="$orderAddressRepository" type="service" id="order_address.repository" />
+
+            <tag name="payone.request_enricher.pay.payone.secured_installment" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecuredInstallment\InstallmentOptionsRequestParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+
+            <tag name="payone.request_enricher.option.payone.secured_installment.load" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecuredInstallment\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Secured Invoice -->
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecuredInvoice\AuthorizeRequestParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Provider\Payone\DeviceFingerprint\PayoneBNPLDeviceFingerprintService" />
+            <argument key="$orderAddressRepository" type="service" id="order_address.repository" />
+
+            <tag name="payone.request_enricher.pay.payone.secured_invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecuredInvoice\PreAuthorizeRequestParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+            <argument key="$deviceFingerprintService" type="service" id="PayonePayment\Provider\Payone\DeviceFingerprint\PayoneBNPLDeviceFingerprintService" />
+            <argument key="$orderAddressRepository" type="service" id="order_address.repository" />
+
+            <tag name="payone.request_enricher.pay.payone.secured_invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecuredInvoice\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Secure Invoice -->
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecureInvoice\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.payone.secure_invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecureInvoice\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.payone.secure_invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\SecureInvoice\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+    </services>
+</container>

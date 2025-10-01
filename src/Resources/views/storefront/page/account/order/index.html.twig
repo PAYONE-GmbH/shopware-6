@@ -1,7 +1,8 @@
 {% sw_extends '@Storefront/storefront/page/account/order/index.html.twig' %}
 
+{# shopware-block: 38103671b0c8d761e93ce98241c9f2826046e465488e40a6e87637259120e2bb@v6.6.10.5 #}
 {% block page_checkout_confirm_form_submit %}
-    {% if constant('PayonePayment\\PaymentMethod\\PayoneApplePay::UUID') == context.paymentMethod.id %}
+    {% if constant('PayonePayment\\Provider\\ApplePay\\PaymentMethod\\StandardPaymentMethod::UUID') == context.paymentMethod.id %}
         {% sw_include '@Storefront/storefront/component/checkout/apple-pay-button.html.twig' with {'amount': page.order.amountTotal } %}
 
         <button id="confirmFormSubmit"
@@ -14,6 +15,7 @@
     {% endif %}
 {% endblock %}
 
+{# shopware-block: c734ae41a141423611bde7a745f7444baa9c34ccd9c75b23837e914151c7723f@v6.6.10.5 #}
 {% block page_checkout_confirm_payment %}
     {{ parent() }}
 

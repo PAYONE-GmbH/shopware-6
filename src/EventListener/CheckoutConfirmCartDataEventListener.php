@@ -4,31 +4,30 @@ declare(strict_types=1);
 
 namespace PayonePayment\EventListener;
 
-use PayonePayment\Components\Helper\OrderFetcherInterface;
+use PayonePayment\Service\OrderLoaderService;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\Order\OrderConverter;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Process\Exception\LogicException;
 
-class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
+readonly class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly OrderConverter $orderConverter,
-        private readonly OrderFetcherInterface $orderFetcher
+        private OrderConverter $orderConverter,
+        private OrderLoaderService $orderLoaderService,
     ) {
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class => 'addCartData',
+            CheckoutConfirmPageLoadedEvent::class  => 'addCartData',
             AccountEditOrderPageLoadedEvent::class => 'addCartData',
         ];
     }
@@ -41,7 +40,7 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
             $cart = $event->getPage()->getCart();
         } else {
             $order = $event->getPage()->getOrder();
-            $cart = $this->convertCartFromOrder($order, $event->getContext());
+            $cart  = $this->convertCartFromOrder($order, $event->getContext());
         }
 
         if ($cart->hasExtension(CheckoutCartPaymentData::EXTENSION_NAME)) {
@@ -54,10 +53,10 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
             /** @var CheckoutCartPaymentData|null $extension */
             $extension = $page->getExtension(CheckoutCartPaymentData::EXTENSION_NAME);
 
-            if ($extension !== null) {
+            if (null !== $extension) {
                 $payoneData->assign([
                     CheckoutCartPaymentData::DATA_WORK_ORDER_ID => $extension->getWorkorderId(),
-                    CheckoutCartPaymentData::DATA_CART_HASH => $extension->getCartHash(),
+                    CheckoutCartPaymentData::DATA_CART_HASH     => $extension->getCartHash(),
                 ]);
             }
             $page->addExtension(CheckoutConfirmPaymentData::EXTENSION_NAME, $payoneData);
@@ -66,9 +65,9 @@ class CheckoutConfirmCartDataEventListener implements EventSubscriberInterface
 
     private function convertCartFromOrder(OrderEntity $orderEntity, Context $context): Cart
     {
-        $order = $this->orderFetcher->getOrderById($orderEntity->getId(), $context);
+        $order = $this->orderLoaderService->getOrderById($orderEntity->getId(), $context);
 
-        if ($order === null) {
+        if (null === $order) {
             throw new LogicException('could not find order via id');
         }
 

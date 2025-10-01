@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  mariadb:
+    container_name: ${PHPUNIT_DB_CONTAINER_NAME}
+    image: 'mariadb:10.9.2'
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 'true'
+      MYSQL_USER: 'netinventors'
+      MYSQL_PASSWORD: 'athene'
+      MYSQL_DATABASE: 'shopware_test'
+    ports:
+      - '${PHPUNIT_DB_CONTAINER_PORT}:3306'

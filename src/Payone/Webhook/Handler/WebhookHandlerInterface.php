@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 interface WebhookHandlerInterface
 {
     public const RESPONSE_TSOK = 'TSOK';
+
     public const RESPONSE_TSNOTOK = 'TSNOTOK';
 
     public function process(SalesChannelContext $salesChannelContext, Request $request): void;

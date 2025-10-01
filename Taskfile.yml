@@ -1,0 +1,39 @@
+version: "3"
+dotenv:
+  - ./dev-ops/.env.local
+  - ./dev-ops/.env
+vars:
+  PHP_BIN: $(which "{{.PHP_BIN}}")
+  COMPOSER_BIN: $(which composer)
+includes:
+  core:
+    taskfile: ./dev-ops/taskfile/vendor/netinventors/shopware6-taskfile/core.yml
+    optional: true
+    aliases: [ c ]
+  ecs:
+    taskfile: ./dev-ops/taskfile/vendor/netinventors/shopware6-taskfile/ecs.yml
+    optional: true
+  phpunit:
+    taskfile: ./dev-ops/taskfile/vendor/netinventors/shopware6-taskfile/phpunit.yml
+    optional: true
+  phpunuhi:
+    taskfile: ./dev-ops/taskfile/vendor/netinventors/shopware6-taskfile/phpunuhi.yml
+    optional: true
+  plugin:
+    taskfile: ./dev-ops/taskfile/vendor/netinventors/shopware6-taskfile/plugin.yml
+    optional: true
+    aliases: [ p ]
+  psalm:
+    taskfile: ./dev-ops/taskfile/vendor/netinventors/shopware6-taskfile/psalm.yml
+    optional: true
+  rector:
+    taskfile: ./dev-ops/taskfile/vendor/netinventors/shopware6-taskfile/rector.yml
+    optional: true
+  test:
+    taskfile: ./dev-ops/taskfile/vendor/netinventors/shopware6-taskfile/test.yml
+    optional: true
+tasks:
+  default:
+    cmds:
+      - cmd: task --list-all
+        silent: true

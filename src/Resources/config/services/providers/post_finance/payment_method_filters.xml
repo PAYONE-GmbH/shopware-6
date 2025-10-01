@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service
+            id="payone.payment_filter_method.postfinance.card"
+            class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService"
+        >
+            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument key="$paymentHandlerClass">PayonePayment\Provider\PostFinance\PaymentHandler\CardPaymentHandler</argument>
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument key="$extensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService" />
+
+            <argument key="$allowedCountries" type="collection">
+                <argument>CH</argument>
+            </argument>
+
+            <argument key="$allowedB2bCountries" type="collection">
+                <argument>CH</argument>
+            </argument>
+
+            <argument key="$allowedCurrencies" type="collection">
+                <argument>CHF</argument>
+            </argument>
+
+            <tag name="payone.payment_method.filter" />
+        </service>
+
+        <service
+            id="payone.payment_filter_method.postfinance.wallet"
+            class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService"
+        >
+            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument key="$paymentHandlerClass">PayonePayment\Provider\PostFinance\PaymentHandler\WalletPaymentHandler</argument>
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument key="$extensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService" />
+
+            <argument key="$allowedCountries" type="collection">
+                <argument>CH</argument>
+            </argument>
+
+            <argument key="$allowedB2bCountries" type="collection">
+                <argument>CH</argument>
+            </argument>
+
+            <argument key="$allowedCurrencies" type="collection">
+                <argument>CHF</argument>
+            </argument>
+
+            <tag name="payone.payment_method.filter" />
+        </service>
+    </services>
+</container>

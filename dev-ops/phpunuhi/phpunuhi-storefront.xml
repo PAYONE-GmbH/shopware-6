@@ -1,0 +1,22 @@
+<phpunuhi
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="./vendor/boxblinkracer/phpunuhi/config.xsd"
+>
+    <translations>
+        <set name="Storefront">
+            <format>
+                <json indent="4" />
+            </format>
+
+            <styles>
+                <style>kebab</style>
+                <style>camel</style>
+            </styles>
+
+            <locales basePath="../../src/Resources/snippet">
+                <locale name="de-DE">%base_path%/storefront.%locale%.json</locale>
+                <locale name="en-GB">%base_path%/storefront.%locale%.json</locale>
+            </locales>
+        </set>
+    </translations>
+</phpunuhi>

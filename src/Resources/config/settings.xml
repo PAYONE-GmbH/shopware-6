@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
-
+<config
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd"
+>
     <card>
         <title>Basic Configuration</title>
         <title lang="de-DE">Grundeinstellungen</title>
@@ -513,10 +514,10 @@
         <title>PAYONE Unzer Ratenkauf</title>
         <title lang="de-DE">PAYONE Unzer Ratenkauf</title>
 
-        <name>payment_payolutionInstallment</name>
+        <name>payment_unzerInstallment</name>
 
         <input-field>
-            <name>payolutionInstallmentCompanyName</name>
+            <name>unzerInstallmentCompanyName</name>
             <label>Company Name</label>
             <label lang="de-DE">Firmenname</label>
             <helpText>Is displayed in the supplementary notes to the privacy statement for purchase on account.</helpText>
@@ -524,7 +525,7 @@
         </input-field>
 
         <input-field>
-            <name>payolutionInstallmentChannelName</name>
+            <name>unzerInstallmentChannelName</name>
             <label>Channel Name</label>
             <label lang="de-DE">Channel Name</label>
             <helpText>Username for the URL to the EU Standard Credit Information hosted by Payolution.</helpText>
@@ -532,7 +533,7 @@
         </input-field>
 
         <input-field>
-            <name>payolutionInstallmentChannelPassword</name>
+            <name>unzerInstallmentChannelPassword</name>
             <label>Channel Password</label>
             <label lang="de-DE">Channel Passwort</label>
             <helpText>Password for the url to the EU Standard Credit Information hosted by Payolution.</helpText>
@@ -540,7 +541,7 @@
         </input-field>
 
         <input-field type="single-select">
-            <name>payolutionInstallmentAuthorizationMethod</name>
+            <name>unzerInstallmentAuthorizationMethod</name>
             <label>Authorization Method</label>
             <label lang="de-DE">Autorisierungsmethode</label>
             <helpText>Use this option to set the authorization method for this payment type.</helpText>
@@ -560,7 +561,7 @@
         </input-field>
 
         <input-field type="bool">
-            <name>payolutionInstallmentProvideNarrativeText</name>
+            <name>unzerInstallmentProvideNarrativeText</name>
             <label>Transmit order number in narrative text?</label>
             <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
             <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
@@ -572,10 +573,10 @@
         <title>PAYONE Unzer Rechnungskauf</title>
         <title lang="de-DE">PAYONE Unzer Rechnungskauf</title>
 
-        <name>payment_payolutionInvoicing</name>
+        <name>payment_unzerInvoice</name>
 
         <input-field>
-            <name>payolutionInvoicingCompanyName</name>
+            <name>unzerInvoiceCompanyName</name>
             <label>Company Name</label>
             <label lang="de-DE">Firmenname</label>
             <helpText>Is displayed in the supplementary notes to the privacy statement for purchase on account.</helpText>
@@ -583,7 +584,7 @@
         </input-field>
 
         <input-field>
-            <name>payolutionInvoicingIban</name>
+            <name>unzerInvoiceIban</name>
             <label>IBAN</label>
             <label lang="de-DE">IBAN</label>
             <helpText>IBAN which is displayed on the invoice next to the payment reference.</helpText>
@@ -591,7 +592,7 @@
         </input-field>
 
         <input-field>
-            <name>payolutionInvoicingBic</name>
+            <name>unzerInvoiceBic</name>
             <label>BIC</label>
             <label lang="de-DE">BIC</label>
             <helpText>BIC which is displayed on the invoice next to the payment reference.</helpText>
@@ -599,13 +600,13 @@
         </input-field>
 
         <input-field type="bool">
-            <name>payolutionInvoicingTransferCompanyData</name>
+            <name>unzerInvoiceTransferCompanyData</name>
             <label>Sets the b2b flag if the customer's company name is present.</label>
             <label lang="de-DE">Setzt das b2b-Flag, wenn beim Kunden der Firmennamen gesetzt ist.</label>
         </input-field>
 
         <input-field type="single-select">
-            <name>payolutionInvoicingAuthorizationMethod</name>
+            <name>unzerInvoiceAuthorizationMethod</name>
             <label>Authorization Method</label>
             <label lang="de-DE">Autorisierungsmethode</label>
             <helpText>Use this option to set the authorization method for this payment type.</helpText>
@@ -625,7 +626,7 @@
         </input-field>
 
         <input-field type="bool">
-            <name>payolutionInvoicingProvideNarrativeText</name>
+            <name>unzerInvoiceProvideNarrativeText</name>
             <label>Transmit order number in narrative text?</label>
             <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
             <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
@@ -637,10 +638,10 @@
         <title>PAYONE Unzer Lastschrift</title>
         <title lang="de-DE">PAYONE Unzer Lastschrift</title>
 
-        <name>payment_payolutionDebit</name>
+        <name>payment_unzerDebit</name>
 
         <input-field>
-            <name>payolutionDebitCompanyName</name>
+            <name>unzerDebitCompanyName</name>
             <label>Company Name</label>
             <label lang="de-DE">Firmenname</label>
             <helpText>Is displayed in the supplementary notes to the privacy statement for purchase on account.</helpText>
@@ -648,7 +649,7 @@
         </input-field>
 
         <input-field type="single-select">
-            <name>payolutionDebitAuthorizationMethod</name>
+            <name>unzerDebitAuthorizationMethod</name>
             <label>Authorization Method</label>
             <label lang="de-DE">Autorisierungsmethode</label>
             <helpText>Use this option to set the authorization method for this payment type.</helpText>
@@ -668,7 +669,7 @@
         </input-field>
 
         <input-field type="bool">
-            <name>payolutionDebitProvideNarrativeText</name>
+            <name>unzerDebitProvideNarrativeText</name>
             <label>Transmit order number in narrative text?</label>
             <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
             <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
@@ -938,10 +939,10 @@
         <title>PAYONE Ratepay Open Invoice</title>
         <title lang="de-DE">PAYONE Ratepay Rechnungskauf</title>
 
-        <name>payment_ratepayInvoicing</name>
+        <name>payment_ratepayInvoice</name>
 
         <input-field type="single-select">
-            <name>ratepayInvoicingAuthorizationMethod</name>
+            <name>ratepayInvoiceAuthorizationMethod</name>
             <label>Authorization Method</label>
             <label lang="de-DE">Autorisierungsmethode</label>
             <helpText>Use this option to set the authorization method for this payment type.</helpText>
@@ -961,18 +962,18 @@
         </input-field>
 
         <input-field>
-            <name>ratepayInvoicingDeviceFingerprintSnippetId</name>
+            <name>ratepayInvoiceDeviceFingerprintSnippetId</name>
             <label>Device Fingerprint Snippet ID</label>
             <label lang="de-DE">Device Fingerprint Snippet ID</label>
             <defaultValue>ratepay</defaultValue>
         </input-field>
 
         <component name="payone-ratepay-profiles">
-            <name>ratepayInvoicingProfiles</name>
+            <name>ratepayInvoiceProfiles</name>
         </component>
 
         <component name="payone-ratepay-profile-configurations">
-            <name>ratepayInvoicingProfileConfigurations</name>
+            <name>ratepayInvoiceProfileConfigurations</name>
         </component>
     </card>
 

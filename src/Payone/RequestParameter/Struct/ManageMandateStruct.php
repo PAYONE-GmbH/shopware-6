@@ -15,10 +15,10 @@ class ManageMandateStruct extends AbstractRequestParameterStruct
         SalesChannelContext $salesChannelContext,
         protected string $iban,
         protected string $bic,
-        string $paymentMethod
+        string $paymentMethod,
     ) {
         $this->salesChannelContext = $salesChannelContext;
-        $this->paymentMethod = $paymentMethod;
+        $this->paymentMethod       = $paymentMethod;
     }
 
     public function getIban(): string

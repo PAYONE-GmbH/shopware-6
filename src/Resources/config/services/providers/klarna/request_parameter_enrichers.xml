@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container
+    xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\CustomerRequestParameterEnricher">
+            <argument key="$languageRepository" type="service" id="language.repository" />
+            <argument key="$salutationRepository" type="service" id="salutation.repository" />
+            <argument key="$countryRepository" type="service" id="country.repository" />
+            <argument key="$requestStack" type="service" id="request_stack" />
+
+            <tag name="payone.request_enricher.pay.klarna.direct_debit" />
+            <tag name="payone.request_enricher.pay.klarna.installment" />
+            <tag name="payone.request_enricher.pay.klarna.invoice" />
+
+            <tag name="payone.request_enricher.session.klarna.create" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\OrderLinesRequestParameterEnricher">
+            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface" />
+
+            <tag name="payone.request_enricher.pay.klarna.direct_debit" />
+            <tag name="payone.request_enricher.pay.klarna.installment" />
+            <tag name="payone.request_enricher.pay.klarna.invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\ReturnUrlRequestParameterEnricher">
+            <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
+
+            <tag name="payone.request_enricher.pay.klarna.direct_debit" />
+            <tag name="payone.request_enricher.pay.klarna.installment" />
+            <tag name="payone.request_enricher.pay.klarna.invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\CreateSessionRequestParameterEnricher">
+            <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
+            <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
+            <argument key="$orderLoaderService" type="service" id="PayonePayment\Service\OrderLoaderService" />
+
+            <tag name="payone.request_enricher.session.klarna.create" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\FinancingTypeParameterEnricher">
+            <tag name="payone.request_enricher.session.klarna.create" />
+            <tag name="payone.request_enricher.pay.klarna.direct_debit" />
+            <tag name="payone.request_enricher.pay.klarna.installment" />
+            <tag name="payone.request_enricher.pay.klarna.invoice" />
+        </service>
+
+        <!-- Direct Debit -->
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\DirectDebit\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.klarna.direct_debit" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\DirectDebit\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.klarna.direct_debit" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\DirectDebit\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Installment -->
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\Installment\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.klarna.installment" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\Installment\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.klarna.installment" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\Installment\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+
+        <!-- Invoice -->
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\Invoice\AuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.klarna.invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\Invoice\PreAuthorizeRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.klarna.invoice" />
+        </service>
+
+        <service id="PayonePayment\Provider\Klarna\RequestParameter\Enricher\Invoice\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
+        </service>
+    </services>
+</container>
