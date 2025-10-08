@@ -69,19 +69,30 @@ export default class PayonePaymentPayPalV2 extends Plugin {
 
     _createOrder() {
         return new Promise((resolve, reject) => {
-            fetch(this.options.createCheckoutSessionUrl)
-                .then(response => response.text())
-                .then((responseText, request) => {
-                    if (request.status >= 400) {
-                        reject(responseText);
+            fetch(this.options.createCheckoutSessionUrl, {
+                method: "GET",
+                credentials: "same-origin",
+                headers: {
+                    "Accept": "application/json",
+                    // hilfreich in Shopware, damit kein HTML-Layout zurückkommt:
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then(async(response) => {
+                    if (!response.ok) {
+                        // Fehlertext sichern, bevor der Stream "verbraucht" ist
+                        const errorText = await response.text().catch(() => "");
+                        // wirf etwas Sinnvolles inkl. Status
+                        throw new Error(errorText || `HTTP ${ response.status }`);
                     }
-
-                    try {
-                        const response = JSON.parse(responseText);
-                        resolve(response.orderId);
-                    } catch (error) {
-                        reject(error);
-                    }
+                    // wenn du JSON erwartest:
+                    return response.json();
+                })
+                .then((data) => {
+                    resolve(data.orderId);
+                })
+                .catch((err) => {
+                    reject(err);
                 });
         });
     }
