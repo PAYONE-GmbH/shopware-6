@@ -190,7 +190,7 @@ readonly class DefaultPaymentFilterService implements PaymentFilterServiceInterf
     /**
      * @throws PaymentMethodNotAllowedException
      */
-    private function validateDifferentShippingAddress(
+    protected function validateDifferentShippingAddress(
         PaymentMethodCollection $paymentMethods,
         PaymentFilterContext $filterContext,
     ): void {

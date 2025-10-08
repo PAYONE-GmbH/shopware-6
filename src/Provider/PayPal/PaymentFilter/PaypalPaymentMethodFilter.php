@@ -28,4 +28,11 @@ readonly class PaypalPaymentMethodFilter extends DefaultPaymentFilterService
             throw new PaymentMethodNotAllowedException('PayPal: PayPal v1 is not allowed if v2 is active.');
         }
     }
+
+    protected function validateDifferentShippingAddress(
+        PaymentMethodCollection $paymentMethods,
+        PaymentFilterContext $filterContext,
+    ): void {
+        // Not required for Paypal
+    }
 }

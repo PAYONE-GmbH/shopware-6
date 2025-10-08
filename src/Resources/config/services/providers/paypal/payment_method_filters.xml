@@ -6,6 +6,18 @@
 >
     <services>
         <service
+                id="payone.payment_filter_method.paypal"
+                class="PayonePayment\Provider\PayPal\PaymentFilter\PaypalPaymentMethodFilter"
+        >
+            <argument key="$systemConfigService" type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument key="$paymentHandlerClass">PayonePayment\Provider\PayPal\PaymentHandler\StandardPaymentHandler</argument>
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+            <argument key="$extensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService" />
+
+            <tag name="payone.payment_method.filter" />
+        </service>
+
+        <service
             id="payone.payment_filter_method.paypal_express"
             class="PayonePayment\Components\PaymentFilter\DefaultPaymentFilterService"
         >
