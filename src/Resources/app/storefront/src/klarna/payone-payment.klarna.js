@@ -1,4 +1,4 @@
-import Plugin from 'src/plugin-system/plugin.class';
+const Plugin = window.PluginBaseClass;
 import ButtonLoadingIndicator from 'src/utility/loading-indicator/button-loading-indicator.util';
 
 export default class PayonePaymentKlarna extends Plugin {

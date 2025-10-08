@@ -12,6 +12,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class RequestParameterTestEnricherRegistry extends Collection
 {
+    #[\Override]
     protected function getExpectedClass(): string|null
     {
         return RequestParameterEnricherChain::class;

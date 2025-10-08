@@ -25,6 +25,7 @@ class Iban extends \Symfony\Component\Validator\Constraints\Iban
      */
     protected static $errorNames = self::ERROR_NAMES;
 
+    #[\Override]
     public function validatedBy(): string
     {
         return IbanValidator::class;

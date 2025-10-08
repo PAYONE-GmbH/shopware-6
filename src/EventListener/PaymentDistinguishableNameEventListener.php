@@ -29,6 +29,7 @@ class PaymentDistinguishableNameEventListener implements EventSubscriberInterfac
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

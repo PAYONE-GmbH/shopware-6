@@ -68,6 +68,7 @@ class PaymentMethodInstaller implements InstallerInterface
         self::$cache = $payonePaymentMethods;
     }
 
+    #[\Override]
     public function install(InstallContext $context): void
     {
         foreach ($this->getPaymentMethods() as $paymentMethod) {
@@ -79,6 +80,7 @@ class PaymentMethodInstaller implements InstallerInterface
         }
     }
 
+    #[\Override]
     public function update(UpdateContext $context): void
     {
         // Fix for usage of bad UUIDv4 value in https://github.com/PAYONE-GmbH/shopware-6/pull/65.
@@ -100,6 +102,7 @@ SQL);
         }
     }
 
+    #[\Override]
     public function uninstall(UninstallContext $context): void
     {
         foreach ($this->getPaymentMethods() as $paymentMethod) {
@@ -107,10 +110,12 @@ SQL);
         }
     }
 
+    #[\Override]
     public function activate(ActivateContext $context): void
     {
     }
 
+    #[\Override]
     public function deactivate(DeactivateContext $context): void
     {
     }

@@ -10,6 +10,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 
 class TotalPriceFilter implements PaymentFilterServiceInterface
 {
+    #[\Override]
     public function filterPaymentMethods(
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext,

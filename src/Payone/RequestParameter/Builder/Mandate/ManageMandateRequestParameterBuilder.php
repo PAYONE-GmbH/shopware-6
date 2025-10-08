@@ -15,6 +15,7 @@ class ManageMandateRequestParameterBuilder extends AbstractRequestParameterBuild
     /**
      * @param ManageMandateStruct $arguments
      */
+    #[\Override]
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         return [
@@ -26,6 +27,7 @@ class ManageMandateRequestParameterBuilder extends AbstractRequestParameterBuild
         ];
     }
 
+    #[\Override]
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         return $arguments instanceof ManageMandateStruct;

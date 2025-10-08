@@ -24,6 +24,7 @@ readonly class GetCheckoutSessionParameterEnricher implements RequestParameterEn
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $cartExtension = $this->cartExtensionService->getCartExtensionForExpressCheckout(

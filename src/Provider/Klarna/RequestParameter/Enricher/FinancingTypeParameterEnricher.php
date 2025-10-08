@@ -14,6 +14,7 @@ use PayonePayment\RequestParameter\RequestParameterEnricherInterface;
  */
 readonly class FinancingTypeParameterEnricher implements RequestParameterEnricherInterface
 {
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         if (!$arguments->paymentHandler instanceof FinancingTypeAwareInterface) {

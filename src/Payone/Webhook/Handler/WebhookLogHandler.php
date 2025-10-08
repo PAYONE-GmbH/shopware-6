@@ -20,6 +20,7 @@ readonly class WebhookLogHandler implements WebhookHandlerInterface
     ) {
     }
 
+    #[\Override]
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool
     {
         return isset(
@@ -30,6 +31,7 @@ readonly class WebhookLogHandler implements WebhookHandlerInterface
         );
     }
 
+    #[\Override]
     public function process(SalesChannelContext $salesChannelContext, Request $request): void
     {
         $data = $request->request->all();

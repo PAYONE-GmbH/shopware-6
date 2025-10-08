@@ -1,37 +1,94 @@
 {% block payone_payment_payment_details %}
     <div class="payone-refund-button">
-        <sw-container v-tooltip="{message: $tc('sw-order.payone-payment.refund.tooltips.impossible'), disabled: buttonEnabled}" :key="buttonEnabled">
-            <sw-button :disabled="!buttonEnabled" @click="openRefundModal">
-                {{ $tc('sw-order.payone-payment.refund.buttonTitle') }}
-            </sw-button>
+        <sw-container
+            v-tooltip="{message: $t('sw-order.payone-payment.refund.tooltips.impossible'), disabled: buttonEnabled}"
+            :key="buttonEnabled"
+        >
+            <mt-button
+                :disabled="!buttonEnabled"
+                @click="openRefundModal"
+                variant="secondary"
+                size="default"
+            >
+                {{ $t('sw-order.payone-payment.refund.buttonTitle') }}
+            </mt-button>
         </sw-container>
 
-        <sw-modal v-if="showRefundModal" @modal-close="closeRefundModal" :title="$tc(`sw-order.payone-payment.modal.refund.title`)" class="payone-payment-detail--refund-modal">
-            <payone-order-items :order="order" :items="items"></payone-order-items>
+        <sw-modal
+            v-if="showRefundModal"
+            @modal-close="closeRefundModal"
+            :title="$t(`sw-order.payone-payment.modal.refund.title`)"
+            class="payone-payment-detail--refund-modal"
+        >
+            <payone-order-items
+                :order="order"
+                :items="items"
+            ></payone-order-items>
 
             <div class="payone-payment-detail--refund-modal--content">
-                <sw-container columns="1fr 1fr" gap="0 32px">
-                    <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.orderAmount')" :value="currencyFilter(transaction.amount.totalPrice, order.currency.shortName)"></sw-text-field>
-                    <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.refund.refunded')" :value="payoneCurrencyFilter(refundedAmount, order.currency.shortName)"></sw-text-field>
-                    <sw-text-field :disabled="true" :label="$tc('sw-order.payone-payment.modal.remainingAmount')" :value="payoneCurrencyFilter(remainingAmount, order.currency.shortName)"></sw-text-field>
-                    <sw-number-field required="required" numberType="float" :digits="decimalPrecision" :label="$tc('sw-order.payone-payment.modal.refund.amount')"
-                                     v-model:value="refundAmount"
-                                     :min="0"
-                                     :max="remainingAmount"></sw-number-field>
+                <sw-container
+                    columns="1fr 1fr"
+                    gap="0 32px"
+                >
+                    <mt-text-field
+                        :disabled="true"
+                        :label="$t('sw-order.payone-payment.modal.orderAmount')"
+                        :model-value="currencyFilter(transaction.amount.totalPrice, order.currency.shortName)"
+                    ></mt-text-field>
+
+                    <mt-text-field
+                        :disabled="true"
+                        :label="$t('sw-order.payone-payment.modal.refund.refunded')"
+                        :model-value="payoneCurrencyFilter(refundedAmount, order.currency.shortName)"
+                    ></mt-text-field>
+
+                    <mt-text-field
+                        :disabled="true"
+                        :label="$t('sw-order.payone-payment.modal.remainingAmount')"
+                        :model-value="payoneCurrencyFilter(remainingAmount, order.currency.shortName)"
+                    ></mt-text-field>
+
+                    <mt-number-field
+                        required="required"
+                        numberType="float"
+                        :digits="decimalPrecision"
+                        :label="$t('sw-order.payone-payment.modal.refund.amount')"
+                        v-model="refundAmount"
+                        :min="0"
+                        :max="remainingAmount"
+                    ></mt-number-field>
                 </sw-container>
             </div>
 
             <template #modal-footer>
-                <sw-button :disabled="isLoading" @click="closeRefundModal">
-                    {{ $tc('sw-order.payone-payment.modal.close') }}
-                </sw-button>
+                <mt-button
+                    :disabled="isLoading"
+                    @click="closeRefundModal"
+                    variant="secondary"
+                >
+                    {{ $t('sw-order.payone-payment.modal.close') }}
+                </mt-button>
 
-                <sw-button-process :isLoading="isLoading" :processSuccess="isRefundSuccessful" @process-finish="onRefundFinished()" :disabled="isLoading || refundAmount <= 0" variant="primary" @click="refundOrder">
-                    {{ $tc('sw-order.payone-payment.modal.refund.submit') }}
+                <sw-button-process
+                    :isLoading="isLoading"
+                    :processSuccess="isRefundSuccessful"
+                    @process-finish="onRefundFinished()"
+                    :disabled="isLoading || refundAmount <= 0"
+                    variant="primary"
+                    @click="refundOrder"
+                >
+                    {{ $t('sw-order.payone-payment.modal.refund.submit') }}
                 </sw-button-process>
 
-                <sw-button-process :isLoading="isLoading" :processSuccess="isRefundSuccessful" @process-finish="onRefundFinished()" :disabled="isLoading" variant="primary" @click="refundFullOrder">
-                    {{ $tc('sw-order.payone-payment.modal.refund.fullSubmit') }}
+                <sw-button-process
+                    :isLoading="isLoading"
+                    :processSuccess="isRefundSuccessful"
+                    @process-finish="onRefundFinished()"
+                    :disabled="isLoading"
+                    variant="primary"
+                    @click="refundFullOrder"
+                >
+                    {{ $t('sw-order.payone-payment.modal.refund.fullSubmit') }}
                 </sw-button-process>
             </template>
         </sw-modal>

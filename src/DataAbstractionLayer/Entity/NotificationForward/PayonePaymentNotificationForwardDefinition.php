@@ -20,21 +20,25 @@ class PayonePaymentNotificationForwardDefinition extends EntityDefinition
 {
     final public const ENTITY_NAME = 'payone_payment_notification_forward';
 
+    #[\Override]
     public function getEntityName(): string
     {
         return self::ENTITY_NAME;
     }
 
+    #[\Override]
     public function getCollectionClass(): string
     {
         return PayonePaymentNotificationForwardCollection::class;
     }
 
+    #[\Override]
     public function getEntityClass(): string
     {
         return PayonePaymentNotificationForwardEntity::class;
     }
 
+    #[\Override]
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([

@@ -28,6 +28,7 @@ readonly class CalculationRequestParameterEnricher implements RequestParameterEn
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $dataBag         = $arguments->requestData;

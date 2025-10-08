@@ -10,7 +10,7 @@ class TestRequestParameterEnricher
 {
     public function enrich(
         string $paymentHandlerIdentifier,
-        RequestParameterEnricherChain $enrichers
+        RequestParameterEnricherChain $enrichers,
     ): RequestDataBag|null {
         /** @var TestRequestParameterEnricherInterface $enricher */
         foreach ($enrichers->getElements() as $enricher) {

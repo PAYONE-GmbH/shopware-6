@@ -56,6 +56,7 @@ readonly class CheckoutCartEventListener implements EventSubscriberInterface
         $this->serializer = new Serializer(encoders: [ new JsonEncoder() ]);
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [
@@ -131,7 +132,7 @@ SQL;
             );
 
             $requestParameters = $createRequest->all();
-            $response = $this->getInitializedPaymentResponse(
+            $response          = $this->getInitializedPaymentResponse(
                 $cart,
                 $createRequest->all(),
             ) ?: $this->payoneClient->request($requestParameters);

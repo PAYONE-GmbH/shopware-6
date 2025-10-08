@@ -25,6 +25,7 @@ class RedirectCleanUpHandler extends ScheduledTaskHandler
         return [ RedirectCleanUp::class ];
     }
 
+    #[\Override]
     public function run(): void
     {
         $this->logger->debug('Starting to clean up PAYONE Redirects...');

@@ -25,6 +25,7 @@ readonly class CustomerInformationRequestParameterEnricher implements RequestPar
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $parameters         = [];

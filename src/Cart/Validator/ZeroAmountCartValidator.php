@@ -19,6 +19,7 @@ readonly class ZeroAmountCartValidator implements CartValidatorInterface
     ) {
     }
 
+    #[\Override]
     public function validate(Cart $cart, ErrorCollection $errors, SalesChannelContext $context): void
     {
         if (0 === $cart->getLineItems()->count()) {

@@ -80,26 +80,31 @@ class ConfigInstaller implements InstallerInterface
     ) {
     }
 
+    #[\Override]
     public function install(InstallContext $context): void
     {
         $this->setDefaultValues();
     }
 
+    #[\Override]
     public function update(UpdateContext $context): void
     {
         $this->setDefaultValues();
     }
 
+    #[\Override]
     public function uninstall(UninstallContext $context): void
     {
         // Nothing to do here
     }
 
+    #[\Override]
     public function activate(ActivateContext $context): void
     {
         // Nothing to do here
     }
 
+    #[\Override]
     public function deactivate(DeactivateContext $context): void
     {
         // Nothing to do here

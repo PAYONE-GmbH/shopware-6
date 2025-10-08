@@ -23,6 +23,7 @@ class CardResponseHandler implements ResponseHandlerInterface
         $this->transactionDataHandler = $transactionDataHandler;
     }
 
+    #[\Override]
     protected function getAdditionalTransactionData(RequestDataBag $dataBag, array $request, array $response): array
     {
         return [

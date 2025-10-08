@@ -36,10 +36,10 @@ class ValidateController extends StorefrontController
         path: '/payone/invoicing/validate',
         name: 'frontend.payone.payolution.invoicing.validate',
         options: [
-            'seo' => false,
+            'seo'         => false,
             'deprecation' => [
-                'since' => '6.4',
-                'message' => 'The route "frontend.payone.payolution.invoicing.validate" is deprecated and will be removed in Shopware 7.0. Use "payone.payolution.frontend.invoice.validate" instead.'
+                'since'   => '6.4',
+                'message' => 'The route "frontend.payone.payolution.invoicing.validate" is deprecated and will be removed in Shopware 7.0. Use "payone.payolution.frontend.invoice.validate" instead.',
             ],
         ],
         defaults: [ 'XmlHttpRequest' => true ],

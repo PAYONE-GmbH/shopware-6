@@ -25,6 +25,7 @@ class AccountCardPageLoadedEvent extends NestedEvent
         return self::NAME;
     }
 
+    #[\Override]
     public function getContext(): Context
     {
         return $this->context->getContext();

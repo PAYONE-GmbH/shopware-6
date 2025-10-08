@@ -17,6 +17,7 @@ readonly class PaypalPaymentMethodFilter extends DefaultPaymentFilterService
     /**
      * @throws PaymentMethodNotAllowedException
      */
+    #[\Override]
     protected function additionalChecks(
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext,

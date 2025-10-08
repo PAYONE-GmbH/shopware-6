@@ -1,36 +1,70 @@
 {% block payone_ratepay_profile_configurations %}
     <div class="payone-ratepay-profile-configuration">
         <template v-if="profileConfigurations.length > 0">
-            <h3>{{ $tc('payone-payment.general.headlines.ratepayProfileConfigurations') }}</h3>
+            <h3>
+                {{ $t('payone-payment.general.headlines.ratepayProfileConfigurations') }}
+            </h3>
 
             <div class="payone-ratepay-profile-configuration--items">
                 <div v-for="profileConfiguration in profileConfigurations">
-                    <p class="payone-ratepay-profile-configuration--headline">{{ $tc('payone-payment.general.label.shopId') }}: {{ profileConfiguration.shopId }}</p>
+                    <p class="payone-ratepay-profile-configuration--headline">
+                        {{ $t('payone-payment.general.label.shopId') }}:{{ profileConfiguration.shopId }}
+                    </p>
 
                     {% block payone_ratepay_configuration_grid %}
                         <sw-description-list grid="1fr 1fr">
-                            <dt>{{ $tc('payone-payment.general.label.currency') }}</dt>
-                            <dd>{{ profileConfiguration.shopCurrency }}</dd>
+                            <dt>
+                                {{ $t('payone-payment.general.label.currency') }}
+                            </dt>
 
-                            <dt>{{ $tc('payone-payment.general.label.invoiceCountry') }}</dt>
-                            <dd>{{ profileConfiguration.invoiceCountry }}</dd>
+                            <dd>
+                                {{ profileConfiguration.shopCurrency }}
+                            </dd>
 
-                            <dt>{{ $tc('payone-payment.general.label.shippingCountry') }}</dt>
-                            <dd>{{ profileConfiguration.shippingCountry }}</dd>
+                            <dt>
+                                {{ $t('payone-payment.general.label.invoiceCountry') }}
+                            </dt>
 
-                            <dt>{{ $tc('payone-payment.general.label.minBasket') }}</dt>
-                            <dd>{{ profileConfiguration.minBasket }}</dd>
+                            <dd>
+                                {{ profileConfiguration.invoiceCountry }}
+                            </dd>
 
-                            <dt>{{ $tc('payone-payment.general.label.maxBasket') }}</dt>
-                            <dd>{{ profileConfiguration.maxBasket }}</dd>
+                            <dt>
+                                {{ $t('payone-payment.general.label.shippingCountry') }}
+                            </dt>
+
+                            <dd>
+                                {{ profileConfiguration.shippingCountry }}
+                            </dd>
+
+                            <dt>
+                                {{ $t('payone-payment.general.label.minBasket') }}
+                            </dt>
+
+                            <dd>
+                                {{ profileConfiguration.minBasket }}
+                            </dd>
+
+                            <dt>
+                                {{ $t('payone-payment.general.label.maxBasket') }}
+                            </dt>
+
+                            <dd>
+                                {{ profileConfiguration.maxBasket }}
+                            </dd>
                         </sw-description-list>
                     {% endblock %}
                 </div>
             </div>
         </template>
 
-        <sw-alert variant="info" appearance="default" :showIcon="true" :closable="false">
-            <span v-html="$tc('payone-payment.general.label.reloadConfigInfo')"></span>
-        </sw-alert>
+        <mt-banner
+            variant="info"
+            appearance="default"
+            :showIcon="true"
+            :closable="false"
+        >
+            <span v-html="$t('payone-payment.general.label.reloadConfigInfo')"></span>
+        </mt-banner>
     </div>
 {% endblock %}

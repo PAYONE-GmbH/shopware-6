@@ -80,6 +80,7 @@ class CustomFieldInstaller implements InstallerInterface
         ];
     }
 
+    #[\Override]
     public function install(InstallContext $context): void
     {
         foreach ($this->customFieldSets as $customFieldSet) {
@@ -90,6 +91,7 @@ class CustomFieldInstaller implements InstallerInterface
         }
     }
 
+    #[\Override]
     public function update(UpdateContext $context): void
     {
         foreach ($this->customFieldSets as $customFieldSet) {
@@ -100,6 +102,7 @@ class CustomFieldInstaller implements InstallerInterface
         }
     }
 
+    #[\Override]
     public function uninstall(UninstallContext $context): void
     {
         foreach ($this->customFieldSets as $customFieldSet) {
@@ -110,6 +113,7 @@ class CustomFieldInstaller implements InstallerInterface
         }
     }
 
+    #[\Override]
     public function activate(ActivateContext $context): void
     {
         foreach ($this->customFieldSets as $customFieldSet) {
@@ -120,6 +124,7 @@ class CustomFieldInstaller implements InstallerInterface
         }
     }
 
+    #[\Override]
     public function deactivate(DeactivateContext $context): void
     {
         foreach ($this->customFieldSets as $customFieldSet) {

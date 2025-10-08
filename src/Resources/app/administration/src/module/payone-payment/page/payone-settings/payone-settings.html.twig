@@ -1,178 +1,241 @@
 {% block payone_payment %}
-<sw-page class="payone-payment">
-    {% block payone_payment_header %}
-    <template #smart-bar-header>
-        <h2>
-            {{ $tc('sw-settings.index.title') }}
-            <sw-icon name="regular-chevron-right-xs" small></sw-icon>
-            {{ $tc('payone-payment.title') }}
-        </h2>
-    </template>
-    {% endblock %}
-
-    {% block payone_payment_actions %}
-    <template #smart-bar-actions>
-        {% block payone_payment_settings_actions_feedback %}
-        <sw-button
-                @click="isSupportModalOpen = true"
-                :disabled="false"
-                variant="ghost"
-                :square="false"
-                :block="false"
-                :isLoading="false">
-            {{ $tc('payone-payment.supportModal.menuButton') }}
-        </sw-button>
+    <sw-page class="payone-payment">
+        {% block payone_payment_header %}
+            <template #smart-bar-header>
+                <h2>
+                    {{ $t('sw-settings.index.title') }}
+                    <mt-icon
+                        name="regular-chevron-right-xs"
+                        size="16px"
+                    ></mt-icon>
+                    {{ $t('payone-payment.title') }}
+                </h2>
+            </template>
         {% endblock %}
 
-        {% block payone_payment_settings_actions_notification_forward_target %}
-            <sw-button
-                :routerLink="{ name: 'payone.notification.target.list' }"
-                :disabled="false"
-                variant="ghost"
-                :square="false"
-                :block="false"
-                :isLoading="false"
-                v-if="acl.can('payone_payment_notification_target:read')"
-            >
-                {{ $tc('payonePayment.notificationTarget.module.buttonTitle') }}
-            </sw-button>
+        {% block payone_payment_actions %}
+            <template #smart-bar-actions>
+                {% block payone_payment_settings_actions_feedback %}
+                    <mt-button
+                        @click="isSupportModalOpen = true"
+                        :disabled="false"
+                        :square="false"
+                        :block="false"
+                        :isLoading="false"
+                        variant="primary"
+                        size="default"
+                        ghost
+                    >
+                        {{ $t('payone-payment.supportModal.menuButton') }}
+                    </mt-button>
+                {% endblock %}
+
+                {% block payone_payment_settings_actions_notification_forward_target %}
+                    <mt-button
+                        @click="$router.push({ name: 'payone.notification.target.list' })"
+                        :disabled="false"
+                        :square="false"
+                        :block="false"
+                        :isLoading="false"
+                        variant="secondary"
+                        size="default"
+                        v-if="acl.can('payone_payment_notification_target:read')"
+                        ghost
+                    >
+                        {{ $t('payonePayment.notificationTarget.module.buttonTitle') }}
+                    </mt-button>
+                {% endblock %}
+
+                {% block payone_payment_settings_actions_test %}
+                    <sw-button-process
+                        @click="onTest"
+                        :isLoading="isTesting"
+                        :processSuccess="isTestSuccessful"
+                        :disabled="isLoading"
+                    >
+                        {{ $t('payone-payment.settingsForm.test') }}
+                    </sw-button-process>
+                {% endblock %}
+
+                {% block payone_payment_settings_actions_save %}
+                    <sw-button-process
+                        class="sw-settings-login-registration__save-action"
+                        :isLoading="isLoading"
+                        :processSuccess="isSaveSuccessful"
+                        :disabled="isLoading || isTesting"
+                        variant="primary"
+                        @process-finish="saveFinish"
+                        @click="onSave"
+                    >
+                        {{ $t('payone-payment.settingsForm.save') }}
+                    </sw-button-process>
+                {% endblock %}
+            </template>
         {% endblock %}
 
-        {% block payone_payment_settings_actions_test %}
-        <sw-button-process @click="onTest"
-                           :isLoading="isTesting"
-                           :processSuccess="isTestSuccessful"
-                           :disabled="isLoading">
-            {{ $tc('payone-payment.settingsForm.test') }}
-        </sw-button-process>
+        {% block payone_payment_settings_content %}
+            <template #content>
+                <sw-modal
+                    v-if="isSupportModalOpen"
+                    @modal-close="isSupportModalOpen = false"
+                    :title="$t('payone-payment.supportModal.title')"
+                    class="payone-feedback sw-modal--large"
+                >
+                    <sw-container columns="1fr 1fr 1fr 1fr">
+                        <div class="payone-feedback__col">
+                            <div class="payone-feedback__text">
+                                <div class="payone-feedback__icon">
+                                    <mt-icon
+                                        name="regular-file-text"
+                                        size="32px"
+                                    ></mt-icon>
+                                </div>
+
+                                <p class="payone-feedback__desc">
+                                    {{ $t('payone-payment.supportModal.documentation.description') }}
+                                </p>
+                            </div>
+
+                            <mt-button
+                                :disabled="false"
+                                variant="primary"
+                                :square="false"
+                                :block="false"
+                                :isLoading="false"
+                                link="https://docs.payone.com/display/public/INT/Shopware+6+Plugin"
+                            >
+                                {{ $t('payone-payment.supportModal.documentation.button') }}
+                            </mt-button>
+                        </div>
+
+                        <div class="payone-feedback__col">
+                            <div class="payone-feedback__text">
+                                <div class="payone-feedback__icon">
+                                    <mt-icon
+                                        name="regular-headset"
+                                        size="32px"
+                                    ></mt-icon>
+                                </div>
+                                <p class="payone-feedback__desc">
+                                    {{ $t('payone-payment.supportModal.support.description') }}
+                                </p>
+                            </div>
+
+                            <mt-button
+                                :disabled="false"
+                                variant="primary"
+                                :square="false"
+                                :block="false"
+                                :isLoading="false"
+                                link="mailto:tech.support@payone.com"
+                            >
+                                {{ $t('payone-payment.supportModal.support.button') }}
+                            </mt-button>
+                        </div>
+
+                        <div class="payone-feedback__col">
+                            <div class="payone-feedback__text">
+                                <div class="payone-feedback__icon">
+                                    <mt-icon
+                                        name="regular-code"
+                                        size="32px"
+                                    ></mt-icon>
+                                </div>
+
+                                <p class="payone-feedback__desc">
+                                    {{ $t('payone-payment.supportModal.repository.description') }}
+                                </p>
+                            </div>
+
+                            <mt-button
+                                :disabled="false"
+                                variant="primary"
+                                :square="false"
+                                :block="false"
+                                :isLoading="false"
+                                link="https://github.com/PAYONE-GmbH/shopware-6"
+                            >
+                                {{ $t('payone-payment.supportModal.repository.button') }}
+                            </mt-button>
+                        </div>
+
+                        <div class="payone-feedback__col">
+                            <div class="payone-feedback__text">
+                                <div class="payone-feedback__icon">
+                                    <mt-icon
+                                        name="regular-fingerprint"
+                                        size="32px"
+                                    ></mt-icon>
+                                </div>
+
+                                <p class="payone-feedback__desc">
+                                    {{ $t('payone-payment.supportModal.testdata.description') }}
+                                </p>
+                            </div>
+
+                            <mt-button
+                                :disabled="false"
+                                variant="primary"
+                                :square="false"
+                                :block="false"
+                                :isLoading="false"
+                                link="https://www.payone.com/DE-de/kampagne/ecom-testaccount"
+                            >
+                                {{ $t('payone-payment.supportModal.testdata.button') }}
+                            </mt-button>
+                        </div>
+                    </sw-container>
+                </sw-modal>
+
+                <sw-card-view>
+                    <payone-payment-settings
+                        class="payone-config__wrapper"
+                        ref="systemConfig"
+                        sales-channel-switchable
+                        inherit
+                        domain="PayonePayment.settings"
+                    >
+                        <template #beforeElements="{card, config}">
+                            <div
+                                v-if="card.setShowFields !== undefined"
+                                class="payone-config__collapsible-container"
+                                v-bind:class="{'collapsed': !card.showFields}"
+                            >
+                                <a
+                                    class="payone-config__collapsible-handle"
+                                    @click="card.setShowFields(!card.showFields)"
+                                >
+                                    <mt-icon
+                                        size="16px"
+                                        v-if="!card.showFields"
+                                        name="regular-chevron-down-xxs"
+                                        class="payone-config__collapsible-handle-open"
+                                    ></mt-icon>
+
+                                    <mt-icon
+                                        size="16px"
+                                        v-if="card.showFields"
+                                        name="regular-chevron-up-xxs"
+                                        class="payone-config__collapsible-handle-close"
+                                    ></mt-icon>
+                                </a>
+                            </div>
+
+                            <mt-banner
+                                v-if="card.showFields && card.name === 'payment_apple_pay' && !isApplePayCertConfigured"
+                                variant="info"
+                                appearance="default"
+                                :showIcon="true"
+                                :closable="false"
+                            >
+                                <span
+                                    v-html="$t('payone-payment.applePay.cert.notification')"
+                                ></span>
+                            </mt-banner>
+                        </template>
+                    </payone-payment-settings>
+                </sw-card-view>
+            </template>
         {% endblock %}
-
-        {% block payone_payment_settings_actions_save %}
-        <sw-button-process
-                class="sw-settings-login-registration__save-action"
-                :isLoading="isLoading"
-                :processSuccess="isSaveSuccessful"
-                :disabled="isLoading || isTesting"
-                variant="primary"
-                @process-finish="saveFinish"
-                @click="onSave">
-            {{ $tc('payone-payment.settingsForm.save') }}
-        </sw-button-process>
-        {% endblock %}
-    </template>
-    {% endblock %}
-
-    {% block payone_payment_settings_content %}
-    <template #content>
-        <sw-modal
-                v-if="isSupportModalOpen"
-                @modal-close="isSupportModalOpen = false"
-                :title="$tc('payone-payment.supportModal.title')"
-                class="payone-feedback sw-modal--large">
-            <sw-container columns="1fr 1fr 1fr 1fr">
-                <div class="payone-feedback__col">
-                    <div class="payone-feedback__text">
-                        <div class="payone-feedback__icon">
-                            <sw-icon name="regular-file-text" large="true"></sw-icon>
-                        </div>
-                        <p class="payone-feedback__desc">
-                            {{ $tc('payone-payment.supportModal.documentation.description') }}
-                        </p>
-                    </div>
-                    <sw-button
-                            :disabled="false"
-                            variant="primary"
-                            :square="false"
-                            :block="false"
-                            :isLoading="false"
-                            link="https://docs.payone.com/display/public/INT/Shopware+6+Plugin">
-                        {{ $tc('payone-payment.supportModal.documentation.button') }}
-                    </sw-button>
-                </div>
-                <div class="payone-feedback__col">
-                    <div class="payone-feedback__text">
-                        <div class="payone-feedback__icon">
-                            <sw-icon name="regular-headset" large="true"></sw-icon>
-                        </div>
-                        <p class="payone-feedback__desc">
-                            {{ $tc('payone-payment.supportModal.support.description') }}
-                        </p>
-                    </div>
-                    <sw-button
-                            :disabled="false"
-                            variant="primary"
-                            :square="false"
-                            :block="false"
-                            :isLoading="false"
-                            link="mailto:tech.support@payone.com">
-                        {{ $tc('payone-payment.supportModal.support.button') }}
-                    </sw-button>
-                </div>
-                <div class="payone-feedback__col">
-                    <div class="payone-feedback__text">
-                        <div class="payone-feedback__icon">
-                            <sw-icon name="regular-code" large="true"></sw-icon>
-                        </div>
-                        <p class="payone-feedback__desc">
-                            {{ $tc('payone-payment.supportModal.repository.description') }}
-                        </p>
-                    </div>
-                    <sw-button
-                            :disabled="false"
-                            variant="primary"
-                            :square="false"
-                            :block="false"
-                            :isLoading="false"
-                            link="https://github.com/PAYONE-GmbH/shopware-6">
-                        {{ $tc('payone-payment.supportModal.repository.button') }}
-                    </sw-button>
-                </div>
-                <div class="payone-feedback__col">
-                    <div class="payone-feedback__text">
-                        <div class="payone-feedback__icon">
-                            <sw-icon name="regular-fingerprint" large="true"></sw-icon>
-                        </div>
-                        <p class="payone-feedback__desc">
-                            {{ $tc('payone-payment.supportModal.testdata.description') }}
-                        </p>
-                    </div>
-                    <sw-button
-                            :disabled="false"
-                            variant="primary"
-                            :square="false"
-                            :block="false"
-                            :isLoading="false"
-                            link="https://www.payone.com/DE-de/kampagne/ecom-testaccount">
-                        {{ $tc('payone-payment.supportModal.testdata.button') }}
-                    </sw-button>
-                </div>
-            </sw-container>
-        </sw-modal>
-
-        <sw-card-view>
-            <payone-payment-settings
-                    class="payone-config__wrapper"
-                    ref="systemConfig"
-                    sales-channel-switchable
-                    inherit
-                    domain="PayonePayment.settings">
-
-                <template #beforeElements="{card, config}">
-                    <div v-if="card.setShowFields !== undefined" class="payone-config__collapsible-container" v-bind:class="{'collapsed': !card.showFields}" >
-                        <a class="payone-config__collapsible-handle" @click="card.setShowFields(!card.showFields)">
-                            <sw-icon small v-if="!card.showFields" name="regular-chevron-down-xxs" class="payone-config__collapsible-handle-open"></sw-icon>
-                            <sw-icon small v-if="card.showFields" name="regular-chevron-up-xxs" class="payone-config__collapsible-handle-close"></sw-icon>
-                        </a>
-                    </div>
-
-                    <sw-alert v-if="card.showFields && card.name === 'payment_apple_pay' && !isApplePayCertConfigured"
-                              variant="info" appearance="default" :showIcon="true" :closable="false">
-                        <span v-html="$tc('payone-payment.applePay.cert.notification')"></span>
-                    </sw-alert>
-                </template>
-            </payone-payment-settings>
-        </sw-card-view>
-    </template>
-    {% endblock %}
-</sw-page>
+    </sw-page>
 {% endblock %}

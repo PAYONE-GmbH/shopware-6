@@ -81,21 +81,25 @@ class StandardPaymentHandler extends AbstractPaymentHandler
         $this->stateHandler         = $stateHandler;
     }
 
+    #[\Override]
     public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
     {
         return PaymentHandlerType::REFUND === $type;
     }
 
+    #[\Override]
     public function getConfigKeyPrefix(): string
     {
         return StandardPaymentMethod::getConfigurationPrefix();
     }
 
+    #[\Override]
     public function getDefaultAuthorizationMethod(): string
     {
         return RequestActionEnum::AUTHORIZE->value;
     }
 
+    #[\Override]
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (self::isNeverCapturable($payoneTransActionData)) {
@@ -114,6 +118,7 @@ class StandardPaymentHandler extends AbstractPaymentHandler
     /**
      * @throws PayoneRequestException
      */
+    #[\Override]
     public function validateRequestData(RequestDataBag $dataBag): void
     {
         $bankGroup = $dataBag->get('epsBankGroup');
@@ -123,6 +128,7 @@ class StandardPaymentHandler extends AbstractPaymentHandler
         }
     }
 
+    #[\Override]
     public function getPaymentMethodUuid(): string
     {
         return StandardPaymentMethod::getId();

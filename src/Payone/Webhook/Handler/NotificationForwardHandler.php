@@ -24,6 +24,7 @@ readonly class NotificationForwardHandler implements WebhookHandlerInterface
     ) {
     }
 
+    #[\Override]
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool
     {
         if (\array_key_exists('txaction', $data)) {
@@ -33,6 +34,7 @@ readonly class NotificationForwardHandler implements WebhookHandlerInterface
         return false;
     }
 
+    #[\Override]
     public function process(SalesChannelContext $salesChannelContext, Request $request): void
     {
         $paymentTransactionId = $this->getPaymentTransactionId($request->request->getInt('txid'), $salesChannelContext);

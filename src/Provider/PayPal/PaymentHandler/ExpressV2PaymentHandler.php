@@ -51,26 +51,31 @@ class ExpressV2PaymentHandler extends AbstractPaymentHandler implements ExpressC
         );
     }
 
+    #[\Override]
     public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
     {
         return PaymentHandlerType::REFUND === $type;
     }
 
+    #[\Override]
     public function getConfigKeyPrefix(): string
     {
         return ExpressV2PaymentMethod::getConfigurationPrefix();
     }
 
+    #[\Override]
     public function getDefaultAuthorizationMethod(): string
     {
         return RequestActionEnum::PREAUTHORIZE->value;
     }
 
+    #[\Override]
     public function getPaymentMethodUuid(): string
     {
         return ExpressV2PaymentMethod::getId();
     }
 
+    #[\Override]
     public function getExpressCheckoutSessionEnricherChains(): ExpressCheckoutSessionEnricherChainsDto
     {
         return $this->expressCheckoutSessionEnricherChains;

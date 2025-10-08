@@ -24,21 +24,25 @@ class PayonePaymentWebhookLogDefinition extends EntityDefinition
 {
     final public const ENTITY_NAME = 'payone_payment_webhook_log';
 
+    #[\Override]
     public function getEntityName(): string
     {
         return self::ENTITY_NAME;
     }
 
+    #[\Override]
     public function getCollectionClass(): string
     {
         return PayonePaymentWebhookLogCollection::class;
     }
 
+    #[\Override]
     public function getEntityClass(): string
     {
         return PayonePaymentWebhookLogEntity::class;
     }
 
+    #[\Override]
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([

@@ -9,7 +9,6 @@ use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
-use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -25,17 +24,17 @@ class CheckoutConfirmTrustlyEventListener implements EventSubscriberInterface
         'DE', 'DK', 'EE', 'ES', 'FI', 'IT', 'MT', 'NL', 'NO', 'PL', 'SE',
     ];
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hideTrustlyForDisallowedCountryCustomers',
-            AccountPaymentMethodPageLoadedEvent::class => 'hideTrustlyForDisallowedCountryCustomers',
-            AccountEditOrderPageLoadedEvent::class     => 'hideTrustlyForDisallowedCountryCustomers',
+            CheckoutConfirmPageLoadedEvent::class  => 'hideTrustlyForDisallowedCountryCustomers',
+            AccountEditOrderPageLoadedEvent::class => 'hideTrustlyForDisallowedCountryCustomers',
         ];
     }
 
     public function hideTrustlyForDisallowedCountryCustomers(
-        AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event,
+        AccountEditOrderPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event,
     ): void {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 

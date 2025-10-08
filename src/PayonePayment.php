@@ -36,6 +36,7 @@ class PayonePayment extends Plugin
 {
     final public const PLUGIN_NAME = 'PayonePayment';
 
+    #[\Override]
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
@@ -124,6 +125,7 @@ class PayonePayment extends Plugin
         );
     }
 
+    #[\Override]
     public function install(InstallContext $installContext): void
     {
         $this->getConfigInstaller()->install($installContext);
@@ -132,6 +134,7 @@ class PayonePayment extends Plugin
         $this->getRuleInstallerSecureInvoice()->install($installContext);
     }
 
+    #[\Override]
     public function update(UpdateContext $updateContext): void
     {
         $this->getConfigInstaller()->update($updateContext);
@@ -140,11 +143,13 @@ class PayonePayment extends Plugin
         $this->getRuleInstallerSecureInvoice()->update($updateContext);
     }
 
+    #[\Override]
     public function postUpdate(UpdateContext $updateContext): void
     {
         $this->getCustomFieldInstaller()->cleanup($updateContext);
     }
 
+    #[\Override]
     public function activate(ActivateContext $activateContext): void
     {
         $this->getConfigInstaller()->activate($activateContext);
@@ -153,6 +158,7 @@ class PayonePayment extends Plugin
         $this->getRuleInstallerSecureInvoice()->activate($activateContext);
     }
 
+    #[\Override]
     public function deactivate(DeactivateContext $deactivateContext): void
     {
         $this->getConfigInstaller()->deactivate($deactivateContext);
@@ -161,6 +167,7 @@ class PayonePayment extends Plugin
         $this->getRuleInstallerSecureInvoice()->deactivate($deactivateContext);
     }
 
+    #[\Override]
     public function uninstall(UninstallContext $uninstallContext): void
     {
         if (!$this->container instanceof ContainerInterface) {
@@ -191,6 +198,7 @@ class PayonePayment extends Plugin
         $connection->executeStatement('DROP TABLE IF EXISTS payone_payment_webhook_log');
     }
 
+    #[\Override]
     public function executeComposerCommands(): bool
     {
         return true;

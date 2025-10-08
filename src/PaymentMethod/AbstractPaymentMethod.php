@@ -27,41 +27,49 @@ abstract class AbstractPaymentMethod implements PaymentMethodInterface
     /**
      * @inheritdoc
      */
+    #[\Override]
     final public function getPaymentHandlerClassName(): string
     {
         return $this->paymentHandlerClassName;
     }
 
+    #[\Override]
     final public function getName(): string
     {
         return $this->name;
     }
 
+    #[\Override]
     final public function getAdministrationLabel(): array|string|null
     {
         return $this->administrationLabel;
     }
 
+    #[\Override]
     final public function getDescription(): string
     {
         return $this->description;
     }
 
+    #[\Override]
     final public function getTranslations(): array
     {
         return $this->translations;
     }
 
+    #[\Override]
     final public function getPosition(): int
     {
         return $this->position;
     }
 
+    #[\Override]
     final public function getTemplate(): ?string
     {
         return $this->template;
     }
 
+    #[\Override]
     public function isAfterOrderPayment(): bool
     {
         return $this->afterOrderPayment;

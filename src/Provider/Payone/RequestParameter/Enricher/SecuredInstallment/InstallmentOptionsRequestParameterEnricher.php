@@ -24,6 +24,7 @@ readonly class InstallmentOptionsRequestParameterEnricher implements RequestPara
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $currency = $this->orderLoaderService->getOrderCurrency(null, $arguments->salesChannelContext->getContext());

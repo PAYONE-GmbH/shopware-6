@@ -19,6 +19,7 @@ readonly class PreventNoLongerSupportedPaymentMetdhodActivation implements Event
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [
@@ -39,8 +40,8 @@ readonly class PreventNoLongerSupportedPaymentMetdhodActivation implements Event
 
             if (
                 !isset($payload['active'])
-                || $payload['active'] === 0
-                || $payload['active'] === false
+                || 0 === $payload['active']
+                || false === $payload['active']
             ) {
                 continue;
             }

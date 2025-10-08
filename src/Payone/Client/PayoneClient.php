@@ -26,6 +26,7 @@ readonly class PayoneClient implements PayoneClientInterface
     /**
      * @throws PayoneRequestException
      */
+    #[\Override]
     public function request(array $parameters, bool $json = true): array
     {
         $curl = \curl_init();

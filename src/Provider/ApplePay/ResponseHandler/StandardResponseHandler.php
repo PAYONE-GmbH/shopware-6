@@ -27,6 +27,7 @@ class StandardResponseHandler implements ResponseHandlerInterface
         $this->transactionDataHandler = $transactionDataHandler;
     }
 
+    #[\Override]
     public function handle(
         string $orderTransactionId,
         PaymentTransaction $paymentTransaction,

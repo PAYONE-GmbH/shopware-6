@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Migration\MigrationStep;
  */
 class Migration1758717304DeleteStoredCreditCards extends MigrationStep
 {
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_758_717_304;
@@ -21,11 +22,13 @@ class Migration1758717304DeleteStoredCreditCards extends MigrationStep
     /**
      * @throws Exception
      */
+    #[\Override]
     public function update(Connection $connection): void
     {
         $this->deleteCreditCardData($connection);
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
     }

@@ -32,7 +32,7 @@ class NotificationForwardHandler
 
     public function __invoke(NotificationForwardMessage $message): void
     {
-        $target = $this->forwardTargetRepository->search(new Criteria([$message->getNotificationTargetId()]), Context::createDefaultContext())->first();
+        $target = $this->forwardTargetRepository->search(new Criteria([$message->getNotificationTargetId()]), Context::createCLIContext())->first();
         if (!$target instanceof PayonePaymentNotificationTargetEntity) {
             // should never occur - just to be safe.
             return;
@@ -124,6 +124,6 @@ class NotificationForwardHandler
             'response'             => $responseContent,
             'transactionId'        => $message->getPaymentTransactionId(),
             'content'              => json_encode($message->getRequestData()),
-        ]], Context::createDefaultContext());
+        ]], Context::createCLIContext());
     }
 }

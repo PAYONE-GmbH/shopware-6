@@ -46,6 +46,7 @@ readonly class PaymentHandlerPayExecutor implements PaymentHandlerPayExecutorInt
     ) {
     }
 
+    #[\Override]
     public function pay(
         PaymentHandlerInterface $paymentHandler,
         Request $request,

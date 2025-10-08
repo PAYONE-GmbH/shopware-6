@@ -47,10 +47,10 @@ class CalculateController extends StorefrontController
         path: '/payone/installment/calculation/{orderId}',
         name: 'frontend.payone.payolution.installment.calculation',
         options: [
-            'seo' => false,
+            'seo'         => false,
             'deprecation' => [
-                'since' => '6.4',
-                'message' => 'The route "frontend.payone.payolution.installment.calculation" is deprecated and will be removed in Shopware 7.0. Use "payone.payolution.frontend.installment.calculate" instead.'
+                'since'   => '6.4',
+                'message' => 'The route "frontend.payone.payolution.installment.calculation" is deprecated and will be removed in Shopware 7.0. Use "payone.payolution.frontend.installment.calculate" instead.',
             ],
         ],
         defaults: [ 'XmlHttpRequest' => true ],

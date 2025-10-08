@@ -22,6 +22,7 @@ readonly class OrderValidationEventListener implements EventSubscriberInterface
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

@@ -12,11 +12,13 @@ class Migration1710545921NotificationForwardIncreaseResponseColumn extends Migra
 {
     use InheritanceUpdaterTrait;
 
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_710_545_921;
     }
 
+    #[\Override]
     public function update(Connection $connection): void
     {
         $sql = 'ALTER TABLE `payone_payment_notification_forward` CHANGE `response` `response` LONGTEXT DEFAULT NULL;';
@@ -24,6 +26,7 @@ class Migration1710545921NotificationForwardIncreaseResponseColumn extends Migra
         $connection->executeStatement($sql);
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
         // implement update destructive

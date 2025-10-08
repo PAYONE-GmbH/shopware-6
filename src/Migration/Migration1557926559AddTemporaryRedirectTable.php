@@ -9,11 +9,13 @@ use Shopware\Core\Framework\Migration\MigrationStep;
 
 class Migration1557926559AddTemporaryRedirectTable extends MigrationStep
 {
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_557_926_559;
     }
 
+    #[\Override]
     public function update(Connection $connection): void
     {
         $sql = '
@@ -27,6 +29,7 @@ class Migration1557926559AddTemporaryRedirectTable extends MigrationStep
         $connection->executeStatement($sql);
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
         // implement update destructive

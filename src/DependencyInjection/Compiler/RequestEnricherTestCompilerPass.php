@@ -12,6 +12,7 @@ class RequestEnricherTestCompilerPass implements CompilerPassInterface
 {
     use MergeRequestParameterEnricherCompilerPassTrait;
 
+    #[\Override]
     public function process(ContainerBuilder $container): void
     {
         $this->merge($container,

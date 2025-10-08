@@ -9,8 +9,7 @@ use PayonePayment\PaymentMethod\ExpressCheckoutPaymentMethodAwareInterface;
 use PayonePayment\PaymentMethod\ExpressCheckoutPaymentMethodTrait;
 use PayonePayment\Provider\PayPal\PaymentHandler\ExpressV2PaymentHandler;
 
-class ExpressV2PaymentMethod extends AbstractPaymentMethod implements
-    ExpressCheckoutPaymentMethodAwareInterface
+class ExpressV2PaymentMethod extends AbstractPaymentMethod implements ExpressCheckoutPaymentMethodAwareInterface
 {
     use ExpressCheckoutPaymentMethodTrait;
 
@@ -43,16 +42,19 @@ class ExpressV2PaymentMethod extends AbstractPaymentMethod implements
         );
     }
 
+    #[\Override]
     public static function getId(): string
     {
         return self::UUID;
     }
 
+    #[\Override]
     public static function getTechnicalName(): string
     {
         return self::TECHNICAL_NAME;
     }
 
+    #[\Override]
     public static function getConfigurationPrefix(): string
     {
         return self::CONFIGURATION_PREFIX;

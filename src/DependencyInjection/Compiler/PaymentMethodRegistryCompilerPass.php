@@ -13,6 +13,7 @@ use Symfony\Component\Filesystem\Path;
 
 class PaymentMethodRegistryCompilerPass implements CompilerPassInterface
 {
+    #[\Override]
     public function process(ContainerBuilder $container): void
     {
         $definition     = $container->getDefinition(PaymentMethodRegistry::class);

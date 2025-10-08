@@ -31,6 +31,7 @@ readonly class CreateCheckoutSessionParameterEnricher implements RequestParamete
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $salesChannelContext = $arguments->salesChannelContext;

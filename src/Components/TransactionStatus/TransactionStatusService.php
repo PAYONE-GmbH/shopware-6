@@ -40,6 +40,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
     ) {
     }
 
+    #[\Override]
     public function transitionByConfigMapping(
         SalesChannelContext $salesChannelContext,
         PaymentTransaction $paymentTransaction,
@@ -105,6 +106,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         );
     }
 
+    #[\Override]
     public function transitionByName(
         Context $context,
         string $transactionId,
@@ -170,7 +172,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             [
                 TransactionActionEnum::DEBIT->value,
                 TransactionActionEnum::CAPTURE->value,
-                TransactionActionEnum::INVOICE->value
+                TransactionActionEnum::INVOICE->value,
             ],
             true,
         );
@@ -274,8 +276,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isFailedRedirect(array $firstTransaction, array $transactionData): bool
     {
-        return
-            \array_key_exists('response', $firstTransaction)
+        return \array_key_exists('response', $firstTransaction)
             && \array_key_exists('status', $firstTransaction['response'])
             && $firstTransaction['response']['status'] === \strtoupper(TransactionActionEnum::REDIRECT->value)
             && TransactionActionEnum::FAILED->value === \strtolower((string) $transactionData['txaction'])

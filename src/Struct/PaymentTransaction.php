@@ -8,8 +8,6 @@ use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDa
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Framework\Struct\Struct;
 
 /**
@@ -60,49 +58,6 @@ class PaymentTransaction extends Struct
 
         $transactionStruct->payoneTransactionData = null !== $transactionData ? $transactionData->jsonSerialize() : [];
         $transactionStruct->orderTransaction      = $transaction;
-
-        return $transactionStruct;
-    }
-
-    /**
-     * @deprecated
-     */
-    public static function fromAsyncPaymentTransactionStruct(
-        AsyncPaymentTransactionStruct $paymentTransaction,
-        OrderEntity $orderEntity,
-    ): self {
-        $transactionStruct        = new self();
-        $transactionStruct->order = $orderEntity;
-
-        /** @var PayonePaymentOrderTransactionDataEntity|null $transactionData */
-        $transactionData = $paymentTransaction->getOrderTransaction()
-            ->getExtension(PayonePaymentOrderTransactionExtension::NAME)
-        ;
-
-        $transactionStruct->payoneTransactionData = null !== $transactionData ? $transactionData->jsonSerialize() : [];
-        $transactionStruct->orderTransaction      = $paymentTransaction->getOrderTransaction();
-        $transactionStruct->returnUrl             = $paymentTransaction->getReturnUrl();
-
-        return $transactionStruct;
-    }
-
-    /**
-     * @deprecated
-     */
-    public static function fromSyncPaymentTransactionStruct(
-        SyncPaymentTransactionStruct $paymentTransaction,
-        OrderEntity $orderEntity,
-    ): self {
-        $transactionStruct        = new self();
-        $transactionStruct->order = $orderEntity;
-
-        /** @var PayonePaymentOrderTransactionDataEntity|null $transactionData */
-        $transactionData = $paymentTransaction->getOrderTransaction()
-            ->getExtension(PayonePaymentOrderTransactionExtension::NAME)
-        ;
-
-        $transactionStruct->payoneTransactionData = null !== $transactionData ? $transactionData->jsonSerialize() : [];
-        $transactionStruct->orderTransaction      = $paymentTransaction->getOrderTransaction();
 
         return $transactionStruct;
     }

@@ -9,11 +9,13 @@ use Shopware\Core\Framework\Migration\MigrationStep;
 
 class Migration1666770470AddCardTypeToCardTable extends MigrationStep
 {
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_666_770_470;
     }
 
+    #[\Override]
     public function update(Connection $connection): void
     {
         $sql = 'ALTER TABLE `payone_payment_card` ADD `card_type` VARCHAR(255) NOT NULL;';
@@ -21,6 +23,7 @@ class Migration1666770470AddCardTypeToCardTable extends MigrationStep
         $connection->executeStatement($sql);
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
         // implement update destructive

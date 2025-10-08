@@ -29,6 +29,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
     /**
      * @param FinancialTransactionStruct $arguments
      */
+    #[\Override]
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         $totalAmount = $arguments->getRequestData()->get('amount');
@@ -111,6 +112,7 @@ class CaptureRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $parameters;
     }
 
+    #[\Override]
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof FinancialTransactionStruct)) {

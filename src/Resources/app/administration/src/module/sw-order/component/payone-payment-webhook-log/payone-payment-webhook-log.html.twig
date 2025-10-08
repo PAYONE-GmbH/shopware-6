@@ -1,15 +1,15 @@
 {% block payone_payment_webhook_log %}
-    <sw-card
-            class="payone-payment-webhook-log-card"
-            position-identifier="payone-payment-webhook-log-card"
-            :title="$tc('sw-order.payone-payment.webhookLog.cardTitle')"
+    <mt-card
+        class="payone-payment-webhook-log-card"
+        position-identifier="payone-payment-webhook-log-card"
+        :title="$t('sw-order.payone-payment.webhookLog.cardTitle')"
     >
         <sw-data-grid
-                v-if="webhookLogs.length > 0"
-                :showSelection="false"
-                :dataSource="webhookLogs"
-                :columns="webhookLogColumns"
-                :isLoading="isLoading"
+            v-if="webhookLogs.length > 0"
+            :showSelection="false"
+            :dataSource="webhookLogs"
+            :columns="webhookLogColumns"
+            :isLoading="isLoading"
         >
             <template #column-webhookDateTime="{ item }">
                 {{ dateFilter(item.webhookDateTime, { hour: '2-digit', minute: '2-digit' }) }}
@@ -17,26 +17,30 @@
 
             <template #actions="{ item }">
                 <sw-context-menu-item @click="openDetails(item)">
-                    {{ $tc('sw-order.payone-payment.webhookLog.contextMenu.openWebhookDetails') }}
+                    {{ $t('sw-order.payone-payment.webhookLog.contextMenu.openWebhookDetails') }}
                 </sw-context-menu-item>
             </template>
 
             <template #action-modals="{ item }">
                 <sw-modal
-                        v-if="showWebhookDetails"
-                        :title="$tc('sw-order.payone-payment.webhookLog.webhookDetailsModal.title')"
-                        variant="large"
-                        @modal-close="onCloseWebhookModal"
+                    v-if="showWebhookDetails"
+                    :title="$t('sw-order.payone-payment.webhookLog.webhookDetailsModal.title')"
+                    variant="large"
+                    @modal-close="onCloseWebhookModal"
                 >
-                    <sw-button variant="primary" @click="downloadAsTxt(showWebhookDetails, 'webhook', item.transactionId)">
-                        {{ $tc('sw-order.payone-payment.webhookLog.webhookDetailsModal.downloadButton') }}
-                    </sw-button>
+                    <mt-button
+                        variant="primary"
+                        @click="downloadAsTxt(showWebhookDetails, 'webhook', item.transactionId)"
+                    >
+                        {{ $t('sw-order.payone-payment.webhookLog.webhookDetailsModal.downloadButton') }}
+                    </mt-button>
+
                     <sw-data-grid
-                            :showSelection="false"
-                            :showActions="false"
-                            :dataSource="toKeyValueSource(showWebhookDetails)"
-                            :columns="keyValueColumns"
-                            :isLoading="isLoading"
+                        :showSelection="false"
+                        :showActions="false"
+                        :dataSource="toKeyValueSource(showWebhookDetails)"
+                        :columns="keyValueColumns"
+                        :isLoading="isLoading"
                     >
                     </sw-data-grid>
                 </sw-modal>
@@ -44,17 +48,17 @@
         </sw-data-grid>
 
         <sw-empty-state
-                v-else
-                :absolute="false"
-                :title="$tc('sw-order.payone-payment.webhookLog.emptyState.title')"
-                :subline="$tc('sw-order.payone-payment.webhookLog.emptyState.subline')"
+            v-else
+            :absolute="false"
+            :title="$t('sw-order.payone-payment.webhookLog.emptyState.title')"
+            :subline="$t('sw-order.payone-payment.webhookLog.emptyState.subline')"
         >
             <template #icon>
                 <img
-                        :src="assetFilter('/administration/static/img/empty-states/order-empty-state.svg')"
-                        :alt="$tc('sw-order.payone-payment.webhookLog.emptyState.title')"
-                >
+                    :src="assetFilter('/administration/administration/static/img/empty-states/order-empty-state.svg')"
+                    :alt="$t('sw-order.payone-payment.webhookLog.emptyState.title')"
+                />
             </template>
         </sw-empty-state>
-    </sw-card>
+    </mt-card>
 {% endblock %}

@@ -35,7 +35,7 @@ export default {
             return [{
                 property: 'shopId',
                 dataIndex: 'shopId',
-                label: this.$tc('payone-payment.general.label.shopId'),
+                label: this.$t('payone-payment.general.label.shopId'),
                 allowResize: false,
                 inlineEdit: 'string',
                 width: '200px',
@@ -43,14 +43,14 @@ export default {
             }, {
                 property: 'currency',
                 dataIndex: 'currency',
-                label: this.$tc('payone-payment.general.label.currency'),
+                label: this.$t('payone-payment.general.label.currency'),
                 allowResize: false,
                 inlineEdit: 'string',
                 width: '200px',
                 primary: true,
             }, {
                 property: 'error',
-                label: this.$tc('payone-payment.general.label.error'),
+                label: this.$t('payone-payment.general.label.error'),
                 allowResize: false,
                 width: '100px',
                 primary: true,
@@ -76,11 +76,11 @@ export default {
 
     methods: {
         createdComponent() {
-            this.$root.$on('payone-ratepay-profiles-update-result', this.onProfilesUpdateResult);
+            Shopware.Utils.EventBus.on('payone-ratepay-profiles-update-result', this.onProfilesUpdateResult);
         },
 
         destroyedComponent() {
-            this.$root.$off('payone-ratepay-profiles-update-result');
+            Shopware.Utils.EventBus.off('payone-ratepay-profiles-update-result');
         },
 
         onProfilesUpdateResult(result) {

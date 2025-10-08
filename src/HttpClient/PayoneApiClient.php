@@ -29,6 +29,7 @@ class PayoneApiClient implements PayoneApiClientInterface
         $this->serializer = new Serializer([], [ new JsonEncoder() ]);
     }
 
+    #[\Override]
     public function request(array $parameters, bool $expectsJson = true): array
     {
         $bodyStream = $this->streamFactory->createStream(http_build_query($parameters));

@@ -8,7 +8,6 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\PayonePayment;
 use PayonePayment\RequestParameter\AbstractRequestDto;
-use PayonePayment\RequestParameter\PaymentRequestDto;
 use PayonePayment\RequestParameter\RequestParameterEnricherInterface;
 use Shopware\Core\Framework\Plugin\PluginService;
 
@@ -24,6 +23,7 @@ readonly class SystemRequestParameterEnricher implements RequestParameterEnriche
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $context             = $arguments->getContext();

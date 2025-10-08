@@ -4,14 +4,9 @@ declare(strict_types=1);
 
 namespace PayonePayment\Payone\RequestParameter\Builder;
 
-use PayonePayment\PaymentHandler\AbstractKlarnaPaymentHandler;
-use PayonePayment\PaymentHandler\AbstractPostfinancePaymentHandler;
 use PayonePayment\Payone\RequestParameter\Struct\AbstractRequestParameterStruct;
-use PayonePayment\Payone\RequestParameter\Struct\KlarnaCreateSessionStruct;
 use PayonePayment\Payone\RequestParameter\Struct\ManageMandateStruct;
 use PayonePayment\Payone\RequestParameter\Struct\PaymentTransactionStruct;
-use PayonePayment\Payone\RequestParameter\Struct\PayolutionAdditionalActionStruct;
-use PayonePayment\Provider;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -40,6 +35,7 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
     /**
      * @param ManageMandateStruct|PaymentTransactionStruct $arguments
      */
+    #[\Override]
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         $this->validateMethod($arguments, 'getSalesChannelContext');
@@ -86,6 +82,7 @@ class CustomerRequestParameterBuilder extends AbstractRequestParameterBuilder
         return array_filter($personalData);
     }
 
+    #[\Override]
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         return $arguments instanceof ManageMandateStruct;

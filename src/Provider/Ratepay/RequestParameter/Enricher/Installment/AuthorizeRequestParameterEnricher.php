@@ -34,6 +34,7 @@ readonly class AuthorizeRequestParameterEnricher implements RequestParameterEnri
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $requestActionEnum = $this->getRequestActionEnum();
@@ -42,8 +43,8 @@ readonly class AuthorizeRequestParameterEnricher implements RequestParameterEnri
             return [];
         }
 
-        $context             = $arguments->salesChannelContext->getContext();
-        $paymentTransaction  = $arguments->paymentTransaction;
+        $context            = $arguments->salesChannelContext->getContext();
+        $paymentTransaction = $arguments->paymentTransaction;
 
         $order    = $this->orderLoaderService->getOrderById($paymentTransaction->order->getId(), $context, true);
         $currency = $this->orderLoaderService->getOrderCurrency($order, $context);

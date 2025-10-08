@@ -29,6 +29,7 @@ readonly class WebhookProcessor implements WebhookProcessorInterface
         $this->handlers = iterator_to_array($handlers);
     }
 
+    #[\Override]
     public function process(SalesChannelContext $salesChannelContext, Request $request): Response
     {
         $data = $request->request->all();

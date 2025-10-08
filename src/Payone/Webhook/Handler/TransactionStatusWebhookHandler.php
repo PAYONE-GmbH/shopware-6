@@ -20,6 +20,7 @@ readonly class TransactionStatusWebhookHandler implements WebhookHandlerInterfac
     ) {
     }
 
+    #[\Override]
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool
     {
         if (\array_key_exists('txaction', $data)) {
@@ -29,6 +30,7 @@ readonly class TransactionStatusWebhookHandler implements WebhookHandlerInterfac
         return false;
     }
 
+    #[\Override]
     public function process(SalesChannelContext $salesChannelContext, Request $request): void
     {
         $data = $request->request->all();

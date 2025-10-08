@@ -32,6 +32,7 @@ readonly class CheckoutConfirmEventListener implements EventSubscriberInterface
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

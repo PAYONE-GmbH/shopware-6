@@ -18,6 +18,7 @@ readonly class PaymentFilterContextFactory implements PaymentFilterContextFactor
     ) {
     }
 
+    #[\Override]
     public function createContextForOrder(
         OrderEntity $order,
         SalesChannelContext $salesChannelContext,
@@ -33,6 +34,7 @@ readonly class PaymentFilterContextFactory implements PaymentFilterContextFactor
         );
     }
 
+    #[\Override]
     public function createContextForCart(Cart $cart, SalesChannelContext $salesChannelContext): PaymentFilterContext
     {
         $customer = $salesChannelContext->getCustomer();

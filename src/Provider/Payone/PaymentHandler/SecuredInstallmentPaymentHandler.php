@@ -54,21 +54,25 @@ class SecuredInstallmentPaymentHandler extends AbstractPaymentHandler implements
         $this->deviceFingerprintService = $deviceFingerprintService;
     }
 
+    #[\Override]
     public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
     {
         return PaymentHandlerType::REFUND === $type;
     }
 
+    #[\Override]
     public function getConfigKeyPrefix(): string
     {
         return SecuredInstallmentPaymentMethod::getConfigurationPrefix();
     }
 
+    #[\Override]
     public function getDefaultAuthorizationMethod(): string
     {
         return RequestActionEnum::PREAUTHORIZE->value;
     }
 
+    #[\Override]
     public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
         $definitions = $this->getBasicValidationDefinitions($dataBag, $salesChannelContext);
@@ -84,6 +88,7 @@ class SecuredInstallmentPaymentHandler extends AbstractPaymentHandler implements
         return $definitions;
     }
 
+    #[\Override]
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (self::isNeverCapturable($payoneTransActionData)) {
@@ -95,6 +100,7 @@ class SecuredInstallmentPaymentHandler extends AbstractPaymentHandler implements
         ;
     }
 
+    #[\Override]
     public function getPaymentMethodUuid(): string
     {
         return SecuredInstallmentPaymentMethod::getId();

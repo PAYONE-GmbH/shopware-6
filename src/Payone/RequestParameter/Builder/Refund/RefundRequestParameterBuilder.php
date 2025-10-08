@@ -19,6 +19,7 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
     /**
      * @param FinancialTransactionStruct $arguments
      */
+    #[\Override]
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
         $totalAmount = $arguments->getRequestData()->get('amount');
@@ -88,6 +89,7 @@ class RefundRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $parameters;
     }
 
+    #[\Override]
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if (!($arguments instanceof FinancialTransactionStruct)) {

@@ -50,6 +50,7 @@ readonly class KernelEventListener implements EventSubscriberInterface
         $this->serializer = new Serializer(encoders: [ new JsonEncoder() ]);
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

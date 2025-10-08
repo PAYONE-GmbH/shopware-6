@@ -42,21 +42,25 @@ class CardPaymentHandler extends AbstractPaymentHandler
         $this->stateHandler         = $stateHandler;
     }
 
+    #[\Override]
     public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
     {
         return PaymentHandlerType::REFUND === $type;
     }
 
+    #[\Override]
     public function getConfigKeyPrefix(): string
     {
         return CardPaymentMethod::getConfigurationPrefix();
     }
 
+    #[\Override]
     public function getDefaultAuthorizationMethod(): string
     {
         return RequestActionEnum::PREAUTHORIZE->value;
     }
 
+    #[\Override]
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (AuthorizationTypeEnum::PREAUTHORIZATION->value !== $payoneTransActionData['authorizationType']) {
@@ -66,6 +70,7 @@ class CardPaymentHandler extends AbstractPaymentHandler
         return TransactionActionEnum::PAID->value === \strtolower((string) $transactionData['txaction']);
     }
 
+    #[\Override]
     public static function isRefundable(array $transactionData): bool
     {
         if (
@@ -78,6 +83,7 @@ class CardPaymentHandler extends AbstractPaymentHandler
         return TransactionActionEnum::PAID->value === \strtolower((string) $transactionData['txaction']);
     }
 
+    #[\Override]
     public function getPaymentMethodUuid(): string
     {
         return CardPaymentMethod::getId();

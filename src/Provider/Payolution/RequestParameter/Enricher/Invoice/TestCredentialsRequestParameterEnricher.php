@@ -12,11 +12,13 @@ readonly class TestCredentialsRequestParameterEnricher implements TestRequestPar
 {
     use TestCredentialsRequestParameterEnricherTrait;
 
+    #[\Override]
     public function isActive(): bool
     {
         return true;
     }
 
+    #[\Override]
     public function getTestCredentials(): array
     {
         return [
@@ -40,6 +42,7 @@ readonly class TestCredentialsRequestParameterEnricher implements TestRequestPar
         ];
     }
 
+    #[\Override]
     public function getPaymentHandlerIdentifier(): string
     {
         return InvoicePaymentHandler::class;

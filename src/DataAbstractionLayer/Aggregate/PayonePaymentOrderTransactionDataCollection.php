@@ -11,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  */
 class PayonePaymentOrderTransactionDataCollection extends EntityCollection
 {
+    #[\Override]
     public function getExpectedClass(): string
     {
         return PayonePaymentOrderTransactionDataEntity::class;

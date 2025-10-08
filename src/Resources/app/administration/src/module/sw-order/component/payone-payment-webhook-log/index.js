@@ -40,31 +40,31 @@ export default {
             return [
                 {
                     property: 'transactionId',
-                    label: this.$tc('sw-order.payone-payment.webhookLog.columnTitleTransactionId')
+                    label: this.$t('sw-order.payone-payment.webhookLog.columnTitleTransactionId')
                 },
                 {
                     property: 'transactionState',
-                    label: this.$tc('sw-order.payone-payment.webhookLog.columnTitleTransactionState')
+                    label: this.$t('sw-order.payone-payment.webhookLog.columnTitleTransactionState')
                 },
                 {
                     property: 'sequenceNumber',
-                    label: this.$tc('sw-order.payone-payment.webhookLog.columnTitleSequenceNumber')
+                    label: this.$t('sw-order.payone-payment.webhookLog.columnTitleSequenceNumber')
                 },
                 {
                     property: 'clearingType',
-                    label: this.$tc('sw-order.payone-payment.webhookLog.columnTitleClearingType')
+                    label: this.$t('sw-order.payone-payment.webhookLog.columnTitleClearingType')
                 },
                 {
                     property: 'webhookDateTime',
-                    label: this.$tc('sw-order.payone-payment.webhookLog.columnTitleWebhookDateTime')
+                    label: this.$t('sw-order.payone-payment.webhookLog.columnTitleWebhookDateTime')
                 },
             ];
         },
 
         keyValueColumns() {
             return [
-                {property: 'key', label: this.$tc('sw-order.payone-payment.webhookLog.columnTitleKey')},
-                {property: 'value', label: this.$tc('sw-order.payone-payment.webhookLog.columnTitleValue')},
+                {property: 'key', label: this.$t('sw-order.payone-payment.webhookLog.columnTitleKey')},
+                {property: 'value', label: this.$t('sw-order.payone-payment.webhookLog.columnTitleValue')},
             ];
         },
     },

@@ -79,11 +79,11 @@ export default {
 
     methods: {
         createdComponent() {
-            this.$root.$on('payone-ratepay-profiles-update-result', this.onProfilesUpdateResult);
+            Shopware.Utils.EventBus.on('payone-ratepay-profiles-update-result', this.onProfilesUpdateResult);
         },
 
         destroyedComponent() {
-            this.$root.$off('payone-ratepay-profiles-update-result');
+            Shopware.Utils.EventBus.off('payone-ratepay-profiles-update-result');
         },
 
         onProfilesUpdateResult(result) {

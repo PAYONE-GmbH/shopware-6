@@ -9,11 +9,13 @@ use Shopware\Core\Framework\Migration\MigrationStep;
 
 class Migration1686568861TransactionDataTxIdLength extends MigrationStep
 {
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_686_568_861;
     }
 
+    #[\Override]
     public function update(Connection $connection): void
     {
         // reduce max length of transaction-id
@@ -22,6 +24,7 @@ class Migration1686568861TransactionDataTxIdLength extends MigrationStep
         $connection->executeStatement($sql);
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
         // implement update destructive

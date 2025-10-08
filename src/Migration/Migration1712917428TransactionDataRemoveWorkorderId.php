@@ -12,15 +12,18 @@ class Migration1712917428TransactionDataRemoveWorkorderId extends MigrationStep
 {
     use InheritanceUpdaterTrait;
 
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_712_917_428;
     }
 
+    #[\Override]
     public function update(Connection $connection): void
     {
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
         if ($this->columnExists($connection, 'payone_payment_order_transaction_data', 'work_order_id')) {

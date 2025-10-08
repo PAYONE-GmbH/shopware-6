@@ -19,6 +19,7 @@ readonly class ProfileRequestDto extends AbstractRequestDto
         parent::__construct(null, $paymentHandler, $clientApiRequest);
     }
 
+    #[\Override]
     public function getSalesChannelId(): string
     {
         return $this->salesChannelId;

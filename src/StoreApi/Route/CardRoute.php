@@ -22,11 +22,13 @@ class CardRoute extends AbstractCardRoute
     ) {
     }
 
+    #[\Override]
     public function getDecorated(): AbstractCardRoute
     {
         throw new DecorationPatternException(self::class);
     }
 
+    #[\Override]
     #[Route(
         path: '/store-api/payone/account/card',
         name: 'store-api.payone.account.card',
@@ -46,6 +48,7 @@ class CardRoute extends AbstractCardRoute
         return new CardResponse($result);
     }
 
+    #[\Override]
     #[OA\Post(
         path: 'payone/account/deleteCard/{pseudoCardPan}',
         operationId: 'deleteCustomerCard',

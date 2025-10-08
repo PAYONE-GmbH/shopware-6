@@ -24,6 +24,7 @@ readonly class PreCheckRequestParameterEnricher implements RequestParameterEnric
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $dataBag             = $arguments->requestData;

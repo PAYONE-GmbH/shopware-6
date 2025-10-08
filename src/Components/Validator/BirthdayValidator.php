@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class BirthdayValidator extends LessThanOrEqualValidator
 {
+    #[\Override]
     public function validate(mixed $value, Constraint $constraint): void
     {
         if (!$constraint instanceof Birthday) {

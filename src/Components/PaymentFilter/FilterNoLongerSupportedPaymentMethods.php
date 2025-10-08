@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PayonePayment\Components\PaymentFilter;
 
-use PayonePayment\PaymentHandler\PaymentHandlerGroups;
 use PayonePayment\PaymentMethod\NoLongerSupportedPaymentMethodInterface;
 use PayonePayment\PaymentMethod\PaymentMethodRegistry;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
@@ -16,6 +15,7 @@ readonly class FilterNoLongerSupportedPaymentMethods implements PaymentFilterSer
     ) {
     }
 
+    #[\Override]
     public function filterPaymentMethods(
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext,

@@ -8,7 +8,6 @@ use PayonePayment\EventListener\ChecksBillingAddressCountry;
 use PayonePayment\EventListener\ChecksCurrency;
 use PayonePayment\EventListener\RemovesPaymentMethod;
 use PayonePayment\Provider\Paydirekt\PaymentMethod\StandardPaymentMethod;
-use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -24,16 +23,16 @@ class CheckoutConfirmPaydirektEventListener implements EventSubscriberInterface
     use ChecksBillingAddressCountry;
     use RemovesPaymentMethod;
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hidePaydirektForNonDeCustomers',
-            AccountPaymentMethodPageLoadedEvent::class => 'hidePaydirektForNonDeCustomers',
+            CheckoutConfirmPageLoadedEvent::class => 'hidePaydirektForNonDeCustomers',
         ];
     }
 
     public function hidePaydirektForNonDeCustomers(
-        AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event,
+        CheckoutConfirmPageLoadedEvent $event,
     ): void {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 

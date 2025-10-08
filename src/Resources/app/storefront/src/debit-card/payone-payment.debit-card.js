@@ -1,10 +1,9 @@
 /* eslint-disable import/no-unresolved */
 
-import Plugin from 'src/plugin-system/plugin.class';
+const Plugin = window.PluginBaseClass;
 import PseudoModalUtil from 'src/utility/modal-extension/pseudo-modal.util';
 import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
 import ButtonLoadingIndicator from 'src/utility/loading-indicator/button-loading-indicator.util';
-import HttpClient from "src/service/http-client.service";
 
 export default class PayonePaymentDebitCard extends Plugin {
     static options = {
@@ -13,8 +12,6 @@ export default class PayonePaymentDebitCard extends Plugin {
 
     init() {
         this.orderFormDisabled = true;
-
-        this._client = new HttpClient();
 
         document
             .getElementById('confirmOrderForm')
@@ -54,8 +51,17 @@ export default class PayonePaymentDebitCard extends Plugin {
 
         const data = this._getRequestData();
 
-        this._client.abort();
-        this._client.post(this._getManageMandateUrl(), JSON.stringify(data), content => this._openModal(content));
+        fetch(this._getManageMandateUrl(), {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.text())
+            .then((content) => {
+                this._openModal(content);
+            });
     }
 
     _submitForm() {

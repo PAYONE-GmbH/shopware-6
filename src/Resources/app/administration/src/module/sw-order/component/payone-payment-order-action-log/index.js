@@ -49,31 +49,31 @@ export default {
             return [
                 {
                     property: 'transactionId',
-                    label: this.$tc('sw-order.payone-payment.orderActionLog.columnTitleTransactionId')
+                    label: this.$t('sw-order.payone-payment.orderActionLog.columnTitleTransactionId')
                 },
                 {
                     property: 'request',
-                    label: this.$tc('sw-order.payone-payment.orderActionLog.columnTitleRequest')
+                    label: this.$t('sw-order.payone-payment.orderActionLog.columnTitleRequest')
                 },
                 {
                     property: 'response',
-                    label: this.$tc('sw-order.payone-payment.orderActionLog.columnTitleResponse')
+                    label: this.$t('sw-order.payone-payment.orderActionLog.columnTitleResponse')
                 },
                 {
                     property: 'amount',
-                    label: this.$tc('sw-order.payone-payment.orderActionLog.columnTitleAmount')
+                    label: this.$t('sw-order.payone-payment.orderActionLog.columnTitleAmount')
                 },
                 {
                     property: 'requestDateTime',
-                    label: this.$tc('sw-order.payone-payment.orderActionLog.columnTitleRequestDateTime')
+                    label: this.$t('sw-order.payone-payment.orderActionLog.columnTitleRequestDateTime')
                 },
             ];
         },
 
         keyValueColumns() {
             return [
-                {property: 'key', label: this.$tc('sw-order.payone-payment.orderActionLog.columnTitleKey')},
-                {property: 'value', label: this.$tc('sw-order.payone-payment.orderActionLog.columnTitleValue')},
+                {property: 'key', label: this.$t('sw-order.payone-payment.orderActionLog.columnTitleKey')},
+                {property: 'value', label: this.$t('sw-order.payone-payment.orderActionLog.columnTitleValue')},
             ];
         },
     },

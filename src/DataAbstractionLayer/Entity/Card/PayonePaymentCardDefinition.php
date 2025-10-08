@@ -22,21 +22,25 @@ class PayonePaymentCardDefinition extends EntityDefinition
 {
     final public const ENTITY_NAME = 'payone_payment_card';
 
+    #[\Override]
     public function getEntityName(): string
     {
         return self::ENTITY_NAME;
     }
 
+    #[\Override]
     public function getCollectionClass(): string
     {
         return PayonePaymentCardCollection::class;
     }
 
+    #[\Override]
     public function getEntityClass(): string
     {
         return PayonePaymentCardEntity::class;
     }
 
+    #[\Override]
     protected function defineFields(): FieldCollection
     {
         $pseudoCardPanField = (new StringField('pseudo_card_pan', 'pseudoCardPan'))->setFlags(new Required());

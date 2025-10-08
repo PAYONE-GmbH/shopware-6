@@ -12,6 +12,7 @@ readonly class GenericExpressCheckoutFilterOther implements PaymentFilterService
     /**
      * if AmazonPay/PayPal Express is selected, no other payment methods should be available.
      */
+    #[\Override]
     public function filterPaymentMethods(
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext,

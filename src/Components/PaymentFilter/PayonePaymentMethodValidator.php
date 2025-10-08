@@ -22,6 +22,7 @@ readonly class PayonePaymentMethodValidator implements CartValidatorInterface
     /**
      * This validation takes care of changing the currently selected PAYONE payment method if it is no longer available.
      */
+    #[\Override]
     public function validate(Cart $cart, ErrorCollection $errors, SalesChannelContext $context): void
     {
         if (0 === $cart->getLineItems()->count()) {

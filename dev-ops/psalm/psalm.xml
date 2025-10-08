@@ -20,6 +20,10 @@
         </ignoreFiles>
     </projectFiles>
 
+    <stubs>
+        <file name="./stubs/shopware/core/Framework/DataAbstractionLayer/Search/EntitySearchResult.stub.php" />
+    </stubs>
+
     <forbiddenFunctions>
         <function name="dd" />
         <function name="die" />
@@ -36,7 +40,7 @@
         <DeprecatedMethod errorLevel="info" />
         <DeprecatedProperty errorLevel="info" />
         <DeprecatedFunction errorLevel="info" />
-
+        
         <MissingClassConstType errorLevel="suppress" />
 
         <PropertyNotSetInConstructor>
@@ -48,18 +52,6 @@
                 <referencedProperty name="Symfony\Component\HttpKernel\Bundle\Bundle::$name" />
             </errorLevel>
         </PropertyNotSetInConstructor>
-
-        <InternalClass>
-            <errorLevel type="suppress">
-                <referencedClass name="Shopware\Core\Defaults" />
-            </errorLevel>
-        </InternalClass>
-
-        <InternalMethod>
-            <errorLevel type="suppress">
-                <referencedMethod name="Shopware\Core\Framework\Context::createDefaultContext" />
-            </errorLevel>
-        </InternalMethod>
     </issueHandlers>
 
     <plugins>

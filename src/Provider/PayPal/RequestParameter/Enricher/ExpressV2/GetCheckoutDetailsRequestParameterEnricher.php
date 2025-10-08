@@ -14,6 +14,7 @@ use PayonePayment\RequestParameter\RequestParameterEnricherInterface;
  */
 readonly class GetCheckoutDetailsRequestParameterEnricher implements RequestParameterEnricherInterface
 {
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         return [

@@ -19,6 +19,7 @@ class PaypalExpressAddressValidationEventListener implements EventSubscriberInte
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

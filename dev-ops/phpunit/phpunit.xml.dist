@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
-    bootstrap="../../tests/TestBootstrap.php"
-    cacheResult="false"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+    bootstrap="../../vendor/shopware/core/TestBootstrap.php"
+    failOnRisky="true"
+    failOnWarning="true"
+    executionOrder="random"
 >
     <php>
         <ini name="error_reporting" value="-1" />
@@ -21,7 +23,7 @@
         </testsuite>
     </testsuites>
 
-    <coverage>
+    <source>
         <include>
             <directory suffix=".php">../../src</directory>
         </include>
@@ -29,9 +31,9 @@
         <exclude>
             <directory suffix=".php">../../src/Resources</directory>
         </exclude>
-    </coverage>
+    </source>
 
-    <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
-    </listeners>
+    <extensions>
+        <bootstrap class="Symfony\Bridge\PhpUnit\SymfonyExtension" />
+    </extensions>
 </phpunit>

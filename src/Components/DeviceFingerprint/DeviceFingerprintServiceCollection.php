@@ -25,6 +25,7 @@ class DeviceFingerprintServiceCollection implements DeviceFingerprintServiceColl
         }
     }
 
+    #[\Override]
     public function getForPaymentHandler(string $paymentHandlerClass): AbstractDeviceFingerprintService|null
     {
         return $this->services[$paymentHandlerClass] ?? null;

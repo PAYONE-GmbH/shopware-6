@@ -1,7 +1,6 @@
 import template from './sw-order-detail-payone.html.twig';
 
-const { Component } = Shopware;
-const { mapState } = Component.getComponentHelper();
+const {  Store } = Shopware;
 
 export default {
     template,
@@ -16,9 +15,7 @@ export default {
     },
 
     computed: {
-        ...mapState('swOrderDetail', [
-            'order',
-        ]),
+        order: () => Store.get('swOrderDetail').order,
     },
 
     methods: {

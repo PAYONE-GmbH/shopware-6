@@ -13,6 +13,7 @@ use PayonePayment\RequestParameter\PaymentRequestDto;
  */
 readonly class OrderLinesWithNegativePriceRequestParameterEnricher extends OrderLinesRequestParameterEnricher
 {
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $parameters = parent::enrich($arguments);
