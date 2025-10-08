@@ -26,6 +26,7 @@ readonly class CheckoutConfirmKlarnaPaymentEventListener implements EventSubscri
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

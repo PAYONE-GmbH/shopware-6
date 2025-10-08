@@ -12,6 +12,6 @@
   ],
   "require-dev": {
     "php": ">=8.2",
-    "netinventors/shopware6-taskfile": "6.*"
+    "netinventors/shopware6-taskfile": "7.*"
   }
 }

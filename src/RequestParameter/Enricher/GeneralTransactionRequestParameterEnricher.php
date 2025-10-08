@@ -37,6 +37,7 @@ readonly class GeneralTransactionRequestParameterEnricher implements RequestPara
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $paymentTransaction  = $arguments->paymentTransaction;

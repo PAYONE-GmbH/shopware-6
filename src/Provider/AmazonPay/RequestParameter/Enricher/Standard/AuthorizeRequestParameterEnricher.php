@@ -30,6 +30,7 @@ readonly class AuthorizeRequestParameterEnricher implements RequestParameterEnri
         $this->orderAddressRepository = $orderAddressRepository;
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         if ($arguments->action !== RequestActionEnum::AUTHORIZE->value) {

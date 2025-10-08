@@ -1,19 +1,18 @@
 {% block payone_notification_target_list %}
     <sw-page class="sw-review-list">
-
         {% block payone_notification_target_list_smart_bar_header %}
             <template #smart-bar-header>
                 {% block payone_notification_target_list_smart_bar_header_title %}
                     <h2>
-
                         {% block payone_notification_target_list_smart_bar_header_title_text %}
-                            {{ $tc('payonePayment.notificationTarget.list.title') }}
+                            {{ $t('payonePayment.notificationTarget.list.title') }}
                         {% endblock %}
 
                         {% block payone_notification_target_list_smart_bar_header_amount %}
-                            <span v-if="!isLoading" class="sw-page__smart-bar-amount">
-                                ({{ items.total }})
-                            </span>
+                            <span
+                                v-if="!isLoading"
+                                class="sw-page__smart-bar-amount"
+                            >({{ items.total }})</span>
                         {% endblock %}
                     </h2>
                 {% endblock %}
@@ -23,20 +22,19 @@
         {% block payone_notification_target_list_actions %}
             <template #smart-bar-actions>
                 {% block payone_notification_target_list_smart_bar_actions %}
-                    <sw-button
-                        :routerLink="{ name: 'payone.notification.target.create' }"
+                    <mt-button
+                        @click="$router.push({ name: 'payone.notification.target.create' })"
                         variant="primary"
                         v-if="acl.can('payone_payment_notification_target:create')"
                     >
-                        {{ $tc('payonePayment.notificationTarget.list.buttonCreate') }}
-                    </sw-button>
+                        {{ $t('payonePayment.notificationTarget.list.buttonCreate') }}
+                    </mt-button>
                 {% endblock %}
             </template>
         {% endblock %}
 
         {% block payone_notification_target_list_content %}
             <template #content>
-
                 {% block payone_notification_target_list_content_list %}
                     <sw-entity-listing
                         v-if="items"
@@ -58,22 +56,35 @@
                         :allowEdit="acl.can('payone_payment_notification_target:update')"
                         :allowDelete="acl.can('payone_payment_notification_target:delete')"
                     >
-
                         {% block payone_notification_target_list_grid_columns %}
                             {% block payone_notification_target_list_grid_columns_url %}
                                 <template #column-url="{ item }">
-                                    <router-link :to="{ name: 'payone.notification.target.detail', params: { id: item.id } }"
-                                                 v-if="acl.can('payone_payment_notification_target:update')">
+                                    <router-link
+                                        :to="{ name: 'payone.notification.target.detail', params: { id: item.id } }"
+                                        v-if="acl.can('payone_payment_notification_target:update')"
+                                    >
                                         {{ item.url }}
                                     </router-link>
+
                                     <span v-else>{{ item.url }}</span>
                                 </template>
                             {% endblock %}
 
                             {% block payone_notification_target_list_grid_columns_is_basic_auth %}
                                 <template #column-isBasicAuth="{ item }">
-                                    <sw-icon v-if="item.isBasicAuth" name="regular-checkmark-xs" small class="is--active"></sw-icon>
-                                    <sw-icon v-else name="regular-times-s" small class="is--inactive"></sw-icon>
+                                    <mt-icon
+                                        v-if="item.isBasicAuth"
+                                        name="regular-checkmark-xs"
+                                        size="16px"
+                                        class="is--active"
+                                    ></mt-icon>
+
+                                    <mt-icon
+                                        v-else
+                                        name="regular-times-s"
+                                        size="16px"
+                                        class="is--inactive"
+                                    ></mt-icon>
                                 </template>
                             {% endblock %}
 
@@ -87,9 +98,11 @@
                 {% endblock %}
 
                 {% block payone_notification_target_list_empty_state %}
-                    <sw-empty-state v-if="!isLoading && !total"
-                                    icon="default-documentation-file"
-                                    :title="$tc('payonePayment.notificationTarget.list.empty')">
+                    <sw-empty-state
+                        v-if="!isLoading && !total"
+                        icon="regular-repeat"
+                        :title="$t('payonePayment.notificationTarget.list.empty')"
+                    >
                     </sw-empty-state>
                 {% endblock %}
             </template>
@@ -98,12 +111,12 @@
         {% block payone_notification_target_list_sidebar %}
             <template #sidebar>
                 <sw-sidebar>
-
                     {% block payone_notification_target_list_sidebar_refresh %}
                         <sw-sidebar-item
-                            icon="default-arrow-360-left"
-                            :title="$tc('sw-review.list.titleSidebarItemRefresh')"
-                            @click="onRefresh">
+                            icon="regular-undo"
+                            :title="$t('sw-review.list.titleSidebarItemRefresh')"
+                            @click="onRefresh"
+                        >
                         </sw-sidebar-item>
                     {% endblock %}
                 </sw-sidebar>

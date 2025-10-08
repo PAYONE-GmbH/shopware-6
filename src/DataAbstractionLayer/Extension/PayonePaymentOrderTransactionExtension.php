@@ -14,6 +14,7 @@ class PayonePaymentOrderTransactionExtension extends EntityExtension
 {
     final public const NAME = 'payonePaymentOrderTransactionData';
 
+    #[\Override]
     public function extendFields(FieldCollection $collection): void
     {
         $collection->add(
@@ -26,8 +27,9 @@ class PayonePaymentOrderTransactionExtension extends EntityExtension
         );
     }
 
-    public function getDefinitionClass(): string
+    #[\Override]
+    public function getEntityName(): string
     {
-        return OrderTransactionDefinition::class;
+        return OrderTransactionDefinition::ENTITY_NAME;
     }
 }

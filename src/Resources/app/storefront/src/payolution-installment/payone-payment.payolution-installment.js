@@ -1,15 +1,13 @@
 /* eslint-disable import/no-unresolved */
 
-import Plugin from 'src/plugin-system/plugin.class';
-import HttpClient from "src/service/http-client.service";
+const Plugin = window.PluginBaseClass;
+
 import PageLoadingIndicatorUtil from 'src/utility/loading-indicator/page-loading-indicator.util';
 import ButtonLoadingIndicator from 'src/utility/loading-indicator/button-loading-indicator.util';
 
 export default class PayonePaymentPayolutionInstallment extends Plugin {
     init() {
         this.orderFormDisabled = true;
-
-        this._client = new HttpClient();
 
         this._disableSubmitButton();
         this._registerEventListeners();
@@ -41,8 +39,17 @@ export default class PayonePaymentPayolutionInstallment extends Plugin {
         PageLoadingIndicatorUtil.create();
 
         const data = JSON.stringify(this._getRequestData());
-        this._client.abort();
-        this._client.post(this._getCalculationUrl(), data, response => this._handleCalculationCallback(response));
+        fetch(this._getCalculationUrl(), {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: data
+        })
+            .then(response => response.text())
+            .then((response) => {
+                this._handleCalculationCallback(response);
+            });
     }
 
     _handleCalculationCallback(response) {

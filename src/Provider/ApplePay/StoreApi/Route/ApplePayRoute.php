@@ -48,11 +48,13 @@ class ApplePayRoute extends AbstractApplePayRoute
     ) {
     }
 
+    #[\Override]
     public function getDecorated(): AbstractApplePayRoute
     {
         throw new DecorationPatternException(self::class);
     }
 
+    #[\Override]
     #[Route(
         path: '/store-api/payone/apple-pay/validate-merchant',
         name: 'store-api.payone.apple-pay.validate-merchant',
@@ -120,6 +122,7 @@ class ApplePayRoute extends AbstractApplePayRoute
         );
     }
 
+    #[\Override]
     #[Route(
         path: '/store-api/payone/apple-pay/process',
         name: 'store-api.payone.apple-pay.process',

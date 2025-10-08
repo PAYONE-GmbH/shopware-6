@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
  */
 class Migration1758889715MigratePayolutionConfigurationKeysToUnzer extends MigrationStep
 {
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_758_889_715;
@@ -22,6 +23,7 @@ class Migration1758889715MigratePayolutionConfigurationKeysToUnzer extends Migra
     /**
      * @throws Exception
      */
+    #[\Override]
     public function update(Connection $connection): void
     {
         $stmt = <<<'SQL'
@@ -50,6 +52,7 @@ SQL;
         }
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
         $connection->executeStatement(<<<'SQL'

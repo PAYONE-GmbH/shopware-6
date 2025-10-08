@@ -26,6 +26,7 @@ class StandardV2ResponseHandler implements ResponseHandlerInterface
         $this->transactionDataHandler = $transactionDataHandler;
     }
 
+    #[\Override]
     public function handle(
         string $orderTransactionId,
         PaymentTransaction $paymentTransaction,
@@ -49,5 +50,4 @@ class StandardV2ResponseHandler implements ResponseHandlerInterface
             $data,
         );
     }
-
 }

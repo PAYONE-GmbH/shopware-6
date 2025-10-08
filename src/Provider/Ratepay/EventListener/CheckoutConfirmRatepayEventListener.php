@@ -17,7 +17,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPage;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
-use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPage;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -33,6 +32,7 @@ readonly class CheckoutConfirmRatepayEventListener implements EventSubscriberInt
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [
@@ -46,12 +46,11 @@ readonly class CheckoutConfirmRatepayEventListener implements EventSubscriberInt
                 [ 'hidePaymentMethodsByProfiles' ],
                 [ 'addPayonePageData' ],
             ],
-            AccountPaymentMethodPageLoadedEvent::class => 'hidePaymentMethodsForCompanies',
         ];
     }
 
     public function hidePaymentMethodsForCompanies(
-        CheckoutConfirmPageLoadedEvent|AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent $event,
+        CheckoutConfirmPageLoadedEvent|AccountEditOrderPageLoadedEvent $event,
     ): void {
         $page = $event->getPage();
 

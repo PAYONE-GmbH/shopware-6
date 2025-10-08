@@ -40,21 +40,25 @@ class PrepaymentPaymentHandler extends AbstractPaymentHandler
         $this->requestEnricherChain = $requestEnricherChain;
     }
 
+    #[\Override]
     public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
     {
         return PaymentHandlerType::REFUND === $type;
     }
 
+    #[\Override]
     public function getConfigKeyPrefix(): string
     {
         return PrepaymentPaymentMethod::getConfigurationPrefix();
     }
 
+    #[\Override]
     public function getDefaultAuthorizationMethod(): string
     {
         return RequestActionEnum::PREAUTHORIZE->value;
     }
 
+    #[\Override]
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (self::isNeverCapturable($payoneTransActionData)) {
@@ -74,6 +78,7 @@ class PrepaymentPaymentHandler extends AbstractPaymentHandler
         return static::matchesIsCapturableDefaults($transactionData);
     }
 
+    #[\Override]
     public function getPaymentMethodUuid(): string
     {
         return PrepaymentPaymentMethod::getId();

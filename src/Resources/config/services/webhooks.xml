@@ -45,7 +45,7 @@
         <service id="PayonePayment\Payone\Webhook\Handler\NotificationForwardHandler">
             <argument type="service" id="payone_payment_notification_target.repository" />
             <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
-            <argument type="service" id="messenger.bus.shopware" />
+            <argument type="service" id="messenger.default_bus" />
 
             <tag name="payone.webhook.handler" priority="0" />
         </service>
@@ -54,7 +54,7 @@
             <argument key="$forwardTargetRepository" type="service" id="payone_payment_notification_target.repository" />
             <argument key="$notificationForwardRepository" type="service" id="payone_payment_notification_forward.repository" />
             <argument key="$logger" type="service" id="monolog.logger.payone_transaction_forward" />
-            <argument key="$messageBus" type="service" id="messenger.bus.shopware" />
+            <argument key="$messageBus" type="service" id="messenger.default_bus" />
 
             <tag name="messenger.message_handler" />
         </service>

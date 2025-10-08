@@ -110,23 +110,23 @@ export default {
 
                 if (credentialsValid) {
                     this.createNotificationSuccess({
-                        title: this.$tc('payone-payment.settingsForm.titleSuccess'),
+                        title: this.$t('payone-payment.settingsForm.titleSuccess'),
                         message: testCount > 0
-                            ? this.$tc('payone-payment.settingsForm.messageTestSuccess')
-                            : this.$tc('payone-payment.settingsForm.messageTestNoTestedPayments'),
+                            ? this.$t('payone-payment.settingsForm.messageTestSuccess')
+                            : this.$t('payone-payment.settingsForm.messageTestNoTestedPayments'),
                     });
                     this.isTestSuccessful = true;
                 } else {
                     for (let key in errors) {
                         if (errors.hasOwnProperty(key)) {
                             this.createNotificationError({
-                                title: this.$tc('payone-payment.settingsForm.titleError'),
-                                message: this.$tc('payone-payment.settingsForm.messageTestError.' + key)
+                                title: this.$t('payone-payment.settingsForm.titleError'),
+                                message: this.$t('payone-payment.settingsForm.messageTestError.' + key)
                             });
                             let message = errors[key];
                             if (typeof message === 'string') {
                                 this.createNotificationError({
-                                    title: this.$tc('payone-payment.settingsForm.titleError'),
+                                    title: this.$t('payone-payment.settingsForm.titleError'),
                                     message: message
                                 });
                             }
@@ -135,8 +135,8 @@ export default {
                 }
             }).catch((errorResponse) => {
                 this.createNotificationError({
-                    title: this.$tc('payone-payment.settingsForm.titleError'),
-                    message: this.$tc('payone-payment.settingsForm.messageTestError.general')
+                    title: this.$t('payone-payment.settingsForm.titleError'),
+                    message: this.$t('payone-payment.settingsForm.messageTestError.general')
                 });
             }).finally(() => {
                 this.isTesting = false;
@@ -156,8 +156,8 @@ export default {
 
                 if (!Array.isArray(resultBySalesChannel.errors)) {
                     this.createNotificationError({
-                        title: this.$tc('payone-payment.settingsForm.titleError'),
-                        message: this.$tc('payone-payment.settingsForm.messageSaveError.ratepayProfilesUpdateFailed')
+                        title: this.$t('payone-payment.settingsForm.titleError'),
+                        message: this.$t('payone-payment.settingsForm.messageSaveError.ratepayProfilesUpdateFailed')
                     });
                 }
             }

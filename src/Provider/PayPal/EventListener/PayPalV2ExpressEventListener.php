@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PayonePayment\Provider\PayPal\EventListener;
 
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Service\ActivePaymentMethodsLoaderService;
 use PayonePayment\Provider\PayPal\PaymentMethod\ExpressV2PaymentMethod;
+use PayonePayment\Service\ActivePaymentMethodsLoaderService;
 use PayonePayment\Storefront\Controller\GenericExpressController;
 use PayonePayment\Storefront\Struct\PayPalV2ExpressButtonData;
 use Psr\Log\LoggerInterface;
@@ -33,6 +33,7 @@ class PayPalV2ExpressEventListener implements EventSubscriberInterface
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

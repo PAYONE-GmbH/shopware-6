@@ -20,21 +20,25 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class PayonePaymentOrderTransactionDataDefinition extends EntityDefinition
 {
+    #[\Override]
     public function getEntityName(): string
     {
         return 'payone_payment_order_transaction_data';
     }
 
+    #[\Override]
     public function getEntityClass(): string
     {
         return PayonePaymentOrderTransactionDataEntity::class;
     }
 
+    #[\Override]
     public function getCollectionClass(): string
     {
         return PayonePaymentOrderTransactionDataCollection::class;
     }
 
+    #[\Override]
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection(

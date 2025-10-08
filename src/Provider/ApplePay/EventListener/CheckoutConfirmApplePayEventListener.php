@@ -8,7 +8,6 @@ use PayonePayment\EventListener\RemovesPaymentMethod;
 use PayonePayment\Provider\ApplePay\PaymentMethod\StandardPaymentMethod;
 use PayonePayment\Provider\ApplePay\StoreApi\Route\ApplePayRoute;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
-use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use UAParser\Parser;
@@ -22,17 +21,17 @@ class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hideApplePayForNonSafariUsers',
-            AccountPaymentMethodPageLoadedEvent::class => 'hideApplePayForNonSafariUsers',
-            AccountEditOrderPageLoadedEvent::class     => 'hideApplePayForNonSafariUsers',
+            CheckoutConfirmPageLoadedEvent::class  => 'hideApplePayForNonSafariUsers',
+            AccountEditOrderPageLoadedEvent::class => 'hideApplePayForNonSafariUsers',
         ];
     }
 
     public function hideApplePayForNonSafariUsers(
-        CheckoutConfirmPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|AccountEditOrderPageLoadedEvent $event,
+        CheckoutConfirmPageLoadedEvent|AccountEditOrderPageLoadedEvent $event,
     ): void {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 

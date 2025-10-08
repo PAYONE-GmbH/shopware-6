@@ -22,6 +22,7 @@ readonly class AuthorizeRequestParameterEnricher implements RequestParameterEnri
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         if ($arguments->action !== RequestActionEnum::AUTHORIZE->value) {

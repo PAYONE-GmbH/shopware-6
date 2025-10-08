@@ -46,6 +46,24 @@ export default {
 
         notificationTargetRepository() {
             return this.repositoryFactory.create('payone_payment_notification_target');
+        },
+
+        txactionsOptions() {
+            return [
+                { value: "appointed", label: "appointed" },
+                { value: "capture", label: "capture" },
+                { value: "paid", label: "paid" },
+                { value: "underpaid", label: "underpaid" },
+                { value: "cancelation", label: "cancelation" },
+                { value: "refund", label: "refund" },
+                { value: "debit", label: "debit" },
+                { value: "transfer", label: "transfer" },
+                { value: "reminder", label: "reminder" },
+                { value: "vauthorization", label: "vauthorization" },
+                { value: "vsettlement", label: "vsettlement" },
+                { value: "invoice", label: "invoice" },
+                { value: "failed", label: "failed" }
+            ];
         }
     },
 
@@ -66,7 +84,10 @@ export default {
                 return;
             }
 
-            Shopware.State.commit('context/resetLanguageToDefault');
+            if (!Shopware.Store.get('context').isSystemDefaultLanguage) {
+                Shopware.Store.get('context').resetLanguageToDefault();
+            }
+
             this.notificationTarget = this.notificationTargetRepository.create(Shopware.Context.api);
         },
 
@@ -98,7 +119,7 @@ export default {
             }
 
             this.createNotificationError({
-                message: this.$tc(
+                message: this.$t(
                     'global.notification.notificationSaveErrorMessageRequiredFieldsInvalid'
                 )
             });
@@ -117,7 +138,7 @@ export default {
                 this.isLoading = false;
                 this.isSaveSuccessful = true;
                 this.createNotificationSuccess({
-                    message: this.$tc(
+                    message: this.$t(
                         'payonePayment.notificationTarget.messages.successfullySaved'
                     ),
                 });
@@ -134,7 +155,7 @@ export default {
             }).catch((exception) => {
                 this.isLoading = false;
                 this.createNotificationError({
-                    message: this.$tc(
+                    message: this.$t(
                         'global.notification.notificationSaveErrorMessageRequiredFieldsInvalid'
                     )
                 });

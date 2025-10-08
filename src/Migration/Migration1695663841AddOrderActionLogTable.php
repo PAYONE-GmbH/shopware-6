@@ -12,11 +12,13 @@ class Migration1695663841AddOrderActionLogTable extends MigrationStep
 {
     use InheritanceUpdaterTrait;
 
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_695_663_841;
     }
 
+    #[\Override]
     public function update(Connection $connection): void
     {
         $sql = 'CREATE TABLE IF NOT EXISTS `payone_payment_order_action_log` (
@@ -44,6 +46,7 @@ class Migration1695663841AddOrderActionLogTable extends MigrationStep
         $connection->executeStatement($sql);
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
         // implement update destructive

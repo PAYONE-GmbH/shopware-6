@@ -20,16 +20,17 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
     /**
      * @param FinancialTransactionStruct $arguments
      */
+    #[\Override]
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $paymentTransaction = $arguments->getPaymentTransaction();
-        $currency = $paymentTransaction->getOrder()->getCurrency();
-        $requestData = $arguments->getRequestData();
-        $orderLines = $requestData->all('orderLines');
-        $isCompleted = $requestData->get('complete', false);
+        $paymentTransaction   = $arguments->getPaymentTransaction();
+        $currency             = $paymentTransaction->getOrder()->getCurrency();
+        $requestData          = $arguments->getRequestData();
+        $orderLines           = $requestData->all('orderLines');
+        $isCompleted          = $requestData->get('complete', false);
         $includeShippingCosts = $requestData->get('includeShippingCosts', false);
 
-        if ($currency === null || $paymentTransaction->getOrder()->getLineItems() === null) {
+        if (null === $currency || null === $paymentTransaction->getOrder()->getLineItems()) {
             return [];
         }
 
@@ -69,6 +70,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
         return $parameters;
     }
 
+    #[\Override]
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         if ($arguments instanceof FinancialTransactionStruct) {
@@ -102,7 +104,7 @@ class OrderLinesRequestParameterBuilder extends AbstractRequestParameterBuilder
         return \in_array(
             $arguments->getAction(),
             [ RequestActionEnum::AUTHORIZE->value, RequestActionEnum::PREAUTHORIZE->value ],
-            true
+            true,
         );
     }
 }

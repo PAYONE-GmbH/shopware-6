@@ -28,6 +28,7 @@ readonly class CreateCheckoutSessionRequestParameterEnricher implements RequestP
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $requestParameters = [

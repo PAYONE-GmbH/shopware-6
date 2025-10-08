@@ -43,6 +43,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         $this->currencyPrecision         = $currencyPrecision;
     }
 
+    #[\Override]
     public function capture(ParameterBag $parameterBag, Context $context): JsonResponse
     {
         [ $requestResponse, $payoneResponse ] = $this->handleRequest(
@@ -88,6 +89,7 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         );
     }
 
+    #[\Override]
     protected function getAmount(OrderTransactionEntity $transaction): int
     {
         /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
@@ -96,16 +98,19 @@ class CaptureTransactionHandler extends AbstractTransactionHandler implements Ca
         return (int) $payoneTransactionData->getCapturedAmount();
     }
 
+    #[\Override]
     protected function getQuantityCustomField(): string
     {
         return CustomFieldInstaller::CAPTURED_QUANTITY;
     }
 
+    #[\Override]
     protected function getAllowPropertyName(): string
     {
         return 'allowCapture';
     }
 
+    #[\Override]
     protected function getAmountPropertyName(): string
     {
         return 'capturedAmount';

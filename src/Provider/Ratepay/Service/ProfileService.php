@@ -114,7 +114,7 @@ readonly class ProfileService
     public function getProfileByOrder(
         OrderEntity $order,
         string $paymentHandler,
-        bool $throwException = false
+        bool $throwException = false,
     ): Profile|null {
         $billingAddress  = $this->orderLoaderService->getOrderBillingAddress($order);
         $shippingAddress = $this->orderLoaderService->getOrderShippingAddress($order);

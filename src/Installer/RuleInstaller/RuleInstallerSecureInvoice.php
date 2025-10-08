@@ -52,25 +52,30 @@ class RuleInstallerSecureInvoice implements InstallerInterface
     ) {
     }
 
+    #[\Override]
     public function install(InstallContext $context): void
     {
         $this->upsertAvailabilityRule($context->getContext());
     }
 
+    #[\Override]
     public function update(UpdateContext $context): void
     {
         $this->upsertAvailabilityRule($context->getContext());
     }
 
+    #[\Override]
     public function uninstall(UninstallContext $context): void
     {
         $this->removeAvailabilityRule($context->getContext());
     }
 
+    #[\Override]
     public function activate(ActivateContext $context): void
     {
     }
 
+    #[\Override]
     public function deactivate(DeactivateContext $context): void
     {
     }

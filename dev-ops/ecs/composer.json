@@ -13,5 +13,8 @@
   "require-dev": {
     "netinventors/ecs-set-list": "^1.0",
     "symplify/easy-coding-standard": "^12.5.8"
+  },
+  "conflict": {
+    "friendsofphp/php-cs-fixer": ">=v3.85.0"
   }
 }

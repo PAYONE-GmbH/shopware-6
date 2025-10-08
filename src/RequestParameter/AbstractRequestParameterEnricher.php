@@ -9,7 +9,7 @@ use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 /**
  * @template T of AbstractRequestDto
  */
-readonly abstract class AbstractRequestParameterEnricher
+abstract readonly class AbstractRequestParameterEnricher
 {
     /**
      * @param T $requestDto

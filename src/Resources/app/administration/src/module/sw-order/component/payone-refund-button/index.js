@@ -148,7 +148,7 @@ export default {
                     unit_price: this.order.shippingCosts.totalPrice,
                     selected: false,
                     disabled: false,
-                    product: this.$tc('sw-order.payone-payment.modal.shippingCosts'),
+                    product: this.$t('sw-order.payone-payment.modal.shippingCosts'),
                 });
             }
         },
@@ -230,14 +230,14 @@ export default {
         executeRefund(request) {
             this.PayonePaymentService.refundPayment(request).then(() => {
                 this.createNotificationSuccess({
-                    title: this.$tc('sw-order.payone-payment.refund.successTitle'),
-                    message: this.$tc('sw-order.payone-payment.refund.successMessage')
+                    title: this.$t('sw-order.payone-payment.refund.successTitle'),
+                    message: this.$t('sw-order.payone-payment.refund.successMessage')
                 });
 
                 this.isRefundSuccessful = true;
             }).catch((error) => {
                 this.createNotificationError({
-                    title: this.$tc('sw-order.payone-payment.refund.errorTitle'),
+                    title: this.$t('sw-order.payone-payment.refund.errorTitle'),
                     message: error.message
                 });
 

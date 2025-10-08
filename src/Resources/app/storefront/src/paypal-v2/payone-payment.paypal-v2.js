@@ -1,5 +1,4 @@
-import Plugin from 'src/plugin-system/plugin.class';
-import HttpClient from "src/service/http-client.service";
+const Plugin = window.PluginBaseClass;
 
 export default class PayonePaymentPayPalV2 extends Plugin {
     static options = {
@@ -21,8 +20,6 @@ export default class PayonePaymentPayPalV2 extends Plugin {
 
             return;
         }
-
-        this._client = new HttpClient();
 
         this._loadScript();
     }
@@ -72,9 +69,9 @@ export default class PayonePaymentPayPalV2 extends Plugin {
 
     _createOrder() {
         return new Promise((resolve, reject) => {
-            this._client.get(
-                this.options.createCheckoutSessionUrl,
-                (responseText, request) => {
+            fetch(this.options.createCheckoutSessionUrl)
+                .then(response => response.text())
+                .then((responseText, request) => {
                     if (request.status >= 400) {
                         reject(responseText);
                     }
@@ -85,8 +82,7 @@ export default class PayonePaymentPayPalV2 extends Plugin {
                     } catch (error) {
                         reject(error);
                     }
-                },
-            );
+                });
         });
     }
 

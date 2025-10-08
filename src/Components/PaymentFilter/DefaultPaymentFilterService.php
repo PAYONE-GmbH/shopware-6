@@ -39,6 +39,7 @@ readonly class DefaultPaymentFilterService implements PaymentFilterServiceInterf
     ) {
     }
 
+    #[\Override]
     final public function filterPaymentMethods(
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext,
@@ -246,7 +247,7 @@ readonly class DefaultPaymentFilterService implements PaymentFilterServiceInterf
 
         if ($paymentMethod->getHandlerIdentifier() !== $this->paymentHandlerClass) {
             throw new PaymentMethodNotAllowedException(
-                'payment is a generic express-checkout which has not been initialized yet.'
+                'payment is a generic express-checkout which has not been initialized yet.',
             );
         }
 
@@ -254,7 +255,7 @@ readonly class DefaultPaymentFilterService implements PaymentFilterServiceInterf
 
         if (!$extensionData instanceof CheckoutCartPaymentData || empty($extensionData->getWorkorderId())) {
             throw new PaymentMethodNotAllowedException(
-                'payment is a generic express-checkout which has not been initialized yet.'
+                'payment is a generic express-checkout which has not been initialized yet.',
             );
         }
     }

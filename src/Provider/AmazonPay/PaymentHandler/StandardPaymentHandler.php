@@ -60,21 +60,25 @@ class StandardPaymentHandler extends AbstractPaymentHandler
         $this->serializer           = new Serializer(encoders: [ new JsonEncoder() ]);
     }
 
+    #[\Override]
     public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
     {
         return PaymentHandlerType::REFUND === $type;
     }
 
+    #[\Override]
     public function getConfigKeyPrefix(): string
     {
         return StandardPaymentMethod::getConfigurationPrefix();
     }
 
+    #[\Override]
     public function getDefaultAuthorizationMethod(): string
     {
         return RequestActionEnum::AUTHORIZE->value;
     }
 
+    #[\Override]
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (AuthorizationTypeEnum::PREAUTHORIZATION->value !== $payoneTransActionData['authorizationType']) {
@@ -84,6 +88,7 @@ class StandardPaymentHandler extends AbstractPaymentHandler
         return TransactionActionEnum::PAID->value === \strtolower((string) $transactionData['txaction']);
     }
 
+    #[\Override]
     public static function isRefundable(array $transactionData): bool
     {
         if (
@@ -96,6 +101,7 @@ class StandardPaymentHandler extends AbstractPaymentHandler
         return TransactionActionEnum::PAID->value === \strtolower((string) $transactionData['txaction']);
     }
 
+    #[\Override]
     public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
         $definitions = $this->getBasicValidationDefinitions($dataBag, $salesChannelContext);
@@ -107,6 +113,7 @@ class StandardPaymentHandler extends AbstractPaymentHandler
         return $definitions;
     }
 
+    #[\Override]
     public function getRedirectResponse(
         SalesChannelContext $context,
         array $request,
@@ -131,6 +138,7 @@ class StandardPaymentHandler extends AbstractPaymentHandler
         ]));
     }
 
+    #[\Override]
     public function getPaymentMethodUuid(): string
     {
         return StandardPaymentMethod::getId();

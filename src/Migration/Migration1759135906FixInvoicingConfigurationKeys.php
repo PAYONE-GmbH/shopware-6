@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
  */
 class Migration1759135906FixInvoicingConfigurationKeys extends MigrationStep
 {
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_759_135_906;
@@ -22,6 +23,7 @@ class Migration1759135906FixInvoicingConfigurationKeys extends MigrationStep
     /**
      * @throws Exception
      */
+    #[\Override]
     public function update(Connection $connection): void
     {
         $stmt = <<<'SQL'
@@ -50,6 +52,7 @@ SQL;
         }
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
         $connection->executeStatement(<<<'SQL'

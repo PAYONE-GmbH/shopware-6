@@ -24,6 +24,7 @@ readonly class UpdateCheckoutSessionParameterEnricher implements RequestParamete
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $cart          = $arguments->cart;

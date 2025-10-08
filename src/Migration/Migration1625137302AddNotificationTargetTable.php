@@ -9,11 +9,13 @@ use Shopware\Core\Framework\Migration\MigrationStep;
 
 class Migration1625137302AddNotificationTargetTable extends MigrationStep
 {
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_625_137_302;
     }
 
+    #[\Override]
     public function update(Connection $connection): void
     {
         $sql = 'CREATE TABLE IF NOT EXISTS `payone_payment_notification_target` (
@@ -31,6 +33,7 @@ class Migration1625137302AddNotificationTargetTable extends MigrationStep
         $connection->executeStatement($sql);
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
         // implement update destructive

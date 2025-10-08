@@ -9,11 +9,13 @@ use Shopware\Core\Framework\Migration\MigrationStep;
 
 class Migration1718642595CreditCardAddCardHolder extends MigrationStep
 {
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_718_642_595;
     }
 
+    #[\Override]
     public function update(Connection $connection): void
     {
         $connection->executeStatement(
@@ -24,6 +26,7 @@ class Migration1718642595CreditCardAddCardHolder extends MigrationStep
         );
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
     }

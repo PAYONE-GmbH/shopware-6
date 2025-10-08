@@ -38,6 +38,7 @@ class Birthday extends LessThanOrEqual
         parent::__construct($options);
     }
 
+    #[\Override]
     public function validatedBy(): string
     {
         return BirthdayValidator::class;

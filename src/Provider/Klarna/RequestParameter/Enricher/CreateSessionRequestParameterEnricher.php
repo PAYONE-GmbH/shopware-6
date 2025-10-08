@@ -26,6 +26,7 @@ readonly class CreateSessionRequestParameterEnricher implements RequestParameter
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $salesChannelContext = $arguments->salesChannelContext;

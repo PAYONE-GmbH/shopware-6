@@ -22,6 +22,7 @@ readonly class CheckoutConfirmSecuredInstallmentEventListener implements EventSu
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

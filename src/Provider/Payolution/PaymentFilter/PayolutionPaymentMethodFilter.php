@@ -16,6 +16,7 @@ readonly class PayolutionPaymentMethodFilter extends DefaultPaymentFilterService
     /**
      * @throws PaymentMethodNotAllowedException
      */
+    #[\Override]
     protected function additionalChecks(PaymentMethodCollection $methodCollection, PaymentFilterContext $filterContext): void
     {
         if (empty($this->getPaymentHandlerConfiguration($filterContext->getSalesChannelContext(), 'CompanyName'))) {

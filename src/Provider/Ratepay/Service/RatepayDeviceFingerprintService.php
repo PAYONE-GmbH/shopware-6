@@ -32,6 +32,7 @@ class RatepayDeviceFingerprintService extends AbstractDeviceFingerprintService
         $this->serializer = new Serializer([], [ new JsonEncoder() ]);
     }
 
+    #[\Override]
     public function getSupportedPaymentHandlerClasses(): array
     {
         return [
@@ -41,6 +42,7 @@ class RatepayDeviceFingerprintService extends AbstractDeviceFingerprintService
         ];
     }
 
+    #[\Override]
     public function getDeviceIdentSnippet(string $deviceIdentToken, SalesChannelContext $salesChannelContext): string
     {
         $location  = 'Checkout';
@@ -65,11 +67,13 @@ HTML;
         return $snippet;
     }
 
+    #[\Override]
     protected function getSessionVarName(): string
     {
         return self::SESSION_VAR_NAME;
     }
 
+    #[\Override]
     protected function buildDeviceIdentToken(SalesChannelContext $salesChannelContext): string
     {
         $sessionId = $this->getSession()?->get('sessionId') ?? '';

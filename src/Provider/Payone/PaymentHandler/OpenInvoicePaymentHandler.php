@@ -39,21 +39,25 @@ class OpenInvoicePaymentHandler extends AbstractPaymentHandler
         $this->requestEnricherChain = $requestEnricherChain;
     }
 
+    #[\Override]
     public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
     {
         return PaymentHandlerType::REFUND === $type;
     }
 
+    #[\Override]
     public function getConfigKeyPrefix(): string
     {
         return OpenInvoicePaymentMethod::getConfigurationPrefix();
     }
 
+    #[\Override]
     public function getDefaultAuthorizationMethod(): string
     {
         return RequestActionEnum::PREAUTHORIZE->value;
     }
 
+    #[\Override]
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (self::isNeverCapturable($payoneTransActionData)) {
@@ -65,6 +69,7 @@ class OpenInvoicePaymentHandler extends AbstractPaymentHandler
         ;
     }
 
+    #[\Override]
     public function getPaymentMethodUuid(): string
     {
         return OpenInvoicePaymentMethod::getId();

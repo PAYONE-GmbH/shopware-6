@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  */
 readonly class AuthorizeRequestParameterEnricher implements RequestParameterEnricherInterface
 {
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $requestActionEnum = $this->getRequestActionEnum();

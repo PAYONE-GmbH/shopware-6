@@ -7,8 +7,8 @@ export default {
 
     methods: {
         hasPayoneTransaction(order) {
-            let me = this;
             let isPayone = false;
+            let me = this;
 
             if (!order.transactions) {
                 return false;
@@ -19,7 +19,6 @@ export default {
                     isPayone = true;
                 }
             });
-
 
             return isPayone;
         },

@@ -32,39 +32,41 @@ class SystemRequestParameterBuilder extends AbstractRequestParameterBuilder
         parent::__construct($serviceAccessor);
     }
 
+    #[\Override]
     public function getRequestParameter(AbstractRequestParameterStruct $arguments): array
     {
-        $context = $this->getContext($arguments);
+        $context        = $this->getContext($arguments);
         $salesChannelId = $this->getSalesChannelId($arguments);
 
         $configuration = $this->configReader->read($salesChannelId);
         /** @var class-string<PaymentHandlerInterface> $paymentHandlerClassname */
         $paymentHandlerClassname = $arguments->getPaymentMethod();
-        $paymentMethod = $this->paymentMethodRegistry->getByHandler($paymentHandlerClassname);
-        $configurationPrefix = $paymentMethod::getConfigurationPrefix();
+        $paymentMethod           = $this->paymentMethodRegistry->getByHandler($paymentHandlerClassname);
+        $configurationPrefix     = $paymentMethod::getConfigurationPrefix();
 
-        $accountId = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_ACCOUNT_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_ACCOUNT_ID));
+        $accountId  = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_ACCOUNT_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_ACCOUNT_ID));
         $merchantId = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_MERCHANT_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_MERCHANT_ID));
-        $portalId = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_PORTAL_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_ID));
-        $portalKey = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY));
+        $portalId   = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_PORTAL_ID, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_ID));
+        $portalKey  = $configuration->getByPrefix(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY, $configurationPrefix, $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_KEY));
 
         $plugin = $this->pluginService->getPluginByName(PayonePayment::PLUGIN_NAME, $context);
 
         return [
-            'aid' => $accountId,
-            'mid' => $merchantId,
-            'portalid' => $portalId,
-            'key' => $portalKey,
-            'api_version' => '3.10',
-            'mode' => $configuration->get('transactionMode'),
-            'encoding' => 'UTF-8',
-            'integrator_name' => 'shopware6',
+            'aid'                => $accountId,
+            'mid'                => $merchantId,
+            'portalid'           => $portalId,
+            'key'                => $portalKey,
+            'api_version'        => '3.10',
+            'mode'               => $configuration->get('transactionMode'),
+            'encoding'           => 'UTF-8',
+            'integrator_name'    => 'shopware6',
             'integrator_version' => $this->shopwareVersion,
-            'solution_name' => 'netinventors',
-            'solution_version' => $plugin->getVersion(),
+            'solution_name'      => 'netinventors',
+            'solution_version'   => $plugin->getVersion(),
         ];
     }
 
+    #[\Override]
     public function supports(AbstractRequestParameterStruct $arguments): bool
     {
         return !($arguments instanceof TestCredentialsStruct);

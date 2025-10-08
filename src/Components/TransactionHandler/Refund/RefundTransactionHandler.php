@@ -43,6 +43,7 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         $this->currencyPrecision         = $currencyPrecision;
     }
 
+    #[\Override]
     public function refund(ParameterBag $parameterBag, Context $context): JsonResponse
     {
         [ $requestResponse ] = $this->handleRequest($parameterBag, RequestActionEnum::REFUND->value, $context);
@@ -70,6 +71,7 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         return $requestResponse;
     }
 
+    #[\Override]
     protected function getAmount(OrderTransactionEntity $transaction): int
     {
         /** @var PayonePaymentOrderTransactionDataEntity $payoneTransactionData */
@@ -78,16 +80,19 @@ class RefundTransactionHandler extends AbstractTransactionHandler implements Ref
         return (int) $payoneTransactionData->getRefundedAmount();
     }
 
+    #[\Override]
     protected function getQuantityCustomField(): string
     {
         return CustomFieldInstaller::REFUNDED_QUANTITY;
     }
 
+    #[\Override]
     protected function getAllowPropertyName(): string
     {
         return 'allowRefund';
     }
 
+    #[\Override]
     protected function getAmountPropertyName(): string
     {
         return 'refundedAmount';

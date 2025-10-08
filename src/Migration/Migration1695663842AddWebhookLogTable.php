@@ -12,11 +12,13 @@ class Migration1695663842AddWebhookLogTable extends MigrationStep
 {
     use InheritanceUpdaterTrait;
 
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_695_663_842;
     }
 
+    #[\Override]
     public function update(Connection $connection): void
     {
         $sql = 'CREATE TABLE IF NOT EXISTS `payone_payment_webhook_log` (
@@ -38,6 +40,7 @@ class Migration1695663842AddWebhookLogTable extends MigrationStep
         $connection->executeStatement($sql);
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
         // implement update destructive

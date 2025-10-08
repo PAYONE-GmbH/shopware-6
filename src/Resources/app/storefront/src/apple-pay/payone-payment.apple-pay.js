@@ -1,8 +1,6 @@
 /* eslint-disable import/no-unresolved */
 
-import Plugin from 'src/plugin-system/plugin.class';
-import DomAccess from 'src/helper/dom-access.helper';
-import HttpClient from 'src/service/http-client.service';
+const Plugin = window.PluginBaseClass;
 
 export default class PayonePaymentApplePay extends Plugin {
     static options = {
@@ -28,10 +26,9 @@ export default class PayonePaymentApplePay extends Plugin {
             this.options.supportedNetworks = [];
         }
 
-        this._httpClient = new HttpClient();
         this.validateMerchantUrl = this.el.dataset.validateMerchantUrl;
         this.processPaymentUrl = this.el.dataset.processPaymentUrl;
-        this.orderForm = DomAccess.querySelector(document, '#confirmOrderForm');
+        this.orderForm = document.querySelector('#confirmOrderForm');
 
         this._registerEventHandler();
     }
@@ -56,40 +53,54 @@ export default class PayonePaymentApplePay extends Plugin {
     validateMerchant(event) {
         const validationUrl = event.validationURL;
 
-        this._httpClient.abort();
-        this._httpClient.post(this.validateMerchantUrl, JSON.stringify({validationUrl: validationUrl}), (response) => {
-            let merchantSession = null;
-
-            try {
-                merchantSession = JSON.parse(response);
-            } catch (e) {
-                this.handleErrorOnPayment();
-                return;
-            }
-
-            if (!merchantSession || !merchantSession.merchantSessionIdentifier || !merchantSession.signature) {
-                this.handleErrorOnPayment();
-                return;
-            }
-
-            this.session.completeMerchantValidation(merchantSession);
+        fetch(this.validateMerchantUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ validationUrl: validationUrl })
         })
+            .then(response => response.text())
+            .then((response) => {
+                let merchantSession = null;
+
+                try {
+                    merchantSession = JSON.parse(response);
+                } catch (e) {
+                    this.handleErrorOnPayment();
+                    return;
+                }
+
+                if (!merchantSession || !merchantSession.merchantSessionIdentifier || !merchantSession.signature) {
+                    this.handleErrorOnPayment();
+                    return;
+                }
+
+                this.session.completeMerchantValidation(merchantSession);
+            });
     }
 
     handleErrorOnPayment() {
-        const errorContainer = DomAccess.querySelector(document, '#payone-apple-pay-error');
+        const errorContainer = document.querySelector('#payone-apple-pay-error');
         errorContainer.style.display = 'block';
         errorContainer.scrollIntoView({block: 'start'});
     }
 
     authorizePayment(event) {
-        let orderId = DomAccess.querySelector(this.orderForm, 'input[name=\'orderId\']').value;
+        let orderId = this.orderForm.querySelector('input[name=\'orderId\']').value;
 
-        this._httpClient.abort();
-        this._httpClient.post(this.processPaymentUrl, JSON.stringify({token: event.payment.token, orderId: orderId}), (response) => {
-            this.completePayment(response);
-            this.orderForm.submit();
+        fetch(this.processPaymentUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ token: event.payment.token, orderId: orderId })
         })
+            .then(response => response.text())
+            .then((response) => {
+                this.completePayment(response);
+                this.orderForm.submit();
+            });
     }
 
     completePayment(response) {
@@ -119,10 +130,10 @@ export default class PayonePaymentApplePay extends Plugin {
     }
 
     updateFormData(status, txid, userid, response) {
-        DomAccess.querySelector(this.orderForm, 'input[name=\'status\']').value = status;
-        DomAccess.querySelector(this.orderForm, 'input[name=\'txid\']').value = txid;
-        DomAccess.querySelector(this.orderForm, 'input[name=\'userid\']').value = userid;
-        DomAccess.querySelector(this.orderForm, 'input[name=\'response\']').value = response;
+        this.orderForm.querySelector('input[name=\'status\']').value = status;
+        this.orderForm.querySelector('input[name=\'txid\']').value = txid;
+        this.orderForm.querySelector('input[name=\'userid\']').value = userid;
+        this.orderForm.querySelector('input[name=\'response\']').value = response;
     }
 
     _handleApplePayButtonClick() {

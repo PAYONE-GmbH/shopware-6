@@ -10,11 +10,13 @@ class RedirectCleanUp extends ScheduledTask
 {
     private const TIME_INTERVAL_DAILY = 86400;
 
+    #[\Override]
     public static function getTaskName(): string
     {
         return 'payone_payment.redirect_clean_up';
     }
 
+    #[\Override]
     public static function getDefaultInterval(): int
     {
         return self::TIME_INTERVAL_DAILY;

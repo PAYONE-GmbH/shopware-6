@@ -33,6 +33,7 @@ class CreditCardResponseHandler implements ResponseHandlerInterface
     ) {
     }
 
+    #[\Override]
     public function handle(
         string $orderTransactionId,
         PaymentTransaction $paymentTransaction,

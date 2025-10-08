@@ -39,6 +39,7 @@ class ConfigReader implements ConfigReaderInterface
         ;
     }
 
+    #[\Override]
     public function read(?string $salesChannelId = null, bool $fallback = true): Configuration
     {
         $values = $this->systemConfigService->getDomain(

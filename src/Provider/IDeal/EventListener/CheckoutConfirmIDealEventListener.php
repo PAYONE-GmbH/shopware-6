@@ -9,7 +9,6 @@ use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
-use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -19,17 +18,17 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class CheckoutConfirmIDealEventListener implements EventSubscriberInterface
 {
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [
-            CheckoutConfirmPageLoadedEvent::class      => 'hideIDealForNonNlCustomers',
-            AccountPaymentMethodPageLoadedEvent::class => 'hideIDealForNonNlCustomers',
-            AccountEditOrderPageLoadedEvent::class     => 'hideIDealForNonNlCustomers',
+            CheckoutConfirmPageLoadedEvent::class  => 'hideIDealForNonNlCustomers',
+            AccountEditOrderPageLoadedEvent::class => 'hideIDealForNonNlCustomers',
         ];
     }
 
     public function hideIDealForNonNlCustomers(
-        AccountEditOrderPageLoadedEvent|AccountPaymentMethodPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event,
+        AccountEditOrderPageLoadedEvent|CheckoutConfirmPageLoadedEvent $event,
     ): void {
         $paymentMethods = $event->getPage()->getPaymentMethods();
 

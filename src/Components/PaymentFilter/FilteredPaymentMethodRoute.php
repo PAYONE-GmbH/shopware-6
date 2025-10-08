@@ -29,6 +29,7 @@ class FilteredPaymentMethodRoute extends AbstractPaymentMethodRoute
     ) {
     }
 
+    #[\Override]
     public function getDecorated(): AbstractPaymentMethodRoute
     {
         return $this->decorated;
@@ -38,6 +39,7 @@ class FilteredPaymentMethodRoute extends AbstractPaymentMethodRoute
      * This decoration filters out PAYONE payment methods if necessary. The PayonePaymentMethodValidator takes care
      * of changing the currently selected payment method if it is no longer available.
      */
+    #[\Override]
     public function load(Request $request, SalesChannelContext $context, Criteria $criteria): PaymentMethodRouteResponse
     {
         $response       = $this->getDecorated()->load($request, $context, $criteria);

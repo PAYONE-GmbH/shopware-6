@@ -54,7 +54,7 @@ class SettingsController extends AbstractController
     {
         $testCount = 0;
         $errors    = [];
-        
+
         /** @var PaymentMethodInterface $paymentMethod */
         foreach ($this->paymentMethodRegistry as $paymentMethod) {
             $paymentClass        = $paymentMethod->getPaymentHandlerClassName();

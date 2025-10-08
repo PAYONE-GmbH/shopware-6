@@ -43,16 +43,19 @@ class StandardPaymentMethod extends AbstractPaymentMethod implements NoLongerSup
         );
     }
 
+    #[\Override]
     public static function getId(): string
     {
         return self::UUID;
     }
 
+    #[\Override]
     public static function getTechnicalName(): string
     {
         return self::TECHNICAL_NAME;
     }
 
+    #[\Override]
     public static function getConfigurationPrefix(): string
     {
         return self::CONFIGURATION_PREFIX;

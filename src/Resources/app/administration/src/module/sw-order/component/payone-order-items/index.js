@@ -24,17 +24,17 @@ export default {
             return [
                 {
                     property: 'product',
-                    label: this.$tc('sw-order.payone-payment.modal.columns.product'),
+                    label: this.$t('sw-order.payone-payment.modal.columns.product'),
                     rawData: true
                 },
                 {
                     property: 'quantity',
-                    label: this.$tc('sw-order.payone-payment.modal.columns.quantity'),
+                    label: this.$t('sw-order.payone-payment.modal.columns.quantity'),
                     rawData: true
                 },
                 {
                     property: 'price',
-                    label: this.$tc('sw-order.payone-payment.modal.columns.price'),
+                    label: this.$t('sw-order.payone-payment.modal.columns.price'),
                     rawData: true
                 }
             ];

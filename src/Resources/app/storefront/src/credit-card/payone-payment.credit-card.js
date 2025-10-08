@@ -1,7 +1,6 @@
 /* eslint-disable import/no-unresolved */
 
-import Plugin from 'src/plugin-system/plugin.class';
-import ButtonLoadingIndicator from 'src/utility/loading-indicator/button-loading-indicator.util';
+const Plugin = window.PluginBaseClass;
 
 export default class PayonePaymentCreditCard extends Plugin {
     static options = {
@@ -201,10 +200,13 @@ export default class PayonePaymentCreditCard extends Plugin {
 
         event.preventDefault();
 
-        if(confirmFormSubmit) {
-            const loader = new ButtonLoadingIndicator(confirmFormSubmit);
+        if (confirmFormSubmit) {
+            const plugin = window.PluginManager.getPluginInstanceFromElement(
+                document.querySelector('#confirmOrderForm[data-form-submit-loader]'),
+                'FormSubmitLoader'
+            );
+            plugin.removeLoadingIndicator();
             confirmFormSubmit.disabled = false;
-            loader.remove();
         }
     }
 

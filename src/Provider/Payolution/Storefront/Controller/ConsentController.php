@@ -29,10 +29,10 @@ class ConsentController extends StorefrontController
         path: '/payone/consent',
         name: 'frontend.account.payone.payolution.consent',
         options: [
-            'seo' => false,
+            'seo'         => false,
             'deprecation' => [
-                'since' => '6.4',
-                'message' => 'The route "frontend.account.payone.payolution.consent" is deprecated and will be removed in Shopware 7.0. Use "payone.payolution.frontend.invoice.consent" instead.'
+                'since'   => '6.4',
+                'message' => 'The route "frontend.account.payone.payolution.consent" is deprecated and will be removed in Shopware 7.0. Use "payone.payolution.frontend.invoice.consent" instead.',
             ],
         ],
         defaults: [ 'XmlHttpRequest' => true ],

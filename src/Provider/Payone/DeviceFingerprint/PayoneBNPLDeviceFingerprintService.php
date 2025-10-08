@@ -28,6 +28,7 @@ class PayoneBNPLDeviceFingerprintService extends AbstractDeviceFingerprintServic
         parent::__construct($requestStack);
     }
 
+    #[\Override]
     public function getSupportedPaymentHandlerClasses(): array
     {
         return [
@@ -37,6 +38,7 @@ class PayoneBNPLDeviceFingerprintService extends AbstractDeviceFingerprintServic
         ];
     }
 
+    #[\Override]
     public function getDeviceIdentSnippet(string $deviceIdentToken, SalesChannelContext $salesChannelContext): string
     {
         $html = <<<'HTML'
@@ -55,11 +57,13 @@ HTML;
         );
     }
 
+    #[\Override]
     protected function getSessionVarName(): string
     {
         return self::SESSION_VAR_NAME;
     }
 
+    #[\Override]
     protected function buildDeviceIdentToken(SalesChannelContext $salesChannelContext): string
     {
         $sessionId = $this->getSession()?->get('sessionId') ?? '';

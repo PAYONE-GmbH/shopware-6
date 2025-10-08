@@ -59,6 +59,7 @@ readonly class PaymentHandlerPayExecutor extends StandardPaymentHandlerPayExecut
         );
     }
 
+    #[\Override]
     public function pay(
         PaymentHandlerInterface $paymentHandler,
         Request $request,

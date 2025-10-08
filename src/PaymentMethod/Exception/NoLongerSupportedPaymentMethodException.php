@@ -17,11 +17,13 @@ class NoLongerSupportedPaymentMethodException extends ShopwareHttpException
         );
     }
 
+    #[\Override]
     public function getErrorCode(): string
     {
         return 'PAYONE__PAYMENT_METHOD_NO_LONGER_SUPPORTED';
     }
 
+    #[\Override]
     public function getStatusCode(): int
     {
         return Response::HTTP_FORBIDDEN;

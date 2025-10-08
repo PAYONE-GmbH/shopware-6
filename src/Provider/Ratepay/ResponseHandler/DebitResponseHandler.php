@@ -15,6 +15,7 @@ class DebitResponseHandler implements ResponseHandlerInterface
 {
     use HandleSynchronousResponseTrait;
 
+    #[\Override]
     protected function getAdditionalTransactionData(RequestDataBag $dataBag, array $request, array $response): array
     {
         // It differs depending on the authorization method

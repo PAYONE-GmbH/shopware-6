@@ -108,14 +108,14 @@ export default {
 
             this.PayonePaymentService.requeueNotificationForward(request).then(() => {
                 this.createNotificationSuccess({
-                    title: this.$tc('payonePayment.notificationTarget.actions.requeue'),
-                    message: this.$tc('payonePayment.notificationTarget.messages.success')
+                    title: this.$t('payonePayment.notificationTarget.actions.requeue'),
+                    message: this.$t('payonePayment.notificationTarget.messages.success')
                 });
 
                 this.getNotificationForwards(transaction);
             }).catch((error) => {
                 this.createNotificationError({
-                    title: this.$tc('payonePayment.notificationTarget.actions.requeue'),
+                    title: this.$t('payonePayment.notificationTarget.actions.requeue'),
                     message: error.message
                 });
             }).finally(() => {
@@ -132,7 +132,7 @@ export default {
         getPayoneCardType(transaction) {
             let cardType = transaction.extensions.payonePaymentOrderTransactionData?.additionalData?.card_type;
 
-            return cardType ? this.$tc('sw-order.payone-payment.creditCard.cardTypes.' + cardType) : null;
+            return cardType ? this.$t('sw-order.payone-payment.creditCard.cardTypes.' + cardType) : null;
         },
     }
 };

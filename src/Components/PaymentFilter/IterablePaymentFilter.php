@@ -16,6 +16,7 @@ readonly class IterablePaymentFilter implements PaymentFilterServiceInterface
     ) {
     }
 
+    #[\Override]
     public function filterPaymentMethods(
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext,

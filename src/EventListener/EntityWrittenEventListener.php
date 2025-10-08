@@ -20,6 +20,7 @@ readonly class EntityWrittenEventListener implements EventSubscriberInterface
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

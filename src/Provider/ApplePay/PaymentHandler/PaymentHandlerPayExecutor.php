@@ -43,6 +43,7 @@ readonly class PaymentHandlerPayExecutor implements PaymentHandlerPayExecutorInt
         $this->serializer = new Serializer(encoders: [ new JsonEncoder() ]);
     }
 
+    #[\Override]
     public function pay(
         PaymentHandlerInterface $paymentHandler,
         Request $request,

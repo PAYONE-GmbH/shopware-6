@@ -48,21 +48,25 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler implements Financ
         $this->stateHandler         = $stateHandler;
     }
 
+    #[\Override]
     public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
     {
         return PaymentHandlerType::REFUND === $type;
     }
 
+    #[\Override]
     public function getConfigKeyPrefix(): string
     {
         return InstallmentPaymentMethod::getConfigurationPrefix();
     }
 
+    #[\Override]
     public function getDefaultAuthorizationMethod(): string
     {
         return RequestActionEnum::PREAUTHORIZE->value;
     }
 
+    #[\Override]
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (self::isNeverCapturable($payoneTransActionData)) {
@@ -74,6 +78,7 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler implements Financ
         ;
     }
 
+    #[\Override]
     public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
         return [
@@ -82,11 +87,13 @@ class InstallmentPaymentHandler extends AbstractPaymentHandler implements Financ
         ];
     }
 
+    #[\Override]
     public function getPaymentMethodUuid(): string
     {
         return InstallmentPaymentMethod::getId();
     }
 
+    #[\Override]
     public function getFinancingType(): FinancingTypeEnum
     {
         return FinancingTypeEnum::INSTALLMENT;

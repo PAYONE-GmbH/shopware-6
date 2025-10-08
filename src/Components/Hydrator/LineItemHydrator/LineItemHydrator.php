@@ -54,6 +54,7 @@ class LineItemHydrator implements LineItemHydratorInterface
     ) {
     }
 
+    #[\Override]
     public function mapPayoneOrderLinesByRequest(
         CurrencyEntity $currency,
         OrderEntity $order,
@@ -103,6 +104,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         return $this->convertItemListToPayoneArray($requestLineItems, $currency);
     }
 
+    #[\Override]
     public function mapCartLines(Cart $cart, SalesChannelContext $salesChannelContext): array
     {
         $context          = $salesChannelContext->getContext();
@@ -127,6 +129,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         return $this->convertItemListToPayoneArray($requestLineItems, $salesChannelContext->getCurrency());
     }
 
+    #[\Override]
     public function mapOrderLines(CurrencyEntity $currency, OrderEntity $order, Context $context): array
     {
         $lineItemCollection = $order->getLineItems();

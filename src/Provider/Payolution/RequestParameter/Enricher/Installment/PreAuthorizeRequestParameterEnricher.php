@@ -8,9 +8,9 @@ use PayonePayment\Payone\Request\RequestActionEnum;
 
 readonly class PreAuthorizeRequestParameterEnricher extends AuthorizeRequestParameterEnricher
 {
+    #[\Override]
     protected function getRequestActionEnum(): RequestActionEnum
     {
         return RequestActionEnum::PREAUTHORIZE;
     }
 }
-

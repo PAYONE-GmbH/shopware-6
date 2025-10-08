@@ -52,21 +52,25 @@ class CreditCardPaymentHandler extends AbstractPaymentHandler
         $this->stateHandler         = $stateHandler;
     }
 
+    #[\Override]
     public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
     {
         return PaymentHandlerType::REFUND === $type;
     }
 
+    #[\Override]
     public function getConfigKeyPrefix(): string
     {
         return CreditCardPaymentMethod::getConfigurationPrefix();
     }
 
+    #[\Override]
     public function getDefaultAuthorizationMethod(): string
     {
         return RequestActionEnum::PREAUTHORIZE->value;
     }
 
+    #[\Override]
     public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
         $definitions = $this->getBasicValidationDefinitions($dataBag, $salesChannelContext);
@@ -90,6 +94,7 @@ class CreditCardPaymentHandler extends AbstractPaymentHandler
         return $definitions;
     }
 
+    #[\Override]
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (self::isNeverCapturable($payoneTransActionData)) {
@@ -105,6 +110,7 @@ class CreditCardPaymentHandler extends AbstractPaymentHandler
         return static::matchesIsCapturableDefaults($transactionData);
     }
 
+    #[\Override]
     public function getPaymentMethodUuid(): string
     {
         return CreditCardPaymentMethod::getId();

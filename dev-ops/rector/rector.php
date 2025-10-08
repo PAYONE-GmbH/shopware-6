@@ -20,6 +20,6 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->sets([
-        ShopwareSetList::SHOPWARE_6_6_0,
+        ShopwareSetList::SHOPWARE_6_7_0,
     ]);
 };

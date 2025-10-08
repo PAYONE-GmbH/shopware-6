@@ -22,6 +22,7 @@ readonly class PaymentStatusHandler implements WebhookHandlerInterface
     ) {
     }
 
+    #[\Override]
     public function process(SalesChannelContext $salesChannelContext, Request $request): void
     {
         $paymentTransaction = $this->transactionDataHandler->getPaymentTransactionByPayoneTransactionId(
@@ -44,6 +45,7 @@ readonly class PaymentStatusHandler implements WebhookHandlerInterface
         );
     }
 
+    #[\Override]
     public function supports(SalesChannelContext $salesChannelContext, array $data): bool
     {
         return isset($data['txid'])

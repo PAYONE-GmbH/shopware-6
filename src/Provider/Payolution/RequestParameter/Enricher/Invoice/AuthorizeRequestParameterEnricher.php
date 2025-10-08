@@ -31,6 +31,7 @@ readonly class AuthorizeRequestParameterEnricher implements RequestParameterEnri
     ) {
     }
 
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         $requestActionEnum = $this->getRequestActionEnum();

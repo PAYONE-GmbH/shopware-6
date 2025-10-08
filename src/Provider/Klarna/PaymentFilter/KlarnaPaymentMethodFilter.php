@@ -16,13 +16,14 @@ readonly class KlarnaPaymentMethodFilter extends DefaultPaymentFilterService
     /**
      * @throws PaymentMethodNotAllowedException
      */
+    #[\Override]
     protected function additionalChecks(
         PaymentMethodCollection $methodCollection,
         PaymentFilterContext $filterContext,
     ): void {
         if ($this->hasCustomProducts($filterContext)) {
             throw new PaymentMethodNotAllowedException(
-                'PAYONE does not support custom products within Klarna payments'
+                'PAYONE does not support custom products within Klarna payments',
             );
         }
     }

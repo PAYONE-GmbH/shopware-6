@@ -9,11 +9,13 @@ use Shopware\Core\Framework\Migration\MigrationStep;
 
 class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends MigrationStep
 {
+    #[\Override]
     public function getCreationTimestamp(): int
     {
         return 1_639_050_658;
     }
 
+    #[\Override]
     public function update(Connection $connection): void
     {
         $sql = 'INSERT INTO `payone_payment_order_transaction_data`
@@ -104,6 +106,7 @@ class Migration1639050658MigrateOrderTransactionDataFromCustomFields extends Mig
         }
     }
 
+    #[\Override]
     public function updateDestructive(Connection $connection): void
     {
         // implement update destructive

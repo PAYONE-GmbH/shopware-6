@@ -32,10 +32,10 @@ class DownloadController extends StorefrontController
         path: '/payone/installment/download',
         name: 'frontend.payone.payolution.installment.download',
         options: [
-            'seo' => false,
+            'seo'         => false,
             'deprecation' => [
-                'since' => '6.4',
-                'message' => 'The route "frontend.payone.payolution.installment.download" is deprecated and will be removed in Shopware 7.0. Use "payone.payolution.frontend.installment.download" instead.'
+                'since'   => '6.4',
+                'message' => 'The route "frontend.payone.payolution.installment.download" is deprecated and will be removed in Shopware 7.0. Use "payone.payolution.frontend.installment.download" instead.',
             ],
         ],
         defaults: [ 'XmlHttpRequest' => true ],

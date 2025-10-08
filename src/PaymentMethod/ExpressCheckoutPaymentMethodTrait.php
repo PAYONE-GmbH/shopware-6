@@ -12,7 +12,7 @@ trait ExpressCheckoutPaymentMethodTrait
     protected PaymentHandlerInterface&ExpressCheckoutPaymentHandlerAwareInterface $paymentHandler;
 
     public function setPaymentHandler(
-        PaymentHandlerInterface&ExpressCheckoutPaymentHandlerAwareInterface $paymentHandler
+        PaymentHandlerInterface&ExpressCheckoutPaymentHandlerAwareInterface $paymentHandler,
     ): void {
         $this->paymentHandler = $paymentHandler;
     }

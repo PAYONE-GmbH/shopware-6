@@ -45,21 +45,25 @@ class DebitPaymentHandler extends AbstractPaymentHandler
         $this->requestEnricherChain = $requestEnricherChain;
     }
 
+    #[\Override]
     public function supports(PaymentHandlerType $type, string $paymentMethodId, Context $context): bool
     {
         return PaymentHandlerType::REFUND === $type;
     }
 
+    #[\Override]
     public function getConfigKeyPrefix(): string
     {
         return DebitPaymentMethod::getConfigurationPrefix();
     }
 
+    #[\Override]
     public function getDefaultAuthorizationMethod(): string
     {
         return RequestActionEnum::PREAUTHORIZE->value;
     }
 
+    #[\Override]
     public function getValidationDefinitions(DataBag $dataBag, SalesChannelContext $salesChannelContext): array
     {
         $definitions = $this->getBasicValidationDefinitions($dataBag, $salesChannelContext);
@@ -70,6 +74,7 @@ class DebitPaymentHandler extends AbstractPaymentHandler
         return $definitions;
     }
 
+    #[\Override]
     public static function isCapturable(array $transactionData, array $payoneTransActionData): bool
     {
         if (self::isNeverCapturable($payoneTransActionData)) {
@@ -81,6 +86,7 @@ class DebitPaymentHandler extends AbstractPaymentHandler
         ;
     }
 
+    #[\Override]
     public function getPaymentMethodUuid(): string
     {
         return DebitPaymentMethod::getId();

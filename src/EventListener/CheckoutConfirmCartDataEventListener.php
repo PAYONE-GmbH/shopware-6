@@ -24,6 +24,7 @@ readonly class CheckoutConfirmCartDataEventListener implements EventSubscriberIn
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

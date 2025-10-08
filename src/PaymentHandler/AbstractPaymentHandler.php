@@ -15,6 +15,7 @@ abstract class AbstractPaymentHandler extends AbstractShopwarePaymentHandler imp
 {
     protected readonly PaymentHandlerPayExecutorInterface $payExecutor;
 
+    #[\Override]
     public function pay(
         Request $request,
         PaymentTransactionStruct $transaction,

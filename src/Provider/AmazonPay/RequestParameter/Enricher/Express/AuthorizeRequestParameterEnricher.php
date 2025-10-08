@@ -16,6 +16,7 @@ use PayonePayment\RequestParameter\RequestParameterEnricherInterface;
  */
 readonly class AuthorizeRequestParameterEnricher implements RequestParameterEnricherInterface
 {
+    #[\Override]
     public function enrich(AbstractRequestDto $arguments): array
     {
         if ($arguments->action !== RequestActionEnum::AUTHORIZE->value) {
