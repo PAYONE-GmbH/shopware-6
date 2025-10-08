@@ -1,0 +1,132 @@
+{
+  "main.js": {
+    "file": "assets/payone-payment-yHmwc9qG.js",
+    "name": "payone-payment",
+    "src": "main.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "module/payone-payment/component/payone-payment-plugin-icon/index.js",
+      "module/payone-payment/component/payone-ratepay-profile-configurations/index.js",
+      "module/payone-payment/component/payone-ratepay-profiles/index.js",
+      "module/payone-payment/page/payone-settings/index.js",
+      "module/payone-notification-target/page/payone-notification-target-detail/index.js",
+      "module/payone-notification-target/page/payone-notification-target-list/index.js",
+      "module/sw-order/component/payone-capture-button/index.js",
+      "module/sw-order/component/payone-order-items/index.js",
+      "module/sw-order/component/payone-payment-management/index.js",
+      "module/sw-order/component/payone-payment-order-action-log/index.js",
+      "module/sw-order/component/payone-payment-webhook-log/index.js",
+      "module/sw-order/component/payone-refund-button/index.js",
+      "module/sw-order/view/sw-order-detail-payone/index.js",
+      "module/sw-order/page/sw-order-detail/index.js"
+    ]
+  },
+  "module/payone-notification-target/page/payone-notification-target-detail/index.js": {
+    "file": "assets/index-DRJqZZu2.js",
+    "name": "index",
+    "src": "module/payone-notification-target/page/payone-notification-target-detail/index.js",
+    "isDynamicEntry": true
+  },
+  "module/payone-notification-target/page/payone-notification-target-list/index.js": {
+    "file": "assets/index-BRtyPmhG.js",
+    "name": "index",
+    "src": "module/payone-notification-target/page/payone-notification-target-list/index.js",
+    "isDynamicEntry": true
+  },
+  "module/payone-payment/component/payone-payment-plugin-icon/index.js": {
+    "file": "assets/index-BTrSYjkY.js",
+    "name": "index",
+    "src": "module/payone-payment/component/payone-payment-plugin-icon/index.js",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-B6sQ0EGO.css"
+    ]
+  },
+  "module/payone-payment/component/payone-ratepay-profile-configurations/index.js": {
+    "file": "assets/index-B2DuEd9h.js",
+    "name": "index",
+    "src": "module/payone-payment/component/payone-ratepay-profile-configurations/index.js",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-fjVWfop_.css"
+    ]
+  },
+  "module/payone-payment/component/payone-ratepay-profiles/index.js": {
+    "file": "assets/index-DyAX5SD_.js",
+    "name": "index",
+    "src": "module/payone-payment/component/payone-ratepay-profiles/index.js",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-Bet9BGQj.css"
+    ]
+  },
+  "module/payone-payment/page/payone-settings/index.js": {
+    "file": "assets/index-BbyBawW7.js",
+    "name": "index",
+    "src": "module/payone-payment/page/payone-settings/index.js",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-B8NwrOeQ.css"
+    ]
+  },
+  "module/sw-order/component/payone-capture-button/index.js": {
+    "file": "assets/index-CPA72YU3.js",
+    "name": "index",
+    "src": "module/sw-order/component/payone-capture-button/index.js",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-BCNIzRwh.css"
+    ]
+  },
+  "module/sw-order/component/payone-order-items/index.js": {
+    "file": "assets/index-BnzQa17P.js",
+    "name": "index",
+    "src": "module/sw-order/component/payone-order-items/index.js",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-BH3t_MMG.css"
+    ]
+  },
+  "module/sw-order/component/payone-payment-management/index.js": {
+    "file": "assets/index-1x2Zhiwi.js",
+    "name": "index",
+    "src": "module/sw-order/component/payone-payment-management/index.js",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-CG356GgQ.css"
+    ]
+  },
+  "module/sw-order/component/payone-payment-order-action-log/index.js": {
+    "file": "assets/index-Be5-UySV.js",
+    "name": "index",
+    "src": "module/sw-order/component/payone-payment-order-action-log/index.js",
+    "isDynamicEntry": true
+  },
+  "module/sw-order/component/payone-payment-webhook-log/index.js": {
+    "file": "assets/index-CED0g-AY.js",
+    "name": "index",
+    "src": "module/sw-order/component/payone-payment-webhook-log/index.js",
+    "isDynamicEntry": true
+  },
+  "module/sw-order/component/payone-refund-button/index.js": {
+    "file": "assets/index-DFvC7jUc.js",
+    "name": "index",
+    "src": "module/sw-order/component/payone-refund-button/index.js",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-DwnVe5aj.css"
+    ]
+  },
+  "module/sw-order/page/sw-order-detail/index.js": {
+    "file": "assets/index-z3jAkgAL.js",
+    "name": "index",
+    "src": "module/sw-order/page/sw-order-detail/index.js",
+    "isDynamicEntry": true
+  },
+  "module/sw-order/view/sw-order-detail-payone/index.js": {
+    "file": "assets/index-RX_vWIDt.js",
+    "name": "index",
+    "src": "module/sw-order/view/sw-order-detail-payone/index.js",
+    "isDynamicEntry": true
+  }
+}
