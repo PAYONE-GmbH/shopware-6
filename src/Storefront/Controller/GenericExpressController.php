@@ -160,7 +160,7 @@ class GenericExpressController extends StorefrontController
 
         $customerResponse = $this->registerRoute->register($customerDataBag, $context, false);
         $customerId       = $customerResponse->getCustomer()->getId();
-        $newContextToken  = $this->accountService->login($response['addpaydata']['email'], $context, true);
+        $newContextToken  = $this->accountService->loginById($customerId, $context);
 
         // info: we need to pass the payment-method-id for creating the context & switching the context
         $newContext = $this->salesChannelContextFactory->create(
