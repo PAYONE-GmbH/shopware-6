@@ -1,0 +1,38 @@
+{
+  "base": "/bundles/payonepayment/administration/",
+  "entryPoints": {
+    "payone-payment": {
+      "css": [],
+      "dynamic": [
+        "/bundles/payonepayment/administration/assets/index-BTrSYjkY.js",
+        "/bundles/payonepayment/administration/assets/index-B2DuEd9h.js",
+        "/bundles/payonepayment/administration/assets/index-DyAX5SD_.js",
+        "/bundles/payonepayment/administration/assets/index-BbyBawW7.js",
+        "/bundles/payonepayment/administration/assets/index-DRJqZZu2.js",
+        "/bundles/payonepayment/administration/assets/index-BRtyPmhG.js",
+        "/bundles/payonepayment/administration/assets/index-CPA72YU3.js",
+        "/bundles/payonepayment/administration/assets/index-BnzQa17P.js",
+        "/bundles/payonepayment/administration/assets/index-1x2Zhiwi.js",
+        "/bundles/payonepayment/administration/assets/index-Be5-UySV.js",
+        "/bundles/payonepayment/administration/assets/index-CED0g-AY.js",
+        "/bundles/payonepayment/administration/assets/index-DFvC7jUc.js",
+        "/bundles/payonepayment/administration/assets/index-RX_vWIDt.js",
+        "/bundles/payonepayment/administration/assets/index-z3jAkgAL.js"
+      ],
+      "js": [
+        "/bundles/payonepayment/administration/assets/payone-payment-yHmwc9qG.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.1.0",
+    7,
+    1,
+    0
+  ],
+  "viteServer": null
+}
