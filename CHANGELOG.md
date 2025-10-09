@@ -446,3 +446,18 @@ Maintenance
 * Change webhook for prepayment auto capture to 'paid'
 * Remove bankgrouptype parameter for iDEAL
 * tested with 6.6.10.5
+
+# 7.0.0
+
+New Features
+
+* Established compatibility with 6.7.x
+ 
+Bugfix
+ 
+* Fixed PayPal issue with mismatched shipping and billing addresses
+ 
+Maintenance
+
+* Removed deactivated payment methods from the frontend (Paydirekt, Trustly, Sofort) 
+* Tested with 6.7.3
