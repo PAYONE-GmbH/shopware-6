@@ -433,3 +433,18 @@ Wartung
 * Webhook für die automatische Vorkasse auf 'paid' geändert
 * Bankgruppentyp-Parameter für iDEAL entfernt
 * getestet mit 6.6.10.5
+
+# 7.0.0
+
+Neue Funktionen
+
+* Kompatibilität hergestellt mit 6.7.x
+ 
+Fehlerbehebung
+ 
+* PayPal: Fehler bei abweichender Liefer- und Rechnungsadresse behoben
+ 
+Wartung
+
+* Deaktivierte Zahlungsarten aus dem Frontend entfernt (Paydirekt, Trustly, Sofort) 
+* Getested mit 6.7.3
