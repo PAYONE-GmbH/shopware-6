@@ -4,21 +4,17 @@ declare(strict_types=1);
 
 namespace PayonePayment\Provider\Payone\EventListener;
 
-use PayonePayment\Payone\Dto\PaymentTransactionDto;
 use PayonePayment\Provider\Payone\PaymentHandler\CreditCardPaymentHandler;
 use PayonePayment\Provider\Payone\PaymentMethod\CreditCardPaymentMethod;
-use PayonePayment\RequestParameter\PaymentRequestDto;
-use PayonePayment\RequestParameter\PaymentRequestEnricher;
+use PayonePayment\Provider\Payone\RequestParameter\CreditCardCheckRequestDto;
+use PayonePayment\Provider\Payone\RequestParameter\RequestEnricher;
 use PayonePayment\RequestParameter\RequestParameterEnricherChain;
 use PayonePayment\StoreApi\Route\AbstractCardRoute;
 use PayonePayment\Storefront\Struct\CheckoutCartPaymentData;
 use PayonePayment\Storefront\Struct\CheckoutConfirmPaymentData;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
-use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
@@ -27,7 +23,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 readonly class CheckoutConfirmCreditCardEventListener implements EventSubscriberInterface
 {
     public function __construct(
-        private PaymentRequestEnricher $paymentRequestEnricher,
+        private RequestEnricher $requestEnricher,
         private RequestParameterEnricherChain $requestEnricherChain,
         private CreditCardPaymentHandler $paymentHandler,
         private EntityRepository $languageRepository,
@@ -53,14 +49,11 @@ readonly class CheckoutConfirmCreditCardEventListener implements EventSubscriber
             return;
         }
 
-        $cardRequest = $this->paymentRequestEnricher->enrich(
-            new PaymentRequestDto(
-                new PaymentTransactionDto(new OrderTransactionEntity(), new OrderEntity(), []),
-                new RequestDataBag(),
+        $cardRequest = $this->requestEnricher->enrich(
+            new CreditCardCheckRequestDto(
                 $context,
-                $page->getCart(),
                 $this->paymentHandler,
-                clientApiRequest: true,
+                true,
             ),
 
             $this->requestEnricherChain,

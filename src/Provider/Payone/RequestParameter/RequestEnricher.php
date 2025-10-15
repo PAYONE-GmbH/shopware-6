@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Provider\Ratepay\RequestParameter;
+namespace PayonePayment\Provider\Payone\RequestParameter;
 
 use PayonePayment\RequestParameter\AbstractRequestParameterEnricher;
 use PayonePayment\RequestParameter\RequestEnricherTrait;
 
 /**
- * @extends AbstractRequestParameterEnricher<CalculateRequestDto|ProfileRequestDto>
+ * @extends AbstractRequestParameterEnricher<CreditCardCheckRequestDto>
  */
 readonly class RequestEnricher extends AbstractRequestParameterEnricher
 {
     /**
-     * @use RequestEnricherTrait<CalculateRequestDto|ProfileRequestDto>
+     * @use RequestEnricherTrait<CreditCardCheckRequestDto>
      */
     use RequestEnricherTrait;
 }

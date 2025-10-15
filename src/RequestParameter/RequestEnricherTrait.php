@@ -7,7 +7,7 @@ namespace PayonePayment\RequestParameter;
 /**
  * @template T of AbstractRequestDto
  */
-trait PaymentRequestEnricherTrait
+trait RequestEnricherTrait
 {
     /**
      * @param T $requestDto
