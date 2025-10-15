@@ -5,6 +5,8 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd"
 >
     <services>
+        <service id="PayonePayment\Provider\Payone\RequestParameter\RequestEnricher" />
+
         <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\CustomerInformationRequestParameterEnricher">
             <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
 

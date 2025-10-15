@@ -6,7 +6,7 @@
 >
     <services>
         <service id="PayonePayment\Provider\Payone\EventListener\CheckoutConfirmCreditCardEventListener">
-            <argument type="service" id="PayonePayment\RequestParameter\PaymentRequestEnricher" />
+            <argument type="service" id="PayonePayment\Provider\Payone\RequestParameter\RequestEnricher" />
             <argument type="service" id="payone.request_enricher_chain.check.payone.credit_card" />
             <argument type="service" id="PayonePayment\Provider\Payone\PaymentHandler\CreditCardPaymentHandler" />
             <argument type="service" id="language.repository" />

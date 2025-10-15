@@ -10,7 +10,7 @@ namespace PayonePayment\RequestParameter;
 readonly class PaymentRequestEnricher extends AbstractRequestParameterEnricher
 {
     /**
-     * @use PaymentRequestEnricherTrait<PaymentRequestDto>
+     * @use RequestEnricherTrait<PaymentRequestDto>
      */
-    use PaymentRequestEnricherTrait;
+    use RequestEnricherTrait;
 }
