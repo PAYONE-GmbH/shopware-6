@@ -356,7 +356,7 @@ Wartung
 # 6.0.0
 
 Neue Funktionen
- 
+
 * Unterstützung für Shopware 6.6 hinzugefügt
 * Verbesserung der Refundfunktion auf der Bestelldetailsseite
 * Neue Loggingfunktion auf der Bestelldetailsseite
@@ -364,7 +364,7 @@ Neue Funktionen
 * neue Zahlungsart: Amazon Pay
 * B2B Zahlungen für BNPL gesicherter Rechnungskauf
 
-Fehlerbehebung   
+Fehlerbehebung
 
 * iDEAL Bankliste geupdated
 * Fehler beim Geburtstagsfeld in Unzer B2B behoben
@@ -373,7 +373,7 @@ Fehlerbehebung
 * notification logging repariert
 
 Wartung
- 
+
 * getestet mit 6.5.8.9 und 6.6.1.2
 
 # 6.0.1
@@ -385,19 +385,19 @@ Fehlerbehebung
 # 6.1.2
 
 Neue Funktionen
- 
+
 * Einzelartikel für alle Zahlungsarten aktivieren
 * Hinzufügen von Artikeldetails auf der Bestellungsdetailseite
- 
+
 Fehlerbehebungen
- 
+
 * Probleme mit dem Zahlungsfilter behoben
 * Probleme mit der Rechtevergabe behoben
 * Problem mit der Benachrichtigungsweiterleitungs-Detailseite behoben (Danke @hgnb99)
 * Problem mit Apple Pay behoben
- 
+
 Wartung
- 
+
 * Kreditkarteninhaber hinzufügen
 * Speicherung von SEPA-Mandaten entfernt
 * composer.json angepasst
@@ -406,16 +406,16 @@ Wartung
 # 6.2.0
 
 Neue Funktionen
- 
+
 * neue Zahlart: PayPal v2
 * neue Zahlart: PayPal Express v2
- 
+
 Fehlerbehebung
- 
+
 * zeigt Fehlermeldungen im Backend nur noch bei tatsächlichem Fehler an
- 
+
 Wartung
- 
+
 * webhooks: Sortierreihenfolge für Handler hinzugefügt
 * getestet mit 6.6.9
 
@@ -439,12 +439,27 @@ Wartung
 Neue Funktionen
 
 * Kompatibilität hergestellt mit 6.7.x
- 
+
 Fehlerbehebung
- 
+
 * PayPal: Fehler bei abweichender Liefer- und Rechnungsadresse behoben
- 
+
 Wartung
 
-* Deaktivierte Zahlungsarten aus dem Frontend entfernt (Paydirekt, Trustly, Sofort) 
+* Deaktivierte Zahlungsarten aus dem Frontend entfernt (Paydirekt, Trustly, Sofort)
 * Getested mit 6.7.3
+
+# 7.0.1
+
+Neue Funktionen
+
+* Verbessert den Kreditkartenprüfungsprozess durch die Einführung eines dedizierten Anfrage-DTO und eines generischen Anfrage-Enrichers.
+* Vereinfacht die Kreditkartenprüfungsanfrage und reduziert die Abhängigkeit von bestimmten Bestell- oder Warenkorbinformationen. Außerdem zentralisiert es die Logik zur Anreicherung von Anfrageparametern.
+
+Bugfix
+
+* Behebt einen Fehler, der Probleme beim Bearbeiten von Bestellungen mit fehlgeschlagener Kreditkartenzahlungen verursacht.
+
+Maintenance
+
+* Removes twig/twig requirement.

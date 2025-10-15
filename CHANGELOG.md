@@ -368,7 +368,7 @@ Maintenance
 # 6.0.0
 
 New Features
- 
+
 * compatibility with SW 6.6 established
 * improved refund handling on order detail page
 * new logging function on order detail page
@@ -376,17 +376,17 @@ New Features
 * new payment method: Amazon Pay
 * implement B2B payments for BNPL Secured Invoice
 
-Bugfixes   
+Bugfixes
 
 * updated the iDEAL issuer list
 * fixed birthday field in Unzer B2B
 * updated the hash method
 * removed paydirekt and updated giropay
 * fixed notification forwarding
-* fixed notification logging 
+* fixed notification logging
 
 Maintenance
- 
+
 * tested with 6.5.8.9 and 6.6.1.2
 
 # 6.0.1
@@ -398,19 +398,19 @@ Bugfix
 # 6.1.2
 
 New Features
- 
+
 * enable line items for all payment methods
 * add line item details in order details page
- 
+
 Bugfixes
- 
+
 * fixed problems with payment filter
 * fixed problems with rights assignment
 * fixed problem with Notification Forward Detail Page (Thanks @hgnb99)
 * fixed problem with Apple Pay
- 
+
 Maintenance
- 
+
 * add credit card holder
 * removed storage of SEPA mandates
 * edit composer.json
@@ -419,16 +419,16 @@ Maintenance
 # 6.2.0
 
 New Features
- 
+
 * new payment method: PayPal v2
 * new payment method: PayPal Express v2
- 
+
 Bugfix
- 
+
 * show error notification in backend only in case of an error
- 
+
 Maintenance
- 
+
 * webhooks: add sort-order for handlers to prevent wrong order
 * tested with 6.6.9
 
@@ -452,12 +452,27 @@ Maintenance
 New Features
 
 * Established compatibility with 6.7.x
- 
+
 Bugfix
- 
+
 * Fixed PayPal issue with mismatched shipping and billing addresses
- 
+
 Maintenance
 
-* Removed deactivated payment methods from the frontend (Paydirekt, Trustly, Sofort) 
+* Removed deactivated payment methods from the frontend (Paydirekt, Trustly, Sofort)
 * Tested with 6.7.3
+
+# 7.0.1
+
+New Features
+
+* Improves credit card check process by introducing a dedicated request DTO and a generic request enricher.
+* Simplifies the credit card check request and reduces dependencies on specific order or cart information. It also centralizes request parameter enrichment logic.
+
+Bugfix
+
+* Fixes a bug that causes problems when editing orders with failed credit card payments.
+
+Maintenance
+
+* Removes twig/twig requirement.
