@@ -466,13 +466,13 @@ Maintenance
 
 New Features
 
-* Improves credit card check process by introducing a dedicated request DTO and a generic request enricher.
-* Simplifies the credit card check request and reduces dependencies on specific order or cart information. It also centralizes request parameter enrichment logic.
+* Improves credit card check process by introducing a dedicated request DTO and a generic request enricher
+* Simplifies the credit card check request and reduces dependencies on specific order or cart information. It also centralizes request parameter enrichment logic
 
 Bugfix
 
-* Fixes a bug that causes problems when editing orders with failed credit card payments.
+* Fixes a bug that causes problems when editing orders with failed credit card payments
 
 Maintenance
 
-* Removes twig/twig requirement.
+* Removes twig/twig requirement
