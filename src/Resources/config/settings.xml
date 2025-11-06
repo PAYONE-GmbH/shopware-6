@@ -925,7 +925,7 @@
         <input-field>
             <name>applePayDisplayName</name>
             <label>ApplePay Display Name</label>
-            <helpText>This name will be display on the device during the payment process. E.g. the MacBook Pro Touchbar</helpText>
+            <helpText>This name will be displayed on the device during the payment process. E.g. the MacBook Pro Touchbar</helpText>
             <helpText lang="de-DE">Wird auf dem jeweiligen Gerät während des Zahlungsprozesses ausgegeben. (Bsp. MacBook Pro Touchbar)</helpText>
         </input-field>
 
@@ -1579,6 +1579,45 @@
             <label lang="de-DE">Bestellnummer im Verwendungstext übertragen?</label>
             <helpText>Indicates whether the order number should be transferred in the payment method's narrative text. If the option is deactivated, the narrative text is deducted from the corresponding field in your PMI payment portal</helpText>
             <helpText lang="de-DE">Gibt an, ob bei Zahlungen die Bestellnummer im Verwendungszweck der Zahlart übertragen werden soll. Ist die Option deaktiviert, greift die Einstellung für den Verwendungszweck aus dem Zahlungsportal im PMI</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>PAYONE Google Pay</title>
+        <title lang="de-DE">PAYONE Google Pay</title>
+
+        <name>payment_googlePay</name>
+
+        <input-field type="single-select">
+            <name>googlePayAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Defines the authorization method for this payment method.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field>
+            <name>googlePayMerchantId</name>
+            <label>Google Pay Merchant ID</label>
+        </input-field>
+
+        <input-field>
+            <name>googlePayMerchantName</name>
+            <label>Google Pay Merchant Name</label>
+            <helpText>This name will be displayed on the device during the payment process.</helpText>
+            <helpText lang="de-DE">Wird auf dem jeweiligen Gerät während des Zahlungsprozesses ausgegeben.</helpText>
         </input-field>
     </card>
 </config>

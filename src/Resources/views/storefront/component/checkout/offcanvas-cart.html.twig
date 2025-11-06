@@ -30,4 +30,13 @@
             } %}
         {% endblock %}
     {% endif %}
+
+    {% if page.extensions.payoneGooglePayButton %}
+        {% block utilities_offcanvas_payone_google_pay_button %}
+            {% sw_include '@PayonePayment/storefront/payone/google-pay/google-pay-button.html.twig' with {
+                location: 'offcanvas',
+                buttonConfiguration: page.extensions.payoneGooglePayButton
+            } %}
+        {% endblock %}
+    {% endif %}
 {% endblock %}

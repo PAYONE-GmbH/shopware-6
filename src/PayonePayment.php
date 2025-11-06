@@ -77,6 +77,10 @@ class PayonePayment extends Plugin
         );
 
         $container->addCompilerPass(
+            new Provider\GooglePay\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
             new Provider\IDeal\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
         );
 
