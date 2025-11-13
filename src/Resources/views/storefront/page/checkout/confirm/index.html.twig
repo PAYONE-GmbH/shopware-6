@@ -41,3 +41,16 @@
         {% sw_include page.extensions.payone.template %}
     {% endif %}
 {% endblock %}
+
+{% block page_checkout_confirm_payment_shipping %}
+    {{ parent() }}
+
+    {% block utilities_checkout_payone_google_pay_button %}
+        {% if page.extensions.payoneGooglePayButton %}
+            {% sw_include '@PayonePayment/storefront/payone/google-pay/google-pay-button.html.twig' with {
+                location: 'cart',
+                buttonConfiguration: page.extensions.payoneGooglePayButton
+            } %}
+        {% endif %}
+    {% endblock %}
+{% endblock %}

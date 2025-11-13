@@ -37,7 +37,7 @@
                     tokenizationSpecification: {
                         type: 'PAYMENT_GATEWAY',
                         parameters: {
-                            gateway: 'payone', // todo: due to the payone documentation (Prerequisites): "GatewayId: payonegmbh"
+                            gateway: 'payone',
                             gatewayMerchantId: '{{ buttonConfiguration.merchantId }}' // todo: ask Payone for their merchantId at Google
                         }
                     }
@@ -106,10 +106,10 @@
             const req = {
                 ...deepCopy(baseGooglePayRequest),
                 transactionInfo: {
-                    countryCode: 'US',
-                    currencyCode: 'USD',
-                    totalPriceStatus: 'FINAL',
-                    totalPrice: (Math.random() * 999 + 1).toFixed(2),
+                    countryCode: '{{ buttonConfiguration.countryCode }}',
+                    currencyCode: '{{ buttonConfiguration.currencyCode }}',
+                    totalPriceStatus: 'FINAL', // todo: there is also an option ESTIMATED, we should compare it to amazon and decide what value should be used
+                    totalPrice: '{{ buttonConfiguration.totalPrice }}',
                 },
                 // todo: callbackIntents (codelab gpay-web-201)
             };
