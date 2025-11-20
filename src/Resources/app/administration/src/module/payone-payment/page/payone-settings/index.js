@@ -149,7 +149,7 @@ export default {
             if (response.payoneRatepayProfilesUpdateResult && response.payoneRatepayProfilesUpdateResult[salesChannelId]) {
                 const resultBySalesChannel = response.payoneRatepayProfilesUpdateResult[salesChannelId];
 
-                this.$root.$emit(
+                Shopware.Utils.EventBus.emit(
                     'payone-ratepay-profiles-update-result',
                     resultBySalesChannel
                 );
