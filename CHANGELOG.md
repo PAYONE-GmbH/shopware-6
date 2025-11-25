@@ -476,3 +476,9 @@ Bugfix
 Maintenance
 
 * Removes twig/twig requirement
+
+# 7.0.2
+
+New Features
+
+* Provides compatibility to the product set feature of Pickware Pro

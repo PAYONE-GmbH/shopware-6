@@ -463,3 +463,9 @@ Bugfix
 Maintenance
 
 * Removes twig/twig requirement.
+
+# 7.0.2
+
+Neue Funktionen
+
+* Kompatibilität zur Stücklisten-Funktion von Pickware Pro
