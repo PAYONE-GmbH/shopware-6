@@ -41,24 +41,24 @@ readonly class ButtonConfiguration
 
         $customer = $salesChannelContext->getCustomer();
         if (!$customer instanceof CustomerEntity) {
-            //TODO: throw exception
+            throw new \RuntimeException('Customer not available');
         }
 
         $billingAddress = $customer->getActiveBillingAddress();
         if (!$billingAddress instanceof CustomerAddressEntity) {
-            //TODO: throw exception
+            throw new \RuntimeException('No billing address available');
         }
 
         $country = $billingAddress->getCountry();
         if (!$country instanceof CountryEntity) {
-            //TODO: throw exception
+            throw new \RuntimeException('No billing country available');
         }
 
         return new ArrayStruct([
             'environment'                  => 'test' === $config->get('transactionMode') ? 'TEST' : 'PRODUCTION',
             'merchantId'                   => $merchantId,
-            'googlePayMerchantId'          => $config->get('googlePayMerchantId'),
-            'googlePayMerchantName'        => $config->get('googlePayMerchantName'),
+            'googlePayMerchantId'          => $config->get('googlePayGoogleMerchantId'), // @TODO: is never used - do we need that?
+            'googlePayMerchantName'        => $config->get('googlePayGoogleMerchantName'),
             'googlePayAllowedCardNetworks' => \array_map(
                 static fn(CardNetwork $enum): string => $enum->value,
                 CardNetwork::cases(),

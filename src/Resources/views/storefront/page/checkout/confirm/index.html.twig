@@ -15,7 +15,12 @@
             location: 'cart',
             buttonConfiguration: page.extensions.payoneGooglePayButton,
         } %}
-        {{ parent() }}
+        <button
+            id="confirmFormSubmit"
+            class="submit--hidden d-none"
+            form="confirmOrderForm"
+            type="submit"
+        ></button>
     {% else %}
         {{ parent() }}
     {% endif %}

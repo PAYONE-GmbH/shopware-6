@@ -1609,12 +1609,12 @@
         </input-field>
 
         <input-field>
-            <name>googlePayMerchantId</name>
+            <name>googlePayGoogleMerchantId</name>
             <label>Google Pay Merchant ID</label>
         </input-field>
 
         <input-field>
-            <name>googlePayMerchantName</name>
+            <name>googlePayGoogleMerchantName</name>
             <label>Google Pay Merchant Name</label>
             <helpText>This name will be displayed on the device during the payment process.</helpText>
             <helpText lang="de-DE">Wird auf dem jeweiligen Gerät während des Zahlungsprozesses ausgegeben.</helpText>
