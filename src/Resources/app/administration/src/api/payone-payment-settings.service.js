@@ -24,6 +24,18 @@ class PayonePaymentSettingsService extends ApiService {
             });
     }
 
+    reloadRatepayProfiles(salesChannelId) {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient.post(
+            `/_action/payone/reload-ratepay-profiles`,
+            { salesChannelId },
+            { headers }
+        ).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
     getStateMachineTransitionActions() {
         const headers = this.getBasicHeaders();
 

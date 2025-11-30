@@ -74,13 +74,27 @@ export default {
 
         onSave() {
             this.isSaveSuccessful = false;
-            this.isLoading = true;
-            this.$refs.systemConfig.saveAll().then((response) => {
-                this.handleRatepayProfileUpdates(response);
-                this.isSaveSuccessful = true;
-            }).finally(() => {
-                this.isLoading = false;
-            });
+            this.isLoading        = true;
+
+            this.$refs.systemConfig.saveAll()
+                .then(() => {
+                    const salesChannelId = this.$refs.systemConfig.currentSalesChannelId;
+
+                    return this.PayonePaymentSettingsService.reloadRatepayProfiles(salesChannelId);
+                })
+                .then((response) => {
+                    this.handleRatepayProfileUpdates(response);
+                    this.isSaveSuccessful = true;
+                })
+                .catch((error) => {
+                    this.createNotificationError({
+                        title: this.$t('payone-payment.settingsForm.titleError'),
+                        message: this.$t('payone-payment.settingsForm.messageSaveError.general')
+                    });
+                })
+                .finally(() => {
+                    this.isLoading = false;
+                });
         },
 
         onTest() {
