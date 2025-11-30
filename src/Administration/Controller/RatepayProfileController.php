@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayonePayment\Administration\Controller;
 
+use PayonePayment\PaymentHandler\PaymentHandlerInterface;
 use PayonePayment\Provider\Ratepay\PaymentHandler\DebitPaymentHandler;
 use PayonePayment\Provider\Ratepay\PaymentHandler\InstallmentPaymentHandler;
 use PayonePayment\Provider\Ratepay\PaymentHandler\InvoicePaymentHandler;
@@ -18,7 +19,14 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(defaults: ['_routeScope' => ['api']])]
 class RatepayProfileController extends AbstractController
 {
+    /**
+     * @var array<int, PaymentHandlerInterface>
+     */
     private array $paymentHandlers;
+
+    /**
+     * @var array<class-string, RequestParameterEnricherChain>
+     */
     private array $requestEnricherChains;
 
     public function __construct(
@@ -48,7 +56,12 @@ class RatepayProfileController extends AbstractController
     public function reloadProfiles(Request $request): JsonResponse
     {
         $salesChannelId = $request->request->get('salesChannelId');
-        $scIdParam = ($salesChannelId === 'null' || $salesChannelId === null) ? null : (string) $salesChannelId;
+
+        if (null !== $salesChannelId && !is_string($salesChannelId)) {
+            $salesChannelId = (string) $salesChannelId;
+        }
+
+        $scIdParam = ('null' === $salesChannelId || null === $salesChannelId) ? null : $salesChannelId;
 
         $this->syncInvoiceToInvoicing($scIdParam);
 
@@ -57,33 +70,48 @@ class RatepayProfileController extends AbstractController
         foreach ($this->paymentHandlers as $paymentHandler) {
             $paymentHandlerClassName = $paymentHandler::class;
 
+            /** @var array{updates?: array, errors?: array} $result */
             $result = $this->profileService->updateProfileConfiguration(
                 $paymentHandler,
                 $this->requestEnricherChains[$paymentHandlerClassName],
-                $scIdParam
+                $scIdParam,
             );
 
             if ($paymentHandler instanceof InvoicePaymentHandler) {
                 $result = $this->convertInvoicingToInvoice($result, $scIdParam);
             }
 
-            $results[$salesChannelId][] = $result;
+            $key             = $salesChannelId ?? '';
+            $results[$key][] = $result;
         }
 
-        $finalData = [];
+        $finalData   = [];
         $responseKey = $scIdParam ?? 'null';
 
-        foreach ($results as $scId => $updateResultsBySalesChannel) {
+        foreach ($results as $updateResultsBySalesChannel) {
             $salesChannelData = [
                 'updates' => [],
                 'errors'  => [],
             ];
+
+            /** @var array{updates?: array, errors?: array} $updateResult */
             foreach ($updateResultsBySalesChannel as $updateResult) {
-                if (isset($updateResult['updates'])) $salesChannelData['updates'][] = $updateResult['updates'];
-                if (isset($updateResult['errors'])) $salesChannelData['errors'][] = $updateResult['errors'];
+                if (isset($updateResult['updates']) && is_array($updateResult['updates'])) {
+                    $salesChannelData['updates'][] = $updateResult['updates'];
+                }
+
+                if (isset($updateResult['errors']) && is_array($updateResult['errors'])) {
+                    $salesChannelData['errors'][] = $updateResult['errors'];
+                }
             }
-            $salesChannelData['updates'] = !empty($salesChannelData['updates']) ? \array_merge(...$salesChannelData['updates']) : [];
-            $salesChannelData['errors'] = !empty($salesChannelData['errors']) ? \array_merge(...$salesChannelData['errors']) : [];
+
+            $salesChannelData['updates'] = count($salesChannelData['updates']) > 0
+                ? array_merge(...$salesChannelData['updates'])
+                : [];
+
+            $salesChannelData['errors'] = count($salesChannelData['errors']) > 0
+                ? array_merge(...$salesChannelData['errors'])
+                : [];
 
             $finalData['payoneRatepayProfilesUpdateResult'][$responseKey] = $salesChannelData;
         }
@@ -91,26 +119,44 @@ class RatepayProfileController extends AbstractController
         return new JsonResponse($finalData);
     }
 
-    // we need this "ing" change because of PayonePayment\Provider\Ratepay\PaymentMethod;
+    /**
+     * We need this "ing" change because of PayonePayment\Provider\Ratepay\PaymentMethod;
+     */
     private function syncInvoiceToInvoicing(?string $salesChannelId): void
     {
+        /** @var mixed $data */
         $data = $this->systemConfigService->get('PayonePayment.settings.ratepayInvoiceProfiles', $salesChannelId);
-        if (!empty($data)) {
+
+        // Strict check: Is it an array and does it contain data
+        if (is_array($data) && count($data) > 0) {
             $this->systemConfigService->set('PayonePayment.settings.ratepayInvoicingProfiles', $data, $salesChannelId);
         }
     }
 
+    /**
+     * @param array{updates?: array, errors?: array} $result
+     * @return array{updates?: array, errors?: array}
+     */
     private function convertInvoicingToInvoice(array $result, ?string $salesChannelId): array
     {
-        $mappedUpdates = [];
-        if (isset($result['updates'])) {
-            foreach ($result['updates'] as $key => $value) {
-                $newKey = str_replace('Invoicing', 'Invoice', $key);
-                $mappedUpdates[$newKey] = $value;
+        if (!isset($result['updates']) || !is_array($result['updates'])) {
+            return $result;
+        }
 
-                if ($key !== $newKey) {
-                    $this->systemConfigService->set($newKey, $value, $salesChannelId);
-                }
+        $mappedUpdates = [];
+
+        /**
+         * @var string $key
+         * @var mixed $value
+         */
+        foreach ($result['updates'] as $key => $value) {
+            $keyStr = (string) $key;
+            $newKey = str_replace('Invoicing', 'Invoice', $keyStr);
+
+            $mappedUpdates[$newKey] = $value;
+
+            if ($keyStr !== $newKey) {
+                $this->systemConfigService->set($newKey, $value, $salesChannelId);
             }
         }
 
