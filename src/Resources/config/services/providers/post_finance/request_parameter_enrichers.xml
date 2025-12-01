@@ -15,6 +15,14 @@
             <tag name="payone.request_enricher.pay.post_finance.wallet" />
         </service>
 
+        <service id="PayonePayment\Provider\PostFinance\RequestParameter\Enricher\OrderLinesRequestParameterEnricher">
+            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface" />
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+
+            <tag name="payone.request_enricher.pay.post_finance.card" />
+            <tag name="payone.request_enricher.pay.post_finance.wallet" />
+        </service>
+
         <service id="PayonePayment\Provider\PostFinance\RequestParameter\Enricher\ReturnUrlRequestParameterEnricher">
             <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
 
