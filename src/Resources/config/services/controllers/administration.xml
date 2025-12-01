@@ -7,7 +7,6 @@
     <services>
         <service id="PayonePayment\Administration\Controller\RatepayProfileController">
             <argument type="service" id="PayonePayment\Provider\Ratepay\Service\ProfileService" />
-            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="PayonePayment\Provider\Ratepay\PaymentHandler\DebitPaymentHandler" />
             <argument type="service" id="payone.request_enricher_chain.profile.ratepay.debit" />
             <argument type="service" id="PayonePayment\Provider\Ratepay\PaymentHandler\InstallmentPaymentHandler" />

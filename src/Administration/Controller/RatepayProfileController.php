@@ -10,7 +10,6 @@ use PayonePayment\Provider\Ratepay\PaymentHandler\InstallmentPaymentHandler;
 use PayonePayment\Provider\Ratepay\PaymentHandler\InvoicePaymentHandler;
 use PayonePayment\Provider\Ratepay\Service\ProfileService;
 use PayonePayment\RequestParameter\RequestParameterEnricherChain;
-use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +30,6 @@ class RatepayProfileController extends AbstractController
 
     public function __construct(
         private readonly ProfileService $profileService,
-        private readonly SystemConfigService $systemConfigService,
         DebitPaymentHandler $debitPaymentHandler,
         RequestParameterEnricherChain $debitRequestEnricherChain,
         InstallmentPaymentHandler $installmentPaymentHandler,
@@ -63,8 +61,6 @@ class RatepayProfileController extends AbstractController
 
         $scIdParam = ('null' === $salesChannelId || null === $salesChannelId) ? null : $salesChannelId;
 
-        $this->syncInvoiceToInvoicing($scIdParam);
-
         $results = [];
 
         foreach ($this->paymentHandlers as $paymentHandler) {
@@ -76,10 +72,6 @@ class RatepayProfileController extends AbstractController
                 $this->requestEnricherChains[$paymentHandlerClassName],
                 $scIdParam,
             );
-
-            if ($paymentHandler instanceof InvoicePaymentHandler) {
-                $result = $this->convertInvoicingToInvoice($result, $scIdParam);
-            }
 
             $key             = $salesChannelId ?? '';
             $results[$key][] = $result;
@@ -117,51 +109,5 @@ class RatepayProfileController extends AbstractController
         }
 
         return new JsonResponse($finalData);
-    }
-
-    /**
-     * We need this "ing" change because of PayonePayment\Provider\Ratepay\PaymentMethod;
-     */
-    private function syncInvoiceToInvoicing(?string $salesChannelId): void
-    {
-        /** @var mixed $data */
-        $data = $this->systemConfigService->get('PayonePayment.settings.ratepayInvoiceProfiles', $salesChannelId);
-
-        // Strict check: Is it an array and does it contain data
-        if (is_array($data) && count($data) > 0) {
-            $this->systemConfigService->set('PayonePayment.settings.ratepayInvoicingProfiles', $data, $salesChannelId);
-        }
-    }
-
-    /**
-     * @param array{updates?: array, errors?: array} $result
-     * @return array{updates?: array, errors?: array}
-     */
-    private function convertInvoicingToInvoice(array $result, ?string $salesChannelId): array
-    {
-        if (!isset($result['updates']) || !is_array($result['updates'])) {
-            return $result;
-        }
-
-        $mappedUpdates = [];
-
-        /**
-         * @var string $key
-         * @var mixed $value
-         */
-        foreach ($result['updates'] as $key => $value) {
-            $keyStr = (string) $key;
-            $newKey = str_replace('Invoicing', 'Invoice', $keyStr);
-
-            $mappedUpdates[$newKey] = $value;
-
-            if ($keyStr !== $newKey) {
-                $this->systemConfigService->set($newKey, $value, $salesChannelId);
-            }
-        }
-
-        $result['updates'] = $mappedUpdates;
-
-        return $result;
     }
 }
