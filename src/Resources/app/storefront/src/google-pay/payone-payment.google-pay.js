@@ -105,7 +105,7 @@ export default class PayoneGooglePayPlugin extends Plugin {
                     type: 'PAYMENT_GATEWAY',
                     parameters: {
                         gateway: 'payonegmbh',
-                        gatewayMerchantId: this.config.merchantId,
+                        gatewayMerchantId: this.config.googlePayMerchantId,
                     },
                 },
             }],

@@ -54,10 +54,12 @@ readonly class ButtonConfiguration
             throw new \RuntimeException('No billing country available');
         }
 
+        $isTest = 'test' === $config->get('transactionMode');
+
         return new ArrayStruct([
-            'environment'                  => 'test' === $config->get('transactionMode') ? 'TEST' : 'PRODUCTION',
+            'environment'                  => $isTest ? 'TEST' : 'PRODUCTION',
             'merchantId'                   => $merchantId,
-            'googlePayMerchantId'          => $config->get('googlePayGoogleMerchantId'), // @TODO: is never used - do we need that?
+            'googlePayMerchantId'          => $isTest ? $merchantId : $config->get('googlePayGoogleMerchantId'),
             'googlePayMerchantName'        => $config->get('googlePayGoogleMerchantName'),
             'googlePayAllowedCardNetworks' => \array_map(
                 static fn(CardNetwork $enum): string => $enum->value,
