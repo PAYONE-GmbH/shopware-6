@@ -469,3 +469,7 @@ Maintenance
 Neue Funktionen
 
 * Kompatibilität zur Stücklisten-Funktion von Pickware Pro
+
+Bugfix
+
+* Reaktivierung der optionalen Übermittlung von Bestellpositionen

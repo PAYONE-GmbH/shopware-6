@@ -482,3 +482,7 @@ Maintenance
 New Features
 
 * Provides compatibility to the product set feature of Pickware Pro
+
+Bugfix
+
+* Reactivation of the optional transmission of order line items
