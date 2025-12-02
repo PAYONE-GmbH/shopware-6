@@ -61,6 +61,10 @@ class PayonePayment extends Plugin
         );
 
         $container->addCompilerPass(
+            new Provider\Alipay\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
             new Provider\AmazonPay\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
         );
 
@@ -122,6 +126,10 @@ class PayonePayment extends Plugin
 
         $container->addCompilerPass(
             new Provider\WeChatPay\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
+        );
+
+        $container->addCompilerPass(
+            new Provider\Wero\DependencyInjection\Compiler\MergeRequestParameterEnricherCompilerPass(),
         );
     }
 

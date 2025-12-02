@@ -476,3 +476,9 @@ Bugfix
 Maintenance
 
 * Removes twig/twig requirement
+
+# 7.1.0
+
+New Features
+
+* new payment method: Wero

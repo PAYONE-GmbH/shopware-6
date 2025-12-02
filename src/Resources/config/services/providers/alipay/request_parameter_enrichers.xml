@@ -28,6 +28,10 @@
             <tag name="payone.request_enricher.pay.alipay.standard" />
         </service>
 
+        <service id="PayonePayment\Provider\Alipay\RequestParameter\Enricher\ShippingInformationRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.alipay.standard" />
+        </service>
+
         <service id="PayonePayment\Provider\Alipay\RequestParameter\Enricher\Standard\TestCredentialsRequestParameterEnricher">
             <tag name="payone.request_enricher.test" />
         </service>

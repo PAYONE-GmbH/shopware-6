@@ -40,4 +40,5 @@ return [
     Provider\SofortBanking\PaymentMethod\StandardPaymentMethod::class,
     Provider\Trustly\PaymentMethod\StandardPaymentMethod::class,
     Provider\WeChatPay\PaymentMethod\StandardPaymentMethod::class,
+    Provider\Wero\PaymentMethod\StandardPaymentMethod::class,
 ];

@@ -28,6 +28,10 @@
             <tag name="payone.request_enricher.pay.we_chat_pay.standard" />
         </service>
 
+        <service id="PayonePayment\Provider\WeChatPay\RequestParameter\Enricher\ShippingInformationRequestParameterEnricher">
+            <tag name="payone.request_enricher.pay.we_chat_pay.standard" />
+        </service>
+
         <service id="PayonePayment\Provider\WeChatPay\RequestParameter\Enricher\Standard\TestCredentialsRequestParameterEnricher">
             <tag name="payone.request_enricher.test" />
         </service>
