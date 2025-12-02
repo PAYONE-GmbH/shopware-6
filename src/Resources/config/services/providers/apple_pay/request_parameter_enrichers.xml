@@ -13,6 +13,13 @@
             <tag name="payone.request_enricher.pay.apple_pay.standard" />
         </service>
 
+        <service id="PayonePayment\Provider\ApplePay\RequestParameter\Enricher\OrderLinesRequestParameterEnricher">
+            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface" />
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+
+            <tag name="payone.request_enricher.pay.apple_pay.standard" />
+        </service>
+
         <service id="PayonePayment\Provider\ApplePay\RequestParameter\Enricher\PreAuthorizeRequestParameterEnricher">
             <argument key="$serviceAccessor" type="service" id="PayonePayment\Payone\RequestParameter\Builder\RequestBuilderServiceAccessor" />
             <argument key="$cartService" type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />

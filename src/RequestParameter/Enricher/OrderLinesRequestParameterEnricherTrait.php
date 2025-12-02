@@ -28,8 +28,7 @@ trait OrderLinesRequestParameterEnricherTrait
             return [];
         }
 
-        $requestData = $arguments->requestData;
-        $orderLines  = $requestData->all('orderLines');
+        $orderLines = $arguments->requestData->all('orderLines');
 
         if ([] !== $orderLines || !$this->isAuthorizeAction($arguments)) {
             return [];
@@ -44,7 +43,8 @@ trait OrderLinesRequestParameterEnricherTrait
 
     private function isAuthorizeAction(PaymentRequestDto $arguments): bool
     {
-        return RequestActionEnum::AUTHORIZE->value === $arguments->action
+        return
+            RequestActionEnum::AUTHORIZE->value === $arguments->action
             || RequestActionEnum::PREAUTHORIZE->value === $arguments->action
         ;
     }

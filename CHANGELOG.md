@@ -487,3 +487,4 @@ New Features
 Bugfix
 
 * Fixed RatePay profile configuration
+* Reactivation of the optional transmission of order line items

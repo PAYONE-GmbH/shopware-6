@@ -17,6 +17,16 @@
             <tag name="payone.request_enricher.pay.pay_pal_v2.standard" />
         </service>
 
+        <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\OrderLinesRequestParameterEnricher">
+            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface" />
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+
+            <tag name="payone.request_enricher.pay.pay_pal.express" />
+            <tag name="payone.request_enricher.pay.pay_pal.standard" />
+            <tag name="payone.request_enricher.pay.pay_pal_v2.express" />
+            <tag name="payone.request_enricher.pay.pay_pal_v2.standard" />
+        </service>
+
         <service id="PayonePayment\Provider\PayPal\RequestParameter\Enricher\ReturnUrlRequestParameterEnricher">
             <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
 

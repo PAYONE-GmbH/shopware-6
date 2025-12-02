@@ -14,6 +14,13 @@
             <tag name="payone.request_enricher.pay.sofort_banking.standard" />
         </service>
 
+        <service id="PayonePayment\Provider\SofortBanking\RequestParameter\Enricher\OrderLinesRequestParameterEnricher">
+            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface" />
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+
+            <tag name="payone.request_enricher.pay.sofort_banking.standard" />
+        </service>
+
         <service id="PayonePayment\Provider\SofortBanking\RequestParameter\Enricher\ReturnUrlRequestParameterEnricher">
             <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
 

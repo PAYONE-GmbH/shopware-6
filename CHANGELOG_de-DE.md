@@ -474,3 +474,4 @@ Neue Funktionen
 Bugfix
 
 * Behebt einen Fehler, der Probleme beim Konfigurieren von RatePay Profilen verursachte.
+* Reaktivierung der optionalen Übermittlung von Bestellpositionen

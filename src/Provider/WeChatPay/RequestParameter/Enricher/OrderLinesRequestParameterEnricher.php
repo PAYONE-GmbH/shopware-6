@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PayonePayment\Provider\Ratepay\RequestParameter\Enricher;
+namespace PayonePayment\Provider\WeChatPay\RequestParameter\Enricher;
 
+use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface;
-use PayonePayment\RequestParameter\Enricher\OrderLinesRequestParameterEnricherTrait;
+use PayonePayment\RequestParameter\Enricher\OptionalOrderLinesRequestParameterEnricherTrait;
 use PayonePayment\RequestParameter\PaymentRequestDto;
 use PayonePayment\RequestParameter\RequestParameterEnricherInterface;
 
@@ -17,12 +18,13 @@ use PayonePayment\RequestParameter\RequestParameterEnricherInterface;
 readonly class OrderLinesRequestParameterEnricher implements RequestParameterEnricherInterface
 {
     /**
-     * @use OrderLinesRequestParameterEnricherTrait<T>
+     * @use OptionalOrderLinesRequestParameterEnricherTrait<T>
      */
-    use OrderLinesRequestParameterEnricherTrait;
+    use OptionalOrderLinesRequestParameterEnricherTrait;
 
     public function __construct(
         protected LineItemHydratorInterface $lineItemHydrator,
+        protected ConfigReader $configReader,
     ) {
     }
 }
