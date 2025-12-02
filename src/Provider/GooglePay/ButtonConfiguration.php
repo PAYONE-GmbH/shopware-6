@@ -54,8 +54,8 @@ readonly class ButtonConfiguration
         return new ArrayStruct([
             'environment'                  => $isTest ? 'TEST' : 'PRODUCTION',
             'merchantId'                   => $merchantId,
-            'googlePayMerchantId'          => $isTest ? null : $config->getString('googlePayGoogleMerchantId'),
-            'googlePayMerchantName'        => $config->get('googlePayGoogleMerchantName'),
+            'googlePayMerchantId'          => $isTest ? 'test' : $config->getString('googlePayGoogleMerchantId'),
+            'googlePayMerchantName'        => $isTest ? 'Payone Test Shop' : $config->getString('googlePayGoogleMerchantName'),
             'googlePayAllowedCardNetworks' => \array_map(
                 static fn(CardNetworkEnum $enum): string => $enum->value,
                 CardNetworkEnum::cases(),

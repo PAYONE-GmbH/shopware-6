@@ -40,17 +40,10 @@ export default class PayoneGooglePayPlugin extends Plugin {
     }
 
     _generateMerchantInfo() {
-        let merchantInfo = {};
-
-        if (null !== this.config.googlePayMerchantId) {
-            merchantInfo.merchantId = this.config.googlePayMerchantId;
-        }
-
-        if (null !== this.config.googlePayMerchantName) {
-            merchantInfo.merchantName = this.config.googlePayMerchantName;
-        }
-
-        return merchantInfo;
+        return {
+            merchantId: this.config.googlePayMerchantId,
+            merchantName: this.config.googlePayMerchantName,
+        };
     }
 
     /**
@@ -105,12 +98,6 @@ export default class PayoneGooglePayPlugin extends Plugin {
     }
 
     _onSdkReady() {
-        const parameters = { gateway: 'payonegmbh' };
-
-        if (null !== this.config.googlePayMerchantId) {
-            parameters.gatewayMerchantId = this.config.googlePayMerchantId;
-        }
-
         const baseRequest = Object.freeze({
             apiVersion: 2,
             apiVersionMinor: 0,
@@ -122,7 +109,10 @@ export default class PayoneGooglePayPlugin extends Plugin {
                 },
                 tokenizationSpecification: {
                     type: 'PAYMENT_GATEWAY',
-                    parameters,
+                    parameters: {
+                        gateway: 'payonegmbh',
+                        gatewayMerchantId: this.config.merchantId,
+                    },
                 },
             }],
             merchantInfo: this.merchantInfo,
