@@ -13,7 +13,7 @@ class InvoicePaymentMethod extends AbstractPaymentMethod
 
     final public const TECHNICAL_NAME = 'payone_ratepay_invoice';
 
-    final public const CONFIGURATION_PREFIX = 'ratepayInvoicing';
+    final public const CONFIGURATION_PREFIX = 'ratepayInvoice';
 
     public function __construct()
     {

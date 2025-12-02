@@ -53,7 +53,7 @@ export default {
                         minBasket = this.configuration[shopId]['tx-limit-installment-min'];
                         maxBasket = this.configuration[shopId]['tx-limit-installment-max'];
                         break;
-                    case 'PayonePayment.settings.ratepayInvoicingProfileConfigurations':
+                    case 'PayonePayment.settings.ratepayInvoiceProfileConfigurations':
                         minBasket = this.configuration[shopId]['tx-limit-invoice-min'];
                         maxBasket = this.configuration[shopId]['tx-limit-invoice-max'];
                         break;

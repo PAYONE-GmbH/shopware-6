@@ -236,6 +236,25 @@ Component.extend('payone-payment-settings', 'sw-system-config', {
                 bind.onChange = handleToggleChange;
             }
 
+            if (element.config && element.config.componentName === 'payone-ratepay-profiles') {
+                const bucket = this._getConfigBucket();
+
+                if (bucket && bucket[element.name]) {
+                    bind.value = bucket[element.name];
+                }
+
+                bind['onUpdate:value'] = (newValue) => {
+                    if (newValue instanceof Event || (newValue && newValue.target && newValue.type)) {
+                        return;
+                    }
+
+                    const activeBucket = this._getConfigBucket();
+                    if (activeBucket) {
+                        activeBucket[element.name] = newValue;
+                    }
+                };
+            }
+
             return bind;
         },
 
