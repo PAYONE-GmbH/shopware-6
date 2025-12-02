@@ -22,6 +22,8 @@ export default class PayoneGooglePayPlugin extends Plugin {
             return;
         }
 
+        this.merchantInfo = this._generateMerchantInfo();
+
         this._loadGooglePaySdk().then(() => {
             this._onSdkReady();
         }).catch(console.error);
@@ -35,6 +37,20 @@ export default class PayoneGooglePayPlugin extends Plugin {
 
             return null;
         }
+    }
+
+    _generateMerchantInfo() {
+        let merchantInfo = {};
+
+        if (null !== this.config.googlePayMerchantId) {
+            merchantInfo.merchantId = this.config.googlePayMerchantId;
+        }
+
+        if (null !== this.config.googlePayMerchantName) {
+            merchantInfo.merchantName = this.config.googlePayMerchantName;
+        }
+
+        return merchantInfo;
     }
 
     /**
@@ -77,10 +93,7 @@ export default class PayoneGooglePayPlugin extends Plugin {
         if (!PayoneGooglePayPlugin.paymentsClient) {
             PayoneGooglePayPlugin.paymentsClient = new google.payments.api.PaymentsClient({
                 environment: this.config.environment,
-                merchantInfo: {
-                    merchantId: this.config.merchantId,
-                    merchantName: this.config.merchantName,
-                }
+                merchantInfo: this.merchantInfo,
             });
         }
 
@@ -92,6 +105,12 @@ export default class PayoneGooglePayPlugin extends Plugin {
     }
 
     _onSdkReady() {
+        const parameters = { gateway: 'payonegmbh' };
+
+        if (null !== this.config.googlePayMerchantId) {
+            parameters.gatewayMerchantId = this.config.googlePayMerchantId;
+        }
+
         const baseRequest = Object.freeze({
             apiVersion: 2,
             apiVersionMinor: 0,
@@ -103,16 +122,10 @@ export default class PayoneGooglePayPlugin extends Plugin {
                 },
                 tokenizationSpecification: {
                     type: 'PAYMENT_GATEWAY',
-                    parameters: {
-                        gateway: 'payonegmbh',
-                        gatewayMerchantId: this.config.googlePayMerchantId,
-                    },
+                    parameters,
                 },
             }],
-            merchantInfo: {
-                merchantId: this.config.merchantId,
-                merchantName: this.config.merchantName,
-            }
+            merchantInfo: this.merchantInfo,
         });
 
         this.baseRequest = baseRequest;

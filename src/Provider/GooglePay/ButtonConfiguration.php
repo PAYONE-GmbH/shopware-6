@@ -6,6 +6,7 @@ namespace PayonePayment\Provider\GooglePay;
 
 use PayonePayment\Components\ConfigReader\ConfigReader;
 use PayonePayment\Installer\ConfigInstaller;
+use PayonePayment\Provider\GooglePay\Enum\CardNetworkEnum;
 use PayonePayment\Provider\GooglePay\PaymentMethod\StandardPaymentMethod;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
@@ -13,12 +14,6 @@ use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-
-enum CardNetwork: string
-{
-    case MASTERCARD = 'MASTERCARD';
-    case VISA       = 'VISA';
-}
 
 readonly class ButtonConfiguration
 {
@@ -59,11 +54,11 @@ readonly class ButtonConfiguration
         return new ArrayStruct([
             'environment'                  => $isTest ? 'TEST' : 'PRODUCTION',
             'merchantId'                   => $merchantId,
-            'googlePayMerchantId'          => $isTest ? $merchantId : $config->get('googlePayGoogleMerchantId'),
+            'googlePayMerchantId'          => $isTest ? null : $config->getString('googlePayGoogleMerchantId'),
             'googlePayMerchantName'        => $config->get('googlePayGoogleMerchantName'),
             'googlePayAllowedCardNetworks' => \array_map(
-                static fn(CardNetwork $enum): string => $enum->value,
-                CardNetwork::cases(),
+                static fn(CardNetworkEnum $enum): string => $enum->value,
+                CardNetworkEnum::cases(),
             ),
             'countryCode'                  => $country->getIso(),
             'currencyCode'                 => $salesChannelContext->getCurrency()->getShortName(),
