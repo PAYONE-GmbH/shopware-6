@@ -468,4 +468,5 @@ Maintenance
 
 Neue Funktionen
 
-* neue Zahlart: Wero
+* Neue Zahlart: Wero
+* Kompatibilität zur Stücklisten-Funktion von Pickware Pro

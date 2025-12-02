@@ -481,4 +481,5 @@ Maintenance
 
 New Features
 
-* new payment method: Wero
+* New payment method: Wero
+* Provides compatibility to the product set feature of Pickware Pro
