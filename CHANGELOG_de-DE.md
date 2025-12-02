@@ -470,3 +470,7 @@ Neue Funktionen
 
 * Neue Zahlart: Wero
 * Kompatibilität zur Stücklisten-Funktion von Pickware Pro
+
+Bugfix
+
+* Behebt einen Fehler, der Probleme beim Konfigurieren von RatePay Profilen verursachte.

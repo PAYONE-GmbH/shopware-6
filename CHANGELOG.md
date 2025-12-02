@@ -483,3 +483,7 @@ New Features
 
 * New payment method: Wero
 * Provides compatibility to the product set feature of Pickware Pro
+
+Bugfix
+
+* Fixed RatePay profile configuration
