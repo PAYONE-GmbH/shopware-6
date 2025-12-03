@@ -1,6 +1,6 @@
 {
   "main.js": {
-    "file": "assets/payone-payment-yHmwc9qG.js",
+    "file": "assets/payone-payment-CsomMcVw.js",
     "name": "payone-payment",
     "src": "main.js",
     "isEntry": true,
@@ -43,7 +43,7 @@
     ]
   },
   "module/payone-payment/component/payone-ratepay-profile-configurations/index.js": {
-    "file": "assets/index-B2DuEd9h.js",
+    "file": "assets/index-C342mQzj.js",
     "name": "index",
     "src": "module/payone-payment/component/payone-ratepay-profile-configurations/index.js",
     "isDynamicEntry": true,
@@ -52,7 +52,7 @@
     ]
   },
   "module/payone-payment/component/payone-ratepay-profiles/index.js": {
-    "file": "assets/index-DyAX5SD_.js",
+    "file": "assets/index-DvIOCrYt.js",
     "name": "index",
     "src": "module/payone-payment/component/payone-ratepay-profiles/index.js",
     "isDynamicEntry": true,
@@ -61,7 +61,7 @@
     ]
   },
   "module/payone-payment/page/payone-settings/index.js": {
-    "file": "assets/index-BbyBawW7.js",
+    "file": "assets/index-BLVpOUYz.js",
     "name": "index",
     "src": "module/payone-payment/page/payone-settings/index.js",
     "isDynamicEntry": true,

@@ -11,6 +11,7 @@ return [
     Provider\ApplePay\PaymentMethod\StandardPaymentMethod::class,
     Provider\Bancontact\PaymentMethod\StandardPaymentMethod::class,
     Provider\Eps\PaymentMethod\StandardPaymentMethod::class,
+    Provider\GooglePay\PaymentMethod\StandardPaymentMethod::class,
     Provider\IDeal\PaymentMethod\StandardPaymentMethod::class,
     Provider\Klarna\PaymentMethod\DirectDebitPaymentMethod::class,
     Provider\Klarna\PaymentMethod\InstallmentPaymentMethod::class,
@@ -40,4 +41,5 @@ return [
     Provider\SofortBanking\PaymentMethod\StandardPaymentMethod::class,
     Provider\Trustly\PaymentMethod\StandardPaymentMethod::class,
     Provider\WeChatPay\PaymentMethod\StandardPaymentMethod::class,
+    Provider\Wero\PaymentMethod\StandardPaymentMethod::class,
 ];

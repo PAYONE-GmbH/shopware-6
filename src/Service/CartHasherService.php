@@ -7,6 +7,7 @@ namespace PayonePayment\Service;
 use PayonePayment\Exception\InvalidCartHashException;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentTransactionStruct;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -91,11 +92,28 @@ readonly class CartHasherService
                 continue;
             }
 
+            // Ignore Pickware product set items, because they have been added after finishing the order,
+            // so they would have an impact on the hash
+            if (
+                $lineItem instanceof OrderLineItemEntity
+                && null !== $lineItem->getParentId()
+                && \is_array($payload = $lineItem->getPayload())
+                && isset($payload['pickwareProductSetConfigurationSnapshot'])
+            ) {
+                continue;
+            }
+
             $detail = [
                 'id'       => $lineItem->getReferencedId() ?? '',
                 'type'     => $lineItem->getType(),
                 'quantity' => $lineItem->getQuantity(),
             ];
+
+            // Ignore Pickware product set items, because they have been added after finishing the order,
+            // so they would have an impact on the hash
+            if ('pickware_product_set_jit_product_set' === $detail['type']) {
+                $detail['type'] = LineItem::PRODUCT_LINE_ITEM_TYPE;
+            }
 
             if (null !== $lineItem->getPrice()) {
                 $detail['price'] = $this->currencyPrecision->getRoundedItemAmount(

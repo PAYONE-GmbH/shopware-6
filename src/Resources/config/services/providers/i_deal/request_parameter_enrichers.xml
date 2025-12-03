@@ -14,6 +14,13 @@
             <tag name="payone.request_enricher.pay.i_deal.standard" />
         </service>
 
+        <service id="PayonePayment\Provider\IDeal\RequestParameter\Enricher\OrderLinesRequestParameterEnricher">
+            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface" />
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+
+            <tag name="payone.request_enricher.pay.i_deal.standard" />
+        </service>
+
         <service id="PayonePayment\Provider\IDeal\RequestParameter\Enricher\ReturnUrlRequestParameterEnricher">
             <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
 

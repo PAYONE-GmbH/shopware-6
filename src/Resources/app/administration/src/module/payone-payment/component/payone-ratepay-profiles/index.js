@@ -26,7 +26,7 @@ export default {
             newItem: null,
             showDuplicateAlert: false,
             showEmptyAlert: false,
-            profiles: this.value,
+            profiles: this.value || [],
         };
     },
 
@@ -59,11 +59,33 @@ export default {
     },
 
     watch: {
-        profiles(profiles) {
-            this.$emit('update:value', profiles);
-            this.$emit('input', profiles); // required for SW 6.5.x compatibility
-            this.$emit('change', profiles); // required for SW 6.5.x compatibility
+        profiles: {
+            handler(profiles) {
+                if (!(profiles instanceof Event)) {
+                    this.$emit('update:value', profiles);
+                }
+            },
+            deep: true
         },
+
+        value: {
+            handler(newValue) {
+                if (newValue instanceof Event) return;
+
+                if (!newValue) {
+                    if (this.profiles.length > 0) {
+                        this.profiles = [];
+                    }
+                    return;
+                }
+
+                if (JSON.stringify(newValue) !== JSON.stringify(this.profiles)) {
+                    this.profiles = newValue;
+                }
+            },
+            immediate: true,
+            deep: true
+        }
     },
 
     created() {

@@ -20,6 +20,12 @@ apple-pay-button {
     display: block;
 }
 
+#gpay-container {
+    button {
+        width: 100%;
+    }
+}
+
 .payone-payment.debit {
     .debit-row {
         margin-bottom: 1rem;

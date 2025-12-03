@@ -463,3 +463,16 @@ Bugfix
 Maintenance
 
 * Removes twig/twig requirement.
+
+# 7.1.0
+
+Neue Funktionen
+
+* Neue Zahlart: Wero
+* Neue Zahlart: GooglePay
+* Kompatibilität zur Stücklisten-Funktion von Pickware Pro
+
+Bugfix
+
+* Behebt einen Fehler, der Probleme beim Konfigurieren von RatePay Profilen verursachte.
+* Reaktivierung der optionalen Übermittlung von Bestellpositionen

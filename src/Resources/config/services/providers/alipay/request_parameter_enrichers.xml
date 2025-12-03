@@ -18,6 +18,13 @@
             <tag name="payone.request_enricher.pay.alipay.standard" />
         </service>
 
+        <service id="PayonePayment\Provider\Alipay\RequestParameter\Enricher\OrderLinesRequestParameterEnricher">
+            <argument key="$lineItemHydrator" type="service" id="PayonePayment\Components\Hydrator\LineItemHydrator\LineItemHydratorInterface" />
+            <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
+
+            <tag name="payone.request_enricher.pay.alipay.standard" />
+        </service>
+
         <service id="PayonePayment\Provider\Alipay\RequestParameter\Enricher\PreAuthorizeRequestParameterEnricher">
             <tag name="payone.request_enricher.pay.alipay.standard" />
         </service>
@@ -25,6 +32,10 @@
         <service id="PayonePayment\Provider\Alipay\RequestParameter\Enricher\ReturnUrlRequestParameterEnricher">
             <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
 
+            <tag name="payone.request_enricher.pay.alipay.standard" />
+        </service>
+
+        <service id="PayonePayment\Provider\Alipay\RequestParameter\Enricher\ShippingInformationRequestParameterEnricher">
             <tag name="payone.request_enricher.pay.alipay.standard" />
         </service>
 

@@ -12,18 +12,5 @@
 
             <tag name="kernel.event_subscriber" />
         </service>
-
-        <service id="PayonePayment\Provider\Ratepay\EventListener\KernelEventListener">
-            <argument type="service" id="PayonePayment\Provider\Ratepay\Service\ProfileService" />
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
-            <argument type="service" id="PayonePayment\Provider\Ratepay\PaymentHandler\DebitPaymentHandler" />
-            <argument type="service" id="payone.request_enricher_chain.profile.ratepay.debit" />
-            <argument type="service" id="PayonePayment\Provider\Ratepay\PaymentHandler\InstallmentPaymentHandler" />
-            <argument type="service" id="payone.request_enricher_chain.profile.ratepay.installment" />
-            <argument type="service" id="PayonePayment\Provider\Ratepay\PaymentHandler\InvoicePaymentHandler" />
-            <argument type="service" id="payone.request_enricher_chain.profile.ratepay.invoice" />
-
-            <tag name="kernel.event_subscriber" />
-        </service>
     </services>
 </container>

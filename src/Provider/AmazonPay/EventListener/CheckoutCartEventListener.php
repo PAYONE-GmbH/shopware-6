@@ -134,7 +134,7 @@ SQL;
             $requestParameters = $createRequest->all();
             $response          = $this->getInitializedPaymentResponse(
                 $cart,
-                $createRequest->all(),
+                $requestParameters,
             ) ?: $this->payoneClient->request($requestParameters);
 
             if ('OK' === $response['status']) {
