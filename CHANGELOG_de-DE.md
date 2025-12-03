@@ -469,6 +469,7 @@ Maintenance
 Neue Funktionen
 
 * Neue Zahlart: Wero
+* Neue Zahlart: GooglePay
 * Kompatibilität zur Stücklisten-Funktion von Pickware Pro
 
 Bugfix

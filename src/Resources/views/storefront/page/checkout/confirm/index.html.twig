@@ -3,15 +3,24 @@
 {# shopware-block: 4af14bfe03c7f596186c0ae8a9518892ec60deff157e33869575718fa474f757@v6.6.10.5 #}
 {% block page_checkout_confirm_form_submit %}
     {% if constant('PayonePayment\\Provider\\ApplePay\\PaymentMethod\\StandardPaymentMethod::UUID') == context.paymentMethod.id %}
-        {% if not page.cart.errors.blockOrder %}
-            {% sw_include '@Storefront/storefront/component/checkout/apple-pay-button.html.twig' with {'amount': page.cart.price.totalPrice } %}
-        {% endif %}
-
-        <button id="confirmFormSubmit"
-                class="submit--hidden d-none"
-                form="confirmOrderForm"
-                type="submit">
-        </button>
+        {% sw_include '@Storefront/storefront/component/checkout/apple-pay-button.html.twig' with {'amount': page.cart.price.totalPrice } %}
+        <button
+            id="confirmFormSubmit"
+            class="submit--hidden d-none"
+            form="confirmOrderForm"
+            type="submit"
+        ></button>
+    {% elseif constant('PayonePayment\\Provider\\GooglePay\\PaymentMethod\\StandardPaymentMethod::UUID') == context.paymentMethod.id %}
+        {% sw_include '@Storefront/storefront/component/checkout/google-pay-button.html.twig' with {
+            location: 'cart',
+            buttonConfiguration: page.extensions.payoneGooglePayButton,
+        } %}
+        <button
+            id="confirmFormSubmit"
+            class="submit--hidden d-none"
+            form="confirmOrderForm"
+            type="submit"
+        ></button>
     {% else %}
         {{ parent() }}
     {% endif %}

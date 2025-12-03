@@ -11,6 +11,7 @@ return [
     Provider\ApplePay\PaymentMethod\StandardPaymentMethod::class,
     Provider\Bancontact\PaymentMethod\StandardPaymentMethod::class,
     Provider\Eps\PaymentMethod\StandardPaymentMethod::class,
+    Provider\GooglePay\PaymentMethod\StandardPaymentMethod::class,
     Provider\IDeal\PaymentMethod\StandardPaymentMethod::class,
     Provider\Klarna\PaymentMethod\DirectDebitPaymentMethod::class,
     Provider\Klarna\PaymentMethod\InstallmentPaymentMethod::class,

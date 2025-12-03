@@ -1,0 +1,29 @@
+{% block utilities_checkout_payone_google_pay_button %}
+    {% if page.extensions.payoneGooglePayButton %}
+        {% block component_payone_google_pay_button %}
+            <div
+                data-payone-google-pay="true"
+                data-payone-google-pay-options='{{ {
+                    merchantId: buttonConfiguration.merchantId,
+                    googlePayMerchantName: buttonConfiguration.googlePayMerchantName,
+                    googlePayMerchantId: buttonConfiguration.googlePayMerchantId,
+                    environment: buttonConfiguration.environment,
+                    allowedCardNetworks: buttonConfiguration.googlePayAllowedCardNetworks,
+                    countryCode: buttonConfiguration.countryCode,
+                    currencyCode: buttonConfiguration.currencyCode,
+                    totalPrice: buttonConfiguration.totalPrice
+                }|json_encode|e('html_attr') }}'
+            >
+                <div id="gpay-container" data-payone-google-pay-button></div>
+
+                <input
+                    type="hidden"
+                    id="google-pay-token"
+                    name="google-pay-token"
+                    value=""
+                    data-google-pay-token
+                />
+            </div>
+        {% endblock %}
+    {% endif %}
+{% endblock %}
