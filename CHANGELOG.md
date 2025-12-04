@@ -478,13 +478,18 @@ Maintenance
 * Removes twig/twig requirement
 
 # 7.1.0
-New Features
 
+New Features
 
 * New payment method: Wero
 * New payment method: GooglePay
 * Provides compatibility to the product set feature of Pickware Pro
 
-Bugfix
+Bugfixes
+
 * Fixed RatePay profile configuration
 * Reactivation of the optional transmission of order line items
+
+Maintenance
+
+* Tested with 6.7.4.2
