@@ -456,11 +456,11 @@ Neue Funktionen
 * Verbessert den Kreditkartenprüfungsprozess durch die Einführung eines dedizierten Anfrage-DTO und eines generischen Anfrage-Enrichers.
 * Vereinfacht die Kreditkartenprüfungsanfrage und reduziert die Abhängigkeit von bestimmten Bestell- oder Warenkorbinformationen. Außerdem zentralisiert es die Logik zur Anreicherung von Anfrageparametern.
 
-Bugfix
+Fehlerbehebung
 
 * Behebt einen Fehler, der Probleme beim Bearbeiten von Bestellungen mit fehlgeschlagener Kreditkartenzahlungen verursacht.
 
-Maintenance
+Wartung
 
 * Removes twig/twig requirement.
 
@@ -472,7 +472,11 @@ Neue Funktionen
 * Neue Zahlart: GooglePay
 * Kompatibilität zur Stücklisten-Funktion von Pickware Pro
 
-Bugfix
+Fehlerbehebung
 
 * Behebt einen Fehler, der Probleme beim Konfigurieren von RatePay Profilen verursachte.
 * Reaktivierung der optionalen Übermittlung von Bestellpositionen
+
+Wartung
+
+* Getestet mit 6.7.4.2
