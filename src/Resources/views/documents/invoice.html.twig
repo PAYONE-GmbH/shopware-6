@@ -124,6 +124,53 @@
             <br><br><strong><em>{{ 'PayonePayment.secureInvoice.document.accountNotice' | trans }}</em></strong><br>
         {% endif %}
     {% endif %}
+
+    {% if constant('PayonePayment\\Provider\\Payone\\PaymentMethod\\SecuredInvoicePaymentMethod::UUID') == order.transactions.last.paymentMethod.id %}
+        {% set securedInvoiceDataExtension = constant('\\PayonePayment\\Provider\\Payone\\Extension\\SecuredInvoice\\SecuredInvoiceDocumentDataExtension::EXTENSION_NAME') %}
+        {% if order.extensions[securedInvoiceDataExtension] %}
+            {% block document_payment_payone_secured_invoice_clearing_reference %}{% endblock %}
+            <br>
+            <strong>{{ 'PayonePayment.securedInvoice.document.invoicingDescription' | trans }}</strong><br>
+
+            {% for securedInvoiceData in order.extensions[securedInvoiceDataExtension].documentData %}
+                {% if securedInvoiceData.accountHolder %}
+                    {% block document_payment_payone_secured_invoice_holder %}
+                        <br>
+                        {{ 'PayonePayment.securedInvoice.document.holder' | trans({'%holder%': securedInvoiceData.accountHolder}) }}
+                    {% endblock %}
+                {% endif %}
+
+                {% block document_payment_payone_secured_invoice_iban %}
+                    <br>
+                    {{ 'PayonePayment.securedInvoice.document.iban' | trans({'%iban%': securedInvoiceData.iban}) }}
+                {% endblock %}
+
+                {% if securedInvoiceData.bic %}
+                    {% block document_payment_payone_secured_invoice_bic %}
+                        <br>
+                        {{ 'PayonePayment.securedInvoice.document.bic' | trans({'%bic%': securedInvoiceData.bic}) }}
+                    {% endblock %}
+                {% endif %}
+
+                {% if securedInvoiceData.reference %}
+                    {% block document_payment_payone_secured_invoice_reference %}
+                        <br>
+                        {{ 'PayonePayment.securedInvoice.document.reference' | trans({'%reference%': securedInvoiceData.reference}) }}
+                    {% endblock %}
+                {% endif %}
+
+                {% if securedInvoiceData.dueDate %}
+                    {% block document_payment_payone_secured_invoice_due_date %}
+                        <br>
+                        {% set formattedDueDate = securedInvoiceData.dueDate|slice(0, 4) ~ "-" ~ securedInvoiceData.dueDate|slice(4, 2) ~ "-" ~ securedInvoiceData.dueDate|slice(6, 2) %}
+                        {{ 'PayonePayment.securedInvoice.document.dueDate' | trans({'%dueDate%': formattedDueDate|format_date('medium')}) }}
+                    {% endblock %}
+                {% endif %}
+            {% endfor %}
+
+            <br><br><strong><em>{{ 'PayonePayment.securedInvoice.document.accountNotice' | trans }}</em></strong><br>
+        {% endif %}
+    {% endif %}
 {% endblock %}
 
 {% block document_footer_bank_name %}

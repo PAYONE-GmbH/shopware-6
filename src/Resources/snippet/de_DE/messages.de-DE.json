@@ -206,6 +206,17 @@
         "securedInvoice": {
             "general": {
                 "consentText": "Mit Abschluss dieser Bestellung erkläre ich mich mit den <a href=\"https://legal.paylater.payone.com/de/terms-of-payment.html\" title=\"https://legal.paylater.payone.com/de/terms-of-payment.html\" target=\"_blank\">ergänzenden Zahlungsbedingungen</a> und der Durchführung einer Risikoprüfung für die ausgewählte Zahlungsart einverstanden. Den <a href=\"https://legal.paylater.payone.com/de/data-protection-payments.html\" title=\"https://legal.paylater.payone.com/de/data-protection-payments.html\" target=\"_blank\">ergänzenden Datenschutzhinweis</a> habe ich zur Kenntnis genommen."
+            },
+            "cardTitle": "Payone gesicherte Rechnung",
+            "document": {
+                "clearingReference": "Referenz: %reference%",
+                "invoicingDescription": "Bitte überweisen Sie den ausstehenden Betrag auf das folgende Konto:",
+                "iban": "IBAN: %iban%",
+                "bic": "BIC: %bic%",
+                "reference": "Verwendungszweck: %reference%",
+                "holder": "Kontoinhaber: %holder%",
+                "dueDate": "Fälligkeitsdatum: %dueDate%",
+                "accountNotice": "Damit wir Ihre Zahlung schnell zuordnen können, überweisen Sie den ausstehenden Betrag bitte ausschließlich auf das obige Konto."
             }
         },
         "securedInstallment": {
