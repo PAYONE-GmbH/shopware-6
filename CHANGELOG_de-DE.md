@@ -480,3 +480,13 @@ Fehlerbehebung
 Wartung
 
 * Getestet mit 6.7.4.2
+
+# 7.1.1
+
+Fehlerbehebung
+
+* Kompatibilität ab Shopware Version 6.7.5.0 hergestellt
+
+Wartung
+
+* Getestet mit 6.7.6.2

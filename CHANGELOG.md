@@ -493,3 +493,13 @@ Bugfixes
 Maintenance
 
 * Tested with 6.7.4.2
+
+# 7.1.1
+
+Bugfixes
+
+* Compatibility established from Shopware version 6.7.5.0 onwards
+
+Maintenance
+
+* Tested with 6.7.6.2
