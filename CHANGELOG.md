@@ -493,3 +493,9 @@ Bugfixes
 Maintenance
 
 * Tested with 6.7.4.2
+
+# unreleased
+
+Bugfixes
+
+* Fixed an occasional error during plugin update in PaymentMethodInstaller
