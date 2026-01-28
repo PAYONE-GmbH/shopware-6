@@ -62,7 +62,7 @@ class PaymentMethodInstaller implements InstallerInterface
              * @noinspection UsingInclusionOnceReturnValueInspection
              * @var list<class-string<PaymentMethodInterface>> $payonePaymentMethods
              */
-            $payonePaymentMethods = (array) require_once $configurationFile;
+            $payonePaymentMethods = (array) require $configurationFile;
         }
 
         self::$cache = $payonePaymentMethods;

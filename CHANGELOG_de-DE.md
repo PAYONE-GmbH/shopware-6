@@ -480,3 +480,9 @@ Fehlerbehebung
 Wartung
 
 * Getestet mit 6.7.4.2
+
+# unreleased
+
+Fehlerbehebung
+
+* Ein gelegentlich auftretender Fehler beim Plugin-Update in PaymentMethodInstaller wurde behoben.
