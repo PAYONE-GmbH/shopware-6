@@ -493,3 +493,9 @@ Bugfixes
 Maintenance
 
 * Tested with 6.7.4.2
+
+# 7.1.1
+
+Bugfix
+
+* Delivery of gross prices for line items and shipping positions in payment requests (also for B2B customers) 

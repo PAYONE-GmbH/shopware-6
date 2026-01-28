@@ -480,3 +480,9 @@ Fehlerbehebung
 Wartung
 
 * Getestet mit 6.7.4.2
+
+# 7.1.1
+
+Fehlerbehebung
+
+* Lieferung von Bruttopreisen für Bestell- und Versand-Positionen in Payment Requests (auch für B2B-Kunden) 

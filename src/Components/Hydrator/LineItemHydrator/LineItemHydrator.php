@@ -9,6 +9,7 @@ use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\Delivery\Struct\Delivery;
 use Shopware\Core\Checkout\Cart\Delivery\Struct\DeliveryCollection;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
@@ -91,13 +92,15 @@ class LineItemHydrator implements LineItemHydratorInterface
             $requestLineItems[] = $this->getLineItemRequest(
                 $lineItem,
                 $orderLine['quantity'],
+                taxState: $order->getTaxStatus(),
             );
+
         }
 
         if ($includeShippingCosts && $deliveries = $order->getDeliveries()) {
             $requestLineItems = array_merge(
                 $requestLineItems,
-                $this->getShippingItems($deliveries, $order->getLanguageId()),
+                $this->getShippingItems($deliveries, $order->getLanguageId(), taxState: $order->getTaxStatus()),
             );
         }
 
@@ -114,6 +117,7 @@ class LineItemHydrator implements LineItemHydratorInterface
             $requestLineItems[] = $this->getLineItemRequest(
                 $lineItem,
                 $lineItem->getQuantity(),
+                taxState: $salesChannelContext->getTaxState(),
             );
         }
 
@@ -122,7 +126,7 @@ class LineItemHydrator implements LineItemHydratorInterface
         if (0 < $deliveries->count()) {
             $requestLineItems = \array_merge(
                 $requestLineItems,
-                $this->getShippingItems($deliveries, $context->getLanguageId(), $context),
+                $this->getShippingItems($deliveries, $context->getLanguageId(), $context, $context->getTaxState()),
             );
         }
 
@@ -147,13 +151,14 @@ class LineItemHydrator implements LineItemHydratorInterface
             $requestLineItems[] = $this->getLineItemRequest(
                 $lineItem,
                 $lineItem->getQuantity(),
+                taxState: $order->getTaxStatus(),
             );
         }
 
         if ($deliveries = $order->getDeliveries()) {
             $requestLineItems = \array_merge(
                 $requestLineItems,
-                $this->getShippingItems($deliveries, $order->getLanguageId()),
+                $this->getShippingItems($deliveries, $order->getLanguageId(), taxState: $order->getTaxStatus()),
             );
         }
 
@@ -194,7 +199,9 @@ class LineItemHydrator implements LineItemHydratorInterface
     private function getLineItemRequest(
         LineItem|OrderLineItemEntity $lineItemEntity,
         int $quantity,
+        string|null $taxState = null
     ): array {
+        $taxState      = $taxState ?? CartPrice::TAX_STATE_NET;
         $productNumber = \is_array($lineItemEntity->getPayload()) && \array_key_exists('productNumber', $lineItemEntity->getPayload())
             ? $lineItemEntity->getPayload()['productNumber']
             : null
@@ -215,18 +222,16 @@ class LineItemHydrator implements LineItemHydratorInterface
             : $taxes->first()->getTaxRate()
         ;
 
-        $unitPrice = null;
-        if ($lineItemEntity instanceof LineItem) {
-            $unitPrice = $lineItemEntity->getPrice()?->getUnitPrice();
-        } elseif ($lineItemEntity instanceof OrderLineItemEntity) {
-            $unitPrice = $lineItemEntity->getUnitPrice();
+        $grossPrice = .0;
+        foreach ($lineItemEntity->getPrice()->getCalculatedTaxes() as $calculatedTax) {
+            $grossPrice += $this->getGrossPrice($calculatedTax, $taxState);
         }
 
         return $this->getRequestItem(
             $this->mapItemType($lineItemEntity->getType()),
             $productNumber,
             $lineItemEntity->getLabel() ?? '',
-            $unitPrice ?? 0.0,
+            $grossPrice / $quantity,
             $quantity,
             $taxRate,
         );
@@ -236,7 +241,9 @@ class LineItemHydrator implements LineItemHydratorInterface
         DeliveryCollection|OrderDeliveryCollection $deliveryCollection,
         string $languageId,
         Context|null $context = null,
+        string|null $taxState = null
     ): array {
+        $taxState = $taxState ?? CartPrice::TAX_STATE_NET;
         if (null === $context) {
             $context = Context::createCLIContext();
         }
@@ -278,20 +285,28 @@ class LineItemHydrator implements LineItemHydratorInterface
         }
 
         $items = [];
-
         foreach ($shippingCosts->getCalculatedTaxes() as $shipmentPosition) {
             /** @var CalculatedTax $shipmentPosition */
             $items[] = $this->getRequestItem(
                 self::TYPE_SHIPMENT,
                 '', // got be filled by `addShippingItemsToItemList`
                 $shippingMethod->getTranslation('name') ?? '',
-                $shipmentPosition->getPrice(),
+                $this->getGrossPrice($shipmentPosition, $taxState),
                 1,
                 $shipmentPosition->getTaxRate(),
             );
         }
 
         return $items;
+    }
+
+    private function getGrossPrice(CalculatedTax $calculatedTax, string $taxState): float
+    {
+        if (CartPrice::TAX_STATE_NET !== $taxState) {
+            return $calculatedTax->getPrice();
+        }
+
+        return $calculatedTax->getTax() + $calculatedTax->getPrice();
     }
 
     /**
