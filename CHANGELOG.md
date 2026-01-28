@@ -499,3 +499,8 @@ Maintenance
 Bugfix
 
 * Delivery of gross prices for line items and shipping positions in payment requests (also for B2B customers) 
+* Compatibility established from Shopware version 6.7.5.0 onwards
+
+Maintenance
+
+* Tested with 6.7.6.2

@@ -486,3 +486,8 @@ Wartung
 Fehlerbehebung
 
 * Lieferung von Bruttopreisen für Bestell- und Versand-Positionen in Payment Requests (auch für B2B-Kunden) 
+* Kompatibilität ab Shopware Version 6.7.5.0 hergestellt
+
+Wartung
+
+* Getestet mit 6.7.6.2
