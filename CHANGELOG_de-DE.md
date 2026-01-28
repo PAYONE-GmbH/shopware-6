@@ -481,11 +481,15 @@ Wartung
 
 * Getestet mit 6.7.4.2
 
-# 7.1.1
+# 7.2.0
+
+Neue Funktionen
+
+* Payla Clearing-Daten werden gespeichert und auf Rechnungen ausgegeben
 
 Fehlerbehebung
 
-* Lieferung von Bruttopreisen für Bestell- und Versand-Positionen in Payment Requests (auch für B2B-Kunden) 
+* Lieferung von Bruttopreisen für Bestell- und Versand-Positionen in Payment Requests (auch für B2B-Kunden)
 * Kompatibilität ab Shopware Version 6.7.5.0 hergestellt
 
 Wartung
