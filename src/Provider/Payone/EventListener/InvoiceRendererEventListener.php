@@ -4,20 +4,17 @@ declare(strict_types=1);
 
 namespace PayonePayment\Provider\Payone\EventListener;
 
-use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
-use PayonePayment\Components\Document\Struct\InvoiceDocumentData;
-use PayonePayment\Provider\Payolution\PaymentMethod\InvoicePaymentMethod;
+use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
+use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
+use PayonePayment\Provider\Payone\Dto\SecuredInvoice\InvoiceDocumentDataDto;
+use PayonePayment\Provider\Payone\Extension\SecuredInvoice\SecuredInvoiceDocumentDataExtension;
+use PayonePayment\Provider\Payone\PaymentMethod\SecuredInvoicePaymentMethod;
 use Shopware\Core\Checkout\Document\Event\InvoiceOrdersEvent;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 readonly class InvoiceRendererEventListener implements EventSubscriberInterface
 {
-    public function __construct(
-        private ConfigReaderInterface $configReader,
-    ) {
-    }
-
     #[\Override]
     public static function getSubscribedEvents(): array
     {
@@ -31,17 +28,17 @@ readonly class InvoiceRendererEventListener implements EventSubscriberInterface
         $orders = $event->getOrders();
 
         foreach ($orders as $order) {
-            if ($this->hasPayolutionInvoicingTransaction($order)) {
+            if ($this->hasSecuredInvoiceTransaction($order)) {
                 $this->addInvoiceDocumentExtension($order);
             }
         }
     }
 
-    private function hasPayolutionInvoicingTransaction(OrderEntity $order): bool
+    private function hasSecuredInvoiceTransaction(OrderEntity $order): bool
     {
         if ($order->getTransactions()) {
             foreach ($order->getTransactions() as $transaction) {
-                if (InvoicePaymentMethod::UUID === $transaction->getPaymentMethodId()) {
+                if (SecuredInvoicePaymentMethod::UUID === $transaction->getPaymentMethodId()) {
                     return true;
                 }
             }
@@ -52,21 +49,32 @@ readonly class InvoiceRendererEventListener implements EventSubscriberInterface
 
     private function addInvoiceDocumentExtension(OrderEntity $order): void
     {
-        $configuration = $this->configReader->read($order->getSalesChannelId());
+        $data = new SecuredInvoiceDocumentDataExtension();
 
-        $iban = $configuration->get('payolutionInvoicingIban');
-        $bic  = $configuration->get('payolutionInvoicingBic');
+        foreach ($order->getTransactions() as $transaction) {
+            $extensions = $transaction->getExtensions();
+            $extension  = $extensions[PayonePaymentOrderTransactionExtension::NAME] ?? null;
 
-        if (empty($iban) || empty($bic)) {
-            return;
+            if ($extension instanceof PayonePaymentOrderTransactionDataEntity) {
+                $txData = $extension->getTransactionData() ?? [];
+                foreach ($txData as $txDatum) {
+                    $clearing = $txDatum['response']['clearing'] ?? [];
+                    if ([] === $clearing) {
+                        continue;
+                    }
+
+                    $dto = new InvoiceDocumentDataDto(
+                        $clearing['BankAccount']['BankAccountHolder'] ?? null,
+                        $clearing['BankAccount']['Iban'] ?? null,
+                        $clearing['BankAccount']['Bic'] ?? null,
+                        $clearing['DueDate'] ?? null,
+                        $clearing['Reference'] ?? null,
+                    );
+                    $data->addDocumentData($dto);
+                }
+            }
         }
 
-        $extension = new InvoiceDocumentData();
-        $extension->assign([
-            'iban' => $iban,
-            'bic'  => $bic,
-        ]);
-
-        $order->addExtension(InvoiceDocumentData::EXTENSION_NAME, $extension);
+        $order->addExtension(SecuredInvoiceDocumentDataExtension::EXTENSION_NAME, $data);
     }
 }
