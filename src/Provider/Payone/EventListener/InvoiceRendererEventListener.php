@@ -51,19 +51,22 @@ readonly class InvoiceRendererEventListener implements EventSubscriberInterface
             return;
         }
 
-        $txDatum  = end($txData);
-        $clearing = $txDatum['response']['clearing'] ?? [];
-        if ([] === $clearing) {
-            return;
-        }
+        foreach (\array_reverse($txData) as $txDataItem) {
+            $clearing = $txDataItem['response']['clearing'] ?? [];
+            if (!isset($clearing['BankAccount'])) {
+                continue;
+            }
 
-        $ext = new SecuredInvoiceDocumentDataExtension(
-            $clearing['BankAccount']['BankAccountHolder'] ?? null,
-            $clearing['BankAccount']['Iban'] ?? null,
-            $clearing['BankAccount']['Bic'] ?? null,
-            $clearing['DueDate'] ?? null,
-            $clearing['Reference'] ?? null,
-        );
-        $order->addExtension(SecuredInvoiceDocumentDataExtension::EXTENSION_NAME, $ext);
+            $ext = new SecuredInvoiceDocumentDataExtension(
+                $clearing['BankAccount']['BankAccountHolder'] ?? null,
+                $clearing['BankAccount']['Iban'] ?? null,
+                $clearing['BankAccount']['Bic'] ?? null,
+                $clearing['DueDate'] ?? null,
+                $clearing['Reference'] ?? null,
+            );
+            $order->addExtension(SecuredInvoiceDocumentDataExtension::EXTENSION_NAME, $ext);
+
+            break;
+        }
     }
 }
