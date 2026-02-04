@@ -22,8 +22,6 @@
         </service>
 
         <service id="PayonePayment\Provider\Payone\EventListener\InvoiceRendererEventListener">
-            <argument type="service" id="PayonePayment\Components\ConfigReader\ConfigReaderInterface" />
-
             <tag name="kernel.event_subscriber" />
         </service>
     </services>
