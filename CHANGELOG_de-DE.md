@@ -492,6 +492,7 @@ Fehlerbehebung
 * Lieferung von Bruttopreisen für Bestell- und Versand-Positionen in Payment Requests (auch für B2B-Kunden)
 * Kompatibilität ab Shopware Version 6.7.5.0 hergestellt
 * Ein gelegentlich auftretender Fehler beim Plugin-Update in PaymentMethodInstaller wurde behoben.
+* Behebt einen Fehler bei der Bezahlung mit RatePay
 
 Wartung
 
