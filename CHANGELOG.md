@@ -498,9 +498,9 @@ Maintenance
 
 New Features
 
-* Payla Clearing details are now stored and shown on invoices
+* Clearing details for PAYONE Secured Invoice are now stored and shown on invoices
 
-Bugfix
+Bugfixes
 
 * Delivery of gross prices for line items and shipping positions in payment requests (also for B2B customers)
 * Compatibility established from Shopware version 6.7.5.0 onwards

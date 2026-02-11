@@ -485,7 +485,7 @@ Wartung
 
 Neue Funktionen
 
-* Payla Clearing-Daten werden gespeichert und auf Rechnungen ausgegeben
+* Bezahlinformationen werden nun für den PAYONE gesicherten Rechungskauf gespeichert und auf Rechnungen ausgegeben
 
 Fehlerbehebung
 
