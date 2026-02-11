@@ -206,6 +206,17 @@
         "securedInvoice": {
             "general": {
                 "consentText": "By placing this order, I agree to the <a href=\"https://legal.paylater.payone.com/en/terms-of-payment.html\" title=\"https://legal.paylater.payone.com/en/terms-of-payment.html\" target=\"_blank\">supplementary payment terms</a> and the performance of a risk assessment for the selected payment method. I am aware of the <a href=\"https://legal.paylater.payone.com/en/data-protection-payments.html\" title=\"https://legal.paylater.payone.com/en/data-protection-payments.html\" target=\"_blank\">supplementary data protection notice</a>."
+            },
+            "cardTitle": "Payone secure invoice",
+            "document": {
+                "clearingReference": "Reference: %reference%",
+                "invoicingDescription": "Please transfer the outstanding amount to the following bank account:",
+                "iban": "IBAN: %iban%",
+                "bic": "BIC: %bic%",
+                "reference": "Reference: %reference%",
+                "holder": "Account Holder: %holder%",
+                "dueDate": "Due date: %dueDate%",
+                "accountNotice": "In order for us to quickly allocate your payment, please transfer the outstanding amount exclusively to the account above."
             }
         },
         "securedInstallment": {

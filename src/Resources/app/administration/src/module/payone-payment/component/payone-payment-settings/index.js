@@ -19,28 +19,8 @@ Component.extend('payone-payment-settings', 'sw-system-config', {
 
         _findCardByElement(element) {
             return this.config.find(card =>
-                (Array.isArray(card.elements) && card.elements.includes(element)) ||
-                (Array.isArray(card.__payoneCollapsedElementsBuffer) && card.__payoneCollapsedElementsBuffer.includes(element))
+                Array.isArray(card.elements) && card.elements.includes(element)
             );
-        },
-
-        setFieldPresentation(element, isVisible) {
-            element.config = element.config || {};
-            if (element._payoneOrigLabel === undefined) {
-                element._payoneOrigLabel = element.config.label;
-            }
-
-            if (element._payoneOrigHelpText === undefined) {
-                element._payoneOrigHelpText = element.config.helpText;
-            }
-            
-            if (isVisible) {
-                element.config.label    = element._payoneOrigLabel;
-                element.config.helpText = element._payoneOrigHelpText;
-            } else {
-                element.config.label    = '';
-                element.config.helpText = undefined;
-            }
         },
 
         async readConfig() {
@@ -56,7 +36,9 @@ Component.extend('payone-payment-settings', 'sw-system-config', {
 
                         return {
                             id: element.value,
+                            value: element.value,
                             name: translationValue,
+                            label: translationValue,
                         }
                     });
                 });
@@ -64,7 +46,7 @@ Component.extend('payone-payment-settings', 'sw-system-config', {
             await this.$super('readConfig');
 
             this.config.forEach((card) => {
-                const matches = card.name.match(/^payment_(.*)$/);
+                const matches           = card.name.match(/^payment_(.*)$/);
                 const paymentMethodName = matches ? matches[1] : null;
 
                 if (paymentMethodName) {
@@ -72,46 +54,54 @@ Component.extend('payone-payment-settings', 'sw-system-config', {
                     this.addPaymentStatusFieldsToPaymentSettingCard(card, paymentMethodName);
                 }
 
-                // make ONLY payment_* cards collapsible; leave basic_configuration etc. alone
-                if (card.name.startsWith('payment_') || card.name === 'status_mapping') {
-                    card.setShowFields = (isVisible) => {
-                        card.showFields = !!isVisible;
-
-                        if (card.showFields) {
-                            // restore buffered elements to render area
-                            if (Array.isArray(card.__payoneCollapsedElementsBuffer) && card.__payoneCollapsedElementsBuffer.length) {
-                                card.elements.splice(0, 0, ...card.__payoneCollapsedElementsBuffer);
-                                card.__payoneCollapsedElementsBuffer.length = 0;
-                            }
-
-                            // unhide everything by default
-                            card.elements.forEach((element) => {
-                                element.hidden = false;
-                                this.setFieldPresentation(element, true);
-                            });
-
-                            // then apply status-mapping visibility (depends on toggle)
-                            this.showPaymentStatusFieldsBasedOnToggle(card);
-                        } else {
-                            // create buffer and move everything out of the card (prevents bool fields from leaking)
-                            if (!Array.isArray(card.__payoneCollapsedElementsBuffer)) {
-                                card.__payoneCollapsedElementsBuffer = [];
-                            }
-                            card.__payoneCollapsedElementsBuffer.length = 0;
-
-                            card.elements.forEach((element) => {
-                                element.hidden = true;
-                                this.setFieldPresentation(element, false);
-                                card.__payoneCollapsedElementsBuffer.push(element);
-                            });
-
-                            // remove all visual elements while collapsed
-                            card.elements.splice(0, card.elements.length);
+                if (card.name === 'status_mapping' && Array.isArray(card.elements)) {
+                    card.elements.forEach(element => {
+                        if (element.name.toLowerCase().includes('paymentstatus')) {
+                            element.config         = element.config || {};
+                            element.config.options = this.stateMaschineOptions;
                         }
+                    });
+                }
+            });
+
+            this.config.forEach((card) => {
+                if (card.name.startsWith('payment_') || card.name === 'status_mapping') {
+                    card.showFields = false;
+
+                    card.setShowFields = (visible) => {
+                        card.showFields = visible;
+                        this.updateCardVisibility(card);
                     };
 
-                    // start collapsed
-                    card.setShowFields(false);
+                    this.updateCardVisibility(card);
+                }
+            });
+        },
+
+        updateCardVisibility(card) {
+            if (!card || !Array.isArray(card.elements)) {
+                return;
+            }
+
+            const bucket = this._getConfigBucket();
+            const toggleFieldName       = this._getShowPaymentStatusFieldsFieldName(card.name);
+            const isStatusMappingActive = bucket ? !!bucket[toggleFieldName] : false;
+            const isGlobalMappingCard   = (card.name === 'status_mapping');
+
+            card.elements.forEach((element) => {
+                if (!card.showFields) {
+                    element.hidden = true;
+                    return;
+                }
+
+                if (isGlobalMappingCard) {
+                    element.hidden = false;
+                } else {
+                    if (element.__payoneIsStatus) {
+                        element.hidden = !isStatusMappingActive;
+                    } else {
+                        element.hidden = false;
+                    }
                 }
             });
         },
@@ -119,6 +109,7 @@ Component.extend('payone-payment-settings', 'sw-system-config', {
         addApiConfigurationFieldsToPaymentSettingCard(card, paymentMethodName) {
             const allowedFieldKeys = ['merchantId', 'accountId', 'portalId', 'portalKey'];
             const basicCard        = this.config.find(c => c.name === 'basic_configuration');
+
             if (!basicCard || !Array.isArray(basicCard.elements)) {
                 return;
             }
@@ -140,11 +131,12 @@ Component.extend('payone-payment-settings', 'sw-system-config', {
                     '.' + paymentMethodName + (fieldKey[0].toUpperCase() + fieldKey.slice(1))
                 );
 
-                cloned.config          = cloned.config || {};
+                cloned.config = cloned.config || {};
                 cloned.config.helpText = {
                     'en-GB': 'The basic configuration value is used, if nothing is entered here.',
                     'de-DE': 'Es wird der Wert aus der Grundeinstellung verwendet, wenn hier kein Wert eingetragen ist.',
                 };
+                cloned.hidden = true;
 
                 elementsToPrepend.push(cloned);
             });
@@ -168,42 +160,48 @@ Component.extend('payone-payment-settings', 'sw-system-config', {
                         'de-DE': 'Sie können für jede Zahlungsart ein spezifisches Statusmapping konfigurieren. Existiert eine solche Konfiguration nicht, wird auf die allgemeine Konfiguration zurückgegriffen.',
                     }
                 },
-                name: this._getShowPaymentStatusFieldsFieldName(card.name)
+                name: this._getShowPaymentStatusFieldsFieldName(card.name),
+                hidden: true
             });
 
-            // pick the source elements regardless of the collapsed state of the status_mapping card
             const statusTemplateCard = this.config.find(c => c.name === 'status_mapping');
             if (!statusTemplateCard) {
                 return;
             }
 
-            const sourceElements = (Array.isArray(statusTemplateCard.elements) && statusTemplateCard.elements.length)
-                ? statusTemplateCard.elements
-                : (statusTemplateCard.__payoneCollapsedElementsBuffer || []);
+            const sourceElements = statusTemplateCard.elements || [];
 
             sourceElements.forEach((element) => {
-                const cloned= Utils.object.cloneDeep(element);
+                const cloned = Utils.object.cloneDeep(element);
 
                 cloned.name             = element.name.replace('.paymentStatus', `.${paymentMethodName}PaymentStatus`);
                 cloned.__payoneIsStatus = true;
                 cloned.hidden           = true;
 
-                this.setFieldPresentation(cloned, false);
+                if (this.stateMaschineOptions) {
+                    cloned.config         = cloned.config || {};
+                    cloned.config.options = this.stateMaschineOptions;
+                }
 
                 card.elements.push(cloned);
             });
         },
 
         getElementBind(element, mapInheritance) {
-            const bind = this.$super('getElementBind', element, mapInheritance);
+            const bind          = this.$super('getElementBind', element, mapInheritance);
+            const isStatusField = element.name.toLowerCase().includes('paymentstatus');
 
-            // supply options for all status selects
-            if (element.name.includes('PaymentStatus') || element.name.includes('.paymentStatus')) {
+            if (isStatusField) {
                 bind.config         = bind.config || {};
                 bind.config.options = this.stateMaschineOptions;
+
+                const bucket = this._getConfigBucket();
+                if (bucket && bucket[element.name] !== undefined) {
+                    bind.value      = bucket[element.name];
+                    bind.modelValue = bucket[element.name];
+                }
             }
 
-            // wire the "show status mapping" toggle
             if (element.name.endsWith('_show_status_mapping')) {
                 const fieldName = element.name;
                 const bucket    = this._getConfigBucket() || {};
@@ -227,13 +225,13 @@ Component.extend('payone-payment-settings', 'sw-system-config', {
                     }
 
                     const owningCard = this._findCardByElement(element);
-                    if (owningCard && owningCard.showFields) {
-                        this.showPaymentStatusFieldsBasedOnToggle(owningCard);
+                    if (owningCard) {
+                        this.updateCardVisibility(owningCard);
                     }
                 };
 
                 bind['onUpdate:modelValue'] = handleToggleChange;
-                bind.onChange = handleToggleChange;
+                bind.onChange               = handleToggleChange;
             }
 
             if (element.config && element.config.componentName === 'payone-ratepay-profiles') {
@@ -259,45 +257,22 @@ Component.extend('payone-payment-settings', 'sw-system-config', {
         },
 
         getInheritWrapperBind(element) {
-            const rtn = this.$super('getInheritWrapperBind', element);
+            const bind = this.$super('getInheritWrapperBind', element);
 
-            rtn.hidden = element.hidden;
-
-            return rtn;
-        },
-
-        showPaymentStatusFieldsBasedOnToggle(card) {
-            if (!card || !card.showFields) {
-                return;
+            if (element.hidden) {
+                bind.style = { display: 'none' };
             }
 
-            const configBucket = this._getConfigBucket();
-            if (!configBucket) {
-                return;
-            }
-
-            const toggleFieldName = this._getShowPaymentStatusFieldsFieldName(card.name);
-            const toggleIsOn      = !!configBucket[toggleFieldName];
-
-            // ensure the toggle itself is shown while card is open
-            const toggleElement = card.elements.find(e => e.name === toggleFieldName);
-            if (toggleElement) {
-                toggleElement.hidden = false;
-                this.setFieldPresentation(toggleElement, true);
-            }
-
-            // show/hide only the status-mapping fields; all other fields stay visible while card is open
-            card.elements.forEach((element) => {
-                if (element.__payoneIsStatus) {
-                    element.hidden = !toggleIsOn;
-                    this.setFieldPresentation(element, toggleIsOn);
-                }
-            });
+            return bind;
         },
 
         emitConfig() {
-            // keep UI consistent when system-config emits updates
-            this.config.forEach(card => this.showPaymentStatusFieldsBasedOnToggle(card));
+            this.config.forEach(card => {
+                if (card.name.startsWith('payment_') || card.name === 'status_mapping') {
+                    this.updateCardVisibility(card);
+                }
+            });
+            
             this.$super('emitConfig');
         }
     }

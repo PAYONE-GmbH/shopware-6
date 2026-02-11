@@ -493,3 +493,20 @@ Bugfixes
 Maintenance
 
 * Tested with 6.7.4.2
+
+# 7.2.0
+
+New Features
+
+* Payla Clearing details are now stored and shown on invoices
+
+Bugfix
+
+* Delivery of gross prices for line items and shipping positions in payment requests (also for B2B customers)
+* Compatibility established from Shopware version 6.7.5.0 onwards
+* Fixed an occasional error during plugin update in PaymentMethodInstaller
+* Fixed RatePay payment handling
+
+Maintenance
+
+* Tested with 6.7.6.2
