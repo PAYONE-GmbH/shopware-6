@@ -493,3 +493,9 @@ Bugfixes
 Maintenance
 
 * Tested with 6.7.4.2
+
+# 7.2.0
+
+Bugfixes
+
+* Fixed RatePay payment handling

@@ -480,3 +480,9 @@ Fehlerbehebung
 Wartung
 
 * Getestet mit 6.7.4.2
+
+# 7.2.0
+
+Fehlerbehebung
+
+* Behebt einen Fehler bei der Bezahlung mit RatePay
