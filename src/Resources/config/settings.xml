@@ -3,6 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd"
 >
+    <!-- Default values are maintained in PayonePayment\Installer\SettingsDefaults::DEFAULT_VALUES -->
     <card>
         <title>Basic Configuration</title>
         <title lang="de-DE">Grundeinstellungen</title>
@@ -190,6 +191,171 @@
                     <name lang="de-DE">Autorisierung</name>
                 </option>
             </options>
+        </input-field>
+    </card>
+
+    <card>
+        <title>PAYONE Credit Card (Click to Pay)</title>
+        <title lang="de-DE">PAYONE Kreditkarte (Click to Pay)</title>
+
+        <name>payment_clickToPay</name>
+
+        <component name="payone-click-to-pay-banner">
+            <name>payoneClickToPayBanner</name>
+        </component>
+
+        <input-field type="single-select">
+            <name>clickToPayAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Use this option to set the authorization method for this payment type.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field>
+            <name>clickToPayVisaSrcInitiatorId</name>
+            <label>VISA – Initiator ID</label>
+            <label lang="de-DE">VISA – Initiator-ID</label>
+            <required>true</required>
+            <defaultValue>2662KBGOLX92KS4XIFYU213JLdGTvLhYkOB-_1gLo1D1jOqgM</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayVisaSrcDpaId</name>
+            <label>VISA – DPA ID</label>
+            <label lang="de-DE">VISA – DPA-ID</label>
+            <required>true</required>
+        </input-field>
+        <input-field>
+            <name>clickToPayVisaEncryptionKey</name>
+            <label>VISA – Encryption Key</label>
+            <label lang="de-DE">VISA – Encryption Key</label>
+            <required>true</required>
+            <defaultValue>GQJIKLOAMZWIT8IRIGHR14vQUlllxiMWf-XSHQHvjI5wuTZ2w</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayVisaNModulus</name>
+            <label>VISA – nModulus</label>
+            <label lang="de-DE">VISA – nModulus</label>
+            <required>true</required>
+            <defaultValue>kPujwVJjevI_oeZwZoA2Wjt94DFcMvRCab8iRiEGrGfKWtNCwQYkylyuRoB615cYm2BVbvoKH8Yyv0aC3dwah6UmOdJszmL0pV_cbx_tXzWgYg3sYNsp0sBxUFcQ1A6DVbyOxxJbmnwlHGE5fkuzJr-qqul3RswsCG-vPrh_--2_RSipa9lVr9gvfI4AbFABLTqKeto0rWPbIBKdhcGQ7JMPxzq8239KPUZfSyNueAcdL-yHADi3L2VSzdF7tS7si3ue_IFoXDpbggsFxvEt79UlBDOBsagc_ms9_ZsYlJaKCT8ZjwhakMo_-Zdc97mudVj1jz2_L5l4l_zibF5riw</defaultValue>
+        </input-field>
+
+        <input-field>
+            <name>clickToPayMastercardSrcInitiatorId</name>
+            <label>Mastercard – Initiator ID</label>
+            <label lang="de-DE">Mastercard – Initiator-ID</label>
+            <required>true</required>
+            <defaultValue>559003b0-5d17-4d89-aa2b-b02a4023d64d</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayMastercardSrcDpaId</name>
+            <label>Mastercard – DPA ID</label>
+            <label lang="de-DE">Mastercard – DPA-ID</label>
+            <required>true</required>
+        </input-field>
+
+        <input-field>
+            <name>clickToPayButtonStyle</name>
+            <label>Button Style</label>
+            <label lang="de-DE">Button-Stil</label>
+            <required>true</required>
+            <defaultValue>OUTLINED</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayButtonTextCase</name>
+            <label>Button Text Case</label>
+            <label lang="de-DE">Groß- und Kleinschreibung des Button-Texts</label>
+            <required>true</required>
+            <defaultValue>capitalize</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayButtonAndBadgeColor</name>
+            <label>Button &amp; Badge Color</label>
+            <label lang="de-DE">Button- und Badge-Farbe</label>
+            <required>true</required>
+            <defaultValue>#3B82F6</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayButtonFilledHoverColor</name>
+            <label>Button Filled Hover Color</label>
+            <label lang="de-DE">Hover-Farbe für gefüllten Button</label>
+            <required>true</required>
+            <defaultValue>#6390f2</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayButtonOutlinedHoverColor</name>
+            <label>Button Outlined Hover Color</label>
+            <label lang="de-DE">Hover-Farbe für umrandeten Button</label>
+            <required>true</required>
+            <defaultValue>#60A5FA</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayButtonDisabledColor</name>
+            <label>Button Disabled Color</label>
+            <label lang="de-DE">Farbe für deaktivierten Button</label>
+            <required>true</required>
+            <defaultValue>#A5B4FC</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayCardItemActiveColor</name>
+            <label>Card Item Active Color</label>
+            <label lang="de-DE">Aktive Kartenfarbe</label>
+            <required>true</required>
+            <defaultValue>#6390f2</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayButtonAndBadgeTextColor</name>
+            <label>Button &amp; Badge Text Color</label>
+            <label lang="de-DE">Textfarbe für Button und Badge</label>
+            <required>true</required>
+            <defaultValue>#FFFFFF</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayLinkTextColor</name>
+            <label>Link Text Color</label>
+            <label lang="de-DE">Link-Textfarbe</label>
+            <required>true</required>
+            <defaultValue>#3B82F6</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayAccentColor</name>
+            <label>Accent Color</label>
+            <label lang="de-DE">Akzentfarbe</label>
+            <required>true</required>
+            <defaultValue>#6390f2</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayFontFamily</name>
+            <label>Font Family</label>
+            <label lang="de-DE">Schriftart</label>
+            <required>true</required>
+            <defaultValue>Sansation</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayButtonAndInputRadius</name>
+            <label>Button &amp; Input Border Radius</label>
+            <label lang="de-DE">Rahmenradius für Button und Eingabefelder</label>
+            <required>true</required>
+            <defaultValue>1rem</defaultValue>
+        </input-field>
+        <input-field>
+            <name>clickToPayCardItemRadius</name>
+            <label>Card Item Border Radius</label>
+            <label lang="de-DE">Rahmenradius der Karten</label>
+            <required>true</required>
+            <defaultValue>2rem</defaultValue>
         </input-field>
     </card>
 
@@ -965,7 +1131,6 @@
             <name>ratepayInvoiceDeviceFingerprintSnippetId</name>
             <label>Device Fingerprint Snippet ID</label>
             <label lang="de-DE">Device Fingerprint Snippet ID</label>
-            <defaultValue>ratepay</defaultValue>
         </input-field>
 
         <component name="payone-ratepay-profiles">
@@ -1362,7 +1527,6 @@
             <name>securedInvoiceAllowDifferentShippingAddress</name>
             <label>Allow a different delivery address (Attention: has to be enabled in the PAYONE account)</label>
             <label lang="de-DE">Abweichende Lieferadresse zulassen (Hinweis: Muss im PAYONE-Konto freigeschaltet sein!)</label>
-            <defaultValue>false</defaultValue>
         </input-field>
     </card>
 
@@ -1404,7 +1568,6 @@
             <name>securedInstallmentAllowDifferentShippingAddress</name>
             <label>Allow a different delivery address (Attention: has to be enabled in the PAYONE account)</label>
             <label lang="de-DE">Abweichende Lieferadresse zulassen (Hinweis: Muss im PAYONE-Konto freigeschaltet sein!)</label>
-            <defaultValue>false</defaultValue>
         </input-field>
     </card>
 
@@ -1446,7 +1609,6 @@
             <name>securedDirectDebitAllowDifferentShippingAddress</name>
             <label>Allow a different delivery address (Attention: has to be enabled in the PAYONE account)</label>
             <label lang="de-DE">Abweichende Lieferadresse zulassen (Hinweis: Muss im PAYONE-Konto freigeschaltet sein!)</label>
-            <defaultValue>false</defaultValue>
         </input-field>
     </card>
 
@@ -1538,7 +1700,6 @@
             <label lang="de-DE">Verbiete Zustellung an Postfilialen</label>
             <helpText>Enabling this option will prevent the user from selecting post offices for delivery.</helpText>
             <helpText lang="de-DE">Die Aktivierung dieser Option verhindert, dass der Benutzer Postfilialen für die Zustellung auswählen kann.</helpText>
-            <defaultValue>true</defaultValue>
         </input-field>
 
         <input-field type="bool">
@@ -1547,7 +1708,6 @@
             <label lang="de-DE">Verbiete Zustellung an Packstationen</label>
             <helpText>Enabling this option will prevent the user from selecting pack-stations for delivery.</helpText>
             <helpText lang="de-DE">Die Aktivierung dieser Option verhindert, dass der Benutzer Packstationen für die Zustellung auswählen kann.</helpText>
-            <defaultValue>true</defaultValue>
         </input-field>
 
         <input-field type="single-select">

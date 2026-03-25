@@ -510,3 +510,20 @@ Bugfixes
 Maintenance
 
 * Tested with 6.7.6.2
+
+# 7.3.0
+
+New Features
+
+* New payment method: Click to pay (Credit card new)
+
+Bugfixes
+
+* Improved handling of default values for payment method settings 
+* Optimization of the installation routine
+* Adjust CI workflow for Shopware 6.7 migration
+* Add index on order_transaction_id
+
+Maintenance
+
+* Bump cross-spawn to 7.0.6

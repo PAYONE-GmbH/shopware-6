@@ -1,0 +1,14 @@
+<div class="payone-payment click-to-pay">
+    {% block page_checkout_confirm_payone_card_title_credit_card %}
+        <div class="card-title">
+            {{ "PayonePayment.checkoutConfirmPage.defaultCardTitle" | trans }}
+        </div>
+    {% endblock %}
+
+    {% block page_checkout_confirm_payone_card_content_credit_card %}
+        <script src="https://sdk.tokenization.secure.payone.com/1.3.0/hosted-tokenization-sdk.js" crossorigin="anonymous"></script>
+        <br />
+        <div id="payment-IFrame" data-payone-ctp="true"></div>
+    {% endblock %}
+</div>
+

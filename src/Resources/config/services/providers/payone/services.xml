@@ -12,5 +12,12 @@
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" />
             <argument type="service" id="PayonePayment\Payone\Client\PayoneClient" />
         </service>
+
+        <service id="PayonePayment\Provider\Payone\Service\ClickToPayJwtHandler">
+            <argument key="$requestEnricher" type="service" id="PayonePayment\Provider\Payone\RequestParameter\RequestEnricher" />
+            <argument key="$requestEnricherChain" type="service" id="payone.request_enricher_chain.session.payone.click_to_pay" />
+            <argument key="$paymentHandler" type="service" id="PayonePayment\Provider\Payone\PaymentHandler\ClickToPayPaymentHandler" />
+            <argument key="$payoneClient" type="service" id="PayonePayment\Payone\Client\PayoneClient" />
+        </service>
     </services>
 </container>

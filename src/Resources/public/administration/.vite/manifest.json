@@ -1,10 +1,11 @@
 {
   "main.js": {
-    "file": "assets/payone-payment-c4qabnEj.js",
+    "file": "assets/payone-payment-DjfxCAuc.js",
     "name": "payone-payment",
     "src": "main.js",
     "isEntry": true,
     "dynamicImports": [
+      "module/payone-payment/component/payone-click-to-pay-banner/index.js",
       "module/payone-payment/component/payone-payment-plugin-icon/index.js",
       "module/payone-payment/component/payone-ratepay-profile-configurations/index.js",
       "module/payone-payment/component/payone-ratepay-profiles/index.js",
@@ -32,6 +33,15 @@
     "name": "index",
     "src": "module/payone-notification-target/page/payone-notification-target-list/index.js",
     "isDynamicEntry": true
+  },
+  "module/payone-payment/component/payone-click-to-pay-banner/index.js": {
+    "file": "assets/index-O5u190iO.js",
+    "name": "index",
+    "src": "module/payone-payment/component/payone-click-to-pay-banner/index.js",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-ZGp_ZB1M.css"
+    ]
   },
   "module/payone-payment/component/payone-payment-plugin-icon/index.js": {
     "file": "assets/index-BTrSYjkY.js",

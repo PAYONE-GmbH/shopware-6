@@ -497,3 +497,20 @@ Fehlerbehebung
 Wartung
 
 * Getestet mit 6.7.6.2
+
+# 7.3.0
+
+Neue Funktionen
+
+* Neue Zahlart: Click to pay (Kreditkarte neu)
+
+Fehlerbehebung
+
+* Verbesserte Handhabung der Standardwerte für Zahlungsmethodeneinstellungen 
+* Optimierung der Installations-Routine
+* Anpassung des CI-Workflows für die Migration auf Shopware 6.7
+* Index für `order_transaction_id` hinzugefügt
+
+Maintenance
+
+* Bump cross-spawn auf 7.0.6
