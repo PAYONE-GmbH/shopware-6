@@ -8,6 +8,7 @@ import PayonePaymentKlarna from "./klarna/payone-payment.klarna";
 import PayonePaymentPayPalV2 from "./paypal-v2/payone-payment.paypal-v2";
 import "./amazon-pay";
 import PayoneGooglePayPlugin from "./google-pay/payone-payment.google-pay";
+import PayoneClickToPayPlugin from "./click-to-pay/payone-payment.click-to-pay";
 
 const PluginManager = window.PluginManager;
 
@@ -20,6 +21,7 @@ PluginManager.register('PayonePaymentRatepayInstallment', PayonePaymentRatepayIn
 PluginManager.register('PayonePaymentKlarna', PayonePaymentKlarna, '[data-payone-payment-klarna]');
 PluginManager.register('PayonePaymentPayPalV2', PayonePaymentPayPalV2, '[data-payone-payment-pay-pal-v2-options]');
 PluginManager.register('PayoneGooglePayPlugin', PayoneGooglePayPlugin, '[data-payone-google-pay]');
+PluginManager.register('PayoneClickToPayPlugin', PayoneClickToPayPlugin, '[data-payone-click-to-pay]');
 
 if (module.hot) {
     module.hot.accept();

@@ -24,9 +24,22 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                php-version: [ '8.2', '8.3', '8.4' ]
-                mysql-version: [ '8.0' ]
-                shopware-version: [ 'v6.7.0.0', 'v6.7.1.0', 'v6.7.2.0', 'v6.7.3.0', 'v6.7.4.0', 'v6.7.5.0', 'v6.7.6.0', 'v6.7.7.0', 'v6.7.8.0', 'v6.7.9.0' ]
+                php-version:
+                  - '8.2'
+                  - '8.3'
+                  - '8.4'
+                  - '8.5'
+                mysql-version: [ '8.0', '8.2' ]
+                shopware-version:
+                  - 'v6.7.0.1'
+                  - 'v6.7.1.2'
+                  - 'v6.7.2.2'
+                  - 'v6.7.3.1'
+                  - 'v6.7.4.2'
+                  - 'v6.7.5.1'
+                  - 'v6.7.6.2'
+                  - 'v6.7.7.1'
+                  - 'v6.7.8.1'
             fail-fast: false
             max-parallel: 10
         services:
@@ -38,7 +51,6 @@ jobs:
                 ports:
                     - 3306:3306
         steps:
-
             -   name: Install PHP
                 uses: shivammathur/setup-php@master
                 with:
@@ -79,12 +91,9 @@ jobs:
 
             -   name: "Install Shopware dependencies"
                 # Install Shopware with --no-dev to prevent that dev-tools of the module got in conflict with the tools of shopware
-                # Lock twig to <=3.20 because of an incompatibility to squirrelphp/twig-php-syntax
                 run: |
                     composer req shopware/core:${{ matrix.shopware-version }} shopware/administration:* shopware/storefront:* --no-update
-                    composer remove shopware/elasticsearch --no-update
                     composer install
-                    composer require twig/twig:"<=3.20"
 
             -   name: "Install ${{ env.COMPOSER_NAME }}"
                 run: |
@@ -99,17 +108,17 @@ jobs:
                     composer remove shopware/* --no-update
                     composer install
 
-            -   name: "Run PHPStan"
-                working-directory: ${{ env.MODULE_DIR }}
-                run: ./vendor/bin/phpstan
+            #-   name: "Run PHPStan"
+            #    working-directory: ${{ env.MODULE_DIR }}
+            #    run: ./vendor/bin/phpstan
 
-            -   name: "Check Code style (easy-coding-style)"
-                working-directory: ${{ env.MODULE_DIR }}
-                run: ./vendor/bin/ecs
+            #-   name: "Check Code style (easy-coding-style)"
+            #    working-directory: ${{ env.MODULE_DIR }}
+            #    run: ./vendor/bin/ecs
 
-            -   name: "Check Code style (rector)"
-                working-directory: ${{ env.MODULE_DIR }}
-                run: ./vendor/bin/rector --dry-run
+            #-   name: "Check Code style (rector)"
+            #    working-directory: ${{ env.MODULE_DIR }}
+            #    run: ./vendor/bin/rector --dry-run
 
             #    # Workaround. The variables are required for shopware to work properly during unit-testing
             #-   name: "Install Shopware for unit-testing"

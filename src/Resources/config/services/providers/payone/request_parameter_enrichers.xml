@@ -23,6 +23,7 @@
             <argument key="$countryRepository" type="service" id="country.repository" />
             <argument key="$requestStack" type="service" id="request_stack" />
 
+            <tag name="payone.request_enricher.pay.payone.click_to_pay" />
             <tag name="payone.request_enricher.pay.payone.credit_card" />
             <tag name="payone.request_enricher.pay.payone.debit" />
             <tag name="payone.request_enricher.pay.payone.open_invoice" />
@@ -52,12 +53,34 @@
             <argument key="$redirectHandler" type="service" id="PayonePayment\Components\RedirectHandler\RedirectHandler" />
 
             <tag name="payone.request_enricher.pay.payone.credit_card" />
+            <tag name="payone.request_enricher.pay.payone.click_to_pay" />
         </service>
 
         <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\ShippingInformationRequestParameterEnricher">
             <tag name="payone.request_enricher.pay.payone.secured_direct_debit" />
             <tag name="payone.request_enricher.pay.payone.secured_installment" />
             <tag name="payone.request_enricher.pay.payone.secured_invoice" />
+        </service>
+
+        <!-- Click To Pay -->
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\ClickToPay\ClickToPaySessionRequestParameterEnricher">
+            <tag name="payone.request_enricher.session.payone.click_to_pay" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\ClickToPay\AuthorizeRequestParameterEnricher">
+            <argument key="$cardRepository" type="service" id="PayonePayment\Service\CardRepositoryService" />
+
+            <tag name="payone.request_enricher.pay.payone.click_to_pay" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\ClickToPay\PreauthorizeRequestParameterEnricher">
+            <argument key="$cardRepository" type="service" id="PayonePayment\Service\CardRepositoryService" />
+
+            <tag name="payone.request_enricher.pay.payone.click_to_pay" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\RequestParameter\Enricher\ClickToPay\TestCredentialsRequestParameterEnricher">
+            <tag name="payone.request_enricher.test" />
         </service>
 
         <!-- Credit Card -->
