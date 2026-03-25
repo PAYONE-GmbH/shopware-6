@@ -22,6 +22,23 @@
             <tag name="shopware.payment.method" />
         </service>
 
+        <!-- Click To Pay -->
+        <service id="PayonePayment\Provider\Payone\ResponseHandler\ClickToPayResponseHandler">
+            <argument type="service" id="translator" />
+            <argument type="service" id="PayonePayment\DataHandler\TransactionDataHandler" />
+            <argument type="service" id="PayonePayment\Service\CardRepositoryService" />
+            <argument type="service" id="order_line_item.repository" />
+        </service>
+
+        <service id="PayonePayment\Provider\Payone\PaymentHandler\ClickToPayPaymentHandler">
+            <argument type="service" id="PayonePayment\PaymentHandler\PaymentHandlerPayExecutor" />
+            <argument type="service" id="PayonePayment\Provider\Payone\ResponseHandler\ClickToPayResponseHandler" />
+            <argument type="service" id="PayonePayment\Service\PaymentStateHandlerService" />
+            <argument type="service" id="payone.request_enricher_chain.pay.payone.click_to_pay" />
+
+            <tag name="shopware.payment.method" />
+        </service>
+
         <!-- Debit -->
         <service id="PayonePayment\Provider\Payone\ResponseHandler\DebitResponseHandler">
             <argument type="service" id="translator" />
