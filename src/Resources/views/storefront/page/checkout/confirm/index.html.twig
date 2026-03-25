@@ -21,6 +21,16 @@
             form="confirmOrderForm"
             type="submit"
         ></button>
+    {% elseif constant('PayonePayment\\Provider\\Payone\\PaymentMethod\\ClickToPayPaymentMethod::UUID') == context.paymentMethod.id %}
+        {% sw_include '@Storefront/storefront/component/checkout/click-to-pay-button.html.twig' with {
+            location: 'cart',
+        } %}
+        <button
+            id="confirmFormSubmit"
+            class="submit--hidden d-none"
+            form="confirmOrderForm"
+            type="submit"
+        ></button>
     {% else %}
         {{ parent() }}
     {% endif %}

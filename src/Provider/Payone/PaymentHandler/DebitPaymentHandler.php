@@ -55,7 +55,7 @@ class DebitPaymentHandler extends AbstractPaymentHandler
     #[\Override]
     public function getDefaultAuthorizationMethod(): string
     {
-        return RequestActionEnum::PREAUTHORIZE->value;
+        return RequestActionEnum::AUTHORIZE->value;
     }
 
     #[\Override]
