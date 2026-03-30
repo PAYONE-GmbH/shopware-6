@@ -1,0 +1,36 @@
+{% block utilities_checkout_payone_click_to_pay_button %}
+    {% if page.extensions['payone-click-to-pay-options'] %}
+        {% block component_payone_click_to_pay_button %}
+            <div
+                class="d-grid"
+                data-payone-click-to-pay="true"
+                data-payone-click-to-pay-options='{{ page.extensions['payone-click-to-pay-options']|json_encode|e('html_attr') }}'
+                data-shop-name="{{ config('core.basicInformation.shopName') }}"
+            >
+                <div id="payone-click-to-pay-error" style="display:none;">
+                    {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                        type: "danger",
+                        content: ""
+                    } %}
+                </div>
+
+                <button type="button" class="btn btn-primary btn-lg">
+                    {{ 'checkout.confirmSubmit'|trans|sw_sanitize }}
+                </button>
+
+                <input type="hidden" form="confirmOrderForm" id="click-to-pay-token" name="click-to-pay-token" data-click-to-pay-token />
+
+                {# Tokenization result fields #}
+                <input type="hidden" form="confirmOrderForm" id="payoneCtpCardInputMode" name="cardInputMode" data-payone-ctp-card-input-mode />
+                <input type="hidden" form="confirmOrderForm" id="payoneCtpPaymentCheckoutData" name="paymentCheckoutData" data-payone-ctp-paymentcheckout-data />
+
+                {# Manual card entry compatibility (same field names as credit card flow) #}
+                <input type="hidden" form="confirmOrderForm" id="payoneCtpPseudoCardPan" name="pseudoCardPan" data-payone-ctp-pseudo-card-pan />
+                <input type="hidden" form="confirmOrderForm" id="payoneCtpTruncatedCardPan" name="truncatedCardPan" data-payone-ctp-truncated-card-pan />
+                <input type="hidden" form="confirmOrderForm" id="payoneCtpCardExpireDate" name="cardExpireDate" data-payone-ctp-card-expire-date />
+                <input type="hidden" form="confirmOrderForm" id="payoneCtpCardType" name="cardType" data-payone-ctp-card-type />
+                <input type="hidden" form="confirmOrderForm" id="payoneCtpCardHolder" name="cardHolder" data-payone-ctp-card-holder />
+            </div>
+        {% endblock %}
+    {% endif %}
+{% endblock %}

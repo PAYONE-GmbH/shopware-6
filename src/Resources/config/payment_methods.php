@@ -20,6 +20,7 @@ return [
     Provider\Payolution\PaymentMethod\DebitPaymentMethod::class,
     Provider\Payolution\PaymentMethod\InstallmentPaymentMethod::class,
     Provider\Payolution\PaymentMethod\InvoicePaymentMethod::class,
+    Provider\Payone\PaymentMethod\ClickToPayPaymentMethod::class,
     Provider\Payone\PaymentMethod\CreditCardPaymentMethod::class,
     Provider\Payone\PaymentMethod\DebitPaymentMethod::class,
     Provider\Payone\PaymentMethod\OpenInvoicePaymentMethod::class,

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PayonePayment\Installer;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use PayonePayment\PaymentMethod\PaymentMethodInterface;
 use PayonePayment\PayonePayment;
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
@@ -68,34 +69,30 @@ class PaymentMethodInstaller implements InstallerInterface
         self::$cache = $payonePaymentMethods;
     }
 
+    /**
+     * @throws Exception
+     */
     #[\Override]
     public function install(InstallContext $context): void
     {
+        $this->fixWrongPaymentMethodId();
+
         foreach ($this->getPaymentMethods() as $paymentMethod) {
             $this->upsertPaymentMethod($paymentMethod, $context->getContext());
 
-            // Only do this within an install context otherwise this may
+            // Only do this within an installation context otherwise this may
             // interfere badly with merchant configurations.
             $this->enablePaymentMethodForAllSalesChannels($paymentMethod, $context->getContext());
         }
     }
 
+    /**
+     * @throws Exception
+     */
     #[\Override]
     public function update(UpdateContext $context): void
     {
-        // Fix for usage of bad UUIDv4 value in https://github.com/PAYONE-GmbH/shopware-6/pull/65.
-        // Todo: Remove this after some time has passed.
-        // If we find a payment method entity with the concrete invalid UUIDv4 value we update the key
-        // before any update procedures take place otherwise we would have a duplicate payment method.
-        // This is also the reason why a migration is not a viable way here.
-        if ($this->findPaymentMethodEntity('0b532088e2da3092f9f7054ec4009d18')) {
-            $this->connection->executeStatement(<<<'SQL'
-UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');
-SQL);
-            $this->connection->executeStatement(<<<'SQL'
-UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');
-SQL);
-        }
+        $this->fixWrongPaymentMethodId();
 
         foreach ($this->getPaymentMethods() as $paymentMethod) {
             $this->upsertPaymentMethod($paymentMethod, $context->getContext());
@@ -135,6 +132,20 @@ SQL);
     }
 
     /**
+     * @return list<string>
+     */
+    private function getPaymentMethodIds(): array
+    {
+        $paymentMethodIds = [];
+
+        foreach ($this->getPaymentMethods() as $paymentMethod) {
+            $paymentMethodIds[] = $paymentMethod::getId();
+        }
+
+        return $paymentMethodIds;
+    }
+
+    /**
      * Reads the payone payment method with te given ID from the database usind the connection.
      * The reason for not using DAL is that Shopware has registered a subscriber on
      * `PaymentEvents::PAYMENT_METHOD_LOADED_EVENT`, which causes problems on PaymentHandler class changes.
@@ -148,10 +159,13 @@ SQL;
         return [] !== $this->connection->executeQuery($sql, [ $id ])->fetchAllAssociative();
     }
 
+    /**
+     * @throws Exception
+     */
     private function upsertPaymentMethod(PaymentMethodInterface $paymentMethod, Context $context): void
     {
         $pluginId        = $this->pluginIdProvider->getPluginIdByBaseClass(PayonePayment::class, $context);
-        $installed       = $this->getInstalledPaymentMethods($pluginId);
+        $installed       = $this->getInstalledPaymentMethods();
         $paymentMethodId = $paymentMethod::getId();
 
         // Collect some common data which will be used for both update and insert
@@ -173,6 +187,7 @@ SQL;
         }
 
         $installedPaymentMethod = $installed[$paymentMethodId];
+
         if (
             $data['handlerIdentifier'] !== $installedPaymentMethod['handler_identifier']
             || $data['afterOrderEnabled'] !== $installedPaymentMethod['after_order_enabled']
@@ -186,17 +201,29 @@ SQL;
      * Reads the installed payone payment methods from the database usind the connection.
      * The reason for not using DAL is that Shopware has registered a subscriber on
      * `PaymentEvents::PAYMENT_METHOD_LOADED_EVENT`, which causes problems on PaymentHandler class changes.
+     *
+     * @throws Exception
      */
-    private function getInstalledPaymentMethods(string $pluginId)
+    private function getInstalledPaymentMethods(): array
     {
         if (null === $this->installedPaymentMethods) {
+            $paymentMethodIds = $this->getPaymentMethodIds();
+
+            if (empty($paymentMethodIds)) {
+                return [];
+            }
+
+            $idPlaceholders = \implode(',', \array_fill(0, \count($paymentMethodIds), 'UNHEX(?)'));
+
             $sql = <<<SQL
 SELECT LOWER(HEX(`id`)) as id, `handler_identifier`, `after_order_enabled`, `technical_name`
 FROM `payment_method`
-WHERE HEX(`plugin_id`) = ?;
+WHERE `id` IN ($idPlaceholders);
 SQL;
 
-            $this->installedPaymentMethods = $this->connection->executeQuery($sql, [ $pluginId ])->fetchAllAssociativeIndexed();
+            $this->installedPaymentMethods = $this->connection
+                ->executeQuery($sql, $paymentMethodIds)
+                ->fetchAllAssociativeIndexed();
         }
 
         return $this->installedPaymentMethods;
@@ -266,5 +293,25 @@ SQL;
         $criteria->addFilter(new EqualsFilter('id', $data['id']));
 
         return 0 !== $this->paymentMethodRepository->search($criteria, $context)->getTotal();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function fixWrongPaymentMethodId(): void
+    {
+        // Fix for usage of bad UUIDv4 value in https://github.com/PAYONE-GmbH/shopware-6/pull/65.
+        // Todo: Remove this after some time has passed.
+        // If we find a payment method entity with the concrete invalid UUIDv4 value we update the key
+        // before any update procedures take place otherwise we would have a duplicate payment method.
+        // This is also the reason why a migration is not a viable way here.
+        if ($this->findPaymentMethodEntity('0b532088e2da3092f9f7054ec4009d18')) {
+            $this->connection->executeStatement(<<<'SQL'
+UPDATE `payment_method` SET `id` = UNHEX('4e8a9d3d3c6e428887573856b38c9003') WHERE `id` = UNHEX('0b532088e2da3092f9f7054ec4009d18');
+SQL);
+            $this->connection->executeStatement(<<<'SQL'
+UPDATE `sales_channel` SET `payment_method_ids` = REPLACE(`payment_method_ids`, '0b532088e2da3092f9f7054ec4009d18', '4e8a9d3d3c6e428887573856b38c9003');
+SQL);
+        }
     }
 }
