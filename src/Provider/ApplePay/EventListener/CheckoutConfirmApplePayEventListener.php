@@ -49,7 +49,13 @@ class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
 
     private function isSafariBrowser(string $userAgent): bool
     {
-        return 'safari' === \strtolower((Parser::create())->parse($userAgent)->ua->family);
+        $browserFamily = \strtolower((Parser::create())->parse($userAgent)->ua->family);
+
+        return (
+            'safari' === $browserFamily
+            || 'chrome' === $browserFamily
+            || 'firefox' === $browserFamily
+        );
     }
 
     private function isSetup(): bool
