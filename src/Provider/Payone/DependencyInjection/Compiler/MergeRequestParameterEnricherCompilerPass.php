@@ -30,6 +30,11 @@ class MergeRequestParameterEnricherCompilerPass implements
         );
 
         $this->merge($container,
+            'payone.request_enricher_chain.pay.payone.click_to_pay',
+            'payone.request_enricher.pay.payone.click_to_pay',
+        );
+
+        $this->merge($container,
             'payone.request_enricher_chain.pay.payone.debit',
             'payone.request_enricher.pay.payone.debit',
         );
@@ -68,6 +73,12 @@ class MergeRequestParameterEnricherCompilerPass implements
         $this->merge($container,
             'payone.request_enricher_chain.pay.payone.secure_invoice',
             'payone.request_enricher.pay.payone.secure_invoice',
+        );
+
+        $this->merge($container,
+            'payone.request_enricher_chain.session.payone.click_to_pay',
+            'payone.request_enricher.session.payone.click_to_pay',
+            generalTag: 'payone.request_enricher.system.general',
         );
     }
 }

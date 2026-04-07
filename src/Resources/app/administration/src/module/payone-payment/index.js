@@ -3,6 +3,7 @@ import enGB from './snippet/en_GB.json';
 import './filter/payone_currency.filter';
 import './component/payone-payment-settings';
 
+Shopware.Component.register('payone-click-to-pay-banner', () => import('./component/payone-click-to-pay-banner'));
 Shopware.Component.register('payone-payment-plugin-icon', () => import('./component/payone-payment-plugin-icon'));
 Shopware.Component.register('payone-ratepay-profile-configurations', () => import('./component/payone-ratepay-profile-configurations'));
 Shopware.Component.register('payone-ratepay-profiles', () => import('./component/payone-ratepay-profiles'));

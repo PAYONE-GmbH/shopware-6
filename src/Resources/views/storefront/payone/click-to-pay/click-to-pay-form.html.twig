@@ -1,0 +1,18 @@
+<div class="payone-payment click-to-pay">
+    {% block page_checkout_confirm_payone_card_title_credit_card %}
+        <div class="card-title">
+            {{ "PayonePayment.checkoutConfirmPage.defaultCardTitle" | trans }}
+        </div>
+    {% endblock %}
+
+    {% block page_checkout_confirm_payone_card_content_credit_card %}
+        <script
+            src="https://sdk.tokenization.secure.payone.com/1.5.0/hosted-tokenization-sdk.js"
+            integrity="sha384-qV/kvLA3YM9ZkCKfcliuCeR0PkqumnwfDNDF2FwkbZCQTMFJ5kzJc/7dH4E3rT0L"
+            crossorigin="anonymous"
+        ></script>
+
+        <br />
+        <div id="payment-IFrame" data-payone-ctp="true"></div>
+    {% endblock %}
+</div>

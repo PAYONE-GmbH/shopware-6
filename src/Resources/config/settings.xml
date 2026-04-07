@@ -3,6 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd"
 >
+    <!-- Default values are maintained in PayonePayment\Installer\SettingsDefaults::DEFAULT_VALUES -->
     <card>
         <title>Basic Configuration</title>
         <title lang="de-DE">Grundeinstellungen</title>
@@ -193,6 +194,156 @@
         </input-field>
     </card>
 
+    <card>
+        <title>PAYONE Credit Card (Click to Pay)</title>
+        <title lang="de-DE">PAYONE Kreditkarte (Click to Pay)</title>
+
+        <name>payment_clickToPay</name>
+
+        <component name="payone-click-to-pay-banner">
+            <name>payoneClickToPayBanner</name>
+        </component>
+
+        <input-field type="single-select">
+            <name>clickToPayAuthorizationMethod</name>
+            <label>Authorization Method</label>
+            <label lang="de-DE">Autorisierungsmethode</label>
+            <helpText>Use this option to set the authorization method for this payment type.</helpText>
+            <helpText lang="de-DE">Legt die Autorisierungsmethode für diese Zahlungsart fest.</helpText>
+            <options>
+                <option>
+                    <id>preauthorization</id>
+                    <name>Pre-authorization</name>
+                    <name lang="de-DE">Vorautorisierung</name>
+                </option>
+                <option>
+                    <id>authorization</id>
+                    <name>Authorization</name>
+                    <name lang="de-DE">Autorisierung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>clickToPayEnableCTP</name>
+            <label>Enable CTP</label>
+            <label lang="de-DE">CTP aktivieren</label>
+        </input-field>
+
+        <input-field type="bool">
+            <name>clickToPayEnableCustomerOnboarding</name>
+            <label>Enable customer onboarding</label>
+            <label lang="de-DE">Kunden-Onboarding aktivieren</label>
+            <helpText>Customer onboarding is only available with CTP enabled</helpText>
+            <helpText lang="de-DE">Die Kundenanmeldung ist nur bei aktiviertem CTP verfügbar</helpText>
+        </input-field>
+
+        <input-field>
+            <name>clickToPayFormBgColor</name>
+            <label>Form background color</label>
+            <label lang="de-DE">Form Hintergrundfarbe</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayFieldBgColor</name>
+            <label>Field background color</label>
+            <label lang="de-DE">Feld Hintergrundfarbe</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayFieldBorder</name>
+            <label>Field border</label>
+            <label lang="de-DE">Feld Rahmen</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayFieldOutline</name>
+            <label>Field outline</label>
+            <label lang="de-DE">Feld Umrandung</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayFieldLabelColor</name>
+            <label>Field label color</label>
+            <label lang="de-DE">Feld Beschriftungsfarbe</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayFieldPlaceholderColor</name>
+            <label>Field placeholder color</label>
+            <label lang="de-DE">Feld Platzhalterfarbe</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayFieldTextColor</name>
+            <label>Field text color</label>
+            <label lang="de-DE">Feld Textfarbe</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayFieldErrorCodeColor</name>
+            <label>Field error code color</label>
+            <label lang="de-DE">Feld Fehlercodefarbe</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayFontFamily</name>
+            <label>Font family</label>
+            <label lang="de-DE">Schriftart</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayFontUrl</name>
+            <label>Font URL</label>
+            <label lang="de-DE">Schrift-URL</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayLabelStyleFontSize</name>
+            <label>Label font size</label>
+            <label lang="de-DE">Beschriftung Schriftgröße</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayLabelStyleFontWeight</name>
+            <label>Label font weight</label>
+            <label lang="de-DE">Beschriftung Schriftstärke</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayInputStyleFontSize</name>
+            <label>Input font size</label>
+            <label lang="de-DE">Eingabefeld Schriftgröße</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayInputStyleFontWeight</name>
+            <label>Input font weight</label>
+            <label lang="de-DE">Eingabefeld Schriftstärke</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayErrorValidationStyleFontSize</name>
+            <label>Error validation font size</label>
+            <label lang="de-DE">Fehlervalidierung Schriftgröße</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayErrorValidationStyleFontWeight</name>
+            <label>Error validation font weight</label>
+            <label lang="de-DE">Fehlervalidierung Schriftstärke</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayBtnBgColor</name>
+            <label>Button background color</label>
+            <label lang="de-DE">Schaltfläche Hintergrundfarbe</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayBtnTextColor</name>
+            <label>Button text color</label>
+            <label lang="de-DE">Schaltfläche Textfarbe</label>
+        </input-field>
+        <input-field>
+            <name>clickToPayBtnBorderColor</name>
+            <label>Button border color</label>
+            <label lang="de-DE">Schaltfläche Rahmenfarbe</label>
+        </input-field>
+        <input-field>
+            <name>clickToPaySeparatorColor</name>
+            <label>Separator color</label>
+            <label lang="de-DE">Trennlinie Farbe</label>
+        </input-field>
+        <input-field>
+            <name>clickToPaySeparatorTextColor</name>
+            <label>Separator text color</label>
+            <label lang="de-DE">Trennlinie Textfarbe</label>
+        </input-field>
+    </card>
     <card>
         <title>PAYONE Prepayment</title>
         <title lang="de-DE">PAYONE Vorkasse</title>
@@ -965,7 +1116,6 @@
             <name>ratepayInvoiceDeviceFingerprintSnippetId</name>
             <label>Device Fingerprint Snippet ID</label>
             <label lang="de-DE">Device Fingerprint Snippet ID</label>
-            <defaultValue>ratepay</defaultValue>
         </input-field>
 
         <component name="payone-ratepay-profiles">
@@ -1362,7 +1512,6 @@
             <name>securedInvoiceAllowDifferentShippingAddress</name>
             <label>Allow a different delivery address (Attention: has to be enabled in the PAYONE account)</label>
             <label lang="de-DE">Abweichende Lieferadresse zulassen (Hinweis: Muss im PAYONE-Konto freigeschaltet sein!)</label>
-            <defaultValue>false</defaultValue>
         </input-field>
     </card>
 
@@ -1404,7 +1553,6 @@
             <name>securedInstallmentAllowDifferentShippingAddress</name>
             <label>Allow a different delivery address (Attention: has to be enabled in the PAYONE account)</label>
             <label lang="de-DE">Abweichende Lieferadresse zulassen (Hinweis: Muss im PAYONE-Konto freigeschaltet sein!)</label>
-            <defaultValue>false</defaultValue>
         </input-field>
     </card>
 
@@ -1446,7 +1594,6 @@
             <name>securedDirectDebitAllowDifferentShippingAddress</name>
             <label>Allow a different delivery address (Attention: has to be enabled in the PAYONE account)</label>
             <label lang="de-DE">Abweichende Lieferadresse zulassen (Hinweis: Muss im PAYONE-Konto freigeschaltet sein!)</label>
-            <defaultValue>false</defaultValue>
         </input-field>
     </card>
 
@@ -1538,7 +1685,6 @@
             <label lang="de-DE">Verbiete Zustellung an Postfilialen</label>
             <helpText>Enabling this option will prevent the user from selecting post offices for delivery.</helpText>
             <helpText lang="de-DE">Die Aktivierung dieser Option verhindert, dass der Benutzer Postfilialen für die Zustellung auswählen kann.</helpText>
-            <defaultValue>true</defaultValue>
         </input-field>
 
         <input-field type="bool">
@@ -1547,7 +1693,6 @@
             <label lang="de-DE">Verbiete Zustellung an Packstationen</label>
             <helpText>Enabling this option will prevent the user from selecting pack-stations for delivery.</helpText>
             <helpText lang="de-DE">Die Aktivierung dieser Option verhindert, dass der Benutzer Packstationen für die Zustellung auswählen kann.</helpText>
-            <defaultValue>true</defaultValue>
         </input-field>
 
         <input-field type="single-select">

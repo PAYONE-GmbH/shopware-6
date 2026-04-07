@@ -38,7 +38,7 @@ class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
         $request   = $event->getRequest();
         $userAgent = $request->server->get('HTTP_USER_AGENT');
 
-        if ($this->isSafariBrowser($userAgent) && true === $this->isSetup()) {
+        if ($this->isBrowserSupported($userAgent) && true === $this->isSetup()) {
             return;
         }
 
@@ -47,9 +47,18 @@ class CheckoutConfirmApplePayEventListener implements EventSubscriberInterface
         $event->getPage()->setPaymentMethods($paymentMethods);
     }
 
-    private function isSafariBrowser(string $userAgent): bool
+    private function isBrowserSupported(string $userAgent): bool
     {
-        return 'safari' === \strtolower((Parser::create())->parse($userAgent)->ua->family);
+        $browserFamily = \strtolower((Parser::create())->parse($userAgent)->ua->family);
+
+        return
+            'safari' === $browserFamily
+            || 'mobile safari' === $browserFamily
+            || 'chrome' === $browserFamily
+            || 'chrome mobile' === $browserFamily
+            || 'firefox' === $browserFamily
+            || 'firefox mobile' === $browserFamily
+        ;
     }
 
     private function isSetup(): bool

@@ -45,6 +45,17 @@ class Configuration extends Struct
         return $value;
     }
 
+    public function getNullableString(string $key, string $comparisonValue = ''): string|null
+    {
+        $value = $this->getString($key);
+
+        if ($comparisonValue === $value) {
+            return null;
+        }
+
+        return $value;
+    }
+
     public function getBool(string $key, bool $default = false): bool
     {
         $value = $this->get($key, $default);
