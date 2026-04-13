@@ -502,7 +502,7 @@ Wartung
 
 Neue Funktionen
 
-* Neue Zahlart: Click to pay (Kreditkarte neu)
+* Neue Zahlart: Click to pay
 * Erweiterung der Browserunterstützung für Apple Pay auf Chrome und Firefox
 
 Fehlerbehebung

@@ -515,7 +515,7 @@ Maintenance
 
 New Features
 
-* New payment method: Click to pay (Credit card new)
+* New payment method: Click to pay
 * Expand browser support for Apple Pay for Chrome and Firefox
 
 Bugfixes
