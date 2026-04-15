@@ -88,9 +88,9 @@ class PaymentDistinguishableNameEventListener implements EventSubscriberInterfac
             }
 
             $label = \str_replace(
-                $payment->getName(),
+                (string) ($payment->getName() ?? $payment->getTranslation('name')),
                 $label ?? $labels['en-GB'],
-                $payment->getDistinguishableName(),
+                (string) ($payment->getDistinguishableName() ?? $payment->getTranslation('distinguishableName')),
             );
 
             $payment->setDistinguishableName($label);

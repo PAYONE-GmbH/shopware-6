@@ -528,3 +528,9 @@ Bugfixes
 Maintenance
 
 * Bump cross-spawn to 7.0.6
+
+# 7.3.1
+
+Bugfixes
+
+* Fixed an error in sales channel management (occurring with administrative languages other than German and English) 
