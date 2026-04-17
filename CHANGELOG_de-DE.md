@@ -515,3 +515,9 @@ Fehlerbehebung
 Maintenance
 
 * Bump cross-spawn auf 7.0.6
+
+# 7.3.1
+
+Fehlerbehebung
+
+* Fehler in der Verkaufskanalverwaltung behoben (aufgetreten bei anderen Verwaltungssprachen als Deutsch und Englisch) 
