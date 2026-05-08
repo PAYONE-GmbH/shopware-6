@@ -541,3 +541,9 @@ Bugfixes
 
 * Apple Pay: fixed issue with new orders
 * Klarna: improved handling for new orders
+
+# 7.3.3
+
+Bugfixes
+
+* Fixed incorrect column name in API and transaction log

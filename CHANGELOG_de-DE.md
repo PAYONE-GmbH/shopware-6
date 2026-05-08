@@ -528,3 +528,9 @@ Fehlerbehebung
 
 * Apple Pay: Problem bei neuen Bestellungen behoben
 * Klarna: Verbesserte Verarbeitung bei neuen Bestellungen
+
+# 7.3.3
+
+Fehlerbehebung
+
+* Falschen Spaltennamen in API- und Transkationslog korrigiert

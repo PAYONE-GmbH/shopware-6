@@ -85,7 +85,7 @@
             },
             "orderActionLog": {
                 "cardTitle": "API-Log",
-                "columnTitleTransactionId": "Transaction ID",
+                "columnTitleTransactionId": "PAYONE TXID",
                 "columnTitleReferenceNumber": "Reference Number",
                 "columnTitleRequest": "Request",
                 "columnTitleResponse": "Response",
@@ -112,7 +112,7 @@
             },
             "webhookLog": {
                 "cardTitle": "Transactionstatus-Log",
-                "columnTitleTransactionId": "Transaction ID",
+                "columnTitleTransactionId": "PAYONE TXID",
                 "columnTitleTransactionState": "Status",
                 "columnTitleSequenceNumber": "Sequence Number",
                 "columnTitleClearingType": "Clearing Type",
