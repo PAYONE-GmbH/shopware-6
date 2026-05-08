@@ -16,6 +16,7 @@ use PayonePayment\RequestParameter\PaymentRequestEnricher;
 use PayonePayment\RequestParameter\RequestParameterEnricherChain;
 use PayonePayment\Service\CartHasherService;
 use PayonePayment\Storefront\Struct\CheckoutKlarnaSessionData;
+use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -67,13 +68,14 @@ readonly class KlarnaSessionService
 
         $cart          = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
         $cartHash      = $this->cartHasher->generate($order ?? $cart, $salesChannelContext);
+        $order         = $order ?? $this->createFakeOrderEntity($salesChannelContext, $cart);
         $paymentMethod = $this->paymentMethodRegistry->get(
             $salesChannelContext->getPaymentMethod()->getTechnicalName(),
         );
 
         $request = $this->paymentRequestEnricher->enrich(
             new PaymentRequestDto(
-                new PaymentTransactionDto(new OrderTransactionEntity(), $order ?? $this->createFakeOrderEntity(), []),
+                new PaymentTransactionDto(new OrderTransactionEntity(), $order, []),
                 new RequestDataBag(),
                 $salesChannelContext,
                 $cart,
@@ -93,11 +95,14 @@ readonly class KlarnaSessionService
         );
     }
 
-    private function createFakeOrderEntity(): OrderEntity
+    private function createFakeOrderEntity(SalesChannelContext $salesChannelContext, Cart $cart): OrderEntity
     {
         $orderEntity = new OrderEntity();
 
         $orderEntity->setId(self::EMPTY_ORDER_ID);
+        $orderEntity->setCurrencyId($salesChannelContext->getCurrencyId());
+        $orderEntity->setSalesChannelId($salesChannelContext->getSalesChannelId());
+        $orderEntity->setAmountTotal($cart->getPrice()->getTotalPrice());
 
         return $orderEntity;
     }

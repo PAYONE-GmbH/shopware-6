@@ -534,3 +534,10 @@ Maintenance
 Bugfixes
 
 * Fixed an error in sales channel management (occurring with administrative languages other than German and English) 
+
+# 7.3.2
+
+Bugfixes
+
+* Apple Pay: fixed issue with new orders
+* Klarna: improved handling for new orders

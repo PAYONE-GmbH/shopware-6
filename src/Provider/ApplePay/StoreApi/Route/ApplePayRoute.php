@@ -14,10 +14,12 @@ use PayonePayment\RequestParameter\PaymentRequestEnricher;
 use PayonePayment\RequestParameter\RequestParameterEnricherChain;
 use PayonePayment\Service\OrderLoaderService;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Plugin\Exception\DecorationPatternException;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
@@ -138,11 +140,14 @@ class ApplePayRoute extends AbstractApplePayRoute
         $cart                = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
         $orderId             = $request->get('orderId');
 
-        $orderEntity = match ($orderId) {
-            null    => $this->createFakeOrderEntity(),
+        if (!\is_string($orderId) || !Uuid::isValid($orderId)) {
+            $orderId = null;
+        }
 
+        $orderEntity = match ($orderId) {
+            null    => $this->createFakeOrderEntity($salesChannelContext, $cart),
             default => $this->orderLoaderService->getOrderById(
-                (string) $orderId,
+                $orderId,
                 $salesChannelContext->getContext(),
             ),
         };
@@ -169,11 +174,14 @@ class ApplePayRoute extends AbstractApplePayRoute
         return new JsonResponse($response);
     }
 
-    private function createFakeOrderEntity(): OrderEntity
+    private function createFakeOrderEntity(SalesChannelContext $salesChannelContext, Cart $cart): OrderEntity
     {
         $orderEntity = new OrderEntity();
 
         $orderEntity->setId(self::EMPTY_ORDER_ID);
+        $orderEntity->setCurrencyId($salesChannelContext->getCurrencyId());
+        $orderEntity->setSalesChannelId($salesChannelContext->getSalesChannelId());
+        $orderEntity->setAmountTotal($cart->getPrice()->getTotalPrice());
 
         return $orderEntity;
     }
