@@ -103,6 +103,7 @@ readonly class KlarnaSessionService
         $orderEntity->setOrderNumber('KLARNA-' . Uuid::randomHex());
         $orderEntity->setCurrencyId($salesChannelContext->getCurrencyId());
         $orderEntity->setSalesChannelId($salesChannelContext->getSalesChannelId());
+        $orderEntity->setLanguageId($salesChannelContext->getLanguageId());
         $orderEntity->setAmountTotal($cart->getPrice()->getTotalPrice());
 
         return $orderEntity;
