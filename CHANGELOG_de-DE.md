@@ -528,4 +528,4 @@ Fehlerbehebung
 
 Fehlerbehebung
 
-* Teilerstattungs-Problem bei Kreditkartentransaktionsn behoben
+* Teilerstattungs-Problem bei Kreditkartentransaktionen behoben
