@@ -520,6 +520,12 @@ Maintenance
 
 Fehlerbehebung
 
-* Fehler in der Verkaufskanalverwaltung behoben
+* Fehler in der Verkaufskanalverwaltung behoben (aufgetreten bei anderen Verwaltungssprachen als Deutsch und Englisch) 
 * Apple Pay: Problem bei neuen Bestellungen behoben
 * Klarna: Verbesserte Verarbeitung bei neuen Bestellungen
+
+# 7.3.2
+
+Fehlerbehebung
+
+* Apple Pay & Klarna: Probleme mit identischer Referenz-Nummer behoben
