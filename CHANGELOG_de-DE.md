@@ -528,4 +528,5 @@ Fehlerbehebung
 
 Fehlerbehebung
 
+* Teilerstattungs-Problem bei Kreditkartentransaktionen behoben
 * Apple Pay & Klarna: Probleme mit identischer Referenz-Nummer behoben
