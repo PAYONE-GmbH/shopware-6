@@ -543,5 +543,5 @@ Bugfixes
 
 * Fixed a partial refund error for credit card transactions
 * Apple Pay & Klarna: Fixed problems with identical reference number
-* Fixed incorrect column name in API and transaction log
+* Fixed incorrect column name in API log and transaction log
 
