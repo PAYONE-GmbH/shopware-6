@@ -198,8 +198,25 @@ export default {
             this.executeRefund(request);
         },
 
+        hasLineItemCaptureData() {
+            return this.order.lineItems.some((item) => {
+                return (item.customFields?.payone_captured_quantity ?? 0) > 0;
+            });
+        },
+
         getRefundableQuantityOfItem(orderItem) {
-            return (orderItem.customFields?.payone_captured_quantity ?? orderItem.quantity) - (orderItem.customFields?.payone_refunded_quantity ?? 0);
+            const refundedQuantity = orderItem.customFields?.payone_refunded_quantity ?? 0;
+            let capturedQuantity   = orderItem.customFields?.payone_captured_quantity;
+
+            if (
+                null === capturedQuantity
+                || undefined === capturedQuantity
+                || (capturedQuantity <= 0 && !this.hasLineItemCaptureData && this.remainingAmount > 0)
+            ) {
+                capturedQuantity = orderItem.quantity;
+            }
+
+            return Math.max(0, capturedQuantity - refundedQuantity);
         },
 
         refundFullOrder() {
