@@ -545,3 +545,8 @@ Bugfixes
 * Apple Pay & Klarna: Fixed problems with identical reference number
 * Fixed incorrect column name in API log and transaction log
 
+# 7.3.3
+
+Bugfixes
+
+* Fix undefined array key access in partial payment check
