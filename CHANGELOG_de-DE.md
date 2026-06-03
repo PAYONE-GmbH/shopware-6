@@ -531,3 +531,9 @@ Fehlerbehebung
 * Fehler bei Teilerstattungen in Kreditkartentransaktionen behoben
 * Apple Pay & Klarna: Probleme mit identischer Referenz-Nummer behoben
 * Falschen Spaltennamen in API- und Transkationslog korrigiert
+
+# 7.3.3
+
+Neue Funktionen
+
+* Klarna: Länder-Restriktionen entfernt
