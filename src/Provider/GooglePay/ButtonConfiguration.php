@@ -56,6 +56,8 @@ readonly class ButtonConfiguration
             'merchantId'                   => $merchantId,
             'googlePayMerchantId'          => $isTest ? 'test' : $config->getString('googlePayGoogleMerchantId'),
             'googlePayMerchantName'        => $isTest ? 'Payone Test Shop' : $config->getString('googlePayGoogleMerchantName'),
+            'googlePayButtonColor'         => $config->getString('googlePayButtonColor', 'default'),
+            'googlePayButtonType'          => $config->getString('googlePayButtonType', 'pay'),
             'googlePayAllowedCardNetworks' => \array_map(
                 static fn(CardNetworkEnum $enum): string => $enum->value,
                 CardNetworkEnum::cases(),
