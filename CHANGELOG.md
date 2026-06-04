@@ -550,6 +550,7 @@ Bugfixes
 New Features
 
 * Google Pay: Button configuration integrated into the PAYONE settings 
+* Klarna: country restrictions removed
 
 Bugfixes
 

@@ -537,6 +537,7 @@ Fehlerbehebung
 Neue Funktionen
 
 * Google Pay: Button-Konfiguration in die PAYONE-Einstellungen integriert 
+* Klarna: Länder-Restriktionen entfernt
 
 Bugfixes
 
