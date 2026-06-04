@@ -132,7 +132,9 @@ export default class PayoneGooglePayPlugin extends Plugin {
 
     _renderButton(client) {
         const button = client.createButton({
-            onClick: this._onClick.bind(this)
+            onClick: this._onClick.bind(this),
+            buttonColor: this.config.buttonColor || 'default',
+            buttonType: this.config.buttonType || 'pay',
         });
 
         this.buttonContainer.innerHTML = '';
