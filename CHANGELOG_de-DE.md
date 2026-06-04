@@ -537,3 +537,7 @@ Fehlerbehebung
 Neue Funktionen
 
 * Google Pay: Button-Konfiguration in die PAYONE-Einstellungen integriert 
+
+Bugfixes
+
+* Beheben eines "undefined array key"-Zugriffs bei der Teilzahlungsprüfung

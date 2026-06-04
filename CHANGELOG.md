@@ -550,3 +550,7 @@ Bugfixes
 New Features
 
 * Google Pay: Button configuration integrated into the PAYONE settings 
+
+Bugfixes
+
+* Fix undefined array key access in partial payment check
