@@ -196,16 +196,16 @@ export default class PayonePaymentCreditCard extends Plugin {
     }
 
     _handleOrderFormError(event) {
+        const confirmOrderForm  = document.getElementById('confirmOrderForm');
         const confirmFormSubmit = document.getElementById('confirmFormSubmit');
 
         event.preventDefault();
 
+        if (confirmOrderForm) {
+            confirmOrderForm.dispatchEvent(new Event('removeLoader'));
+        }
+
         if (confirmFormSubmit) {
-            const plugin = window.PluginManager.getPluginInstanceFromElement(
-                document.querySelector('#confirmOrderForm[data-form-submit-loader]'),
-                'FormSubmitLoader'
-            );
-            plugin.removeLoadingIndicator();
             confirmFormSubmit.disabled = false;
         }
     }
