@@ -542,3 +542,4 @@ Neue Funktionen
 Bugfixes
 
 * Beheben eines "undefined array key"-Zugriffs bei der Teilzahlungsprüfung
+* Kreditkarte: Validierungsfehler im Checkout (Kompatibilitätsanpssung für Shopware 6.7.10.2)
