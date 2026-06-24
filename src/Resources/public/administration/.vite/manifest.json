@@ -1,6 +1,6 @@
 {
   "main.js": {
-    "file": "assets/payone-payment-DjfxCAuc.js",
+    "file": "assets/payone-payment-CtE39ASW.js",
     "name": "payone-payment",
     "src": "main.js",
     "isEntry": true,
@@ -119,7 +119,7 @@
     "isDynamicEntry": true
   },
   "module/sw-order/component/payone-refund-button/index.js": {
-    "file": "assets/index-DFvC7jUc.js",
+    "file": "assets/index-DKbVdyyZ.js",
     "name": "index",
     "src": "module/sw-order/component/payone-refund-button/index.js",
     "isDynamicEntry": true,
