@@ -167,8 +167,21 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 
     private function isTransactionPartialPaid(array $transactionData, CurrencyEntity $currency): bool
     {
+        if (
+            !\array_key_exists('transactiontype', $transactionData)
+            || !\array_key_exists('receivable', $transactionData)
+            || !\array_key_exists('price', $transactionData)
+            || !\array_key_exists('invoice_grossamount', $transactionData)
+        ) {
+            return false;
+        }
+
+        if (TransactionTypeEnum::GT->value === $transactionData['transactiontype']) {
+            return false;
+        }
+
         $validAction = \in_array(
-            \strtolower((string) $transactionData['txaction']),
+            \strtolower((string) ($transactionData['txaction'] ?? '')),
             [
                 TransactionActionEnum::DEBIT->value,
                 TransactionActionEnum::CAPTURE->value,
@@ -181,19 +194,12 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             return false;
         }
 
-        if (
-            \array_key_exists('transactiontype', $transactionData)
-            && TransactionTypeEnum::GT->value === $transactionData['transactiontype']
-        ) {
-            return false;
-        }
-
         $transactionDataReceivable = $this->currencyPrecision->getRoundedTotalAmount(
             (float) $transactionData['receivable'],
             $currency,
         );
 
-        if (\array_key_exists('receivable', $transactionData) && 0 === $transactionDataReceivable) {
+        if (0 === $transactionDataReceivable) {
             return false;
         }
 
@@ -202,10 +208,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             $currency,
         );
 
-        if (
-            \array_key_exists('price', $transactionData) && \array_key_exists('receivable', $transactionData)
-            && $transactionDataReceivable === $transactionDataPrice
-        ) {
+        if ($transactionDataReceivable === $transactionDataPrice) {
             return false;
         }
 
@@ -214,10 +217,7 @@ class TransactionStatusService implements TransactionStatusServiceInterface
             $currency,
         );
 
-        if (
-            \array_key_exists('price', $transactionData) && \array_key_exists('invoice_grossamount', $transactionData)
-            && $transactionDataInvoiceGrossAmount === $transactionDataPrice
-        ) {
+        if ($transactionDataInvoiceGrossAmount === $transactionDataPrice) {
             return false;
         }
 

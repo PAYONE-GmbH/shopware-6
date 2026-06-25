@@ -1799,5 +1799,63 @@
             <helpText>This name will be displayed on the device during the payment process.</helpText>
             <helpText lang="de-DE">Wird auf dem jeweiligen Gerät während des Zahlungsprozesses ausgegeben.</helpText>
         </input-field>
+
+        <input-field type="single-select">
+            <name>googlePayButtonColor</name>
+            <label>Button color</label>
+            <label lang="de-DE">Button-Farbe</label>
+            <options>
+                <option>
+                    <id>default</id>
+                    <name>Default</name>
+                    <name lang="de-DE">Standard</name>
+                </option>
+                <option>
+                    <id>white</id>
+                    <name>White</name>
+                    <name lang="de-DE">Weiß</name>
+                </option>
+                <option>
+                    <id>black</id>
+                    <name>Black</name>
+                    <name lang="de-DE">Schwarz</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>googlePayButtonType</name>
+            <label>Button type</label>
+            <label lang="de-DE">Button-Typ</label>
+            <helpText>Modifies the label of the checkout button.</helpText>
+            <helpText lang="de-DE">Ändert das Label des Bestellabschluss-Buttons.</helpText>
+            <options>
+                <option>
+                    <id>buy</id>
+                    <name>Buy</name>
+                    <name lang="de-DE">Buy</name>
+                </option>
+                <option>
+                    <id>checkout</id>
+                    <name>Checkout</name>
+                    <name lang="de-DE">Checkout</name>
+                </option>
+                <option>
+                    <id>order</id>
+                    <name>Order</name>
+                    <name lang="de-DE">Order</name>
+                </option>
+                <option>
+                    <id>pay</id>
+                    <name>Pay</name>
+                    <name lang="de-DE">Pay</name>
+                </option>
+                <option>
+                    <id>plain</id>
+                    <name>Plain</name>
+                    <name lang="de-DE">Plain</name>
+                </option>
+            </options>
+        </input-field>
     </card>
 </config>

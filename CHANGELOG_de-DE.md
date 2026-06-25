@@ -531,3 +531,15 @@ Fehlerbehebung
 * Fehler bei Teilerstattungen in Kreditkartentransaktionen behoben
 * Apple Pay & Klarna: Probleme mit identischer Referenz-Nummer behoben
 * Falschen Spaltennamen in API- und Transkationslog korrigiert
+
+# 7.3.3
+
+Neue Funktionen
+
+* Google Pay: Button-Konfiguration in die PAYONE-Einstellungen integriert 
+* Klarna: Länder-Restriktionen entfernt
+
+Bugfixes
+
+* Beheben eines "undefined array key"-Zugriffs bei der Teilzahlungsprüfung
+* Kreditkarte: Validierungsfehler im Checkout (Kompatibilitätsanpssung für Shopware 6.7.10.2)

@@ -14,24 +14,6 @@
             <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument key="$extensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService" />
 
-            <argument key="$allowedCountries" type="collection">
-                <argument>AT</argument>
-                <argument>CH</argument>
-                <argument>DE</argument>
-                <argument>DK</argument>
-                <argument>Fi</argument>
-                <argument>NL</argument>
-                <argument>NO</argument>
-                <argument>SE</argument>
-            </argument>
-
-            <argument key="$allowedB2bCountries" type="collection">
-                <argument>Fi</argument>
-                <argument>DE</argument>
-                <argument>NO</argument>
-                <argument>SE</argument>
-            </argument>
-
             <argument key="$allowedCurrencies" type="collection">
                 <argument>EUR</argument>
                 <argument>CHF</argument>
@@ -52,24 +34,6 @@
             <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument key="$extensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService" />
 
-            <argument key="$allowedCountries" type="collection">
-                <argument>AT</argument>
-                <argument>CH</argument>
-                <argument>DE</argument>
-                <argument>DK</argument>
-                <argument>Fi</argument>
-                <argument>NL</argument>
-                <argument>NO</argument>
-                <argument>SE</argument>
-            </argument>
-
-            <argument key="$allowedB2bCountries" type="collection">
-                <argument>Fi</argument>
-                <argument>DE</argument>
-                <argument>NO</argument>
-                <argument>SE</argument>
-            </argument>
-
             <argument key="$allowedCurrencies" type="collection">
                 <argument>EUR</argument>
                 <argument>CHF</argument>
@@ -89,24 +53,6 @@
             <argument key="$paymentHandlerClass">PayonePayment\Provider\Klarna\PaymentHandler\InvoicePaymentHandler</argument>
             <argument key="$configReader" type="service" id="PayonePayment\Components\ConfigReader\ConfigReader" />
             <argument key="$extensionService" type="service" id="PayonePayment\Components\GenericExpressCheckout\CartExtensionService" />
-
-            <argument key="$allowedCountries" type="collection">
-                <argument>AT</argument>
-                <argument>CH</argument>
-                <argument>DE</argument>
-                <argument>DK</argument>
-                <argument>Fi</argument>
-                <argument>NL</argument>
-                <argument>NO</argument>
-                <argument>SE</argument>
-            </argument>
-
-            <argument key="$allowedB2bCountries" type="collection">
-                <argument>Fi</argument>
-                <argument>DE</argument>
-                <argument>NO</argument>
-                <argument>SE</argument>
-            </argument>
 
             <argument key="$allowedCurrencies" type="collection">
                 <argument>EUR</argument>

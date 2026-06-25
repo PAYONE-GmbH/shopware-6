@@ -545,3 +545,14 @@ Bugfixes
 * Apple Pay & Klarna: Fixed problems with identical reference number
 * Fixed incorrect column name in API log and transaction log
 
+# 7.3.3
+
+New Features
+
+* Google Pay: Button configuration integrated into the PAYONE settings 
+* Klarna: country restrictions removed
+
+Bugfixes
+
+* Fix undefined array key access in partial payment check
+* Credit Card: Validation error in the checkout (Compatibility adjustment for  Shopware 6.7.10.2)
