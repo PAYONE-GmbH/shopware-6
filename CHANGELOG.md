@@ -554,5 +554,5 @@ New Features
 
 Bugfixes
 
-* Fix undefined array key access in partial payment check
+* Fixed undefined array key access in partial payment check
 * Credit Card: Validation error in the checkout (Compatibility adjustment for  Shopware 6.7.10.2)
