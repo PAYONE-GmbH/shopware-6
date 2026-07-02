@@ -543,3 +543,9 @@ Bugfixes
 
 * Beheben eines "undefined array key"-Zugriffs bei der Teilzahlungsprüfung
 * Kreditkarte: Validierungsfehler im Checkout (Kompatibilitätsanpssung für Shopware 6.7.10.2)
+
+# 7.3.4
+
+Bugfixes
+
+* Fehler behoben, durch den Positionen bei Teilerstattungen für Kreditkarten- / Click-to-Pay-Transaktionen nicht auswählbar waren

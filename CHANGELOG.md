@@ -556,3 +556,9 @@ Bugfixes
 
 * Fixed undefined array key access in partial payment check
 * Credit Card: Validation error in the checkout (Compatibility adjustment for  Shopware 6.7.10.2)
+
+# 7.3.4
+
+Bugfixes
+
+* Fixed line items not being selectable for partial refunds on Credit Card / Click to Pay transactions
