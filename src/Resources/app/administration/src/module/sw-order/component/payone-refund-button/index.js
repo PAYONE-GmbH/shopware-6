@@ -211,7 +211,7 @@ export default {
             if (
                 null === capturedQuantity
                 || undefined === capturedQuantity
-                || (capturedQuantity <= 0 && !this.hasLineItemCaptureData && this.remainingAmount > 0)
+                || (capturedQuantity <= 0 && !this.hasLineItemCaptureData() && this.remainingAmount > 0)
             ) {
                 capturedQuantity = orderItem.quantity;
             }

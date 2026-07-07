@@ -562,3 +562,4 @@ Bugfixes
 Maintenance
 
 * Apple Pay: Updates the SDK script to use the `1.latest` version, ensuring compatibility with the most recent version 1 features.
+* Fixed line items not being selectable for partial refunds on Credit Card / Click to Pay transactions
