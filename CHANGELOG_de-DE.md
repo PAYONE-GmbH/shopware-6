@@ -543,3 +543,10 @@ Bugfixes
 
 * Beheben eines "undefined array key"-Zugriffs bei der Teilzahlungsprüfung
 * Kreditkarte: Validierungsfehler im Checkout (Kompatibilitätsanpssung für Shopware 6.7.10.2)
+
+# 7.4.0
+
+Maintenance
+
+* Apple Pay: Aktualisiert das SDK-Skript auf die Version 1.latest, um die Kompatibilität mit den neuesten Funktionen der Version 1 sicherzustellen.
+* Fehler behoben, durch den Positionen bei Teilerstattungen für Kreditkarten- / Click-to-Pay-Transaktionen nicht auswählbar waren
