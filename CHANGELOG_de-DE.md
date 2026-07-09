@@ -548,5 +548,5 @@ Bugfixes
 
 Maintenance
 
-* Apple Pay: Aktualisiert das SDK-Skript auf die Version 1.latest, um die Kompatibilität mit den neuesten Funktionen der Version 1 sicherzustellen.
+* Apple Pay: Aktualisiert auf die Version 1.latest, um die Kompatibilität mit den neuesten Funktionen der Version 1 sicherzustellen.
 * Fehler behoben, durch den Positionen bei Teilerstattungen für Kreditkarten- / Click-to-Pay-Transaktionen nicht auswählbar waren
