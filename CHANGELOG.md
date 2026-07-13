@@ -566,3 +566,9 @@ Maintenance
 Bugfixes
 
 * Fixed line items not being selectable for partial refunds on Credit Card / Click to Pay transactions
+
+# 7.4.1
+
+Bugfixes
+
+* Fixed an issue where failed PAYONE payments were not transitioned to the configured payment status after a redirect
