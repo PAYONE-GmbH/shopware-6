@@ -65,20 +65,9 @@ class ApplePayRoute extends AbstractApplePayRoute
     )]
     public function validateMerchant(Request $request, SalesChannelContext $salesChannelContext): Response
     {
-        $defaultValidationUrl = 'https://apple-pay-gateway.apple.com/paymentservices/paymentSession';
-        $pathToCertFolder     = Path::join($this->kernelDirectory, self::CERT_FOLDER);
-        $configuration        = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
-        $validationUrl        = $request->get('validationUrl', $defaultValidationUrl);
-        $merchantIdCertPath   = Path::join($pathToCertFolder, 'merchant_id.pem');
-        $merchantIdKeyPath    = Path::join($pathToCertFolder, 'merchant_id.key');
-        $passPhrase           = $configuration->get('applePayCertPassphrase');
-
-        $body = [
-            'merchantIdentifier' => $configuration->get('applePayMerchantName'),
-            'displayName'        => $configuration->get('applePayDisplayName'),
-            'initiative'         => 'web',
-            'initiativeContext'  => $request->getHttpHost(),
-        ];
+        $pathToCertFolder   = Path::join($this->kernelDirectory, self::CERT_FOLDER);
+        $merchantIdCertPath = Path::join($pathToCertFolder, 'merchant_id.pem');
+        $merchantIdKeyPath  = Path::join($pathToCertFolder, 'merchant_id.key');
 
         if (!\file_exists($merchantIdCertPath) || !\file_exists($merchantIdKeyPath)) {
             $this->logger->error(
@@ -88,6 +77,18 @@ class ApplePayRoute extends AbstractApplePayRoute
 
             throw new FileNotFoundException();
         }
+
+        $defaultValidationUrl = 'https://apple-pay-gateway.apple.com/paymentservices/paymentSession';
+        $configuration        = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
+        $validationUrl        = $request->get('validationUrl', $defaultValidationUrl);
+        $passPhrase           = $configuration->get('applePayCertPassphrase');
+
+        $body = [
+            'merchantIdentifier' => $configuration->get('applePayMerchantName'),
+            'displayName'        => $configuration->get('applePayDisplayName'),
+            'initiative'         => 'web',
+            'initiativeContext'  => $request->getHttpHost(),
+        ];
 
         try {
             $response = $this->httpClient->request('POST', $validationUrl, [
@@ -110,9 +111,10 @@ class ApplePayRoute extends AbstractApplePayRoute
 
         if (200 !== $statusCode) {
             $this->logger->error('ApplePay merchant validation failed.', [
+                'url'        => $validationUrl,
                 'body'       => $body,
                 'statusCode' => $statusCode,
-                'url'        => $validationUrl,
+                'response'   => $response->getBody()->getContents(),
             ]);
         }
 

@@ -22,10 +22,10 @@ abstract class AbstractPaymentHandler extends AbstractShopwarePaymentHandler imp
         Context $context,
         Struct|null $validateStruct,
     ): RedirectResponse|null {
-        $devcieFingerprintService = null;
+        $deviceFingerprintService = null;
 
         if ($this instanceof DeviceFingerprintAwareInterface) {
-            $devcieFingerprintService = $this->getDeviceFingerprintService();
+            $deviceFingerprintService = $this->getDeviceFingerprintService();
         }
 
         return $this->payExecutor->pay(
@@ -34,7 +34,7 @@ abstract class AbstractPaymentHandler extends AbstractShopwarePaymentHandler imp
             $transaction,
             $context,
             $validateStruct,
-            $devcieFingerprintService,
+            $deviceFingerprintService,
         );
     }
 }
