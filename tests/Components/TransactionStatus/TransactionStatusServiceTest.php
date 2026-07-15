@@ -14,6 +14,8 @@ use PayonePayment\Provider\Payone\PaymentMethod\CreditCardPaymentMethod;
 use PayonePayment\Service\CurrencyPrecisionService;
 use PayonePayment\Struct\Configuration;
 use PayonePayment\Struct\PaymentTransaction;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
@@ -34,9 +36,7 @@ use Shopware\Core\System\StateMachine\Exception\IllegalTransitionException;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
 
-/**
- * @covers \PayonePayment\Components\TransactionStatus\TransactionStatusService
- */
+#[CoversClass(TransactionStatusService::class)]
 class TransactionStatusServiceTest extends TestCase
 {
     private const TRANSACTION_ID = 'aa9a1a0e6b5648f6a17f9c0e5d9d1c11';
@@ -137,9 +137,8 @@ class TransactionStatusServiceTest extends TestCase
      * Fall 3: The transaction already reached one of the protected states. A later "failed"
      * notification is treated as late or duplicated and must be ignored instead of rolling the
      * payment status back.
-     *
-     * @dataProvider protectedStateProvider
      */
+    #[DataProvider('protectedStateProvider')]
     public function testFailedNotificationIsIgnoredForProtectedState(string $currentState): void
     {
         $orderTransaction = $this->createOrderTransaction($currentState);
@@ -156,7 +155,7 @@ class TransactionStatusServiceTest extends TestCase
         );
     }
 
-    public function protectedStateProvider(): \Generator
+    public static function protectedStateProvider(): \Generator
     {
         yield 'paid' => [OrderTransactionStates::STATE_PAID];
         yield 'paid_partially' => [OrderTransactionStates::STATE_PARTIALLY_PAID];
