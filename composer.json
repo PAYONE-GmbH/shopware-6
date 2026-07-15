@@ -21,6 +21,7 @@
     "sort-packages": true,
     "allow-plugins": {
       "bamarni/composer-bin-plugin": true,
+      "php-http/discovery": true,
       "symfony/runtime": true
     }
   },
@@ -40,8 +41,7 @@
   },
   "require-dev": {
     "ext-simplexml": "*",
-    "bamarni/composer-bin-plugin": "^1.8",
-    "dms/phpunit-arraysubset-asserts": "^0.3.0"
+    "bamarni/composer-bin-plugin": "^1.8"
   },
   "autoload": {
     "psr-4": {
