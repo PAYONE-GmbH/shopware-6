@@ -2,7 +2,7 @@
   "require-dev": {
     "php": ">=8.2",
     "dq5studios/psalm-junit": "^4.1.0",
-    "netinventors/shopware6-psalm-plugins": "^7.0.0",
+    "netinventors/shopware6-psalm-plugins": "^7.0.5",
     "netinventors/shopware6-psalm-stubs": "^7.0.2",
     "vimeo/psalm": "^6.12.0"
   }

@@ -562,4 +562,13 @@ Bugfixes
 Maintenance
 
 * Apple Pay: Update to `1.latest` version, ensuring compatibility with the most recent version 1 features.
+
+Bugfixes
+
 * Fixed line items not being selectable for partial refunds on Credit Card / Click to Pay transactions
+
+# 7.4.1
+
+Bugfixes
+
+* Fixed an issue where failed PAYONE payments were not transitioned to the configured payment status after a redirect

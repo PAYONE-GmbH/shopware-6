@@ -7,8 +7,6 @@ namespace PayonePayment\Components\TransactionStatus;
 use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\TransactionStatus\Enum\TransactionActionEnum;
 use PayonePayment\Components\TransactionStatus\Enum\TransactionTypeEnum;
-use PayonePayment\DataAbstractionLayer\Aggregate\PayonePaymentOrderTransactionDataEntity;
-use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\PaymentMethod\PaymentMethodRegistry;
 use PayonePayment\Service\CurrencyPrecisionService;
 use PayonePayment\Struct\PaymentTransaction;
@@ -30,6 +28,18 @@ class TransactionStatusService implements TransactionStatusServiceInterface
 {
     final public const STATUS_PREFIX = 'paymentStatus';
 
+    /**
+     * States for which a "failed" notification is ignored instead of applying the configured mapping.
+     */
+    private const FAILED_NOTIFICATION_PROTECTED_STATES = [
+        OrderTransactionStates::STATE_AUTHORIZED,
+        OrderTransactionStates::STATE_PAID,
+        OrderTransactionStates::STATE_PARTIALLY_PAID,
+        OrderTransactionStates::STATE_REFUNDED,
+        OrderTransactionStates::STATE_PARTIALLY_REFUNDED,
+        OrderTransactionStates::STATE_CHARGEBACK,
+    ];
+
     public function __construct(
         private readonly StateMachineRegistry $stateMachineRegistry,
         private readonly ConfigReaderInterface $configReader,
@@ -46,10 +56,6 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         PaymentTransaction $paymentTransaction,
         array $transactionData,
     ): void {
-        if ($this->isAsyncCancelled($paymentTransaction, $transactionData)) {
-            return;
-        }
-
         $configuration       = $this->configReader->read($salesChannelContext->getSalesChannel()->getId());
         $currency            = $paymentTransaction->getOrder()->getCurrency();
         $orderTransaction    = $paymentTransaction->getOrderTransaction();
@@ -122,12 +128,13 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         string $transitionName,
         array $transactionData = [],
     ): void {
-        $transactionCriteria = (new Criteria([$transactionId]))->addAssociation('stateMachineState');
-
-        /** @var OrderTransactionEntity|null $transaction */
-        $transaction = $this->transactionRepository->search($transactionCriteria, $context)->first();
+        $transaction = $this->fetchOrderTransactionWithState($context, $transactionId);
 
         if (null === $transaction || null === $machineStateEntity = $transaction->getStateMachineState()) {
+            return;
+        }
+
+        if ($this->shouldIgnoreFailedNotification($transactionData, $machineStateEntity->getTechnicalName())) {
             return;
         }
 
@@ -253,33 +260,35 @@ class TransactionStatusService implements TransactionStatusServiceInterface
         return true;
     }
 
-    private function isAsyncCancelled(PaymentTransaction $paymentTransaction, array $transactionData): bool
+    /**
+     * A "failed" notification is only relevant while the transaction is still pending. Once the
+     * transaction already reached one of the protected states (e.g. it was authorized or paid in
+     * the meantime), a "failed" notification is treated as late or duplicated and is ignored
+     * instead of applying the configured mapping.
+     *
+     * Only applies to actual PAYONE "failed" webhooks - if the given data has no `txaction` (e.g.
+     * a manual transition via transitionByName()), nothing is blocked.
+     */
+    private function shouldIgnoreFailedNotification(array $transactionData, string $currentState): bool
     {
-        /** @var PayonePaymentOrderTransactionDataEntity|null $payoneTransactionData */
-        $payoneTransactionData = $paymentTransaction->getOrderTransaction()->getExtension(
-            PayonePaymentOrderTransactionExtension::NAME,
-        );
-
-        if (null === $payoneTransactionData || empty($payoneTransactionData->getTransactionData())) {
+        if (!isset($transactionData['txaction'])) {
             return false;
         }
 
-        $payoneTransactionDataHistory = $payoneTransactionData->getTransactionData();
-        $firstTransaction             = $payoneTransactionDataHistory[\array_key_first($payoneTransactionDataHistory)];
-
-        if ($this->isFailedRedirect($firstTransaction, $transactionData)) {
-            return true;
+        if (TransactionActionEnum::FAILED->value !== \strtolower((string) $transactionData['txaction'])) {
+            return false;
         }
 
-        return false;
+        return \in_array($currentState, self::FAILED_NOTIFICATION_PROTECTED_STATES, true);
     }
 
-    private function isFailedRedirect(array $firstTransaction, array $transactionData): bool
+    private function fetchOrderTransactionWithState(Context $context, string $transactionId): OrderTransactionEntity|null
     {
-        return \array_key_exists('response', $firstTransaction)
-            && \array_key_exists('status', $firstTransaction['response'])
-            && $firstTransaction['response']['status'] === \strtoupper(TransactionActionEnum::REDIRECT->value)
-            && TransactionActionEnum::FAILED->value === \strtolower((string) $transactionData['txaction'])
-        ;
+        $criteria = new Criteria();
+        $criteria->setIds([$transactionId]);
+        $criteria->addAssociation('stateMachineState');
+
+        /** @var OrderTransactionEntity|null */
+        return $this->transactionRepository->search($criteria, $context)->first();
     }
 }

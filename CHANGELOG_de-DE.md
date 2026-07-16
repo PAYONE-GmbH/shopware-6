@@ -549,4 +549,13 @@ Bugfixes
 Maintenance
 
 * Apple Pay: Aktualisiert auf die Version 1.latest, um die Kompatibilität mit den neuesten Funktionen der Version 1 sicherzustellen.
+
+Bugfixes
+
 * Fehler behoben, durch den Positionen bei Teilerstattungen für Kreditkarten- / Click-to-Pay-Transaktionen nicht auswählbar waren
+
+# 7.4.1
+
+Bugfixes
+
+* Problem behoben, bei dem fehlgeschlagene PAYONE-Zahlungen nach einer Weiterleitung nicht auf den konfigurierten Zahlungsstatus gesetzt wurden

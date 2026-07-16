@@ -36,22 +36,33 @@
         <DeprecatedMethod errorLevel="info" />
         <DeprecatedProperty errorLevel="info" />
         <DeprecatedFunction errorLevel="info" />
-        
+
+        <DeprecatedClass>
+            <errorLevel type="suppress">
+                <referencedClass name="Symfony\Component\DependencyInjection\Loader\XmlFileLoader" />
+            </errorLevel>
+        </DeprecatedClass>
+
         <MissingClassConstType errorLevel="suppress" />
 
         <PropertyNotSetInConstructor>
             <errorLevel type="suppress">
+                <referencedProperty name="Shopware\Core\Framework\DataAbstractionLayer\Entity::$_uniqueIdentifier"/>
                 <referencedProperty name="Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition::$registry"/>
+                <referencedProperty name="Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait::$id"/>
+                <referencedProperty name="Shopware\Core\Framework\Rule\Rule::$operator"/>
                 <referencedProperty name="Symfony\Bundle\FrameworkBundle\Controller\AbstractController::$container"/>
                 <referencedProperty name="Symfony\Component\DependencyInjection\ContainerAwareTrait::$container" />
                 <referencedProperty name="Symfony\Component\HttpKernel\Bundle\Bundle::$container" />
                 <referencedProperty name="Symfony\Component\HttpKernel\Bundle\Bundle::$name" />
+                <referencedProperty name="Symfony\Component\Validator\ConstraintValidator::$context" />
             </errorLevel>
         </PropertyNotSetInConstructor>
 
         <InternalClass>
             <errorLevel type="suppress">
                 <referencedClass name="Shopware\Core\Defaults" />
+                <referencedClass name="Shopware\Core\Content\Flow\Dispatching\Action\SendMailAction" />
             </errorLevel>
         </InternalClass>
 
@@ -63,8 +74,24 @@
     </issueHandlers>
 
     <plugins>
-        <pluginClass class="NetInventors\Shopware6PsalmPlugins\MigrationUpdateDestructiveChecker\MigrationUpdateDestructiveChecker"/>
-        <pluginClass class="NetInventors\Shopware6PsalmPlugins\RequireOnceEnforcer\RequireOnceEnforcer"/>
+        <pluginClass class="NetInventors\Shopware6PsalmPlugins\MigrationUpdateDestructiveChecker\MigrationUpdateDestructiveChecker" />
+        <pluginClass class="NetInventors\Shopware6PsalmPlugins\RequireOnceEnforcer\RequireOnceEnforcer" />
+        
+        <pluginClass class="NetInventors\Shopware6PsalmPlugins\ServiceInterfaceEnforcer\ServiceInterfaceEnforcer">
+            <config>
+                <suppress>
+                    <class name="Countable" />
+                    <class name="Doctrine\DBAL\ServerVersionProvider" />
+                    <class name="IteratorAggregate" />
+                    <class name="Shopware\Core\Framework\Adapter\Translation\AbstractTranslator" />
+                    <class name="Stringable" />
+                    <class name="Symfony\Component\DependencyInjection\ContainerBuilder" />
+                    <class name="Symfony\Contracts\Service\ResetInterface" />
+                </suppress>
+            </config>
+        </pluginClass>
+        
+        <pluginClass class="NetInventors\Shopware6PsalmStubs\Stubs" />
 
         <pluginClass class="DQ5Studios\PsalmJunit\Plugin">
             <filepath>./junit.xml</filepath>
