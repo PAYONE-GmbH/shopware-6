@@ -41,9 +41,11 @@
 {% endblock %}
 
 {% block base_flashbags_checkout %}
-    <div id="payone-apple-pay-error" style="display: none;">
-        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with { type: "danger", content: 'PayonePayment.errorMessages.genericError'|trans  } %}
-    </div>
+    {% block base_flashbags_checkout_payone_error %}
+        <div id="payone-apple-pay-error" style="display: none;">
+            {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with { type: "danger", content: 'PayonePayment.errorMessages.genericError'|trans  } %}
+        </div>
+    {% endblock %}
 
     {{ parent() }}
 {% endblock %}
@@ -52,11 +54,13 @@
 {% block page_checkout_confirm %}
     {{ parent() }}
 
-    {% if page.extensions.payoneDeviceFingerprint and page.extensions.payoneDeviceFingerprint.snippet %}
-        {{ page.extensions.payoneDeviceFingerprint.snippet|raw }}
-    {% endif %}
+    {% block page_checkout_confirm_payone %}
+        {% if page.extensions.payoneDeviceFingerprint and page.extensions.payoneDeviceFingerprint.snippet %}
+            {{ page.extensions.payoneDeviceFingerprint.snippet|raw }}
+        {% endif %}
 
-    {% if page.extensions.payone and page.extensions.payone.template %}
-        {% sw_include page.extensions.payone.template %}
-    {% endif %}
+        {% if page.extensions.payone and page.extensions.payone.template %}
+            {% sw_include page.extensions.payone.template %}
+        {% endif %}
+    {% endblock %}
 {% endblock %}
