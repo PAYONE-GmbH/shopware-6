@@ -571,4 +571,4 @@ Bugfixes
 
 Bugfixes
 
-* Fixed an issue where failed PAYONE payments were not transitioned to the configured payment status after a redirect
+* Fixed an issue where failed PAYONE payments failed to transitioned to the configured status after redirect.
