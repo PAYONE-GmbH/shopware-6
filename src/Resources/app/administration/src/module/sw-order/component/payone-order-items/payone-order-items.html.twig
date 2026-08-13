@@ -59,7 +59,7 @@
             </template>
 
             <template #column-price="{ item }">
-                {{ currencyFilter(item.unit_price, order.currency.shortName) }}
+                {{ currencyFilter(item.unit_price, order.currency.isoCode) }}
             </template>
         </sw-data-grid>
     </div>

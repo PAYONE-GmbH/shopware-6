@@ -33,19 +33,19 @@
                     <mt-text-field
                         :disabled="true"
                         :label="$t('sw-order.payone-payment.modal.orderAmount')"
-                        :model-value="currencyFilter(transaction.amount.totalPrice, order.currency.shortName)"
+                        :model-value="currencyFilter(transaction.amount.totalPrice, order.currency.isoCode)"
                     ></mt-text-field>
 
                     <mt-text-field
                         :disabled="true"
                         :label="$t('sw-order.payone-payment.modal.refund.refunded')"
-                        :model-value="payoneCurrencyFilter(refundedAmount, order.currency.shortName)"
+                        :model-value="payoneCurrencyFilter(refundedAmount, order.currency.isoCode)"
                     ></mt-text-field>
 
                     <mt-text-field
                         :disabled="true"
                         :label="$t('sw-order.payone-payment.modal.remainingAmount')"
-                        :model-value="payoneCurrencyFilter(remainingAmount, order.currency.shortName)"
+                        :model-value="payoneCurrencyFilter(remainingAmount, order.currency.isoCode)"
                     ></mt-text-field>
 
                     <mt-number-field
