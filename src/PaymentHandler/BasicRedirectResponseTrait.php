@@ -14,6 +14,10 @@ trait BasicRedirectResponseTrait
         array $request,
         array $response,
     ): RedirectResponse|null {
+        if (!isset($response['redirecturl'])) {
+            return null;
+        }
+
         return new RedirectResponse($response['redirecturl']);
     }
 }
