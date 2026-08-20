@@ -63,7 +63,7 @@ readonly class ButtonConfiguration
                 CardNetworkEnum::cases(),
             ),
             'countryCode'                  => $country->getIso(),
-            'currencyCode'                 => $salesChannelContext->getCurrency()->getShortName(),
+            'currencyCode'                 => $salesChannelContext->getCurrency()->getIsoCode(),
             'totalPrice'                   => $cart->getPrice()->getTotalPrice(),
         ]);
     }

@@ -100,7 +100,7 @@ readonly class CheckoutConfirmClickToPayEventListener implements EventSubscriber
         $event->getPage()->addArrayExtension('payone-click-to-pay-options', \array_merge($uiCustomization, [
             'token'                    => $jwt->token,
             'locale'                   => \str_replace('-', '_', $salesChannelContext->getLanguageInfo()->localeCode),
-            'currencyCode'             => $salesChannelContext->getCurrency()->getShortName(),
+            'currencyCode'             => $salesChannelContext->getCurrency()->getIsoCode(),
             'amount'                   => $this->getTotalAmount($event),
             'email'                    => $customer?->getEmail(),
             'enableCTP'                => $enableCTP,

@@ -1,6 +1,6 @@
 {
   "main.js": {
-    "file": "assets/payone-payment-D85K1qvx.js",
+    "file": "assets/payone-payment-IXzGJ3KQ.js",
     "name": "payone-payment",
     "src": "main.js",
     "isEntry": true,
@@ -80,7 +80,7 @@
     ]
   },
   "module/sw-order/component/payone-capture-button/index.js": {
-    "file": "assets/index-CPA72YU3.js",
+    "file": "assets/index-DJdhlxrB.js",
     "name": "index",
     "src": "module/sw-order/component/payone-capture-button/index.js",
     "isDynamicEntry": true,
@@ -89,7 +89,7 @@
     ]
   },
   "module/sw-order/component/payone-order-items/index.js": {
-    "file": "assets/index-BnzQa17P.js",
+    "file": "assets/index-Bp1NPw8O.js",
     "name": "index",
     "src": "module/sw-order/component/payone-order-items/index.js",
     "isDynamicEntry": true,
@@ -119,7 +119,7 @@
     "isDynamicEntry": true
   },
   "module/sw-order/component/payone-refund-button/index.js": {
-    "file": "assets/index-BznN6pF3.js",
+    "file": "assets/index-ChHk5Ito.js",
     "name": "index",
     "src": "module/sw-order/component/payone-refund-button/index.js",
     "isDynamicEntry": true,
