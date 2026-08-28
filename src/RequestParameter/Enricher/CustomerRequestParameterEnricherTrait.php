@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace PayonePayment\RequestParameter\Enricher;
 
 use PayonePayment\RequestParameter\AbstractRequestDto;
+use PayonePayment\RequestParameter\PaymentRequestDto;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -34,30 +36,31 @@ trait CustomerRequestParameterEnricherTrait
     public function enrich(AbstractRequestDto $arguments): array
     {
         $salesChannelContext = $arguments->salesChannelContext;
+        $customer            = $salesChannelContext->getCustomer();
 
-        if (null === $salesChannelContext->getCustomer()) {
+        if (null === $customer) {
             throw new \RuntimeException('missing customer');
         }
 
         $language = $this->getCustomerLanguage($salesChannelContext);
+        $locale   = $language->getLocale();
 
-        if (null === $language->getLocale()) {
+        if (null === $locale) {
             throw new \RuntimeException('missing language locale');
         }
 
-        $billingAddress = $salesChannelContext->getCustomer()->getActiveBillingAddress();
+        $billingAddress = $arguments instanceof PaymentRequestDto
+            ? $arguments->paymentTransaction->order->getBillingAddress()
+            : $customer->getActiveBillingAddress()
+        ;
 
         if (null === $billingAddress) {
             throw new \RuntimeException('missing customer billing address');
         }
 
-        $salutation = $this->getCustomerSalutation($billingAddress, $salesChannelContext->getContext())
-            ->getDisplayName()
-        ;
-
-        $country = $this->getCustomerCountry($billingAddress, $salesChannelContext->getContext())
-            ->getIso()
-        ;
+        $context    = $salesChannelContext->getContext();
+        $salutation = $this->getCustomerSalutation($billingAddress, $context)->getDisplayName();
+        $country    = $this->getCustomerCountry($billingAddress, $context)->getIso();
 
         $ip = null !== $this->requestStack->getCurrentRequest()
             ? $this->requestStack->getCurrentRequest()->getClientIp()
@@ -75,12 +78,12 @@ trait CustomerRequestParameterEnricherTrait
             'zip'             => $billingAddress->getZipcode(),
             'city'            => $billingAddress->getCity(),
             'country'         => $country,
-            'email'           => $salesChannelContext->getCustomer()->getEmail(),
-            'language'        => \substr($language->getLocale()->getCode(), 0, 2),
+            'email'           => $customer->getEmail(),
+            'language'        => \substr($locale->getCode(), 0, 2),
             'ip'              => $ip,
         ];
 
-        $birthday = $salesChannelContext->getCustomer()->getBirthday();
+        $birthday = $customer->getBirthday();
 
         if (null !== $birthday) {
             $personalData['birthday'] = $birthday->format('Ymd');
@@ -89,8 +92,10 @@ trait CustomerRequestParameterEnricherTrait
         return \array_filter($personalData);
     }
 
-    protected function getCustomerSalutation(CustomerAddressEntity $addressEntity, Context $context): SalutationEntity
-    {
+    protected function getCustomerSalutation(
+        CustomerAddressEntity|OrderAddressEntity $addressEntity,
+        Context $context
+    ): SalutationEntity {
         $salutationId = $addressEntity->getSalutationId();
 
         if (null === $salutationId) {
@@ -107,8 +112,10 @@ trait CustomerRequestParameterEnricherTrait
         return $salutation;
     }
 
-    protected function getCustomerCountry(CustomerAddressEntity $addressEntity, Context $context): CountryEntity
-    {
+    protected function getCustomerCountry(
+        CustomerAddressEntity|OrderAddressEntity $addressEntity,
+        Context $context
+    ): CountryEntity {
         $criteria = new Criteria([$addressEntity->getCountryId()]);
 
         /** @var CountryEntity|null $country */

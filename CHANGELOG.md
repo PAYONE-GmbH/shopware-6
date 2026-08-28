@@ -533,7 +533,7 @@ Maintenance
 
 Bugfixes
 
-* Fixed an error in sales channel management (occurring with administrative languages other than German and English) 
+* Fixed an error in sales channel management (occurring with administrative languages other than German and English)
 * Apple Pay: fixed issue with new orders
 * Klarna: improved handling for new orders
 
@@ -549,7 +549,7 @@ Bugfixes
 
 New Features
 
-* Google Pay: Button configuration integrated into the PAYONE settings 
+* Google Pay: Button configuration integrated into the PAYONE settings
 * Klarna: country restrictions removed
 
 Bugfixes
@@ -572,3 +572,9 @@ Bugfixes
 Bugfixes
 
 * Fixed an issue where failed PAYONE payments were not transitioned to the configured payment status after a redirect
+
+# 7.4.2
+
+Bugfixes
+
+* Fixed an issue where PAYONE payments used the customer's default billing address instead of the billing address used for the order
