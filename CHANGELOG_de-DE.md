@@ -520,7 +520,7 @@ Maintenance
 
 Fehlerbehebung
 
-* Fehler in der Verkaufskanalverwaltung behoben (aufgetreten bei anderen Verwaltungssprachen als Deutsch und Englisch) 
+* Fehler in der Verkaufskanalverwaltung behoben (aufgetreten bei anderen Verwaltungssprachen als Deutsch und Englisch)
 * Apple Pay: Problem bei neuen Bestellungen behoben
 * Klarna: Verbesserte Verarbeitung bei neuen Bestellungen
 
@@ -536,7 +536,7 @@ Fehlerbehebung
 
 Neue Funktionen
 
-* Google Pay: Button-Konfiguration in die PAYONE-Einstellungen integriert 
+* Google Pay: Button-Konfiguration in die PAYONE-Einstellungen integriert
 * Klarna: Länder-Restriktionen entfernt
 
 Bugfixes
@@ -559,3 +559,9 @@ Bugfixes
 Bugfixes
 
 * Problem behoben, bei dem fehlgeschlagene PAYONE-Zahlungen nach einer Weiterleitung nicht auf den konfigurierten Zahlungsstatus gesetzt wurden
+
+# 7.4.2
+
+Bugfixes
+
+* Problem behoben, bei dem für PAYONE-Zahlungen die Standard-Rechnungsadresse des Kunden anstelle der in der Bestellung verwendeten Rechnungsadresse übermittelt wurde
