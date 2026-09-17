@@ -11,6 +11,7 @@
             <argument type="service" id="order_transaction.repository" />
             <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextRestorer" />
             <argument type="service" id="PayonePayment\DataHandler\OrderActionLogDataHandler" />
+            <argument type="service" id="PayonePayment\Service\CurrencyPrecisionService"/>
         </service>
 
         <service id="PayonePayment\Provider\ApplePay\ResponseHandler\StandardResponseHandler">

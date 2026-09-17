@@ -8,9 +8,11 @@ use PayonePayment\Components\ConfigReader\ConfigReaderInterface;
 use PayonePayment\Components\DeviceFingerprint\AbstractDeviceFingerprintService;
 use PayonePayment\DataAbstractionLayer\Extension\PayonePaymentOrderTransactionExtension;
 use PayonePayment\DataHandler\OrderActionLogDataHandler;
+use PayonePayment\Installer\ConfigInstaller;
 use PayonePayment\PaymentHandler\CreatePaymentExceptionTrait;
 use PayonePayment\PaymentHandler\PaymentHandlerInterface;
 use PayonePayment\PaymentHandler\PaymentHandlerPayExecutorInterface;
+use PayonePayment\Service\CurrencyPrecisionService;
 use PayonePayment\Struct\PaymentTransaction;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -21,6 +23,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextRestorer;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -39,6 +42,7 @@ readonly class PaymentHandlerPayExecutor implements PaymentHandlerPayExecutorInt
         private EntityRepository $orderTransactionRepository,
         private SalesChannelContextRestorer $salesChannelContextRestorer,
         private OrderActionLogDataHandler $orderActionLogDataHandler,
+        private CurrencyPrecisionService $currencyPrecision,
     ) {
         $this->serializer = new Serializer(encoders: [ new JsonEncoder() ]);
     }
@@ -107,10 +111,17 @@ readonly class PaymentHandlerPayExecutor implements PaymentHandlerPayExecutorInt
             $salesChannelContext,
         );
 
+        $orderActionLogRequest = $this->prepareOrderActionLogRequest(
+            $payoneRequest,
+            $order,
+            $paymentHandler,
+            $salesChannelContext,
+        );
+
         // special case: the request has been already processed before the payment handler has been executed. Now we will log the previous request/response
         $this->orderActionLogDataHandler->createOrderActionLog(
             $order,
-            $payoneRequest,
+            $orderActionLogRequest,
             $response,
             $salesChannelContext->getContext(),
         );
@@ -121,5 +132,46 @@ readonly class PaymentHandlerPayExecutor implements PaymentHandlerPayExecutorInt
     protected function getAuthorizationMethod(string $salesChannelId, string $configKey, string $default): string
     {
         return $this->configReader->read($salesChannelId)->getString($configKey, $default);
+    }
+
+    /**
+     * @param array<string, mixed> $request
+     *
+     * @return array<string, mixed>
+     */
+    private function prepareOrderActionLogRequest(
+        array $request,
+        OrderEntity $order,
+        PaymentHandlerInterface $paymentHandler,
+        SalesChannelContext $salesChannelContext,
+    ): array {
+        $configuration = $this->configReader->read(
+            $order->getSalesChannelId(),
+        );
+
+        $configurationPrefix = $paymentHandler->getConfigKeyPrefix();
+
+        $request['amount'] = $this->currencyPrecision->getRoundedTotalAmount(
+            $order->getAmountTotal(),
+            $salesChannelContext->getCurrency(),
+        );
+
+        $request['mode'] = $configuration->get(
+            ConfigInstaller::CONFIG_FIELD_TRANSACTION_MODE,
+        );
+
+        $request['mid'] = $configuration->getByPrefix(
+            ConfigInstaller::CONFIG_FIELD_MERCHANT_ID,
+            $configurationPrefix,
+            $configuration->get(ConfigInstaller::CONFIG_FIELD_MERCHANT_ID),
+        );
+
+        $request['portalid'] = $configuration->getByPrefix(
+            ConfigInstaller::CONFIG_FIELD_PORTAL_ID,
+            $configurationPrefix,
+            $configuration->get(ConfigInstaller::CONFIG_FIELD_PORTAL_ID),
+        );
+
+        return $request;
     }
 }
