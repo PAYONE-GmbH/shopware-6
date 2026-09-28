@@ -579,3 +579,4 @@ Bugfixes
 
 * Fixed an issue where PAYONE payments used the customer's default billing address instead of the billing address used for the order
 * Fixed logging error for Apple Pay
+* Fixed twisted firstname/lastname transmission for Apple Pay
