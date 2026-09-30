@@ -567,3 +567,4 @@ Bugfixes
 * Problem behoben, bei dem für PAYONE-Zahlungen die Standard-Rechnungsadresse des Kunden anstelle der in der Bestellung verwendeten Rechnungsadresse übermittelt wurde
 * Logging-Fehler mit Apple Pay behoben
 * Verdrehte Übertragung von Vorname/Nachname behoben bei Apple Pay
+* Problem behoben bei der Ermittlung der Rechnungsadresse

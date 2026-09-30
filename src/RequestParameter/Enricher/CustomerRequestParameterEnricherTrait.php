@@ -49,10 +49,14 @@ trait CustomerRequestParameterEnricherTrait
             throw new \RuntimeException('missing language locale');
         }
 
-        $billingAddress = $arguments instanceof PaymentRequestDto
-            ? $arguments->paymentTransaction->order->getBillingAddress()
-            : $customer->getActiveBillingAddress()
-        ;
+        $billingAddress = $customer->getActiveBillingAddress();
+
+        if (
+            $arguments instanceof PaymentRequestDto
+            && $arguments->paymentTransaction->order->getBillingAddress() instanceof OrderAddressEntity
+        ) {
+            $billingAddress = $arguments->paymentTransaction->order->getBillingAddress();
+        }
 
         if (null === $billingAddress) {
             throw new \RuntimeException('missing customer billing address');
