@@ -49,10 +49,12 @@ readonly class NotificationForwardHandler implements WebhookHandlerInterface
             return;
         }
 
+        $requestData = $this->utf8EncodeRecursive($request->request->all());
+
         foreach ($notificationTargets as $target) {
             $message = new NotificationForwardMessage(
                 $target->getId(),
-                $request->request->all(),
+                $requestData,
                 $paymentTransactionId,
                 (string) $request->getClientIp(),
             );
@@ -92,5 +94,21 @@ readonly class NotificationForwardHandler implements WebhookHandlerInterface
         );
 
         return $paymentTransaction?->getOrderTransaction()->getId();
+    }
+
+    private function utf8EncodeRecursive(array $data): array
+    {
+        foreach ($data as &$value) {
+            if (\is_array($value)) {
+                $value = $this->utf8EncodeRecursive($value);
+
+                continue;
+            }
+
+            $value = mb_convert_encoding((string) $value, 'UTF-8', 'ISO-8859-1');
+        }
+        unset($value);
+
+        return $data;
     }
 }

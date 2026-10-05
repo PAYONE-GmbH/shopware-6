@@ -38,6 +38,8 @@ class NotificationForwardHandler
             return;
         }
 
+        $requestData = $this->isoEncodeRecursive($message->getRequestData());
+
         $ch = curl_init();
         curl_setopt($ch, \CURLOPT_URL, $target->getUrl());
         curl_setopt($ch, \CURLOPT_HEADER, false);
@@ -45,7 +47,7 @@ class NotificationForwardHandler
         curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, \CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, \CURLOPT_CONNECTTIMEOUT, 10);
-        curl_setopt($ch, \CURLOPT_POSTFIELDS, http_build_query($message->getRequestData()));
+        curl_setopt($ch, \CURLOPT_POSTFIELDS, http_build_query($requestData));
         curl_setopt($ch, \CURLOPT_FAILONERROR, true);
         curl_setopt($ch, \CURLOPT_HTTPHEADER, $this->buildHeaders($message, $target));
 
@@ -91,6 +93,22 @@ class NotificationForwardHandler
         }
 
         return $headers;
+    }
+
+    private function isoEncodeRecursive(array $data): array
+    {
+        foreach ($data as &$value) {
+            if (\is_array($value)) {
+                $value = $this->isoEncodeRecursive($value);
+
+                continue;
+            }
+
+            $value = mb_convert_encoding((string) $value, 'ISO-8859-1', 'UTF-8');
+        }
+        unset($value);
+
+        return $data;
     }
 
     private function statusLogger(array $responseInfo, string $responseContent, NotificationForwardMessage $message): void
