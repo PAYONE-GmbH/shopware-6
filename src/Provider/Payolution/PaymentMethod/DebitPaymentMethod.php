@@ -22,16 +22,16 @@ class DebitPaymentMethod extends AbstractPaymentMethod
             true,
             'PAYONE Unzer Lastschrift',
             null,
-            'SEPA Direct Debit by Paysafe Pay Later.',
+            'SEPA Direct Debit by Unzer.',
             [
                 'de-DE' => [
                     'name'        => 'PAYONE Unzer Lastschrift',
-                    'description' => 'Gesicherte Lastschrift von Paysafe Pay Later.',
+                    'description' => 'Gesicherte Lastschrift von Unzer.',
                 ],
 
                 'en-GB' => [
                     'name'        => 'PAYONE Unzer Lastschrift',
-                    'description' => 'SEPA Direct Debit by Paysafe Pay Later.',
+                    'description' => 'SEPA Direct Debit by Unzer.',
                 ],
             ],
             107,
