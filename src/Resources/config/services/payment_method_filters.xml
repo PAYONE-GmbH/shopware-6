@@ -45,7 +45,7 @@
         </service>
 
         <service id="PayonePayment\Components\PaymentFilter\GenericExpressCheckoutFilterOther">
-            <tag name="payone.payment_method.filter" />
+            <tag name="payone.payment_method.filter" priority="-1000" />
         </service>
 
         <service id="PayonePayment\Components\PaymentFilter\FilterNoLongerSupportedPaymentMethods">

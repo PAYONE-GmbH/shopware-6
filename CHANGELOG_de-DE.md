@@ -568,3 +568,4 @@ Bugfixes
 * Logging-Fehler mit Apple Pay behoben
 * Verdrehte Übertragung von Vorname/Nachname behoben bei Apple Pay
 * Weiterleitung von Notifications mit Sonderzeichen korrigiert
+* Problem beim Wechsel der Zahlungsart nach Abbruch eines Express-Checkouts behoben

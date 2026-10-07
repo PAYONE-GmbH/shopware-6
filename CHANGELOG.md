@@ -581,3 +581,4 @@ Bugfixes
 * Fixed logging error for Apple Pay
 * Fixed twisted firstname/lastname transmission for Apple Pay
 * Fixed notification forwarding for notifications containing special characters
+* Fixed changing the payment method after cancelling an express checkout
