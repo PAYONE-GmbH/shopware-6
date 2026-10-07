@@ -565,3 +565,4 @@ Bugfixes
 Bugfixes
 
 * Problem behoben, bei dem für PAYONE-Zahlungen die Standard-Rechnungsadresse des Kunden anstelle der in der Bestellung verwendeten Rechnungsadresse übermittelt wurde
+* Problem beim Wechsel der Zahlungsart nach Abbruch eines Express-Checkouts behoben

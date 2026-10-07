@@ -578,3 +578,4 @@ Bugfixes
 Bugfixes
 
 * Fixed an issue where PAYONE payments used the customer's default billing address instead of the billing address used for the order
+* Fixed changing the payment method after cancelling an express checkout
