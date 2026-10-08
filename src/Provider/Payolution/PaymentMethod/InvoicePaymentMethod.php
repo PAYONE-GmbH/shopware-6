@@ -22,7 +22,7 @@ class InvoicePaymentMethod extends AbstractPaymentMethod
             true,
             'PAYONE Unzer Rechnungskauf',
             null,
-            'Invoice payment by Paysafe Pay Later.',
+            'Invoice payment by Unzer.',
             [
                 'de-DE' => [
                     'name'        => 'PAYONE Unzer Rechnungskauf',

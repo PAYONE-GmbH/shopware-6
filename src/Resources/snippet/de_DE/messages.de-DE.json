@@ -59,9 +59,9 @@
             "buttonImage2x": "checkout-logo-medium-de-2x.png"
         },
         "payolution": {
-            "cardTitleInvoicing": "Paysafe Pay Later Rechnung",
-            "cardTitleInstallment": "Paysafe Pay Later Ratenzahlung",
-            "cardTitleDebit": "Paysafe Pay Later Lastschrift",
+            "cardTitleInvoicing": "Unzer Rechnung",
+            "cardTitleInstallment": "Unzer Ratenzahlung",
+            "cardTitleDebit": "Unzer Lastschrift",
             "accountHolder": {
                 "label": "Kontoinhaber"
             },
@@ -101,7 +101,7 @@
                 "textWithLink": "Meine <a data-toggle=\"modal\" data-bs-toggle=\"modal\" data-url=\"%link%\" href=\"%link%\" title=\"Einwilligung\">Einwilligung</a> kann ich jederzeit mit Wirkung für die Zukunft wiederrufen."
             },
             "mandateCheckbox": {
-                "textWithLink": "Hiermit erteile ich das <a href=\"%link%\" target=\"_blank\" title=\"Paysafe Pay Later SEPA-Mandat\">SEPA-Lastschriftmandat</a>."
+                "textWithLink": "Hiermit erteile ich das <a href=\"%link%\" target=\"_blank\" title=\"Unzer SEPA-Mandat\">SEPA-Lastschriftmandat</a>."
             }
         },
         "prepayment": {

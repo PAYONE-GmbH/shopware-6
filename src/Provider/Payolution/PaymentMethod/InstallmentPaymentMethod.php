@@ -22,7 +22,7 @@ class InstallmentPaymentMethod extends AbstractPaymentMethod
             true,
             'PAYONE Unzer Ratenkauf',
             null,
-            'Installment payment by Paysafe Pay Later.',
+            'Installment payment by Unzer.',
             [
                 'de-DE' => [
                     'name'        => 'PAYONE Unzer Ratenkauf',

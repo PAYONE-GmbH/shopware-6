@@ -59,9 +59,9 @@
             "buttonImage2x": "checkout-logo-medium-en-2x.png"
         },
         "payolution": {
-            "cardTitleInvoicing": "Paysafe Pay Later Invoice",
-            "cardTitleInstallment": "Paysafe Pay Later Installment",
-            "cardTitleDebit": "Paysafe Pay Later Debit",
+            "cardTitleInvoicing": "Unzer Invoice",
+            "cardTitleInstallment": "Unzer Installment",
+            "cardTitleDebit": "Unzer Debit",
             "accountHolder": {
                 "label": "Account Holder"
             },
@@ -101,7 +101,7 @@
                 "textWithLink": "I can revoke my <a data-toggle=\"modal\" data-bs-toggle=\"modal\" data-url=\"%link%\" href=\"%link%\" title=\"Einwilligung\">consent</a> at any time with effect for the future."
             },
             "mandateCheckbox": {
-                "textWithLink": "I hereby issue the <a href=\"%link%\" target=\"_blank\" title=\"Paysafe Pay Later SEPA mandate\">SEPA direct debit mandate</a>."
+                "textWithLink": "I hereby issue the <a href=\"%link%\" target=\"_blank\" title=\"Unzer SEPA mandate\">SEPA direct debit mandate</a>."
             }
         },
         "prepayment": {
